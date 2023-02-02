@@ -1,17 +1,46 @@
-import { Routes, Route } from "react-router-dom";
-import { Home } from "./screens/home/home";
-import "./App.css";
-import { Init } from "./screens/int/Init";
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import { 
+  BrowserRouter as Router, 
+  Route, Link,
+  createBrowserRouter, 
+  createRoutesFromElements,
+  RouterProvider
+} from 'react-router-dom';
+
+import { LateralMenu } from './components/LateralMenu/LateralMenu';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<LateralMenu />}>
+    </Route>
+  )
+);
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route index element={<Init />} />
-        <Route path="home" element={<Home />} />
-      </Routes>
-    </>
+  <RouterProvider router={router}/>
   );
 }
 
 export default App;
+
+/*
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+*/
