@@ -13,7 +13,7 @@ import { LateralMenu } from './components/LateralMenu/LateralMenu';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<LateralMenu/>}>
+    <Route path="/" element={<LateralMenu />}>
     </Route>
   )
 );
