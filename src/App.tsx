@@ -1,6 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
+import './Fonts.css'
+
 import { 
   BrowserRouter as Router, 
   Route, Link,
@@ -9,11 +11,11 @@ import {
   RouterProvider
 } from 'react-router-dom';
 
-import { LateralMenu } from './components/LateralMenu/LateralMenu';
+import { HomePage } from './components/HomePage/HomePage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<LateralMenu />}>
+    <Route path="/" element={<HomePage />}>
     </Route>
   )
 );
