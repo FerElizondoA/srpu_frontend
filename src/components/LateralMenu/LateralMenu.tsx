@@ -42,6 +42,10 @@ export const text = {
   icon: {
     fontSize: "25px",
     color: "#000"
+  },
+  button: {
+    fontFamily: "MontserratMedium",
+    fontSize: "1.15vw"
   }
 };
 
@@ -69,14 +73,14 @@ export function LateralMenu(){
           </Grid>
         </Grid>
 
-        <Grid item container direction="column">
+        <Grid item container direction="column" spacing={0}>
           <Grid item>
             <ListItem>
               <ListItemButton>
                 <ListItemIcon>
                   <HomeOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Inicio" />
+                <Typography sx={text.button}>Inicio</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -87,7 +91,7 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <PostAddOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Inscripción" />
+                <Typography sx={text.button}>Inscripción</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -98,7 +102,7 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <PivotTableChartOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Reestructuración" />
+                <Typography sx={text.button}>Reestructuración</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -109,18 +113,18 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <HighlightOffOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Cancelación" />
+                <Typography sx={text.button}>Cancelación</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
 
-          <Grid item container>
+          <Grid item>
             <ListItem>
               <ListItemButton>
                 <ListItemIcon>
                   <AttachMoneyOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Mecanismos de pago" />
+                <Typography sx={text.button}>Mecanismos de pago</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -131,7 +135,7 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <CampaignOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Tablero electrónico" />
+                <Typography sx={text.button}>Tablero electrónico</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -142,7 +146,7 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <SettingsOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Configuración" />
+                <Typography sx={text.button}>Configuración</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
@@ -153,7 +157,7 @@ export function LateralMenu(){
                 <ListItemIcon>
                   <LockOutlinedIcon sx={text.icon}/>
                 </ListItemIcon>
-                <ListItemText primary="Cambiar Contraseña" />
+                <Typography sx={text.button}>Cambiar Contraseña</Typography>
               </ListItemButton>
             </ListItem>
           </Grid>
