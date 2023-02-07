@@ -169,18 +169,82 @@ export function LateralMenu(){
 
 /*
 
-        <Grid item container xs={9} lg={10} direction='column'>
-          <Grid item lg={1}>
-            <header>Inicio</header>
-          </Grid>
-          <Grid item container lg={11} justifyContent="center">
-            <img
-              src={escudo}
-              style={{ height: "50vh", backgroundColor: "#ff0" }}
-            ></img>
-          </Grid>
+        <Grid item>
+          <nav>
+            <List>
+              <ListItem>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inicio" />
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem>
+                <ListItemButton
+                  onClick={() => {
+                    setOpenProgramas(!openProgramas);
+                  }}
+                >
+                  
+                  <ListItemIcon>
+                  
+                    <PostAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inscripción" />
+                  {openProgramas ? <ExpandLess /> : <ExpandMore />}
+                  
+                </ListItemButton>
+                
+              </ListItem>
+
+              <ListItem>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <PivotTableChartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Reestructuración" />
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inicio" />
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inicio" />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </nav>
         </Grid>
-*/
+      </Grid>
+
+      <Grid item container xs={9} lg={10} direction="column">
+        <Grid item lg={1}>
+          <header>Inicio</header>
+        </Grid>
+        <Grid item container lg={11} justifyContent="center">
+          <img
+            src={escudo}
+            style={{ height: "50vh", backgroundColor: "#ff0" }}
+          ></img>
+        </Grid>
+      </Grid>
+      
+    </Grid>
+  );
+}
 
 /*
 
