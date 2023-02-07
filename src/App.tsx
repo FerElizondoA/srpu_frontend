@@ -11,7 +11,18 @@ import {
   RouterProvider
 } from 'react-router-dom';
 
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
 import { HomePage } from './components/HomePage/HomePage';
+
+export const appTheme = createTheme({
+  palette: {
+    primary:{
+      main: "#AF8C55"
+    }
+  },
+});
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,27 +33,12 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-  <RouterProvider router={router}/>
+    <ThemeProvider theme={appTheme}>
+      <CssBaseline enableColorScheme>
+        <RouterProvider router={router} />
+      </CssBaseline>
+    </ThemeProvider>
   );
 }
 
 export default App;
-
-/*
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-*/
