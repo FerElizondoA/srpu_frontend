@@ -27,20 +27,26 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import ModalReestructura from "../reestructuraModals/ModalReestrucutra"
+import ModalReestructura from "../reestructuraModals/ModalReestrucutra";
+
+export const text = {
+  medium: {
+    fontFamily: "MontserratMedium",
+    fontSize: "1.0vw",
+  },
+};
 
 export function Reestructura() {
   const [openAcordion, setopenAcordion] = useState(true);
 
   const [openModalReestructura, setOpenModalReestructura] = useState(false);
 
-
   const handleCloseModalReestructura = () => {
     setOpenModalReestructura(false);
-  }
+  };
   const handleOpenModalHistorial = () => {
     setOpenModalReestructura(true);
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,250 +141,304 @@ export function Reestructura() {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
-    <Grid container>
+    <Grid
+      container
+      sx={{
+        display: "center",
+        alignItems: "center",
+        height: "60%",
+      }}
+    >
       <Grid
         item
-        container
-        xs={12}
-        lg={12}
-        md={12}
-        sx={{
-          //backgroundColor: "#0f0",
-          height: "100vh",
-          //boxShadow: 5,
-        }}
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
       >
-        <Container>
-          
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Institución financiera
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Institución financiera"
+          >
+            <MenuItem value={10}>No aplica</MenuItem>
+            <MenuItem value={20}>Aplica</MenuItem>
+            <MenuItem value={30}>Indefinido</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
-           
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Tipo de fuente de pago
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Institución financiera"
+          >
+            <MenuItem value={10}>No aplica</MenuItem>
+            <MenuItem value={20}>Aplica</MenuItem>
+            <MenuItem value={30}>Indefinido</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
-         
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Institución financiera"
+          >
+            <MenuItem value={10}>No aplica</MenuItem>
+            <MenuItem value={20}>Aplica</MenuItem>
+            <MenuItem value={30}>Indefinido</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
-              <List
-                sx={{
-                  alignItems: "center",
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Tipo de fuente alterna de pago
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Institución financiera"
+          >
+            <MenuItem value={10}>No aplica</MenuItem>
+            <MenuItem value={20}>Aplica</MenuItem>
+            <MenuItem value={30}>Indefinido</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
-                  justifyItems: "center",
-                }}
-              >
-                <ListItem
-                  sx={{
-                    alignItems: "center",
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Destino</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Institución financiera"
+          >
+            <MenuItem value={10}>No aplica</MenuItem>
+            <MenuItem value={20}>Aplica</MenuItem>
+            <MenuItem value={30}>Indefinido</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
-                    justifyItems: "center",
-                  }}
-                >
-                  <FormControl fullWidth sx={{ m: 1, width: "33%" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Institución financiera
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Institución financiera"
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Clave de inscripción"
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Fecha de contratacion desde"
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ height: "10%" }}
+      >
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Monto original contratado"
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ display: "grid" }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => {
+            setopenAcordion(!openAcordion);
+          }}
+        >
+          LIMPIAR
+        </Button>
+      </Grid>
+
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={5}
+        md={4}
+        lg={5}
+        sx={{ display: "grid" }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => {
+            setopenAcordion(!openAcordion);
+          }}
+        >
+          Consultar
+        </Button>
+      </Grid>
+
+      <Grid
+        item
+        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        sm={10.8}
+        md={9.3}
+        lg={11}
+        sx={{ display: "grid" }}
+      >
+        <Paper sx={{ overflow: "hidden", boxShadow: "5", display: "grid" }}>
+          <TableContainer sx={{ maxHeight: 400 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
                     >
-                      <MenuItem value={10}>No aplica</MenuItem>
-                      <MenuItem value={20}>Aplica</MenuItem>
-                      <MenuItem value={30}>Indefinido</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  
-
-                  <FormControl fullWidth sx={{ m: 1, width: "33%" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Tipo de fuente de pago
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Institución financiera"
-                    >
-                      <MenuItem value={10}>No aplica</MenuItem>
-                      <MenuItem value={20}>Aplica</MenuItem>
-                      <MenuItem value={30}>Indefinido</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl fullWidth sx={{ m: 1, width: "33%" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Estatus
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Institución financiera"
-                    >
-                      <MenuItem value={10}>No aplica</MenuItem>
-                      <MenuItem value={20}>Aplica</MenuItem>
-                      <MenuItem value={30}>Indefinido</MenuItem>
-                    </Select>
-                  </FormControl>
-                </ListItem>
-
-                <ListItem
-                  sx={{
-                    alignItems: "center",
-                    backgroundColor: "white",
-                    justifyItems: "center",
-                  }}
-                >
-                 
-
-                  <FormControl fullWidth sx={{ m: 1, width: "33%" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Tipo de fuente alterna de pago
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Institución financiera"
-                    >
-                      <MenuItem value={10}>No aplica</MenuItem>
-                      <MenuItem value={20}>Aplica</MenuItem>
-                      <MenuItem value={30}>Indefinido</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl fullWidth sx={{ m: 1, width: "33%" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Destino
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Institución financiera"
-                    >
-                      <MenuItem value={10}>No aplica</MenuItem>
-                      <MenuItem value={20}>Aplica</MenuItem>
-                      <MenuItem value={30}>Indefinido</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <TextField
-                    sx={{ m: 1, width: "33%" }}
-                    id="outlined-basic"
-                    label="Clave de inscripción"
-                    variant="outlined"
-                  />
-                </ListItem>
-                <ListItem>
-                 
-                 
-                    <TextField
-                      sx={{ m: 1, width: "25%" }}
-                      id="outlined-basic"
-                      label="Fecha de contratacion desde"
-                      variant="outlined"
-                    />
-                    <TextField
-                      sx={{ m: 1, width: "25%" }}
-                      id="outlined-basic"
-                      label="Monto original contratado"
-                      variant="outlined"
-                    />
-                    <Button
-                      sx={{ m: 1, width: "25%" }}
-                      variant="contained"
-                      onClick={() => {
-                        setopenAcordion(!openAcordion);
-                      }}
-                    >
-                      LIMPIAR
-                    </Button>
-                  
-                    <Button
-                      sx={{ m: 1, width: "25%" }}
-                      variant="contained"
-                      onClick={() => {
-                        setopenAcordion(!openAcordion);
-                      }}
-                    >
-                      Consultar
-                    </Button>
-                  
-
-                </ListItem>
-              </List>
-
-         
-       
-
-
-
-
-            <Grid container sx={{ width: "100%", justifyContent: 'center' }}>
-              <Paper sx={{ width: "100%", overflow: "hidden", boxShadow: "5" }}>
-                <TableContainer sx={{ maxHeight: 400 }}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows
-                        .slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                        .map((row) => {
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.Estatus}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
                           return (
-                            <TableRow
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={row.Estatus}
-                            >
-                              {columns.map((column) => {
-                                const value = row[column.id];
-                                return (
-                                  <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                  >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                  </TableCell>
-                                );
-                              })}
-                            </TableRow>
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
                           );
                         })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 100]}
-                  component="div"
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </Paper>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
 
-              <Button variant="contained" sx={{ width: "15%"}}  onClick={() => { handleOpenModalHistorial()}}>ver Historial</Button>
-              <ModalReestructura open={openModalReestructura} handleClose={handleCloseModalReestructura}></ModalReestructura>
-            </Grid>
+        <Button
+          variant="contained"
+          sx={{ width: "18%", display: "flex", alignItems: "center", justifyContent:"center" }}
+          onClick={() => {
+            handleOpenModalHistorial();
+          }}
+        >
+          ver Historial
+        </Button>
 
-           
-         
-
-        </Container>
-
+        <ModalReestructura
+          open={openModalReestructura}
+          handleClose={handleCloseModalReestructura}
+        ></ModalReestructura>
+        
       </Grid>
+      
     </Grid>
   );
 }

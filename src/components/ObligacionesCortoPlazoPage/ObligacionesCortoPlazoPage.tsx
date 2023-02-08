@@ -52,7 +52,7 @@ export function ObligacionesCortoPlazoPage() {
         </Grid>
       )}
       {tabIndex === 1 && (
-          <Typography>Panel 2</Typography>
+          <SolicitudInscripcion/>
       )}
       {tabIndex === 2 && (
         <Grid container>
