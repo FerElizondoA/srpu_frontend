@@ -27,21 +27,21 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 export const text = {
   regular:{
     fontFamily: "MontserratRegular",
-    fontSize: "2vh",
+    fontSize: "1.2vw",
     color: "#000"
   },
   bold: {
     fontFamily: "MontserratBold",
-    fontSize: "2vh",
+    fontSize: "1.2vw",
   },
   italic: {
     fontFamily: "MontserratMedium",
-    fontSize: "2vh",
+    fontSize: "1.2vw",
     fontStyle: "oblique"
   },
   medium: {
     fontFamily: "MontserratMedium",
-    fontSize: "2vh"
+    fontSize: "1.2vw"
   },
   icon: {
     fontSize: "25px",
@@ -49,7 +49,7 @@ export const text = {
   },
   button: {
     fontFamily: "MontserratRegular",
-    fontSize: "2vh"
+    fontSize: "1.2vw"
   },
 };
 
