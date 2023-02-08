@@ -28,6 +28,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import ModalReestructura from "../reestructuraModals/ModalReestrucutra";
+import { height } from "@mui/system";
 
 export const text = {
   medium: {
@@ -56,8 +57,9 @@ export function Reestructura() {
       | "Estatus"
       | "Fecha_de_inscripción"
       | "Institucion_financiera"
-      | "Fecha_de_contratación";
-    //'Monto original contratado' | 'Destino' | 'Tipo de fuente de pago' | 'Tipode fuente alterna de pago' | 'Plazo(meses)' | 'Plazo(días)' | 'Acción';
+      | "Fecha_de_contratación"
+      |'Monto_original_contratado';
+    //| 'Destino' | 'Tipo de fuente de pago' | 'Tipode fuente alterna de pago' | 'Plazo(meses)' | 'Plazo(días)' | 'Acción';
     label: string;
     minWidth?: number;
     align?: "right";
@@ -92,6 +94,14 @@ export function Reestructura() {
       align: "right",
       format: (value: number) => value.toFixed(2),
     },
+    {
+      id: 'Monto_original_contratado',
+      label: 'Monto_original_contratado',
+      minWidth: 170,
+      align: "right",
+      format: (value: number) => value.toFixed(2),
+    },
+
   ];
 
   interface Data {
@@ -100,6 +110,7 @@ export function Reestructura() {
     Fecha_de_inscripción: string;
     Institucion_financiera: string;
     Fecha_de_contratación: string;
+    Monto_original_contratado:string;
   }
 
   function createData(
@@ -107,7 +118,8 @@ export function Reestructura() {
     Estatus: string,
     Fecha_de_inscripción: string,
     Institucion_financiera: string,
-    Fecha_de_contratación: string
+    Fecha_de_contratación: string,
+    Monto_original_contratado: string,
   ): Data {
     return {
       Clave_de_Inscripcion,
@@ -115,14 +127,15 @@ export function Reestructura() {
       Fecha_de_inscripción,
       Institucion_financiera,
       Fecha_de_contratación,
+      Monto_original_contratado,
     };
   }
 
   const rows = [
-    createData("1", "Correcto", "03/02/2023", "Banco de Mexico", "01/01/2023"),
-    createData("2", "Incorrecto", "09/01/2023", "Bbva", "01/01/2023"),
-    createData("3", "Pendiente", "10/12/2020", "Banjico", "01/01/2023"),
-    createData("4", "Pendiente", "01/09/2019", "Banregio", "01/01/2023"),
+    createData("1", "Correcto", "03/02/2023", "Banco de Mexico", "01/01/2023","1000000"),
+    createData("2", "Incorrecto", "09/01/2023", "Bbva", "01/01/2023","2000000"),
+    createData("3", "Pendiente", "10/12/2020", "Banjico", "01/01/2023","3000000"),
+    createData("4", "Pendiente", "01/09/2019", "Banregio", "01/01/2023","1000000"),
   ];
 
   const [page, setPage] = React.useState(0);
@@ -151,11 +164,12 @@ export function Reestructura() {
     >
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <FormControl fullWidth>
@@ -176,11 +190,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <FormControl fullWidth>
@@ -201,11 +216,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <FormControl fullWidth>
@@ -224,11 +240,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <FormControl fullWidth>
@@ -249,11 +266,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <FormControl fullWidth>
@@ -272,11 +290,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <TextField
@@ -289,12 +308,14 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
+        
       >
         <TextField
           fullWidth
@@ -306,11 +327,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ height: "10%" }}
       >
         <TextField
@@ -323,11 +345,12 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
+        lg={4.5}
+        xl={4.8}
         sx={{ display: "grid" }}
       >
         <Button
@@ -342,12 +365,13 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 2, lg: 4, xl: 3 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 10 }}
         sm={5}
         md={4}
-        lg={5}
-        sx={{ display: "grid" }}
+        lg={4.5}
+        xl={4.8}
+        sx={{ display: "grid"}}
       >
         <Button
           variant="contained"
@@ -361,12 +385,13 @@ export function Reestructura() {
 
       <Grid
         item
-        mt={{ sm: 4, md: 4, lg: 4, xl: 8 }}
-        ml={{ sm: 5, md: 9, lg: 10, xl: 15 }}
+        mt={{ sm: 4, md: 1, lg: 4, xl: 1 }}
+        ml={{ sm: 5, md: 9, lg: 10, xl: 11 }}
         sm={10.8}
         md={9.3}
-        lg={11}
-        sx={{ display: "grid" }}
+        lg={10}
+        xl={10}
+        sx={{ display: "grid", justifyItems: "center" }}
       >
         <Paper sx={{ overflow: "hidden", boxShadow: "5", display: "grid" }}>
           <TableContainer sx={{ maxHeight: 400 }}>
@@ -424,7 +449,7 @@ export function Reestructura() {
 
         <Button
           variant="contained"
-          sx={{ width: "18%", display: "flex", alignItems: "center", justifyContent:"center" }}
+          sx={{ width: "50%", display: "flex", alignItems: "center", justifyContent:"center" }}
           onClick={() => {
             handleOpenModalHistorial();
           }}
