@@ -11,7 +11,7 @@ export function HomePage(){
         <Grid item xs={3.5} md={3} lg={2.2}>
           <LateralMenu />
         </Grid>
-        <Grid item md={9} lg={9.8}>
+        <Grid item xs={8.5} md={9} lg={9.8}>
           <ObligacionesCortoPlazoPage />
         </Grid>
       </Grid>
