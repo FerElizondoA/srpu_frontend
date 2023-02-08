@@ -8,10 +8,10 @@ import { ObligacionesCortoPlazoPage } from '../ObligacionesCortoPlazoPage/Obliga
 export function HomePage(){
     return (
       <Grid container>
-        <Grid item xs={3.5} md={3.5} lg={2.5}>
+        <Grid item xs={3.5} md={3} lg={2.2}>
           <LateralMenu />
         </Grid>
-        <Grid item md={8.5} lg={9.5}>
+        <Grid item md={9} lg={9.8}>
           <ObligacionesCortoPlazoPage />
         </Grid>
       </Grid>
