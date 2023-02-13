@@ -8,8 +8,10 @@ import {
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useState } from "react";
+import { Documentacion } from "./Panels/Documentacion";
 
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
+
 
 export const text = {
   regular: {
@@ -61,11 +63,12 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 2 && (
         <Grid item container>
           <Typography>Panel 2</Typography>
+          
         </Grid>
       )}
       {tabIndex === 3 && (
-        <Grid item container>
-          <Typography>Panel 3</Typography>
+        <Grid container>
+          <Documentacion/>
         </Grid>
       )}
       {tabIndex === 4 && (

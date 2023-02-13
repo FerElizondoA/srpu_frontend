@@ -237,6 +237,7 @@ export function SolicitudInscripcion() {
             </Button>
           </Grid>
         </Grid>
+
       </Grid>
     );
 }
