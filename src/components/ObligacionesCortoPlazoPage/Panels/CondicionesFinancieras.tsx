@@ -10,68 +10,13 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper,
-    Box
+    Box,
+    Button
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell"
 import { queries } from '../../../queries';
-
-// dummy data
-
-interface Data {
-    dispositionDate: Date;
-    dispositionAmount: number;
-    capitalPaymentDate: Date;
-    capitalPaymentRange: string;
-    iFirstPaymentDate: Date;
-    iRate: number;
-    comission: number;
-}
-
-interface Head {
-    id: keyof Data;
-    isNumeric: boolean;
-    label: string;
-}
-
-const heads: readonly Head[] = [
-    {
-        id: 'dispositionDate',
-        isNumeric: false,
-        label: "Fecha de Disposición"
-    },
-    {
-        id: 'dispositionAmount',
-        isNumeric: true,
-        label: "Importe de Disposición"
-    },
-    {
-        id: 'capitalPaymentDate',
-        isNumeric: false,
-        label: "Fecha de Primer Pago Capital"
-    },
-    {
-        id: 'capitalPaymentRange',
-        isNumeric: false,
-        label: "Periocidad de Pago Capital"
-    },
-    {
-        id: 'iFirstPaymentDate',
-        isNumeric: false,
-        label: "Fecha de Primer Pago de Interés"
-    },
-    {
-        id: 'iRate',
-        isNumeric: true,
-        label: "Tasa de Interés"
-    },
-    {
-        id: 'comission',
-        isNumeric: true,
-        label: "Comisiones"
-    },
-]
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -97,34 +42,110 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export function CondicionesFinancieras(){
+    const columns: GridColDef[] = [
+      {
+        field: "id",
+        headerClassName: "header",
+        headerName: "ID",
+        width: 90,
+      },
+      {
+        field: "dispositionDate",
+        headerClassName: "header",
+        headerName: "Fecha de Disposición",
+        width: 200,
+        editable: false,
+      },
+      {
+        field: "dispositionAmount",
+        headerClassName: "header",
+        headerName: "Importe de Disposición",
+        width: 200,
+        editable: false,
+      },
+      {
+        field: "capitalPaymentDate",
+        headerClassName: "header",
+        headerName: "Fecha de Primer Pago de Capital",
+        width: 260,
+        editable: false,
+      },
+      {
+        field: "capitalPaymentRange",
+        headerClassName: "header",
+        headerName: "Periocidad de Pago Capital",
+        width: 220,
+        editable: false,
+      },
+      {
+        field: "iFirstPaymentDate",
+        headerClassName: "header",
+        headerName: "Fecha de Primer Pago de Interés",
+        width: 260,
+        editable: false,
+      },
+      {
+        field: "iRate",
+        headerClassName: "header",
+        headerName: "Tasa de Interés",
+        width: 130,
+        editable: false,
+      },
+      {
+        field: "comission",
+        headerClassName: "header",
+        headerName: "Comisiones",
+        width: 110,
+        editable: false,
+      },
+    ];
+
+    const rows = [
+      {
+        id: 1,
+        dispositionDate: "14/02/2023",
+        dispositionAmount: "$3000",
+        capitalPaymentDate: "14/03/2023",
+        capitalPaymentRange: "6 meses",
+        iFirstPaymentDate: "14/03/2023",
+        iRate: "%34.44",
+        comission: "$234.67"
+      },
+
+      {
+        id: 2,
+        dispositionDate: "14/02/2023",
+        dispositionAmount: "$3000",
+        capitalPaymentDate: "14/03/2023",
+        capitalPaymentRange: "5 meses",
+        iFirstPaymentDate: "14/03/2023",
+        iRate: "%34.44",
+        comission: "$234.67"
+      },
+    ];
     return (
-      <Grid container direction="column">
+      <Grid container>
+        <Grid
+          item
+          sx={{
+            width: "100%",
+            height: "1565%",
+            "& .header": {
+                fontFamily: "MontserratRegular"
+            },
+          }}
+          lg={9.5}
+        >
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+          />
+        </Grid>
         <Grid item>
-          <TableContainer>
-            <Table>
-              <TableHead>
-              {heads.map((head) =>(
-                <StyledTableCell key={head.id}>
-                    <TableSortLabel>
-                        {head.label}
-                    </TableSortLabel>
-                </StyledTableCell>
-              ))}
-              </TableHead>
-            </Table>
-          </TableContainer>
+            <Button>100</Button>
         </Grid>
       </Grid>
     );
 }
-/*
-
-
-                    <TableCell>Fecha de Disposición</TableCell>
-                    <TableCell>Importe de Disposición</TableCell>
-                    <TableCell>Fecha de Primer Pago de Capital</TableCell>
-                    <TableCell>Periocidad de Pago Capital</TableCell>
-                    <TableCell>Fecha de Primer Pago de Interés</TableCell>
-                    <TableCell>Tasa de Interés</TableCell>
-                    <TableCell>Comisiones</TableCell>
-*/
