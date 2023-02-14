@@ -4,10 +4,16 @@ import {
   Grid,
   Typography,
   Avatar,
+  Divider,
   List,
   ListItemButton,
   ListItemIcon,
+  IconButton,
   Collapse,
+  Drawer,
+  AppBar,
+  Toolbar
+
 } from "@mui/material";
 
 // icons
@@ -23,39 +29,23 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import MenuIcon from '@mui/icons-material/Menu';
 
-export const text = {
-  regular:{
-    fontFamily: "MontserratRegular",
-    fontSize: "1.2vw",
-    color: "#000"
-  },
-  bold: {
-    fontFamily: "MontserratBold",
-    fontSize: "1.2vw",
-  },
-  italic: {
-    fontFamily: "MontserratMedium",
-    fontSize: "1.2vw",
-    fontStyle: "oblique"
-  },
-  medium: {
-    fontFamily: "MontserratMedium",
-    fontSize: "1.2vw"
-  },
-  icon: {
-    fontSize: "25px",
-    color: "#000"
-  },
-  button: {
-    fontFamily: "MontserratRegular",
-    fontSize: "1.2vw"
-  },
-};
+import {useState} from 'react';
+
+import { queries } from "../../queries";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export function LateralMenu(){
-  const [openInscripcion, setOpenInscripcion] = React.useState(true);
-  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(true);
+
+  const query = {
+    isXs: useMediaQuery("(min-width: 0px) and (max-width: 899px)"),
+  };
+
+  const [openInscripcion, setOpenInscripcion] = React.useState(false);
+  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleInscripcionClick = () => {
     setOpenInscripcion(!openInscripcion);
@@ -66,137 +56,188 @@ export function LateralMenu(){
   };
 
   return (
-    <Grid container sx={{ boxShadow: 5, height: "100vh", overflow: "auto"}}>
-      <Grid item container direction="column" spacing={1.5}>
-        <Grid item sx={{ alignSelf: "center" }} mt={2}>
-          <img src={logo} style={{ height: "50px" }}></img>
+    <AppBar position="static">
+      <Toolbar variant="dense">
+        <Grid container>
+          <Grid item mt={0.5}>
+            <IconButton
+              size="large"
+              color="inherit"
+              onClick={() => setIsDrawerOpen(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Grid>
+          <Grid item ml={3} mt={0.5}>
+            <img src={logo} style={{ height: "40px" }}></img>
+          </Grid>
         </Grid>
-        <Grid item sx={{ alignSelf: "center" }}>
-          <Avatar sx={{ height: "10vh", width: "10vh" }}>M</Avatar>
+        <Grid item>
+          <Drawer
+            anchor="left"
+            open={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            <Grid container sx={{width: "50vw"}}>
+              <Grid item container direction="column" mt={2}>
+                <Grid item sx={{ alignSelf: "center" }}>
+                  <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
+                </Grid>
+
+                <Grid item sx={{ alignSelf: "center" }}>
+                  <Typography sx={queries.text}>Josvan Gonzalez</Typography>
+                </Grid>
+
+                <Grid item sx={{ alignSelf: "center" }}>
+                  <Typography sx={queries.bold_text}>Administrador</Typography>
+                </Grid>
+
+                <Grid item sx={{ alignSelf: "center" }}>
+                  <Typography sx={queries.italic_text}>Organismo</Typography>
+                </Grid>
+
+                <Grid item sx={{ alignSelf: "center" }}>
+                  <Typography sx={queries.text}>Municipio Monterrey</Typography>
+                </Grid>
+
+                <Grid item>
+                  <Divider />
+                </Grid>
+              </Grid>
+
+              <Grid item container direction="column">
+                <Grid item>
+                  <List>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <HomeOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>Inicio</Typography>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={handleInscripcionClick}>
+                      <ListItemIcon>
+                        <PostAddOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>Inscripción</Typography>
+                      {openInscripcion ? <ExpandMore /> : <ExpandLess />}
+                    </ListItemButton>
+
+                    <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
+                      <List>
+                        <ListItemButton
+                          sx={{ marginLeft: 2 }}
+                          onClick={handleFinanciamientoClick}
+                        >
+                          <ListItemIcon>
+                            <KeyboardDoubleArrowRightIcon sx={queries.icon} />
+                          </ListItemIcon>
+                          <Typography sx={queries.text}>
+                            Financiamiento y Obligaciones
+                          </Typography>
+                          {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
+                        </ListItemButton>
+                        <Collapse
+                          in={openFinanciamiento}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List>
+                            <ListItemButton sx={{ marginLeft: 4 }}>
+                              <ListItemIcon>
+                                <KeyboardArrowRightIcon sx={queries.icon} />
+                              </ListItemIcon>
+                              <Typography sx={queries.text}>
+                                Obligaciones a Corto Plazo
+                              </Typography>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{ marginLeft: 4 }}>
+                              <ListItemIcon>
+                                <KeyboardArrowRightIcon sx={queries.icon} />
+                              </ListItemIcon>
+                              <Typography sx={queries.text}>
+                                Credito Simple
+                              </Typography>
+                            </ListItemButton>
+                          </List>
+                        </Collapse>
+
+                        <ListItemButton sx={{ marginLeft: 2 }}>
+                          <ListItemIcon>
+                            <KeyboardDoubleArrowRightIcon sx={queries.icon} />
+                          </ListItemIcon>
+                          <Typography sx={queries.text}>
+                            Consulta de solicitudes
+                          </Typography>
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
+
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <PivotTableChartOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>
+                        Reestructuración
+                      </Typography>
+                    </ListItemButton>
+
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <HighlightOffOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>Cancelación</Typography>
+                    </ListItemButton>
+
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AttachMoneyOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>
+                        Mecanismos de pago
+                      </Typography>
+                    </ListItemButton>
+
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <CampaignOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>
+                        Tablero electrónico
+                      </Typography>
+                    </ListItemButton>
+                  </List>
+                </Grid>
+                <Grid item>
+                  <Divider />
+                </Grid>
+              </Grid>
+              <Grid item container direction="column">
+                <Grid item>
+                  <List>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <SettingsOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>Configuración</Typography>
+                    </ListItemButton>
+
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <LockOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>
+                        Cambiar Contraseña
+                      </Typography>
+                    </ListItemButton>
+                  </List>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Drawer>
         </Grid>
-        <Grid item sx={{ alignSelf: "center" }}>
-          <Typography sx={text.bold}>Marlon Israel</Typography>
-        </Grid>
-        <Grid item sx={{ alignSelf: "center" }}>
-          <Typography sx={text.italic}>Administrador</Typography>
-        </Grid>
-        <Grid item sx={{ alignSelf: "center" }}>
-          <Typography sx={text.medium}>Organismo</Typography>
-        </Grid>
-        <Grid item sx={{ alignSelf: "center" }}>
-          <Typography sx={text.regular}>Municipio Monterrey</Typography>
-        </Grid>
-      </Grid>
-
-      <Grid item container direction="column">
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <HomeOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Inicio</Typography>
-          </ListItemButton>
-
-          <ListItemButton onClick={handleInscripcionClick}>
-            <ListItemIcon>
-              <PostAddOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Inscripción</Typography>
-            {openInscripcion ? <ExpandMore /> : <ExpandLess />}
-          </ListItemButton>
-
-          <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
-            <List>
-              <ListItemButton
-                sx={{ marginLeft: 2 }}
-                onClick={handleFinanciamientoClick}
-              >
-                <ListItemIcon>
-                  <KeyboardDoubleArrowRightIcon sx={text.icon} />
-                </ListItemIcon>
-                <Typography sx={text.button}>
-                  Financiamiento y Obligaciones
-                </Typography>
-                {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
-              </ListItemButton>
-              <Collapse in={openFinanciamiento} timeout="auto" unmountOnExit>
-                <List>
-                  <ListItemButton sx={{ marginLeft: 4 }}>
-                    <ListItemIcon>
-                      <KeyboardArrowRightIcon sx={text.icon} />
-                    </ListItemIcon>
-                    <Typography sx={text.button}>
-                      Obligaciones a Corto Plazo
-                    </Typography>
-                  </ListItemButton>
-
-                  <ListItemButton sx={{ marginLeft: 4 }}>
-                    <ListItemIcon>
-                      <KeyboardArrowRightIcon sx={text.icon} />
-                    </ListItemIcon>
-                    <Typography sx={text.button}>Credito Simple</Typography>
-                  </ListItemButton>
-                </List>
-              </Collapse>
-
-              <ListItemButton sx={{ marginLeft: 2 }}>
-                <ListItemIcon>
-                  <KeyboardDoubleArrowRightIcon sx={text.icon} />
-                </ListItemIcon>
-                <Typography sx={text.button}>
-                  Consulta de solicitudes
-                </Typography>
-              </ListItemButton>
-            </List>
-          </Collapse>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <PivotTableChartOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Reestructuración</Typography>
-          </ListItemButton>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <HighlightOffOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Cancelación</Typography>
-          </ListItemButton>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <AttachMoneyOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Mecanismos de pago</Typography>
-          </ListItemButton>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <CampaignOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Tablero electrónico</Typography>
-          </ListItemButton>
-        </List>
-      </Grid>
-
-      <Grid item container direction="column">
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Configuración</Typography>
-          </ListItemButton>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <LockOutlinedIcon sx={text.icon} />
-            </ListItemIcon>
-            <Typography sx={text.button}>Cambiar Contraseña</Typography>
-          </ListItemButton>
-        </List>
-      </Grid>
-    </Grid>
+      </Toolbar>
+    </AppBar>
   );
 };
