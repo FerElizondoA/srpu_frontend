@@ -38,7 +38,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 10, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 35 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -111,7 +111,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 35 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -176,7 +176,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 15 }}
+        ml={{ xs: 5, sm: 10, md: 2, lg: 15 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.8} lg={3.5}>
