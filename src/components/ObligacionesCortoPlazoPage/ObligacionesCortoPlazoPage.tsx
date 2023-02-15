@@ -24,7 +24,7 @@ export function ObligacionesCortoPlazoPage() {
   }
 
   const query ={
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 960px)")
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)")
   }
 
   return (
