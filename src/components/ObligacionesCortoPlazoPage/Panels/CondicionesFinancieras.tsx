@@ -10,18 +10,124 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Box,
     Button
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell"
 import { queries } from '../../../queries';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+
+// dummy data
+
+interface Data {
+    dispositionDate: Date;
+    dispositionAmount: number;
+    capitalPaymentDate: Date;
+    capitalPaymentRange: string;
+    iFirstPaymentDate: Date;
+    iRate: number;
+    comission: number;
+}
+
+interface Head {
+    id: keyof Data;
+    isNumeric: boolean;
+    label: string;
+}
+
+const heads: readonly Head[] = [
+    {
+        id: 'dispositionDate',
+        isNumeric: false,
+        label: "Fecha de Disposición"
+    },
+    {
+        id: 'dispositionAmount',
+        isNumeric: true,
+        label: "Importe de Disposición"
+    },
+    {
+        id: 'capitalPaymentDate',
+        isNumeric: false,
+        label: "Fecha de Primer Pago Capital"
+    },
+    {
+        id: 'capitalPaymentRange',
+        isNumeric: false,
+        label: "Periocidad de Pago Capital"
+    },
+    {
+        id: 'iFirstPaymentDate',
+        isNumeric: false,
+        label: "Fecha de Primer Pago de Interés"
+    },
+    {
+        id: 'iRate',
+        isNumeric: true,
+        label: "Tasa de Interés"
+    },
+    {
+        id: 'comission',
+        isNumeric: true,
+        label: "Comisiones"
+    },
+]
+
+////////////////////////////////////////////////////////
+
+function createDummyData(
+    dispositionDate: Date,
+    dispositionAmount: number,
+    capitalPaymentDate: Date,
+    capitalPaymentRange: string,
+    iFirstPaymentDate: Date,
+    iRate: number,
+    comission: number
+){
+    return {
+        dispositionDate,
+        dispositionAmount,
+        capitalPaymentDate,
+        capitalPaymentRange,
+        iFirstPaymentDate,
+        iRate,
+        comission
+    }
+}
+
+const rows = [
+    createDummyData(
+        new Date(2023, 2, 14),
+        10000,
+        new Date(2023, 3, 14),
+        "1 año",
+        new Date(2023, 4, 14),
+        30,
+        350.05
+        ),
+    createDummyData(
+        new Date(2022, 1, 18),
+        2000,
+        new Date(2022, 2, 18),
+        "5 meses",
+        new Date(2022, 3, 18),
+        25.23,
+        370.05
+        ),
+    createDummyData(
+        new Date(2021, 5, 23),
+        4300,
+        new Date(2021, 6, 23),
+        "8 meses",
+        new Date(2021, 7, 23),
+        34.93,
+        632.65
+        )
+]
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#6f7677",
-    color: theme.palette.common.white,
+    backgroundColor: "white",
+    color: theme.palette.common.black,
     fontFamily: "MontserratMedium",
     fontSize: "1.8ch",
   },
@@ -32,119 +138,73 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  fontFamily: "MontserratMedium",
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
   // hide last border
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
 export function CondicionesFinancieras(){
-    const columns: GridColDef[] = [
-      {
-        field: "id",
-        headerClassName: "header",
-        headerName: "ID",
-        width: 90,
-      },
-      {
-        field: "dispositionDate",
-        headerClassName: "header",
-        headerName: "Fecha de Disposición",
-        width: 200,
-        editable: false,
-      },
-      {
-        field: "dispositionAmount",
-        headerClassName: "header",
-        headerName: "Importe de Disposición",
-        width: 200,
-        editable: false,
-      },
-      {
-        field: "capitalPaymentDate",
-        headerClassName: "header",
-        headerName: "Fecha de Primer Pago de Capital",
-        width: 260,
-        editable: false,
-      },
-      {
-        field: "capitalPaymentRange",
-        headerClassName: "header",
-        headerName: "Periocidad de Pago Capital",
-        width: 220,
-        editable: false,
-      },
-      {
-        field: "iFirstPaymentDate",
-        headerClassName: "header",
-        headerName: "Fecha de Primer Pago de Interés",
-        width: 260,
-        editable: false,
-      },
-      {
-        field: "iRate",
-        headerClassName: "header",
-        headerName: "Tasa de Interés",
-        width: 130,
-        editable: false,
-      },
-      {
-        field: "comission",
-        headerClassName: "header",
-        headerName: "Comisiones",
-        width: 110,
-        editable: false,
-      },
-    ];
-
-    const rows = [
-      {
-        id: 1,
-        dispositionDate: "14/02/2023",
-        dispositionAmount: "$3000",
-        capitalPaymentDate: "14/03/2023",
-        capitalPaymentRange: "6 meses",
-        iFirstPaymentDate: "14/03/2023",
-        iRate: "%34.44",
-        comission: "$234.67"
-      },
-
-      {
-        id: 2,
-        dispositionDate: "14/02/2023",
-        dispositionAmount: "$3000",
-        capitalPaymentDate: "14/03/2023",
-        capitalPaymentRange: "5 meses",
-        iFirstPaymentDate: "14/03/2023",
-        iRate: "%34.44",
-        comission: "$234.67"
-      },
-    ];
     return (
-      <Grid container>
-        <Grid
-          item
-          sx={{
-            width: "100%",
-            height: "1565%",
-            "& .header": {
-                fontFamily: "MontserratRegular"
-            },
-          }}
-          lg={9.5}
-        >
-          <DataGrid
-            columns={columns}
-            rows={rows}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-          />
-        </Grid>
+      <Grid container direction="column">
         <Grid item>
-            <Button>100</Button>
+          <TableContainer sx={{minHeight: "85vh"}}>
+            <Table>
+              <TableHead>
+                {heads.map((head) => (
+                  <StyledTableCell key={head.id}>
+                    <TableSortLabel>{head.label}</TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row">
+                      {row.dispositionDate.toLocaleDateString()}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                        {"$" + row.dispositionAmount.toString()}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                        {row.capitalPaymentDate.toLocaleDateString()}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                        {row.capitalPaymentRange}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                        {row.capitalPaymentDate.toLocaleDateString()}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                        {row.iRate + "%"}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                        {"$" + row.comission}
+                    </StyledTableCell>
+                    
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item container>
+            <Grid item>
+                <Button >AGREGAR</Button>
+            </Grid>
+
+            <Grid item>
+                <Button>ELIMINAR</Button>
+            </Grid>
         </Grid>
       </Grid>
     );
