@@ -4,14 +4,15 @@ import { LateralMenu} from "../LateralMenu/LateralMenu"
 import MenuIcon from '@mui/icons-material/Menu'
 import App from '../../App';
 import { ObligacionesCortoPlazoPage } from '../ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage';
+import { Reestructura } from '../reestructura/Reestructura';
 
 export function HomePage(){
     return (
       <Grid container>
-        <Grid item xs={3.5} md={3.5} lg={2.5}>
+        <Grid item xs={3.5} md={3} lg={2.2}>
           <LateralMenu />
         </Grid>
-        <Grid item md={8.5} lg={9.5}>
+        <Grid item xs={8.5} md={9} lg={9.8}>
           <ObligacionesCortoPlazoPage />
         </Grid>
       </Grid>

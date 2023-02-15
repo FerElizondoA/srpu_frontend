@@ -8,8 +8,10 @@ import {
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useState } from "react";
+import { Documentacion } from "./Panels/Documentacion";
 
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
+
 
 export const text = {
   regular: {
@@ -32,43 +34,48 @@ export function ObligacionesCortoPlazoPage() {
   }
 
   return (
-    <Box>
-      <Tabs
-        value={tabIndex}
-        onChange={handleChange}
-        centered
-        variant={query.isXLg ?  "standard" : "scrollable"}
-        scrollButtons="auto"
-      >
-        <Tab label="Encabezado" sx={text.regular}></Tab>
-        <Tab label="Información General" sx={text.regular}></Tab>
-        <Tab label="Condiciones Financieras" sx={text.regular}></Tab>
-        <Tab label="Documentación" sx={text.regular}></Tab>
-        <Tab label="Solicitud de Inscripción" sx={text.regular}></Tab>
-      </Tabs>
+    <Grid container direction="column">
+      <Grid item>
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          centered
+          variant={query.isXLg ? "standard" : "scrollable"}
+          scrollButtons="auto"
+        >
+          <Tab label="Encabezado" sx={text.regular}></Tab>
+          <Tab label="Información General" sx={text.regular}></Tab>
+          <Tab label="Condiciones Financieras" sx={text.regular}></Tab>
+          <Tab label="Documentación" sx={text.regular}></Tab>
+          <Tab label="Solicitud de Inscripción" sx={text.regular}></Tab>
+        </Tabs>
+      </Grid>
       {tabIndex === 0 && (
-        <Grid container>
+        <Grid item container>
           <Typography>Panel 1</Typography>
         </Grid>
       )}
       {tabIndex === 1 && (
-          <Typography>Panel 2</Typography>
+        <Grid item container>
+          <SolicitudInscripcion />
+        </Grid>
       )}
       {tabIndex === 2 && (
-        <Grid container>
+        <Grid item container>
           <Typography>Panel 2</Typography>
+          
         </Grid>
       )}
       {tabIndex === 3 && (
         <Grid container>
-          <Typography>Panel 3</Typography>
+          <Documentacion/>
         </Grid>
       )}
       {tabIndex === 4 && (
-        <Grid container>
+        <Grid item container>
           <Typography>Panel 4</Typography>
         </Grid>
       )}
-    </Box>
+    </Grid>
   );
 }
