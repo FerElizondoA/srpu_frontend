@@ -1,19 +1,26 @@
-import escudo from '../../assets/images/escudo.png'
-import { IconButton, Grid, Toolbar, AppBar} from "@mui/material"
+import { Grid } from "@mui/material"
 import { LateralMenu} from "../LateralMenu/LateralMenu"
-import MenuIcon from '@mui/icons-material/Menu'
-import App from '../../App';
 import { ObligacionesCortoPlazoPage } from '../ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage';
 import { Reestructura } from '../reestructura/Reestructura';
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { LateralMenuMobile } from '../LateralMenu/LateralMenuMobile';
+import { ObligacionesCortoPlazoPageMobile } from '../ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPageMobile';
+
 export function HomePage(){
+
+    const query = {
+      isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)")
+    }
+
     return (
-      <Grid container>
-        <Grid item xs={3.5} md={3} lg={2.2}>
-          <LateralMenu />
+      <Grid container direction="column">
+        <Grid item>
+          {query.isMobile? <LateralMenuMobile/> : <LateralMenu/>}
         </Grid>
-        <Grid item xs={8.5} md={9} lg={9.8}>
-          <ObligacionesCortoPlazoPage />
+        <Grid item>
+
+          {query.isMobile? <ObligacionesCortoPlazoPageMobile/> : <ObligacionesCortoPlazoPage/>}
         </Grid>
       </Grid>
     );

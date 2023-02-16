@@ -37,12 +37,14 @@ export function InformacionGeneral() {
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 30 }}
+        mt={{ xs: 10, sm: 10, md: 5, lg: 5 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>Fecha de Contratación</InputLabel>
+          <InputLabel sx={queries.medium_text}>
+            Fecha de Contratación
+          </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateField
               fullWidth
@@ -82,7 +84,9 @@ export function InformacionGeneral() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>Monto Original Contratado</InputLabel>
+          <InputLabel sx={queries.medium_text}>
+            Monto Original Contratado
+          </InputLabel>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -107,7 +111,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 30 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -172,7 +176,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 2, md: 7, lg: 15 }}
+        ml={{ xs: 5, sm: 10, md: 2, lg: 15 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.8} lg={3.5}>
