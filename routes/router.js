@@ -1,5 +1,7 @@
 const express = require("express");
 const verifyToken = require("../controllers/auth/verifyToken.js");
+const { createClaveDeInscripcion, getClavesDeInscripcion, getDetailClaveDeInscripcion, modifyClaveDeInscripcion, deleteClaveDeInscripcion } = require("../controllers/ClaveDeInscripcion.js");
+const { createDestino, getDestinos, getDetailDestino, modifyDestino, deleteDestino } = require("../controllers/Destinos.js");
 const { createEntePublicoObligado, getEntePublicoObligado, getDetailEntePublicoObligado, modifyEntePublicoObligado, deleteEntePublicoObligado } = require("../controllers/EntesPublicosObligados.js");
 const { createEstatus, getDetailEstatus, modifyEstatus, deleteEstatus, getEstatus } = require("../controllers/Estatus.js");
 const { deleteFuenteAlternaDePago, createFuenteAlternaDePago, getFuenteAlternaDePago, getDetailFuenteAlternaDePago, modifyFuenteAlternaDePago } = require("../controllers/FuenteAlternaDePago.js");
@@ -143,6 +145,50 @@ router.put("/modify-fuenteAlternaDePago", verifyToken.verifyJWT, (req, res) => {
 
 router.delete("/delete-fuenteAlternaDePago", verifyToken.verifyJWT, (req, res) => {
   deleteFuenteAlternaDePago(req, res);
+});
+
+//Clave de Inscripcion
+router.post("/create-claveDeInscripcion",  verifyToken.verifyJWT, (req, res, express) => {
+  createClaveDeInscripcion(req, res);
+});
+
+router.get("/get-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
+  getClavesDeInscripcion(req, res);
+});
+
+router.get("/detail-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
+  getDetailClaveDeInscripcion(req, res);
+});
+
+router.put("/modify-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
+  modifyClaveDeInscripcion(req, res);
+});
+
+
+router.delete("/delete-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
+  deleteClaveDeInscripcion(req, res);
+});
+
+//Destinos
+router.post("/create-destino",  verifyToken.verifyJWT, (req, res, express) => {
+  createDestino(req, res);
+});
+
+router.get("/get-destinos", verifyToken.verifyJWT, (req, res) => {
+  getDestinos(req, res);
+});
+
+router.get("/detail-destino", verifyToken.verifyJWT, (req, res) => {
+  getDetailDestino(req, res);
+});
+
+router.put("/modify-destino", verifyToken.verifyJWT, (req, res) => {
+  modifyDestino(req, res);
+});
+
+
+router.delete("/delete-destino", verifyToken.verifyJWT, (req, res) => {
+  deleteDestino(req, res);
 });
 
 
