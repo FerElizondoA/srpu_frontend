@@ -15,7 +15,6 @@ export const queries = {
   medium_text: {
     fontSize: "2ch",
     fontFamily: "MontserratMedium",
-    alignSelf: "center",
     "@media (max-width: 600px)": {
       // XS (extra small) screen
       fontSize: "1rem",
