@@ -1,37 +1,32 @@
-import { 
-    Grid,
-    Tabs,
-    Tab,
-    Typography,
-    Box
- } from "@mui/material"
+import { Grid, Tabs, Tab, Typography, Box } from "@mui/material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useState } from "react";
-import { Autorización } from "./Panels/Autorizacón";
+import { Autorización } from "./Panels/AutorizacIón";
+import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Documentacion } from "./Panels/Documentacion";
 import { Encabezado } from "./Panels/Encabezado";
+import { FuenteDePago } from "./Panels/FuenteDePago";
 import { InformaciónGeneral } from "./Panels/InformacionGeneral";
 
 export const text = {
   regular: {
     fontFamily: "MontserratRegular",
     fontSize: "1.0vw",
-    color: "#000"
+    color: "#000",
   },
 };
 
 export function CreditoSimplePage() {
-
   const [tabIndex, setTabIndex] = useState(0);
-  
+
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
-  }
+  };
 
-  const query ={
-    isXLg: useMediaQuery("(min-width: 1535px)")
-  }
+  const query = {
+    isXLg: useMediaQuery("(min-width: 1535px)"),
+  };
 
   return (
     <Grid container direction="column">
@@ -46,6 +41,7 @@ export function CreditoSimplePage() {
           <Tab label="Encabezado" sx={text.regular}></Tab>
           <Tab label="Información General" sx={text.regular}></Tab>
           <Tab label="Autorizacón" sx={text.regular}></Tab>
+          <Tab label="Fuente de Pago" sx={text.regular}></Tab>
           <Tab label="Condiciones Financieras" sx={text.regular}></Tab>
           <Tab label="Documentación" sx={text.regular}></Tab>
           <Tab label="Solicitud de Inscripción" sx={text.regular}></Tab>
@@ -53,37 +49,40 @@ export function CreditoSimplePage() {
       </Grid>
       {tabIndex === 0 && (
         <Grid item container>
-          <Encabezado
-          CS={""}/>
+          <Encabezado CS={""} />
         </Grid>
       )}
       {tabIndex === 1 && (
         <Grid item container>
-          <InformaciónGeneral/>
+          <InformaciónGeneral />
         </Grid>
       )}
       {tabIndex === 2 && (
         <Grid item container>
-          <Autorización/>
+          <Autorización />
         </Grid>
       )}
       {tabIndex === 3 && (
-        <Grid item container>
-          <Typography>Condiciones Financieras </Typography>
+        <Grid container>
           
+          <FuenteDePago/>
+        
         </Grid>
       )}
       {tabIndex === 4 && (
-        <Grid container>
-         <Documentacion/>
-              
+        <Grid item container>
+          <CondicionesFinancieras />
         </Grid>
       )}
       {tabIndex === 5 && (
         <Grid item container>
-          
-            </Grid>
+          <Documentacion />
+        </Grid>
       )}
+      {tabIndex === 6 && (<Grid item container>
+        <Typography>Solicitud de inscripción</Typography>
+        
+        </Grid>)}
     </Grid>
   );
 }
