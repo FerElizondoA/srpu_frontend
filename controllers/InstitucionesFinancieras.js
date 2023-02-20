@@ -15,7 +15,6 @@ module.exports = {
       });
     } else {
       db.query(`CALL sp_AgregarInstitucionFinanciera('${IdUsuarioCreador}', '${Institucion}' )`, (err, result) => {
-        console.log(result);
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -43,7 +42,6 @@ module.exports = {
   //LISTADO COMPLETO
   getInstitucionesFinancieras: (req, res) => {
     db.query(`CALL sp_ListadoInstitucionesFinancieras()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -143,7 +141,6 @@ module.exports = {
     db.query(
       `CALL sp_BajaLogicaInstitucionFinanciera('${IdInstitucion}', '${IdUsuarioModificador}')`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error",

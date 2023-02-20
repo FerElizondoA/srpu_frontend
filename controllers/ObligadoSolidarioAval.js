@@ -17,7 +17,6 @@ module.exports = {
       db.query(
         `CALL sp_AgregarObligadoSolidarioAval('${IdUsuarioCreador}', '${ObligadoSolidarioAval}' )`,
         (err, result) => {
-          console.log(result);
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -46,7 +45,6 @@ module.exports = {
   //LISTADO COMPLETO
   getObligadoSolidarioAval: (req, res) => {
     db.query(`CALL sp_ListadoObligadosSolidariosAvales()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",

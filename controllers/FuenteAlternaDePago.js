@@ -15,7 +15,6 @@ module.exports = {
       });
     } else {
       db.query(`CALL sp_AgregarFuenteAlternaDePago('${IdUsuarioCreador}', '${FuenteAlternaDePago}' )`, (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -43,7 +42,6 @@ module.exports = {
   //LISTADO COMPLETO
   getFuenteAlternaDePago: (req, res) => {
     db.query(`CALL sp_ListadoFuentesAlternasDePago()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",

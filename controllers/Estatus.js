@@ -15,7 +15,6 @@ module.exports = {
       });
     } else {
       db.query(`CALL sp_AgregarEstatus('${IdUsuarioCreador}', '${State}' )`, (err, result) => {
-        console.log(result);
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -43,7 +42,6 @@ module.exports = {
   //LISTADO COMPLETO
   getEstatus: (req, res) => {
     db.query(`CALL sp_ListadoEstatus()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",
