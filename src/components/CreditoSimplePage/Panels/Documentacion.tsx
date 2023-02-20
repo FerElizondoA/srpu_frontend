@@ -37,27 +37,18 @@ export function Documentacion() {
       <Grid
         //container
         item
-        mt={{ md: 5, lg: 1, xl: 1 }}
-        ml={{ md: 5, lg: 0, xl: 0 }}
-        md={3}
+        mt={{ sm:1, md: 1, lg: 1, xl: 1 }}
+        ml={{ sm:1, md: 0, lg: 0, xl: 0 }}
+        sm={12}
+        md={12}
         lg={12}
         xl={12}
-        sx={{
-          //height: "50%",
-          justifyItems: "center",
-          //display: "grid",
-          //backgroundColor: "blue",
-          //   border: 1,
-          //   borderRadius: 3,
-          //   borderColor: "#af8c55",
-          //borderStyle: "dashed",
-        }}
+     
       >
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -89,9 +80,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -123,9 +113,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -157,9 +146,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -191,9 +179,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -225,9 +212,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -259,9 +245,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -293,9 +278,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -327,9 +311,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -361,9 +344,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -395,9 +377,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -429,9 +410,8 @@ export function Documentacion() {
 
         <Grid
           item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
+          sm={12}
+          md={12}
           lg={12}
           xl={12}
         >
@@ -497,9 +477,8 @@ export function Documentacion() {
 
       <Grid
         item
-        mt={{ md: 5, lg: 1, xl: 1 }}
-        ml={{ md: 5, lg: 0, xl: 0 }}
-        md={3}
+        sm={12}
+        md={12}
         lg={12}
         xl={12}
         sx={{
