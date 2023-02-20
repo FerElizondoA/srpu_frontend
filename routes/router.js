@@ -9,6 +9,7 @@ const { createFuenteDePago, getFuenteDePago, getDetailFuenteDePago, modifyFuente
 const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
+const { getDetailUsuario } = require("../controllers/usuarios.js");
 
 
 
@@ -142,7 +143,6 @@ router.put("/modify-fuenteAlternaDePago", verifyToken.verifyJWT, (req, res) => {
   modifyFuenteAlternaDePago(req, res);
 });
 
-
 router.delete("/delete-fuenteAlternaDePago", verifyToken.verifyJWT, (req, res) => {
   deleteFuenteAlternaDePago(req, res);
 });
@@ -189,6 +189,11 @@ router.put("/modify-destino", verifyToken.verifyJWT, (req, res) => {
 
 router.delete("/delete-destino", verifyToken.verifyJWT, (req, res) => {
   deleteDestino(req, res);
+});
+
+//Usuario
+router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
+  getDetailUsuario(req, res);
 });
 
 

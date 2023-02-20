@@ -15,8 +15,6 @@ module.exports = {
       });
     } else {
       db.query(`CALL sp_AgregarEntePublicoObligado('${IdUsuarioCreador}', '${EntePublicoObligado}' )`, (err, result) => {
-        console.log(result);
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -44,7 +42,6 @@ module.exports = {
   //LISTADO COMPLETO
   getEntePublicoObligado: (req, res) => {
     db.query(`CALL sp_ListadoEntesPublicosObligados()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -144,7 +141,6 @@ module.exports = {
     db.query(
       `CALL sp_BajaLogicaEntePublicoObligado('${IdEntePublicoObligado}', '${IdUsuarioModificador}')`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error",
