@@ -14,7 +14,7 @@ import {
   Routes,
 } from "react-router-dom";
 
-// import { CssBaseline } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles"; //, ThemeProvider
 
 import { HomePage } from "./components/HomePage/HomePage";
@@ -40,7 +40,7 @@ function App() {
 
   useLayoutEffect(() => {
     if (jt !== null) {
-      sessionValid().then((r) => {
+      sessionValid().then((r: any) => {
         if ((r as boolean) === false) {
           window.location.assign("http://10.200.4.106/");
         } else if ((r as boolean) === true) {
@@ -51,7 +51,7 @@ function App() {
         }
       });
     } else {
-      continueSession().then((r) => {
+      continueSession().then((r: any) => {
         if ((r as boolean) === false) {
           window.location.assign("http://10.200.4.106/");
         } else {
@@ -62,11 +62,13 @@ function App() {
   }, [IdApp, jt, navigate]);
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<HomePage />}></Route>
-      </Routes>
-    </>
+    <ThemeProvider theme={appTheme}>
+      <CssBaseline enableColorScheme>
+        <Routes>
+          <Route path="/" element={<HomePage />}></Route>
+        </Routes>
+      </CssBaseline>
+    </ThemeProvider>
   );
 }
 
