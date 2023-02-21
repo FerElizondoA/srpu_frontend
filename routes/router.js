@@ -9,6 +9,7 @@ const { createFuenteDePago, getFuenteDePago, getDetailFuenteDePago, modifyFuente
 const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
+const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
 const { getDetailUsuario } = require("../controllers/usuarios.js");
 
 
@@ -191,10 +192,33 @@ router.delete("/delete-destino", verifyToken.verifyJWT, (req, res) => {
   deleteDestino(req, res);
 });
 
+//Roles
+router.post("/create-rol",  verifyToken.verifyJWT, (req, res, express) => {
+  createRol(req, res);
+});
+
+router.get("/get-roles", verifyToken.verifyJWT, (req, res) => {
+  getRoles(req, res);
+});
+
+router.get("/detail-rol", verifyToken.verifyJWT, (req, res) => {
+  getDetailRol(req, res);
+});
+
+router.put("/modify-rol", verifyToken.verifyJWT, (req, res) => {
+  modifyRol(req, res);
+});
+
+
+router.delete("/delete-rol", verifyToken.verifyJWT, (req, res) => {
+  deleteRol(req, res);
+});
+
 //Usuario
 router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
 });
+
 
 
 module.exports = router;
