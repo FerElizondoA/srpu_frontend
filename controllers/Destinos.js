@@ -1,7 +1,7 @@
 const db = require("../config/db.js");
 
 module.exports = {
-  //CREAR
+  //CREAR  
   createDestino: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Destino = req.body.Destino;
@@ -72,7 +72,7 @@ module.exports = {
   // DETALLE POR ID
   getDetailDestino: (req, res) => {
     const IdDestino = req.body.IdDestino;
-    if (IdClaveDeInscripcion == null ||/^[\s]*$/.test(IdDestino)) {
+    if (IdDestino == null ||/^[\s]*$/.test(IdDestino)) {
         return res.status(409).send({
           error: "Ingresé IdDestino.",
         });
@@ -129,7 +129,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaDestino('${IdDestino}','${ClavDestinoeDeInscripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaDestino('${IdDestino}','${Destino}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -156,6 +156,7 @@ module.exports = {
     }
   },
 
+  
   //BORRADO LOGICO
   deleteDestino: (req, res) => {
     const IdDestino = req.body.IdDestino;
