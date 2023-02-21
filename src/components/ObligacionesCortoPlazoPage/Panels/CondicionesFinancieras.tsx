@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles'
 
 import {
@@ -10,7 +9,10 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Button
+    ButtonBase,
+    Button,
+    Box,
+    Checkbox
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell"
@@ -19,6 +21,7 @@ import { queries } from '../../../queries';
 // dummy data
 
 interface Data {
+    isSelected: boolean;
     dispositionDate: Date;
     dispositionAmount: number;
     capitalPaymentDate: Date;
@@ -35,6 +38,11 @@ interface Head {
 }
 
 const heads: readonly Head[] = [
+    {
+        id: 'isSelected',
+        isNumeric: false,
+        label: "Selección"
+    },
     {
         id: 'dispositionDate',
         isNumeric: false,
@@ -129,16 +137,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     backgroundColor: "white",
     color: theme.palette.common.black,
     fontFamily: "MontserratMedium",
-    fontSize: "1.8ch",
+    fontSize: "1.6ch",
   },
   [`&.${tableCellClasses.body}`]: {
     fontFamily: "MontserratRegular",
-    fontSize: "1.5ch"
+    fontSize: "1.6ch"
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   fontFamily: "MontserratMedium",
+  fontSize: "1.5ch",
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
@@ -148,11 +157,49 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const CustomButton = styled(ButtonBase)((_color: string) => ({
+  backgroundColor: _color,
+  width: "100%",
+  height: "100%",
+  fontFamily: "MontserratMedium",
+  fontSize: "1.8ch"
+}))
+
+const ConfirmButton = styled(Button)(({ theme }) => ({
+  width: "100%",
+  height: "60px",
+  fontFamily: "MontserratMedium",
+  fontSize: "1.8ch",
+  color: "green",
+  borderColor: "green",
+  borderRadius: "0",
+  ":hover": {
+    backgroundColor: "green",
+    color: "white",
+    borderColor: "green"
+  }
+}))
+
+const DeleteButton = styled(Button)(({ theme }) => ({
+  width: "100%",
+  height: "60px",
+  fontFamily: "MontserratMedium",
+  fontSize: "1.8ch",
+  color: "#e57373",
+  borderColor: "#e57373",
+  borderRadius: "0",
+  ":hover": {
+    backgroundColor: "#e57373",
+    color: "white",
+    borderColor: "#e57373"
+  }
+}))
+
 export function CondicionesFinancieras(){
     return (
       <Grid container direction="column">
         <Grid item>
-          <TableContainer sx={{minHeight: "85vh"}}>
+          <TableContainer sx={{ minHeight: "100%" }}>
             <Table>
               <TableHead>
                 {heads.map((head) => (
@@ -164,47 +211,49 @@ export function CondicionesFinancieras(){
               <TableBody>
                 {rows.map((row) => (
                   <StyledTableRow>
+                    <StyledTableCell padding="checkbox">
+                      <Checkbox />
+                    </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
                       {row.dispositionDate.toLocaleDateString()}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                        {"$" + row.dispositionAmount.toString()}
+                      {"$" + row.dispositionAmount.toString()}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                        {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString()}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                        {row.capitalPaymentRange}
+                      {row.capitalPaymentRange}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                        {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString()}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                        {row.iRate + "%"}
+                      {row.iRate + "%"}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                        {"$" + row.comission}
+                      {"$" + row.comission}
                     </StyledTableCell>
-                    
                   </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         </Grid>
-        <Grid item container>
-            <Grid item>
-                <Button >AGREGAR</Button>
-            </Grid>
 
-            <Grid item>
-                <Button>ELIMINAR</Button>
-            </Grid>
+        <Grid item container position="fixed" sx={{top: "auto", bottom: 0}}>
+          <Grid item lg={6}>
+            <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+          </Grid>
+          <Grid item lg={6}>
+            <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
+          </Grid>
         </Grid>
       </Grid>
     );
