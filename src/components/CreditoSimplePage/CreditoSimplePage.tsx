@@ -8,6 +8,7 @@ import { Documentacion } from "./Panels/Documentacion";
 import { Encabezado } from "./Panels/Encabezado";
 import { FuenteDePago } from "./Panels/FuenteDePago";
 import { InformaciónGeneral } from "./Panels/InformacionGeneral";
+import { SolicitudDeInscripcion } from "./Panels/SolicitudDeInscripcion";
 
 export const text = {
   regular: {
@@ -49,7 +50,7 @@ export function CreditoSimplePage() {
       </Grid>
       {tabIndex === 0 && (
         <Grid item container>
-          <Encabezado CS={""} />
+          <Encabezado/>
         </Grid>
       )}
       {tabIndex === 1 && (
@@ -80,7 +81,7 @@ export function CreditoSimplePage() {
         </Grid>
       )}
       {tabIndex === 6 && (<Grid item container>
-        <Typography>Solicitud de inscripción</Typography>
+        <SolicitudDeInscripcion/>
         
         </Grid>)}
     </Grid>
