@@ -34,7 +34,7 @@ export function ObligacionesCortoPlazoPage() {
         <Tabs
           value={tabIndex}
           onChange={handleChange}
-          centered
+          centered={query.isScrollable ? false : true}
           variant={query.isScrollable ? "scrollable" : "standard"}
           scrollButtons
           allowScrollButtonsMobile

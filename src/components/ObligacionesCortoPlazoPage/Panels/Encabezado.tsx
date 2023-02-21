@@ -23,7 +23,7 @@ export function Encabezado(){
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
+            <InputLabel sx={queries.medium_text}>Tipo de Registro</InputLabel>
             <Select fullWidth variant="standard" label="test">
               <MenuItem sx={queries.text}>Item 1</MenuItem>
               <MenuItem sx={queries.text}>Item 2</MenuItem>
@@ -72,8 +72,8 @@ export function Encabezado(){
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>Entidad Federativa</InputLabel>
-            <Select fullWidth variant="standard" label="test">
+                <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
+              <Select fullWidth variant="standard" label="test">
               <MenuItem sx={queries.text}>Item 1</MenuItem>
               <MenuItem sx={queries.text}>Item 2</MenuItem>
               <MenuItem sx={queries.text}>Item 3</MenuItem>
