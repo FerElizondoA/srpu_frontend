@@ -157,14 +157,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const CustomButton = styled(ButtonBase)((_color: string) => ({
-  backgroundColor: _color,
-  width: "100%",
-  height: "100%",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch"
-}))
-
 const ConfirmButton = styled(Button)(({ theme }) => ({
   width: "100%",
   height: "60px",
