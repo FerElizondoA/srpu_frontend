@@ -11,34 +11,19 @@ import { DateField } from "@mui/x-date-pickers/DateField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
-import useMediaQuery from "@mui/material/useMediaQuery";
-
 import { queries } from "../../../queries";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export function InformacionGeneral() {
-  const query = {
-    isXs: useMediaQuery("(min-width: 0px) and (max-width: 899px)"),
-  };
-
-  const text = {
-    medium: {
-      fontFamily: "MontserratMedium",
-      fontSize: query.isXs ? "1.5v" : "2ch",
-    },
-    icon: {
-      fontSize: query.isXs ? "5vw" : "10vh",
-    },
-  };
 
   return (
     <Grid container>
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 10, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
+        mt={{ xs: 10, sm: 10, md: 5, lg: 0 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -69,7 +54,7 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             variant="standard"
-            sx={text.medium}
+            sx={queries.medium_text}
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",
@@ -111,7 +96,7 @@ export function InformacionGeneral() {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: 25 }}
+        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -175,7 +160,7 @@ export function InformacionGeneral() {
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
+        mt={{ xs: 10, sm: 2, md: 5, lg: 2 }}
         ml={{ xs: 5, sm: 10, md: 2, lg: 15 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
@@ -189,10 +174,10 @@ export function InformacionGeneral() {
           >
             <Grid container direction="column">
               <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={text.icon} />
+                <CheckCircleIcon color="success" sx={queries.icon} />
               </Grid>
               <Grid item>
-                <Typography sx={text.medium}>
+                <Typography sx={queries.medium_text}>
                   Destino del financiamiento
                 </Typography>
               </Grid>
@@ -210,10 +195,10 @@ export function InformacionGeneral() {
           >
             <Grid container direction="column">
               <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={text.icon} />
+                <CheckCircleIcon color="success" sx={queries.icon} />
               </Grid>
               <Grid item>
-                <Typography sx={text.medium}>
+                <Typography sx={queries.medium_text}>
                   Obligado Solidario / Aval
                 </Typography>
               </Grid>
@@ -231,10 +216,10 @@ export function InformacionGeneral() {
           >
             <Grid container direction="column">
               <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={text.icon} />
+                <CheckCircleIcon color="success" sx={queries.icon} />
               </Grid>
               <Grid item>
-                <Typography sx={text.medium}>Institución Financiera</Typography>
+                <Typography sx={queries.medium_text}>Institución Financiera</Typography>
               </Grid>
             </Grid>
           </Button>
