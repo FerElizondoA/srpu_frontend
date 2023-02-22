@@ -1,11 +1,9 @@
-import React from 'react';
-
 import './App.css';
 import './Fonts.css'
 
 import { 
   BrowserRouter as Router, 
-  Route, Link,
+  Route,
   createBrowserRouter, 
   createRoutesFromElements,
   RouterProvider

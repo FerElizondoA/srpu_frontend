@@ -1,12 +1,9 @@
 import {
   Grid,
   TextField,
-  Typography,
-  Button,
   Select,
   MenuItem,
   InputLabel,
-  FormControl,
 } from "@mui/material";
 import axios from "axios";
 
@@ -18,7 +15,6 @@ import { queries } from "../../../queries";
 import { useEffect, useState } from "react";
 
 import Autocomplete from "@mui/material/Autocomplete";
-import { validateHeaderValue } from "http";
 
 interface EncabezadoCS {
   ente_publico: string;
