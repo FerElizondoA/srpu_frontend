@@ -39,31 +39,19 @@ export function ObligacionesCortoPlazoPage() {
           allowScrollButtonsMobile
         >
           <Tab label="Encabezado" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Información General" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Condiciones Financieras" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Documentación" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Solicitud de Inscripción" sx={queries.text}></Tab>
         </Tabs>
       </Grid>
-      {tabIndex === 0 && (
-        <Grid item container>
-          <Encabezado/>
-        </Grid>
-      )}
-      {tabIndex === 2 && (
-        <Grid item container>
-          <InformacionGeneral/>
-        </Grid>
-      )}
-      {tabIndex === 4 && (
-        <Grid item container>
-          <CondicionesFinancieras/>
-        </Grid>
-      )}
+      {tabIndex === 0 && <Encabezado />}
+      {tabIndex === 2 && <InformacionGeneral />}
+      {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 6 && (
         <Grid item container>
           <Typography>Panel 4</Typography>
