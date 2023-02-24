@@ -1,3 +1,4 @@
+import * as React from "react"
 import { styled } from '@mui/material/styles'
 
 import {
@@ -17,6 +18,8 @@ import {
 
 import { tableCellClasses } from "@mui/material/TableCell"
 import { queries } from '../../../queries';
+import { ReactNode } from 'react';
+import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
 // dummy data
 
@@ -187,7 +190,22 @@ const DeleteButton = styled(Button)(({ theme }) => ({
   }
 }))
 
-export function CondicionesFinancieras(){
+export class CondicionesFinancieras extends React.Component{
+
+  state = {
+    openAgregarCondicion: false
+  }
+
+  constructor(props: any){
+    super(props);
+    this.changeOpenAgregarState.bind(this);
+  }
+
+  changeOpenAgregarState = (open: boolean) => {
+    this.setState({openAgregarCondicion: open});
+  }
+
+  render(): ReactNode {
     return (
       <Grid container direction="column">
         <Grid item>
@@ -239,14 +257,26 @@ export function CondicionesFinancieras(){
           </TableContainer>
         </Grid>
 
-        <Grid item container position="fixed" sx={{top: "auto", bottom: 0}}>
-          <Grid item lg={6}>
-            <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+        <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+          <Grid item md={6}lg={6}>
+            <ConfirmButton
+              variant="outlined"
+              onClick={() =>
+                this.changeOpenAgregarState(!this.state.openAgregarCondicion)
+              }
+            >
+              AGREGAR
+            </ConfirmButton>
+            <AgregarCondicionFinanciera
+              handler={this.changeOpenAgregarState}
+              openState={this.state.openAgregarCondicion}
+            />
           </Grid>
-          <Grid item lg={6}>
+          <Grid item md={6} lg={6}>
             <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
           </Grid>
         </Grid>
       </Grid>
     );
+  }
 }

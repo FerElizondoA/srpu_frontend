@@ -18,7 +18,7 @@ export function Encabezado(){
         <Grid
           item
           container
-          mt={{ xs: 10, sm: 10, md: 5, lg: 10 }}
+          mt={{ xs: 10, sm: 10, md: 10, lg: 10 }}
           ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
@@ -67,7 +67,7 @@ export function Encabezado(){
         <Grid
           item
           container
-          mt={{ xs: 10, sm: 10, md: 5, lg: 10 }}
+          mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
           ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
