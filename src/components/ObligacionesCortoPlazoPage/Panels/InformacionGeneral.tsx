@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Grid,
   TextField,
@@ -6,17 +7,43 @@ import {
   InputLabel,
   InputAdornment,
 } from "@mui/material";
-
 import { DateField } from "@mui/x-date-pickers/DateField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
+import { DestinoDelFinanciamiento } from "../Dialogs/Dialog-IG-DestinoDelFinaciamiento";
+import { InstitucionFinanciera } from "../Dialogs/Dialog-IG-InstitucionFinanciera";
+import { ObligadoSolidarioAval } from "../Dialogs/Dialog-IG-ObligadoSolidiario";
 import { queries } from "../../../queries";
-
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-export function InformacionGeneral() {
+export class  InformacionGeneral extends  React.Component {
 
+  state = {
+    openDestino: false,
+    openObligado: false,
+    openInstitucion: false,
+  }
+
+  constructor(props: any){
+    super(props);
+    this.changeOpenDestinoState.bind(this);
+    this.changeOpenObligado.bind(this);
+    this.changeOpenInstitucione.bind(this);
+  }
+  
+  changeOpenDestinoState = (open: boolean) => {
+    this.setState({openDestino: open});
+  }
+
+  changeOpenObligado = (open: boolean) => {
+    this.setState({openObligado: open});
+  }
+
+  changeOpenInstitucione = (open: boolean) => {
+    this.setState({openInstitucion: open});
+  }
+  render()  {
   return (
     <Grid container>
       <Grid
@@ -171,6 +198,7 @@ export function InformacionGeneral() {
               width: "100%",
               height: "30vh",
             }}
+            onClick={() => this.changeOpenDestinoState(!this.state.openDestino)}
           >
             <Grid container direction="column">
               <Grid item xs={12}>
@@ -183,6 +211,7 @@ export function InformacionGeneral() {
               </Grid>
             </Grid>
           </Button>
+          <DestinoDelFinanciamiento handler={this.changeOpenDestinoState} openState={this.state.openDestino}/>
         </Grid>
 
         <Grid item xs={3.5} md={3.8} lg={3.5}>
@@ -192,6 +221,7 @@ export function InformacionGeneral() {
               width: "100%",
               height: "30vh",
             }}
+            onClick={() => this.changeOpenObligado(!this.state.openObligado)}
           >
             <Grid container direction="column">
               <Grid item xs={12}>
@@ -204,6 +234,7 @@ export function InformacionGeneral() {
               </Grid>
             </Grid>
           </Button>
+          <ObligadoSolidarioAval handler={this.changeOpenObligado} openState={this.state.openObligado}/>
         </Grid>
 
         <Grid item xs={3.5} md={3.8} lg={3.5}>
@@ -213,6 +244,7 @@ export function InformacionGeneral() {
               width: "100%",
               height: "30vh",
             }}
+            onClick={() => this.changeOpenInstitucione(!this.state.openObligado)}
           >
             <Grid container direction="column">
               <Grid item xs={12}>
@@ -223,8 +255,11 @@ export function InformacionGeneral() {
               </Grid>
             </Grid>
           </Button>
+          <InstitucionFinanciera handler={this.changeOpenInstitucione} openState={this.state.openInstitucion} />
         </Grid>
       </Grid>
+      
     </Grid>
   );
+}
 }
