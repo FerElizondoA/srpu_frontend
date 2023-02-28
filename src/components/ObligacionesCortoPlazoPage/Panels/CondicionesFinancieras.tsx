@@ -1,25 +1,18 @@
 import * as React from "react"
-import { styled } from '@mui/material/styles'
 
 import {
     Grid,
     Table,
     TableBody,
     TableSortLabel,
-    TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    ButtonBase,
-    Button,
-    Box,
     Checkbox
 } from "@mui/material";
 
-import { tableCellClasses } from "@mui/material/TableCell"
-import { queries } from '../../../queries';
 import { ReactNode } from 'react';
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { StyledTableCell, StyledTableRow, ConfirmButton, DeleteButton } from "../../CustomComponents";
 
 // dummy data
 
@@ -107,7 +100,7 @@ function createDummyData(
 
 const rows = [
     createDummyData(
-        new Date(2023, 2, 14),
+        new Date(2023, 2, 14), // AÑO - MES - DÍA
         10000,
         new Date(2023, 3, 14),
         "1 año",
@@ -134,61 +127,6 @@ const rows = [
         632.65
         )
 ]
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "white",
-    color: theme.palette.common.black,
-    fontFamily: "MontserratMedium",
-    fontSize: "1.6ch",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontFamily: "MontserratRegular",
-    fontSize: "1.6ch"
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  fontFamily: "MontserratMedium",
-  fontSize: "1.5ch",
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-const ConfirmButton = styled(Button)(({ theme }) => ({
-  width: "100%",
-  height: "60px",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch",
-  color: "green",
-  borderColor: "green",
-  borderRadius: "0",
-  ":hover": {
-    backgroundColor: "green",
-    color: "white",
-    borderColor: "green"
-  }
-}))
-
-const DeleteButton = styled(Button)(({ theme }) => ({
-  width: "100%",
-  height: "60px",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch",
-  color: "#e57373",
-  borderColor: "#e57373",
-  borderRadius: "0",
-  ":hover": {
-    backgroundColor: "#e57373",
-    color: "white",
-    borderColor: "#e57373"
-  }
-}))
 
 export class CondicionesFinancieras extends React.Component{
 
@@ -225,14 +163,14 @@ export class CondicionesFinancieras extends React.Component{
                       <Checkbox />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
-                      {row.dispositionDate.toLocaleDateString()}
+                      {row.dispositionDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {"$" + row.dispositionAmount.toString()}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
@@ -240,7 +178,7 @@ export class CondicionesFinancieras extends React.Component{
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
