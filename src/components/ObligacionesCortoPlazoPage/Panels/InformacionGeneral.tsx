@@ -11,7 +11,7 @@ import { DateField } from "@mui/x-date-pickers/DateField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
-import { DestinoDelFinanciamiento } from "../Dialogs/Dialog-IG-DestinoDelFinaciamiento";
+import { DestinoDelFinanciamiento } from "../Dialogs/Dialog-IG-DestinoDelFinanciamiento";
 import { InstitucionFinanciera } from "../Dialogs/Dialog-IG-InstitucionFinanciera";
 import { ObligadoSolidarioAval } from "../Dialogs/Dialog-IG-ObligadoSolidiario";
 import { queries } from "../../../queries";
