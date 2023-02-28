@@ -2,7 +2,6 @@ import {
     Grid,
     Tabs,
     Tab,
-    Typography,
     Divider
  } from "@mui/material"
 
@@ -12,7 +11,8 @@ import { SyntheticEvent, useState } from "react";
 import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
-
+import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
+import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
 
 export function ObligacionesCortoPlazoPage() {
@@ -52,16 +52,8 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 0 && <Encabezado />}
       {tabIndex === 2 && <InformacionGeneral />}
       {tabIndex === 4 && <CondicionesFinancieras />}
-      {tabIndex === 6 && (
-        <Grid item container>
-          <Typography>Panel 4</Typography>
-        </Grid>
-      )}
-      {tabIndex === 8 && (
-        <Grid item container>
-          <Typography>Panel 5</Typography>
-        </Grid>
-      )}
+      {tabIndex === 6 && <Documentacion/>}
+      {tabIndex === 8 && <SolicitudInscripcion />}
     </Grid>
   );
 }
