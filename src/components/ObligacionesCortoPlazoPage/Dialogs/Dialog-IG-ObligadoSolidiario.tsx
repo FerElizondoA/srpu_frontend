@@ -78,6 +78,7 @@ export class ObligadoSolidarioAval extends React.Component<{
       <Dialog
         fullScreen
         open={this.props.openState}
+        onClose={() => this.props.handler(false)}
         TransitionComponent={Transition}
       >
         <AppBar sx={{ position: "relative" }}>

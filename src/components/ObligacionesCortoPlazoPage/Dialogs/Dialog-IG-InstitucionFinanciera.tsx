@@ -64,6 +64,7 @@ export class InstitucionFinanciera extends React.Component<{
         maxWidth={"lg"}
         open={this.props.openState}
         TransitionComponent={Transition}
+        onClose={() => this.props.handler(false)}
       >
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
@@ -86,9 +87,8 @@ export class InstitucionFinanciera extends React.Component<{
               item
               container
               mt={{ xs: 10, sm: 10, md: 0, lg: 4 }}
-              ml={{ xs: 0, sm: 0, md: 0, lg: 0 }}
             >
-              <Grid item xs={12} md={12} lg={12}>
+              <Grid item lg={10} ml={window.outerWidth/150}>
                 <InputLabel sx={queries.medium_text}>
                   Institución Financiera
                 </InputLabel>
@@ -109,7 +109,6 @@ export class InstitucionFinanciera extends React.Component<{
                 item
                 container
                 mt={{ xs: 10, sm: 10, md: 10, lg: 10 }}
-                ml={{ xs: 0, sm: 0, md: 0, lg: 0 }}
                 mb={{ xs: 5, sm: 5, md: 5, lg: 5 }}
                 sx={{ top: "auto", bottom: 0, justifyContent: "center" }}
               >

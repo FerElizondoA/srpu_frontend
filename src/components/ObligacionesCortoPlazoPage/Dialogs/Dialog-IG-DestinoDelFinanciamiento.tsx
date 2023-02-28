@@ -61,6 +61,7 @@ export class DestinoDelFinanciamiento extends React.Component<{
         fullWidth
         maxWidth={"lg"}
         open={this.props.openState}
+        onClose={() => this.props.handler(false)}
         TransitionComponent={Transition}
       >
         <AppBar sx={{ position: "relative" }}>
