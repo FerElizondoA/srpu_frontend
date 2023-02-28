@@ -3,8 +3,51 @@ import {
   InputLabel,
   TextField,
   Divider,
+  Checkbox,
+  Table,
+  TableBody,
+  TableSortLabel,
+  TableContainer,
+  TableHead,
 } from "@mui/material";
 import { queries } from "../../../queries";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+
+// dummy data
+
+interface Data {
+  isSelected: boolean;
+  rule: String;
+  
+}
+
+interface Head {
+  id: keyof Data;
+  isNumeric: boolean;
+  label: string;
+}
+
+const heads: readonly Head[] = [
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Selección",
+  },
+  {
+    id: "rule",
+    isNumeric: false,
+    label: "Regla",
+  },
+ 
+];
+
+function createDummyData(rule: string) {
+  return {
+    rule
+  };
+}
+
+const rows = [createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc."), createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc.")];
 
 export function SolicitudInscripcion() {
   return (
@@ -128,13 +171,49 @@ export function SolicitudInscripcion() {
 
         <Grid item md={9} lg={9} xl={9}>
           <Divider sx={queries.medium_text}>
-            Declaratorias aplicables
-            al financiamiento u obligación.
+            Declaratorias aplicables al financiamiento u obligación.
           </Divider>
         </Grid>
       </Grid>
 
-     
+      <Grid
+        item
+        container
+        //flexDirection="row"
+        mt={{ sm: 2, md: 0, lg: 0 }}
+        ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        spacing={{ md: 10, lg: 10 }}
+      >
+        <Grid item md={9} lg={9} xl={9}>
+          <Grid container direction="column">
+            <Grid item>
+              <TableContainer sx={{ minHeight: "100%" }}>
+                <Table>
+                  <TableHead>
+                    {heads.map((head) => (
+                      <StyledTableCell key={head.id}>
+                        <TableSortLabel>{head.label}</TableSortLabel>
+                      </StyledTableCell>
+                    ))}
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <StyledTableRow>
+                        <StyledTableCell padding="checkbox">
+                          <Checkbox />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.rule}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Grid>
   );
 }
