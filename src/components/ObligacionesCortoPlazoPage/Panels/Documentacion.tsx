@@ -1,3 +1,6 @@
-export function Documentacion(){
 
+export function Documentacion() {
+    return(
+    <></>
+    )
 }
