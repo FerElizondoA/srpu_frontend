@@ -40,7 +40,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 export function LateralMenu(){
 
   const query = {
-    isXs: useMediaQuery("(min-width: 0px) and (max-width: 899px)"),
+    isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
   };
 
   const [openInscripcion, setOpenInscripcion] = React.useState(false);
@@ -78,7 +78,7 @@ export function LateralMenu(){
             open={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
           >
-            <Grid container sx={{width: "50vw"}}>
+            <Grid container sx={{width: query.isXs? "40vw": "30vw"}}>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
                   <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
