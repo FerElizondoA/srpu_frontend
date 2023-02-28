@@ -4,10 +4,9 @@ import {
   InputLabel,
   TextField,
   Divider,
-  Typography,
-  Checkbox,
 } from "@mui/material";
 import { queries } from "../../../queries";
+
 export function SolicitudInscripcion() {
   return (
     <Grid item container>
