@@ -1,537 +1,131 @@
-import React, { useEffect, useState } from "react";
 import {
   Grid,
   Typography,
-  Button,
-  ButtonGroup,
-  Box,
-  Input,
+  Table,
+  TableBody,
+  TableSortLabel,
+  TableContainer,
+  TableHead,
+  Checkbox,
 } from "@mui/material";
+import { useState } from "react";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  ConfirmButton,
+  DeleteButton,
+} from "../../CustomComponents";
 import { queries } from "../../../queries";
-export function Documentacion() {
-  const [text, setText] = useState<Array<string>>([
-    // "Apartado : Arrastre o de click aqui para cargar un archivo",
-  ]);
 
-  const handleAddText = () => {
-    let newtext = "Apartado : Arrastre o de click aqui para cargar un archivo";
-    let vartemp = text;
-    //vartemp.concat(newtext);
-    setText(vartemp.concat(newtext));
+interface Data {
+  isSelected: boolean;
+  Documento: String;
+}
+
+interface Head {
+  id: keyof Data;
+  isNumeric: boolean;
+  label: string;
+}
+
+const heads: readonly Head[] = [
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Selección",
+  },
+  {
+    id: "Documento",
+    isNumeric: false,
+    label: "Documento/File",
+  },
+];
+
+function createDummyData(Documento: String) {
+  return {
+    Documento,
   };
-  console.log(text);
-  //   useEffect(() =>{
-  //     info()
-  //   }
-  //   )
-  const handleQUITText = () => {
-    let vartemp2 = text;
-    //let vartemp2 =
-    vartemp2.pop();
-    let newvalue = [""];
-    setText(newvalue.concat(vartemp2));
-  };
+}
+
+const rows = [createDummyData("Documento cualquiera.pdf")];
+
+export function Documentacion() {
+  const [file, setFile] = useState("");
 
   return (
-    <Grid container>
-      <Grid
-        //container
-        item
-        mt={{ md: 5, lg: 1, xl: 1 }}
-        ml={{ md: 5, lg: 0, xl: 0 }}
-        md={3}
-        lg={12}
-        xl={12}
-        sx={{
-          //height: "50%",
-          justifyItems: "center",
-          //display: "grid",
-          //backgroundColor: "blue",
-          //   border: 1,
-          //   borderRadius: 3,
-          //   borderColor: "#af8c55",
-          //borderStyle: "dashed",
-        }}
-      >
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
+    <Grid item container direction="column" sx={{ display: "flex" }}>
+      <Grid item>
+        <TableContainer sx={{ minHeight: "100%" }}>
+          <Table>
+            <TableHead>
+              {heads.map((head) => (
+                <StyledTableCell key={head.id}>
+                  <TableSortLabel>{head.label}</TableSortLabel>
+                </StyledTableCell>
+              ))}
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <StyledTableRow>
+                  <StyledTableCell padding="checkbox">
+                    <Checkbox />
+                  </StyledTableCell>
 
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          mt={{ md: 5, lg: 1, xl: 1 }}
-          ml={{ md: 5, lg: 0, xl: 0 }}
-          md={3}
-          lg={12}
-          xl={12}
-        >
-          <Typography
-            sx={{
-              fontFamily: "MontserratLight",
-              height: "100%",
-              justifyItems: "center",
-              display: "grid",
-              //backgroundColor: "red",
-              border: 1,
-              borderRadius: 3,
-              borderColor: "#af8c55",
-            }}
-          >
-            Apartado : Arrastre o de click aqui para cargar un archivo
-            <input
-              type="file"
-              style={{
-                color: "#000",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-          </Typography>
-        </Grid>
-
-        {/* {text.map((x, item) => {
-          return (
-            <Box
-            
-              sx={{
-                cursor: "pointer",
-                //height: "50%",
-                //justifyItems: "center",
-                //display:"grid",
-                //  backgroundColor: "blue",
-                 border: 1,
-                 borderRadius: 3,
-                 borderColor: "#af8c55",
-                 flexDirection: "column",
-                //borderStyle: "dashed",
-              }}
-            >
-              <Typography sx={queries.text}>{x}</Typography>
-              <input
-                type="file"
-                style={{
-                  color: "#000",
-                  opacity: 0,
-                  //width: "50%",
-                  //height: "50%",
-                  cursor: "pointer",
-                }}
-              />
-            </Box>
-
-          );
-        })} */}
+                  <StyledTableCell component="th">
+                    {row.Documento.toString()}
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
 
       <Grid
         item
-        mt={{ md: 5, lg: 1, xl: 1 }}
-        ml={{ md: 5, lg: 0, xl: 0 }}
-        md={3}
-        lg={12}
-        xl={12}
+        container
+        position="fixed"
+        //gap={0}
         sx={{
-          //height: "50%",
-          justifyItems: "center",
-          display: "grid",
-          //backgroundColor: "blue",
-          //border: 1,
-          //borderRadius: 3,
-          //borderColor: "#af8c55",
-          //borderStyle: "dashed",
+          display: "flex",
+          justifyContent: "flex-end",
+          top: "auto",
+          bottom: 0,
         }}
       >
-        <ButtonGroup
-          disableElevation
-          variant="contained"
-          aria-label="text button group"
-        >
-          <Button
-            //   onClick={() => handleAddText()}
-            sx={queries.text}
+        <Grid item md={6} lg={6} sx={{display:"flex", justifyContent: "flex-end", top: "auto", bottom: 0 }}>
+          <Typography
+            position={"absolute"}
+            sx={{
+              border: " 1px solid",
+              borderBlockColor: "#AF8C55",
+              //backgroundColor: "#AF8C55",
+              fontFamily: "MontserratMedium",
+              textAlign: "center",
+            //   justifyContent:"center",
+            //   alignItems:"center",
+              margin:"auto 0",
+              width: "50%",
+              height: "100%",
+            }}
           >
-            Agregar documento
-          </Button>
+            ARRASTRE O DE CLICK AQUI PARA CARGAR EL DOCUMENTO
+          </Typography>
+          <input
+            type="file"
+            accept="application/pdf"
+            style={{
+              opacity: 0,
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+            }}
+          ></input>
+        </Grid>
 
-          <Button
-            // onClick={() => handleQUITText()}
-            sx={queries.text}
-          >
-            Quitar documento
-          </Button>
-        </ButtonGroup>
+        <Grid item md={6} lg={6}>
+          <DeleteButton variant="outlined">BORRAR</DeleteButton>
+        </Grid>
       </Grid>
     </Grid>
   );

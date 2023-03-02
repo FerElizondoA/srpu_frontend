@@ -1,5 +1,5 @@
 import * as React from "react"
-import logo from '../../assets/images/logo.svg';
+
 import {
   Grid,
   Typography,
@@ -12,9 +12,10 @@ import {
   Collapse,
   Drawer,
   AppBar,
-  Toolbar
-
+  Toolbar,
 } from "@mui/material";
+
+import { queries } from "../../queries";
 
 // icons
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -31,21 +32,10 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import {useState} from 'react';
-
-import { queries } from "../../queries";
-
-import useMediaQuery from "@mui/material/useMediaQuery";
-
-export function LateralMenu(){
-
-  const query = {
-    isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
-  };
-
+export function LateralMenuMobile() {
   const [openInscripcion, setOpenInscripcion] = React.useState(false);
   const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleInscripcionClick = () => {
     setOpenInscripcion(!openInscripcion);
@@ -56,29 +46,28 @@ export function LateralMenu(){
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar variant="dense">
+    <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
+      <Toolbar>
+
         <Grid container>
-          <Grid item mt={0.5}>
+          <Grid item >
             <IconButton
               size="large"
               color="inherit"
               onClick={() => setIsDrawerOpen(true)}
             >
-              <MenuIcon />
+              <MenuIcon/>
             </IconButton>
           </Grid>
-          <Grid item ml={3} mt={0.5}>
-            <img src={logo} style={{ height: "40px" }}></img>
-          </Grid>
         </Grid>
-        <Grid item>
+
+      <Grid item>
           <Drawer
-            anchor="left"
+            anchor="bottom"
             open={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
           >
-            <Grid container sx={{width: query.isXs? "40vw": "30vw"}}>
+            <Grid container>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
                   <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
@@ -236,46 +225,8 @@ export function LateralMenu(){
               </Grid>
             </Grid>
           </Drawer>
-        </Grid>
+      </Grid>
       </Toolbar>
     </AppBar>
   );
-};
-
-
-/*
-
-        <Grid item container xs={9} lg={10} direction='column'>
-          <Grid item lg={1}>
-            <header>Inicio</header>
-          </Grid>
-          <Grid item container lg={11} justifyContent="center">
-            <img
-              src={escudo}
-              style={{ height: "50vh", backgroundColor: "#ff0" }}
-            ></img>
-          </Grid>
-        </Grid>
-*/
-
-/*
-
-            <Typography sx={{}}>
-              Sistema del Presupuesto Basado en Resultados
-            </Typography>
-
-            <Avatar>M</Avatar>
-
-            <Typography
-              sx={{ backgroundColor: "#0ff", justifyContent: "center" }}
-            >
-              Marlon Israel
-            </Typography>
-
-            <Typography>Administrador</Typography>
-
-            <Typography>Organismo</Typography>
-
-            <Typography>Municipio Monterrey</Typography>
-            <Divider />
-*/
+}
