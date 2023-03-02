@@ -10,14 +10,80 @@ import {
   InputLabel,
   TextField,
   Autocomplete,
+  Table,
+  TableBody,
+  TableSortLabel,
+  TableContainer,
+  TableHead,
+  Checkbox,
 } from "@mui/material";
 import axios from "axios";
 import { TransitionProps } from "@mui/material/transitions";
-
+import {
+  StyledTableCell,
+  StyledTableRow,
+  ConfirmButton,
+  DeleteButton,
+} from "../../CustomComponents";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { queries } from "../../../queries";
+////////////////////////////////////////////////////////
+interface DataObligadoSalarial {
+  isSelected: boolean;
+  obligadosolidario: string;
+  tipoentepunlicoobligado: string;
+  entepublicoobligado: string;
+}
 
+interface Head {
+  id: keyof DataObligadoSalarial;
+  isNumeric: boolean;
+  label: string;
+}
+
+const heads: readonly Head[] = [
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Seleccion",
+  },
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Obligado solidario / aval",
+  },
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Tipo de ente público obligado",
+  },
+  {
+    id: "isSelected",
+    isNumeric: false,
+    label: "Ente público obligado",
+  },
+];
+
+function createDummyData(
+  obligadosolidario: string,
+  tipoentepunlicoobligado: string,
+  entepublicoobligado: string
+) {
+  return {
+    obligadosolidario,
+    tipoentepunlicoobligado,
+    entepublicoobligado,
+  };
+}
+
+const rows = [
+  createDummyData("ley federal", "Municipio", "Monterrey"),
+  createDummyData("opc1", "opc2", "opc3"),
+  createDummyData("ley federal", "Municipio", "Monterrey"),
+  createDummyData("opc1", "opc2", "opc3"),
+];
+////////////////////////////////////////////////////////
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -95,18 +161,20 @@ export class ObligadoSolidarioAval extends React.Component<{
             </Typography>
           </Toolbar>
         </AppBar>
-        <Grid container>
 
+        <Grid container direction="column">
           <Grid item container>
             <Grid
               item
               container
               spacing={5}
               mt={{ xs: 10, sm: 10, md: 5, lg: 5 }}
-              ml={{ xs: 5, sm: 35, md: 60, lg: 30 }}
+              ml={{ xs: 15, sm: 20, md: 25, lg: window.innerWidth / 50 + 10 }}
             >
               <Grid item xs={3} md={3} lg={3}>
-                <InputLabel sx={queries.medium_text}>Obligado solidario / aval</InputLabel>
+                <InputLabel sx={queries.medium_text}>
+                  Obligado solidario / aval
+                </InputLabel>
                 <Autocomplete
                   fullWidth
                   options={this.state.obligadoCatalog}
@@ -121,7 +189,9 @@ export class ObligadoSolidarioAval extends React.Component<{
               </Grid>
 
               <Grid item xs={3} md={3} lg={3}>
-                <InputLabel sx={queries.medium_text}>Tipo de ente público obligado</InputLabel>
+                <InputLabel sx={queries.medium_text}>
+                  Tipo de ente público obligado
+                </InputLabel>
                 <Autocomplete
                   fullWidth
                   options={this.state.enteCatalog}
@@ -136,7 +206,9 @@ export class ObligadoSolidarioAval extends React.Component<{
               </Grid>
 
               <Grid item xs={3} md={3} lg={3}>
-                <InputLabel sx={queries.medium_text}>Ente público obligado</InputLabel>
+                <InputLabel sx={queries.medium_text}>
+                  Ente público obligado
+                </InputLabel>
                 <TextField
                   fullWidth
                   variant="standard"
@@ -153,9 +225,58 @@ export class ObligadoSolidarioAval extends React.Component<{
                   }}
                 />
               </Grid>
-              
             </Grid>
           </Grid>
+        </Grid>
+
+        <Grid item container direction="column" mt={10}>
+          <Grid item>
+            <TableContainer sx={{ maxHeight: "400px" }}>
+              <Table>
+                <TableHead>
+                  {heads.map((head) => (
+                    <StyledTableCell key={head.id}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <StyledTableRow>
+                      <StyledTableCell padding="checkbox">
+                        <Checkbox />
+                      </StyledTableCell>
+                      <StyledTableCell component="th" scope="row">
+                        {row.entepublicoobligado.toString()}
+                      </StyledTableCell>
+                      <StyledTableCell component="th">
+                        {row.obligadosolidario.toString()}
+                      </StyledTableCell>
+                      <StyledTableCell component="th">
+                        {row.tipoentepunlicoobligado.toString()}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+
+          <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+          <Grid item md={6}lg={6}>
+            <ConfirmButton
+              variant="outlined"
+             
+            >
+              AGREGAR
+            </ConfirmButton>
+            
+          
+          </Grid>
+          <Grid item md={6} lg={6}>
+            <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
+          </Grid>
+        </Grid>
         </Grid>
       </Dialog>
     );
