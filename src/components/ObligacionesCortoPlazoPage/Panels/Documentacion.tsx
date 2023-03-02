@@ -102,7 +102,9 @@ export function Documentacion() {
               //backgroundColor: "#AF8C55",
               fontFamily: "MontserratMedium",
               textAlign: "center",
-              //textColor: "#AF8C55",
+            //   justifyContent:"center",
+            //   alignItems:"center",
+              margin:"auto 0",
               width: "50%",
               height: "100%",
             }}
@@ -122,7 +124,7 @@ export function Documentacion() {
         </Grid>
 
         <Grid item md={6} lg={6}>
-          <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+          <DeleteButton variant="outlined">BORRAR</DeleteButton>
         </Grid>
       </Grid>
     </Grid>
