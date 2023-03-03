@@ -11,8 +11,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
 import { queries } from "../../../queries";
+import { IEncabezado } from "../Interfaces/CortoPlazo/IEncabezado";
 
-export function Encabezado(){
+export function Encabezado({
+  encabezado,
+  setEncabezado,
+}: {
+  encabezado: IEncabezado;
+  setEncabezado: Function;
+}){
+
+  const setsolicitanteAutorizado =(e:any)=>{
+    let aux=encabezado;
+    aux.solicitanteAutorizado=e.target.value;
+    setEncabezado({...aux});
+  };
     return (
       <Grid container>
         <Grid
@@ -23,7 +36,7 @@ export function Encabezado(){
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>Tipo de Registro</InputLabel>
+            <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
             <Select fullWidth variant="standard" label="test">
               <MenuItem sx={queries.text}>Item 1</MenuItem>
               <MenuItem sx={queries.text}>Item 2</MenuItem>
@@ -60,6 +73,8 @@ export function Encabezado(){
                   fontFamily: "MontserratMedium",
                 },
               }}
+              value={encabezado.solicitanteAutorizado}
+              onChangeCapture={setsolicitanteAutorizado}
             />
           </Grid>
         </Grid>
@@ -83,7 +98,7 @@ export function Encabezado(){
           <Grid item xs={3.5} md={3.5} lg={3}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <InputLabel sx={queries.medium_text}>
-                Fecha de Contratación
+                Fecha de Solicitud
               </InputLabel>
               <DateField
                 fullWidth
@@ -122,6 +137,8 @@ export function Encabezado(){
                   fontFamily: "MontserratMedium",
                 },
               }}
+              value={encabezado.solicitanteAutorizado}
+              onChangeCapture={setsolicitanteAutorizado}
             />
           </Grid>
         </Grid>

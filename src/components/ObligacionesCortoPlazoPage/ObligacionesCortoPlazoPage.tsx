@@ -6,7 +6,7 @@ import {
  } from "@mui/material"
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 
 import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";
@@ -14,8 +14,16 @@ import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
+import { IEncabezado } from "./Interfaces/CortoPlazo/IEncabezado";
+import { getDestinos } from "./APIS/APISInformacionGeneral";
 
 export function ObligacionesCortoPlazoPage() {
+
+  useEffect(() => {
+   console.log("Destinos :"+ getDestinos());
+   
+  }, [])
+  
 
   const [tabIndex, setTabIndex] = useState(0);
   
@@ -25,7 +33,19 @@ export function ObligacionesCortoPlazoPage() {
 
   const query ={
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)")
-  }
+  } 
+
+
+  const [encabezado,setEncabezado]=useState<IEncabezado>(
+    
+     { tipoDocumento: "",
+      municipioOrganismo: "",
+      tipoEntePublico: "",
+      fechaSolicitud: "",
+      solicitanteAutorizado: "",
+      cargoSolicitante:"",
+    }
+  );
 
   return (
     <Grid container direction="column">
@@ -38,18 +58,19 @@ export function ObligacionesCortoPlazoPage() {
           scrollButtons
           allowScrollButtonsMobile
         >
-          <Tab label="Encabezado" sx={queries.text}></Tab>
+          <Tab label="Encabezado" sx={queries.text}/>
           <Divider orientation="vertical" flexItem />
-          <Tab label="Información General" sx={queries.text}></Tab>
+          <Tab label="Información General" sx={queries.text}/>
           <Divider orientation="vertical" flexItem />
-          <Tab label="Condiciones Financieras" sx={queries.text}></Tab>
+          <Tab label="Condiciones Financieras" sx={queries.text}/>
           <Divider orientation="vertical" flexItem />
           <Tab label="Documentación" sx={queries.text}></Tab>
           <Divider orientation="vertical" flexItem />
-          <Tab label="Solicitud de Inscripción" sx={queries.text}></Tab>
+          <Tab label="Solicitud de Inscripción" sx={queries.text}/>
         </Tabs>
       </Grid>
-      {tabIndex === 0 && <Encabezado />}
+      
+      {tabIndex === 0 ?<Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
       {tabIndex === 2 && <InformacionGeneral />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 6 && <Documentacion/>}
