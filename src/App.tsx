@@ -1,24 +1,14 @@
-import React, { useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 
 import "./App.css";
 import "./Fonts.css";
 
-import {
-  // BrowserRouter as Router,
-  Route,
-  // Link,
-  // createBrowserRouter,
-  // createRoutesFromElements,
-  // RouterProvider,
-  useNavigate,
-  Routes,
-} from "react-router-dom";
-
-// import { CssBaseline } from "@mui/material";
-import { createTheme } from "@mui/material/styles"; //, ThemeProvider
+import { Route, useNavigate, Routes } from "react-router-dom";
 
 import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 
 export const appTheme = createTheme({
   palette: {
@@ -28,9 +18,6 @@ export const appTheme = createTheme({
   },
 });
 
-// const router = createBrowserRouter(
-//   createRoutesFromElements(<Route path="/" element={<HomePage />}></Route>)
-// );
 
 function App() {
   const navigate = useNavigate();
@@ -62,11 +49,13 @@ function App() {
   }, [IdApp, jt, navigate]);
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<HomePage />}></Route>
-      </Routes>
-    </>
+    <ThemeProvider theme={appTheme}>
+      <CssBaseline enableColorScheme>
+        <Routes>
+          <Route path="/" element={<HomePage />}></Route>
+        </Routes>
+      </CssBaseline>
+    </ThemeProvider>
   );
 }
 
