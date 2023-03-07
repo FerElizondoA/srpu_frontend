@@ -1,5 +1,5 @@
-import * as React from "react"
-import logo from '../../assets/images/logo.svg';
+import * as React from "react";
+import logo from "../../assets/images/logo.svg";
 import {
   Grid,
   Typography,
@@ -12,32 +12,39 @@ import {
   Collapse,
   Drawer,
   AppBar,
-  Toolbar
-
+  Toolbar,
 } from "@mui/material";
 
 // icons
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
-import PivotTableChartOutlinedIcon from '@mui/icons-material/PivotTableChartOutlined';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import MenuIcon from '@mui/icons-material/Menu';
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import PivotTableChartOutlinedIcon from "@mui/icons-material/PivotTableChartOutlined";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-import {useState} from 'react';
+import { useState } from "react";
 
 import { queries } from "../../queries";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
-export function LateralMenu(){
+export function LateralMenu() {
+  const logout = () => {
+    localStorage.clear();
+    window.location.assign("http://10.200.4.106/");
+  };
+
+  const navigate = useNavigate();
 
   const query = {
     isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
@@ -69,7 +76,7 @@ export function LateralMenu(){
             </IconButton>
           </Grid>
           <Grid item ml={3} mt={0.5}>
-            <img src={logo} style={{ height: "40px" }}></img>
+            <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
         </Grid>
         <Grid item>
@@ -78,18 +85,22 @@ export function LateralMenu(){
             open={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
           >
-            <Grid container sx={{width: query.isXs? "40vw": "30vw"}}>
+            <Grid container sx={{ width: query.isXs ? "40vw" : "30vw" }}>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
                   <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.text}>Josvan Gonzalez</Typography>
+                  <Typography sx={queries.text}>
+                    {localStorage.getItem("NombreUsuario")}
+                  </Typography>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.bold_text}>Administrador</Typography>
+                  <Typography sx={queries.bold_text}>
+                    {localStorage.getItem("Rol")}
+                  </Typography>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
@@ -97,7 +108,9 @@ export function LateralMenu(){
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.text}>Municipio Monterrey</Typography>
+                  <Typography sx={queries.text}>
+                    Municipio: Monterrey
+                  </Typography>
                 </Grid>
 
                 <Grid item>
@@ -143,7 +156,12 @@ export function LateralMenu(){
                           unmountOnExit
                         >
                           <List>
-                            <ListItemButton sx={{ marginLeft: 4 }}>
+                            <ListItemButton
+                              sx={{ marginLeft: 4 }}
+                              onClick={() => {
+                                navigate("../OCP");
+                              }}
+                            >
                               <ListItemIcon>
                                 <KeyboardArrowRightIcon sx={queries.icon} />
                               </ListItemIcon>
@@ -152,14 +170,14 @@ export function LateralMenu(){
                               </Typography>
                             </ListItemButton>
 
-                            <ListItemButton sx={{ marginLeft: 4 }}>
+                            {/* <ListItemButton sx={{ marginLeft: 4 }}>
                               <ListItemIcon>
                                 <KeyboardArrowRightIcon sx={queries.icon} />
                               </ListItemIcon>
                               <Typography sx={queries.text}>
                                 Credito Simple
                               </Typography>
-                            </ListItemButton>
+                            </ListItemButton> */}
                           </List>
                         </Collapse>
 
@@ -174,39 +192,39 @@ export function LateralMenu(){
                       </List>
                     </Collapse>
 
-                    <ListItemButton>
+                    {/* <ListItemButton>
                       <ListItemIcon>
                         <PivotTableChartOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
                         Reestructuración
                       </Typography>
-                    </ListItemButton>
+                    </ListItemButton> */}
 
-                    <ListItemButton>
+                    {/* <ListItemButton>
                       <ListItemIcon>
                         <HighlightOffOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>Cancelación</Typography>
-                    </ListItemButton>
+                    </ListItemButton> */}
 
-                    <ListItemButton>
+                    {/* <ListItemButton>
                       <ListItemIcon>
                         <AttachMoneyOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
                         Mecanismos de pago
                       </Typography>
-                    </ListItemButton>
+                    </ListItemButton> */}
 
-                    <ListItemButton>
+                    {/* <ListItemButton>
                       <ListItemIcon>
                         <CampaignOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
                         Tablero electrónico
                       </Typography>
-                    </ListItemButton>
+                    </ListItemButton> */}
                   </List>
                 </Grid>
                 <Grid item>
@@ -216,7 +234,11 @@ export function LateralMenu(){
               <Grid item container direction="column">
                 <Grid item>
                   <List>
-                    <ListItemButton>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("../Config");
+                      }}
+                    >
                       <ListItemIcon>
                         <SettingsOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -231,6 +253,17 @@ export function LateralMenu(){
                         Cambiar Contraseña
                       </Typography>
                     </ListItemButton>
+
+                    <ListItemButton
+                      onClick={() => {
+                        logout();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <LogoutIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.text}>Cerrar Sesión</Typography>
+                    </ListItemButton>
                   </List>
                 </Grid>
               </Grid>
@@ -240,4 +273,4 @@ export function LateralMenu(){
       </Toolbar>
     </AppBar>
   );
-};
+}

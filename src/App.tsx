@@ -9,6 +9,7 @@ import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
+import { Configuracion } from "./components/Config/Config";
 
 export const appTheme = createTheme({
   palette: {
@@ -46,13 +47,16 @@ function App() {
         }
       });
     }
-  }, [IdApp, jt, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="Config" element={<Configuracion />}></Route>
+          <Route path="OCP" element={<HomePage />}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
