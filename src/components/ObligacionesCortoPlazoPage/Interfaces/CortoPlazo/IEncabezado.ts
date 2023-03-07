@@ -15,4 +15,8 @@ export interface IInformacionGeneral {
     montoOriginalContratado: string;
     Denominacion:string;
 }
-   
+
+export interface ISolCortoPlazo {
+  encabezado: IEncabezado;
+  informacionGeneral:IInformacionGeneral;
+}

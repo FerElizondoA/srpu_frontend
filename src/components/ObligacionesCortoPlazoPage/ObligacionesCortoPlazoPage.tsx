@@ -14,14 +14,14 @@ import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
-import { IEncabezado } from "./Interfaces/CortoPlazo/IEncabezado";
-import { getDestinos } from "./APIS/APISInformacionGeneral";
+import { IEncabezado, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
+import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 
 export function ObligacionesCortoPlazoPage() {
 
   useEffect(() => {
-   console.log("Destinos :"+ getDestinos());
-   
+   getDestinos();
+   getObligadoSolidarioAval();
   }, [])
   
 
@@ -36,6 +36,7 @@ export function ObligacionesCortoPlazoPage() {
   } 
 
 
+
   const [encabezado,setEncabezado]=useState<IEncabezado>(
     
      { tipoDocumento: "",
@@ -46,6 +47,8 @@ export function ObligacionesCortoPlazoPage() {
       cargoSolicitante:"",
     }
   );
+  
+  
 
   return (
     <Grid container direction="column">
