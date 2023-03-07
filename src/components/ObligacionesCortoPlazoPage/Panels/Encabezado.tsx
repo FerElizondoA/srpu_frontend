@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import {
   Grid,
   TextField,
@@ -10,20 +12,27 @@ import { DateField } from "@mui/x-date-pickers/DateField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
+
 import { queries } from "../../../queries";
 
+import { useCortoPlazoStore } from "../../../store/main";
+
 export function Encabezado(){
+    
+    const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
+    const changeSolitanteAutorizado: Function = useCortoPlazoStore(state => state.addSolicitanteAutorizado)
+
     return (
       <Grid container>
         <Grid
           item
           container
-          mt={{ xs: 10, sm: 10, md: 10, lg: 20 }}
+          mt={{ xs: 10, sm: 10, md: 10, lg: 10 }}
           ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>Tipo de Registro</InputLabel>
+            <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
             <Select fullWidth variant="standard" label="test">
               <MenuItem sx={queries.text}>Item 1</MenuItem>
               <MenuItem sx={queries.text}>Item 2</MenuItem>
@@ -48,7 +57,9 @@ export function Encabezado(){
             </InputLabel>
             <TextField
               fullWidth
+              value={solicitanteAutorizado}
               variant="standard"
+              onChange={(text) => { changeSolitanteAutorizado(text.target.value) }}
               sx={queries.medium_text}
               InputLabelProps={{
                 style: {
