@@ -69,10 +69,10 @@ export function ObligacionesCortoPlazoPage() {
       </Grid>
       
       {tabIndex === 0 ? <Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
-      {tabIndex === 2 && <InformacionGeneral />}
-      {tabIndex === 4 && <CondicionesFinancieras />}
-      {tabIndex === 6 && <Documentacion/>}
-      {tabIndex === 8 && <SolicitudInscripcion />}
+      {tabIndex === 1 && <InformacionGeneral />}
+      {tabIndex === 2 && <CondicionesFinancieras />}
+      {tabIndex === 3 && <Documentacion/>}
+      {tabIndex === 4 && <SolicitudInscripcion />}
     </Grid>
   );
 }
