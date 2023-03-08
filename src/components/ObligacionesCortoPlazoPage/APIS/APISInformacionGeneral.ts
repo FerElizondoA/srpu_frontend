@@ -34,10 +34,7 @@ export  function getObligadoSolidarioAval (){
           },
       })
       .then( ({data})=> {
-            // console.log("ObligadoSolidario : ");
-            // console.log(data);
-            
-            
+           
             return  data;
       })
       .catch( (error)=> {
