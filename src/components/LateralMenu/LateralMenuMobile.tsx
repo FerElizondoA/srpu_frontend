@@ -1,5 +1,4 @@
 import * as React from "react"
-import logo from '../../assets/images/logo.svg';
 
 import {
   Grid,
@@ -11,16 +10,10 @@ import {
   ListItemIcon,
   IconButton,
   Collapse,
-  SwipeableDrawer,
   Drawer,
   AppBar,
   Toolbar,
-  Box,
-  Button
 } from "@mui/material";
-
-import { styled } from '@mui/material/styles'
-import { grey } from '@mui/material/colors';
 
 import { queries } from "../../queries";
 

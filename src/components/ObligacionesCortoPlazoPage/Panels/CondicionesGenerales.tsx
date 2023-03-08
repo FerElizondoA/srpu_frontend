@@ -4,59 +4,24 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  InputAdornment
 } from "@mui/material";
-import axios from "axios";
+
+import { queries } from "../../../queries";
 
 import { DateField } from "@mui/x-date-pickers/DateField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
-import { queries } from "../../../queries";
+export function CondicionesGenerales(){
 
-import * as React from "react";
-import Autocomplete from "@mui/material/Autocomplete";
-
-export class Encabezado extends React.Component{
-
-  state = {
-    enteCatalog: [""],
-    entidadCatalog: [""],
-    documentoCatalog: [""]
-  };
-
-  fetchEnteCatalog(){
-    axios.get("http://10.200.4.199:8000/api/get-entePublicoObligado", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      }).then((response) => {
-        response.data.data.forEach((element: any) => { // TODO: type 
-          this.state.enteCatalog.push(element.EntePublicoObligado);
-        });
-      });
-    this.state.enteCatalog.shift();
-  }
-
-  fetchEntidadCatalog(){
-
-  }
-
-  fetchDocumentoCatalog(){
-
-  }
-
-  componentDidMount(){
-    this.fetchEnteCatalog();
-  }
-
-  render() {
     return (
       <Grid container>
         <Grid
           item
           container
-          mt={{ xs: 10, sm: 10, md: 5, lg: 5 }}
-          ml={{ xs: 5, sm: 2, md: 7, lg: 30 }}
+          mt={{ xs: 10, sm: 10, md: 5, lg: 10 }}
+          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
@@ -70,25 +35,21 @@ export class Encabezado extends React.Component{
 
           <Grid item xs={3.5} md={3.5} lg={3}>
             <InputLabel sx={queries.medium_text}>
-              Tipo de Ente Público
+              Ente Público Obligado
             </InputLabel>
-            <Autocomplete
-              fullWidth
-              options={this.state.enteCatalog}
-              renderInput={(params) => (
-                <TextField {...params} variant="standard" />
-              )}
-            />
+            <Select fullWidth variant="standard" label="test">
+              <MenuItem sx={queries.text}>Item 1</MenuItem>
+              <MenuItem sx={queries.text}>Item 2</MenuItem>
+              <MenuItem sx={queries.text}>Item 3</MenuItem>
+            </Select>
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
             <InputLabel sx={queries.medium_text}>
-              Solicitante Autorizado
+              Monto Original Contratado
             </InputLabel>
             <TextField
               fullWidth
-              variant="standard"
-              sx={queries.medium_text}
               InputLabelProps={{
                 style: {
                   fontFamily: "MontserratMedium",
@@ -98,29 +59,23 @@ export class Encabezado extends React.Component{
                 style: {
                   fontFamily: "MontserratMedium",
                 },
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
               }}
+              variant="standard"
             />
           </Grid>
-          
         </Grid>
 
         <Grid
           item
           container
-          mt={{ xs: 10, sm: 10, md: 5, lg: 20 }}
-          ml={{ xs: 5, sm: 2, md: 7, lg: 30 }}
+          mt={{ xs: 10, sm: 10, md: 5, lg: 10 }}
+          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 - 15}}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
-          <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>Entidad Federativa</InputLabel>
-            <Select fullWidth variant="standard" label="test">
-              <MenuItem sx={queries.text}>Item 1</MenuItem>
-              <MenuItem sx={queries.text}>Item 2</MenuItem>
-              <MenuItem sx={queries.text}>Item 3</MenuItem>
-            </Select>
-          </Grid>
-
-          <Grid item xs={3.5} md={3.5} lg={3}>
+          <Grid item lg={2.5}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de Contratación
@@ -144,14 +99,34 @@ export class Encabezado extends React.Component{
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={3.5} md={3.5} lg={3}>
-            <InputLabel sx={queries.medium_text}>
-              Cargo del Solicitante
-            </InputLabel>
+          <Grid item lg={2.5}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <InputLabel sx={queries.medium_text}>
+                Fecha de Vencimiento
+              </InputLabel>
+              <DateField
+                fullWidth
+                format="DD-MM-YYYY"
+                variant="standard"
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                    fontSize: "2ch",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item lg={2.5}>
+            <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
             <TextField
               fullWidth
-              variant="standard"
-              sx={queries.medium_text}
               InputLabelProps={{
                 style: {
                   fontFamily: "MontserratMedium",
@@ -161,11 +136,23 @@ export class Encabezado extends React.Component{
                 style: {
                   fontFamily: "MontserratMedium",
                 },
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
               }}
+              variant="standard"
             />
+          </Grid>
+
+          <Grid item lg={2.5}>
+            <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
+            <Select fullWidth variant="standard" label="test">
+              <MenuItem sx={queries.text}>Item 1</MenuItem>
+              <MenuItem sx={queries.text}>Item 2</MenuItem>
+              <MenuItem sx={queries.text}>Item 3</MenuItem>
+            </Select>
           </Grid>
         </Grid>
       </Grid>
     );
-  }
 }

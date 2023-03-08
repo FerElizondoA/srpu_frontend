@@ -1,22 +1,18 @@
-import { styled } from '@mui/material/styles'
+import * as React from "react"
 
 import {
     Grid,
     Table,
     TableBody,
     TableSortLabel,
-    TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    ButtonBase,
-    Button,
-    Box,
     Checkbox
 } from "@mui/material";
 
-import { tableCellClasses } from "@mui/material/TableCell"
-import { queries } from '../../../queries';
+import { ReactNode } from 'react';
+import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { StyledTableCell, StyledTableRow, ConfirmButton, DeleteButton } from "../../CustomComponents";
 
 // dummy data
 
@@ -104,7 +100,7 @@ function createDummyData(
 
 const rows = [
     createDummyData(
-        new Date(2023, 2, 14),
+        new Date(2023, 2, 14), // AÑO - MES - DÍA
         10000,
         new Date(2023, 3, 14),
         "1 año",
@@ -132,70 +128,22 @@ const rows = [
         )
 ]
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "white",
-    color: theme.palette.common.black,
-    fontFamily: "MontserratMedium",
-    fontSize: "1.6ch",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontFamily: "MontserratRegular",
-    fontSize: "1.6ch"
-  },
-}));
+export class CondicionesFinancieras extends React.Component{
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  fontFamily: "MontserratMedium",
-  fontSize: "1.5ch",
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-const CustomButton = styled(ButtonBase)((_color: string) => ({
-  backgroundColor: _color,
-  width: "100%",
-  height: "100%",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch"
-}))
-
-const ConfirmButton = styled(Button)(({ theme }) => ({
-  width: "100%",
-  height: "60px",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch",
-  color: "green",
-  borderColor: "green",
-  borderRadius: "0",
-  ":hover": {
-    backgroundColor: "green",
-    color: "white",
-    borderColor: "green"
+  state = {
+    openAgregarCondicion: false
   }
-}))
 
-const DeleteButton = styled(Button)(({ theme }) => ({
-  width: "100%",
-  height: "60px",
-  fontFamily: "MontserratMedium",
-  fontSize: "1.8ch",
-  color: "#e57373",
-  borderColor: "#e57373",
-  borderRadius: "0",
-  ":hover": {
-    backgroundColor: "#e57373",
-    color: "white",
-    borderColor: "#e57373"
+  constructor(props: any){
+    super(props);
+    this.changeOpenAgregarState.bind(this);
   }
-}))
 
-export function CondicionesFinancieras(){
+  changeOpenAgregarState = (open: boolean) => {
+    this.setState({openAgregarCondicion: open});
+  }
+
+  render(): ReactNode {
     return (
       <Grid container direction="column">
         <Grid item>
@@ -215,14 +163,14 @@ export function CondicionesFinancieras(){
                       <Checkbox />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
-                      {row.dispositionDate.toLocaleDateString()}
+                      {row.dispositionDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {"$" + row.dispositionAmount.toString()}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
@@ -230,7 +178,7 @@ export function CondicionesFinancieras(){
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString()}
+                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
@@ -247,14 +195,26 @@ export function CondicionesFinancieras(){
           </TableContainer>
         </Grid>
 
-        <Grid item container position="fixed" sx={{top: "auto", bottom: 0}}>
-          <Grid item lg={6}>
-            <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+        <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+          <Grid item md={6}lg={6}>
+            <ConfirmButton
+              variant="outlined"
+              onClick={() =>
+                this.changeOpenAgregarState(!this.state.openAgregarCondicion)
+              }
+            >
+              AGREGAR
+            </ConfirmButton>
+            <AgregarCondicionFinanciera
+              handler={this.changeOpenAgregarState}
+              openState={this.state.openAgregarCondicion}
+            />
           </Grid>
-          <Grid item lg={6}>
+          <Grid item md={6} lg={6}>
             <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
           </Grid>
         </Grid>
       </Grid>
     );
+  }
 }

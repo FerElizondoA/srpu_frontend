@@ -2,7 +2,6 @@ import {
     Grid,
     Tabs,
     Tab,
-    Typography,
     Divider
  } from "@mui/material"
 
@@ -13,7 +12,8 @@ import { Documentacion } from "./Panels/Documentacion";
 import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
-
+import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
+import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
 
 export function ObligacionesCortoPlazoPage() {
@@ -40,41 +40,21 @@ export function ObligacionesCortoPlazoPage() {
           allowScrollButtonsMobile
         >
           <Tab label="Encabezado" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Información General" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Condiciones Financieras" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Documentación" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem/>
+          <Divider orientation="vertical" flexItem />
           <Tab label="Solicitud de Inscripción" sx={queries.text}></Tab>
         </Tabs>
       </Grid>
-      {tabIndex === 0 && (
-        <Grid item container>
-          <Encabezado/>
-        </Grid>
-      )}
-      {tabIndex === 2 && (
-        <Grid item container>
-          <InformacionGeneral/>
-        </Grid>
-      )}
-      {tabIndex === 4 && (
-        <Grid item container>
-          <CondicionesFinancieras/>
-        </Grid>
-      )}
-      {tabIndex === 6 && (
-        <Grid item container>
-          <Typography>Panel 4</Typography>
-        </Grid>
-      )}
-      {tabIndex === 8 && (
-        <Grid item container>
-          <Typography>Panel 5</Typography>
-        </Grid>
-      )}
+      {tabIndex === 0 && <Encabezado />}
+      {tabIndex === 2 && <InformacionGeneral />}
+      {tabIndex === 4 && <CondicionesFinancieras />}
+      {tabIndex === 6 && <Documentacion/>}
+      {tabIndex === 8 && <SolicitudInscripcion />}
     </Grid>
   );
 }
