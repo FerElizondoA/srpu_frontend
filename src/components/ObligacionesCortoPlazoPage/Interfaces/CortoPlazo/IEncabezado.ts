@@ -14,6 +14,7 @@ export interface IInformacionGeneral {
     destino: string;
     montoOriginalContratado: string;
     Denominacion:string;
+    InstitucionFinanciera:string
 }
 
 export interface ISolCortoPlazo {

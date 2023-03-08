@@ -12,7 +12,7 @@ import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { IEncabezado } from "./Interfaces/CortoPlazo/IEncabezado";
+import { IEncabezado, IInformacionGeneral, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
 import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 import { Documentacion } from "./Panels/Documentacion";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
@@ -40,13 +40,24 @@ export function ObligacionesCortoPlazoPage() {
 
 
   const [encabezado,setEncabezado]=useState<IEncabezado>(
-    
      { tipoDocumento: "",
       municipioOrganismo: "",
       tipoEntePublico: "",
       fechaSolicitud: "",
       solicitanteAutorizado: "",
       cargoSolicitante:"",
+    }
+  );
+
+  const [informacionGeneral,setInformacionGeneral] = useState <IInformacionGeneral>(
+    {
+      fechaContratacion: "",
+      fechaVencimiento: "",
+      plazo: "",
+      destino: "",
+      montoOriginalContratado: "",
+      Denominacion:"",
+      InstitucionFinanciera:"",
     }
   );
   

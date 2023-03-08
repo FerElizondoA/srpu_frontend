@@ -12,20 +12,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 
 import { queries } from "../../../queries";
 import { IEncabezado } from "../Interfaces/CortoPlazo/IEncabezado";
-import { getMunicipiosUOrganismos } from "../APIS/APISEncabezado";
 import FormControl from "@mui/material/FormControl/FormControl";
+import { logRoles } from "@testing-library/react";
+import { getMunicipiosUOrganismos, getTipoEntePublico } from "../APIS/APISEncabezado";
+import { IMunicipioUOrganizacion, ITipoEntePublico } from "../Interfaces/CortoPlazo/Encabezado/IListEncabezado";
 
-export interface IMunicipioUOrganizacion {
-  Id: string;
-  EntePublicoObligado: string;
-  Tipo: string;
-  IdTipoEntePublico: string;
-  FechaCreacion: string;
-  CreadoPor: number;
-  UltimaModificacion: string;
-  ModificadoPor: number;
-  Deleted: number;
-}
 
 export function Encabezado({
   encabezado,
@@ -36,19 +27,23 @@ export function Encabezado({
 }) {
 
   const [municipiosUOrganismos,setMunicipiosUOrganismos]=useState<Array<IMunicipioUOrganizacion>>([]);
-
-  useEffect(() => {
-    let aux  : IMunicipioUOrganizacion []
-    aux =  []
-    setMunicipiosUOrganismos(aux)
-    
-  }, [])
+  const [tipoEntePublico,setTipoEntePublico]=useState<Array<ITipoEntePublico>>([]);
   
 
+  useEffect(() => {
+    getMunicipiosUOrganismos(setMunicipiosUOrganismos);
+    getTipoEntePublico(setTipoEntePublico);
+  }, [])
 
-  const setsolicitanteAutorizado = (e: any) => {
+  const setSolicitanteAutorizado = (e: any) => {
     let aux = encabezado;
     aux.solicitanteAutorizado = e.target.value;
+    setEncabezado({ ...aux });
+  };
+
+  const setCargoSolicitante = (e: any) => {
+    let aux = encabezado;
+    aux.cargoSolicitante = e.target.value;
     setEncabezado({ ...aux });
   };
 
@@ -63,12 +58,6 @@ export function Encabezado({
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
-          {/* 
-            <Select fullWidth variant="standard" label="test">
-              <MenuItem sx={queries.text}>Item 1</MenuItem>
-              <MenuItem sx={queries.text}>Item 2</MenuItem>
-              <MenuItem sx={queries.text}>Item 3</MenuItem>
-            </Select> */}
           <InputLabel >Tipo de Documento</InputLabel>
           <TextField
             InputProps={{ readOnly: true }}
@@ -84,14 +73,25 @@ export function Encabezado({
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Tipo de Ente Público
-          </InputLabel>
-          <Select fullWidth variant="standard" label="test">
-            <MenuItem sx={queries.text}>Item 1</MenuItem>
-            <MenuItem sx={queries.text}>Item 2</MenuItem>
-            <MenuItem sx={queries.text}>Item 3</MenuItem>
-          </Select>
+        <FormControl required variant="standard" fullWidth>
+            <InputLabel sx={queries.medium_text}>Tipo de Ente Publico</InputLabel>
+            <Select
+              id="MunicipiosuOrganismos"
+              value={encabezado.tipoEntePublico}
+              onChange={(v) => {
+                let aux = encabezado;
+                aux.tipoEntePublico = v.target.value;
+                setEncabezado({ ...aux });
+              }}
+              sx={{ display: "flex", pt: 1 }}
+            >
+              {tipoEntePublico.map((tipo) => (
+                  <MenuItem key={tipo.Id} value={tipo.Id}>
+                    {tipo.Tipo}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -113,27 +113,8 @@ export function Encabezado({
               },
             }}
             value={encabezado.solicitanteAutorizado}
-            onChangeCapture={setsolicitanteAutorizado}
+            onChangeCapture={setSolicitanteAutorizado}
           />
-
-          {/* <FormControl required variant="standard" fullWidth>
-              <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                Tipo de Usuario
-              </InputLabel>
-
-              <Select
-                id="tipousuario"
-                value={tipousuario}
-                onChange={(v) => setTipoUsuario(v.target.value) }
-                sx={{ display: "flex", pt: 1 }}
-              >
-                {usertypes.map((types) => (
-                  <MenuItem key={types.Id} value={types.Id}>
-                    {types.Descripcion}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
         </Grid>
       </Grid>
 
@@ -150,19 +131,19 @@ export function Encabezado({
 
             <Select
               id="MunicipiosuOrganismos"
-              value={encabezado.solicitanteAutorizado}
+              value={encabezado.municipioOrganismo}
               onChange={(v) => {
                 let aux = encabezado;
-                aux.solicitanteAutorizado = v.target.value;
+                aux.municipioOrganismo = v.target.value;
                 setEncabezado({ ...aux });
               }}
               sx={{ display: "flex", pt: 1 }}
             >
-              {/* {usertypes.map((types) => (
-                  <MenuItem key={types.Id} value={types.Id}>
-                    {types.Descripcion}
+              {municipiosUOrganismos.map((municipio) => (
+                  <MenuItem key={municipio.Id} value={municipio.Id}>
+                    {municipio.EntePublicoObligado}
                   </MenuItem>
-                ))} */}
+                ))}
             </Select>
           </FormControl>
         </Grid>
@@ -204,8 +185,8 @@ export function Encabezado({
                 fontFamily: "MontserratMedium",
               },
             }}
-            value={encabezado.solicitanteAutorizado}
-            onChangeCapture={setsolicitanteAutorizado}
+            value={encabezado.cargoSolicitante}
+            onChangeCapture={setCargoSolicitante}
           />
         </Grid>
       </Grid>
