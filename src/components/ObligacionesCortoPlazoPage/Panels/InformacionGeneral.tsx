@@ -27,8 +27,12 @@ export function InformacionGeneral() {
   );
 
   const updateComponent: number = 0;
+  const institucion: string = useCortoPlazoStore(state => state.institucion);
+  const changeInstitucion: Function = useCortoPlazoStore(state => state.changeInstitucion);
   const institucionCatalog: string[] = useCortoPlazoStore(state => state.institucionCatalog);
   const fetchInstituciones: Function = useCortoPlazoStore(state => state.fetchInstituciones);
+  const destino: string = useCortoPlazoStore(state => state.destino);
+  const changeDestino: Function = useCortoPlazoStore(state => state.changeDestino);
   const destinoCatalog: string[] = useCortoPlazoStore(state => state.destinoCatalog);
   const fetchDestinos: Function = useCortoPlazoStore(state => state.fetchDestinos);
   const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
@@ -46,8 +50,6 @@ export function InformacionGeneral() {
     fetchDestinos();
     fetchInstituciones();
   }, [updateComponent])
-
-
 
   return (
     <Grid container>
@@ -160,6 +162,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             fullWidth
+            value={destino}
+            onChange={(event:any, text: string | null) => changeDestino(text)}
             options={destinoCatalog}
             renderInput={(params) => (
               <TextField
@@ -192,19 +196,15 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        container
-        mt={2}
-        ml={window.innerWidth / 50 - 17}
-        spacing={5}
-      >
+      <Grid item container mt={2} ml={window.innerWidth / 50 - 17} spacing={5}>
         <Grid item lg={8.5} ml={window.outerWidth / 150}>
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
           <Autocomplete
             fullWidth
+            value={institucion}
+            onChange={(event:any, text: string | null) => changeInstitucion(text)}
             options={institucionCatalog}
             renderInput={(params) => (
               <TextField
@@ -238,7 +238,10 @@ export function InformacionGeneral() {
               </Typography>
             </Grid>
           </Button>
-          <ObligadoSolidarioAval handler={handleOpenObligadoState} openState={openObligado} />
+          <ObligadoSolidarioAval
+            handler={handleOpenObligadoState}
+            openState={openObligado}
+          />
         </Grid>
       </Grid>
     </Grid>
