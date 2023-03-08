@@ -14,7 +14,7 @@ import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
-import { IEncabezado, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
+import { IEncabezado, IInformacionGeneral, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
 import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 
 export function ObligacionesCortoPlazoPage() {
@@ -38,13 +38,24 @@ export function ObligacionesCortoPlazoPage() {
 
 
   const [encabezado,setEncabezado]=useState<IEncabezado>(
-    
      { tipoDocumento: "",
       municipioOrganismo: "",
       tipoEntePublico: "",
       fechaSolicitud: "",
       solicitanteAutorizado: "",
       cargoSolicitante:"",
+    }
+  );
+
+  const [informacionGeneral,setInformacionGeneral] = useState <IInformacionGeneral>(
+    {
+      fechaContratacion: "",
+      fechaVencimiento: "",
+      plazo: "",
+      destino: "",
+      montoOriginalContratado: "",
+      Denominacion:"",
+      InstitucionFinanciera:"",
     }
   );
   
@@ -74,7 +85,7 @@ export function ObligacionesCortoPlazoPage() {
       </Grid>
       
       {tabIndex === 0 ?<Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
-      {tabIndex === 2 && <InformacionGeneral />}
+       {tabIndex === 2 && <InformacionGeneral />}   {/*informacionGeneral={informacionGeneral} setInformacionGeneral={asetInformacionGeneral}  */}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 6 && <Documentacion/>}
       {tabIndex === 8 && <SolicitudInscripcion />}
