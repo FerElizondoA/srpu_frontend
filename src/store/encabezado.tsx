@@ -7,16 +7,16 @@ export interface EncabezadoSlice{
     organismo: string,
     fechaContratacion: string,
     cargoSolicitante: string,
-    addSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void,
+    changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void,
 }
 
-export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) => ({
+export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set) => ({
     tipoDocumento: "",
     tipoEntePublico: "",
     solicitanteAutorizado: "",
     organismo: "",
-    fechaContratacion: "",
+    fechaContratacion: "DD-MM-YYYY",
     cargoSolicitante: "",
-    addSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set((state) => ({solicitanteAutorizado: newSolicitanteAutorizado}))
+    changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado}))
 })
 
