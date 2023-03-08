@@ -18,10 +18,10 @@ import {
 // icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import PivotTableChartOutlinedIcon from "@mui/icons-material/PivotTableChartOutlined";
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
-import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
+// import PivotTableChartOutlinedIcon from "@mui/icons-material/PivotTableChartOutlined";
+// import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+// import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+// import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -50,8 +50,8 @@ export function LateralMenu() {
     isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
   };
 
-  const [openInscripcion, setOpenInscripcion] = React.useState(false);
-  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
+  const [openInscripcion, setOpenInscripcion] = React.useState(true);
+  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleInscripcionClick = () => {
@@ -87,6 +87,13 @@ export function LateralMenu() {
           >
             <Grid container sx={{ width: query.isXs ? "40vw" : "30vw" }}>
               <Grid item container direction="column" mt={2}>
+
+              <Grid item sx={{ alignSelf: "center" }}>
+                  <Typography sx={queries.text}>
+                    Sistema del Registro Público Único
+                  </Typography>
+                </Grid>
+
                 <Grid item sx={{ alignSelf: "center" }}>
                   <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
                 </Grid>
@@ -121,7 +128,10 @@ export function LateralMenu() {
               <Grid item container direction="column">
                 <Grid item>
                   <List>
-                    <ListItemButton>
+                    <ListItemButton 
+                              onClick={() => {
+                                navigate("../");
+                              }}>
                       <ListItemIcon>
                         <HomeOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -159,7 +169,7 @@ export function LateralMenu() {
                             <ListItemButton
                               sx={{ marginLeft: 4 }}
                               onClick={() => {
-                                navigate("../OCP");
+                                navigate("../ObligacionesCortoPlazo");
                               }}
                             >
                               <ListItemIcon>

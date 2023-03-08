@@ -2,7 +2,6 @@ import {
     Grid,
     Tabs,
     Tab,
-    Divider
  } from "@mui/material"
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -13,7 +12,7 @@ import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { IEncabezado, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
+import { IEncabezado } from "./Interfaces/CortoPlazo/IEncabezado";
 import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 import { Documentacion } from "./Panels/Documentacion";
 
@@ -62,18 +61,14 @@ export function ObligacionesCortoPlazoPage() {
           allowScrollButtonsMobile
         >
           <Tab label="Encabezado" sx={queries.text}/>
-          <Divider orientation="vertical" flexItem />
           <Tab label="Información General" sx={queries.text}/>
-          <Divider orientation="vertical" flexItem />
           <Tab label="Condiciones Financieras" sx={queries.text}/>
-          <Divider orientation="vertical" flexItem />
-          <Tab label="Documentación" sx={queries.text}></Tab>
-          <Divider orientation="vertical" flexItem />
+          <Tab label="Documentación" sx={queries.text}/>
           <Tab label="Solicitud de Inscripción" sx={queries.text}/>
         </Tabs>
       </Grid>
       
-      {tabIndex === 0 ?<Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
+      {tabIndex === 0 ? <Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
       {tabIndex === 2 && <InformacionGeneral />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 6 && <Documentacion/>}
