@@ -15,6 +15,8 @@ import { queries } from "../../queries";
 import { IEncabezado } from "./Interfaces/CortoPlazo/IEncabezado";
 import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 import { Documentacion } from "./Panels/Documentacion";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
 
 export function ObligacionesCortoPlazoPage() {
 
@@ -31,7 +33,8 @@ export function ObligacionesCortoPlazoPage() {
   }
 
   const query ={
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)")
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)")
   } 
 
 
@@ -51,6 +54,9 @@ export function ObligacionesCortoPlazoPage() {
 
   return (
     <Grid container direction="column">
+      <Grid item>
+          {query.isMobile? <LateralMenuMobile/> : <LateralMenu/>}
+        </Grid>
       <Grid item>
         <Tabs
           value={tabIndex}
