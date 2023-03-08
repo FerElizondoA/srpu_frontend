@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   Grid,
   TextField,
@@ -20,7 +18,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 export function Encabezado(){
     
     const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
-    const changeSolitanteAutorizado: Function = useCortoPlazoStore(state => state.addSolicitanteAutorizado)
+    const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado)
 
     return (
       <Grid container>
@@ -59,7 +57,7 @@ export function Encabezado(){
               fullWidth
               value={solicitanteAutorizado}
               variant="standard"
-              onChange={(text) => { changeSolitanteAutorizado(text.target.value) }}
+              onChange={(text) => { changeSolicitanteAutorizado(text.target.value) }}
               sx={queries.medium_text}
               InputLabelProps={{
                 style: {
