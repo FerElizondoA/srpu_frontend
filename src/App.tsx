@@ -1,24 +1,14 @@
-import React, { useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 
 import "./App.css";
 import "./Fonts.css";
 
-import {
-  // BrowserRouter as Router,
-  Route,
-  // Link,
-  // createBrowserRouter,
-  // createRoutesFromElements,
-  // RouterProvider,
-  useNavigate,
-  Routes,
-} from "react-router-dom";
-
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { createTheme } from "@mui/material/styles"; //, ThemeProvider
+import { Route, useNavigate, Routes } from "react-router-dom";
 
 import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 
 export const appTheme = createTheme({
   palette: {
@@ -28,9 +18,6 @@ export const appTheme = createTheme({
   },
 });
 
-// const router = createBrowserRouter(
-//   createRoutesFromElements(<Route path="/" element={<HomePage />}></Route>)
-// );
 
 function App() {
   const navigate = useNavigate();
@@ -40,7 +27,7 @@ function App() {
 
   useLayoutEffect(() => {
     if (jt !== null) {
-      sessionValid().then((r: any) => {
+      sessionValid().then((r) => {
         if ((r as boolean) === false) {
           window.location.assign("http://10.200.4.106/");
         } else if ((r as boolean) === true) {
@@ -51,7 +38,7 @@ function App() {
         }
       });
     } else {
-      continueSession().then((r: any) => {
+      continueSession().then((r) => {
         if ((r as boolean) === false) {
           window.location.assign("http://10.200.4.106/");
         } else {
