@@ -13,7 +13,6 @@ import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
-import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
 
 export function ObligacionesCortoPlazoPage() {

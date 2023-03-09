@@ -10,6 +10,9 @@ import {
   Button,
   Alert,
   InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -55,42 +58,14 @@ const heads: readonly Head[] = [
   },
 ];
 
-const currencies = [
-  {
-    value: "Documento",
-    label: "Documento ",
-  },
-  {
-    value: "Documento2",
-    label: "Documento 1",
-  },
-  {
-    value: "Documento2",
-    label: "Documento 2",
-  },
-  {
-    value: "Documento3",
-    label: "Documendo 3",
-  },
-];
-
-function createDummyData(Documento: String) {
-  return {
-    Documento,
-  };
-}
-
-//const rows = [createDummyData("Documento cualquiera.pdf")];
-
-const MAX_COUNT = 5;
-
 export function Documentacion() {
-  const [file, setFile] = useState("");
+  const [lastFile, setLastFile] = useState<File>();
   const [disabledButton, setDisabledButton] = useState(true);
   const [uploadFile, setUploadFile] = useState<File>();
   const [errorMsg, setErrorMsg] = useState("");
   const [loadingFile, setLoadingFile] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [tiposDocumentos,setTiposDocumentos]=useState();
 
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -106,34 +81,22 @@ export function Documentacion() {
     }
   }
 
-  const AlertDisplay = () => {
-    setDisabledButton(true);
-    setLoadingFile(false);
-    return (
-      <Alert
-        sx={{ borderRadius: 5, width: "80%", alignItems: "center", mt: 2 }}
-        severity="error"
-        onClose={() => {
-          setShowAlert(false);
-          setNombreArchivo("Arrastre o de click aquí para seleccionar archivo");
-        }}
-      >
-        {errorMsg}
-      </Alert>
-    );
-  };
+
 
   const submitForm = () => {
-    let aux = archivos;
-    console.log(uploadFile);
 
-    if (uploadFile !== undefined) {
-      aux?.push(uploadFile);
-      setArchivos(aux);
+    if (lastFile !== uploadFile) {
+      let aux = archivos;
+      console.log(uploadFile);
+
+      if (uploadFile !== undefined) {
+        aux?.push(uploadFile);
+        setArchivos(aux);
+      }
+      setLastFile(uploadFile);
     }
 
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
-    console.log("aux", aux);
   };
 
   const cancelar = () => {
@@ -151,9 +114,22 @@ export function Documentacion() {
     setArchivos(aux);
     console.log("aux", aux);
   };
-
-  const [checked, setChecked] = useState(true);
-
+  const AlertDisplay = () => {
+    setDisabledButton(true);
+    setLoadingFile(false);
+    return (
+      <Alert
+        sx={{ borderRadius: 5, width: "80%", alignItems: "center", mt: 2 }}
+        severity="error"
+        onClose={() => {
+          setShowAlert(false);
+          setNombreArchivo("Arrastre o de click aquí para seleccionar archivo");
+        }}
+      >
+        {errorMsg}
+      </Alert>
+    );
+  };
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
       <Grid item>
@@ -169,8 +145,7 @@ export function Documentacion() {
               </TableHead>
               <TableBody sx={{ margin: "100px" }}>
                 {archivos.map((archivo, index) => (
-                  //const isItemSelected = isSelected(row.name);
-                  <StyledTableRow>
+                  <StyledTableRow key={index}>
                     <StyledTableCell scope="row">
                       <IconButton
                         onClick={() => {
@@ -185,21 +160,21 @@ export function Documentacion() {
                       {archivo.name.toString()}
                     </StyledTableCell>
                     <StyledTableCell>
-                      <TextField
-                        id="standard-select-currency-native"
-                        select
-                        
-                        SelectProps={{
-                          native: true,
-                        }}
-                        variant="standard"
-                      >
-                        {currencies.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </TextField>
+                      <FormControl required variant="standard" fullWidth>
+                        <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
+
+                        {/* <Select
+                          id="MunicipiosuOrganismos"
+                          value={}
+                          sx={{ display: "flex", pt: 1 }}
+                        >
+                          {tiposDocumentos.map((tipo) => (
+                            <MenuItem key={tipo.Id} value={tipo.Id}>
+                              {tipo.}
+                            </MenuItem>
+                          ))}
+                        </Select> */}
+                      </FormControl>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -213,7 +188,6 @@ export function Documentacion() {
         item
         container
         position="fixed"
-        //gap={0}
         sx={{
           display: "flex",
           justifyContent: "flex-end",
@@ -267,18 +241,6 @@ export function Documentacion() {
             }}
           ></input>
 
-          {/* <Button
-            //onClick={submitForm}
-            sx={{
-              backgroundColor: "red",
-              color: "black",
-              height: "3vh",
-              width: "10vw",
-              mb: 0.5,
-            }}
-          >
-            Cargar
-          </Button> */}
         </Grid>
         <Grid item md={4} lg={4}>
           <ConfirmButton variant="outlined" onClick={submitForm}>
