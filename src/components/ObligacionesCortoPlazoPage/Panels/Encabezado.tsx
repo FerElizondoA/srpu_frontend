@@ -1,9 +1,11 @@
+import * as React from "react";
 import {
   Grid,
   TextField,
   Select,
   MenuItem,
   InputLabel,
+  Autocomplete
 } from "@mui/material";
 
 import { DateField } from "@mui/x-date-pickers/DateField";
@@ -17,8 +19,28 @@ import { useCortoPlazoStore } from "../../../store/main";
 
 export function Encabezado(){
     
+    const tipoDocumento: string = useCortoPlazoStore(state => state.tipoDocumento);
+    const changeTipoDocumento: Function = useCortoPlazoStore(state => state.changeTipoDocumento);
+    const tiposEntePublicoCatalog: string[] = useCortoPlazoStore(state => state.entesPublicosCatalog);
+    const fetchEntesPublicos: Function = useCortoPlazoStore(state => state.fetchEntesPublicos);
+    const tipoEntePublico: string = useCortoPlazoStore(state => state.tipoEntePublico);
+    const changeTipoEntePublico: Function = useCortoPlazoStore(state => state.changeTipoEntePublico);
     const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
-    const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado)
+    const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
+    const organismo: string = useCortoPlazoStore(state => state.organismo);
+    const changeOrganismo: Function = useCortoPlazoStore(state => state.changeOrganismo);
+    const organismosCatalog: string[] = useCortoPlazoStore(state => state.organismosCatalog);
+    const fetchOrganismos: Function = useCortoPlazoStore(state => state.fetchOrganismos);
+    const fechaContratacionEncabezado: string = useCortoPlazoStore(state => state.fechaContratacionEncabezado);
+    const changeFechaContratacionEncabezado: Function = useCortoPlazoStore(state => state.changeFechaContratacionEncabezado);
+    const cargoSolicitante: string = useCortoPlazoStore(state => state.cargoSolicitante);
+    const changeCargoSolicitante: Function = useCortoPlazoStore(state => state.changeCargoSolicitante);
+
+
+    React.useEffect(() => {
+      fetchEntesPublicos();
+      fetchOrganismos();
+    });
 
     return (
       <Grid container>
@@ -26,27 +48,47 @@ export function Encabezado(){
           item
           container
           mt={{ xs: 10, sm: 10, md: 10, lg: 10 }}
-          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
+          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
             <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
-            <Select fullWidth variant="standard" label="test">
-              <MenuItem sx={queries.text}>Item 1</MenuItem>
-              <MenuItem sx={queries.text}>Item 2</MenuItem>
-              <MenuItem sx={queries.text}>Item 3</MenuItem>
-            </Select>
+            <Autocomplete
+              fullWidth
+              value={tipoDocumento}
+              onChange={(event: any, text: string | null) =>
+                changeTipoDocumento(text)
+              }
+              options={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+            />
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
             <InputLabel sx={queries.medium_text}>
               Tipo de Ente Público
             </InputLabel>
-            <Select fullWidth variant="standard" label="test">
-              <MenuItem sx={queries.text}>Item 1</MenuItem>
-              <MenuItem sx={queries.text}>Item 2</MenuItem>
-              <MenuItem sx={queries.text}>Item 3</MenuItem>
-            </Select>
+            <Autocomplete
+              fullWidth
+              value={tipoEntePublico}
+              onChange={(event: any, text: string | null) =>
+                changeTipoEntePublico(text)
+              }
+              options={tiposEntePublicoCatalog}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+            />
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
@@ -57,7 +99,9 @@ export function Encabezado(){
               fullWidth
               value={solicitanteAutorizado}
               variant="standard"
-              onChange={(text) => { changeSolicitanteAutorizado(text.target.value) }}
+              onChange={(text) => {
+                changeSolicitanteAutorizado(text.target.value);
+              }}
               sx={queries.medium_text}
               InputLabelProps={{
                 style: {
@@ -77,40 +121,51 @@ export function Encabezado(){
           item
           container
           mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
-          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
+          ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
           spacing={{ xs: 2, md: 5, lg: 10 }}
         >
           <Grid item xs={3.5} md={3.5} lg={3}>
-                <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
-              <Select fullWidth variant="standard" label="test">
-              <MenuItem sx={queries.text}>Item 1</MenuItem>
-              <MenuItem sx={queries.text}>Item 2</MenuItem>
-              <MenuItem sx={queries.text}>Item 3</MenuItem>
-            </Select>
+            <InputLabel sx={queries.medium_text}>
+              Municipio u Organismo
+            </InputLabel>
+            <Autocomplete
+              fullWidth
+              value={organismo}
+              onChange={(event: any, text: string | null) =>
+                changeOrganismo(text)
+              }
+              options={organismosCatalog}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+            />
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <InputLabel sx={queries.medium_text}>
-                Fecha de Contratación
-              </InputLabel>
-              <DateField
-                fullWidth
-                format="DD-MM-YYYY"
-                variant="standard"
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                    fontSize: "2ch",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-              />
-            </LocalizationProvider>
+            <InputLabel sx={queries.medium_text}>
+              Fecha de Contratación
+            </InputLabel>
+            <TextField
+              fullWidth
+              value={fechaContratacionEncabezado}
+              onChange={(text) => changeFechaContratacionEncabezado(text.target.value)}
+              variant="standard"
+              sx={queries.medium_text}
+              InputLabelProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              InputProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+            />
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
@@ -120,6 +175,8 @@ export function Encabezado(){
             <TextField
               fullWidth
               variant="standard"
+              value={cargoSolicitante}
+              onChange={(text) => changeCargoSolicitante(text.target.value)}
               sx={queries.medium_text}
               InputLabelProps={{
                 style: {
