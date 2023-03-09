@@ -2,9 +2,10 @@ import create from "zustand";
 
 import { createEncabezadoSlice, EncabezadoSlice } from "./encabezado";
 import { createInformacionGeneralSlice, InformacionGeneralSlice } from "./informacion_general";
-
-export const useCortoPlazoStore = create<EncabezadoSlice & InformacionGeneralSlice>()((...x) => ({
+import {createSolicitudInscripcionSlice, SolicitudInscripcionSlice} from "./solicitud_inscripcion";
+export const useCortoPlazoStore = create<EncabezadoSlice & InformacionGeneralSlice & SolicitudInscripcionSlice>()((...x) => ({
     ...createEncabezadoSlice(...x),
-    ...createInformacionGeneralSlice(...x)
+    ...createInformacionGeneralSlice(...x),
+    ...createSolicitudInscripcionSlice(...x)
 }))
 
