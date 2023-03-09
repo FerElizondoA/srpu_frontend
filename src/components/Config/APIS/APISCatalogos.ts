@@ -1,6 +1,5 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
 
 export function getClavesDeInscripcion(setState: Function) {
   axios({

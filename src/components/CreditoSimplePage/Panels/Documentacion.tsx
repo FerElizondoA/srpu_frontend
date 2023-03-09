@@ -19,7 +19,6 @@ export function Documentacion() {
     //vartemp.concat(newtext);
     setText(vartemp.concat(newtext));
   };
-  console.log(text);
   //   useEffect(() =>{
   //     info()
   //   }

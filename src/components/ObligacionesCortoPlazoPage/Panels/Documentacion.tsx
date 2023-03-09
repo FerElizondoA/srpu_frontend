@@ -22,7 +22,6 @@ import {
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
 import { getTiposDocumentos } from "../APIS/APISDocumentacion";
 import { ITiposDocumento } from "../Interfaces/CortoPlazo/Documentacion/IListTipoDocumento";
 
@@ -59,21 +58,19 @@ const heads: readonly Head[] = [
 ];
 
 export function Documentacion() {
-
   const [lastFile, setLastFile] = useState<File>();
   const [disabledButton, setDisabledButton] = useState(true);
   const [uploadFile, setUploadFile] = useState<File>();
   const [errorMsg, setErrorMsg] = useState("");
   const [tipoDocumento, setTipoDocumento] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [tiposDocumentos, setTiposDocumentos] = useState<Array<ITiposDocumento>>([]);
-
-
-
+  const [tiposDocumentos, setTiposDocumentos] = useState<
+    Array<ITiposDocumento>
+  >([]);
 
   useEffect(() => {
-    getTiposDocumentos(setTiposDocumentos)
-  }, [])
+    getTiposDocumentos(setTiposDocumentos);
+  }, []);
 
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -89,10 +86,7 @@ export function Documentacion() {
     }
   }
 
-
-
   const submitForm = () => {
-
     if (lastFile !== uploadFile && uploadFile !== undefined) {
       let aux = archivos;
       aux?.push(uploadFile);
@@ -131,7 +125,6 @@ export function Documentacion() {
         {errorMsg}
       </Alert>
     );
-
   };
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
@@ -146,7 +139,307 @@ export function Documentacion() {
                   </StyledTableCell>
                 ))}
               </TableHead>
-              <TableBody sx={{ margin: "100px" }}>
+              <TableBody>
+                <StyledTableRow>
+                  <StyledTableCell scope="row">
+                    <IconButton disabled>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+
+                  <StyledTableCell sx={{ position: "relative" }}>
+                    <Typography
+                      position={"absolute"}
+                      sx={{
+                        display: "flex",
+                        border: "1px solid",
+                        borderBlockColor: "#AF8C55",
+                        fontFamily: "MontserratMedium",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "90%",
+                        height: "30%",
+                      }}
+                    >
+                      {nombreArchivo}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(v) => enCambioFile(v)}
+                      style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    ></input>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl required variant="standard" fullWidth>
+                      <InputLabel sx={queries.medium_text}>
+                        Tipo de Documento
+                      </InputLabel>
+                      <Select
+                        value={tipoDocumento}
+                        onChange={(v) => {
+                          let aux = v.target.value;
+                          setTipoDocumento(aux);
+                          console.log(aux);
+                        }}
+                        sx={{ display: "flex", pt: 1 }}
+                      >
+                        {tiposDocumentos.map((tipo) => (
+                          <MenuItem key={tipo.Id} value={tipo.Id}>
+                            {tipo.Descripcion}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell scope="row">
+                    <IconButton disabled>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+
+                  <StyledTableCell sx={{ position: "relative" }}>
+                    <Typography
+                      position={"absolute"}
+                      sx={{
+                        display: "flex",
+                        border: "1px solid",
+                        borderBlockColor: "#AF8C55",
+                        fontFamily: "MontserratMedium",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "90%",
+                        height: "30%",
+                      }}
+                    >
+                      {nombreArchivo}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(v) => enCambioFile(v)}
+                      style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    ></input>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl required variant="standard" fullWidth>
+                      <InputLabel sx={queries.medium_text}>
+                        Tipo de Documento
+                      </InputLabel>
+                      <Select
+                        value={tipoDocumento}
+                        onChange={(v) => {
+                          let aux = v.target.value;
+                          setTipoDocumento(aux);
+                          console.log(aux);
+                        }}
+                        sx={{ display: "flex", pt: 1 }}
+                      >
+                        {tiposDocumentos.map((tipo) => (
+                          <MenuItem key={tipo.Id} value={tipo.Id}>
+                            {tipo.Descripcion}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell scope="row">
+                    <IconButton disabled>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+
+                  <StyledTableCell sx={{ position: "relative" }}>
+                    <Typography
+                      position={"absolute"}
+                      sx={{
+                        display: "flex",
+                        border: "1px solid",
+                        borderBlockColor: "#AF8C55",
+                        fontFamily: "MontserratMedium",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "90%",
+                        height: "30%",
+                      }}
+                    >
+                      {nombreArchivo}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(v) => enCambioFile(v)}
+                      style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    ></input>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl required variant="standard" fullWidth>
+                      <InputLabel sx={queries.medium_text}>
+                        Tipo de Documento
+                      </InputLabel>
+                      <Select
+                        value={tipoDocumento}
+                        onChange={(v) => {
+                          let aux = v.target.value;
+                          setTipoDocumento(aux);
+                          console.log(aux);
+                        }}
+                        sx={{ display: "flex", pt: 1 }}
+                      >
+                        {tiposDocumentos.map((tipo) => (
+                          <MenuItem key={tipo.Id} value={tipo.Id}>
+                            {tipo.Descripcion}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell scope="row">
+                    <IconButton disabled>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+
+                  <StyledTableCell sx={{ position: "relative" }}>
+                    <Typography
+                      position={"absolute"}
+                      sx={{
+                        display: "flex",
+                        border: "1px solid",
+                        borderBlockColor: "#AF8C55",
+                        fontFamily: "MontserratMedium",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "90%",
+                        height: "30%",
+                      }}
+                    >
+                      {nombreArchivo}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(v) => enCambioFile(v)}
+                      style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    ></input>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl required variant="standard" fullWidth>
+                      <InputLabel sx={queries.medium_text}>
+                        Tipo de Documento
+                      </InputLabel>
+                      <Select
+                        value={tipoDocumento}
+                        onChange={(v) => {
+                          let aux = v.target.value;
+                          setTipoDocumento(aux);
+                          console.log(aux);
+                        }}
+                        sx={{ display: "flex", pt: 1 }}
+                      >
+                        {tiposDocumentos.map((tipo) => (
+                          <MenuItem key={tipo.Id} value={tipo.Id}>
+                            {tipo.Descripcion}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell scope="row">
+                    <IconButton disabled>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+
+                  <StyledTableCell sx={{ position: "relative" }}>
+                    <Typography
+                      position={"absolute"}
+                      sx={{
+                        display: "flex",
+                        border: "1px solid",
+                        borderBlockColor: "#AF8C55",
+                        fontFamily: "MontserratMedium",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "90%",
+                        height: "30%",
+                      }}
+                    >
+                      {nombreArchivo}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(v) => enCambioFile(v)}
+                      style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    ></input>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl required variant="standard" fullWidth>
+                      <InputLabel sx={queries.medium_text}>
+                        Tipo de Documento
+                      </InputLabel>
+                      <Select
+                        value={tipoDocumento}
+                        onChange={(v) => {
+                          let aux = v.target.value;
+                          setTipoDocumento(aux);
+                          console.log(aux);
+                        }}
+                        sx={{ display: "flex", pt: 1 }}
+                      >
+                        {tiposDocumentos.map((tipo) => (
+                          <MenuItem key={tipo.Id} value={tipo.Id}>
+                            {tipo.Descripcion}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                </StyledTableRow>
                 {archivos.map((archivo, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell scope="row">
@@ -164,11 +457,13 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       <FormControl required variant="standard" fullWidth>
-                        <InputLabel sx={queries.medium_text}>Tipo  de Documento</InputLabel>
+                        <InputLabel sx={queries.medium_text}>
+                          Tipo de Documento
+                        </InputLabel>
                         <Select
                           value={tipoDocumento}
                           onChange={(v) => {
-                            let  aux= v.target.value;
+                            let aux = v.target.value;
                             setTipoDocumento(aux);
                             console.log(aux);
                           }}
@@ -180,8 +475,6 @@ export function Documentacion() {
                             </MenuItem>
                           ))}
                         </Select>
-
-
                       </FormControl>
                     </StyledTableCell>
                   </StyledTableRow>
@@ -214,28 +507,24 @@ export function Documentacion() {
             bottom: 0,
           }}
         >
-          {showAlert ? (
-            <AlertDisplay />
-          ) : (
-            <Typography
-              position={"absolute"}
-              sx={{
-                display: "flex",
-                border: " 1px solid",
-                borderBlockColor: "#AF8C55",
-                //backgroundColor: "#AF8C55",
-                fontFamily: "MontserratMedium",
-                textAlign: "center",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "auto 0",
-                width: "34%",
-                height: "100%",
-              }}
-            >
-              {nombreArchivo}
-            </Typography>
-          )}
+          <Typography
+            position={"absolute"}
+            sx={{
+              display: "flex",
+              border: " 1px solid",
+              borderBlockColor: "#AF8C55",
+              //backgroundColor: "#AF8C55",
+              fontFamily: "MontserratMedium",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "auto 0",
+              width: "34%",
+              height: "100%",
+            }}
+          >
+            {nombreArchivo}
+          </Typography>
 
           <input
             type="file"
@@ -248,7 +537,6 @@ export function Documentacion() {
               cursor: "pointer",
             }}
           ></input>
-
         </Grid>
         <Grid item md={4} lg={4}>
           <ConfirmButton variant="outlined" onClick={submitForm}>
