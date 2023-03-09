@@ -6,8 +6,6 @@ import {
   TableSortLabel,
   TableContainer,
   TableHead,
-  Checkbox,
-  Button,
   Alert,
   InputLabel,
   FormControl,
@@ -25,6 +23,8 @@ import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import { getTiposDocumentos } from "../APIS/APISDocumentacion";
+import { ITiposDocumento } from "../Interfaces/CortoPlazo/Documentacion/IListTipoDocumento";
 
 interface Data {
   Documento: String;
@@ -59,13 +59,21 @@ const heads: readonly Head[] = [
 ];
 
 export function Documentacion() {
+
   const [lastFile, setLastFile] = useState<File>();
   const [disabledButton, setDisabledButton] = useState(true);
   const [uploadFile, setUploadFile] = useState<File>();
   const [errorMsg, setErrorMsg] = useState("");
-  const [loadingFile, setLoadingFile] = useState(false);
+  const [tipoDocumento, setTipoDocumento] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [tiposDocumentos,setTiposDocumentos]=useState();
+  const [tiposDocumentos, setTiposDocumentos] = useState<Array<ITiposDocumento>>([]);
+
+
+
+
+  useEffect(() => {
+    getTiposDocumentos(setTiposDocumentos)
+  }, [])
 
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -85,18 +93,16 @@ export function Documentacion() {
 
   const submitForm = () => {
 
-    if (lastFile !== uploadFile) {
+    if (lastFile !== uploadFile && uploadFile !== undefined) {
       let aux = archivos;
-      console.log(uploadFile);
+      aux?.push(uploadFile);
+      setArchivos(aux);
 
-      if (uploadFile !== undefined) {
-        aux?.push(uploadFile);
-        setArchivos(aux);
-      }
       setLastFile(uploadFile);
     }
 
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
+    console.log(archivos);
   };
 
   const cancelar = () => {
@@ -104,19 +110,15 @@ export function Documentacion() {
   };
 
   const quitDocument = (index: number) => {
-    console.log("soy el index de la row", index);
-
     let aux: File[] = [];
     archivos.map((archivo, x) => {
       if (x !== index) aux.push(archivo);
     });
 
     setArchivos(aux);
-    console.log("aux", aux);
   };
   const AlertDisplay = () => {
     setDisabledButton(true);
-    setLoadingFile(false);
     return (
       <Alert
         sx={{ borderRadius: 5, width: "80%", alignItems: "center", mt: 2 }}
@@ -129,6 +131,7 @@ export function Documentacion() {
         {errorMsg}
       </Alert>
     );
+
   };
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
@@ -161,19 +164,24 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       <FormControl required variant="standard" fullWidth>
-                        <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
-
-                        {/* <Select
-                          id="MunicipiosuOrganismos"
-                          value={}
+                        <InputLabel sx={queries.medium_text}>Tipo  de Documento</InputLabel>
+                        <Select
+                          value={tipoDocumento}
+                          onChange={(v) => {
+                            let  aux= v.target.value;
+                            setTipoDocumento(aux);
+                            console.log(aux);
+                          }}
                           sx={{ display: "flex", pt: 1 }}
                         >
                           {tiposDocumentos.map((tipo) => (
                             <MenuItem key={tipo.Id} value={tipo.Id}>
-                              {tipo.}
+                              {tipo.Descripcion}
                             </MenuItem>
                           ))}
-                        </Select> */}
+                        </Select>
+
+
                       </FormControl>
                     </StyledTableCell>
                   </StyledTableRow>
