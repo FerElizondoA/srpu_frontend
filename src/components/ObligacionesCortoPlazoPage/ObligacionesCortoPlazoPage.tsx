@@ -11,10 +11,12 @@ import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
-import { Documentacion } from "./Panels/Documentacion";
 import { queries } from "../../queries";
 import { IEncabezado, IInformacionGeneral, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
 import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
+import { Documentacion } from "./Panels/Documentacion";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
 
 export function ObligacionesCortoPlazoPage() {
 
@@ -83,11 +85,11 @@ export function ObligacionesCortoPlazoPage() {
         </Tabs>
       </Grid>
       
-      {tabIndex === 0 ?<Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
-       {tabIndex === 2 && <InformacionGeneral />}   {/*informacionGeneral={informacionGeneral} setInformacionGeneral={asetInformacionGeneral}  */}
-      {tabIndex === 4 && <CondicionesFinancieras />}
-      {tabIndex === 6 && <Documentacion/>}
-      {tabIndex === 8 && <SolicitudInscripcion />}
+      {tabIndex === 0 ? <Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
+      {tabIndex === 1 && <InformacionGeneral />}
+      {tabIndex === 2 && <CondicionesFinancieras />}
+      {tabIndex === 3 && <Documentacion/>}
+      {tabIndex === 4 && <SolicitudInscripcion />}
     </Grid>
   );
 }
