@@ -35,8 +35,6 @@ export function getTipoEntePublico(setState: Function) {
     },
   })
     .then(({ data }) => {
-      console.log(data.data);
-      
       setState(data.data);
     })
     .catch((error) => {

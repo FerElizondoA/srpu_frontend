@@ -38,7 +38,6 @@ export function Encabezado({ CS }: { CS: string }) {
   };
 
   const getDestino = (id: string) => {
-    console.log("hola", id);
     axios
 
       .get("http://10.200.4.199:8000/api/get-entePublicoObligado", {
@@ -47,13 +46,9 @@ export function Encabezado({ CS }: { CS: string }) {
         },
       })
       .then((r) => {
-        console.log("soy r:", r);
-        console.log("soy r.data", r.data);
-        console.log("soy r.data.data[0]:", r.data.data[2].EntePublicoObligado);
         setCatalogoEntePublico(r.data.data);
       })
       .catch((err) => {
-        console.log("soy el error", err);
       });
   };
 

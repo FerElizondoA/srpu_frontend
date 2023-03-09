@@ -3,33 +3,101 @@ import Button from "@mui/material/Button";
 import {
   Grid,
   Typography,
-  TableContainer,
   Table,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
+  TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  getClavesDeInscripcion,
+  getDestinos,
+  getEntePublico,
+  getEstatus,
+  getFuentesAlternasDePago,
+  getFuentesDePago,
+  getInstitucionesFinancieras,
+  getTipoEntePublico,
+  getTiposDeDocumento,
+} from "./APIS/APISCatalogos";
+import { Box } from "@mui/system";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import { getObligadoSolidarioAval } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export function Catalogos() {
   const modulos = [
-    { id: 1, label: "Claves de inscripción" },
-    { id: 2, label: "Destinos" },
-    { id: 3, label: "Entes Público Obligados" },
-    { id: 4, label: "Estatus" },
-    { id: 5, label: "Fuentes de Pago" },
-    { id: 6, label: "Fuentes Alternas de Pago" },
-    { id: 7, label: "Instituciones Financieras" },
-    { id: 8, label: "Obligados Solidarios / Avales" },
-    { id: 9, label: "Tipos de Documento" },
-    { id: 10, label: "Tipos de Ente Público" },
-    { id: 11, label: "Usuarios" },
+    { id: 0, label: "Claves de inscripción", fnc: getClavesDeInscripcion },
+    { id: 1, label: "Destinos", fnc: getDestinos },
+    {
+      id: 2,
+      label: "Entes Público Obligados",
+      fnc: getEntePublico,
+    },
+    { id: 3, label: "Estatus", fnc: getEstatus },
+    { id: 4, label: "Fuentes de Pago", fnc: getFuentesDePago },
+    {
+      id: 5,
+      label: "Fuentes Alternas de Pago",
+      fnc: getFuentesAlternasDePago,
+    },
+    {
+      id: 6,
+      label: "Instituciones Financieras",
+      fnc: getInstitucionesFinancieras,
+    },
+    {
+      id: 7,
+      label: "Obligados Solidarios / Avales",
+      fnc: getObligadoSolidarioAval,
+    },
+    { id: 8, label: "Tipos de Documento", fnc: getTiposDeDocumento },
+    { id: 9, label: "Tipos de Ente Público", fnc: getTipoEntePublico },
   ];
 
-  const [modulo, setModulo] = useState("");
+  const [modulo, setModulo] = useState("Claves de inscripción");
+
+  const [desc, setDesc] = useState("Claves de inscripción");
+
+  const [catalogo, setCatalogo] = useState<Array<ICatalogo>>([
+    {
+      Id: "",
+      Descripcion: "",
+    },
+  ]);
+
+  const getCatalogos = (id: number) => {
+    modulos[id].fnc(setCatalogo);
+  };
+
+  const [page, setPage] = useState(0);
+
+  const renglonesPagina = 5;
+  const [rowsPerPage, setRowsPerPage] = useState(renglonesPagina);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 5));
+    setPage(0);
+  };
+
+  const [idEdit, setIdEdit] = useState("");
+  const [openEdit, setOpenEdit] = useState(false);
 
   return (
     <Grid
@@ -68,6 +136,7 @@ export function Catalogos() {
                 }}
                 onClick={() => {
                   setModulo(item.label);
+                  getCatalogos(index);
                 }}
               >
                 {item.label}
@@ -82,51 +151,197 @@ export function Catalogos() {
           alignItems={"center"}
         >
           <Grid
-            sx={{ bgcolor: "lightGrey", width: "90%", height: "10%" }}
-            justifyContent={"center"}
-            alignItems={"center"}
+            sx={{
+              bgcolor: "#f1f1f1",
+              width: "90%",
+              height: "10%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius:5
+            }}
           >
             <Typography textAlign={"center"}>{modulo.toUpperCase()}</Typography>
           </Grid>
           <Grid
-            sx={{ bgcolor: "lightGrey", width: "90%", height: "70%" }}
+            sx={{
+              bgcolor: "#f1f1f1",
+              width: "100%",
+              height: "70%",
+              overflow: "auto",
+              borderRadius:5
+            }}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Table>
-              <TableHead>
-                <TableRow
+            <TableContainer sx={{ overflow: "unset" }}>
+              <Table>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "4fr 1fr",
+                      width: "39vw",
+                    }}
+                  >
+                    <TableCell sx={{ textAlign: "center" }}>
+                      Descripción
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>Acción</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody
                   sx={{
-                    display: "grid",
-                    gridTemplateColumns: "4fr 1fr",
-                    width: "39vw",
+                    overflow: "auto",
+                    "&::-webkit-scrollbar": {
+                      width: ".3vw",
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                      backgroundColor: "rgba(0,0,0,.5)",
+                      outline: "1px solid slategrey",
+                      borderRadius: 10,
+                    },
                   }}
                 >
-                  <TableCell sx={{ textAlign: "center" }}>
-                    Descripción
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>Acción</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "4fr 1fr",
-                    width: "39vw",
-                  }}
-                >
-                  <TableCell>Descripción</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <EditIcon />
-                    <DeleteIcon />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                  {catalogo
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((item, index) => {
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            display: "grid",
+                            gridTemplateColumns: "4fr 1fr",
+                          }}
+                        >
+                          <TableCell>{item.Descripcion}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            <Tooltip title="Editar">
+                              <IconButton
+                                onClick={() => {
+                                  setIdEdit(item.Id);
+                                  setOpenEdit(true);
+                                }}
+                              >
+                                <EditIcon
+                                  fontSize="small"
+                                  sx={[
+                                    {
+                                      "&:hover": {
+                                        color: "blue",
+                                      },
+                                    },
+                                  ]}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                onClick={() => {
+                                  setIdEdit(item.Id);
+                                  setOpenEdit(true);
+                                }}
+                              >
+                                <DeleteIcon
+                                  fontSize="small"
+                                  sx={[
+                                    {
+                                      "&:hover": {
+                                        color: "red",
+                                      },
+                                    },
+                                  ]}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+
+              <Dialog
+                open={openEdit}
+                onClose={() => {
+                  setOpenEdit(false);
+                }}
+                fullWidth
+                maxWidth={"sm"}
+              >
+                <DialogTitle sx={{ fontFamily: "MontserratBold" }}>
+                  Modificar Descripción
+                </DialogTitle>
+                <DialogContent sx={{ display: "grid" }}>
+                  <TextField
+                    size="small"
+                    label={
+                      <Typography
+                        sx={{
+                          fontSize: {
+                            xs: "60%",
+                            sm: "70%",
+                            md: "80%",
+                            lg: "80%",
+                            xl: "100%",
+                          },
+                          fontFamily: "MontserratSemiBold",
+                        }}
+                      >
+                        Nueva Descripción
+                      </Typography>
+                    }
+                    sx={{ m: 2 }}
+                    inputProps={{
+                      sx: {
+                        fontSize: {
+                          xs: "70%",
+                          sm: "80%",
+                          md: "80%",
+                          lg: "80%",
+                          xl: "100%",
+                        },
+                      },
+                    }}
+                    value={desc || ""}
+                    onChange={(v) => {
+                      setDesc(v.target.value);
+                    }}
+                  ></TextField>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    color="error"
+                    onClick={() => {
+                      setOpenEdit(false);
+                      setDesc("");
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button onClick={() => {}}>Aceptar</Button>
+                </DialogActions>
+              </Dialog>
+            </TableContainer>
           </Grid>
+          <Box sx={{ width: "100%" }}>
+            <TablePagination
+              rowsPerPageOptions={[renglonesPagina]}
+              component="div"
+              count={catalogo.length}
+              rowsPerPage={renglonesPagina}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Box>
         </Grid>
       </Grid>
     </Grid>
   );
+}
+
+interface ICatalogo {
+  Id: string;
+  Descripcion: string;
 }

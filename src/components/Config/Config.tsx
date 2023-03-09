@@ -44,7 +44,6 @@ export function Configuracion() {
           gridTemplateColumns: "repeat(4,1fr)",
           justifyItems: "center",
           alignItems: "center",
-          boxShadow: 5,
           mt: 15,
           borderRadius: 10,
         }}
@@ -60,6 +59,7 @@ export function Configuracion() {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
+                boxShadow: 1,
               }}
               onClick={() => {
                 navegar(item.id, item.label);

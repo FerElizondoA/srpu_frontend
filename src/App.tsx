@@ -12,6 +12,7 @@ import { createTheme } from "@mui/material/styles";
 import { Configuracion } from "./components/Config/Config";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 import { Catalogos } from "./components/Config/Catalogos";
+import { Usuarios } from "./components/Config/Usuarios";
 
 export const appTheme = createTheme({
   palette: {
@@ -60,6 +61,7 @@ function App() {
           <Route path="config" element={<Configuracion />}></Route>
           <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
+          <Route path="users" element={<Usuarios />}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
