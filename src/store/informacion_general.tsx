@@ -54,13 +54,15 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
               },
             }
           );
+          console.log(response)
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              destinoCatalog: [...state.destinoCatalog, e.Destino],
+              destinoCatalog: [...state.destinoCatalog, e.Descripcion],
             }));
           });
           set(() => ({fetchedDestino: true}))
         }
+
     },
     fetchInstituciones: async () => {
       if (!get().fetchedInstitucion) {
@@ -75,7 +77,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            institucionCatalog: [...state.institucionCatalog, e.Institucion],
+            institucionCatalog: [...state.institucionCatalog, e.Descripcion],
           }));
         });
       }
