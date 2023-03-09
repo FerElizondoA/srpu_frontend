@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Box,
   Typography,
   Grid,
   Dialog,
   DialogContent,
-  List,
   TextField,
-  ListItem,
   Tab,
   Tabs,
 } from "@mui/material";
@@ -52,7 +48,6 @@ export default function ModalReestructura({
             md={10.5}
             lg={11.3}
             xl={11}
-            sx={{ height: "10%" }}
           >
             <Divider
               sx={{
@@ -67,72 +62,74 @@ export default function ModalReestructura({
               <Chip label="Obligacion inscrita" />
             </Divider>
 
-             <Grid
-            item
-            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-            ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
-            sm={5}
-            md={2.5}
-            lg={2}
-            xl={1.8}
-            
-          >
-            <TextField sx={{ width: "100%" }} label={"Clave de inscripción"} />
-          </Grid>
+            <Grid
+              item
+              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+              ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
+              sm={5}
+              md={2.5}
+              lg={2}
+              xl={1.8}
+            >
+              <TextField
+                sx={{ width: "100%" }}
+                label={"Clave de inscripción"}
+              />
+            </Grid>
 
-          <Grid
-            item
-            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-            ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
-            sm={5}
-            md={2.5}
-            lg={2}
-            xl={1.8}
-           
-          >
-            <TextField sx={{ width: "100%" }} label={"Tipo de documento"} />
-          </Grid>
+            <Grid
+              item
+              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+              ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
+              sm={5}
+              md={2.5}
+              lg={2}
+              xl={1.8}
+            >
+              <TextField sx={{ width: "100%" }} label={"Tipo de documento"} />
+            </Grid>
 
-          <Grid
-            item
-            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-            ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
-            sm={5}
-            md={2.5}
-            lg={5.5}
-            xl={1.8}
-            
-          >
-            <TextField sx={{ width: "100%" }} label={"Entidad federativa"} />
-          </Grid>
+            <Grid
+              item
+              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+              ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
+              sm={5}
+              md={2.5}
+              lg={5.5}
+              xl={1.8}
+            >
+              <TextField sx={{ width: "100%" }} label={"Entidad federativa"} />
+            </Grid>
 
-          <Grid
-            item
-            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-            ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
-            sm={5}
-            md={2.5}
-            lg={2}
-            xl={1.8}
-            
-          >
-            <TextField
-              sx={{ width: "100%" }}
-              label={"Tipo de ente público obligado"}
-            />
-          </Grid>
-          <Grid
-            item
-            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-            ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
-            sm={5}
-            md={2.5}
-            lg={2}
-            xl={1.8}
-            sx={{ height: "10%" }}
-          >
-            <TextField sx={{ width: "100%" }} label={"fecha de inscripción"} />
-          </Grid>
+            <Grid
+              item
+              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+              ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
+              sm={5}
+              md={2.5}
+              lg={2}
+              xl={1.8}
+            >
+              <TextField
+                sx={{ width: "100%" }}
+                label={"Tipo de ente público obligado"}
+              />
+            </Grid>
+            <Grid
+              item
+              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+              ml={{ sm: 4, md: 9, lg: 10, xl: 8 }}
+              sm={5}
+              md={2.5}
+              lg={2}
+              xl={1.8}
+              sx={{ height: "10%" }}
+            >
+              <TextField
+                sx={{ width: "100%" }}
+                label={"fecha de inscripción"}
+              />
+            </Grid>
           </Grid>
           ///////////////////////////////////////
           <Grid

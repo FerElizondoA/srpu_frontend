@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const params = new URLSearchParams(window.location.search);
-// const IdApp = params.get("IdApp");
+const IdApp = params.get("IdApp");
 
 export const sessionValid = () => {
   const jt = params.get("jwt") || "";
@@ -38,7 +38,7 @@ export const sessionValid = () => {
 
 export const getUserDetails = (idCentral: string) => {
   return axios
-    .get("http://10.200.4.199:8000/api/detail-usuario", {
+    .get("http://10.200.4.105:8000/api/usuario", {
       params: {
         IdUsuario: idCentral,
       },
@@ -64,32 +64,32 @@ export const getUserDetails = (idCentral: string) => {
       if (error.response.status === 401) {
         localStorage.clear();
       }
-      // getDataSolicitud(idCentral);
+      getDataSolicitud(idCentral);
     });
 };
 
-// const getDataSolicitud = (idSolicitud: string) => {
-//   axios
-//     .get("http://10.200.4.105:5000/api/datosAdicionalesSolicitud", {
-//       params: {
-//         IdUsuario: idSolicitud,
-//         IdApp: IdApp,
-//       },
-//       headers: {
-//         "Content-Type": "application/json",
-//         authorization: localStorage.getItem("jwtToken") || "",
-//       },
-//     })
-//     .then((r) => {
-//       if (r.status === 200) {
-//         // window.location.reload();
-//       }
-//     })
-//     .catch((error) => {
-//       localStorage.clear();
-//       return false;
-//     });
-// };
+const getDataSolicitud = (idSolicitud: string) => {
+  axios
+    .get("http://10.200.4.105:5000/api/datosAdicionalesSolicitud", {
+      params: {
+        IdUsuario: idSolicitud,
+        IdApp: IdApp,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("jwtToken") || "",
+      },
+    })
+    .then((r) => {
+      if (r.status === 200) {
+        // window.location.reload();
+      }
+    })
+    .catch((error) => {
+      localStorage.clear();
+      return false;
+    });
+};
 
 
 export const continueSession = () => {

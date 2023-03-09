@@ -1,11 +1,10 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
 
 export function getMunicipiosUOrganismos(setState: Function) {
   axios({
     method: 'get',
-    url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-entePublicoObligado',
+    url: 'http://10.200.4.199:8000' + '/api/get-entePublicoObligado',
     data: {},
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +26,7 @@ export function getMunicipiosUOrganismos(setState: Function) {
 export function getTipoEntePublico(setState: Function) {
   axios({
     method: 'get',
-    url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-tiposEntePublico',
+    url: 'http://10.200.4.199:8000' + '/api/get-tiposEntePublico',
     data: {},
     headers: {
       "Content-Type": "application/json",

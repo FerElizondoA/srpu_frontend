@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export async function getDestinos (){
     await axios({
         method: 'get',
-        url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-destinos',
+        url: 'http://10.200.4.199:8000' + '/api/get-destinos',
         data: {},
         headers: {
             "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export async function getDestinos (){
 export  function getObligadoSolidarioAval (){
      axios({
         method: 'get',
-        url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-obligadoSolidarioAval',
+        url: 'http://10.200.4.199:8000' + '/api/get-obligadoSolidarioAval',
         data: {},
         headers: {
             "Content-Type": "application/json",

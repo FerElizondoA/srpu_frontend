@@ -213,7 +213,6 @@ export function SolicitudInscripcion() {
             </Grid>
           </Grid>
         </Grid>
-
       </Grid>
     </Grid>
   );
