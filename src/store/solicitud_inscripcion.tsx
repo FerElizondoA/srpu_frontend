@@ -40,12 +40,12 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
             console.log("fetchDocumento executed!");
             data.append("nombre", get().nombreServidorPublico);
             data.append("cargo",  get().cargo);
-            const organismo = useCortoPlazoStore(state => state.organismo)
-            const contrato = useCortoPlazoStore(state => state.tipoDocumento)
-            const banco = useCortoPlazoStore(state => state.institucion)
-            const monto = useCortoPlazoStore(state => state.montoOriginal)
-            const fecha = useCortoPlazoStore(state => state.fechaContratacion)
-            const fechav = useCortoPlazoStore(state => state.fechaVencimiento)
+            const organismo = useCortoPlazoStore.getState().organismo;
+            const contrato = useCortoPlazoStore.getState().tipoDocumento
+            const banco = useCortoPlazoStore.getState().institucion;
+            const monto = useCortoPlazoStore.getState().montoOriginal; 
+            const fecha = useCortoPlazoStore.getState().fechaContratacion; 
+            const fechav = useCortoPlazoStore.getState().fechaVencimiento;
             data.append("nombre", get().nombreServidorPublico);
             data.append("organismo", organismo);
             data.append("contrato",  contrato);
