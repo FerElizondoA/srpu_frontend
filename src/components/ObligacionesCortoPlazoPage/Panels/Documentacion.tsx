@@ -6,8 +6,6 @@ import {
   TableSortLabel,
   TableContainer,
   TableHead,
-  Alert,
-  InputLabel,
   FormControl,
   Select,
   MenuItem,
@@ -61,37 +59,47 @@ const heads: readonly Head[] = [
 ];
 
 export function Documentacion() {
+  //guarda el ultimo archivo para comparar y no agregar 2 veces el mismo archivo
   const [lastFile, setLastFile] = useState<File>();
+  //archivo cargado en el input antes  de dar click al boton  guardar
   const [uploadFile, setUploadFile] = useState<File>();
+  // despliega la lista de tipos de documentos
   const [tiposDocumentos, setTiposDocumentos] = useState<Array<ITiposDocumento>>([]);
-
+  // array que mapea la  cantidad de numero d e archivos para que se actualice bien la informacion
   const [numArchivos, setNumArchivos] = useState([0, 1, 2, 3, 4]);
-
-  const archivoVacio = {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }),tipoArchivo:''};
+  //array con objeto que tiene  archivo:File y tipoArchivo:string
   const [archivos, setArchivos] = useState<Array<IFiLe>>(
     numArchivos.map(() => {
-      return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }),tipoArchivo:''} ;
+      return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
     })
   );
-
   useEffect(() => {
+    
     getTiposDocumentos(setTiposDocumentos);
   }, []);
 
+  useEffect(() => {
+    console.log("------------------------------------------------------------actualizado");
+    
+    console.log(numArchivos);
+    console.log((archivos));
+    
+  }, [numArchivos]);
+// nombre del archivo antes de dar click en agregar
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
   );
 
-  function enCambioFile(event: any, index: number) {
+
+  function cargarArchivo(event: any, index = -1) {
     let auxFile = event.target.files[0]
 
     setUploadFile(event.target.files[0]);
 
-
-    if (index < 5 && auxFile !== undefined) {
-      let aux = archivos;
-      aux[index].archivo = auxFile;
-      setArchivos(aux);
+    if (index >= 0 && auxFile !== undefined) {
+      let auxArrayArchivos = archivos;
+      auxArrayArchivos[index].archivo = auxFile;
+      setArchivos(auxArrayArchivos);
       setLastFile(event.target.files[0]);
     } else {
 
@@ -102,14 +110,13 @@ export function Documentacion() {
   }
 
 
-  const submitForm = () => {
+  const agregarArchivo = () => {
 
     if (lastFile !== uploadFile && uploadFile !== undefined) {
-      setNumArchivos([...numArchivos, (numArchivos.length + 1)])
-      let aux = archivos;
-      aux?.push({archivo:uploadFile,tipoArchivo: ''});
-      
-      setArchivos(aux);
+      setNumArchivos([...numArchivos,numArchivos.length]);
+      let prevState=[...archivos]
+      prevState.push({archivo:uploadFile,tipoArchivo: ''});
+      setArchivos(prevState);
       setLastFile(uploadFile);
     }
 
@@ -122,26 +129,21 @@ export function Documentacion() {
   };
 
   const quitDocument = (index: number) => {
-    let aux: IFiLe[] = [];
+    let auxArrayFile: IFiLe[] = [];
     archivos.map((archivo, x) => {
-      if (x !== index) aux.push(archivo);
+      if (x !== index) auxArrayFile.push(archivo);
     });
-    setArchivos(aux);
+    setArchivos(auxArrayFile);
+    let auxCountFile=numArchivos;
+    auxCountFile.pop();
+    setNumArchivos(auxCountFile);
   };
 
   const asignarTpoDoc = (index: number, valor: string) => {
-    let aux = archivos
+    let aux = [...archivos]
     aux[index].tipoArchivo = valor;
-    setArchivos({...aux});
-    console.log(index);
-    
+    setArchivos(aux);
   }
-
-  // useEffect(() => {
-  //   console.log(tipoDocumento);
-
-  // }, [tipoDocumento])
-
 
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
@@ -160,11 +162,12 @@ export function Documentacion() {
 
 
                 {numArchivos?.map((index) => (
-                  <StyledTableRow>
+                  <StyledTableRow key={index}>
                     <StyledTableCell scope="row">
-                      <IconButton disabled>
+                      {index <= 4 ?<Typography>Obligatorio</Typography>:
+                      <IconButton  onClick={()=>{quitDocument(index);}}>
                         <DeleteIcon />
-                      </IconButton>
+                      </IconButton>}
                     </StyledTableCell>
 
                     <StyledTableCell sx={{ position: "relative" }}>
@@ -188,7 +191,7 @@ export function Documentacion() {
                       <input
                         type="file"
                         accept="application/pdf"
-                        onChange={(v) => enCambioFile(v, index)}
+                        onChange={(v) => cargarArchivo(v, index)}
                         style={{
                           opacity: 0,
                           width: "100%",
@@ -265,7 +268,7 @@ export function Documentacion() {
           <input
             type="file"
             accept="application/pdf"
-            onChange={(v) => enCambioFile(v, 1)}
+            onChange={(v) => cargarArchivo(v)}
             style={{
               opacity: 0,
               width: "100%",
@@ -275,7 +278,7 @@ export function Documentacion() {
           ></input>
         </Grid>
         <Grid item md={4} lg={4}>
-          <ConfirmButton variant="outlined" onClick={submitForm}>
+          <ConfirmButton variant="outlined" onClick={agregarArchivo}>
             AGREGAR
           </ConfirmButton>
         </Grid>
