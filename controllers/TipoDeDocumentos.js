@@ -15,7 +15,7 @@ createTipoDeDocumento: (req, res) => {
       }
       if ((TipoDeDocumento == null ||/^[\s]*$/.test(TipoDeDocumento)) && TipoDeDocumento.length() <= 255) {
         return res.status(409).send({
-          error: "Ingresé un tiopo de documento válida.",
+          error: "Ingresé un tipo de documento válida.",
         });
       }
       if ((ObligadoCortoPlazo == null ||/^[\s]*$/.test(ObligadoCortoPlazo)) && ObligadoLargoPlazo.length() <= 1) {

@@ -221,23 +221,23 @@ router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
 });
 //TipoDeDocumento
-router.post("/create-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.post("/get-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/get-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
-router.post("/get-TipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/get-tipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
 });
 
-router.post("/get-TipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/get-tipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoCortoPlazo(req, res);
 });
 
-router.post("/delete-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/delete-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
 
