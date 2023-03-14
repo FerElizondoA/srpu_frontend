@@ -73,10 +73,21 @@ export const DateInput = function DateInput(props: DateInputProps) {
   const { inputProps, InputProps, ownerState, inputRef, error, ...other } = props;
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center',
-     fontFamily: "MontserrratMedium",
-     }} ref={InputProps?.ref}>
-      <Input ref={inputRef} {...inputProps} {...(other as any)} size="small" sx={{ width: "100%", fontFamily: "MontserratRegular"}} disabled/>
+
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: 'center',
+      "&.MuiBox-root > input": {
+        color: "black",
+        fontSize: "1.5ch",
+        width: "100%", 
+        fontFamily: "MontserratRegular", 
+        margin: "8px auto"
+      }
+      }} ref={InputProps?.ref}>
+      <input ref={inputRef} {...inputProps} {...(other as any)} size="small" sx={{
+        marginTop: "4px",
+      }} disabled/>
       {InputProps?.endAdornment}
     </Box>
   );
