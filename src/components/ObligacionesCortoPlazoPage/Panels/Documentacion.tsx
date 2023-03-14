@@ -79,6 +79,11 @@ export function Documentacion() {
   }, []);
 
   useEffect(() => {
+    
+    
+  }, [tiposDocumentos]);
+
+  useEffect(() => {
     console.log("------------------------------------------------------------actualizado");
     
     console.log(numArchivos);
