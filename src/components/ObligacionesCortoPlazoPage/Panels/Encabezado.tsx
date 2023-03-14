@@ -2,20 +2,18 @@ import * as React from "react";
 import {
   Grid,
   TextField,
-  Select,
-  MenuItem,
   InputLabel,
   Autocomplete
 } from "@mui/material";
 
-import { DateField } from "@mui/x-date-pickers/DateField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-
 
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateInput } from "../../CustomComponents";
 
 export function Encabezado(){
     
@@ -149,23 +147,13 @@ export function Encabezado(){
             <InputLabel sx={queries.medium_text}>
               Fecha de Contratación
             </InputLabel>
-            <TextField
-              fullWidth
-              value={fechaContratacionEncabezado}
-              onChange={(text) => changeFechaContratacionEncabezado(text.target.value)}
-              variant="standard"
-              sx={queries.medium_text}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                slots={{
+                  textField: DateInput
+                }}
+              />
+            </LocalizationProvider>
           </Grid>
 
           <Grid item xs={3.5} md={3.5} lg={3}>
