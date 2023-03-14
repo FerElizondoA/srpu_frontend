@@ -10,6 +10,7 @@ const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
+const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento } = require("../controllers/TipoDeDocumentos.js");
 
 const { getDetailUsuario } = require("../controllers/usuarios.js");
 
@@ -219,7 +220,26 @@ router.delete("/delete-rol", verifyToken.verifyJWT, (req, res) => {
 router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
 });
+//TipoDeDocumento
+router.post("/create-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+  createTipoDeDocumento(req, res);
+});
 
+router.post("/get-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+  getListadoTipoDeDocumento(req, res);
+});
+
+router.post("/get-TipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res, express) => {
+  getListadoTipoDeDocumentoLargoPlazo(req, res);
+});
+
+router.post("/get-TipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res, express) => {
+  getListadoTipoDeDocumentoCortoPlazo(req, res);
+});
+
+router.post("/delete-TipoDeDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+  deleteTipoDeDocumento(req, res);
+});
 
 
 module.exports = router;
