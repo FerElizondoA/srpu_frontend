@@ -148,8 +148,8 @@ export function Documentacion() {
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
       <Grid item>
-        <Grid item ml={window.innerWidth / 50} lg={8} sx={{ overflow: "auto" }}>
-          <TableContainer >
+        <Grid item ml={window.innerWidth / 90} lg={10} sx={{ overflow: "auto" }}>
+          <TableContainer  sx={{ maxHeight: "600px" }}>
             <Table sx={{}}>
               <TableHead>
                 {heads.map((head) => (
@@ -205,7 +205,7 @@ export function Documentacion() {
 
                         <Select
                           value={archivos[index].tipoArchivo}
-                          onChange={(v) => { asignarTpoDoc(index, v.target.value); }}
+                          onChange={(v) =>  { asignarTpoDoc(index, v.target.value); }}
                           sx={{ display: "flex", pt: 1 }}
                         >
                           {tiposDocumentos.map((tipo) => (
