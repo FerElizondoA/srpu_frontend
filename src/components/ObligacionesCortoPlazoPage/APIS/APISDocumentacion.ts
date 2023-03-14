@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export function getTiposDocumentos(setState: Function) {
   axios({
     method: 'get',
-    url: 'http://10.200.4.199:8000' + '/api/get-tiposDocumento',
+    url: 'http://10.200.4.200:8000' + '/api/get-tiposDocumentosCortoPlazo',
     data: {},
     headers: {
       "Content-Type": "application/json",
