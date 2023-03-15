@@ -120,6 +120,9 @@ export function InformacionGeneral() {
     fetchInstituciones();
     fetchObligadoSolidarioAval();
     fetchTipoEntePublicoObligado();
+    if(differenceInDays(new Date(fechaVencimiento), new Date(fechaContratacion)) < 0){
+      // do something!
+    }
     changePlazoDias(differenceInDays(new Date(fechaVencimiento), new Date(fechaContratacion)) + 1)
   }, [fechaContratacion, fechaVencimiento])
 
