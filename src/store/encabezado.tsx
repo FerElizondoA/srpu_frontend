@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
+import dayjs from "dayjs";
 
 export interface EncabezadoSlice{
     fetchedEntesPublicos: boolean;
@@ -10,13 +11,13 @@ export interface EncabezadoSlice{
     tipoEntePublico: string;
     solicitanteAutorizado: string;
     organismo: string;
-    fechaContratacionEncabezado: string;
+    fechaContratacion: string;
     cargoSolicitante: string;
     changeTipoDocumento: (newTipoDocumento: string) => void;
     changeTipoEntePublico: (newTipoEntePublico: string) => void;
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void;
     changeOrganismo: (newOrganismo: string) => void;
-    changeFechaContratacionEncabezado: (newFechaContratacionEncabezado: string) => void;
+    changeFechaContratacion: (newFechaContratacion: string) => void;
     changeCargoSolicitante: (newCargoSolicitante: string) => void;
     fetchEntesPublicos: () => void;
     fetchOrganismos: () => void;
@@ -31,13 +32,13 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     tipoEntePublico: "",
     solicitanteAutorizado: "",
     organismo: "",
-    fechaContratacionEncabezado: "DD-MM-YYYY",
+    fechaContratacion: new Date().toString(),
     cargoSolicitante: "",
     changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
     changeTipoEntePublico: (newTipoEntePublico: string) => set(() => ({tipoEntePublico: newTipoEntePublico})),
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
     changeOrganismo: (newOrganismo: string) => set(() => ({organismo: newOrganismo})),
-    changeFechaContratacionEncabezado: (newFechaContratacionEncabezado: string) => set(() => ({fechaContratacionEncabezado: newFechaContratacionEncabezado})),
+    changeFechaContratacion: (newFechaContratacion: string) => set(() => ({fechaContratacion: newFechaContratacion})),
     changeCargoSolicitante: (newCargoSolicitante: string) => set(() => ({cargoSolicitante: newCargoSolicitante})),
     fetchEntesPublicos: async () => {
         if (!get().fetchedEntesPublicos) {

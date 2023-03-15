@@ -9,11 +9,17 @@ import {
   Autocomplete
 } from "@mui/material";
 
+import enGB from "date-fns/locale/en-GB";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateInput } from "../../CustomComponents";
+import { subDays, addDays } from "date-fns/esm";
 import { ObligadoSolidarioAval } from "../Dialogs/Dialog-IG-ObligadoSolidiario";
 import { queries } from "../../../queries";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { useCortoPlazoStore } from "../../../store/main";
+import { differenceInDays } from "date-fns";
 
 export function InformacionGeneral() {
 
@@ -26,7 +32,6 @@ export function InformacionGeneral() {
     []
   );
 
-  const updateComponent: number = 0;
   const institucion: string = useCortoPlazoStore(state => state.institucion);
   const changeInstitucion: Function = useCortoPlazoStore(state => state.changeInstitucion);
   const institucionCatalog: string[] = useCortoPlazoStore(state => state.institucionCatalog);
@@ -49,7 +54,8 @@ export function InformacionGeneral() {
   React.useEffect(() => {
     fetchDestinos();
     fetchInstituciones();
-  }, [updateComponent])
+    changePlazoDias(differenceInDays(new Date(fechaVencimiento), new Date(fechaContratacion)) + 1)
+  }, [fechaContratacion, fechaVencimiento])
 
   return (
     <Grid container>
@@ -64,23 +70,17 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <TextField
-            fullWidth
-            value={fechaContratacion}
-            onChange={(text) => changeFechaContratacion(text.target.value)}
-            variant="standard"
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+            <DatePicker
+              value={new Date(fechaContratacion)}
+              onChange={(date) => changeFechaContratacion(date?.toString())}
+              minDate={new Date(subDays(new Date(), 365))}
+              maxDate={new Date()}
+              slots={{
+                textField: DateInput
+              }}
+            />
+          </LocalizationProvider>
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -89,7 +89,6 @@ export function InformacionGeneral() {
             fullWidth
             variant="standard"
             value={plazoDias}
-            onChange={(text) => changePlazoDias(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -101,6 +100,7 @@ export function InformacionGeneral() {
                 fontFamily: "MontserratMedium",
               },
             }}
+            disabled
           />
         </Grid>
 
@@ -139,23 +139,16 @@ export function InformacionGeneral() {
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
-          <TextField
-            fullWidth
-            value={fechaVencimiento}
-            onChange={(text) => changeFechaVencimiento(text.target.value)}
-            variant="standard"
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+            <DatePicker
+              value={new Date(fechaVencimiento)}
+              onChange={(date) => changeFechaVencimiento(date?.toString())}
+              minDate={new Date(addDays(new Date(fechaContratacion), 1))}
+              slots={{
+                textField: DateInput
+              }}
+            />
+          </LocalizationProvider>
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>

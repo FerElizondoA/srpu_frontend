@@ -1,19 +1,20 @@
 import { StateCreator } from "zustand";
+import { differenceInDays } from "date-fns";
+import { useCortoPlazoStore } from "./main";
 import axios from "axios";
+import { addDays } from "date-fns/esm";
 
 export interface InformacionGeneralSlice {
   fetchedInstitucion: boolean;
   fetchedDestino: boolean;
   institucionCatalog: string[];
   destinoCatalog: string[];
-  fechaContratacion: string;
   plazoDias: number;
   montoOriginal: number;
   fechaVencimiento: string;
   destino: string;
   institucion: string;
   denominacion: string;
-  changeFechaContratacion: (newFechaContratacion: string) => void;
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
@@ -29,14 +30,12 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchedDestino: false,
     institucionCatalog: [],
     destinoCatalog: [],
-    fechaContratacion: "DD-MM-YYYY",
     plazoDias: 0,
     montoOriginal: 0,
-    fechaVencimiento: "DD-MM-YYYY",
+    fechaVencimiento: "",
     destino: "",
     institucion: "",
-    denominacion: "UDIS",
-    changeFechaContratacion: (newFechaContratacion: string) => set(() =>  ({fechaContratacion: newFechaContratacion})),
+    denominacion: "Pesos",
     changePlazoDias: (newPlazoDias: number) => set(() => ({ plazoDias: newPlazoDias })),
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
