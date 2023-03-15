@@ -29,7 +29,7 @@ import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, startOfDay } from "date-fns";
 
 interface DataObligadoSalarial {
   isSelected: boolean;
@@ -120,11 +120,26 @@ export function InformacionGeneral() {
     fetchInstituciones();
     fetchObligadoSolidarioAval();
     fetchTipoEntePublicoObligado();
-    if(differenceInDays(new Date(fechaVencimiento), new Date(fechaContratacion)) < 0){
+
+    
+    if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
+    {
+      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+    }else{
       // do something!
+      changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
+      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
     }
-    changePlazoDias(differenceInDays(new Date(fechaVencimiento), new Date(fechaContratacion)) + 1)
+    
+    
   }, [fechaContratacion, fechaVencimiento])
+  
+
+  React.useEffect(() => {
+    console.log(fetchObligadoSolidarioAval);
+    
+  }, [])
+  
 
   return (
     <Grid container>
@@ -160,7 +175,7 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             variant="standard"
-            value={plazoDias}
+            value={plazoDias||0}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
