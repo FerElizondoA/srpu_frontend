@@ -66,21 +66,37 @@ export function Documentacion() {
   // despliega la lista de tipos de documentos
   const [tiposDocumentos, setTiposDocumentos] = useState<Array<ITiposDocumento>>([]);
   // array que mapea la  cantidad de numero d e archivos para que se actualice bien la informacion
-  const [numArchivos, setNumArchivos] = useState([0, 1, 2, 3, 4]);
+  const [numArchivos, setNumArchivos] = useState<Array<number>>([]);
+
+  const [numArchivosObligatorios, setNumArchivosObligatosios] = useState<number>(0);
+  const [archivosObligatorios, setarchivosObligatosios] = useState<Array<ITiposDocumento>>([]);
   //array con objeto que tiene  archivo:File y tipoArchivo:string
   const [archivos, setArchivos] = useState<Array<IFiLe>>(
     numArchivos.map(() => {
       return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
     })
   );
+
   useEffect(() => {
-    
+
     getTiposDocumentos(setTiposDocumentos);
   }, []);
 
   useEffect(() => {
+    let auxNumTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio == 1 ).map((tpo,index)=>{return index;})
+    let auxTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio == 1 ).map((tpo)=>{return tpo;})
+    setarchivosObligatosios(auxTpoDocFiltered);
+    setNumArchivosObligatosios(auxNumTpoDocFiltered.length);
+    setNumArchivos(auxNumTpoDocFiltered);
+    setArchivos(
+      auxNumTpoDocFiltered.map((num,index) => {
+        return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: auxTpoDocFiltered[index].Id} ;
+      })
+    );
     
+    console.log("xxxxxxxxxxxxxxxxxxxxxxx");
     
+    console.log([...archivosObligatorios]);
   }, [tiposDocumentos]);
 
   useEffect(() => {
@@ -148,6 +164,8 @@ export function Documentacion() {
     let aux = [...archivos]
     aux[index].tipoArchivo = valor;
     setArchivos(aux);
+    console.log(archivos);
+    
   }
 
   return (
@@ -169,7 +187,7 @@ export function Documentacion() {
                 {numArchivos?.map((index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell scope="row">
-                      {index <= 4 ?<Typography>Obligatorio</Typography>:
+                      {index < numArchivosObligatorios ?<Typography>Obligatorio</Typography>:
                       <IconButton  onClick={()=>{quitDocument(index);}}>
                         <DeleteIcon />
                       </IconButton>}
@@ -203,15 +221,17 @@ export function Documentacion() {
                           height: "100%",
                           cursor: "pointer",
                         }}
-                      ></input>
+                      />
                     </StyledTableCell>
                     <StyledTableCell>
                       <FormControl required variant="standard" fullWidth>
 
                         <Select
-                          value={archivos[index].tipoArchivo}
-                          onChange={(v) =>  { asignarTpoDoc(index, v.target.value); }}
+                          value={archivos[index]?.tipoArchivo}
+                          onChange={(v) =>  {  asignarTpoDoc(index, v.target.value);}}
                           sx={{ display: "flex", pt: 1 }}
+                          inputProps={{ readOnly: index<numArchivosObligatorios }}
+                          // disabled={}
                         >
                           {tiposDocumentos.map((tipo) => (
                             <MenuItem key={tipo.Id} value={tipo.Id}>
@@ -283,7 +303,7 @@ export function Documentacion() {
           ></input>
         </Grid>
         <Grid item md={4} lg={4}>
-          <ConfirmButton variant="outlined" onClick={agregarArchivo}>
+          <ConfirmButton variant="outlined" onClick={()=>{agregarArchivo();}}>
             AGREGAR
           </ConfirmButton>
         </Grid>
