@@ -1,7 +1,17 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
+import { GridValidRowModel } from "@mui/x-data-grid";
+
+export type ObligadoSolidarioAval = {
+  id: string;
+  //isSelected: boolean;
+  obligadoSolidario: string;
+  tipoEntePublicoObligado: string;
+  entePublicoObligado: string;
+}
 
 export interface InformacionGeneralSlice {
+  obligadoSolidarioAvalTable: ObligadoSolidarioAval[];
   fetchedInstitucion: boolean;
   fetchedDestino: boolean;
   fetchedObligadoSolidarioAval: boolean;
@@ -15,9 +25,12 @@ export interface InformacionGeneralSlice {
   fechaVencimiento: string;
   destino: string;
   tipoEntePublicoObligado: string;
+  entePublicoObligado: string;
   obligadoSolidarioAval: string;
   institucion: string;
   denominacion: string;
+  addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => void;
+  removeObligadoSolidarioAval: (index: number) => void;
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
@@ -26,6 +39,7 @@ export interface InformacionGeneralSlice {
   changeDenominacion: (newDenominacion: string) => void;
   changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
   changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
+  changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
   fetchDestinos: () => void;
   fetchInstituciones: () => void;
   fetchTipoEntePublicoObligado: () => void;
@@ -33,6 +47,7 @@ export interface InformacionGeneralSlice {
 }
 
 export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice> = (set,get) => ({
+    obligadoSolidarioAvalTable: [],
     fetchedInstitucion: false,
     fetchedDestino: false,
     fetchedObligadoSolidarioAval: false,
@@ -47,8 +62,11 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     destino: "",
     institucion: "",
     tipoEntePublicoObligado: "",
+    entePublicoObligado: "",
     obligadoSolidarioAval: "",
     denominacion: "Pesos",
+    addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => set((state) => ({ obligadoSolidarioAvalTable: [...state.obligadoSolidarioAvalTable, newObligadoSolidarioAval]})),
+    removeObligadoSolidarioAval: (index: number) => set((state) => ({ obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable.filter((_, i) => i !== index)})),
     changePlazoDias: (newPlazoDias: number) => set(() => ({ plazoDias: newPlazoDias })),
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
@@ -57,6 +75,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
     changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
     changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
+    changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
     fetchDestinos: async () => {
         if (!get().fetchedDestino) {
           console.log("fetchDestinos executed!");
