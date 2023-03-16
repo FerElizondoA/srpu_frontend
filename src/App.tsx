@@ -9,6 +9,10 @@ import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
+import { Configuracion } from "./components/Config/Config";
+import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
+import { Catalogos } from "./components/Config/Catalogos";
+import { Usuarios } from "./components/Config/Usuarios";
 
 export const appTheme = createTheme({
   palette: {
@@ -46,13 +50,18 @@ function App() {
         }
       });
     }
-  }, [IdApp, jt, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="config" element={<Configuracion />}></Route>
+          <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
+          <Route path="catalogos" element={<Catalogos />}></Route>
+          <Route path="users" element={<Usuarios />}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
