@@ -31,11 +31,12 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays } from "date-fns";
 
-interface DataObligadoSalarial {
+type DataObligadoSalarial = {
+  id: string;
   isSelected: boolean;
-  obligadosolidario: string;
-  tipoentepunlicoobligado: string;
-  entepublicoobligado: string;
+  obligadoSolidario: string;
+  tipoEntePublicoObligado: string;
+  entePublicoObligado: string;
 }
 
 interface Head {
@@ -48,43 +49,42 @@ const heads: readonly Head[] = [
   {
     id: "isSelected",
     isNumeric: false,
-    label: "Seleccion",
+    label: "Selección",
   },
   {
-    id: "isSelected",
+    id: "obligadoSolidario",
     isNumeric: false,
     label: "Obligado solidario / aval",
   },
   {
-    id: "isSelected",
+    id: "tipoEntePublicoObligado",
     isNumeric: false,
     label: "Tipo de ente público obligado",
   },
   {
-    id: "isSelected",
+    id: "entePublicoObligado",
     isNumeric: false,
     label: "Ente público obligado",
   },
 ];
 
 function createDummyData(
-  obligadosolidario: string,
-  tipoentepunlicoobligado: string,
-  entepublicoobligado: string
+  isSelected: boolean,
+  id: string,
+  obligadoSolidario: string,
+  tipoEntePublicoObligado: string,
+  entePublicoObligado: string
 ) {
   return {
-    obligadosolidario,
-    tipoentepunlicoobligado,
-    entepublicoobligado,
+    isSelected,
+    id,
+    obligadoSolidario,
+    tipoEntePublicoObligado,
+    entePublicoObligado,
   };
 }
 
-const rows = [
-  createDummyData("ley federal", "Municipio", "Monterrey"),
-  createDummyData("opc1", "opc2", "opc3"),
-  createDummyData("ley federal", "Municipio", "Monterrey"),
-  createDummyData("opc1", "opc2", "opc3"),
-];
+
 
 export function InformacionGeneral() {
 
@@ -114,6 +114,51 @@ export function InformacionGeneral() {
   const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
   const tipoEntePublicoObligadoCatalog: string[] = useCortoPlazoStore(state => state.tipoEntePublicoObligadoCatalog);
   const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
+
+
+//const rows = [
+//  createDummyData("1", "ley federal", "Municipio", "Monterrey"),
+//  createDummyData("2", "opc1", "opc2", "opc3"),
+//  createDummyData("3", "ley federal", "Municipio", "Monterrey"),
+//  createDummyData("4", "opc1", "opc2", "opc3"),
+//];
+  const [rows, setRows] = React.useState<DataObligadoSalarial[]>([]);
+  const [selected, setSelected] = React.useState<readonly string[]>([]);
+
+  const handleClick = (event: React.MouseEvent<unknown>, name: string, index: number) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected: readonly string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
+
+  const addRows = () => {
+    setRows([createDummyData(false,"1", "ley federal", "Municipio", "Monterrey")]);
+  }
+
+  const deleteRows = () => {
+    //console.log(selected)
+    //selected.forEach((it) => {
+    //  console.log(rows[selected.indexOf(it)]);
+    //  rows.pop();
+    //})
+    setRows([])
+  }
 
   React.useEffect(() => {
     fetchDestinos();
@@ -357,7 +402,7 @@ export function InformacionGeneral() {
         <Grid item container>
           <Grid item lg={9}>
             <TableContainer sx={{ maxHeight: "200px" }}>
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
                   {heads.map((head) => (
                     <StyledTableCell key={head.id}>
@@ -366,31 +411,38 @@ export function InformacionGeneral() {
                   ))}
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <StyledTableRow>
-                      <StyledTableCell padding="checkbox">
-                        <Checkbox />
-                      </StyledTableCell>
-                      <StyledTableCell component="th" scope="row">
-                        {row.entepublicoobligado.toString()}
-                      </StyledTableCell>
-                      <StyledTableCell component="th">
-                        {row.obligadosolidario.toString()}
-                      </StyledTableCell>
-                      <StyledTableCell component="th">
-                        {row.tipoentepunlicoobligado.toString()}
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
+                  {rows.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+
+                    return (
+                      <StyledTableRow>
+                        <StyledTableCell padding="checkbox">
+                          <Checkbox 
+                          onClick={(event) => handleClick(event, row.id, index)}
+                          checked={isItemSelected}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.entePublicoObligado.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.obligadoSolidario.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado.toString()}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+            <ConfirmButton variant="outlined" onClick={() => addRows()}>AGREGAR</ConfirmButton>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
+            <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
           </Grid>
         </Grid>
       </Grid>
