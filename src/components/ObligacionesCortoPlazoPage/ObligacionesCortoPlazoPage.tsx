@@ -12,20 +12,11 @@ import { Encabezado } from "./Panels/Encabezado";
 import { InformacionGeneral } from "./Panels/InformacionGeneral";
 import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { IEncabezado, IInformacionGeneral, ISolCortoPlazo } from "./Interfaces/CortoPlazo/IEncabezado";
-import { getDestinos, getObligadoSolidarioAval } from "./APIS/APISInformacionGeneral";
 import { Documentacion } from "./Panels/Documentacion";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 
 export function ObligacionesCortoPlazoPage() {
-
-  useEffect(() => {
-   getDestinos();
-   getObligadoSolidarioAval();
-  }, [])
-  
-
   const [tabIndex, setTabIndex] = useState(0);
   
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
@@ -37,31 +28,6 @@ export function ObligacionesCortoPlazoPage() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)")
   } 
 
-
-
-  const [encabezado,setEncabezado]=useState<IEncabezado>(
-     { tipoDocumento: "",
-      municipioOrganismo: "",
-      tipoEntePublico: "",
-      fechaSolicitud: "",
-      solicitanteAutorizado: "",
-      cargoSolicitante:"",
-    }
-  );
-
-  const [informacionGeneral,setInformacionGeneral] = useState <IInformacionGeneral>(
-    {
-      fechaContratacion: "",
-      fechaVencimiento: "",
-      plazo: "",
-      destino: "",
-      montoOriginalContratado: "",
-      Denominacion:"",
-      InstitucionFinanciera:"",
-    }
-  );
-  
-  
 
   return (
     <Grid container direction="column">
@@ -85,7 +51,7 @@ export function ObligacionesCortoPlazoPage() {
         </Tabs>
       </Grid>
       
-      {tabIndex === 0 ? <Encabezado encabezado={encabezado} setEncabezado={setEncabezado}/>:null}
+      {tabIndex === 0 && <Encabezado/>}
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion/>}
