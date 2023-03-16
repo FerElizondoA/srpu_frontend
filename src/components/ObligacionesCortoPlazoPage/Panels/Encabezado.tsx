@@ -6,14 +6,16 @@ import {
   Autocomplete
 } from "@mui/material";
 
+import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateInput } from "../../CustomComponents";
+import { subDays } from "date-fns/esm";
 
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateInput } from "../../CustomComponents";
 
 export function Encabezado(){
     
@@ -29,8 +31,8 @@ export function Encabezado(){
     const changeOrganismo: Function = useCortoPlazoStore(state => state.changeOrganismo);
     const organismosCatalog: string[] = useCortoPlazoStore(state => state.organismosCatalog);
     const fetchOrganismos: Function = useCortoPlazoStore(state => state.fetchOrganismos);
-    const fechaContratacionEncabezado: string = useCortoPlazoStore(state => state.fechaContratacionEncabezado);
-    const changeFechaContratacionEncabezado: Function = useCortoPlazoStore(state => state.changeFechaContratacionEncabezado);
+    const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
+    const changeFechaContratacion: Function = useCortoPlazoStore(state => state.changeFechaContratacion);
     const cargoSolicitante: string = useCortoPlazoStore(state => state.cargoSolicitante);
     const changeCargoSolicitante: Function = useCortoPlazoStore(state => state.changeCargoSolicitante);
 
@@ -147,8 +149,12 @@ export function Encabezado(){
             <InputLabel sx={queries.medium_text}>
               Fecha de Contratación
             </InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DatePicker
+                value={new Date(fechaContratacion)}
+                onChange={(date) => changeFechaContratacion(date?.toString())}
+                minDate={new Date(subDays(new Date(), 365))}
+                maxDate={new Date()}
                 slots={{
                   textField: DateInput
                 }}
