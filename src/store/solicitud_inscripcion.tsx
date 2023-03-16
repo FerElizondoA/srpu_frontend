@@ -33,13 +33,11 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     
      
     fetchDocumento: () => {
-        let data = new FormData();
+        
 
 
         // if (!get()) {
-            console.log("fetchDocumento executed!");
-            data.append("nombre", get().nombreServidorPublico);
-            data.append("cargo",  get().cargo);
+            
             const organismo = useCortoPlazoStore.getState().organismo;
             const contrato = useCortoPlazoStore.getState().tipoDocumento
             const banco = useCortoPlazoStore.getState().institucion;
@@ -48,19 +46,13 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
             const fechav = useCortoPlazoStore.getState().fechaVencimiento;
             const destino = useCortoPlazoStore.getState().destino
             const plazoDias = useCortoPlazoStore.getState().plazoDias
-            data.append("nombre", get().nombreServidorPublico);
-            data.append("organismo", organismo);
-            data.append("contrato",  contrato);
-            data.append("banco",  banco);
-            data.append("monto",  monto.toString());
-            data.append("fecha",  fecha);
-            data.append("fechav",  fechav);
+            
 
 
             axios.post(
-              "http://192.168.137.152:7000/documento_srpu?",
+              "http://192.168.137.152:7000/documento_srpu",
               {
-                body:{
+                
                       nombre: "Marlon Israel Mendez Maldonado",
                       oficionum: "10",
                       cargo: get().cargo,
@@ -71,11 +63,11 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
                       destino: destino,
                       dias: plazoDias,
                       fechavencimiento: fechav
-                },
+                },{
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
+                }}
+              
             ).then((r) => {
               const a = window.URL || window.webkitURL;
 
