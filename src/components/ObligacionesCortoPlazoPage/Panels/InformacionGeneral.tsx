@@ -30,40 +30,23 @@ import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays } from "date-fns";
-
-type DataObligadoSalarial = {
-  id: string;
-  isSelected: boolean;
-  obligadoSolidario: string;
-  tipoEntePublicoObligado: string;
-  entePublicoObligado: string;
-}
+import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 
 interface Head {
-  id: keyof DataObligadoSalarial;
-  isNumeric: boolean;
   label: string;
 }
 
 const heads: readonly Head[] = [
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Selección",
   },
   {
-    id: "obligadoSolidario",
-    isNumeric: false,
     label: "Obligado solidario / aval",
   },
   {
-    id: "tipoEntePublicoObligado",
-    isNumeric: false,
     label: "Tipo de ente público obligado",
   },
   {
-    id: "entePublicoObligado",
-    isNumeric: false,
     label: "Ente público obligado",
   },
 ];
@@ -83,8 +66,6 @@ function createDummyData(
     entePublicoObligado,
   };
 }
-
-
 
 export function InformacionGeneral() {
 
@@ -114,50 +95,54 @@ export function InformacionGeneral() {
   const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
   const tipoEntePublicoObligadoCatalog: string[] = useCortoPlazoStore(state => state.tipoEntePublicoObligadoCatalog);
   const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
+  const entePublicoObligado: string = useCortoPlazoStore(state => state.entePublicoObligado);
+  const changeEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeEntePublicoObligado);
+  const obligadoSolidarioAvalTable: ObligadoSolidarioAval[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalTable);
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.addObligadoSolidarioAval);
+  const removeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.removeObligadoSolidarioAval);
 
+  const [selected, setSelected] = React.useState<readonly number[]>([]);
 
-//const rows = [
-//  createDummyData("1", "ley federal", "Municipio", "Monterrey"),
-//  createDummyData("2", "opc1", "opc2", "opc3"),
-//  createDummyData("3", "ley federal", "Municipio", "Monterrey"),
-//  createDummyData("4", "opc1", "opc2", "opc3"),
-//];
-  const [rows, setRows] = React.useState<DataObligadoSalarial[]>([]);
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-
-  const handleClick = (event: React.MouseEvent<unknown>, name: string, index: number) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
+      console.log("selectedIndex === 0 !")
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
+      console.log("selectedIndex === selected.length -1 !")
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
+      console.log("selectedIndex === selected.length > 0 !")
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
+    console.log(newSelected);
   };
 
-  const isSelected = (id: string) => selected.indexOf(id) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const addRows = () => {
-    setRows([createDummyData(false,"1", "ley federal", "Municipio", "Monterrey")]);
+    const OSA: ObligadoSolidarioAval = {
+      id: "uuid" + (Math.floor(Math.random() * 100)).toString(), // aqui debe venir el uuid del ObligadoSolidarioAval que va en la tabla
+      obligadoSolidario: obligadoSolidarioAval,
+      entePublicoObligado: entePublicoObligado,
+      tipoEntePublicoObligado: tipoEntePublicoObligado
+    }
+    addObligadoSolidarioAval(OSA);
   }
 
   const deleteRows = () => {
-    //console.log(selected)
-    //selected.forEach((it) => {
-    //  console.log(rows[selected.indexOf(it)]);
-    //  rows.pop();
-    //})
-    setRows([])
+    console.log("selected: ", selected)
+    selected.forEach((it) => {
+      removeObligadoSolidarioAval(it);
+    })
   }
 
   React.useEffect(() => {
@@ -384,6 +369,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             fullWidth
+            value={entePublicoObligado}
+            onChange={(text) => changeEntePublicoObligado(text.target.value)}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -405,20 +392,19 @@ export function InformacionGeneral() {
               <Table stickyHeader>
                 <TableHead>
                   {heads.map((head) => (
-                    <StyledTableCell key={head.id}>
+                    <StyledTableCell>
                       <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
                   ))}
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
-
+                  {obligadoSolidarioAvalTable.map((row, index) => {
+                    const isItemSelected = isSelected(index);
                     return (
                       <StyledTableRow>
                         <StyledTableCell padding="checkbox">
                           <Checkbox 
-                          onClick={(event) => handleClick(event, row.id, index)}
+                          onClick={(event) => handleClick(event, index)}
                           checked={isItemSelected}
                           />
                         </StyledTableCell>
