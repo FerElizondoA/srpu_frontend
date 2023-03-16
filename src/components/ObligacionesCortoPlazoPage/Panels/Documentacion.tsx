@@ -20,6 +20,7 @@ import {
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+
 import { getTiposDocumentos } from "../APIS/APISDocumentacion";
 import { ITiposDocumento } from "../Interfaces/CortoPlazo/Documentacion/IListTipoDocumento";
 
