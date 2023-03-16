@@ -32,7 +32,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     changeReglas: (newReglas: string) => set((state)=> ({reglas: [...state.reglas, newReglas]})),
     
      
-    fetchDocumento: async ()=> {
+    fetchDocumento: () => {
         let data = new FormData();
 
 
@@ -46,6 +46,8 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
             const monto = useCortoPlazoStore.getState().montoOriginal; 
             const fecha = useCortoPlazoStore.getState().fechaContratacion; 
             const fechav = useCortoPlazoStore.getState().fechaVencimiento;
+            const destino = useCortoPlazoStore.getState().destino
+            const plazoDias = useCortoPlazoStore.getState().plazoDias
             data.append("nombre", get().nombreServidorPublico);
             data.append("organismo", organismo);
             data.append("contrato",  contrato);
@@ -55,37 +57,39 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
             data.append("fechav",  fechav);
 
 
-            const response = await axios.post(
-              "http://192.168.137.152:90/documento?",
+            axios.post(
+              "http://192.168.137.152:7000/documento_srpu?",
               {
                 body:{
-                    data
+                      nombre: "Marlon Israel Mendez Maldonado",
+                      oficionum: "10",
+                      cargo: get().cargo,
+                      organismo: organismo,
+                      InstitucionBancaria: banco,
+                      monto:  monto.toString(),
+                      fechacontrato: fecha,
+                      destino: destino,
+                      dias: plazoDias,
+                      fechavencimiento: fechav
                 },
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
                 },
               }
-            );
-            const a = window.URL || window.webkitURL;
+            ).then((r) => {
+              const a = window.URL || window.webkitURL;
 
-            const url = a.createObjectURL(
-              new Blob([response.data], { type: "application/pdf" })
-            );
-    
-            let link = document.createElement("a");
-    
-            link.setAttribute("download", `contrato.pdf`);
-            link.setAttribute("href", url);
-            document.body.appendChild(link);
-            link.click();
-            
-            // response.data.data.forEach((e: any) => {
-            //   set((state) => ({
-               
-            //   }));
-            // });
-        //   }
-        //   set(() => ({}))
+              const url = a.createObjectURL(
+                new Blob([r.data], { type: "application/pdf" })
+              );
+      
+              let link = document.createElement("a");
+      
+              link.setAttribute("download", `contrato.pdf`);
+              link.setAttribute("href", url);
+              document.body.appendChild(link);
+              link.click();
+            })
     },
 
 
