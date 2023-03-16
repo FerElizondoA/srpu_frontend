@@ -30,61 +30,42 @@ import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
-
-interface DataObligadoSalarial {
-  isSelected: boolean;
-  obligadosolidario: string;
-  tipoentepunlicoobligado: string;
-  entepublicoobligado: string;
-}
+import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 
 interface Head {
-  id: keyof DataObligadoSalarial;
-  isNumeric: boolean;
   label: string;
 }
 
 const heads: readonly Head[] = [
   {
-    id: "isSelected",
-    isNumeric: false,
-    label: "Seleccion",
+    label: "Selección",
   },
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Obligado solidario / aval",
   },
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Tipo de ente público obligado",
   },
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Ente público obligado",
   },
 ];
 
 function createDummyData(
-  obligadosolidario: string,
-  tipoentepunlicoobligado: string,
-  entepublicoobligado: string
+  isSelected: boolean,
+  id: string,
+  obligadoSolidario: string,
+  tipoEntePublicoObligado: string,
+  entePublicoObligado: string
 ) {
   return {
-    obligadosolidario,
-    tipoentepunlicoobligado,
-    entepublicoobligado,
+    isSelected,
+    id,
+    obligadoSolidario,
+    tipoEntePublicoObligado,
+    entePublicoObligado,
   };
 }
-
-const rows = [
-  createDummyData("ley federal", "Municipio", "Monterrey"),
-  createDummyData("opc1", "opc2", "opc3"),
-  createDummyData("ley federal", "Municipio", "Monterrey"),
-  createDummyData("opc1", "opc2", "opc3"),
-];
 
 export function InformacionGeneral() {
 
@@ -114,6 +95,55 @@ export function InformacionGeneral() {
   const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
   const tipoEntePublicoObligadoCatalog: string[] = useCortoPlazoStore(state => state.tipoEntePublicoObligadoCatalog);
   const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
+  const entePublicoObligado: string = useCortoPlazoStore(state => state.entePublicoObligado);
+  const changeEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeEntePublicoObligado);
+  const obligadoSolidarioAvalTable: ObligadoSolidarioAval[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalTable);
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.addObligadoSolidarioAval);
+  const removeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.removeObligadoSolidarioAval);
+
+  const [selected, setSelected] = React.useState<readonly number[]>([]);
+
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      console.log("selectedIndex === 0 !")
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      console.log("selectedIndex === selected.length -1 !")
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      console.log("selectedIndex === selected.length > 0 !")
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+    console.log(newSelected);
+  };
+
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  const addRows = () => {
+    const OSA: ObligadoSolidarioAval = {
+      id: "uuid" + (Math.floor(Math.random() * 100)).toString(), // aqui debe venir el uuid del ObligadoSolidarioAval que va en la tabla
+      obligadoSolidario: obligadoSolidarioAval,
+      entePublicoObligado: entePublicoObligado,
+      tipoEntePublicoObligado: tipoEntePublicoObligado
+    }
+    addObligadoSolidarioAval(OSA);
+  }
+
+  const deleteRows = () => {
+    console.log("selected: ", selected)
+    selected.forEach((it) => {
+      removeObligadoSolidarioAval(it);
+    })
+  }
 
   React.useEffect(() => {
     fetchDestinos();
@@ -357,6 +387,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             fullWidth
+            value={entePublicoObligado}
+            onChange={(text) => changeEntePublicoObligado(text.target.value)}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -375,40 +407,46 @@ export function InformacionGeneral() {
         <Grid item container>
           <Grid item lg={9}>
             <TableContainer sx={{ maxHeight: "200px" }}>
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
                   {heads.map((head) => (
-                    <StyledTableCell key={head.id}>
+                    <StyledTableCell>
                       <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
                   ))}
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <StyledTableRow>
-                      <StyledTableCell padding="checkbox">
-                        <Checkbox />
-                      </StyledTableCell>
-                      <StyledTableCell component="th" scope="row">
-                        {row.entepublicoobligado.toString()}
-                      </StyledTableCell>
-                      <StyledTableCell component="th">
-                        {row.obligadosolidario.toString()}
-                      </StyledTableCell>
-                      <StyledTableCell component="th">
-                        {row.tipoentepunlicoobligado.toString()}
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
+                  {obligadoSolidarioAvalTable.map((row, index) => {
+                    const isItemSelected = isSelected(index);
+                    return (
+                      <StyledTableRow>
+                        <StyledTableCell padding="checkbox">
+                          <Checkbox 
+                          onClick={(event) => handleClick(event, index)}
+                          checked={isItemSelected}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.entePublicoObligado.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.obligadoSolidario.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado.toString()}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <ConfirmButton variant="outlined">AGREGAR</ConfirmButton>
+            <ConfirmButton variant="outlined" onClick={() => addRows()}>AGREGAR</ConfirmButton>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
+            <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
           </Grid>
         </Grid>
       </Grid>
