@@ -51,22 +51,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-function createDummyData(
-  isSelected: boolean,
-  id: string,
-  obligadoSolidario: string,
-  tipoEntePublicoObligado: string,
-  entePublicoObligado: string
-) {
-  return {
-    isSelected,
-    id,
-    obligadoSolidario,
-    tipoEntePublicoObligado,
-    entePublicoObligado,
-  };
-}
-
 export function InformacionGeneral() {
 
   const institucion: string = useCortoPlazoStore(state => state.institucion);
@@ -151,25 +135,16 @@ export function InformacionGeneral() {
     fetchObligadoSolidarioAval();
     fetchTipoEntePublicoObligado();
 
-    
     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
     {
       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
     }else{
-      // do something!
       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
     }
     
     
   }, [fechaContratacion, fechaVencimiento])
-  
-
-  React.useEffect(() => {
-    console.log(fetchObligadoSolidarioAval);
-    
-  }, [])
-  
 
   return (
     <Grid container>
