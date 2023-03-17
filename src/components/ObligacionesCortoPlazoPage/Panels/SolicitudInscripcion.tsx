@@ -9,10 +9,14 @@ import {
   TableSortLabel,
   TableContainer,
   TableHead,
+  Fab,
+  Typography,
 } from "@mui/material";
+import { GridCheckIcon } from "@mui/x-data-grid";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
+import { useCortoPlazoStore } from "../../../store/main";
+import { stat } from "fs";
 // dummy data
 
 interface Data {
@@ -50,6 +54,20 @@ function createDummyData(rule: string) {
 const rows = [createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc."), createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc.")];
 
 export function SolicitudInscripcion() {
+
+  const nombreServidorPublico: string = useCortoPlazoStore(state => state.nombreServidorPublico);
+  const changeServidorPublico: Function = useCortoPlazoStore(state => state.changeServidorPublico);
+  const cargo: string = useCortoPlazoStore(state => state.cargo);
+  const changeCargo: Function = useCortoPlazoStore(state => state.changeCargo);
+  const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
+  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
+  const documentoAutorizado: string = useCortoPlazoStore(state => state.documentoAutorizado);
+  const changeDocumentoAutorizado: Function = useCortoPlazoStore(state => state.changeDocumentoAutorizado);
+  const identificacion: string = useCortoPlazoStore(state => state.identificacion);
+  const changeIdentificacion: Function = useCortoPlazoStore(state => state.changeIdentificacion);
+
+  const fetchDocumento: Function = useCortoPlazoStore(state => state.fetchDocumento);
+
   return (
     <Grid item container>
       <Grid
@@ -67,6 +85,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
+            value={nombreServidorPublico}
+            onChange={(text) => changeServidorPublico(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -85,6 +105,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
+            value={cargo}
+            onChange={(text) => changeCargo(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -115,6 +137,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
+            value={solicitanteAutorizado}
+            onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -136,6 +160,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
+            value={documentoAutorizado}
+            onChange={(text) => changeDocumentoAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -155,6 +181,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
+            value={identificacion}
+            onChange={(text) => changeIdentificacion(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -212,6 +240,16 @@ export function SolicitudInscripcion() {
               </TableContainer>
             </Grid>
           </Grid>
+        </Grid>
+        <Grid
+          item
+          position="fixed"
+          sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
+        >
+          <Fab variant="extended" color="success" onClick={() =>{ fetchDocumento()}}>
+            <GridCheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>FINALIZAR</Typography>
+          </Fab>
         </Grid>
       </Grid>
     </Grid>

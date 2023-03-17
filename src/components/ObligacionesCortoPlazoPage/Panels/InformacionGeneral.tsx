@@ -2,75 +2,174 @@ import * as React from "react";
 import {
   Grid,
   TextField,
-  Typography,
-  Button,
   InputLabel,
   InputAdornment,
+  Autocomplete,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableSortLabel,
+  Checkbox
 } from "@mui/material";
-import { DateField } from "@mui/x-date-pickers/DateField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import {
+  StyledTableCell,
+  StyledTableRow,
+  ConfirmButton,
+  DeleteButton,
+} from "../../CustomComponents";
+
+import enGB from "date-fns/locale/en-GB";
+import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-
-import { DestinoDelFinanciamiento } from "../Dialogs/Dialog-IG-DestinoDelFinanciamiento";
-import { InstitucionFinanciera } from "../Dialogs/Dialog-IG-InstitucionFinanciera";
-import { ObligadoSolidarioAval } from "../Dialogs/Dialog-IG-ObligadoSolidiario";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateInput } from "../../CustomComponents";
+import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-export class  InformacionGeneral extends  React.Component {
+import { useCortoPlazoStore } from "../../../store/main";
+import { differenceInDays, startOfDay } from "date-fns";
+import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 
-  state = {
-    openDestino: false,
-    openObligado: false,
-    openInstitucion: false,
+interface Head {
+  label: string;
+}
+
+const heads: readonly Head[] = [
+  {
+    label: "Selección",
+  },
+  {
+    label: "Obligado solidario / aval",
+  },
+  {
+    label: "Tipo de ente público obligado",
+  },
+  {
+    label: "Ente público obligado",
+  },
+];
+
+export function InformacionGeneral() {
+
+  const institucion: string = useCortoPlazoStore(state => state.institucion);
+  const changeInstitucion: Function = useCortoPlazoStore(state => state.changeInstitucion);
+  const institucionCatalog: string[] = useCortoPlazoStore(state => state.institucionCatalog);
+  const fetchInstituciones: Function = useCortoPlazoStore(state => state.fetchInstituciones);
+  const destino: string = useCortoPlazoStore(state => state.destino);
+  const changeDestino: Function = useCortoPlazoStore(state => state.changeDestino);
+  const destinoCatalog: string[] = useCortoPlazoStore(state => state.destinoCatalog);
+  const fetchDestinos: Function = useCortoPlazoStore(state => state.fetchDestinos);
+  const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
+  const changeFechaContratacion: Function = useCortoPlazoStore(state => state.changeFechaContratacion);
+  const plazoDias: number = useCortoPlazoStore(state => state.plazoDias);
+  const changePlazoDias: Function = useCortoPlazoStore(state => state.changePlazoDias);
+  const montoOriginal: number = useCortoPlazoStore(state => state.montoOriginal);
+  const changeMontoOriginal: Function = useCortoPlazoStore(state => state.changeMontoOriginal);
+  const fechaVencimiento: string = useCortoPlazoStore(state => state.fechaVencimiento);
+  const changeFechaVencimiento: Function = useCortoPlazoStore(state => state.changeFechaVencimiento);
+  const denominacion: string = useCortoPlazoStore(state => state.denominacion);
+  const changeDenominacion: Function = useCortoPlazoStore(state => state.changeDenominacion);
+  const obligadoSolidarioAval: string = useCortoPlazoStore(state => state.obligadoSolidarioAval);
+  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.changeObligadoSolidarioAval);
+  const obligadoSolidarioAvalCatalog: string[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalCatalog);
+  const fetchObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.fetchObligadoSolidarioAval);
+  const tipoEntePublicoObligado: string = useCortoPlazoStore(state => state.tipoEntePublicoObligado);
+  const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
+  const tipoEntePublicoObligadoCatalog: string[] = useCortoPlazoStore(state => state.tipoEntePublicoObligadoCatalog);
+  const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
+  const entePublicoObligado: string = useCortoPlazoStore(state => state.entePublicoObligado);
+  const changeEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeEntePublicoObligado);
+  const obligadoSolidarioAvalTable: ObligadoSolidarioAval[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalTable);
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.addObligadoSolidarioAval);
+  const removeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.removeObligadoSolidarioAval);
+
+  const [selected, setSelected] = React.useState<readonly number[]>([]);
+
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      console.log("selectedIndex === 0 !")
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      console.log("selectedIndex === selected.length -1 !")
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      console.log("selectedIndex === selected.length > 0 !")
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+    console.log(newSelected);
+  };
+
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  const addRows = () => {
+    const OSA: ObligadoSolidarioAval = {
+      id: "uuid" + (Math.floor(Math.random() * 100)).toString(), // aqui debe venir el uuid del ObligadoSolidarioAval que va en la tabla
+      obligadoSolidario: obligadoSolidarioAval,
+      entePublicoObligado: entePublicoObligado,
+      tipoEntePublicoObligado: tipoEntePublicoObligado
+    }
+    addObligadoSolidarioAval(OSA);
   }
 
-  constructor(props: any){
-    super(props);
-    this.changeOpenDestinoState.bind(this);
-    this.changeOpenObligado.bind(this);
-    this.changeOpenInstitucione.bind(this);
-  }
-  
-  changeOpenDestinoState = (open: boolean) => {
-    this.setState({openDestino: open});
+  const deleteRows = () => {
+    console.log("selected: ", selected)
+    selected.forEach((it) => {
+      removeObligadoSolidarioAval(it);
+    })
   }
 
-  changeOpenObligado = (open: boolean) => {
-    this.setState({openObligado: open});
-  }
+  React.useEffect(() => {
+    fetchDestinos();
+    fetchInstituciones();
+    fetchObligadoSolidarioAval();
+    fetchTipoEntePublicoObligado();
 
-  changeOpenInstitucione = (open: boolean) => {
-    this.setState({openInstitucion: open});
-  }
-  render()  {
+    if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
+    {
+      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+    }else{
+      changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
+      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+    }
+    
+    
+  }, [fechaContratacion, fechaVencimiento])
+
   return (
     <Grid container>
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 10, md: 5, lg: 0 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        mt={5}
+        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        spacing={5}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateField
-              fullWidth
-              format="DD-MM-YYYY"
-              variant="standard"
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={enGB}
+          >
+            <DatePicker
+              value={new Date(fechaContratacion)}
+              onChange={(date) => changeFechaContratacion(date?.toString())}
+              minDate={new Date(subDays(new Date(), 365))}
+              maxDate={new Date()}
+              slots={{
+                textField: DateInput,
               }}
             />
           </LocalizationProvider>
@@ -81,6 +180,7 @@ export class  InformacionGeneral extends  React.Component {
           <TextField
             fullWidth
             variant="standard"
+            value={plazoDias||0}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -92,6 +192,7 @@ export class  InformacionGeneral extends  React.Component {
                 fontFamily: "MontserratMedium",
               },
             }}
+            disabled
           />
         </Grid>
 
@@ -101,6 +202,8 @@ export class  InformacionGeneral extends  React.Component {
           </InputLabel>
           <TextField
             fullWidth
+            value={montoOriginal}
+            onChange={(text) => changeMontoOriginal(text.target.value)}
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",
@@ -122,26 +225,22 @@ export class  InformacionGeneral extends  React.Component {
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 2, md: 5, lg: 5 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth/50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        mt={2}
+        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        spacing={5}
       >
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateField
-              fullWidth
-              format="DD-MM-YYYY"
-              variant="standard"
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={enGB}
+          >
+            <DatePicker
+              value={new Date(fechaVencimiento)}
+              onChange={(date) => changeFechaVencimiento(date?.toString())}
+              minDate={new Date(addDays(new Date(fechaContratacion), 1))}
+              slots={{
+                textField: DateInput,
               }}
             />
           </LocalizationProvider>
@@ -149,8 +248,27 @@ export class  InformacionGeneral extends  React.Component {
 
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
+          <Autocomplete
+            fullWidth
+            value={destino}
+            onChange={(event: any, text: string | null) => changeDestino(text)}
+            options={destinoCatalog}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={3.5} md={3.5} lg={3}>
+          <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <TextField
             fullWidth
+            value={denominacion}
+            onChange={(text) => changeDenominacion(text.target.value)}
             variant="standard"
             InputLabelProps={{
               style: {
@@ -164,22 +282,27 @@ export class  InformacionGeneral extends  React.Component {
             }}
           />
         </Grid>
+      </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
-          <TextField
+      <Grid item container mt={2} ml={window.innerWidth / 50 - 13} spacing={5}>
+        <Grid item lg={8.5} ml={window.outerWidth / 150}>
+          <InputLabel sx={queries.medium_text}>
+            Institución Financiera
+          </InputLabel>
+          <Autocomplete
             fullWidth
-            variant="standard"
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
+            value={institucion}
+            onChange={(event: any, text: string | null) =>
+              changeInstitucion(text)
+            }
+            options={institucionCatalog}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
           />
         </Grid>
       </Grid>
@@ -188,78 +311,120 @@ export class  InformacionGeneral extends  React.Component {
         item
         container
         mt={{ xs: 10, sm: 2, md: 5, lg: 2 }}
-        ml={{ xs: 5, sm: 10, md: 2, lg: 15 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        ml={38}
+        spacing={5}
       >
-        <Grid item xs={3.5} md={3.8} lg={3.5}>
-          <Button
-            variant="outlined"
-            style={{
-              width: "100%",
-              height: "30vh",
-            }}
-            onClick={() => this.changeOpenDestinoState(!this.state.openDestino)}
-          >
-            <Grid container direction="column">
-              <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={queries.icon} />
-              </Grid>
-              <Grid item>
-                <Typography sx={queries.medium_text}>
-                  Destino del financiamiento
-                </Typography>
-              </Grid>
-            </Grid>
-          </Button>
-          <DestinoDelFinanciamiento handler={this.changeOpenDestinoState} openState={this.state.openDestino}/>
+        <Grid item xs={3} md={3} lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Obligado Solidario / Aval
+          </InputLabel>
+          <Autocomplete
+            fullWidth
+            value={obligadoSolidarioAval}
+            options={obligadoSolidarioAvalCatalog}
+            onChange={(event: any, text: string | null) =>
+              changeObligadoSolidarioAval(text)
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+          />
         </Grid>
 
-        <Grid item xs={3.5} md={3.8} lg={3.5}>
-          <Button
-            variant="outlined"
-            style={{
-              width: "100%",
-              height: "30vh",
-            }}
-            onClick={() => this.changeOpenObligado(!this.state.openObligado)}
-          >
-            <Grid container direction="column">
-              <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={queries.icon} />
-              </Grid>
-              <Grid item>
-                <Typography sx={queries.medium_text}>
-                  Obligado Solidario / Aval
-                </Typography>
-              </Grid>
-            </Grid>
-          </Button>
-          <ObligadoSolidarioAval handler={this.changeOpenObligado} openState={this.state.openObligado}/>
+        <Grid item xs={3} md={3} lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Tipo de ente público obligado
+          </InputLabel>
+          <Autocomplete
+            fullWidth
+            value={tipoEntePublicoObligado}
+            options={tipoEntePublicoObligadoCatalog}
+            onChange={(event: any, text: string | null) =>
+              changeTipoEntePublicoObligado(text)
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+          />
         </Grid>
 
-        <Grid item xs={3.5} md={3.8} lg={3.5}>
-          <Button
-            variant="outlined"
-            style={{
-              width: "100%",
-              height: "30vh",
+        <Grid item xs={3} md={3} lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Ente público obligado
+          </InputLabel>
+          <TextField
+            fullWidth
+            value={entePublicoObligado}
+            onChange={(text) => changeEntePublicoObligado(text.target.value)}
+            variant="standard"
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
             }}
-            onClick={() => this.changeOpenInstitucione(!this.state.openObligado)}
-          >
-            <Grid container direction="column">
-              <Grid item xs={12}>
-                <CheckCircleIcon color="success" sx={queries.icon} />
-              </Grid>
-              <Grid item>
-                <Typography sx={queries.medium_text}>Institución Financiera</Typography>
-              </Grid>
-            </Grid>
-          </Button>
-          <InstitucionFinanciera handler={this.changeOpenInstitucione} openState={this.state.openInstitucion} />
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item container>
+          <Grid item lg={9}>
+            <TableContainer sx={{ maxHeight: "200px" }}>
+              <Table stickyHeader>
+                <TableHead>
+                  {heads.map((head) => (
+                    <StyledTableCell>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {obligadoSolidarioAvalTable.map((row, index) => {
+                    const isItemSelected = isSelected(index);
+                    return (
+                      <StyledTableRow>
+                        <StyledTableCell padding="checkbox">
+                          <Checkbox 
+                          onClick={(event) => handleClick(event, index)}
+                          checked={isItemSelected}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.entePublicoObligado.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.obligadoSolidario.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado.toString()}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item md={6} lg={4.5} mt={1}>
+            <ConfirmButton variant="outlined" onClick={() => addRows()}>AGREGAR</ConfirmButton>
+          </Grid>
+          <Grid item md={6} lg={4.5} mt={1}>
+            <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
+          </Grid>
         </Grid>
       </Grid>
-      
     </Grid>
   );
-}
 }

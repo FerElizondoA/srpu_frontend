@@ -3,8 +3,11 @@ import { tableCellClasses } from "@mui/material/TableCell"
 
 import {
     TableCell,
+    Input,
     TableRow,
+    Box,
     Button,
+    TextFieldProps
 } from "@mui/material";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -61,5 +64,33 @@ export const DeleteButton = styled(Button)(({ theme }) => ({
     borderColor: "#e57373"
   }
 }))
+
+type DateInputProps = TextFieldProps & {
+  ownerState?: any;
+};
+
+export const DateInput = function DateInput(props: DateInputProps) {
+  const { inputProps, InputProps, ownerState, inputRef, error, ...other } = props;
+
+  return (
+
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: 'center',
+      "&.MuiBox-root > input": {
+        color: "black",
+        fontSize: "1.5ch",
+        width: "100%", 
+        fontFamily: "MontserratRegular", 
+        margin: "8px auto"
+      }
+      }} ref={InputProps?.ref}>
+      <input ref={inputRef} {...inputProps} {...(other as any)} size="small" sx={{
+        marginTop: "4px",
+      }} disabled/>
+      {InputProps?.endAdornment}
+    </Box>
+  );
+};
 
 export {} // DO NOT DELETE THIS
