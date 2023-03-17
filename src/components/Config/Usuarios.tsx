@@ -7,15 +7,15 @@ import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("Rol") === "Capturador") {
-      navigate("../home");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    getListadoUsuarios();
+    // createSolicitud();
   }, []);
 
   const [openModalUsuarios, setOpenModalUsuarios] = useState(false);
