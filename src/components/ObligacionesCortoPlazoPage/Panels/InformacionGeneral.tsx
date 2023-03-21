@@ -148,13 +148,6 @@ export function InformacionGeneral() {
     
   }, [fechaContratacion, fechaVencimiento])
   
-
-  React.useEffect(() => {
-    console.log(fetchObligadoSolidarioAval);
-    
-  }, [])
-  
-
   return (
     <Grid container>
       <Grid
