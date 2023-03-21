@@ -62,6 +62,11 @@ export function LateralMenu() {
     setOpenFinanciamiento(!openFinanciamiento);
   };
 
+  const [openConsultaDeSolicitud, setConsultaDeSolicitud] = React.useState(false);
+  const handleConsultaDeSolicitudClick = () => {
+    setConsultaDeSolicitud(!openConsultaDeSolicitud);
+  };
+
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -191,7 +196,10 @@ export function LateralMenu() {
                           </List>
                         </Collapse>
 
-                        <ListItemButton sx={{ marginLeft: 2 }}>
+                        <ListItemButton sx={{ marginLeft: 2 }}
+                         onClick={() => {
+                          navigate("../ConsultaDeSolicitudes");
+                        }}>
                           <ListItemIcon>
                             <KeyboardDoubleArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>

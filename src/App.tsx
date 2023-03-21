@@ -10,6 +10,9 @@ import { continueSession, sessionValid } from "./validation";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
+import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { Catalogos } from "./components/Config/Catalogos";
+import { Usuarios } from "./components/Config/Usuarios";
 
 export const appTheme = createTheme({
   palette: {
@@ -56,6 +59,9 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
+          <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
+          <Route path="catalogos" element={<Catalogos />}></Route>
+          <Route path="users" element={<Usuarios />}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
