@@ -5,7 +5,7 @@ import {
  } from "@mui/material"
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
 import { Encabezado } from "./Panels/Encabezado";

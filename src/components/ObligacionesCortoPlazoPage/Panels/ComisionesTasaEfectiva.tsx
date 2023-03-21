@@ -24,7 +24,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 
 import { queries } from "../../../queries";
 
-import { ConfirmButton, DeleteButton, StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 interface Data {
   isSelected: boolean,

@@ -51,22 +51,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-function createDummyData(
-  isSelected: boolean,
-  id: string,
-  obligadoSolidario: string,
-  tipoEntePublicoObligado: string,
-  entePublicoObligado: string
-) {
-  return {
-    isSelected,
-    id,
-    obligadoSolidario,
-    tipoEntePublicoObligado,
-    entePublicoObligado,
-  };
-}
-
 export function InformacionGeneral() {
 
   const institucion: string = useCortoPlazoStore(state => state.institucion);

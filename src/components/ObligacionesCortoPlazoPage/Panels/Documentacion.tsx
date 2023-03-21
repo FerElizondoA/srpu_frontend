@@ -17,7 +17,7 @@ import {
   ConfirmButton,
   DeleteButton,
 } from "../../CustomComponents";
-import { queries } from "../../../queries";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
@@ -84,8 +84,8 @@ export function Documentacion() {
   }, []);
 
   useEffect(() => {
-    let auxNumTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio == 1 ).map((tpo,index)=>{return index;})
-    let auxTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio == 1 ).map((tpo)=>{return tpo;})
+    let auxNumTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio === 1 ).map((tpo,index)=>{return index;})
+    let auxTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio === 1 ).map((tpo)=>{return tpo;})
     setarchivosObligatosios(auxTpoDocFiltered);
     setNumArchivosObligatosios(auxNumTpoDocFiltered.length);
     setNumArchivos(auxNumTpoDocFiltered);
