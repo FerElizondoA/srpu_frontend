@@ -199,8 +199,6 @@ export function Documentacion() {
                         position={"absolute"}
                         sx={{
                           display: "flex",
-                          border: "1px solid",
-                          borderBlockColor: "#AF8C55",
                           fontFamily: "MontserratMedium",
                           textAlign: "center",
                           justifyContent: "center",

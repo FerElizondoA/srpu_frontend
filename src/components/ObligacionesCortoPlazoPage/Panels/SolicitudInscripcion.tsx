@@ -16,7 +16,6 @@ import { GridCheckIcon } from "@mui/x-data-grid";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { stat } from "fs";
 // dummy data
 
 interface Data {
