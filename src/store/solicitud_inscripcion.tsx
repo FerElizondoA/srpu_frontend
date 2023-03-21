@@ -74,6 +74,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
           },
+          responseType : 'arraybuffer'
         }
       )
       .then((r) => {
