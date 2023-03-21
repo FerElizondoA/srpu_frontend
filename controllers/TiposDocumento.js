@@ -1,24 +1,24 @@
 const db = require("../config/db.js");
 
 module.exports = {
-  //CREAR
-  createClaveDeInscripcion: (req, res) => {
+  //CREAR  
+  createTipoDocumento: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const ClaveDeInscripcion = req.body.ClaveDeInscripcion;
+    const TipoDocumento = req.body.TipoDocumento;
 
-    if ((ClaveDeInscripcion == null ||/^[\s]*$/.test(ClaveDeInscripcion)) && ClaveDeInscripcion.length() <= 255) {
+    if ((TipoDocumento == null ||/^[\s]*$/.test(TipoDocumento)) && TipoDocumento.length() <= 255) {
       return res.status(409).send({
-        error: "Ingresé Clave de inscripcion válida.",
+        error: "Ingrese Tipo Documento válido.",
       });
     } 
     if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
         return res.status(409).send({
-          error: "Ingresé Id usuario válido.",
+          error: "Ingrese Id usuario válido.",
         });
       } 
     else {
       db.query(
-        `CALL sp_AgregarClaveDeInscripcion('${IdUsuario}', '${ClaveDeInscripcion}' )`,
+        `CALL sp_AgregarTipoDocumento('${IdUsuario}', '${TipoDocumento}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -46,8 +46,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getClavesDeInscripcion: (req, res) => {
-    db.query(`CALL sp_ListadoClavesDeInscripcion()`, (err, result) => {
+  getTiposDocumento: (req, res) => {
+    db.query(`CALL sp_ListadoTiposDocumento()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -68,16 +68,16 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailClaveDeInscripcion: (req, res) => {
-    const IdClaveDeInscripcion = req.body.IdClaveDeInscripcion;
-    if (IdClaveDeInscripcion == null ||/^[\s]*$/.test(IdClaveDeInscripcion)) {
+  getDetailTipoDocumento: (req, res) => {
+    const IdTipoDocumento = req.body.IdTipoDocumento;
+    if (IdTipoDocumento == null ||/^[\s]*$/.test(IdTipoDocumento)) {
         return res.status(409).send({
-          error: "Ingresé IdClaveDeInscripcion.",
+          error: "Ingrese IdTipoDocumento.",
         });
       } 
 
     db.query(
-      `CALL sp_DetalleClaveDeInscripcion('${IdClaveDeInscripcion}')`,
+      `CALL sp_DetalleTipoDocumento('${IdTipoDocumento}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -104,20 +104,20 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyClaveDeInscripcion: (req, res) => {
-    const IdClaveDeInscripcion = req.body.IdClaveDeInscripcion;
-    const ClaveDeInscripcion = req.body.ClaveDeInscripcion;
+  modifyTipoDocumento: (req, res) => {
+    const IdTipoDocumento = req.body.IdTipoDocumento;
+    const TipoDocumento = req.body.TipoDocumento;
     const IdUsuarioModificador = req.body.ModificadoPor;
 
-    if (IdClaveDeInscripcion == null ||/^[\s]*$/.test(IdClaveDeInscripcion)) {
+    if (IdTipoDocumento == null ||/^[\s]*$/.test(IdTipoDocumento)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
 
-    if (ClaveDeInscripcion == null ||/^[\s]*$/.test(ClaveDeInscripcion)) {
+    if (TipoDocumento == null ||/^[\s]*$/.test(TipoDocumento)) {
       return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
+        error: "Ingrese Tipo Documento",
       });
     }
     
@@ -127,7 +127,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaClaveDeInscripcion('${IdClaveDeInscripcion}','${ClaveDeInscripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaTipoDocumento('${IdTipoDocumento}','${TipoDocumento}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -154,12 +154,13 @@ module.exports = {
     }
   },
 
+  
   //BORRADO LOGICO
-  deleteClaveDeInscripcion: (req, res) => {
-    const IdClaveDeInscripcion = req.body.IdClaveDeInscripcion;
+  deleteTipoDocumento: (req, res) => {
+    const IdTipoDocumento = req.body.IdTipoDocumento;
     const IdUsuarioModificador = req.body.ModificadoPor;
     db.query(
-      `CALL sp_BajaLogicaClaveDeInscripcion('${IdClaveDeInscripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaTipoDocumento('${IdTipoDocumento}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

@@ -10,6 +10,8 @@ const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
+const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, getTiposEntePublico, getDetailTipoEntePublico } = require("../controllers/TipoEntePublico.js");
+const { createTipoDocumento, getTiposDocumento, getDetailTipoDocumento, modifyTipoDocumento, deleteTipoDocumento } = require("../controllers/TiposDocumento.js");
 
 const { getDetailUsuario } = require("../controllers/usuarios.js");
 
@@ -81,9 +83,31 @@ router.delete("/delete-entePublicoObligado", verifyToken.verifyJWT, (req, res) =
   deleteEntePublicoObligado(req, res);
 });
 
+//TipoEntePublico
+router.post("/create-tipoEntePublico",  verifyToken.verifyJWT, (req, res) => {
+  createTipoEntePublico(req, res);
+});
+
+router.get("/get-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
+  getTiposEntePublico(req, res);
+});
+
+router.get("/detail-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+  getDetailTipoEntePublico(req, res);
+});
+
+router.put("/modify-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoEntePublico(req, res);
+});
+
+
+router.delete("/delete-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+  deleteTipoEntePublico(req, res);
+});
+
 
 //ObligadoSolidarioAval
-router.post("/create-obligadoSolidarioAval",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-obligadoSolidarioAval",  verifyToken.verifyJWT, (req, res) => {
   createObligadoSolidarioAval(req, res);
 });
 
@@ -218,6 +242,29 @@ router.delete("/delete-rol", verifyToken.verifyJWT, (req, res) => {
 //Usuario
 router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
+});
+
+
+//TipoDocumento
+router.post("/create-TipoDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+  createTipoDocumento(req, res);
+});
+
+router.get("/get-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
+  getTiposDocumento(req, res);
+});
+
+router.get("/detail-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+  getDetailTipoDocumento(req, res);
+});
+
+router.put("/modify-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoDocumento(req, res);
+});
+
+
+router.delete("/delete-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+  deleteTipoDocumento(req, res);
 });
 
 

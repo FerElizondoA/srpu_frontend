@@ -20,7 +20,6 @@ module.exports = {
       db.query(
         `CALL sp_AgregarRol('${IdUsuario}', '${Rol}' )`,
         (err, result) => {
-          console.log(result);
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -49,7 +48,6 @@ module.exports = {
   //LISTADO COMPLETO
   getRoles: (req, res) => {
     db.query(`CALL sp_ListadoRoles()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",

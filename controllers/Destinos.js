@@ -20,7 +20,6 @@ module.exports = {
       db.query(
         `CALL sp_AgregarDestino('${IdUsuario}', '${Destino}' )`,
         (err, result) => {
-          console.log(result);
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -49,7 +48,6 @@ module.exports = {
   //LISTADO COMPLETO
   getDestinos: (req, res) => {
     db.query(`CALL sp_ListadoDestinos()`, (err, result) => {
-      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",
