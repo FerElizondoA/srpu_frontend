@@ -17,7 +17,6 @@ import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 
 export function ObligacionesCortoPlazoPage() {
-
   const [tabIndex, setTabIndex] = useState(0);
   
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
