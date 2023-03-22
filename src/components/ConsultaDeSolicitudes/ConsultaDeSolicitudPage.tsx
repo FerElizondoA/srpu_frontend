@@ -25,7 +25,6 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-import { element } from "prop-types";
 
 interface Data {
   Institucion_financiera: string;
@@ -75,29 +74,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-// const StyledTableCell = styled(TableCell)(({ theme }) => ({
-//   [`&.${tableCellClasses.head}`]: {
-//     backgroundColor: "white",
-//     color: theme.palette.common.black,
-//     fontFamily: "MontserratMedium",
-//     fontSize: "1.8ch",
-//   },
-//   [`&.${tableCellClasses.body}`]: {
-//     fontFamily: "MontserratRegular",
-//     fontSize: "1.5ch",
-//   },
-// }));
-
-// const StyledTableRow = styled(TableRow)(({ theme }) => ({
-//   fontFamily: "MontserratMedium",
-//   "&:nth-of-type(odd)": {
-//     backgroundColor: theme.palette.action.hover,
-//   },
-//   // hide last border
-//   "&:last-child td, &:last-child th": {
-//     border: 0,
-//   },
-// }));
 const ejemplos = [
   {
     Institucion_financiera: "Banorte",
@@ -136,42 +112,23 @@ const ejemplos = [
 
 
 export function ConsultaDeSolicitudPage() {
-  //console.log("hola soy el objeto", ejemplos);
-
-  // const [word, setWord] = useState("");
-  // const [filterDisplay, setFilterDisplay] = useState([])
-  // const [busqueda] = useState([ejemplos])
-  // const handleChange = () =>{
-  //   //setWord();
-  //   let oldList = ejemplos.map(row => {
-  //     return {Instituto: row.Institucion_financiera, Monto: row.Monto_original_contratado, Ente_público: row.Tipo_de_ente_público_obligado,
-  //             Clave: row.Clave_de_inscripcion, Estatus: row.Estatus, Fecha: row.Fecha_de_contratacion_desde
-  //     };
-  //   });
-  //   if (word !== ""){
-  //     let newList = [];
-
-  //     newList = oldList.filter(row =>
-  //       row.Instituto.includes(word.toLowerCase())
-  //       );
-  //       setFilterDisplay(newList);
-  //   }else{
-  //     setFilterDisplay(ejemplos)
-  //   };
-
-  // }
 
   const [datos, setDatos] = useState([]);
   const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
 
   const handleChange =(e: React.ChangeEvent<HTMLInputElement>)=>{
+
     setBusqueda(e.target.value)
     filtrar(e.target.value);
-    
+  }
+
+  const handleSearch =() =>{
+    filtrar(busqueda);
   }
 
   const filtrar = (terminoBusqueda: string) =>{
+
     let ResultadoBusqueda = ejemplos.filter((elemento)=>{
       if (elemento.Clave_de_inscripcion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
         || elemento.Estatus.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
@@ -183,8 +140,6 @@ export function ConsultaDeSolicitudPage() {
       {
         console.log("elemento", elemento);
         return elemento;
-        
-        
       }
     })
   }
@@ -220,7 +175,7 @@ export function ConsultaDeSolicitudPage() {
             //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon  onClick = {() =>handleChange}/>
+            <SearchIcon  onClick = {() => handleSearch() }/>
           </IconButton>
         </Paper>
       </Grid>
