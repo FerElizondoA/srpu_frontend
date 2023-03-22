@@ -35,7 +35,7 @@ module.exports = {
       });
     } 
       db.query(
-        `CALL sp_NuevoUsuario('${CreadoPor}', '${IdUsuarioCentral}''${Cargo}','${Correo}','${IdRol}', )`,
+        `CALL sp_NuevoUsuario('${IdUsuarioCreador}', '${IdUsuarioCentral}''${Cargo}','${Correo}','${IdRol}', )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -62,27 +62,34 @@ module.exports = {
     
   },
 
-//   //LISTADO COMPLETO
-//   getUsuario: (req, res) => {
-//     db.query(`CALL sp_ListadoUsuarios()`, (err, result) => {
-//       if (err) {
-//         return res.status(500).send({
-//           error: "Error",
-//         });
-//       }
+  //LISTADO COMPLETO
+  getUsuarios: (req, res) => {
+    const IdApp = req.query.IdApp;
 
-//       if (result.length) {
-//         const data = result[0];
-//         return res.status(200).send({
-//           data,
-//         });
-//       } else {
-//         return res.status(409).send({
-//           error: "¡Sin Información!",
-//         });
-//       }
-//     });
-//   },
+    if (IdApp == null ||/^[\s]*$/.test(IdApp)) {
+      return res.status(409).send({
+        error: "Ingrese IdApp",
+      });
+    } 
+    db.query(`CALL sp_ListadoUsuarios('${IdApp}')`, (err, result) => {
+      if (err) {
+        return res.status(500).send({
+          error: "Error",
+        });
+      }
+
+      if (result.length) {
+        const data = result[0];
+        return res.status(200).send({
+          data,
+        });
+      } else {
+        return res.status(409).send({
+          error: "¡Sin Información!",
+        });
+      }
+    });
+  },
 
   // DETALLE POR ID
   getDetailUsuario: (req, res) => {
