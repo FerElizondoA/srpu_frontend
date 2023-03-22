@@ -13,6 +13,7 @@ import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoP
 import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Catalogos } from "./components/Config/Catalogos";
 import { Usuarios } from "./components/Config/Usuarios";
+import { Configuracion } from "./components/Config/Config";
 
 export const appTheme = createTheme({
   palette: {
@@ -59,6 +60,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
+          <Route path="config" element={<Configuracion />}></Route>
           <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
           <Route path="users" element={<Usuarios />}></Route>
