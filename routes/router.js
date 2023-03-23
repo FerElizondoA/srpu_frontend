@@ -10,6 +10,7 @@ const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
+const { createSolicitud, getSolicitudes } = require("../controllers/Solicitudes.js");
 const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento } = require("../controllers/TipoDeDocumentos.js");
 
 const { getDetailUsuario, getUsuarios } = require("../controllers/usuarios.js");
@@ -245,6 +246,16 @@ router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) 
 router.delete("/delete-tipoDocumento",  verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
+
+//Solicitudes
+router.post("/create-solicitud", verifyToken.verifyJWT, (req, res) => {
+  createSolicitud(req, res);
+});
+
+router.get("/get-solicitudes",  verifyToken.verifyJWT, (req, res) => {
+  getSolicitudes(req, res);
+});
+
 
 
 module.exports = router;
