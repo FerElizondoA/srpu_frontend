@@ -24,244 +24,111 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-
-interface Data {
-  Número_de_Solicitud: string;
-  Monto_original_Contratado: number;
-  Denominacíon: string;
-  Estatus_de_la_solicitud: string;
-  Tipo_de_solicitud: string;
-
-  Tipo_de_ente_público_obligado: string;
-  Institucion_financiera: string;
-  Solicitante_autorizado: string;
-  Cargo_de_solicitante: string;
+import { useEffect, useState } from "react";
+import { getSolicitudes } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
+import e from "express";
+interface IData {
+  Institucion: string;
+  TipoEntePublico: string;
+  ClaveDeInscripcion: string;
+  Estatus: string;
+  FechaContratacion: Date;
+  MontoOriginalContratado: number;
+  //search: string
 }
 
 interface Head {
-  id: keyof Data;
+  id: keyof IData;
   isNumeric: boolean;
   label: string;
 }
 const heads: readonly Head[] = [
   {
-    id: "Número_de_Solicitud",
-    isNumeric: false,
-    label: "Número De Solicitud",
-  },
-
-  {
-    id: "Monto_original_Contratado",
-    isNumeric: true,
-    label: "Monto original contratado",
-  },
-
-  {
-    id: "Denominacíon",
-    isNumeric: true,
-    label: "Denominacíon",
-  },
-
-  {
-    id: "Estatus_de_la_solicitud",
-    isNumeric: true,
-    label: "Estatus de la solicitud",
-  },
-
-  {
-    id: "Tipo_de_solicitud",
-    isNumeric: true,
-    label: "Tipo de solicitud",
-  },
-
-  {
-    id: "Tipo_de_ente_público_obligado",
-    isNumeric: true,
-    label: "Tipo de ente público obligado",
-  },
-
-  {
-    id: "Institucion_financiera",
+    id: "Institucion",
     isNumeric: true,
     label: "Institucion financiera",
   },
-
   {
-    id: "Solicitante_autorizado",
+    id: "TipoEntePublico",
     isNumeric: true,
-    label: "Solicitante autorizado",
+    label: "Tipo de ente público obligado",
   },
-
   {
-    id: "Cargo_de_solicitante",
+    id: "Estatus",
     isNumeric: true,
-    label: "Cargo de solicitante",
+    label: "Estatus",
+  },
+  {
+    id: "ClaveDeInscripcion",
+    isNumeric: true,
+    label: "Clave de inscripcion",
+  },
+  {
+    id: "MontoOriginalContratado",
+    isNumeric: true,
+    label: "Monto original contratado",
+  },
+  {
+    id: "FechaContratacion",
+    isNumeric: true,
+    label: "Fecha de contratacion",
   },
 ];
 
-function createDummyData(
-  Número_de_Solicitud: string,
-  Monto_original_Contratado: number,
-  Denominacíon: string,
-  Estatus_de_la_solicitud: string,
-  Tipo_de_solicitud: string,
-  Tipo_de_ente_público_obligado: string,
-  Institucion_financiera: string,
-  Solicitante_autorizado: string,
-  Cargo_de_solicitante: string
-) {
-  return {
-    Número_de_Solicitud,
-    Monto_original_Contratado,
-    Denominacíon,
-    Estatus_de_la_solicitud,
-    Tipo_de_solicitud,
-    Tipo_de_ente_público_obligado,
-    Institucion_financiera,
-    Solicitante_autorizado,
-    Cargo_de_solicitante,
-  };
-}
-
-const rows = [
-  createDummyData(
-    "121-DC",
-    10000000,
-    "pesos",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Bvba Banorte empresarial",
-    "Jesus Echeverria Rodrigues",
-    "Tesorero del Estado de Nuevo Leon"
-  ),
-  createDummyData(
-    "122-AB",
-    35000000,
-    "udis",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Santander Empresarial",
-    "Marcelo Ebrad Martinez",
-    "Secretaria de Finanzas de Jaurez"
-  ),
-  createDummyData(
-    "121-DC",
-    10000000,
-    "pesos",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Bvba Banorte empresarial",
-    "Jesus Echeverria Rodrigues",
-    "Tesorero del Estado de Nuevo Leon"
-  ),
-  createDummyData(
-    "122-AB",
-    35000000,
-    "udis",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Santander Empresarial",
-    "Marcelo Ebrad Martinez",
-    "Secretaria de Finanzas de Jaurez"
-  ),
-  createDummyData(
-    "121-DC",
-    10000000,
-    "pesos",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Bvba Banorte empresarial",
-    "Jesus Echeverria Rodrigues",
-    "Tesorero del Estado de Nuevo Leon"
-  ),
-  createDummyData(
-    "122-AB",
-    35000000,
-    "udis",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Santander Empresarial",
-    "Marcelo Ebrad Martinez",
-    "Secretaria de Finanzas de Jaurez"
-  ),
-  createDummyData(
-    "121-DC",
-    10000000,
-    "pesos",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Bvba Banorte empresarial",
-    "Jesus Echeverria Rodrigues",
-    "Tesorero del Estado de Nuevo Leon"
-  ),
-  createDummyData(
-    "122-AB",
-    35000000,
-    "udis",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Santander Empresarial",
-    "Marcelo Ebrad Martinez",
-    "Secretaria de Finanzas de Jaurez"
-  ),
-  createDummyData(
-    "121-DC",
-    10000000,
-    "pesos",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Bvba Banorte empresarial",
-    "Jesus Echeverria Rodrigues",
-    "Tesorero del Estado de Nuevo Leon"
-  ),
-  createDummyData(
-    "122-AB",
-    35000000,
-    "udis",
-    "Aprobado",
-    "Corto Plazo",
-    "Municipio",
-    "Santander Empresarial",
-    "Marcelo Ebrad Martinez",
-    "Secretaria de Finanzas de Jaurez"
-  ),
-  //createDummyData("prueba1", 10000000, ),
-];
-
-// const StyledTableCell = styled(TableCell)(({ theme }) => ({
-//   [`&.${tableCellClasses.head}`]: {
-//     backgroundColor: "white",
-//     color: theme.palette.common.black,
-//     fontFamily: "MontserratMedium",
-//     fontSize: "1.8ch",
-//   },
-//   [`&.${tableCellClasses.body}`]: {
-//     fontFamily: "MontserratRegular",
-//     fontSize: "1.5ch",
-//   },
-// }));
-
-// const StyledTableRow = styled(TableRow)(({ theme }) => ({
-//   fontFamily: "MontserratMedium",
-//   "&:nth-of-type(odd)": {
-//     backgroundColor: theme.palette.action.hover,
-//   },
-//   // hide last border
-//   "&:last-child td, &:last-child th": {
-//     border: 0,
-//   },
-// }));
 
 export function ConsultaDeSolicitudPage() {
+
+  const [datos, setDatos] = useState<Array<IData>>([]);
+  // const [datostabla, setDatosTabla] =useState([]);
+  const [busqueda, setBusqueda] = useState("");
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+  
+
+  const handleChange =(dato: string)=>{
+    setBusqueda(dato)
+  }
+
+  const handleSearch =() =>{
+    filtrarDatos();
+  }
+
+
+  const filtrarDatos= () =>{
+      let ResultadoBusqueda = datos.filter((elemento)=>{
+
+      if (elemento.ClaveDeInscripcion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.Estatus.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.FechaContratacion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.Institucion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.MontoOriginalContratado.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.TipoEntePublico.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+      ){
+        console.log(elemento);
+        
+        return elemento;
+      }
+        
+      
+    })
+    setDatosFiltrados(ResultadoBusqueda);
+    
+  }
+
+  useEffect(()=>{
+    getSolicitudes(setDatos);
+  },[])
+
+  useEffect(()=>{
+    setDatosFiltrados(datos);
+  },[datos])
+
+  useEffect(()=>{
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length!=0 ? setDatosFiltrados(datos):null
+  },[busqueda])
+
+  
+
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -288,16 +155,18 @@ export function ConsultaDeSolicitudPage() {
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Buscar"
+            value={busqueda}
+            onChange={(e)=>{handleChange(e.target.value)}}
             //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
+            <SearchIcon  onClick = {() => handleSearch() }/>
           </IconButton>
         </Paper>
       </Grid>
 
       <Grid item>
-        <TableContainer sx={{ maxHeight: "500px" }}>
+        <TableContainer sx={{ maxHeight: "900px" }}>
           <Table>
             <TableHead>
               {heads.map((head) => (
@@ -307,43 +176,32 @@ export function ConsultaDeSolicitudPage() {
               ))}
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {datosFiltrados.map((row) => (
                 <StyledTableRow>
-                  <StyledTableCell component="th" scope="row">
-                    {row.Número_de_Solicitud.toString()}
+                  <StyledTableCell component="th" scope="row" >
+                    {row.Institucion.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Monto_original_Contratado.toString()}
+                    {row.TipoEntePublico.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Denominacíon.toString()}
+                    {row.Estatus.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Estatus_de_la_solicitud.toString()}
+                    {row.ClaveDeInscripcion.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Tipo_de_solicitud.toString()}
+                    {row.MontoOriginalContratado.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Tipo_de_ente_público_obligado.toString()}
+                    {row.FechaContratacion.toString()}
                   </StyledTableCell>
-
-                  <StyledTableCell component="th" scope="row">
-                    {row.Institucion_financiera.toString()}
-                  </StyledTableCell>
-
-                  <StyledTableCell component="th" scope="row">
-                    {row.Solicitante_autorizado.toString()}
-                  </StyledTableCell>
-
-                  <StyledTableCell component="th" scope="row">
-                    {row.Cargo_de_solicitante.toString()}
-                  </StyledTableCell>
+                  
                 </StyledTableRow>
               ))}
             </TableBody>

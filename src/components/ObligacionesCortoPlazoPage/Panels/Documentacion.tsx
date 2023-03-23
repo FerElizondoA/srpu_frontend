@@ -143,7 +143,6 @@ export function Documentacion() {
     }
 
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
-    console.log(archivos);
   };
 
   const cancelar = () => {
