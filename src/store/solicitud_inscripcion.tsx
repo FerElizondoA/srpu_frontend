@@ -15,7 +15,7 @@ export interface SolicitudInscripcionSlice{
     changeDocumentoAutorizado: (newDocumentoAutorizado: string) => void;
     changeIdentificacion: (newIdentificacion: string) => void;
     changeReglas: (newReglas: string) => void;
-    fetchDocumento:() => void;
+    fetchDocumento:(reglasSeleccionadas: number[]) => void;
     fetchReglas: () => void;
 }
 
@@ -33,7 +33,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     changeIdentificacion: (newIdetificacion: string) => set(()=> ({identificacion: newIdetificacion})),
     changeReglas: (newReglas: string) => set((state)=> ({reglas: [...state.reglas, newReglas]})),
     
-    fetchDocumento: async ()=> {
+    fetchDocumento: async (reglasSeleccionadas: number[])=> {
         let data = new FormData();
 
 

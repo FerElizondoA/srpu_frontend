@@ -266,7 +266,7 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="success" onClick={fetchDocumento()}>
+          <Fab variant="extended" color="success" onClick={() => fetchDocumento(selected)}>
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
