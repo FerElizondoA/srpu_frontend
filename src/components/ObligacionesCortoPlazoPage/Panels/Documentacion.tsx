@@ -199,7 +199,7 @@ export function Documentacion() {
                         position={"absolute"}
                         sx={{
                           display: "flex",
-                          fontFamily: "MontserratMedium",
+                          fontFamily: "MontserratBold",
                           textAlign: "center",
                           justifyContent: "center",
                           alignItems: "center",
