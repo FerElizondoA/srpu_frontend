@@ -1,4 +1,3 @@
-const { logRoles } = require("@testing-library/react");
 const db = require("../config/db.js");
 
 module.exports = {
