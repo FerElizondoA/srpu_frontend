@@ -78,60 +78,56 @@ const heads: readonly Head[] = [
 
 export function ConsultaDeSolicitudPage() {
 
-  const [datos, setDatos] = useState([]);
-  const [datostabla, setDatosTabla] =useState([]);
+  const [datos, setDatos] = useState<Array<IData>>([]);
+  // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [filtrar, setFiltrar] = useState<Array<IData>>([]);
-  const [baseDeDatos, setBaseDeDatos] = useState<Array<IData>>([]);
-  console.log("soy la data1",filtrar);
-  const handleChange =(e: React.ChangeEvent<HTMLInputElement>)=>{
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+  
 
-    setBusqueda(e.target.value)
-    filtrar2(e.target.value);
-    console.log("e..",e.target.value);
-    console.log("busqueda",busqueda);
-    
+  const handleChange =(dato: string)=>{
+    setBusqueda(dato)
   }
 
   const handleSearch =() =>{
-    filtrar2(JSON.stringify(baseDeDatos));
-
-    console.log("busqueda",busqueda);
-    
+    filtrarDatos();
   }
 
-  const filtrar2 = (terminoBusqueda: string) =>{
-      let ResultadoBusqueda = baseDeDatos.filter((elemento)=>{
 
-      if (elemento.ClaveDeInscripcion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Estatus.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.FechaContratacion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Institucion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.MontoOriginalContratado.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.TipoEntePublico.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-      )
-      console.log("elemento", elemento);
-      let solicitud: IData ={
-          Institucion: elemento.Institucion,
-          TipoEntePublico: elemento.TipoEntePublico,
-          ClaveDeInscripcion: elemento.ClaveDeInscripcion,
-          Estatus: elemento.Estatus,
-          FechaContratacion: elemento.FechaContratacion,
-          MontoOriginalContratado:elemento.MontoOriginalContratado,
-      }
-      setFiltrar([...filtrar,solicitud])
+  const filtrarDatos= () =>{
+      let ResultadoBusqueda = datos.filter((elemento)=>{
+
+      if (elemento.ClaveDeInscripcion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.Estatus.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.FechaContratacion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.Institucion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.MontoOriginalContratado.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+        || elemento.TipoEntePublico.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
+      ){
+        console.log(elemento);
+        
         return elemento;
+      }
+        
       
     })
-    
+    setDatosFiltrados(ResultadoBusqueda);
     
   }
 
-  
+  useEffect(()=>{
+    getSolicitudes(setDatos);
+  },[])
 
   useEffect(()=>{
-    getSolicitudes(setBaseDeDatos)
-  },[])
+    setDatosFiltrados(datos);
+  },[datos])
+
+  useEffect(()=>{
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length!=0 ? setDatosFiltrados(datos):null
+  },[busqueda])
+
+  
 
   return (
     <Grid container direction="column">
@@ -160,7 +156,7 @@ export function ConsultaDeSolicitudPage() {
             sx={{ ml: 1, flex: 1 }}
             placeholder="Buscar"
             value={busqueda}
-            onChange={handleChange}
+            onChange={(e)=>{handleChange(e.target.value)}}
             //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
@@ -170,7 +166,7 @@ export function ConsultaDeSolicitudPage() {
       </Grid>
 
       <Grid item>
-        <TableContainer sx={{ maxHeight: "500px" }}>
+        <TableContainer sx={{ maxHeight: "900px" }}>
           <Table>
             <TableHead>
               {heads.map((head) => (
@@ -180,7 +176,7 @@ export function ConsultaDeSolicitudPage() {
               ))}
             </TableHead>
             <TableBody>
-              {filtrar.map((row) => (
+              {datosFiltrados.map((row) => (
                 <StyledTableRow>
                   <StyledTableCell component="th" scope="row" >
                     {row.Institucion.toString()}
