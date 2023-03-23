@@ -12,7 +12,8 @@ import {
   Fab,
   Typography,
 } from "@mui/material";
-import { GridCheckIcon } from "@mui/x-data-grid";
+
+import CheckIcon from '@mui/icons-material/Check';
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
@@ -246,7 +247,7 @@ export function SolicitudInscripcion() {
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
           <Fab variant="extended" color="success" onClick={fetchDocumento()}>
-            <GridCheckIcon sx={{ mr: 1 }} />
+            <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
         </Grid>
