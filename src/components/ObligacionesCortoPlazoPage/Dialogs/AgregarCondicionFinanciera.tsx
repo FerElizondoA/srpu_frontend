@@ -89,16 +89,6 @@ export function AgregarCondicionFinanciera(props: Props){
 
           {tabIndex === 4 && <ComisionesTasaEfectiva />}
         </Grid>
-        <Grid
-          item
-          position="fixed"
-          sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
-        >
-          <Fab variant="extended" color="success">
-            <CheckIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>AGREGAR</Typography>
-          </Fab>
-        </Grid>
       </Grid>
     </Dialog>
   );
