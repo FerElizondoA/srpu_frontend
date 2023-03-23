@@ -8,12 +8,12 @@ module.exports = {
 
     if ((Rol == null ||/^[\s]*$/.test(Rol)) && Rol.length() <= 255) {
       return res.status(409).send({
-        error: "Ingresé Rol válido.",
+        error: "Ingrese Rol válido.",
       });
     } 
     if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
         return res.status(409).send({
-          error: "Ingresé Id usuario válido.",
+          error: "Ingrese Id usuario válido.",
         });
       } 
     else {
@@ -72,7 +72,7 @@ module.exports = {
     const IdRol = req.body.IdRol;
     if (IdRol == null ||/^[\s]*$/.test(IdRol)) {
         return res.status(409).send({
-          error: "Ingresé IdRol.",
+          error: "Ingrese IdRol.",
         });
       } 
 
@@ -107,7 +107,7 @@ module.exports = {
   modifyRol: (req, res) => {
     const IdRol = req.body.IdRol;
     const Rol = req.body.NuevoRol;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
     if (IdRol == null ||/^[\s]*$/.test(IdRol)) {
       return res.status(409).send({
@@ -157,7 +157,7 @@ module.exports = {
   //BORRADO LOGICO
   deleteRol: (req, res) => {
     const IdRol = req.body.IdRol;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdUsuarioModificador = req.body.IdUsuario;
     db.query(
       `CALL sp_BajaLogicaRol('${IdRol}', '${IdUsuarioModificador}')`,
       (err, result) => {

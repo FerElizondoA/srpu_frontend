@@ -3,19 +3,19 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createObligadoSolidarioAval: (req, res) => {
-    const ObligadoSolidarioAval = req.body.ObligadoSolidarioAval;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
     if (
-      ObligadoSolidarioAval == null ||
-      /^[\s]*$/.test(ObligadoSolidarioAval)
+      Descripcion == null ||
+      /^[\s]*$/.test(Descripcion)
     ) {
       return res.status(409).send({
         error: "Ingrese Obligado Solidario / Aval",
       });
     } else {
       db.query(
-        `CALL sp_AgregarObligadoSolidarioAval('${IdUsuarioCreador}', '${ObligadoSolidarioAval}' )`,
+        `CALL sp_AgregarObligadoSolidarioAval('${IdUsuarioCreador}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -66,9 +66,9 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailObligadoSolidarioAval: (req, res) => {
-    const IdObligadoSolidarioAval = req.body.IdObligadoSolidarioAval;
+    const IdDescripcion = req.body.IdDescripcion;
     db.query(
-      `CALL sp_DetalleObligadoSolidarioAval('${IdObligadoSolidarioAval}')`,
+      `CALL sp_DetalleObligadoSolidarioAval('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -96,13 +96,13 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyObligadoSolidarioAval: (req, res) => {
-    const IdObligadoSolidarioAval = req.body.IdObligadoSolidarioAval;
-    const NuevaObligadoSolidarioAval = req.body.NuevoObligadoSolidarioAval;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
     if (
-      IdObligadoSolidarioAval == null ||
-      /^[\s]*$/.test(IdObligadoSolidarioAval)
+      IdDescripcion == null ||
+      /^[\s]*$/.test(IdDescripcion)
     ) {
       return res.status(409).send({
         error: "Ingrese Id",
@@ -110,15 +110,15 @@ module.exports = {
     }
 
     if (
-      NuevaObligadoSolidarioAval == null ||
-      /^[\s]*$/.test(NuevaObligadoSolidarioAval)
+      Descripcion == null ||
+      /^[\s]*$/.test(Descripcion)
     ) {
       return res.status(409).send({
         error: "Ingrese Nuevo Obligado Solidario / Aval",
       });
     } else {
       db.query(
-        `CALL sp_ModificaObligadoSolidarioAval('${IdObligadoSolidarioAval}','${NuevaObligadoSolidarioAval}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaObligadoSolidarioAval('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -147,10 +147,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteObligadoSolidarioAval: (req, res) => {
-    const IdObligadoSolidarioAval = req.body.IdObligadoSolidarioAval;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaObligadoSolidarioAval('${IdObligadoSolidarioAval}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaObligadoSolidarioAval('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

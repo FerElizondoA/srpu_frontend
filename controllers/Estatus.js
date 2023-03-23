@@ -6,15 +6,15 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createEstatus: (req, res) => {
-    const State = req.body.State;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
-    if (State == null || /^[\s]*$/.test(State)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Estatus",
       });
     } else {
-      db.query(`CALL sp_AgregarEstatus('${IdUsuarioCreador}', '${State}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarEstatus('${IdUsuarioCreador}', '${Descripcion}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -63,8 +63,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailEstatus: (req, res) => {
-    const IdState = req.body.IdEstatus;
-    db.query(`CALL sp_DetalleEstatus('${IdState}')`, (err, result) => {
+    const IdDescripcion = req.body.IdEstatus;
+    db.query(`CALL sp_DetalleEstatus('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -90,12 +90,11 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyEstatus: (req, res) => {
-    const IdState = req.body.IdEstatus;
-    const NuevaState = req.body.NuevoEstatus;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const NuevaState = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
-
-    if (IdState == null || /^[\s]*$/.test(IdState)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
@@ -107,7 +106,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaEstatus('${IdState}','${NuevaState}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaEstatus('${IdDescripcion}','${NuevaState}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -136,10 +135,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteEstatus: (req, res) => {
-    const IdState = req.body.IdEstatus;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaEstatus('${IdState}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaEstatus('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

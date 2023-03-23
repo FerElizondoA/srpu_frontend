@@ -1,24 +1,24 @@
 const db = require("../config/db.js");
 
 module.exports = {
-  //CREAR
-  createClaveDeInscripcion: (req, res) => {
+  //CREAR  
+  createTasaDeReferencia: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
 
-    if ((Descripcion == null || /^[\s]*$/.test(Descripcion)) ) {
+    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion)) && Descripcion.length() <= 255) {
       return res.status(409).send({
-        error: "Ingrese Clave de inscripcion válida.",
+        error: "Ingrese Tasa De Referencia válido.",
       });
     } 
-    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) ) {
+    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
         return res.status(409).send({
           error: "Ingrese Id usuario válido.",
         });
       } 
     else {
       db.query(
-        `CALL sp_AgregarClaveDeInscripcion('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarTasaDeReferencia('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -46,8 +46,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getClavesDeInscripcion: (req, res) => {
-    db.query(`CALL sp_ListadoClavesDeInscripcion()`, (err, result) => {
+  getTasasDeReferencia: (req, res) => {
+    db.query(`CALL sp_ListadoTasasDeReferencia()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -68,7 +68,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailClaveDeInscripcion: (req, res) => {
+  getDetailTasaDeReferencia: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
         return res.status(409).send({
@@ -77,7 +77,7 @@ module.exports = {
       } 
 
     db.query(
-      `CALL sp_DetalleClaveDeInscripcion('${IdDescripcion}')`,
+      `CALL sp_DetalleTasaDeReferencia('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -104,7 +104,7 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyClaveDeInscripcion: (req, res) => {
+  modifyTasaDeReferencia: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
@@ -127,7 +127,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaClaveDeInscripcion('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaTasaDeReferencia('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -154,12 +154,13 @@ module.exports = {
     }
   },
 
+  
   //BORRADO LOGICO
-  deleteClaveDeInscripcion: (req, res) => {
+  deleteTasaDeReferencia: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaClaveDeInscripcion('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaTasaDeReferencia('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

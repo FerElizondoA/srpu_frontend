@@ -2,6 +2,7 @@ const express = require("express");
 const verifyToken = require("../controllers/auth/verifyToken.js");
 const { createClaveDeInscripcion, getClavesDeInscripcion, getDetailClaveDeInscripcion, modifyClaveDeInscripcion, deleteClaveDeInscripcion } = require("../controllers/ClaveDeInscripcion.js");
 const { createDestino, getDestinos, getDetailDestino, modifyDestino, deleteDestino } = require("../controllers/Destinos.js");
+const { createDiaDelEjercicio, getDiasDelEjercicio, getDetailDiaDelEjercicio, modifyDiaDelEjercicio, deleteDiaDelEjercicio } = require("../controllers/DiaDelEjercicio.js");
 const { createEntePublicoObligado, getEntePublicoObligado, getDetailEntePublicoObligado, modifyEntePublicoObligado, deleteEntePublicoObligado } = require("../controllers/EntesPublicosObligados.js");
 const { createEstatus, getDetailEstatus, modifyEstatus, deleteEstatus, getEstatus } = require("../controllers/Estatus.js");
 const { deleteFuenteAlternaDePago, createFuenteAlternaDePago, getFuenteAlternaDePago, getDetailFuenteAlternaDePago, modifyFuenteAlternaDePago } = require("../controllers/FuenteAlternaDePago.js");
@@ -9,7 +10,11 @@ const { createFuenteDePago, getFuenteDePago, getDetailFuenteDePago, modifyFuente
 const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
+const { createPeriodicidadDePago, getPeriodicidadDePago, getDetailPeriodicidadDePago, modifyPeriodicidadDePago, deletePeriodicidadDePago } = require("../controllers/PeriodicidadDelPago.js");
+const { createReglaDeFinanciamiento, getReglasDeFinanciamiento, getDetailReglaDeFinanciamiento, modifyReglaDeFinanciamiento, deleteReglaDeFinanciamiento } = require("../controllers/ReglaDeFinanciamiento.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
+const { createTasaDeReferencia, getTasasDeReferencia, getDetailTasaDeReferencia, modifyTasaDeReferencia, deleteTasaDeReferencia } = require("../controllers/TasaDeReferencia.js");
+const { createTipoDeComision, getTiposDeComision, getDetailTipoDeComision, modifyTipoDeComision, deleteTipoDeComision } = require("../controllers/TipoDeComision.js");
 const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, getTiposEntePublico, getDetailTipoEntePublico } = require("../controllers/TipoEntePublico.js");
 const { createTipoDocumento, getTiposDocumento, getDetailTipoDocumento, modifyTipoDocumento, deleteTipoDocumento } = require("../controllers/TiposDocumento.js");
 
@@ -18,7 +23,7 @@ const { getDetailUsuario } = require("../controllers/usuarios.js");
 
 
 //Instituciones Financieras
-router.post("/create-institucionFinanciera",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-institucionesFinancieras",  verifyToken.verifyJWT, (req, res, express) => {
   createInstitucionFinanciera(req, res);
 });
 
@@ -26,16 +31,16 @@ router.get("/get-institucionesFinancieras", verifyToken.verifyJWT, (req, res) =>
   getInstitucionesFinancieras(req, res);
 });
 
-router.get("/detail-institucionFinanciera", verifyToken.verifyJWT, (req, res) => {
+router.get("/detail-institucionesFinancieras", verifyToken.verifyJWT, (req, res) => {
   getDetailInstitucionFinanciera(req, res);
 });
 
-router.put("/modify-institucionFinanciera", verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-institucionesFinancieras", verifyToken.verifyJWT, (req, res) => {
   modifyInstitucionFinanciera(req, res);
 });
 
 
-router.delete("/delete-institucionFinanciera", verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-institucionesFinancieras", verifyToken.verifyJWT, (req, res) => {
   deleteInstitucionFinanciera(req, res);
 });
 
@@ -84,7 +89,7 @@ router.delete("/delete-entePublicoObligado", verifyToken.verifyJWT, (req, res) =
 });
 
 //TipoEntePublico
-router.post("/create-tipoEntePublico",  verifyToken.verifyJWT, (req, res) => {
+router.post("/create-tiposEntePublico",  verifyToken.verifyJWT, (req, res) => {
   createTipoEntePublico(req, res);
 });
 
@@ -92,16 +97,16 @@ router.get("/get-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
   getTiposEntePublico(req, res);
 });
 
-router.get("/detail-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+router.get("/detail-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
   getDetailTipoEntePublico(req, res);
 });
 
-router.put("/modify-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
   modifyTipoEntePublico(req, res);
 });
 
 
-router.delete("/delete-tipoEntePublico", verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
   deleteTipoEntePublico(req, res);
 });
 
@@ -196,7 +201,7 @@ router.delete("/delete-claveDeInscripcion", verifyToken.verifyJWT, (req, res) =>
 });
 
 //Destinos
-router.post("/create-destino",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-destinos",  verifyToken.verifyJWT, (req, res, express) => {
   createDestino(req, res);
 });
 
@@ -204,21 +209,21 @@ router.get("/get-destinos", verifyToken.verifyJWT, (req, res) => {
   getDestinos(req, res);
 });
 
-router.get("/detail-destino", verifyToken.verifyJWT, (req, res) => {
+router.get("/detail-destinos", verifyToken.verifyJWT, (req, res) => {
   getDetailDestino(req, res);
 });
 
-router.put("/modify-destino", verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-destinos", verifyToken.verifyJWT, (req, res) => {
   modifyDestino(req, res);
 });
 
 
-router.delete("/delete-destino", verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-destinos", verifyToken.verifyJWT, (req, res) => {
   deleteDestino(req, res);
 });
 
 //Roles
-router.post("/create-rol",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-roles",  verifyToken.verifyJWT, (req, res, express) => {
   createRol(req, res);
 });
 
@@ -226,16 +231,16 @@ router.get("/get-roles", verifyToken.verifyJWT, (req, res) => {
   getRoles(req, res);
 });
 
-router.get("/detail-rol", verifyToken.verifyJWT, (req, res) => {
+router.get("/detail-roles", verifyToken.verifyJWT, (req, res) => {
   getDetailRol(req, res);
 });
 
-router.put("/modify-rol", verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-roles", verifyToken.verifyJWT, (req, res) => {
   modifyRol(req, res);
 });
 
 
-router.delete("/delete-rol", verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-roles", verifyToken.verifyJWT, (req, res) => {
   deleteRol(req, res);
 });
 
@@ -244,9 +249,8 @@ router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
 });
 
-
 //TipoDocumento
-router.post("/create-TipoDocumento",  verifyToken.verifyJWT, (req, res, express) => {
+router.post("/create-TiposDocumento",  verifyToken.verifyJWT, (req, res, express) => {
   createTipoDocumento(req, res);
 });
 
@@ -254,19 +258,132 @@ router.get("/get-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   getTiposDocumento(req, res);
 });
 
-router.get("/detail-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+router.get("/detail-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   getDetailTipoDocumento(req, res);
 });
 
-router.put("/modify-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   modifyTipoDocumento(req, res);
 });
 
 
-router.delete("/delete-TipoDocumento", verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   deleteTipoDocumento(req, res);
 });
 
+//TipoPeriodicidadDePago
+router.post("/create-periodicidadDePago",  verifyToken.verifyJWT, (req, res, express) => {
+  createPeriodicidadDePago(req, res);
+});
+
+router.get("/get-periodicidadDePago", verifyToken.verifyJWT, (req, res) => {
+  getPeriodicidadDePago(req, res);
+});
+
+router.get("/detail-periodicidadDePago", verifyToken.verifyJWT, (req, res) => {
+  getDetailPeriodicidadDePago(req, res);
+});
+
+router.put("/modify-periodicidadDePago", verifyToken.verifyJWT, (req, res) => {
+  modifyPeriodicidadDePago(req, res);
+});
+
+router.delete("/delete-periodicidadDePago", verifyToken.verifyJWT, (req, res) => {
+  deletePeriodicidadDePago(req, res);
+});
+
+
+//TasaDeReferencia
+router.post("/create-tasaDeReferencia",  verifyToken.verifyJWT, (req, res, express) => {
+  createTasaDeReferencia(req, res);
+});
+
+router.get("/get-tasaDeReferencia", verifyToken.verifyJWT, (req, res) => {
+  getTasasDeReferencia(req, res);
+});
+
+router.get("/detail-tasaDeReferencia", verifyToken.verifyJWT, (req, res) => {
+  getDetailTasaDeReferencia(req, res);
+});
+
+router.put("/modify-tasaDeReferencia", verifyToken.verifyJWT, (req, res) => {
+  modifyTasaDeReferencia(req, res);
+});
+
+router.delete("/delete-tasaDeReferencia", verifyToken.verifyJWT, (req, res) => {
+  deleteTasaDeReferencia(req, res);
+});
+
+
+//DiaDelEjercicio
+router.post("/create-diasDelEjercicio",  verifyToken.verifyJWT, (req, res, express) => {
+  createDiaDelEjercicio(req, res);
+});
+
+router.get("/get-diasDelEjercicio", verifyToken.verifyJWT, (req, res) => {
+  getDiasDelEjercicio(req, res);
+});
+
+router.get("/detail-diasDelEjercicio", verifyToken.verifyJWT, (req, res) => {
+  getDetailDiaDelEjercicio(req, res);
+});
+
+router.put("/modify-diasDelEjercicio", verifyToken.verifyJWT, (req, res) => {
+  modifyDiaDelEjercicio(req, res);
+});
+
+router.delete("/delete-diasDelEjercicio", verifyToken.verifyJWT, (req, res) => {
+  deleteDiaDelEjercicio(req, res);
+});
+
+
+//TipoDeComision
+router.post("/create-tipoDeComision",  verifyToken.verifyJWT, (req, res, express) => {
+  createTipoDeComision(req, res);
+});
+
+router.get("/get-tipoDeComision", verifyToken.verifyJWT, (req, res) => {
+  getTiposDeComision(req, res);
+});
+
+router.get("/detail-tipoDeComision", verifyToken.verifyJWT, (req, res) => {
+  getDetailTipoDeComision(req, res);
+});
+
+router.put("/modify-tipoDeComision", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoDeComision(req, res);
+});
+
+router.delete("/delete-tipoDeComision", verifyToken.verifyJWT, (req, res) => {
+  deleteTipoDeComision(req, res);
+});
+
+
+//ReglaDeFinanciamiento
+router.post("/create-reglaDeFinanciamiento",  verifyToken.verifyJWT, (req, res, express) => {
+  createReglaDeFinanciamiento(req, res);
+});
+
+router.get("/get-reglaDeFinanciamiento", verifyToken.verifyJWT, (req, res) => {
+  getReglasDeFinanciamiento(req, res);
+});
+
+router.get("/detail-reglaDeFinanciamiento", verifyToken.verifyJWT, (req, res) => {
+  getDetailReglaDeFinanciamiento(req, res);
+});
+
+router.put("/modify-reglaDeFinanciamiento", verifyToken.verifyJWT, (req, res) => {
+  modifyReglaDeFinanciamiento(req, res);
+});
+
+router.delete("/delete-reglaDeFinanciamiento", verifyToken.verifyJWT, (req, res) => {
+  deleteReglaDeFinanciamiento(req, res);
+});
+
+// Usuario
+router.get("/usuario", verifyToken.verifyJWT, (req, res) => {
+  getDetailUsuario(req, res);
+});
 
 
 module.exports = router;

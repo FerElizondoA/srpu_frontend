@@ -7,7 +7,7 @@ module.exports = {
   //CREAR
   createEntePublicoObligado: (req, res) => {
     const EntePublicoObligado = req.body.EntePublicoObligado;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const IdUsuarioCreador = req.body.IdUsuario;
     const TipoEntePublico = req.body.TipoEntePublico;
 
     if (EntePublicoObligado == null || /^[\s]*$/.test(EntePublicoObligado)) {
@@ -64,8 +64,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailEntePublicoObligado: (req, res) => {
-    const IdEntePublicoObligado = req.body.IdEntePublicoObligado;
-    db.query(`CALL sp_DetalleEntePublicoObligado('${IdEntePublicoObligado}')`, (err, result) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    db.query(`CALL sp_DetalleEntePublicoObligado('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -91,25 +91,25 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyEntePublicoObligado: (req, res) => {
-    const IdEntePublicoObligado = req.body.IdEntePublicoObligado;
-    const NuevaEntePublicoObligado = req.body.NuevoEntePublicoObligado;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
     const TipoEntePublico = req.body.TipoEntePublico;
 
 
-    if (IdEntePublicoObligado == null || /^[\s]*$/.test(IdEntePublicoObligado)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
     
-    if (NuevaEntePublicoObligado == null || /^[\s]*$/.test(NuevaEntePublicoObligado)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Ente Publico Obligado",
       });
     } else {
       db.query(
-        `CALL sp_ModificaEntePublicoObligado('${IdEntePublicoObligado}','${NuevaEntePublicoObligado}','${IdUsuarioModificador}','${TipoEntePublico}')`,
+        `CALL sp_ModificaEntePublicoObligado('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}','${TipoEntePublico}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -138,10 +138,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteEntePublicoObligado: (req, res) => {
-    const IdEntePublicoObligado = req.body.IdEntePublicoObligado;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaEntePublicoObligado('${IdEntePublicoObligado}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaEntePublicoObligado('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

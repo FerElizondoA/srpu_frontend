@@ -6,15 +6,15 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createInstitucionFinanciera: (req, res) => {
-    const Institucion = req.body.Institucion;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
-    if (Institucion == null || /^[\s]*$/.test(Institucion)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Institución Financiera",
       });
     } else {
-      db.query(`CALL sp_AgregarInstitucionFinanciera('${IdUsuarioCreador}', '${Institucion}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarInstitucionFinanciera('${IdUsuarioCreador}', '${Descripcion}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -63,8 +63,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailInstitucionFinanciera: (req, res) => {
-    const IdInstitucion = req.body.IdInstitucion;
-    db.query(`CALL sp_DetalleInstitucionFinanciera('${IdInstitucion}')`, (err, result) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    db.query(`CALL sp_DetalleInstitucionFinanciera('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -90,12 +90,12 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyInstitucionFinanciera: (req, res) => {
-    const IdInstitucion = req.body.IdInstitucion;
-    const NuevaInstitucion = req.body.NuevaInstitucion;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const NuevaInstitucion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
 
-    if (IdInstitucion == null || /^[\s]*$/.test(IdInstitucion)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
@@ -107,7 +107,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaInstitucionFinanciera('${IdInstitucion}','${NuevaInstitucion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaInstitucionFinanciera('${IdDescripcion}','${NuevaInstitucion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -136,10 +136,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteInstitucionFinanciera: (req, res) => {
-    const IdInstitucion = req.body.IdInstitucion;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaInstitucionFinanciera('${IdInstitucion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaInstitucionFinanciera('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

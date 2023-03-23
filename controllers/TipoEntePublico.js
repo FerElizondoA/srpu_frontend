@@ -6,15 +6,15 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createTipoEntePublico: (req, res) => {
-    const TipoEntePublico = req.body.TipoEntePublico;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
-    if (TipoEntePublico == null || /^[\s]*$/.test(TipoEntePublico)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Tipo Ente Publico",
       });
     } else {
-      db.query(`CALL sp_AgregarTipoEntePublico('${IdUsuarioCreador}', '${TipoEntePublico}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarTipoEntePublico('${IdUsuarioCreador}', '${Descripcion}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -63,8 +63,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailTipoEntePublico: (req, res) => {
-    const IdTipoEntePublico = req.body.IdTipoEntePublico;
-    db.query(`CALL sp_DetalleTipoEntePublico('${IdTipoEntePublico}')`, (err, result) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    db.query(`CALL sp_DetalleTipoEntePublico('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -90,12 +90,12 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyTipoEntePublico: (req, res) => {
-    const IdTipoEntePublico = req.body.IdTipoEntePublico;
-    const NuevaTipoEntePublico = req.body.NuevoTipoEntePublico;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const NuevaTipoEntePublico = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
 
-    if (IdTipoEntePublico == null || /^[\s]*$/.test(IdTipoEntePublico)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
@@ -107,7 +107,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaTipoEntePublico('${IdTipoEntePublico}','${NuevaTipoEntePublico}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaTipoEntePublico('${IdDescripcion}','${NuevaTipoEntePublico}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -136,10 +136,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteTipoEntePublico: (req, res) => {
-    const IdTipoEntePublico = req.body.IdTipoEntePublico;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaTipoEntePublico('${IdTipoEntePublico}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaTipoEntePublico('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

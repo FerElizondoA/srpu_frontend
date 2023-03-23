@@ -4,21 +4,21 @@ module.exports = {
   //CREAR  
   createDestino: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const Destino = req.body.Destino;
+    const Descripcion = req.body.Descripcion;
 
-    if ((Destino == null ||/^[\s]*$/.test(Destino)) && Destino.length() <= 255) {
+    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion)) && Descripcion.length() <= 255) {
       return res.status(409).send({
-        error: "Ingresé Destino válido.",
+        error: "Ingrese Descripcion válido.",
       });
     } 
     if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
         return res.status(409).send({
-          error: "Ingresé Id usuario válido.",
+          error: "Ingrese Id usuario válido.",
         });
       } 
     else {
       db.query(
-        `CALL sp_AgregarDestino('${IdUsuario}', '${Destino}' )`,
+        `CALL sp_AgregarDestino('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -69,15 +69,15 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailDestino: (req, res) => {
-    const IdDestino = req.body.IdDestino;
-    if (IdDestino == null ||/^[\s]*$/.test(IdDestino)) {
+    const IdDescripcion = req.body.IdDescripcion;
+    if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
         return res.status(409).send({
-          error: "Ingresé IdDestino.",
+          error: "Ingrese IdDescripcion.",
         });
       } 
 
     db.query(
-      `CALL sp_DetalleDestino('${IdDestino}')`,
+      `CALL sp_DetalleDestino('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -105,17 +105,17 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyDestino: (req, res) => {
-    const IdDestino = req.body.IdDestino;
-    const Destino = req.body.Destino;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
-    if (IdDestino == null ||/^[\s]*$/.test(IdDestino)) {
+    if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
 
-    if (Destino == null ||/^[\s]*$/.test(Destino)) {
+    if (Descripcion == null ||/^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Clave de inscripcion",
       });
@@ -127,7 +127,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaDestino('${IdDestino}','${Destino}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaDestino('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -157,10 +157,10 @@ module.exports = {
   
   //BORRADO LOGICO
   deleteDestino: (req, res) => {
-    const IdDestino = req.body.IdDestino;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaDestino('${IdDestino}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaDestino('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

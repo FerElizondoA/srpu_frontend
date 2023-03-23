@@ -6,15 +6,15 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createFuenteAlternaDePago: (req, res) => {
-    const FuenteAlternaDePago = req.body.FuenteAlternaDePago;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
-    if (FuenteAlternaDePago == null || /^[\s]*$/.test(FuenteAlternaDePago)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Fuente Alterna De Pago",
       });
     } else {
-      db.query(`CALL sp_AgregarFuenteAlternaDePago('${IdUsuarioCreador}', '${FuenteAlternaDePago}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarFuenteAlternaDePago('${IdUsuarioCreador}', '${Descripcion}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error",
@@ -63,8 +63,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailFuenteAlternaDePago: (req, res) => {
-    const IdFuenteAlternaDePago = req.body.IdFuenteAlternaDePago;
-    db.query(`CALL sp_DetalleFuenteAlternaDePago('${IdFuenteAlternaDePago}')`, (err, result) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    db.query(`CALL sp_DetalleFuenteAlternaDePago('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -90,12 +90,12 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyFuenteAlternaDePago: (req, res) => {
-    const IdFuenteAlternaDePago = req.body.IdFuenteAlternaDePago;
-    const NuevaFuenteAlternaDePago = req.body.NuevoFuenteAlternaDePago;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const NuevaFuenteAlternaDePago = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
 
-    if (IdFuenteAlternaDePago == null || /^[\s]*$/.test(IdFuenteAlternaDePago)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
@@ -107,7 +107,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaFuenteAlternaDePago('${IdFuenteAlternaDePago}','${NuevaFuenteAlternaDePago}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaFuenteAlternaDePago('${IdDescripcion}','${NuevaFuenteAlternaDePago}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -136,10 +136,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteFuenteAlternaDePago: (req, res) => {
-    const IdFuenteAlternaDePago = req.body.IdFuenteAlternaDePago;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFuenteAlternaDePago('${IdFuenteAlternaDePago}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaFuenteAlternaDePago('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

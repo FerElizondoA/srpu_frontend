@@ -4,9 +4,9 @@ module.exports = {
   //CREAR  
   createTipoDocumento: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const TipoDocumento = req.body.TipoDocumento;
+    const Descripcion = req.body.Descripcion;
 
-    if ((TipoDocumento == null ||/^[\s]*$/.test(TipoDocumento)) && TipoDocumento.length() <= 255) {
+    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion)) && Descripcion.length() <= 255) {
       return res.status(409).send({
         error: "Ingrese Tipo Documento válido.",
       });
@@ -18,7 +18,7 @@ module.exports = {
       } 
     else {
       db.query(
-        `CALL sp_AgregarTipoDocumento('${IdUsuario}', '${TipoDocumento}' )`,
+        `CALL sp_AgregarTipoDocumento('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -69,15 +69,15 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailTipoDocumento: (req, res) => {
-    const IdTipoDocumento = req.body.IdTipoDocumento;
-    if (IdTipoDocumento == null ||/^[\s]*$/.test(IdTipoDocumento)) {
+    const IdDescripcion = req.body.IdDescripcion;
+    if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
         return res.status(409).send({
-          error: "Ingrese IdTipoDocumento.",
+          error: "Ingrese IdDescripcion.",
         });
       } 
 
     db.query(
-      `CALL sp_DetalleTipoDocumento('${IdTipoDocumento}')`,
+      `CALL sp_DetalleTipoDocumento('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -105,17 +105,17 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyTipoDocumento: (req, res) => {
-    const IdTipoDocumento = req.body.IdTipoDocumento;
-    const TipoDocumento = req.body.TipoDocumento;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
-    if (IdTipoDocumento == null ||/^[\s]*$/.test(IdTipoDocumento)) {
+    if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
 
-    if (TipoDocumento == null ||/^[\s]*$/.test(TipoDocumento)) {
+    if (Descripcion == null ||/^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Tipo Documento",
       });
@@ -127,7 +127,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaTipoDocumento('${IdTipoDocumento}','${TipoDocumento}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaTipoDocumento('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -157,10 +157,10 @@ module.exports = {
   
   //BORRADO LOGICO
   deleteTipoDocumento: (req, res) => {
-    const IdTipoDocumento = req.body.IdTipoDocumento;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaTipoDocumento('${IdTipoDocumento}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaTipoDocumento('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

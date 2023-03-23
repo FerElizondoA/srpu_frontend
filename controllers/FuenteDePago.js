@@ -6,8 +6,8 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createFuenteDePago: (req, res) => {
-    const FuenteDePago = req.body.FuenteDePago;
-    const IdUsuarioCreador = req.body.CreadoPor;
+    const FuenteDePago = req.body.Descripcion;
+    const IdUsuarioCreador = req.body.IdUsuario;
 
     if (FuenteDePago == null || /^[\s]*$/.test(FuenteDePago)) {
       return res.status(409).send({
@@ -63,8 +63,8 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailFuenteDePago: (req, res) => {
-    const IdFuenteDePago = req.body.IdFuenteDePago;
-    db.query(`CALL sp_DetalleFuenteDePago('${IdFuenteDePago}')`, (err, result) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    db.query(`CALL sp_DetalleFuenteDePago('${IdDescripcion}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -90,24 +90,24 @@ module.exports = {
 
   //MODIFICA POR ID
   modifyFuenteDePago: (req, res) => {
-    const IdFuenteDePago = req.body.IdFuenteDePago;
-    const NuevaFuenteDePago = req.body.NuevoFuenteDePago;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
 
-    if (IdFuenteDePago == null || /^[\s]*$/.test(IdFuenteDePago)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
     
-    if (NuevaFuenteDePago == null || /^[\s]*$/.test(NuevaFuenteDePago)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Fuente De Pago",
       });
     } else {
       db.query(
-        `CALL sp_ModificaFuenteDePago('${IdFuenteDePago}','${NuevaFuenteDePago}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaFuenteDePago('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -136,10 +136,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteFuenteDePago: (req, res) => {
-    const IdFuenteDePago = req.body.IdFuenteDePago;
-    const IdUsuarioModificador = req.body.ModificadoPor;
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFuenteDePago('${IdFuenteDePago}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaFuenteDePago('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

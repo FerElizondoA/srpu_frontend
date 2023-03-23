@@ -1,24 +1,24 @@
 const db = require("../config/db.js");
 
 module.exports = {
-  //CREAR
-  createClaveDeInscripcion: (req, res) => {
+  //CREAR  
+  createReglaDeFinanciamiento: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
 
-    if ((Descripcion == null || /^[\s]*$/.test(Descripcion)) ) {
+    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion)) && Descripcion.length() <= 255) {
       return res.status(409).send({
-        error: "Ingrese Clave de inscripcion válida.",
+        error: "Ingrese Descripcion válido.",
       });
     } 
-    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) ) {
+    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
         return res.status(409).send({
           error: "Ingrese Id usuario válido.",
         });
       } 
     else {
       db.query(
-        `CALL sp_AgregarClaveDeInscripcion('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarReglaDeFinanciamiento('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -46,8 +46,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getClavesDeInscripcion: (req, res) => {
-    db.query(`CALL sp_ListadoClavesDeInscripcion()`, (err, result) => {
+  getReglasDeFinanciamiento: (req, res) => {
+    db.query(`CALL sp_ListadoReglasDeFinanciamiento()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -68,7 +68,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailClaveDeInscripcion: (req, res) => {
+  getDetailReglaDeFinanciamiento: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
         return res.status(409).send({
@@ -77,7 +77,7 @@ module.exports = {
       } 
 
     db.query(
-      `CALL sp_DetalleClaveDeInscripcion('${IdDescripcion}')`,
+      `CALL sp_DetalleReglaDeFinanciamiento('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -104,7 +104,7 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyClaveDeInscripcion: (req, res) => {
+  modifyReglaDeFinanciamiento: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
@@ -117,7 +117,7 @@ module.exports = {
 
     if (Descripcion == null ||/^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
+        error: "Ingrese nueva descripcion",
       });
     }
     
@@ -127,7 +127,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaClaveDeInscripcion('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaReglaDeFinanciamiento('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -154,12 +154,13 @@ module.exports = {
     }
   },
 
+  
   //BORRADO LOGICO
-  deleteClaveDeInscripcion: (req, res) => {
+  deleteReglaDeFinanciamiento: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaClaveDeInscripcion('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaReglaDeFinanciamiento('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
