@@ -404,7 +404,7 @@ export function DisposicionPagosCapital(){
               <Grid item ml={window.innerWidth / 50 + 6}>
                 <TableContainer sx={{ maxHeight: "400px" }}>
                   <Table>
-                    <TableHead>
+                    <TableHead sx={{ maxHeight: "200px" }}>
                       {heads.map((head) => (
                         <StyledTableCell key={head.id}>
                           <TableSortLabel>{head.label}</TableSortLabel>
