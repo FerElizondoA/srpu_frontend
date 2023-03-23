@@ -153,6 +153,7 @@ export function CondicionesGenerales(){
             </Select>
           </Grid>
         </Grid>
+        
       </Grid>
     );
 }

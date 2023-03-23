@@ -14,11 +14,6 @@ import { DateInput } from "../../CustomComponents";
 import { subDays } from "date-fns/esm";
 
 import { queries } from "../../../queries";
-import { IEncabezado } from "../Interfaces/CortoPlazo/IEncabezado";
-import FormControl from "@mui/material/FormControl/FormControl";
-import { logRoles } from "@testing-library/react";
-import { getMunicipiosUOrganismos, getTipoEntePublico } from "../APIS/APISEncabezado";
-import { IMunicipioUOrganizacion, ITipoEntePublico } from "../Interfaces/CortoPlazo/Encabezado/IListEncabezado";
 
 import { useCortoPlazoStore } from "../../../store/main";
 
