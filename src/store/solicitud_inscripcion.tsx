@@ -39,33 +39,55 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
 
         // if (!get()) {
             console.log("fetchDocumento executed!");
-            data.append("nombre", get().nombreServidorPublico);
-            data.append("cargo",  get().cargo);
-            const organismo = useCortoPlazoStore.getState().organismo;
-            const contrato = useCortoPlazoStore.getState().tipoDocumento
-            const banco = useCortoPlazoStore.getState().institucion;
-            const monto = useCortoPlazoStore.getState().montoOriginal; 
-            const fecha = useCortoPlazoStore.getState().fechaContratacion; 
-            const fechav = useCortoPlazoStore.getState().fechaVencimiento;
-            data.append("nombre", get().nombreServidorPublico);
-            data.append("organismo", organismo);
-            data.append("contrato",  contrato);
-            data.append("banco",  banco);
-            data.append("monto",  monto.toString());
-            data.append("fecha",  fecha);
-            data.append("fechav",  fechav);
+           
 
+            ////////////////////////////////////////
+            const organismo = useCortoPlazoStore.getState().organismo;
+            const contrato = useCortoPlazoStore.getState().tipoDocumento;
+            const banco = useCortoPlazoStore.getState().institucion;
+            const monto = useCortoPlazoStore.getState().montoOriginal;
+            const fecha = useCortoPlazoStore.getState().fechaContratacion;
+            const fechav = useCortoPlazoStore.getState().fechaVencimiento;
+            const destino = useCortoPlazoStore.getState().destino;
+            const plazoDias = useCortoPlazoStore.getState().plazoDias;
+            const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublicoObligado
+            const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado
+            const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva
+            const reglas = useCortoPlazoStore.getState().reglas
+            const tipocomisiones = useCortoPlazoStore.getState().tipoComision
+            const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico
+            
 
             const response = await axios.post(
-              "http://192.168.137.152:90/documento?",
+              "http://192.168.137.152:7000/documento_srpu",
               {
-                body:{
-                    data
-                },
+                
+                  nombre: "Marlon Israel Mendez Maldonado",
+                  oficionum: "10",
+                  cargo: get().cargo,
+                  organismo: organismo,
+                  InstitucionBancaria: banco,
+                  monto: monto.toString(),
+                  fechacontrato: fecha,
+                  destino: destino,
+                  dias: plazoDias,
+                  fechavencimiento: fechav,
+                  tipoEntePublicoObligado: tipoEntePublicoObligado,
+                  entePublicoObligado: entePublicoObligado,
+                  tasaefectiva: tasaefectiva,
+                  reglas: reglas,
+                  tipocomisiones: tipocomisiones,
+                  servidorpublico: servidorpublico,
+                  contrato: contrato,
+              },
+              {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
                 },
-              }
+                responseType: "arraybuffer"
+                
+              },
+               
             );
             const a = window.URL || window.webkitURL;
 
