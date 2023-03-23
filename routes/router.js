@@ -13,12 +13,8 @@ const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligado
 const { createPeriodicidadDePago, getPeriodicidadDePago, getDetailPeriodicidadDePago, modifyPeriodicidadDePago, deletePeriodicidadDePago } = require("../controllers/PeriodicidadDelPago.js");
 const { createReglaDeFinanciamiento, getReglasDeFinanciamiento, getDetailReglaDeFinanciamiento, modifyReglaDeFinanciamiento, deleteReglaDeFinanciamiento } = require("../controllers/ReglaDeFinanciamiento.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
-const { createTasaDeReferencia, getTasasDeReferencia, getDetailTasaDeReferencia, modifyTasaDeReferencia, deleteTasaDeReferencia } = require("../controllers/TasaDeReferencia.js");
-const { createTipoDeComision, getTiposDeComision, getDetailTipoDeComision, modifyTipoDeComision, deleteTipoDeComision } = require("../controllers/TipoDeComision.js");
-const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, getTiposEntePublico, getDetailTipoEntePublico } = require("../controllers/TipoEntePublico.js");
-const { createTipoDocumento, getTiposDocumento, getDetailTipoDocumento, modifyTipoDocumento, deleteTipoDocumento } = require("../controllers/TiposDocumento.js");
 
-const { getDetailUsuario } = require("../controllers/usuarios.js");
+const { getDetailUsuario, getUsuarios } = require("../controllers/usuarios.js");
 
 
 
@@ -247,6 +243,40 @@ router.delete("/delete-roles", verifyToken.verifyJWT, (req, res) => {
 //Usuario
 router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
+});
+
+router.get("/lista-usuarios", verifyToken.verifyJWT, (req, res) => {
+  getUsuarios(req, res);
+});
+
+//TipoDeDocumento
+router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+  createTipoDeDocumento(req, res);
+});
+
+router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
+  getListadoTipoDeDocumento(req, res);
+});
+
+router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
+  getListadoTipoDeDocumentoLargoPlazo(req, res);
+});
+
+router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
+  getListadoTipoDeDocumentoCortoPlazo(req, res);
+});
+
+router.delete("/delete-tipoDocumento",  verifyToken.verifyJWT, (req, res) => {
+  deleteTipoDeDocumento(req, res);
+});
+
+//Solicitudes
+router.post("/create-solicitud", verifyToken.verifyJWT, (req, res) => {
+  createSolicitud(req, res);
+});
+
+router.get("/get-solicitudes",  verifyToken.verifyJWT, (req, res) => {
+  getSolicitudes(req, res);
 });
 
 //TipoDocumento
