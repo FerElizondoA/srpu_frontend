@@ -18,6 +18,7 @@ import {
   StyledTableRow,
   ConfirmButton,
   DeleteButton,
+  hashFunctionCYRB53,
 } from "../../CustomComponents";
 
 import enGB from "date-fns/locale/en-GB";
@@ -114,7 +115,7 @@ export function InformacionGeneral() {
 
   const addRows = () => {
     const OSA: ObligadoSolidarioAval = {
-      id: "uuid" + (Math.floor(Math.random() * 100)).toString(), // aqui debe venir el uuid del ObligadoSolidarioAval que va en la tabla
+      id: hashFunctionCYRB53(new Date().getTime().toString()),
       obligadoSolidario: obligadoSolidarioAval,
       entePublicoObligado: entePublicoObligado,
       tipoEntePublicoObligado: tipoEntePublicoObligado
@@ -134,7 +135,9 @@ export function InformacionGeneral() {
     fetchInstituciones();
     fetchObligadoSolidarioAval();
     fetchTipoEntePublicoObligado();
+  }, []);
 
+  React.useEffect(() => {
     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
     {
       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
@@ -145,7 +148,7 @@ export function InformacionGeneral() {
     
     
   }, [fechaContratacion, fechaVencimiento])
-
+  
   return (
     <Grid container>
       <Grid
@@ -402,13 +405,13 @@ export function InformacionGeneral() {
                           />
                         </StyledTableCell>
                         <StyledTableCell component="th" scope="row">
-                          {row.entePublicoObligado.toString()}
+                          {row.obligadoSolidario}
                         </StyledTableCell>
                         <StyledTableCell component="th">
-                          {row.obligadoSolidario.toString()}
+                          {row.tipoEntePublicoObligado}
                         </StyledTableCell>
                         <StyledTableCell component="th">
-                          {row.tipoEntePublicoObligado.toString()}
+                          {row.entePublicoObligado}
                         </StyledTableCell>
                       </StyledTableRow>
                     );

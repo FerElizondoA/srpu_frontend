@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Grid,
   InputLabel,
@@ -12,46 +13,26 @@ import {
   Fab,
   Typography,
 } from "@mui/material";
-import { GridCheckIcon } from "@mui/x-data-grid";
+
+import CheckIcon from '@mui/icons-material/Check';
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { stat } from "fs";
-// dummy data
-
-interface Data {
-  isSelected: boolean;
-  rule: String;
-  
-}
 
 interface Head {
-  id: keyof Data;
-  isNumeric: boolean;
   label: string;
 }
 
 const heads: readonly Head[] = [
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Selección",
   },
   {
-    id: "rule",
-    isNumeric: false,
     label: "Regla",
   },
  
 ];
 
-function createDummyData(rule: string) {
-  return {
-    rule
-  };
-}
-
-const rows = [createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc."), createDummyData("Cuerpo de un escrito, prescindiendo de las notas, los comentarios, las portadas, las ilustraciones, etc.")];
 
 export function SolicitudInscripcion() {
 
@@ -65,8 +46,41 @@ export function SolicitudInscripcion() {
   const changeDocumentoAutorizado: Function = useCortoPlazoStore(state => state.changeDocumentoAutorizado);
   const identificacion: string = useCortoPlazoStore(state => state.identificacion);
   const changeIdentificacion: Function = useCortoPlazoStore(state => state.changeIdentificacion);
+  const reglasCatalog: string[] = useCortoPlazoStore(state => state.reglasCatalog);
 
   const fetchDocumento: Function = useCortoPlazoStore(state => state.fetchDocumento);
+  const fetchReglas: Function = useCortoPlazoStore(state => state.fetchReglas);
+
+  const [selected, setSelected] = React.useState<readonly number[]>([]);
+
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      console.log("selectedIndex === 0 !")
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      console.log("selectedIndex === selected.length -1 !")
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      console.log("selectedIndex === selected.length > 0 !")
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+    console.log(newSelected);
+  };
+
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  React.useEffect(() =>{
+    fetchReglas();
+  }, [])
 
   return (
     <Grid item container>
@@ -208,33 +222,39 @@ export function SolicitudInscripcion() {
         item
         container
         //flexDirection="row"
-        mt={{ sm: 2, md: 0, lg: 0 }}
         ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
         spacing={{ md: 10, lg: 10 }}
       >
         <Grid item md={9} lg={9} xl={9}>
           <Grid container direction="column">
             <Grid item>
-              <TableContainer sx={{ minHeight: "100%" }}>
+              <TableContainer sx={{ maxHeight: "350px" }}>
                 <Table>
                   <TableHead>
                     {heads.map((head) => (
-                      <StyledTableCell key={head.id}>
+                      <StyledTableCell>
                         <TableSortLabel>{head.label}</TableSortLabel>
                       </StyledTableCell>
                     ))}
                   </TableHead>
                   <TableBody>
-                    {rows.map((row) => (
-                      <StyledTableRow>
-                        <StyledTableCell padding="checkbox">
-                          <Checkbox />
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                          {row.rule}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
+                    {reglasCatalog.map((row, index) => {
+                      const isItemSelected = isSelected(index);
+                      return (
+                        <StyledTableRow>
+                          <StyledTableCell padding="checkbox">
+                          <Checkbox 
+                          onClick={(event) => handleClick(event, index)}
+                          checked={isItemSelected}
+                          />
+                          </StyledTableCell>
+                          <StyledTableCell component="th" scope="row">
+                            {row}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -246,8 +266,8 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="success" onClick={() =>{ fetchDocumento()}}>
-            <GridCheckIcon sx={{ mr: 1 }} />
+          <Fab variant="extended" color="success" onClick={fetchDocumento()}>
+            <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
         </Grid>

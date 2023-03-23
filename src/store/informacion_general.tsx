@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { GridValidRowModel } from "@mui/x-data-grid";
 
 export type ObligadoSolidarioAval = {
   id: string;

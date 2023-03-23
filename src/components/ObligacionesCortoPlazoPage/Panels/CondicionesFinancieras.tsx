@@ -12,7 +12,16 @@ import {
 
 import { ReactNode } from 'react';
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
-import { StyledTableCell, StyledTableRow, ConfirmButton, DeleteButton } from "../../CustomComponents";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  ConfirmButton,
+  DeleteButton,
+  hashFunctionCYRB53,
+} from "../../CustomComponents";
+import { useCortoPlazoStore } from "../../../store/main";
+
+import { CondicionFinanciera } from "../../../store/condicion_financiera";
 
 // dummy data
 
@@ -128,93 +137,120 @@ const rows = [
         )
 ]
 
-export class CondicionesFinancieras extends React.Component{
+export function CondicionesFinancieras(){
 
-  state = {
-    openAgregarCondicion: false
+  const [openAgregarCondicion, changeAgregarCondicion] = React.useState(false);
+  const [selected, setSelected] = React.useState<readonly number[]>([]);
+
+  const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(state => state.condicionFinancieraTable);
+  const removeCondicionFinanciera: Function = useCortoPlazoStore(state => state.removeCondicionFinanciera);
+
+  const changeOpenAgregarState = (open: boolean) => {
+    changeAgregarCondicion(open);
   }
 
-  constructor(props: any){
-    super(props);
-    this.changeOpenAgregarState.bind(this);
-  }
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
 
-  changeOpenAgregarState = (open: boolean) => {
-    this.setState({openAgregarCondicion: open});
-  }
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      console.log("selectedIndex === 0 !")
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      console.log("selectedIndex === selected.length -1 !")
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      console.log("selectedIndex === selected.length > 0 !")
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+    console.log(newSelected);
+  };
 
-  render(): ReactNode {
-    return (
-      <Grid container direction="column">
-        <Grid item>
-          <TableContainer sx={{ minHeight: "100%" }}>
-            <Table>
-              <TableHead>
-                {heads.map((head) => (
-                  <StyledTableCell key={head.id}>
-                    <TableSortLabel>{head.label}</TableSortLabel>
-                  </StyledTableCell>
-                ))}
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  const deleteRows = () => {
+    console.log("selected: ", selected)
+    selected.forEach((it) => {
+      removeCondicionFinanciera(it);
+    })
+  }
+  return (
+    <Grid container direction="column">
+      <Grid item>
+        <TableContainer sx={{ minHeight: "100%" }}>
+          <Table>
+            <TableHead>
+              {heads.map((head) => (
+                <StyledTableCell key={head.id}>
+                  <TableSortLabel>{head.label}</TableSortLabel>
+                </StyledTableCell>
+              ))}
+            </TableHead>
+            <TableBody>
+              {condicionFinancieraTable.map((row, index) => {
+                const isItemSelected: boolean = isSelected(index);
+                return (
                   <StyledTableRow>
                     <StyledTableCell padding="checkbox">
-                      <Checkbox />
+                        <Checkbox
+                          onClick={(event) => handleClick(event, index)}
+                          checked={isItemSelected}
+                        />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
-                      {row.dispositionDate.toLocaleDateString("en-GB")}
+                      {row.fechaDisposicion}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {"$" + row.dispositionAmount.toString()}
+                      {"$" + row.importeDisposicion}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
+                      {row.fechaPrimerPagoCapital}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
-                      {row.capitalPaymentRange}
+                      {row.periocidadPagoCapital}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
-                      {row.capitalPaymentDate.toLocaleDateString("en-GB")}
+                      {row.fechaPrimerPagoInteres}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
-                      {row.iRate + "%"}
+                      {row.tasaInteres}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
-                      {"$" + row.comission}
+                      {row.comisiones}
                     </StyledTableCell>
                   </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
+                );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
 
-        <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
-          <Grid item md={6}lg={6}>
-            <ConfirmButton
-              variant="outlined"
-              onClick={() =>
-                this.changeOpenAgregarState(!this.state.openAgregarCondicion)
-              }
-            >
-              AGREGAR
-            </ConfirmButton>
-            <AgregarCondicionFinanciera
-              handler={this.changeOpenAgregarState}
-              openState={this.state.openAgregarCondicion}
-            />
-          </Grid>
-          <Grid item md={6} lg={6}>
-            <DeleteButton variant="outlined">ELIMINAR</DeleteButton>
-          </Grid>
+      <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+        <Grid item md={6}lg={6}>
+          <ConfirmButton
+            variant="outlined"
+            onClick={() =>
+              changeOpenAgregarState(!openAgregarCondicion)
+            }
+          >
+            AGREGAR
+          </ConfirmButton>
+          <AgregarCondicionFinanciera
+            handler={changeOpenAgregarState}
+            openState={openAgregarCondicion}
+          />
+        </Grid>
+        <Grid item md={6} lg={6}>
+          <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
         </Grid>
       </Grid>
-    );
-  }
+    </Grid>
+  );
 }
