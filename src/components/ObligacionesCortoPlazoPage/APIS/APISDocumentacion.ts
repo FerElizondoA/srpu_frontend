@@ -12,8 +12,6 @@ export function getTiposDocumentos(setState: Function) {
     },
   })
     .then(({ data }) => {
-        console.log(data.data);
-        
       setState(data.data);
     })
     .catch((error) => {

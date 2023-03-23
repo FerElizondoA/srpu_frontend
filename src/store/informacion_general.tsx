@@ -78,7 +78,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
     fetchDestinos: async () => {
         if (!get().fetchedDestino) {
-          console.log("fetchDestinos executed!");
           const response = await axios.get(
             "http://10.200.4.199:8000/api/get-destinos",
             {
@@ -87,7 +86,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
               },
             }
           );
-          console.log(response)
           response.data.data.forEach((e: any) => {
             set((state) => ({
               destinoCatalog: [...state.destinoCatalog, e.Descripcion],
@@ -99,7 +97,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     },
     fetchInstituciones: async () => {
       if (!get().fetchedInstitucion) {
-        console.log("fetchInstituciones executed!");
         const response = await axios.get(
           "http://10.200.4.199:8000/api/get-institucionesFinancieras",
           {
@@ -118,7 +115,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     },
     fetchTipoEntePublicoObligado: async () => {
       if (!get().fetchedTipoEntePublicoObligado) {
-        console.log("fetchTipoEntePublicoObligado executed!");
         const response = await axios.get(
           "http://10.200.4.199:8000/api/get-tiposEntePublico",
           {
@@ -137,7 +133,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     },
     fetchObligadoSolidarioAval: async () => {
       if (!get().fetchedObligadoSolidarioAval) {
-        console.log("fetchObligadoSolidarioAval executed!");
         const response = await axios.get(
           "http://10.200.4.199:8000/api/get-obligadoSolidarioAval",
           {

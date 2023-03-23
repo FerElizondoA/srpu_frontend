@@ -41,7 +41,6 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     changeCargoSolicitante: (newCargoSolicitante: string) => set(() => ({cargoSolicitante: newCargoSolicitante})),
     fetchEntesPublicos: async () => {
         if (!get().fetchedEntesPublicos) {
-          console.log("fetchEntesPublicos executed!");
           const response = await axios.get(
             "http://10.200.4.199:8000/api/get-tiposEntePublico",
             {
@@ -60,7 +59,6 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     },
     fetchOrganismos: async () => {
         if (!get().fetchedOrganismos) {
-          console.log("fetchMunicipios executed!");
           const response = await axios.get(
             "http://10.200.4.199:8000/api/get-entePublicoObligado",
             {

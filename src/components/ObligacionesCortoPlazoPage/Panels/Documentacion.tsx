@@ -96,7 +96,6 @@ export function Documentacion() {
     }
 
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
-    console.log(archivos);
   };
 
   const cancelar = () => {
@@ -187,7 +186,7 @@ export function Documentacion() {
                         onChange={(v) => {
                           let aux = v.target.value;
                           setTipoDocumento(aux);
-                          console.log(aux);
+                          
                         }}
                         sx={{ display: "flex", pt: 1 }}
                       >
@@ -247,7 +246,7 @@ export function Documentacion() {
                         onChange={(v) => {
                           let aux = v.target.value;
                           setTipoDocumento(aux);
-                          console.log(aux);
+                          
                         }}
                         sx={{ display: "flex", pt: 1 }}
                       >
@@ -307,7 +306,7 @@ export function Documentacion() {
                         onChange={(v) => {
                           let aux = v.target.value;
                           setTipoDocumento(aux);
-                          console.log(aux);
+                          
                         }}
                         sx={{ display: "flex", pt: 1 }}
                       >
@@ -367,7 +366,7 @@ export function Documentacion() {
                         onChange={(v) => {
                           let aux = v.target.value;
                           setTipoDocumento(aux);
-                          console.log(aux);
+                          
                         }}
                         sx={{ display: "flex", pt: 1 }}
                       >
@@ -427,7 +426,7 @@ export function Documentacion() {
                         onChange={(v) => {
                           let aux = v.target.value;
                           setTipoDocumento(aux);
-                          console.log(aux);
+                          
                         }}
                         sx={{ display: "flex", pt: 1 }}
                       >
@@ -465,7 +464,7 @@ export function Documentacion() {
                           onChange={(v) => {
                             let aux = v.target.value;
                             setTipoDocumento(aux);
-                            console.log(aux);
+                            
                           }}
                           sx={{ display: "flex", pt: 1 }}
                         >
