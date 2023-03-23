@@ -59,11 +59,7 @@ export  function getSolicitudes (setState:Function){
        },
    })
    .then( ({data})=> {
-   
-     
          setState(data.data)
-         //console.log(data.data.e);
-         return  data.data.e;
    })
    .catch( (error)=> {
      Swal.fire({
