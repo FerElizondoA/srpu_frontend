@@ -15,12 +15,15 @@ import {
   RadioGroup,
   Radio,
   FormControl,
-  FormControlLabel
+  FormControlLabel,
+  InputAdornment
 } from "@mui/material";
 
-import { DateField } from "@mui/x-date-pickers/DateField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import enGB from "date-fns/locale/en-GB";
+import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateInput } from "../../CustomComponents";
 
 import { queries } from "../../../queries";
 
@@ -109,28 +112,29 @@ const rows = [
 ];
 
 export function ComisionesTasaEfectiva(){
+
+    const [radioValue, setRadioValue] = React.useState("fixedPercentage");
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRadioValue((event.target as HTMLInputElement).value);
+    };
+
     return (
       <Grid container direction="column">
-        <Grid item container mt={10} spacing={5}>
+        <Grid item container mt={2} spacing={5}>
           <Grid item ml={window.innerWidth / 50 + 20}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <InputLabel sx={queries.medium_text}>
-                Fecha de Contratación
-              </InputLabel>
-              <DateField
-                fullWidth
-                format="DD-MM-YYYY"
-                variant="standard"
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                    fontSize: "2ch",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
+            <InputLabel sx={queries.medium_text}>
+              Fecha de Contratación
+            </InputLabel>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DatePicker
+                value={new Date()}
+                onChange={(date) => {}}
+                slots={{
+                  textField: DateInput,
                 }}
               />
             </LocalizationProvider>
@@ -153,7 +157,11 @@ export function ComisionesTasaEfectiva(){
           </Grid>
           <Grid item>
             <FormControl>
-              <RadioGroup defaultValue="fixedPercentage">
+              <RadioGroup
+                defaultValue="fixedPercentage"
+                value={radioValue}
+                onChange={handleChange}
+              >
                 <Grid container>
                   <Grid item>
                     <FormControlLabel
@@ -177,7 +185,11 @@ export function ComisionesTasaEfectiva(){
 
         <Grid item container mt={5} spacing={5}>
           <Grid item ml={window.innerWidth / 50 + 20}>
-            <InputLabel sx={queries.medium_text}>Monto</InputLabel>
+            {radioValue === "fixedPercentage" ? (
+              <InputLabel sx={queries.medium_text}>Porcentaje</InputLabel>
+            ) : (
+              <InputLabel sx={queries.medium_text}>Monto</InputLabel>
+            )}
             <TextField
               fullWidth
               InputLabelProps={{
@@ -189,6 +201,24 @@ export function ComisionesTasaEfectiva(){
                 style: {
                   fontFamily: "MontserratMedium",
                 },
+                startAdornment: (
+                  <>
+                    {radioValue === "fixedPercentage" ? (
+                      <></>
+                    ) : (
+                      <InputAdornment position="start">$</InputAdornment>
+                    )}
+                  </>
+                ),
+                endAdornment: (
+                  <>
+                    {radioValue === "fixedPercentage" ? (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                ),
               }}
               variant="standard"
             />
