@@ -6,23 +6,28 @@ import { useNavigate } from "react-router-dom";
 export function Configuracion() {
   const navigate = useNavigate();
   const modulos = [
-    { id: 1, label: "Claves de inscripción" },
-    { id: 2, label: "Destinos" },
-    { id: 3, label: "Entes Público Obligados" },
+    { id: 0, label: "Claves de inscripción" },
+    { id: 1, label: "Destinos" },
+    { id: 2, label: "Días del ejercicio" },
+    { id: 3, label: "Entes público obligados" },
     { id: 4, label: "Estatus" },
-    { id: 5, label: "Fuentes de Pago" },
-    { id: 6, label: "Fuentes Alternas de Pago" },
-    { id: 7, label: "Instituciones Financieras" },
-    { id: 8, label: "Obligados Solidarios / Avales" },
-    { id: 9, label: "Tipos de Documento" },
-    { id: 10, label: "Tipos de Ente Público" },
-    { id: 11, label: "Usuarios" },
+    { id: 5, label: "Fuentes de pago" },
+    { id: 6, label: "Fuentes alternas de Pago" },
+    { id: 7, label: "Instituciones financieras" },
+    { id: 8, label: "Obligados solidarios / avales" },
+    { id: 9, label: "Periodicidad del pago" },
+    { id: 10, label: "Reglas de financiamiento" },
+    { id: 11, label: "Tasas de referencia" },
+    { id: 12, label: "Tipos de comision" },
+    { id: 13, label: "Tipos de Documento" },
+    { id: 14, label: "Tipos de Ente Público" },
+    { id: 15, label: "Usuarios" },
   ];
   const navegar = (id: number, label: string) => {
     if (id === 11) {
       navigate("../users");
     } else {
-      navigate("../catalogos");
+      navigate(`../catalogos?id=${id}&label=${label}`);
     }
   };
   return (

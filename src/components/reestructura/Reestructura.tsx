@@ -182,280 +182,257 @@ export function Reestructura() {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <Grid container direction="column">
-
-      <Grid container 
-      direction="row"
-      
-      sx ={{backgroundColor: "yellow"}}
-
-     >
-
-        <Grid item container  
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 0 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6} >
-
-          
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Institución financiera
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Destino</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Fecha de contratacion desde"
-                variant="outlined"
-              />
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ display: "grid" }}
-            >
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setopenAcordion(!openAcordion);
-                }}
+      <Grid container direction="row" sx={{ backgroundColor: "yellow" }}>
+        <Grid
+          item
+          container
+          mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+          ml={{ sm: 4, md: 9, lg: 10, xl: 0 }}
+          sm={5}
+          md={4}
+          lg={4.5}
+          xl={6}
+        >
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Institución financiera
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
               >
-                LIMPIAR
-              </Button>
-            </Grid>
-          
-
-        </Grid>
-
-{/* //////////////////////////////////////////////            columnas o rows                       ////////////////////////////////////////*/}
-
-        <Grid item container  
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 0 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}>
-
-          
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Institución financiera
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Destino</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Institución financiera"
-                >
-                  <MenuItem value={10}>No aplica</MenuItem>
-                  <MenuItem value={20}>Aplica</MenuItem>
-                  <MenuItem value={30}>Indefinido</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ height: "10%" }}
-            >
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Fecha de contratacion desde"
-                variant="outlined"
-              />
-            </Grid>
-
-            <Grid
-              item
-              mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
-              ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
-              sm={5}
-              md={4}
-              lg={4.5}
-              xl={6}
-              sx={{ display: "grid" }}
-            >
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setopenAcordion(!openAcordion);
-                }}
-              >
-                LIMPIAR
-              </Button>
-            
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
+              >
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Destino</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
+              >
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <TextField
+              fullWidth
+              id="outlined-basic"
+              label="Fecha de contratacion desde"
+              variant="outlined"
+            />
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ display: "grid" }}
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                setopenAcordion(!openAcordion);
+              }}
+            >
+              LIMPIAR
+            </Button>
+          </Grid>
         </Grid>
 
-        
+        {/* //////////////////////////////////////////////            columnas o rows                       ////////////////////////////////////////*/}
 
+        <Grid
+          item
+          container
+          mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+          ml={{ sm: 4, md: 9, lg: 10, xl: 0 }}
+          sm={5}
+          md={4}
+          lg={4.5}
+          xl={6}
+        >
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Institución financiera
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
+              >
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
+              >
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Destino</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Institución financiera"
+              >
+                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={20}>Aplica</MenuItem>
+                <MenuItem value={30}>Indefinido</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ height: "10%" }}
+          >
+            <TextField
+              fullWidth
+              id="outlined-basic"
+              label="Fecha de contratacion desde"
+              variant="outlined"
+            />
+          </Grid>
+
+          <Grid
+            item
+            mt={{ sm: 2, md: 2, lg: 4, xl: 3 }}
+            ml={{ sm: 4, md: 9, lg: 10, xl: 10 }}
+            sm={5}
+            md={4}
+            lg={4.5}
+            xl={6}
+            sx={{ display: "grid" }}
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                setopenAcordion(!openAcordion);
+              }}
+            >
+              LIMPIAR
+            </Button>
+          </Grid>
+        </Grid>
       </Grid>
 
-
-
-
-
-
-
-
-
-
-{/* ////////////////////////////////////////////////////////////////////////////////////// */}
+      {/* ////////////////////////////////////////////////////////////////////////////////////// */}
       <Grid
         container
         direction="column"
@@ -529,10 +506,6 @@ export function Reestructura() {
           </Paper>
         </Grid>
       </Grid>
-
-
-
-
     </Grid>
   );
 }

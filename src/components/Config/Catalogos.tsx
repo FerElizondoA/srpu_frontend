@@ -8,86 +8,138 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  getClavesDeInscripcion,
-  getDestinos,
-  getEntePublico,
-  getEstatus,
-  getFuentesAlternasDePago,
-  getFuentesDePago,
-  getInstitucionesFinancieras,
-  getTipoEntePublico,
-  getTiposDeDocumento,
-} from "./APIS/APISCatalogos";
+import { getCatalogo } from "./APIS/APISCatalogos";
 import { Box } from "@mui/system";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
-import { getObligadoSolidarioAval } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { DialogCatalogos, IDialog } from "./DialogCatalogos";
+import InfoIcon from "@mui/icons-material/Info";
 
 export function Catalogos() {
+  const params = new URLSearchParams(window.location.search);
+
   const modulos = [
-    { id: 0, label: "Claves de inscripción", get: getClavesDeInscripcion },
-    { id: 1, label: "Destinos", get: getDestinos },
+    {
+      id: 0,
+      label: "Claves de inscripción",
+      fnc: "claveDeInscripcion",
+    },
+    {
+      id: 1,
+      label: "Destinos",
+      fnc: "destinos",
+    },
     {
       id: 2,
-      label: "Entes Público Obligados",
-      get: getEntePublico,
+      label: "Días del ejercicio",
+      fnc: "diasDelEjercicio",
     },
-    { id: 3, label: "Estatus", get: getEstatus },
-    { id: 4, label: "Fuentes de Pago", get: getFuentesDePago },
+    {
+      id: 3,
+      label: "Entes público obligados",
+      fnc: "entePublicoObligado",
+    },
+    {
+      id: 4,
+      label: "Estatus",
+      fnc: "estatus",
+    },
     {
       id: 5,
-      label: "Fuentes Alternas de Pago",
-      get: getFuentesAlternasDePago,
+      label: "Fuentes de pago",
+      fnc: "fuenteDePago",
     },
     {
       id: 6,
-      label: "Instituciones Financieras",
-      get: getInstitucionesFinancieras,
+      label: "Fuentes alternas de pago",
+      fnc: "fuenteAlternaDePago",
     },
     {
       id: 7,
-      label: "Obligados Solidarios / Avales",
-      get: getObligadoSolidarioAval,
+      label: "Instituciones financieras",
+      fnc: "institucionesFinancieras",
     },
-    { id: 8, label: "Tipos de Documento", get: getTiposDeDocumento },
-    { id: 9, label: "Tipos de Ente Público", get: getTipoEntePublico },
+    {
+      id: 8,
+      label: "Obligados solidarios / avales",
+      fnc: "obligadoSolidarioAval",
+    },
+    {
+      id: 9,
+      label: "Periodicidad del pago",
+      fnc: "periodicidadDePago",
+    },
+    {
+      id: 10,
+      label: "Reglas de financiamiento",
+      fnc: "reglaDeFinanciamiento",
+    },
+    {
+      id: 11,
+      label: "Tasas de referencia",
+      fnc: "tasaDeReferencia",
+    },
+    {
+      id: 12,
+      label: "Tipos de comision",
+      fnc: "tipoDeComision",
+    },
+    {
+      id: 13,
+      label: "Tipos de documento",
+      fnc: "tiposDocumento",
+    },
+    {
+      id: 14,
+      label: "Tipos de ente público",
+      fnc: "tiposEntePublico",
+    },
   ];
 
-  const [modulo, setModulo] = useState("Claves de inscripción");
-
-  const [desc, setDesc] = useState("Claves de inscripción");
+  const [modulo, setModulo] = useState(
+    modulos[parseInt(params.get("id") || "0")].label
+  );
 
   const [catalogo, setCatalogo] = useState<Array<ICatalogo>>([
     {
       Id: "",
       Descripcion: "",
+      OCP: 0,
+      OLP: 0,
     },
   ]);
 
-  const getCatalogos = (id: number) => {
-    modulos[id].get(setCatalogo);
-  };
+  const [edit, setEdit] = useState<IDialog>({
+    Crud: "",
+    Id: parseInt(params.get("id") || "0"),
+    IdDesc: "",
+    Descripcion: "",
+    OCP: 0,
+    OLP: 0,
+    Modulo: modulo,
+  });
 
-  // const modifDesc = (id: number) => {
-  //   modulos[id].get();
+  // const getCatalogos = () => {
+  //   getCatalogo(setCatalogo, modulos[edit.Id].fnc);
   // };
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    getCatalogo(setCatalogo, modulos[edit.Id].fnc);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDialog, modulo]);
 
   const [page, setPage] = useState(0);
 
-  const renglonesPagina = 5;
+  const renglonesPagina = 10;
   const [rowsPerPage, setRowsPerPage] = useState(renglonesPagina);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -100,23 +152,8 @@ export function Catalogos() {
     setPage(0);
   };
 
-  const [edit, setEdit] = useState(
-    {
-      Id: "",
-      Descripcion: "",
-    },
-  );
-  
-  const [item, setItem] = useState("");
-  const [openEdit, setOpenEdit] = useState(false);
-
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems={"center"}
-      sx={{ height: "100vh" }}
-    >
+    <Grid container direction="column" alignItems={"center"}>
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
@@ -144,10 +181,16 @@ export function Catalogos() {
                   borderRadius: 20,
                   display: "flex",
                   justifyContent: "start",
+                  fontFamily: "MontserratMedium",
                 }}
                 onClick={() => {
                   setModulo(item.label);
-                  getCatalogos(index);
+                  setEdit({
+                    ...edit,
+                    ...{ Id: index },
+                    ...{ Modulo: item.label },
+                  });
+                  // getCatalogos();
                 }}
               >
                 {item.label}
@@ -157,11 +200,12 @@ export function Catalogos() {
         </Grid>
         <Grid
           container
-          sx={{ width: "90%", height: "90%" }}
+          sx={{ width: "90%", height: "90%", overflow: "auto" }}
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <Grid
+          <Typography
+            textAlign={"center"}
             sx={{
               bgcolor: "#f1f1f1",
               width: "90%",
@@ -170,35 +214,55 @@ export function Catalogos() {
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 5,
+              fontFamily: "MontserratMedium",
             }}
           >
-            <Typography textAlign={"center"}>{modulo.toUpperCase()}</Typography>
-          </Grid>
+            {modulo.toUpperCase()}
+          </Typography>
           <Grid
             sx={{
               bgcolor: "#f1f1f1",
               width: "100%",
               height: "70%",
               overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,.5)",
+                outline: "1px solid slategrey",
+                borderRadius: 10,
+              },
               borderRadius: 5,
             }}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <TableContainer sx={{ overflow: "unset" }}>
+            <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow
                     sx={{
                       display: "grid",
                       gridTemplateColumns: "4fr 1fr",
-                      width: "39vw",
                     }}
                   >
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        fontFamily: "MontserratMedium",
+                      }}
+                    >
                       Descripción
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>Acción</TableCell>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        fontFamily: "MontserratMedium",
+                      }}
+                    >
+                      Acción
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody
@@ -223,15 +287,52 @@ export function Catalogos() {
                           sx={{
                             display: "grid",
                             gridTemplateColumns: "4fr 1fr",
+                            height: "90%",
                           }}
                         >
-                          <TableCell>{item.Descripcion}</TableCell>
+                          <TableCell sx={{ fontFamily: "Montserrat" }}>
+                            {item.Descripcion}
+                          </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
+                            {modulo === "Reglas de financiamiento" ||
+                            modulo === "Tipos de documento" ? (
+                              <Tooltip
+                                title={
+                                  item.OCP === 1 && item.OLP === 1
+                                    ? "Obligatorio en corto plazo y largo plazo"
+                                    : item.OCP === 1 && item.OLP === 0
+                                    ? "Obligatorio en corto plazo"
+                                    : item.OCP === 0 && item.OLP === 1
+                                    ? "Obligatorio en largo plazo"
+                                    : "No obligatorio en corto plazo o largo plazo"
+                                }
+                              >
+                                <IconButton>
+                                  <InfoIcon
+                                    fontSize="small"
+                                    sx={[
+                                      {
+                                        "&:hover": {
+                                          color: "orange",
+                                        },
+                                      },
+                                    ]}
+                                  ></InfoIcon>
+                                </IconButton>
+                              </Tooltip>
+                            ) : null}
                             <Tooltip title="Editar">
                               <IconButton
                                 onClick={() => {
-                                  setEdit(item);
-                                  setOpenEdit(true);
+                                  setEdit((edit) => ({
+                                    ...edit,
+                                    ...{ IdDesc: item.Id },
+                                    ...{ Descripcion: item.Descripcion },
+                                    ...{ Crud: "edita" },
+                                    ...{ OCP: item.OCP },
+                                    ...{ OLP: item.OLP },
+                                  }));
+                                  setOpenDialog(true);
                                 }}
                               >
                                 <EditIcon
@@ -249,8 +350,13 @@ export function Catalogos() {
                             <Tooltip title="Eliminar">
                               <IconButton
                                 onClick={() => {
-                                  setEdit(item);
-                                  setOpenEdit(true);
+                                  setEdit((edit) => ({
+                                    ...edit,
+                                    ...{ IdDesc: item.Id },
+                                    ...{ Descripcion: item.Descripcion },
+                                    ...{ Crud: "elimina" },
+                                  }));
+                                  setOpenDialog(true);
                                 }}
                               >
                                 <DeleteIcon
@@ -271,71 +377,40 @@ export function Catalogos() {
                     })}
                 </TableBody>
               </Table>
-
-              <Dialog
-                open={openEdit}
-                onClose={() => {
-                  setOpenEdit(false);
-                }}
-                fullWidth
-                maxWidth={"sm"}
-              >
-                <DialogTitle sx={{ fontFamily: "MontserratMedium" }}>
-                  Modificar Descripción: {edit.Descripcion}
-                </DialogTitle>
-                <DialogContent sx={{ display: "grid" }}>
-                  <TextField
-                    size="small"
-                    label={
-                      <Typography
-                        sx={{
-                          fontSize: {
-                            xs: "60%",
-                            sm: "70%",
-                            md: "80%",
-                            lg: "80%",
-                            xl: "100%",
-                          },
-                          fontFamily: "Montserrat",
-                        }}
-                      >
-                        Nueva Descripción
-                      </Typography>
-                    }
-                    sx={{ m: 2 }}
-                    inputProps={{
-                      sx: {
-                        fontSize: {
-                          xs: "70%",
-                          sm: "80%",
-                          md: "80%",
-                          lg: "80%",
-                          xl: "100%",
-                        },
-                      },
-                    }}
-                    value={item || ""}
-                    onChange={(v) => {
-                      setItem(v.target.value);
-                    }}
-                  ></TextField>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="error"
-                    onClick={() => {
-                      setOpenEdit(false);
-                      setItem("");
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button onClick={() => {}}>Aceptar</Button>
-                </DialogActions>
-              </Dialog>
             </TableContainer>
           </Grid>
-          <Box sx={{ width: "100%" }}>
+
+          <DialogCatalogos
+            modulos={modulos}
+            edit={edit}
+            open={openDialog}
+            setOpen={setOpenDialog}
+          />
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
+            <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
+              <Button
+                onClick={() => {
+                  console.log(edit);
+                  setEdit((edit) => ({
+                    ...edit,
+                    ...{ Crud: "crea" },
+                    ...{ Descripcion: "" },
+                    ...{ OCP: 0 },
+                    ...{ OLP: 0 },
+                  }));
+                  setOpenDialog(true);
+                }}
+              >
+                <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
+              </Button>
+            </Tooltip>
             <TablePagination
               rowsPerPageOptions={[renglonesPagina]}
               component="div"
@@ -355,4 +430,12 @@ export function Catalogos() {
 interface ICatalogo {
   Id: string;
   Descripcion: string;
+  OCP: number;
+  OLP: number;
+}
+
+export interface IModulos {
+  id: number;
+  label: string;
+  fnc: string;
 }

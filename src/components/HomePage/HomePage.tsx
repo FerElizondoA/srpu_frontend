@@ -3,8 +3,6 @@ import { LateralMenu } from "../LateralMenu/LateralMenu";
 import escudo from "../../assets/logo/escudo.png";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
-import { ObligacionesCortoPlazoPageMobile } from "../ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPageMobile";
-import { ObligacionesCortoPlazoPage } from "../ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 
 export function HomePage() {
   const query = {
@@ -13,13 +11,21 @@ export function HomePage() {
 
   return (
     <Grid container direction="column">
-    
-       
-        <Grid item>
-
-          {query.isMobile? <ObligacionesCortoPlazoPageMobile/> : <ObligacionesCortoPlazoPage/>}
-        </Grid>
+      <Grid item>
+        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
+      <Grid
+        item
+        sx={{
+          height: "90vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img src={escudo} alt="Escudo" style={{ width: "25vw" }} />
+      </Grid>
+    </Grid>
    
   );
 }
