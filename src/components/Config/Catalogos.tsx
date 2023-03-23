@@ -19,7 +19,8 @@ import TablePagination from "@mui/material/TablePagination";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { DialogCatalogos } from "./DialogCatalogos";
+import { DialogCatalogos, IDialog } from "./DialogCatalogos";
+import InfoIcon from "@mui/icons-material/Info";
 
 export function Catalogos() {
   const params = new URLSearchParams(window.location.search);
@@ -103,33 +104,38 @@ export function Catalogos() {
   ];
 
   const [modulo, setModulo] = useState(
-    params.get("label") || "Claves de inscripción"
+    modulos[parseInt(params.get("id") || "0")].label
   );
 
   const [catalogo, setCatalogo] = useState<Array<ICatalogo>>([
     {
       Id: "",
       Descripcion: "",
+      OCP: 0,
+      OLP: 0,
     },
   ]);
 
-  const [edit, setEdit] = useState({
+  const [edit, setEdit] = useState<IDialog>({
     Crud: "",
     Id: parseInt(params.get("id") || "0"),
     IdDesc: "",
     Descripcion: "",
+    OCP: 0,
+    OLP: 0,
     Modulo: modulo,
   });
 
-  const getCatalogos = () => {
-    getCatalogo(setCatalogo, modulos[edit.Id].fnc);
-  };
+  // const getCatalogos = () => {
+  //   getCatalogo(setCatalogo, modulos[edit.Id].fnc);
+  // };
 
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     getCatalogo(setCatalogo, modulos[edit.Id].fnc);
-  }, [openEdit, modulo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDialog, modulo]);
 
   const [page, setPage] = useState(0);
 
@@ -175,6 +181,7 @@ export function Catalogos() {
                   borderRadius: 20,
                   display: "flex",
                   justifyContent: "start",
+                  fontFamily: "MontserratMedium",
                 }}
                 onClick={() => {
                   setModulo(item.label);
@@ -183,7 +190,7 @@ export function Catalogos() {
                     ...{ Id: index },
                     ...{ Modulo: item.label },
                   });
-                  getCatalogos();
+                  // getCatalogos();
                 }}
               >
                 {item.label}
@@ -207,6 +214,7 @@ export function Catalogos() {
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 5,
+              fontFamily: "MontserratMedium",
             }}
           >
             {modulo.toUpperCase()}
@@ -237,13 +245,24 @@ export function Catalogos() {
                     sx={{
                       display: "grid",
                       gridTemplateColumns: "4fr 1fr",
-                      width: "39vw",
                     }}
                   >
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        fontFamily: "MontserratMedium",
+                      }}
+                    >
                       Descripción
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>Acción</TableCell>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        fontFamily: "MontserratMedium",
+                      }}
+                    >
+                      Acción
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody
@@ -271,8 +290,37 @@ export function Catalogos() {
                             height: "90%",
                           }}
                         >
-                          <TableCell>{item.Descripcion}</TableCell>
+                          <TableCell sx={{ fontFamily: "Montserrat" }}>
+                            {item.Descripcion}
+                          </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
+                            {modulo === "Reglas de financiamiento" ||
+                            modulo === "Tipos de documento" ? (
+                              <Tooltip
+                                title={
+                                  item.OCP === 1 && item.OLP === 1
+                                    ? "Obligatorio en corto plazo y largo plazo"
+                                    : item.OCP === 1 && item.OLP === 0
+                                    ? "Obligatorio en corto plazo"
+                                    : item.OCP === 0 && item.OLP === 1
+                                    ? "Obligatorio en largo plazo"
+                                    : "No obligatorio en corto plazo o largo plazo"
+                                }
+                              >
+                                <IconButton>
+                                  <InfoIcon
+                                    fontSize="small"
+                                    sx={[
+                                      {
+                                        "&:hover": {
+                                          color: "orange",
+                                        },
+                                      },
+                                    ]}
+                                  ></InfoIcon>
+                                </IconButton>
+                              </Tooltip>
+                            ) : null}
                             <Tooltip title="Editar">
                               <IconButton
                                 onClick={() => {
@@ -281,8 +329,10 @@ export function Catalogos() {
                                     ...{ IdDesc: item.Id },
                                     ...{ Descripcion: item.Descripcion },
                                     ...{ Crud: "edita" },
+                                    ...{ OCP: item.OCP },
+                                    ...{ OLP: item.OLP },
                                   }));
-                                  setOpenEdit(true);
+                                  setOpenDialog(true);
                                 }}
                               >
                                 <EditIcon
@@ -306,7 +356,7 @@ export function Catalogos() {
                                     ...{ Descripcion: item.Descripcion },
                                     ...{ Crud: "elimina" },
                                   }));
-                                  setOpenEdit(true);
+                                  setOpenDialog(true);
                                 }}
                               >
                                 <DeleteIcon
@@ -333,8 +383,8 @@ export function Catalogos() {
           <DialogCatalogos
             modulos={modulos}
             edit={edit}
-            open={openEdit}
-            setOpen={setOpenEdit}
+            open={openDialog}
+            setOpen={setOpenDialog}
           />
           <Box
             sx={{
@@ -347,11 +397,15 @@ export function Catalogos() {
             <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
               <Button
                 onClick={() => {
+                  console.log(edit);
                   setEdit((edit) => ({
                     ...edit,
                     ...{ Crud: "crea" },
+                    ...{ Descripcion: "" },
+                    ...{ OCP: 0 },
+                    ...{ OLP: 0 },
                   }));
-                  setOpenEdit(true);
+                  setOpenDialog(true);
                 }}
               >
                 <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
@@ -376,6 +430,8 @@ export function Catalogos() {
 interface ICatalogo {
   Id: string;
   Descripcion: string;
+  OCP: number;
+  OLP: number;
 }
 
 export interface IModulos {

@@ -63,6 +63,7 @@ export function LateralMenu() {
   };
 
   const [openConsultaDeSolicitud, setConsultaDeSolicitud] = React.useState(false);
+  
   const handleConsultaDeSolicitudClick = () => {
     setConsultaDeSolicitud(!openConsultaDeSolicitud);
   };

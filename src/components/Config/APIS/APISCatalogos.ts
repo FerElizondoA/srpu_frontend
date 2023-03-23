@@ -22,13 +22,15 @@ export function getCatalogo(setState: Function, getState: string) {
     });
 }
 
-export function modDesc(modDesc: string, idDesc: string, desc: string) {
+export function modDesc(modDesc: string, idDesc: string, desc: string, ocp: number, olp: number) {
   axios
     .put(
       process.env.REACT_APP_APPLICATION_BACK + `/api/modify-${modDesc}`,
       {
         IdDescripcion: idDesc,
         Descripcion: desc,
+        OCP: ocp,
+        OLP: olp,
         IdUsuario: localStorage.getItem("IdUsuario"),
       },
       {
@@ -54,13 +56,15 @@ export function modDesc(modDesc: string, idDesc: string, desc: string) {
     });
 }
 
-export function creaDesc(creaDesc: string, desc: string) {
+export function creaDesc(creaDesc: string, desc: string, ocp: number, olp: number) {
   axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + `/api/create-${creaDesc}`,
       {
         IdUsuario: localStorage.getItem("IdUsuario"),
         Descripcion: desc,
+        OCP: ocp,
+        OLP: olp
       },
       {
         headers: {

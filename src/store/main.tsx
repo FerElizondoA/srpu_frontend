@@ -1,4 +1,4 @@
-import create from "zustand";
+import {create} from "zustand";
 
 import { createEncabezadoSlice, EncabezadoSlice } from "./encabezado";
 import { createInformacionGeneralSlice, InformacionGeneralSlice } from "./informacion_general";

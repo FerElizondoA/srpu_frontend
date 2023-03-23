@@ -1,6 +1,13 @@
 import Button from "@mui/material/Button";
-import { Grid, Typography, TextField } from "@mui/material";
-import { useState } from "react";
+import {
+  Grid,
+  Typography,
+  TextField,
+  Switch,
+  FormGroup,
+  FormControlLabel,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -20,22 +27,33 @@ export function DialogCatalogos({
   open: boolean;
   setOpen: Function;
 }) {
-  const [element, setElement] = useState("");
+  const [element, setElement] = useState(edit.Descripcion);
+
+  const [ocp, setOcp] = useState(0);
+  const [olp, setOlp] = useState(0);
+
+  useEffect(() => {
+    setOcp(edit.OCP);
+    setOlp(edit.OLP);
+  }, [edit.OCP, edit.OLP]);
 
   const funcion = () => {
     if (edit.Crud === "edita") {
-      modDesc(modulos[edit.Id].fnc, edit.IdDesc, element);
-      setElement('')
+      modDesc(modulos[edit.Id].fnc, edit.IdDesc, element, ocp, olp);
+      setElement("");
+      setOcp(0);
+      setOlp(0);
     } else if (edit.Crud === "crea") {
-      creaDesc(modulos[edit.Id].fnc, element);
-      setElement('')
+      creaDesc(modulos[edit.Id].fnc, element, ocp, olp);
+      setElement("");
+      setOcp(0);
+      setOlp(0);
     } else {
       delDesc(modulos[edit.Id].fnc, edit.IdDesc);
     }
 
     setOpen(false);
   };
-
 
   return (
     <Grid container direction="column" alignItems={"center"}>
@@ -45,18 +63,31 @@ export function DialogCatalogos({
           setOpen(false);
         }}
         fullWidth
-        maxWidth={"sm"}
+        maxWidth={"md"}
       >
         <DialogTitle sx={{ fontFamily: "MontserratMedium" }}>
           {edit.Crud === "crea"
             ? `Agregar nuevo elemento a la tabla: ${edit.Modulo}`
             : edit.Crud === "edita"
-            ? `Modificar descripción: ${edit.Descripcion}`
-            : `¿Desea eliminar el elemento '${edit.Descripcion}' de la tabla '
-          ${edit.Modulo}'?`}
+            ? `Modificar descripción`
+            : `¿Desea eliminar el elemento de la tabla
+          '${edit.Modulo}'?`}
         </DialogTitle>
+        {edit.Crud === "crea" ? (
+          ``
+        ) : (
+          <DialogContent
+            sx={{
+              display: "grid",
+              justifyItems: "center",
+              fontFamily: "MontserratMedium",
+            }}
+          >
+            Elemento: {edit.Descripcion}
+          </DialogContent>
+        )}
         {edit.Crud === "crea" || edit.Crud === "edita" ? (
-          <DialogContent sx={{ display: "grid" }}>
+          <DialogContent sx={{ display: "grid", justifyItems: "center" }}>
             <TextField
               size="small"
               label={
@@ -69,13 +100,14 @@ export function DialogCatalogos({
                       lg: "80%",
                       xl: "100%",
                     },
-                    fontFamily: "Montserrat",
+                    fontFamily: "MontserratMedium",
                   }}
                 >
                   Nuevo elemento
                 </Typography>
               }
-              sx={{ m: 2 }}
+              sx={{ m: 2, width: "100%" }}
+              multiline
               inputProps={{
                 sx: {
                   fontSize: {
@@ -85,13 +117,49 @@ export function DialogCatalogos({
                     lg: "80%",
                     xl: "100%",
                   },
+                  fontFamily: "MontserratMedium",
                 },
               }}
               value={element || ""}
               onChange={(v) => {
                 setElement(v.target.value);
               }}
-            ></TextField>
+            />
+            {edit.Modulo === "Reglas de financiamiento" ||
+            edit.Modulo === "Tipos de documento" ? (
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={ocp === 1}
+                      onChange={(e) => {
+                        e.target.checked ? setOcp(1) : setOcp(0);
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ fontFamily: "Montserrat" }}>
+                      Obligatorio en inscripción a corto plazo
+                    </Typography>
+                  }
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={olp === 1}
+                      onChange={(e) => {
+                        e.target.checked ? setOlp(1) : setOlp(0);
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ fontFamily: "Montserrat" }}>
+                      Obligatorio en inscripción a largo plazo
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+            ) : null}
           </DialogContent>
         ) : null}
 
@@ -102,6 +170,7 @@ export function DialogCatalogos({
               setOpen(false);
               setElement("");
             }}
+            sx={{ fontFamily: "Montserrat" }}
           >
             Cancelar
           </Button>
@@ -110,6 +179,7 @@ export function DialogCatalogos({
               //   modifDesc();
               funcion();
             }}
+            sx={{ fontFamily: "Montserrat" }}
           >
             Aceptar
           </Button>
@@ -124,5 +194,7 @@ export interface IDialog {
   Id: number;
   IdDesc: string;
   Descripcion: string;
+  OCP: number;
+  OLP: number;
   Modulo: string;
 }
