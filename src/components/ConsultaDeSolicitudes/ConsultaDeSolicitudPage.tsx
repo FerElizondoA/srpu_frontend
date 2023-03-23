@@ -25,30 +25,31 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-
-interface Data {
-  Institucion_financiera: string;
-  Tipo_de_ente_público_obligado: string;
-  Clave_de_inscripcion: string;
+import { getSolicitudes } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
+import e from "express";
+interface IData {
+  Institucion: string;
+  TipoEntePublico: string;
+  ClaveDeInscripcion: string;
   Estatus: string;
-  Fecha_de_contratacion_desde: Date;
-  Monto_original_contratado: number;
+  FechaContratacion: Date;
+  MontoOriginalContratado: number;
   //search: string
 }
 
 interface Head {
-  id: keyof Data;
+  id: keyof IData;
   isNumeric: boolean;
   label: string;
 }
 const heads: readonly Head[] = [
   {
-    id: "Institucion_financiera",
+    id: "Institucion",
     isNumeric: true,
     label: "Institucion financiera",
   },
   {
-    id: "Tipo_de_ente_público_obligado",
+    id: "TipoEntePublico",
     isNumeric: true,
     label: "Tipo de ente público obligado",
   },
@@ -58,57 +59,21 @@ const heads: readonly Head[] = [
     label: "Estatus",
   },
   {
-    id: "Clave_de_inscripcion",
+    id: "ClaveDeInscripcion",
     isNumeric: true,
     label: "Clave de inscripcion",
   },
   {
-    id: "Monto_original_contratado",
+    id: "MontoOriginalContratado",
     isNumeric: true,
     label: "Monto original contratado",
   },
   {
-    id: "Fecha_de_contratacion_desde",
+    id: "FechaContratacion",
     isNumeric: true,
-    label: "Fecha de contratacion desde",
+    label: "Fecha de contratacion",
   },
 ];
-
-const ejemplos = [
-  {
-    Institucion_financiera: "Banorte",
-    Monto_original_contratado: 2000000,
-    Tipo_de_ente_público_obligado: "Municipio",
-    Clave_de_inscripcion: "123-rg",
-    Estatus: "completa",
-    Fecha_de_contratacion_desde: "12/03/2023", 
-  },
-  {
-    Institucion_financiera: "Santandar",
-    Monto_original_contratado: 3000000,
-    Tipo_de_ente_público_obligado: "Municipio",
-    Clave_de_inscripcion: "434-ph",
-    Estatus: "por terminar",
-    Fecha_de_contratacion_desde: "06/01/2023",
-  },
-  {
-    Institucion_financiera: "Banco Azteca",
-    Monto_original_contratado: 4500000,
-    Tipo_de_ente_público_obligado: "Municipio",
-    Clave_de_inscripcion: "988-tf",
-    Estatus: "incompleta",
-    Fecha_de_contratacion_desde: "01/02/2023",
-  },
-  {
-    Institucion_financiera: "Citibanamex",
-    Monto_original_contratado: 8500000,
-    Tipo_de_ente_público_obligado: "Municipio",
-    Clave_de_inscripcion: "788-ap",
-    Estatus: "por terminar",
-    Fecha_de_contratacion_desde: "01/01/2023",
-  },
-];
-
 
 
 export function ConsultaDeSolicitudPage() {
@@ -116,33 +81,57 @@ export function ConsultaDeSolicitudPage() {
   const [datos, setDatos] = useState([]);
   const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
-
+  const [filtrar, setFiltrar] = useState<Array<IData>>([]);
+  const [baseDeDatos, setBaseDeDatos] = useState<Array<IData>>([]);
+  console.log("soy la data1",filtrar);
   const handleChange =(e: React.ChangeEvent<HTMLInputElement>)=>{
 
     setBusqueda(e.target.value)
-    filtrar(e.target.value);
+    filtrar2(e.target.value);
+    console.log("e..",e.target.value);
+    console.log("busqueda",busqueda);
+    
   }
 
   const handleSearch =() =>{
-    filtrar(busqueda);
+    filtrar2(JSON.stringify(baseDeDatos));
+
+    console.log("busqueda",busqueda);
+    
   }
 
-  const filtrar = (terminoBusqueda: string) =>{
+  const filtrar2 = (terminoBusqueda: string) =>{
+      let ResultadoBusqueda = baseDeDatos.filter((elemento)=>{
 
-    let ResultadoBusqueda = ejemplos.filter((elemento)=>{
-      if (elemento.Clave_de_inscripcion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
+      if (elemento.ClaveDeInscripcion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
         || elemento.Estatus.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Fecha_de_contratacion_desde.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Institucion_financiera.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Monto_original_contratado.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
-        || elemento.Tipo_de_ente_público_obligado.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
+        || elemento.FechaContratacion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
+        || elemento.Institucion.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
+        || elemento.MontoOriginalContratado.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
+        || elemento.TipoEntePublico.toString().toLocaleLowerCase().includes(terminoBusqueda.toLocaleLowerCase())
       )
-      {
-        console.log("elemento", elemento);
-        return elemento;
+      console.log("elemento", elemento);
+      let solicitud: IData ={
+          Institucion: elemento.Institucion,
+          TipoEntePublico: elemento.TipoEntePublico,
+          ClaveDeInscripcion: elemento.ClaveDeInscripcion,
+          Estatus: elemento.Estatus,
+          FechaContratacion: elemento.FechaContratacion,
+          MontoOriginalContratado:elemento.MontoOriginalContratado,
       }
+      setFiltrar([...filtrar,solicitud])
+        return elemento;
+      
     })
+    
+    
   }
+
+  
+
+  useEffect(()=>{
+    getSolicitudes(setBaseDeDatos)
+  },[])
 
   return (
     <Grid container direction="column">
@@ -191,14 +180,14 @@ export function ConsultaDeSolicitudPage() {
               ))}
             </TableHead>
             <TableBody>
-              {ejemplos.map((row) => (
+              {filtrar.map((row) => (
                 <StyledTableRow>
                   <StyledTableCell component="th" scope="row" >
-                    {row.Institucion_financiera.toString()}
+                    {row.Institucion.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Tipo_de_ente_público_obligado.toString()}
+                    {row.TipoEntePublico.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
@@ -206,15 +195,15 @@ export function ConsultaDeSolicitudPage() {
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Clave_de_inscripcion.toString()}
+                    {row.ClaveDeInscripcion.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Monto_original_contratado.toString()}
+                    {row.MontoOriginalContratado.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {row.Fecha_de_contratacion_desde}
+                    {row.FechaContratacion.toString()}
                   </StyledTableCell>
                   
                 </StyledTableRow>
