@@ -34,56 +34,30 @@ import { TasaInteres } from "../../../store/pagos_capital";
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
 
-interface Data {
-  isSelected: boolean,
-  firstPaymentDate: Date,
-  fixedRate: number,
-  paymentRange: string,
-  referenceRate: number,
-  overRate: number,
-  amountOfDays: number
-}
-
 interface Head {
-    id: keyof Data;
-    isNumeric: boolean;
     label: string;
 }
 
 const heads: readonly Head[] = [
     {
-        id: 'isSelected',
-        isNumeric: false,
         label: "Selección"
     },
     {
-        id: 'firstPaymentDate',
-        isNumeric: false,
         label: "Fecha de Primer Pago"
     },
     {
-        id: 'fixedRate',
-        isNumeric: true,
         label: "Tasa Fija"
     },
     {
-        id: 'paymentRange',
-        isNumeric: false,
         label: "Periocidad de Pago"
     },
     {
-        id: 'referenceRate',
-        isNumeric: true,
         label: "Tasa de Referencia"
     },
     {
-        id: 'overRate',
-        isNumeric: true,
         label: "Sobre Tasa"
     },
     {
-        id: 'amountOfDays',
-        isNumeric: true,
         label: "Dias del Ejercicio"
     },
 ]
@@ -167,7 +141,10 @@ export function DisposicionPagosCapital(){
     }
 
     const deleteRows = () => {
-
+      console.log("selected: ", selected)
+      selected.forEach((it) => {
+        removeTasaInteres(it);
+      })
     }
 
     return (
@@ -363,8 +340,9 @@ export function DisposicionPagosCapital(){
               </Grid>
 
               <Grid item>
-                <InputLabel sx={queries.medium_text}>Sobre tasa</InputLabel>
+                <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
                 <TextField
+                  value={sobreTasa}
                   fullWidth
                   InputLabelProps={{
                     style: {
@@ -406,7 +384,7 @@ export function DisposicionPagosCapital(){
                   <Table>
                     <TableHead sx={{ maxHeight: "200px" }}>
                       {heads.map((head) => (
-                        <StyledTableCell key={head.id}>
+                        <StyledTableCell>
                           <TableSortLabel>{head.label}</TableSortLabel>
                         </StyledTableCell>
                       ))}
@@ -451,12 +429,12 @@ export function DisposicionPagosCapital(){
                 </TableContainer>
                 <Grid container>
                   <Grid item md={6} lg={6}>
-                    <ConfirmButton variant="outlined" onClick={() => {}}>
+                    <ConfirmButton variant="outlined" onClick={() => addRows()}>
                       AGREGAR
                     </ConfirmButton>
                   </Grid>
                   <Grid item md={6} lg={6}>
-                    <DeleteButton variant="outlined" onClick={() => {}}>
+                    <DeleteButton variant="outlined" onClick={() => deleteRows()}>
                       ELIMINAR
                     </DeleteButton>
                   </Grid>
