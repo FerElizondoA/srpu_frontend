@@ -3,23 +3,25 @@ import axios from "axios";
 import { useCortoPlazoStore } from "./main";
 
 export interface SolicitudInscripcionSlice{
-    
-
+    fetchedReglas: boolean;
+    reglasCatalog: string[],
     nombreServidorPublico: string;
     cargo: string;
     documentoAutorizado: string;
     identificacion: string;
     reglas: string[];
-
     changeServidorPublico: (newServidorPublico: string) => void;
     changeCargo: (newCargo: string) => void;
     changeDocumentoAutorizado: (newDocumentoAutorizado: string) => void;
     changeIdentificacion: (newIdentificacion: string) => void;
     changeReglas: (newReglas: string) => void;
     fetchDocumento:() => void;
+    fetchReglas: () => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionSlice> = (set, get) => ({
+    fetchedReglas: false,
+    reglasCatalog: [],
     nombreServidorPublico: "",
     cargo: "",
     documentoAutorizado: "",
@@ -31,7 +33,6 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     changeIdentificacion: (newIdetificacion: string) => set(()=> ({identificacion: newIdetificacion})),
     changeReglas: (newReglas: string) => set((state)=> ({reglas: [...state.reglas, newReglas]})),
     
-     
     fetchDocumento: async ()=> {
         let data = new FormData();
 
@@ -87,6 +88,26 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         //   }
         //   set(() => ({}))
     },
+    fetchReglas: async () => {
+        if (!get().fetchedReglas) {
+          console.log("fetchReglas executed!");
+          const response = await axios.get(
+            "http://10.200.4.199:8000/api/get-reglaDeFinanciamiento",
+            {
+              headers: {
+                Authorization: localStorage.getItem("jwtToken"),
+              },
+            }
+          );
+          console.log(response)
+          response.data.data.forEach((e: any) => {
+            set((state) => ({
+              reglasCatalog: [...state.reglasCatalog, e.Descripcion],
+            }));
+          });
+          set(() => ({fetchedReglas: true}))
+        }
+    }
 
 
 })
