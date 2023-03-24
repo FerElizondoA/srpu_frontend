@@ -1,6 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ICreateSolicitud } from "../Interfaces/ISolicitudes";
+import { ICreateSolicitud } from "../Interfaces/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -92,7 +92,7 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
   
 };
 
-export const getListadoUsuarios = () => {
+export const getListadoUsuarios = (setState: Function) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
@@ -102,11 +102,11 @@ export const getListadoUsuarios = () => {
       'Authorization': localStorage.getItem("jwtToken"),
       'Content-Type': 'application/json'
     }
-  }).then((r) => {
+  }).then(({data}) => {
     
-      console.log(r.data.data);
+      console.log(data.data);
       
-      return r.data
+      setState(data.data)
    
   })
     .catch((r) => {

@@ -1,208 +1,217 @@
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import { Button, Typography, Input } from "@mui/material";
+import { Box, Card, CardContent, IconButton, Tooltip, Button, Typography, FormGroup, FormControlLabel, Switch, Grid, Paper, InputBase, TableContainer, Table, TableHead, TableSortLabel, TableBody, } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddLinkIcon from "@mui/icons-material/AddLink";
-import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
-import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
+import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
+import { IUSuarios } from "./Interfaces/IUsuarios";
+
+import {
+  AccountTree as AccountTreeIcon,
+  Edit as EditIcon,
+  FileDownload as FileDownloadIcon,
+  Input
+} from "@mui/icons-material";
+import { StyledTableCell, StyledTableRow } from "../CustomComponents";
 
 export const Usuarios = () => {
-  const navigate = useNavigate();
+  
+
+  const [usuarios, setUsuarios] = useState<Array<IUSuarios>>([]);
 
   useEffect(() => {
+    getListadoUsuarios(setUsuarios);
 
-    getListadoUsuarios();
-    // createSolicitud();
   }, []);
 
-  const [openModalUsuarios, setOpenModalUsuarios] = useState(false);
-  const [openModalVincularUsuario, setOpenModalVincularUsuario] =
-    useState(false);
+  const heads = [
 
-  const [actualizarDatos, setActualizarDatos] = useState(0);
-
-  const handleCloseModalUsuarios = () => {
-    setOpenModalUsuarios(false);
-    setActualizarDatos(actualizarDatos + 1);
-  };
-
-  const handleCloseModalVincularUsuario = () => {
-    setOpenModalVincularUsuario(false);
-  };
-
-  const [usersFiltered, setUsersFiltered] = useState("");
-
-  const dataFilter = (text: string) => {
-    setUsersFiltered(text);
-  };
-
-  //variables y funciones Solicitudes Pendeintes
-  const [openDialogSolicitudesP, setOpenDialogSolicitudesP] = useState(false);
-  const handleClickOpenDialogSolicitudesP = () => {
-    setOpenDialogSolicitudesP(true);
-  };
-
-  const handleCloseSolicitudesP = () => {
-    setOpenDialogSolicitudesP(false);
-  };
-
+    {
+      id: "Nombre",
+      label: "Nombre",
+      
+      
+      
+    },{
+      id: "ApellidoPaterno",
+      label: "ApellidoPaterno",
+      
+      
+      
+    },{
+      id: "ApellidoMaterno",
+      label: "Apellido Materno",
+      
+      
+      
+    },{
+      id: "MunicipioUOrganizacion",
+      label: "Municipio u Organizacion",
+      
+      
+      
+    },{
+      id: "Cargo",
+      label: "Cargo",
+      
+      
+      
+    },{
+      id: "Rol",
+      label: "Rol",
+      
+      
+      
+    },{
+      id: "CorreoElectronico",
+      label: "Correo Electronico",
+      
+      
+      
+    },{
+      id: "Telefono",
+      label: "Telefono",
+      
+      
+      
+    },{
+      id: "Ext",
+      label: "Ext",
+      
+      
+      
+    },{
+      id: "Celular",
+      label: "Celular",
+      
+      
+      
+    },{
+      id: "Curp",
+      label: "Curp",
+      
+      
+      
+    },{
+      id: "Rfc",
+      label: "Rfc",
+      
+      
+      
+    },
+  ];
+  
+  
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        height: "100vh",
-        display: "grid",
-        backgroundColor: "#F2F2F2",
-        alignItems: "start",
-      }}
-    >
-      <LateralMenu />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-          width: "100%",
-          height: "92vh",
-          alignItems: "center"
-        }}
+    
+      <Grid container direction="column">
+      <Grid item width={"100%"}>
+        <LateralMenu />
+      </Grid>
+
+      <Grid
+        item
+        //ml={window.innerWidth / 22}
+        mt={5}
+        mb={5}
+        lg={12}
+        display="center"
+        justifyContent="center"
       >
-        {/* <ModalCrearUsuario
-          title="Crear Solicitud Nuevo Usuario"
-          open={openModalUsuarios}
-          handleClose={handleCloseModalUsuarios}
-        />
-
-        <ModalVincularUsuario
-          title="Vincular Usuario"
-          open={openModalVincularUsuario}
-          handleClose={handleCloseModalVincularUsuario}
-        />
-        <DialogSolicitudes
-          open={openDialogSolicitudesP}
-          handleClose={handleCloseSolicitudesP}
-        /> */}
-
-        <Box
+        {/* <Paper
+          component="form"
           sx={{
-            width: "70vw",
-            height: "10vh",
-            backgroundColor: "#fff",
-            borderRadius: 5,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow:20
+            //alignItems: "center",
+            width: 800,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              border: 1,
-              borderRadius: 2,
-              ml: "1vw",
-              color: "#ccc",
-            }}
-          >
-            <Input
-              sx={{ pl: 1 }}
-              disableUnderline
-              onChange={(v) => dataFilter(v.target.value)}
-            />
-            <SearchIcon sx={{ color: "action.active", mr: 1 }} />
-          </Box>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Buscar"
+            
+            onChange={(e)=>{}}
+            //inputProps={{ "aria-label": "search google maps" }}
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <SearchIcon  onClick = {() =>{} }/>
+          </IconButton>
+        </Paper> */}
+      </Grid>
 
-          <Box>
-            <Button
-              variant="contained"
-              disabled={
-                localStorage.getItem("Rol") !== "Administrador" ? true : false
-              }
-              sx={{
-                mr: 3,
-                backgroundColor: "#15212F",
-                ":hover": {
-                  backgroundColor: "#ccc",
-                },
-              }}
-              onClick={() => handleClickOpenDialogSolicitudesP()}
-            >
-              <ScheduleSendIcon sx={{ mr: 1 }} />
-              <Typography
-                sx={{ fontFamily: "MontserratMedium", fontSize: ".8vw" }}
-              >
-                HISTORIAL DE SOLICITUDES
-              </Typography>
-            </Button>
+      <Grid item>
+        <TableContainer sx={{ maxHeight: "900px" }}>
+          <Table>
+            <TableHead>
+              {heads.map((head) => (
+                <StyledTableCell key={head.id} align="center">
+                  {head.label}
+                </StyledTableCell>
+              ))}
+            </TableHead>
+            <TableBody>
+              {usuarios.map((row) => (
+                <StyledTableRow>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Nombre.toString()}
+                  </StyledTableCell>
 
-            <Button
-              variant="contained"
-              disabled={
-                localStorage.getItem("Rol") !== "Administrador" ? true : false
-              }
-              sx={{
-                mr: 3,
-                backgroundColor: "#15212F",
-                ":hover": {
-                  backgroundColor: "#ccc",
-                },
-              }}
-              onClick={() => setOpenModalVincularUsuario(true)}
-            >
-              <AddLinkIcon sx={{ mr: 1 }} />
-              <Typography
-                sx={{ fontFamily: "MontserratMedium", fontSize: ".8vw" }}
-              >
-                VINCULAR USUARIO
-              </Typography>
-            </Button>
-            <Button
-              variant="contained"
-              disabled={
-                localStorage.getItem("Rol") === "Capturador" ? true : false
-              }
-              sx={{
-                mr: 3,
-                backgroundColor: "#c4a55a",
-                ":hover": {
-                  backgroundColor: "#ccc",
-                },
-              }}
-              onClick={() => setOpenModalUsuarios(true)}
-            >
-              <SendIcon sx={{ mr: 1 }} />
-              <Typography
-                sx={{ fontFamily: "MontserratMedium", fontSize: ".8vw" }}
-              >
-                CREAR SOLICITUD DE ALTA
-              </Typography>
-            </Button>
-          </Box>
-        </Box>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.ApellidoPaterno.toString()}
+                  </StyledTableCell>
 
-        {/* ----- */}
-        <Box
-          sx={{
-            width: "70vw",
-            height: "65vh",
-            backgroundColor: "#fff",
-            borderRadius: 5,
-            display: "flex",
-            alignItems: "center",
-            boxShadow:20
-          }}
-        >
-          {/* <DataTable
-            textFind={usersFiltered}
-            actualizar={actualizarDatos}
-          ></DataTable> */}
-        </Box>
-      </Box>
-    </Box>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.ApellidoMaterno.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.MunicipioUOrganizacion.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Cargo.toString()}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Rol.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.CorreoElectronico.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Telefono.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Ext.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Celular.toString()}
+                  </StyledTableCell>
+
+                  
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Curp.toString()}
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.Rfc.toString()}
+                  </StyledTableCell>
+
+                 
+
+                  
+                  
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+    </Grid>
   );
 };
