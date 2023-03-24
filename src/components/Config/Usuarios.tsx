@@ -1,5 +1,24 @@
 import { useEffect, useState } from "react";
-import { Box, Card, CardContent, IconButton, Tooltip, Button, Typography, FormGroup, FormControlLabel, Switch, Grid, Paper, InputBase, TableContainer, Table, TableHead, TableSortLabel, TableBody, } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  IconButton,
+  Tooltip,
+  Button,
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  Grid,
+  Paper,
+  InputBase,
+  TableContainer,
+  Table,
+  TableHead,
+  TableSortLabel,
+  TableBody,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import SendIcon from "@mui/icons-material/Send";
@@ -12,101 +31,70 @@ import {
   AccountTree as AccountTreeIcon,
   Edit as EditIcon,
   FileDownload as FileDownloadIcon,
-  Input
+  Input,
 } from "@mui/icons-material";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
 
 export const Usuarios = () => {
-  
-
   const [usuarios, setUsuarios] = useState<Array<IUSuarios>>([]);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
-
   }, []);
 
   const heads = [
-
     {
       id: "Nombre",
       label: "Nombre",
-      
-      
-      
-    },{
+    },
+    {
       id: "ApellidoPaterno",
       label: "ApellidoPaterno",
-      
-      
-      
-    },{
+    },
+    {
       id: "ApellidoMaterno",
       label: "Apellido Materno",
-      
-      
-      
-    },{
+    },
+    {
       id: "MunicipioUOrganizacion",
       label: "Municipio u Organizacion",
-      
-      
-      
-    },{
+    },
+    {
       id: "Cargo",
       label: "Cargo",
-      
-      
-      
-    },{
+    },
+    {
       id: "Rol",
       label: "Rol",
-      
-      
-      
-    },{
+    },
+    {
       id: "CorreoElectronico",
       label: "Correo Electronico",
-      
-      
-      
-    },{
+    },
+    {
       id: "Telefono",
       label: "Telefono",
-      
-      
-      
-    },{
+    },
+    {
       id: "Ext",
       label: "Ext",
-      
-      
-      
-    },{
+    },
+    {
       id: "Celular",
       label: "Celular",
-      
-      
-      
-    },{
+    },
+    {
       id: "Curp",
       label: "Curp",
-      
-      
-      
-    },{
+    },
+    {
       id: "Rfc",
       label: "Rfc",
-      
-      
-      
     },
   ];
-  
-  
+
   return (
-    
-      <Grid container direction="column">
+    <Grid container direction="column">
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
@@ -193,7 +181,6 @@ export const Usuarios = () => {
                     {row.Celular.toString()}
                   </StyledTableCell>
 
-                  
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Curp.toString()}
                   </StyledTableCell>
@@ -201,11 +188,6 @@ export const Usuarios = () => {
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Rfc.toString()}
                   </StyledTableCell>
-
-                 
-
-                  
-                  
                 </StyledTableRow>
               ))}
             </TableBody>
