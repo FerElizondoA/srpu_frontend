@@ -3,7 +3,7 @@ import { useLayoutEffect } from "react";
 import "./App.css";
 import "./Fonts.css";
 
-import { Route, useNavigate, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom"; //, useNavigate
 
 import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
@@ -25,7 +25,7 @@ export const appTheme = createTheme({
 
 
 function App() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const jt = params.get("jwt") || null;
   const IdApp = params.get("IdApp");
@@ -38,7 +38,7 @@ function App() {
         } else if ((r as boolean) === true) {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
-            navigate("../");
+            // navigate("../");
           }, 2000);
         }
       });
@@ -47,7 +47,7 @@ function App() {
         if ((r as boolean) === false) {
           window.location.assign("http://10.200.4.106/");
         } else {
-          navigate("../");
+          // navigate("../");
         }
       });
     }
