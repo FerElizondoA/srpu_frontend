@@ -107,11 +107,11 @@ export const Usuarios = () => {
         mt={5}
         mb={5}
         lg={12}
-        display="center"
+        display="flex"
         justifyContent="flex-end"
       >
 
-        <Grid item>
+        <Grid item xs={8} lg={8} sm={8} sx={{display:'flex',justifyContent:'flex-end'}}>
           <Paper
             component="form"
             sx={{
@@ -133,7 +133,7 @@ export const Usuarios = () => {
           </Paper>
         </Grid>
 
-        <Grid item >
+        <Grid item xs={4} lg={4} sm={4} sx={{display:'flex',justifyContent:'flex-end'}}>
           <Button variant="contained" size="large" endIcon={<PersonAddAlt1Icon />} sx={{ mr: '2vw' }}> Añadir Usuario</Button>
 
         </Grid>
