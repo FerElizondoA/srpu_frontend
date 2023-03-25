@@ -1,48 +1,50 @@
 import { useEffect, useState } from "react";
 import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  Tooltip,
   Button,
-  Typography,
-  FormGroup,
-  FormControlLabel,
-  Switch,
   Grid,
   Paper,
   InputBase,
   TableContainer,
   Table,
   TableHead,
-  TableSortLabel,
   TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import AddLinkIcon from "@mui/icons-material/AddLink";
-import SendIcon from "@mui/icons-material/Send";
-import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import { IUSuarios } from "./Interfaces/IUsuarios";
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   AccountTree as AccountTreeIcon,
+  Edit,
   Edit as EditIcon,
   FileDownload as FileDownloadIcon,
   Input,
 } from "@mui/icons-material";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 export const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<Array<IUSuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUSuarios>>([]);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
   }, []);
 
+  useEffect(() => {
+    setUsuariosFiltrados(usuarios);
+  }, [usuarios]);
+
   const heads = [
+    {
+      id: "Acciones",
+      label: "Acciones",
+    },
     {
       id: "Nombre",
       label: "Nombre",
@@ -106,31 +108,42 @@ export const Usuarios = () => {
         mb={5}
         lg={12}
         display="center"
-        justifyContent="center"
+        justifyContent="flex-end"
       >
-        {/* <Paper
-          component="form"
-          sx={{
-            display: "flex",
-            //alignItems: "center",
-            width: 800,
-          }}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Buscar"
-            
-            onChange={(e)=>{}}
+
+        <Grid item>
+          <Paper
+            component="form"
+            sx={{
+              display: "flex",
+              //alignItems: "center",
+              width: 800,
+            }}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Buscar"
+
+              onChange={(e) => { }}
             //inputProps={{ "aria-label": "search google maps" }}
-          />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon  onClick = {() =>{} }/>
-          </IconButton>
-        </Paper> */}
+            />
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <SearchIcon onClick={() => { }} />
+            </IconButton>
+          </Paper>
+        </Grid>
+
+        <Grid item >
+          <Button variant="contained" size="large" endIcon={<PersonAddAlt1Icon />} sx={{ mr: '2vw' }}> Añadir Usuario</Button>
+
+        </Grid>
+
+
+
       </Grid>
 
-      <Grid item>
-        <TableContainer sx={{ maxHeight: "900px" }}>
+      <Grid item sx={{height:"80vh"}}>
+        <TableContainer>
           <Table>
             <TableHead>
               {heads.map((head) => (
@@ -140,8 +153,23 @@ export const Usuarios = () => {
               ))}
             </TableHead>
             <TableBody>
-              {usuarios.map((row) => (
+              {usuariosFiltrados.map((row) => (
                 <StyledTableRow>
+                  <StyledTableCell component="th" scope="row" align="center">
+
+                    <Tooltip title="Editar Usuario">
+                      <IconButton aria-label="delete" size="large" onClick={() => { console.log(row); }}>
+                        <Edit fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Eliminar Usuario">
+                      <IconButton aria-label="delete" size="large" onClick={() => { console.log(row.id, row.ApellidoPaterno.toString()); }}>
+                        <DeleteIcon fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+
+                  </StyledTableCell>
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Nombre.toString()}
                   </StyledTableCell>
