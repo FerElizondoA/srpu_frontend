@@ -35,8 +35,10 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     
     fetchDocumento: async (reglasSeleccionadas: number[])=> {
         let data = new FormData();
-
-
+        let reglas: string[] = [];
+         reglasSeleccionadas.forEach((it) => {
+            reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]]
+         })
         // if (!get()) {
             console.log("fetchDocumento executed!");
            
@@ -50,14 +52,17 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
             const fechav = useCortoPlazoStore.getState().fechaVencimiento;
             const destino = useCortoPlazoStore.getState().destino;
             const plazoDias = useCortoPlazoStore.getState().plazoDias;
+
             const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublicoObligado
             const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado
+            
             const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva
-            const reglas = useCortoPlazoStore.getState().reglas
+            //const reglas = useCortoPlazoStore.getState().reglas
             const tipocomisiones = useCortoPlazoStore.getState().tipoComision
             const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico
-            
 
+            const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago
+            const obligadoSolidario = useCortoPlazoStore.getState().obligadoSolidarioAval
             const response = await axios.post(
               "http://192.168.137.152:7000/documento_srpu",
               {
@@ -79,6 +84,8 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
                   tipocomisiones: tipocomisiones,
                   servidorpublico: servidorpublico,
                   contrato: contrato,
+                  periodopago: periodopago,
+                  obligadoSolidario: obligadoSolidario,
               },
               {
                 headers: {
