@@ -6,7 +6,7 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createSolicitud: (req, res) => {
-    const IdInsitucionFinanciera = req.body.IdInsitucionFinanciera;
+    const IdInstitucionFinanciera = req.body.IdInstitucionFinanciera;
     const IdTipoEntePublico = req.body.IdTipoEntePublico;
     const IdEstatus= req.body.IdEstatus;
     const IdClaveInscripcion= req.body.IdClaveInscripcion;
@@ -15,7 +15,7 @@ module.exports = {
     const Solicitud = req.body.Solicitud;
     const CreadoPor = req.body.CreadoPor;
 
-    if (IdInsitucionFinanciera== null || /^[\s]*$/.test(IdInsitucionFinanciera)) {
+    if (IdInstitucionFinanciera== null || /^[\s]*$/.test(IdInstitucionFinanciera)) {
       return res.status(409).send({
         error: "Ingrese IdInsitucionFinanciera",
       });
