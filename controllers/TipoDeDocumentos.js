@@ -1,3 +1,4 @@
+const { logRoles } = require("@testing-library/react");
 const db = require("../config/db.js");
 
 module.exports = {
@@ -102,7 +103,9 @@ getListadoTipoDeDocumento: (req, res) => {
   },
 
   getListadoTipoDeDocumentoCortoPlazo: (req, res) => {
-    db.query(`CALL sp_ListadoTiposDocumentoCortoPlazo()`, (err, result) => {
+    console.log(req);
+    db.query(`CALL sp_ListadoTiposDocumentosCortoPlazo()`, (err, result) => {
+      console.log(err);
       if (err) {
         return res.status(500).send({
           error: "Error",

@@ -10,9 +10,9 @@ const router = express.Router();
 const { createInstitucionFinanciera, modifyInstitucionFinanciera, deleteInstitucionFinanciera, getInstitucionesFinancieras, getDetailInstitucionFinanciera } = require("../controllers/InstitucionesFinancieras.js");
 const { createObligadoSolidarioAval, getObligadoSolidarioAval, getDetailObligadoSolidarioAval, modifyObligadoSolidarioAval, deleteObligadoSolidarioAval } = require("../controllers/ObligadoSolidarioAval.js");
 const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../controllers/Roles.js");
-const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento } = require("../controllers/TipoDeDocumentos.js");
+const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento } = require("../controllers/TipoDeDocumentos.js");
 
-const { getDetailUsuario } = require("../controllers/usuarios.js");
+const { getDetailUsuario, getUsuarios } = require("../controllers/usuarios.js");
 
 
 
@@ -220,24 +220,31 @@ router.delete("/delete-rol", verifyToken.verifyJWT, (req, res) => {
 router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
   getDetailUsuario(req, res);
 });
+
+router.get("/lista-usuarios", verifyToken.verifyJWT, (req, res) => {
+  getUsuarios(req, res);
+});
+
 //TipoDeDocumento
 router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
 router.get("/get-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
 router.get("/get-tipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
 });
 
-router.get("/get-tipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoCortoPlazo(req, res);
 }); 
 
-router.get("/delete-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.delete("/delete-tipoDocumento",  verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
 
