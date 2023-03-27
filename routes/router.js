@@ -225,19 +225,19 @@ router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.post("/get-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
-router.post("/get-tipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
 });
 
-router.post("/get-tipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tipoDeDocumentoCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoCortoPlazo(req, res);
-});
+}); 
 
-router.post("/delete-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.get("/delete-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
 
