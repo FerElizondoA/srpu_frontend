@@ -230,12 +230,12 @@ router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.get("/get-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+
 router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
-router.get("/get-tipoDeDocumentoLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
+
 router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
 });
