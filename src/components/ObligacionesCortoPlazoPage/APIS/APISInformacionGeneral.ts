@@ -51,7 +51,7 @@ export  function getObligadoSolidarioAval (setState:Function){
 export  function getSolicitudes (setState:Function){
   axios({
      method: 'get',
-     url: 'http://10.200.4.200:8000' + '/api/get-solicitudes',
+     url: 'http://10.200.4.199:8000' + '/api/get-solicitudes',
      data: {},
      headers: {
          "Content-Type": "application/json",

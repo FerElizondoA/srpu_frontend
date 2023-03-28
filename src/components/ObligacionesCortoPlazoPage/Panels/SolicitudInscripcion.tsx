@@ -14,10 +14,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { IconButton } from "@mui/material";
 
 interface Head {
   label: string;
@@ -30,26 +32,50 @@ const heads: readonly Head[] = [
   {
     label: "Regla",
   },
- 
 ];
 
-
 export function SolicitudInscripcion() {
+  const nombreServidorPublico: string = useCortoPlazoStore(
+    (state) => state.nombreServidorPublico
+  );
+  const changeServidorPublico: Function = useCortoPlazoStore(
+    (state) => state.changeServidorPublico
+  );
+  const cargo: string = useCortoPlazoStore((state) => state.cargo);
+  const changeCargo: Function = useCortoPlazoStore(
+    (state) => state.changeCargo
+  );
+  const solicitanteAutorizado: string = useCortoPlazoStore(
+    (state) => state.solicitanteAutorizado
+  );
+  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(
+    (state) => state.changeSolicitanteAutorizado
+  );
+  const documentoAutorizado: string = useCortoPlazoStore(
+    (state) => state.documentoAutorizado
+  );
+  const changeDocumentoAutorizado: Function = useCortoPlazoStore(
+    (state) => state.changeDocumentoAutorizado
+  );
+  const identificacion: string = useCortoPlazoStore(
+    (state) => state.identificacion
+  );
+  const changeIdentificacion: Function = useCortoPlazoStore(
+    (state) => state.changeIdentificacion
+  );
+  const reglasCatalog: string[] = useCortoPlazoStore(
+    (state) => state.reglasCatalog
+  );
 
-  const nombreServidorPublico: string = useCortoPlazoStore(state => state.nombreServidorPublico);
-  const changeServidorPublico: Function = useCortoPlazoStore(state => state.changeServidorPublico);
-  const cargo: string = useCortoPlazoStore(state => state.cargo);
-  const changeCargo: Function = useCortoPlazoStore(state => state.changeCargo);
-  const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
-  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
-  const documentoAutorizado: string = useCortoPlazoStore(state => state.documentoAutorizado);
-  const changeDocumentoAutorizado: Function = useCortoPlazoStore(state => state.changeDocumentoAutorizado);
-  const identificacion: string = useCortoPlazoStore(state => state.identificacion);
-  const changeIdentificacion: Function = useCortoPlazoStore(state => state.changeIdentificacion);
-  const reglasCatalog: string[] = useCortoPlazoStore(state => state.reglasCatalog);
-
-  const fetchDocumento: Function = useCortoPlazoStore(state => state.fetchDocumento);
-  const fetchReglas: Function = useCortoPlazoStore(state => state.fetchReglas);
+  const fetchDocumento: Function = useCortoPlazoStore(
+    (state) => state.fetchDocumento
+  );
+  const fetchReglas: Function = useCortoPlazoStore(
+    (state) => state.fetchReglas
+  );
+  const fetchBorrador: Function = useCortoPlazoStore(
+    (state) => state.fetchBorrador
+  );
 
   const [selected, setSelected] = React.useState<readonly number[]>([]);
 
@@ -60,27 +86,38 @@ export function SolicitudInscripcion() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !")
+      console.log("selectedIndex === 0 !");
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !")
+      console.log("selectedIndex === selected.length -1 !");
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !")
+      console.log("selectedIndex === selected.length > 0 !");
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
     console.log(newSelected);
   };
 
+  const buttodescription = () => {
+    if (localStorage.getItem("Rol") === "Capturador") {
+      return <Typography sx={queries.medium_text}>CAPTURAR</Typography>;
+    } else if (localStorage.getItem("Rol") === "Verificador") {
+      return <Typography sx={queries.medium_text}>AUTORIZAR</Typography>;
+    } else if (localStorage.getItem("Rol") === "Administrador") {
+      return <Typography sx={queries.medium_text}>FIRMAR</Typography>;
+    }
+  };
+  //console.log("hola", localStorage.getItem("Rol"));
+
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  React.useEffect(() =>{
+  React.useEffect(() => {
     fetchReglas();
-  }, [])
+  }, []);
 
   return (
     <Grid item container>
@@ -243,10 +280,10 @@ export function SolicitudInscripcion() {
                       return (
                         <StyledTableRow>
                           <StyledTableCell padding="checkbox">
-                          <Checkbox 
-                          onClick={(event) => handleClick(event, index)}
-                          checked={isItemSelected}
-                          />
+                            <Checkbox
+                              onClick={(event) => handleClick(event, index)}
+                              checked={isItemSelected}
+                            />
                           </StyledTableCell>
                           <StyledTableCell component="th" scope="row">
                             {row}
@@ -254,7 +291,6 @@ export function SolicitudInscripcion() {
                         </StyledTableRow>
                       );
                     })}
-
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -266,7 +302,43 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="success" onClick={() => fetchDocumento(selected)}>
+          <Fab variant="extended" color="error" sx={{ mb: "10px" }}>
+            <CancelIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>Cancelar</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            sx={{ mb: "10px" }}
+            disabled={
+              localStorage.getItem("Rol") === "Capturador"
+                ? false
+                : localStorage.getItem("Rol") === "Verificador"
+                ? false
+                : localStorage.getItem("Rol") === "Administrador"
+                ? false
+                : true
+            }
+          >
+            {/* <IconButton>
+              <Typography sx={queries.medium_text}>Autorizar</Typography>
+              </IconButton> */}
+            <CheckIcon
+              sx={{ mr: 1 }}
+            />
+            {buttodescription()}
+          </Fab>
+          <Fab variant="extended" color="success"  onClick={() => fetchBorrador(selected)} sx={{ mb: "10px" }}>
+            <CheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>BORRADOR</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => fetchDocumento(selected)}
+          >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>

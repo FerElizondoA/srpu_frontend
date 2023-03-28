@@ -26,7 +26,11 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import e from "express";
+import { useNavigate } from "react-router-dom";
+import { ISolicitud } from "../ObligacionesCortoPlazoPage/Interfaces/CortoPlazo/ISolicitud";
+
 interface IData {
   Institucion: string;
   TipoEntePublico: string;
@@ -34,6 +38,8 @@ interface IData {
   Estatus: string;
   FechaContratacion: Date;
   MontoOriginalContratado: number;
+  Ver: boolean;
+  Solicitud: string;
   //search: string
 }
 
@@ -73,61 +79,81 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Fecha de contratacion",
   },
+  {
+    id: "Ver",
+    isNumeric: true,
+    label: "Ver",
+  },
 ];
 
-
 export function ConsultaDeSolicitudPage() {
-
   const [datos, setDatos] = useState<Array<IData>>([]);
   // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
-  
 
-  const handleChange =(dato: string)=>{
-    setBusqueda(dato)
-  }
+  const handleChange = (dato: string) => {
+    setBusqueda(dato);
+  };
 
-  const handleSearch =() =>{
+  const handleSearch = () => {
     filtrarDatos();
-  }
+  };
 
-
-  const filtrarDatos= () =>{
-      let ResultadoBusqueda = datos.filter((elemento)=>{
-
-      if (elemento.ClaveDeInscripcion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-        || elemento.Estatus.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-        || elemento.FechaContratacion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-        || elemento.Institucion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-        || elemento.MontoOriginalContratado.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-        || elemento.TipoEntePublico.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-      ){
+  const filtrarDatos = () => {
+    let ResultadoBusqueda = datos.filter((elemento) => {
+      if (
+        elemento.ClaveDeInscripcion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Estatus.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.FechaContratacion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Institucion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MontoOriginalContratado.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.TipoEntePublico.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
         console.log(elemento);
-        
+
         return elemento;
       }
-        
-      
-    })
+    });
     setDatosFiltrados(ResultadoBusqueda);
-    
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getSolicitudes(setDatos);
-  },[])
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setDatosFiltrados(datos);
-  },[datos])
+  }, [datos]);
 
-  useEffect(()=>{
+  useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length!=0 ? setDatosFiltrados(datos):null
-  },[busqueda])
+    busqueda.length != 0 ? setDatosFiltrados(datos) : null;
+  }, [busqueda]);
 
-  
+  const navigate = useNavigate();
+
+  const handleNavigate = (Solicitud: string) => {
+    console.log("soy el json",Solicitud);
+    let aux: AllSlice  
+    aux = JSON.parse(Solicitud)
+    //console.log("soy el json parseado:",aux..nombre);
+    navigate("../ObligacionesCortoPlazo")
+    //console.log("hola");
+    
+  };
 
   return (
     <Grid container direction="column">
@@ -156,11 +182,13 @@ export function ConsultaDeSolicitudPage() {
             sx={{ ml: 1, flex: 1 }}
             placeholder="Buscar"
             value={busqueda}
-            onChange={(e)=>{handleChange(e.target.value)}}
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
             //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon  onClick = {() => handleSearch() }/>
+            <SearchIcon onClick={() => handleSearch()} />
           </IconButton>
         </Paper>
       </Grid>
@@ -178,7 +206,7 @@ export function ConsultaDeSolicitudPage() {
             <TableBody>
               {datosFiltrados.map((row) => (
                 <StyledTableRow>
-                  <StyledTableCell component="th" scope="row" >
+                  <StyledTableCell component="th" scope="row">
                     {row.Institucion.toString()}
                   </StyledTableCell>
 
@@ -201,7 +229,22 @@ export function ConsultaDeSolicitudPage() {
                   <StyledTableCell component="th" scope="row">
                     {row.FechaContratacion.toString()}
                   </StyledTableCell>
-                  
+
+                  <StyledTableCell component="th" scope="row">
+                    <IconButton
+                      type="button"
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                    >
+                      <VisibilityIcon
+
+                        onClick={() => {
+                          handleNavigate(row.Solicitud)
+                        }}
+                      />
+                      {row.Ver}
+                    </IconButton>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
