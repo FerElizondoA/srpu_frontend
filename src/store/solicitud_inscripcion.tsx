@@ -158,20 +158,21 @@ export const createSolicitudInscripcionSlice: StateCreator<
       useCortoPlazoStore.getState().tipoEntePublicoObligado;
     const entePublicoObligado =
       useCortoPlazoStore.getState().entePublicoObligado;
-    const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
+    const tasaEfectiva = useCortoPlazoStore.getState().tasaEfectiva;
     //const reglas = useCortoPlazoStore.getState().reglas
-    const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
-    const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
+    const tipoComisiones = useCortoPlazoStore.getState().tipoComision;
+    const servidorPublico = useCortoPlazoStore.getState().nombreServidorPublico;
     const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
     const obligadoSolidario =
       useCortoPlazoStore.getState().obligadoSolidarioAval;
     const nombre = useCortoPlazoStore.getState().nombreServidorPublico;
-    const date = new Date();
-    let data = new FormData();
+    
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
+    
+    
 
     const obj = {
       nombre: nombre,
@@ -186,17 +187,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
       fechavencimiento: fechav,
       tipoEntePublicoObligado: tipoEntePublicoObligado,
       entePublicoObligado: entePublicoObligado,
-      tasaefectiva: tasaefectiva,
+      tasaEfectiva: tasaEfectiva,
       reglas: reglas,
-      tipocomisiones: tipocomisiones,
-      servidorpublico: servidorpublico,
+      tipoComisiones: tipoComisiones,
+      servidorPublico: servidorPublico,
       contrato: contrato,
       periodopago: periodopago,
       obligadoSolidario: obligadoSolidario,
     };
 
-    let solicitud = JSON.stringify({ solicitud: obj });
-  console.log(solicitud);
   
     const response = await axios
       .post(
@@ -208,7 +207,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
           IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
           IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
-          Solicitud: solicitud,
+          Solicitud: obj,
           MontoOriginalContratado: monto,
           FechaContratacion: "27-03-10",
         },

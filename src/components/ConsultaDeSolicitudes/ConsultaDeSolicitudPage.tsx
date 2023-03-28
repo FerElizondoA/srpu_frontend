@@ -146,13 +146,11 @@ export function ConsultaDeSolicitudPage() {
   const navigate = useNavigate();
 
   const handleNavigate = (Solicitud: string) => {
-    console.log("soy el json",Solicitud);
-    let aux: AllSlice  
-    aux = JSON.parse(Solicitud)
+    console.log("soy el json", Solicitud);
+
     //console.log("soy el json parseado:",aux..nombre);
-    navigate("../ObligacionesCortoPlazo")
+    navigate("../ObligacionesCortoPlazo");
     //console.log("hola");
-    
   };
 
   return (
@@ -185,6 +183,14 @@ export function ConsultaDeSolicitudPage() {
             onChange={(e) => {
               handleChange(e.target.value);
             }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                handleSearch()
+                ev.preventDefault();
+                return false;
+              }
+            }}
+
             //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
@@ -237,9 +243,8 @@ export function ConsultaDeSolicitudPage() {
                       aria-label="search"
                     >
                       <VisibilityIcon
-
                         onClick={() => {
-                          handleNavigate(row.Solicitud)
+                          handleNavigate(row.Solicitud);
                         }}
                       />
                       {row.Ver}
