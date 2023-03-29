@@ -10,20 +10,17 @@ import {
     Checkbox
 } from "@mui/material";
 
-import { ReactNode } from 'react';
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 import {
   StyledTableCell,
   StyledTableRow,
   ConfirmButton,
   DeleteButton,
-  hashFunctionCYRB53,
 } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
+import { format } from "date-fns";
 
-// dummy data
 
 interface Data {
     isSelected: boolean;
@@ -204,19 +201,19 @@ export function CondicionesFinancieras(){
                         />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
-                      {row.fechaDisposicion}
+                      {format(new Date(row.fechaDisposicion), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {"$" + row.importeDisposicion}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.fechaPrimerPagoCapital}
+                      {format(new Date(row.fechaPrimerPagoCapital), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.periocidadPagoCapital}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.fechaPrimerPagoInteres}
+                      {format(new Date(row.fechaPrimerPagoInteres), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.tasaInteres}
