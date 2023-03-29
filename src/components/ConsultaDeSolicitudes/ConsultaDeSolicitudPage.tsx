@@ -3,33 +3,29 @@ import {
   Table,
   TableBody,
   TableSortLabel,
-  TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Button,
+  Chip,
 } from "@mui/material";
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import { tableCellClasses } from "@mui/material/TableCell";
-import { queries } from "../../queries";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
+
 import {
   StyledTableCell,
   StyledTableRow,
-  ConfirmButton,
-  DeleteButton,
 } from "../CustomComponents";
+
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import e from "express";
 import { useNavigate } from "react-router-dom";
-import { ISolicitud } from "../ObligacionesCortoPlazoPage/Interfaces/CortoPlazo/ISolicitud";
+
+import { format } from 'date-fns'
 
 interface IData {
   Institucion: string;
@@ -40,7 +36,6 @@ interface IData {
   MontoOriginalContratado: number;
   Ver: boolean;
   Solicitud: string;
-  //search: string
 }
 
 interface Head {
@@ -145,14 +140,11 @@ export function ConsultaDeSolicitudPage() {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (Solicitud: string) => {
-    console.log("soy el json",Solicitud);
-    let aux: AllSlice  
-    aux = JSON.parse(Solicitud)
-    //console.log("soy el json parseado:",aux..nombre);
+  const handleNavigate = (solicitud: any) => {
+    console.log("solicitud!: ", solicitud)
+    let aux: any = JSON.parse(solicitud)
+    console.log("aux!: ", aux);
     navigate("../ObligacionesCortoPlazo")
-    //console.log("hola");
-    
   };
 
   return (
@@ -163,7 +155,6 @@ export function ConsultaDeSolicitudPage() {
 
       <Grid
         item
-        //ml={window.innerWidth / 22}
         mt={5}
         mb={5}
         lg={12}
@@ -174,7 +165,6 @@ export function ConsultaDeSolicitudPage() {
           component="form"
           sx={{
             display: "flex",
-            //alignItems: "center",
             width: 800,
           }}
         >
@@ -185,7 +175,6 @@ export function ConsultaDeSolicitudPage() {
             onChange={(e) => {
               handleChange(e.target.value);
             }}
-            //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon onClick={() => handleSearch()} />
@@ -204,49 +193,57 @@ export function ConsultaDeSolicitudPage() {
               ))}
             </TableHead>
             <TableBody>
-              {datosFiltrados.map((row) => (
-                <StyledTableRow>
-                  <StyledTableCell component="th" scope="row">
-                    {row.Institucion.toString()}
-                  </StyledTableCell>
+              {datosFiltrados.map((row) => {
 
-                  <StyledTableCell component="th" scope="row">
-                    {row.TipoEntePublico.toString()}
-                  </StyledTableCell>
+                let chip = <></>;
+                if(row.Estatus === "En_actualizacion "){
+                  chip = <Chip label="En verificación" icon={<WarningAmberIcon/>} 
+                  color="warning" variant="outlined"/>
+                }
 
-                  <StyledTableCell component="th" scope="row">
-                    {row.Estatus.toString()}
-                  </StyledTableCell>
+                return (
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row">
+                      {row.Institucion.toString()}
+                    </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row">
-                    {row.ClaveDeInscripcion.toString()}
-                  </StyledTableCell>
+                    <StyledTableCell component="th" scope="row" align="center">
+                      {row.TipoEntePublico.toString()}
+                    </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row">
-                    {row.MontoOriginalContratado.toString()}
-                  </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {chip}
+                    </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row">
-                    {row.FechaContratacion.toString()}
-                  </StyledTableCell>
+                    <StyledTableCell component="th" scope="row" align="center">
+                      {row.ClaveDeInscripcion.toString()}
+                    </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row">
-                    <IconButton
-                      type="button"
-                      sx={{ p: "10px" }}
-                      aria-label="search"
-                    >
-                      <VisibilityIcon
+                    <StyledTableCell component="th" scope="row" align="center">
+                      {"$" + row.MontoOriginalContratado.toString()}
+                    </StyledTableCell>
 
-                        onClick={() => {
-                          handleNavigate(row.Solicitud)
-                        }}
-                      />
-                      {row.Ver}
-                    </IconButton>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                    <StyledTableCell component="th" scope="row">
+                      {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
+                    </StyledTableCell>
+
+                    <StyledTableCell component="th" scope="row">
+                      <IconButton
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                      >
+                        <VisibilityIcon
+                          onClick={() => {
+                            handleNavigate(row.Solicitud);
+                          }}
+                        />
+                        {row.Ver}
+                      </IconButton>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+})}
             </TableBody>
           </Table>
         </TableContainer>
