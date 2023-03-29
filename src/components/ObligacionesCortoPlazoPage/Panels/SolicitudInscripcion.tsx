@@ -111,7 +111,6 @@ export function SolicitudInscripcion() {
       return <Typography sx={queries.medium_text}>FIRMAR</Typography>;
     }
   };
-  //console.log("hola", localStorage.getItem("Rol"));
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -138,6 +137,7 @@ export function SolicitudInscripcion() {
             variant="standard"
             value={nombreServidorPublico}
             onChange={(text) => changeServidorPublico(text.target.value)}
+            disabled
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -158,6 +158,7 @@ export function SolicitudInscripcion() {
             variant="standard"
             value={cargo}
             onChange={(text) => changeCargo(text.target.value)}
+            disabled
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
