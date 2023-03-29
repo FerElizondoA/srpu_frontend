@@ -20,7 +20,6 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { CondicionesGenerales } from "../Panels/CondicionesGenerales";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
 import { useCortoPlazoStore } from "../../../store/main";
@@ -122,18 +121,15 @@ export function AgregarCondicionFinanciera(props: Props){
             scrollButtons
             allowScrollButtonsMobile
           >
-            <Tab label="Condiciones Generales" sx={queries.text}></Tab>
-            <Divider orientation="vertical" flexItem />
             <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
             <Divider orientation="vertical" flexItem />
             <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
             <Divider orientation="vertical" flexItem />
           </Tabs>
-          {tabIndex === 0 && <CondicionesGenerales />}
 
-          {tabIndex === 2 && <DisposicionPagosCapital />}
+          {tabIndex === 0 && <DisposicionPagosCapital />}
 
-          {tabIndex === 4 && <ComisionesTasaEfectiva />}
+          {tabIndex === 2 && <ComisionesTasaEfectiva />}
         </Grid>
       </Grid>
     </Dialog>
