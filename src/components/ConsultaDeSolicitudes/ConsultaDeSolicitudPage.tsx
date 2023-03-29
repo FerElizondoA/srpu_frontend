@@ -175,6 +175,15 @@ export function ConsultaDeSolicitudPage() {
             onChange={(e) => {
               handleChange(e.target.value);
             }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                handleSearch()
+                ev.preventDefault();
+                return false;
+              }
+            }}
+
+            //inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon onClick={() => handleSearch()} />

@@ -126,7 +126,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-
+    
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
