@@ -7,11 +7,11 @@ import { createPagosCapitalSlice, PagosCapitalSlice } from "./pagos_capital";
 import { createTasaEfectivaSlice, TasaEfectivaSlice } from "./tasa_efectiva";
 import { createCondicionFinancieraSlice, CondicionFinancieraSlice } from "./condicion_financiera";
 
-type AllSlice = EncabezadoSlice & InformacionGeneralSlice
+export type SolicitudSlice = EncabezadoSlice & InformacionGeneralSlice
                 & SolicitudInscripcionSlice & PagosCapitalSlice
                 & TasaEfectivaSlice & CondicionFinancieraSlice;
 
-export const useCortoPlazoStore = create<AllSlice>()((...x) => ({
+export const useCortoPlazoStore = create<SolicitudSlice>()((...x) => ({
     ...createEncabezadoSlice(...x),
     ...createInformacionGeneralSlice(...x),
     ...createSolicitudInscripcionSlice(...x),
