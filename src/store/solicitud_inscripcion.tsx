@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
+import { format } from 'date-fns'
 
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
@@ -20,9 +21,7 @@ export interface SolicitudInscripcionSlice {
   fetchBorrador: (reglasSeleccionadas: number[]) => void;
 }
 
-export const createSolicitudInscripcionSlice: StateCreator<
-  SolicitudInscripcionSlice
-> = (set, get) => ({
+export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionSlice> = (set, get) => ({
   fetchedReglas: false,
   reglasCatalog: [],
   nombreServidorPublico: "Rosalba Aguilar Díaz",
@@ -30,26 +29,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
   documentoAutorizado: "",
   identificacion: "",
   reglas: [],
-  changeServidorPublico: (newServidorPublico: string) =>
-    set(() => ({ nombreServidorPublico: newServidorPublico })),
+  changeServidorPublico: (newServidorPublico: string) => set(() => ({ nombreServidorPublico: newServidorPublico })),
   changeCargo: (newCargo: string) => set(() => ({ cargo: newCargo })),
-  changeDocumentoAutorizado: (newDocumentoAutorizado: string) =>
-    set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
-  changeIdentificacion: (newIdetificacion: string) =>
-    set(() => ({ identificacion: newIdetificacion })),
-  changeReglas: (newReglas: string) =>
-    set((state) => ({ reglas: [...state.reglas, newReglas] })),
-
+  changeDocumentoAutorizado: (newDocumentoAutorizado: string) => set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
+  changeIdentificacion: (newIdetificacion: string) => set(() => ({ identificacion: newIdetificacion })),
+  changeReglas: (newReglas: string) => set((state) => ({ reglas: [...state.reglas, newReglas] })),
   fetchDocumento: async (reglasSeleccionadas: number[]) => {
-    let data = new FormData();
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-    // if (!get()) {
-    //console.log("fetchDocumento executed!");
 
-    ////////////////////////////////////////
     const organismo = useCortoPlazoStore.getState().organismo;
     const contrato = useCortoPlazoStore.getState().tipoDocumento;
     const banco = useCortoPlazoStore.getState().institucion;
@@ -58,16 +48,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const fechav = useCortoPlazoStore.getState().fechaVencimiento;
     const destino = useCortoPlazoStore.getState().destino;
     const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado =
-      useCortoPlazoStore.getState().tipoEntePublicoObligado;
-    const entePublicoObligado =
-      useCortoPlazoStore.getState().entePublicoObligado;
+    const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublicoObligado;
+    const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado;
     const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
     const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
     const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
     const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
-    const obligadoSolidario =
-      useCortoPlazoStore.getState().obligadoSolidarioAval;
+    const obligadoSolidario = useCortoPlazoStore.getState().obligadoSolidarioAval;
     const IdBanco = useCortoPlazoStore.getState().obligadoSolidarioAvalCatalog;
     const cargo = useCortoPlazoStore.getState().cargo;
 
@@ -114,18 +101,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
     link.setAttribute("href", url);
     document.body.appendChild(link);
     link.click();
-
-    // response.data.data.forEach((e: any) => {
-    //   set((state) => ({
-
-    //   }));
-    // });
-    //   }
-    //   set(() => ({}))
   },
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
-      //console.log("fetchReglas executed!");
       const response = await axios.get(
         "http://10.200.4.199:8000/api/get-reglaDeFinanciamiento",
         {
@@ -134,7 +112,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       );
-      //console.log(response);
       response.data.data.forEach((e: any) => {
         set((state) => ({
           reglasCatalog: [...state.reglasCatalog, e.Descripcion],
@@ -145,59 +122,59 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchBorrador: async (reglasSeleccionadas: number[]) => {
-    ////////////////////////////////////////
-    const organismo = useCortoPlazoStore.getState().organismo;
-    const contrato = useCortoPlazoStore.getState().tipoDocumento;
-    const banco = useCortoPlazoStore.getState().institucion;
-    const monto = useCortoPlazoStore.getState().montoOriginal;
-    const fecha = useCortoPlazoStore.getState().fechaContratacion;
-    const fechav = useCortoPlazoStore.getState().fechaVencimiento;
-    const destino = useCortoPlazoStore.getState().destino;
-    const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado =
-      useCortoPlazoStore.getState().tipoEntePublicoObligado;
-    const entePublicoObligado =
-      useCortoPlazoStore.getState().entePublicoObligado;
-    const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
-    //const reglas = useCortoPlazoStore.getState().reglas
-    const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
-    const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
-    const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
-    const obligadoSolidario =
-      useCortoPlazoStore.getState().obligadoSolidarioAval;
-    const nombre = useCortoPlazoStore.getState().nombreServidorPublico;
-    const date = new Date();
-    let data = new FormData();
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
 
-    const obj = {
-      nombre: nombre,
-      oficionum: "10",
-      cargo: get().cargo,
-      organismo: organismo,
-      InstitucionBancaria: banco,
-      monto: monto.toString(),
-      fechacontrato: fecha,
-      destino: destino,
-      dias: plazoDias,
-      fechavencimiento: fechav,
-      tipoEntePublicoObligado: tipoEntePublicoObligado,
-      entePublicoObligado: entePublicoObligado,
-      tasaefectiva: tasaefectiva,
-      reglas: reglas,
-      tipocomisiones: tipocomisiones,
-      servidorpublico: servidorpublico,
-      contrato: contrato,
-      periodopago: periodopago,
-      obligadoSolidario: obligadoSolidario,
-    };
+    const state = useCortoPlazoStore.getState();
 
-    let solicitud = JSON.stringify({ solicitud: obj });
-  console.log(solicitud);
-  
+    const solicitud: any = {
+      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago), "yyyy-MM-dd"),
+      capitalNumeroPago: state.capitalNumeroPago,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
+      cargo: state.cargo,
+      cargoSolicitante: state.cargoSolicitante,
+      denominacion: state.denominacion,
+      destino: state.destino, 
+      disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion), "yyyy-MM-dd"),
+      disposicionImporte: state.disposicionImporte,
+      documentoAutorizado: state.documentoAutorizado,
+      efectivaDiasEjercicio: state.efectivaDiasEjercicio,
+      efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion), "yyyy-MM-dd"),
+      efectivaMontoFijo: state.efectivaMontoFijo,
+      efectivaPeriocidadPago: state.efectivaPeriocidadPago,
+      efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
+      entePublicoObligado: state.entePublicoObligado,
+      fechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
+      fechaVencimiento: format(new Date(state.fechaVencimiento), "yyyy-MM-dd"),
+      hasIVA: state.hasIVA,
+      hasMonto: state.hasMonto,
+      hasPorcentaje: state.hasPorcentaje,
+      identificacion: state.identificacion,
+      institucion: state.institucion,
+      montoOriginal: state.montoOriginal,
+      nombreServidorPublico: state.nombreServidorPublico,
+      organismo: state.organismo,
+      plazoDias: state.plazoDias,
+      sobreTasa: state.sobreTasa,
+      solicitanteAutorizado: state.solicitanteAutorizado,
+      tasaDiasEjercicio: state.tasaDiasEjercicio,
+      tasaEfectiva: state.tasaEfectiva,
+      tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago), "yyyy-MM-dd"),
+      tasaPeriocidadPago: state.tasaPeriocidadPago,
+      tasaReferencia: state.tasaReferencia,
+      tipoComision: state.tipoComision,
+      tipoDocumento: state.tipoDocumento,
+      tipoEntePublico: state.tipoEntePublico,
+      tipoEntePublicoObligado: state.tipoEntePublicoObligado,
+      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
+      condicionFinancieraTable: state.condicionFinancieraTable,
+      reglas: state.reglas,
+      tasaEfectivaTable: state.tasaEfectivaTable,
+      tasaInteresTable: state.tasaInteresTable,
+    }
+
     const response = await axios
       .post(
         "http://10.200.4.200:8000/api/create-solicitud",
@@ -208,9 +185,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
           IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
           IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
-          Solicitud: solicitud,
-          MontoOriginalContratado: monto,
-          FechaContratacion: "27-03-10",
+          Solicitud: JSON.stringify(solicitud),
+          MontoOriginalContratado: solicitud.montoOriginal,
+          FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
         },
         {
           headers: {
@@ -219,7 +196,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(function (response) {
-        console.log(response);
+        console.log("response: ", response);
+        console.log("solicitud: ", response.data.data.Solicitud);
       })
       .catch(function (error) {
         console.log(error);
