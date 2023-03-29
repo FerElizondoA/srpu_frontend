@@ -36,6 +36,8 @@ import {
 import { useCortoPlazoStore } from "../../../store/main";
 import { TasaEfectiva } from "../../../store/tasa_efectiva";
 
+import { format } from "date-fns";
+
 interface Head {
     label: string;
 }
@@ -343,7 +345,7 @@ export function ComisionesTasaEfectiva(){
           <Grid item>
             <FormControlLabel
               label="Causa IVA"
-              control={<Checkbox defaultChecked />}
+              control={<Checkbox onChange={(_) => changeHasIVA(!hasIVA)} />}
             ></FormControlLabel>
           </Grid>
 
@@ -372,7 +374,7 @@ export function ComisionesTasaEfectiva(){
                           {row.tipoComision}
                         </StyledTableCell>
                         <StyledTableCell align="center">
-                          {row.fechaPrimerPago}
+                          {format(new Date(row.fechaPrimerPago), "dd/MM/yyyy")}
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           {row.periocidadPago}
