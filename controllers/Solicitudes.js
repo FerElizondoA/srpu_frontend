@@ -6,7 +6,7 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createSolicitud: (req, res) => {
-    const IdInsitucionFinanciera = req.body.IdInsitucionFinanciera;
+    const IdInstitucionFinanciera = req.body.IdInstitucionFinanciera;
     const IdTipoEntePublico = req.body.IdTipoEntePublico;
     const IdEstatus= req.body.IdEstatus;
     const IdClaveInscripcion= req.body.IdClaveInscripcion;
@@ -14,8 +14,17 @@ module.exports = {
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
     const CreadoPor = req.body.CreadoPor;
-
-    if (IdInsitucionFinanciera== null || /^[\s]*$/.test(IdInsitucionFinanciera)) {
+    console.log("holiwi")
+    console.log(req.body.IdInstitucionFinanciera);
+    console.log(req.body.IdTipoEntePublico);
+    console.log(req.body.IdEstatus);
+    
+    console.log(req.body.IdClaveInscripcion);
+    console.log(req.body.MontoOriginalContratado);
+    console.log(req.body.FechaContratacion);
+    console.log(req.body.Solicitud);
+    console.log(req.body.CreadoPor);
+    if (IdInstitucionFinanciera== null || /^[\s]*$/.test(IdInstitucionFinanciera)) {
       return res.status(409).send({
         error: "Ingrese IdInsitucionFinanciera",
       });
@@ -56,7 +65,7 @@ module.exports = {
         });
       }
 
-      db.query(`CALL sp_AgregarSolicitud('${IdInsitucionFinanciera}', '${IdTipoEntePublico}', '${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${CreadoPor}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarSolicitud('${IdInstitucionFinanciera}', '${IdTipoEntePublico}', '${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${CreadoPor}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
