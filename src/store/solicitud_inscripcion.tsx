@@ -48,18 +48,17 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     const fechav = useCortoPlazoStore.getState().fechaVencimiento;
     const destino = useCortoPlazoStore.getState().destino;
     const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublicoObligado;
+    const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublico;
     const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado;
     const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
     const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
     const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
     const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
     const obligadoSolidario = useCortoPlazoStore.getState().obligadoSolidarioAval;
-    const IdBanco = useCortoPlazoStore.getState().obligadoSolidarioAvalCatalog;
-    const cargo = useCortoPlazoStore.getState().cargo;
-
+    const tasaInteres = useCortoPlazoStore.getState().tasaReferencia  
+    
     const response = await axios.post(
-      "http://192.168.137.152:7000/documento_srpu",
+      "http://10.200.4.46:7000/documento_srpu",
 
       {
         nombre: servidorpublico,
@@ -68,19 +67,20 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         organismo: organismo,
         InstitucionBancaria: banco,
         monto: monto.toString(),
-        fechacontrato: fecha,
         destino: destino,
         dias: plazoDias,
-        fechavencimiento: fechav,
         tipoEntePublicoObligado: tipoEntePublicoObligado,
         entePublicoObligado: entePublicoObligado,
         tasaefectiva: tasaefectiva,
+        tasaInteres: tasaInteres,
         reglas: reglas,
         tipocomisiones: tipocomisiones,
         servidorpublico: servidorpublico,
         contrato: contrato,
         periodopago: periodopago,
         obligadoSolidario: obligadoSolidario,
+        fechaContrato: format(new Date(fecha), "yyyy-MM-dd"),
+        fechaVencimiento: format(new Date(fechav), "yyyy-MM-dd"),
       },
       {
         headers: {
