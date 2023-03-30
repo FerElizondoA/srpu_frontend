@@ -109,6 +109,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
+            
           },
         }
       );
@@ -177,7 +178,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
 
     const response = await axios
       .post(
-        "http://10.200.4.200:8000/api/create-solicitud",
+        "http://10.200.4.199:8000/api/create-solicitud",
 
         {
           CreadoPor: localStorage.getItem("IdUsuario"),
