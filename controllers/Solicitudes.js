@@ -14,10 +14,11 @@ module.exports = {
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
     const CreadoPor = req.body.CreadoPor;
-
+    console.log("holiwi")
     console.log(req.body.IdInstitucionFinanciera);
     console.log(req.body.IdTipoEntePublico);
     console.log(req.body.IdEstatus);
+    
     console.log(req.body.IdClaveInscripcion);
     console.log(req.body.MontoOriginalContratado);
     console.log(req.body.FechaContratacion);
@@ -64,7 +65,7 @@ module.exports = {
         });
       }
 
-      db.query(`CALL sp_AgregarSolicitud('${IdInsitucionFinanciera}', '${IdTipoEntePublico}', '${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${CreadoPor}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarSolicitud('${IdInstitucionFinanciera}', '${IdTipoEntePublico}', '${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${CreadoPor}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",

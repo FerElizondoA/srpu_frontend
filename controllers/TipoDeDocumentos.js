@@ -32,7 +32,7 @@ createTipoDeDocumento: (req, res) => {
         db.query(
           `CALL sp_AgregarTipoDocumento('${IdUsuarioCreador}', '${TipoDeDocumento}', '${ObligadoCortoPlazo}', '${ObligadoLargoPlazo}' )`,
           (err, result) => {
-            console.log(result);
+            
             if (err) {
               return res.status(500).send({
                 error: "Error",
@@ -102,9 +102,9 @@ getListadoTipoDeDocumento: (req, res) => {
   },
 
   getListadoTipoDeDocumentoCortoPlazo: (req, res) => {
-    console.log(req);
+  
     db.query(`CALL sp_ListadoTiposDocumentosCortoPlazo()`, (err, result) => {
-      console.log(err);
+      
       if (err) {
         return res.status(500).send({
           error: "Error",
