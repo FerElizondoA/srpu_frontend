@@ -11,9 +11,10 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { Catalogos } from "./components/Config/Catalogos";
-import { Usuarios } from "./components/Config/Usuarios";
-import { Configuracion } from "./components/Config/Config";
+
+import { Usuarios } from "./screens/Config/Usuarios";
+import { Configuracion } from "./screens/Config/Config";
+import { Catalogos } from "./screens/Config/Catalogos";
 
 export const appTheme = createTheme({
   palette: {

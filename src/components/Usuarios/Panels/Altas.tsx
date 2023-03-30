@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { createSolicitud } from "../APIS Solicitudes/Solicitudes";
-import { ICreateSolicitud } from "../Interfaces/ISolicitudes";
+//import { createSolicitud } from "../../APIS/APIS Solicitudes/Solicitudesss
+import { createSolicitud } from "../../APIS/APIS Solicitudes/Solicitudes";
+import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuario/ISolicitudes";
+//import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuarios/ISolicitudes";
 export const Altas=()=>{
 
     const [solicitud,setSolicitudes]=useState<ICreateSolicitud>({

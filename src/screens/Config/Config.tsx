@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 

@@ -21,8 +21,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
-import { getTiposDocumentos } from "../APIS/APISDocumentacion";
-import { ITiposDocumento } from "../Interfaces/CortoPlazo/Documentacion/IListTipoDocumento";
+import { getTiposDocumentos } from "../../APIS/APIS Cortoplazo/APISDocumentacion";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
 
 interface Data {
   Documento: String;
