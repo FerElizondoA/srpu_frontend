@@ -23,9 +23,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import SendIcon from "@mui/icons-material/Send";
 import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
-import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
-import { IUSuarios } from "./Interfaces/IUsuarios";
 
 import {
   AccountTree as AccountTreeIcon,
@@ -33,7 +30,10 @@ import {
   FileDownload as FileDownloadIcon,
   Input,
 } from "@mui/icons-material";
-import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
+import { IUSuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
 
 export const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<Array<IUSuarios>>([]);
