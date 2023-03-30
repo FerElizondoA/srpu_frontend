@@ -117,7 +117,6 @@ export function ConsultaDeSolicitudPage() {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-        console.log(elemento);
 
         return elemento;
       }
@@ -141,9 +140,7 @@ export function ConsultaDeSolicitudPage() {
   const navigate = useNavigate();
 
   const handleNavigate = (solicitud: any) => {
-    console.log("solicitud!: ", solicitud)
     let aux: any = JSON.parse(solicitud)
-    console.log("aux!: ", aux);
     navigate("../ObligacionesCortoPlazo")
   };
 

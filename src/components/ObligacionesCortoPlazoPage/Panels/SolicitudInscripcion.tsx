@@ -66,7 +66,6 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-
   const fetchDocumento: Function = useCortoPlazoStore(
     (state) => state.fetchDocumento
   );
@@ -86,20 +85,16 @@ export function SolicitudInscripcion() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !");
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !");
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !");
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const buttodescription = () => {
@@ -130,7 +125,7 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>
-            Nombre del servidor publico a quien va dirigido
+            Servidor publico a quien va dirigido
           </InputLabel>
           <TextField
             fullWidth
@@ -325,12 +320,15 @@ export function SolicitudInscripcion() {
             {/* <IconButton>
               <Typography sx={queries.medium_text}>Autorizar</Typography>
               </IconButton> */}
-            <CheckIcon
-              sx={{ mr: 1 }}
-            />
+            <CheckIcon sx={{ mr: 1 }} />
             {buttodescription()}
           </Fab>
-          <Fab variant="extended" color="success"  onClick={() => fetchBorrador(selected)} sx={{ mb: "10px" }}>
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => fetchBorrador(selected)}
+            sx={{ mb: "10px" }}
+          >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>BORRADOR</Typography>
           </Fab>

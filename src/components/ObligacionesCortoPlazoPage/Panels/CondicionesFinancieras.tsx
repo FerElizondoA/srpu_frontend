@@ -71,26 +71,21 @@ export function CondicionesFinancieras(){
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !")
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !")
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !")
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const deleteRows = () => {
-    console.log("selected: ", selected)
     selected.forEach((it) => {
       removeCondicionFinanciera(it);
     })

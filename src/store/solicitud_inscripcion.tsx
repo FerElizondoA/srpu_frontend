@@ -196,11 +196,8 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         }
       )
       .then(function (response) {
-        console.log("response: ", response);
-        console.log("solicitud: ", response.data.data.Solicitud);
       })
       .catch(function (error) {
-        console.log(error);
       });
   },
 });

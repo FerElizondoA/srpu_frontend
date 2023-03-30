@@ -78,7 +78,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     removeTasaInteres: (index: number) => set((state) => ({tasaInteresTable: state.tasaInteresTable.filter((_, i) => i !== index)})),
     fetchPeriocidadPago: async () => {
         if(!get().fetchedPeriocidadPago){
-            console.log("fetchPeriocidadPago executed!");
             const response = await axios.get(
               "http://10.200.4.199:8000/api/get-periodicidadDePago",
               {
@@ -87,7 +86,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
                 periocidadDePagoCatalog: [...state.periocidadDePagoCatalog, e.Descripcion],
@@ -98,7 +96,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     },
     fetchTasaReferencia: async () => {
         if(!get().fetchedTasaReferencia){
-            console.log("fetchTasaReferencia executed!");
             const response = await axios.get(
               "http://10.200.4.199:8000/api/get-tasaDeReferencia",
               {
@@ -107,7 +104,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
                 tasaReferenciaCatalog: [...state.tasaReferenciaCatalog, e.Descripcion],
@@ -118,7 +114,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     },
     fetchDiasEjercicio: async () => {
         if(!get().fetchedDiasEjercicio){
-            console.log("fetchDiasEjercicio executed!");
             const response = await axios.get(
               "http://10.200.4.199:8000/api/get-diasDelEjercicio",
               {
@@ -127,7 +122,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
                 diasEjercicioCatalog: [...state.diasEjercicioCatalog, e.Descripcion],

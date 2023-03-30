@@ -161,13 +161,13 @@ export const Usuarios = () => {
                   <StyledTableCell component="th" scope="row" align="center">
 
                     <Tooltip title="Editar Usuario">
-                      <IconButton aria-label="delete" size="large" onClick={() => { console.log(row); }}>
+                      <IconButton aria-label="delete" size="large" onClick={() => {  }}>
                         <Edit fontSize="inherit" />
                       </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Eliminar Usuario">
-                      <IconButton aria-label="delete" size="large" onClick={() => { console.log(row.id, row.ApellidoPaterno.toString()); }}>
+                      <IconButton aria-label="delete" size="large" onClick={() => {  }}>
                         <DeleteIcon fontSize="inherit" />
                       </IconButton>
                     </Tooltip>

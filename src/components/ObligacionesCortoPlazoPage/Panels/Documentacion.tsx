@@ -94,19 +94,8 @@ export function Documentacion() {
         return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: auxTpoDocFiltered[index].Id} ;
       })
     );
-    
-    console.log("xxxxxxxxxxxxxxxxxxxxxxx");
-    
-    console.log([...archivosObligatorios]);
   }, [tiposDocumentos]);
 
-  useEffect(() => {
-    console.log("------------------------------------------------------------actualizado");
-    
-    console.log(numArchivos);
-    console.log((archivos));
-    
-  }, [numArchivos]);
 // nombre del archivo antes de dar click en agregar
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -164,7 +153,6 @@ export function Documentacion() {
     let aux = [...archivos]
     aux[index].tipoArchivo = valor;
     setArchivos(aux);
-    console.log(archivos);
     
   }
 

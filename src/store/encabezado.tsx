@@ -31,10 +31,10 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     organismosCatalog: [],
     tipoDocumento: "Obligación a Corto Plazo",
     tipoEntePublico: "",
-    solicitanteAutorizado: "",
+    solicitanteAutorizado:  localStorage.getItem("NombreUsuario") || '',
     organismo: "",
     fechaContratacion: new Date().toString(),
-    cargoSolicitante: "",
+    cargoSolicitante: localStorage.getItem("Puesto") || '',
     changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
     changeTipoEntePublico: (newTipoEntePublico: string) => set(() => ({tipoEntePublico: newTipoEntePublico})),
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
@@ -60,7 +60,6 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
           });
           set(() => ({fetchedEntesPublicos: true}))
         }
-        console.log("map!: ", get().entesPublicosMap)
     },
     fetchOrganismos: async () => {
         if (!get().fetchedOrganismos) {

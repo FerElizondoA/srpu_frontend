@@ -103,8 +103,6 @@ export const getListadoUsuarios = (setState: Function) => {
     }
   }).then(({data}) => {
     
-      console.log(data.data);
-      
       setState(data.data)
    
   })

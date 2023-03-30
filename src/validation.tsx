@@ -49,13 +49,16 @@ export const getUserDetails = (idCentral: string) => {
     })
     .then((r) => {
       if (r.status === 200) {
+        console.log(r.data.data);
+        
         localStorage.setItem("IdUsuario", r.data.data.Id);
         localStorage.setItem(
           "NombreUsuario",
-          r.data.data.Nombre.split(" ")[0] + " " + r.data.data.ApellidoPaterno
+          r.data.data.Nombre + " " + r.data.data.ApellidoPaterno + " " + r.data.data.ApellidoMaterno
         );
 
         localStorage.setItem("Rol", r.data.data.Rol);
+        localStorage.setItem("Puesto", r.data.data.Cargo);
 
         return true;
       }
