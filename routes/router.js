@@ -16,9 +16,8 @@ const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../
 const { createTasaDeReferencia, getTasasDeReferencia, getDetailTasaDeReferencia, modifyTasaDeReferencia, deleteTasaDeReferencia } = require("../controllers/TasaDeReferencia.js");
 const { createTipoDeComision, getTiposDeComision, getDetailTipoDeComision, modifyTipoDeComision, deleteTipoDeComision } = require("../controllers/TipoDeComision.js");
 const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, getTiposEntePublico, getDetailTipoEntePublico } = require("../controllers/TipoEntePublico.js");
-const { createTipoDocumento, getTiposDocumento, getDetailTipoDocumento, modifyTipoDocumento, deleteTipoDocumento } = require("../controllers/TiposDocumento.js");
 const { createSolicitud, getSolicitudes } = require("../controllers/Solicitudes.js");
-const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento } = require("../controllers/TipoDeDocumentos.js");
+const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento, modifyTipoDocumento } = require("../controllers/TipoDeDocumentos.js");
 
 const { getDetailUsuario, getUsuarios } = require("../controllers/usuarios.js");
 
@@ -244,11 +243,11 @@ router.delete("/delete-roles", verifyToken.verifyJWT, (req, res) => {
 //#endregion
 
 //#region TipoDocumento
-router.post("/create-tipoDeDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.post("/create-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
@@ -260,7 +259,11 @@ router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) 
   getListadoTipoDeDocumentoCortoPlazo(req, res);
 });
 
-router.delete("/delete-tipoDocumento",  verifyToken.verifyJWT, (req, res) => {
+router.put("/modify-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoDocumento(req, res);
+});
+
+router.delete("/delete-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
 

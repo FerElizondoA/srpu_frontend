@@ -5,20 +5,22 @@ module.exports = {
   createReglaDeFinanciamiento: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
+    const OCP = req.body.OCP;
+    const OLP = req.body.OLP;
 
-    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion)) && Descripcion.length() <= 255) {
+    if ((Descripcion == null ||/^[\s]*$/.test(Descripcion))) {
       return res.status(409).send({
         error: "Ingrese Descripcion válido.",
       });
     } 
-    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario)) && IdUsuario.length() <= 36) {
+    if ((IdUsuario == null || /^[\s]*$/.test(IdUsuario))) {
         return res.status(409).send({
           error: "Ingrese Id usuario válido.",
         });
       } 
     else {
       db.query(
-        `CALL sp_AgregarReglaDeFinanciamiento('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarReglaDeFinanciamiento('${IdUsuario}', '${Descripcion}', '${OCP}', '${OLP}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -108,6 +110,8 @@ module.exports = {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
+    const OCP = req.body.OCP;
+    const OLP = req.body.OLP;
 
     if (IdDescripcion == null ||/^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -127,7 +131,7 @@ module.exports = {
         });
       } else {
       db.query(
-        `CALL sp_ModificaReglaDeFinanciamiento('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaReglaDeFinanciamiento('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}','${OCP}','${OLP}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
