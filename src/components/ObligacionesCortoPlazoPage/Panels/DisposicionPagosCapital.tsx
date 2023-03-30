@@ -343,6 +343,7 @@ export function DisposicionPagosCapital(){
                 <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
                 <TextField
                   value={sobreTasa}
+                  onChange={(text) => changeSobreTasa(text.target.value)}
                   fullWidth
                   InputLabelProps={{
                     style: {

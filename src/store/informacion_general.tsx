@@ -57,7 +57,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     tipoEntePublicoObligadoCatalog: [],
     plazoDias: 0,
     montoOriginal: 0,
-    fechaVencimiento: "",
+    fechaVencimiento: new Date().toString(),
     destino: "",
     institucion: "",
     tipoEntePublicoObligado: "",

@@ -43,7 +43,7 @@ export interface TasaEfectivaSlice {
 export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, get) => ({
     fetchedTiposComision: false,
     tipoComision: "",
-    efectivaFechaContratacion: "",
+    efectivaFechaContratacion: new Date().toString(),
     efectivaPeriocidadPago: "",
     hasPorcentaje: false,
     hasMonto: false,

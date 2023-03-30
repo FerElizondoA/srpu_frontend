@@ -5,6 +5,7 @@ export interface EncabezadoSlice{
     fetchedEntesPublicos: boolean;
     fetchedOrganismos: boolean;
     entesPublicosCatalog: string[];
+    entesPublicosMap: Map<string | null, string>;
     organismosCatalog: string[];
     tipoDocumento: string;
     tipoEntePublico: string;
@@ -26,6 +27,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     fetchedEntesPublicos: false,
     fetchedOrganismos: false,
     entesPublicosCatalog: [],
+    entesPublicosMap: new Map<string  | null, string>(),
     organismosCatalog: [],
     tipoDocumento: "Obligación a Corto Plazo",
     tipoEntePublico: "",
@@ -50,12 +52,15 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
             }
           );
           response.data.data.forEach((e: any) => {
+            //get().entesPublicosMap.set(e.Id, e);
             set((state) => ({
-              entesPublicosCatalog: [...state.entesPublicosCatalog, e.Descripcion],
+              //entesPublicosCatalog: [...state.entesPublicosCatalog, e.Descripcion],
+              entesPublicosMap: state.entesPublicosMap.set(e.Id, e.Descripcion)
             }));
           });
           set(() => ({fetchedEntesPublicos: true}))
         }
+        console.log("map!: ", get().entesPublicosMap)
     },
     fetchOrganismos: async () => {
         if (!get().fetchedOrganismos) {
