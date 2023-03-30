@@ -36,8 +36,6 @@ export function Encabezado(){
     const cargoSolicitante: string = useCortoPlazoStore(state => state.cargoSolicitante);
     const changeCargoSolicitante: Function = useCortoPlazoStore(state => state.changeCargoSolicitante);
 
-    const entesPublicosMap: Map<string | null, string> = useCortoPlazoStore(state => state.entesPublicosMap);
-  
     React.useEffect(() => {
       fetchEntesPublicos();
       fetchOrganismos();
@@ -77,11 +75,11 @@ export function Encabezado(){
             </InputLabel>
             <Autocomplete
               fullWidth
-              value={entesPublicosMap.get(tipoEntePublico)}
+              value={tipoEntePublico}
               onChange={(event: any, text: string | null) =>
-                changeTipoEntePublico(entesPublicosMap.get(text))
+                changeTipoEntePublico(text)
               }
-              options={Array.from(entesPublicosMap.values())}
+              options={tiposEntePublicoCatalog}
               renderInput={(params) => (
                 <TextField
                   {...params}
