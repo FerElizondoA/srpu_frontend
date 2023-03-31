@@ -5,11 +5,13 @@ export interface EncabezadoSlice{
     fetchedEntesPublicos: boolean;
     fetchedOrganismos: boolean;
     tipoDocumento: string;
-    entesPublicosMap: Map<string | null, string>
-    tipoEntePublico: [string, string];
+    entesPublicosMap: Map<string | null, string>;
+    IdTipoEntePublico: string;
+    tipoEntePublico: string;
     solicitanteAutorizado: string;
-    organismosMap: Map<string | null, any>,
-    organismo: [string, string];
+    organismosMap: Map<string | null, any>;
+    IdOrganismo: string;
+    organismo: string;
     fechaContratacion: string;
     cargoSolicitante: string;
     changeTipoDocumento: (newTipoDocumento: string) => void;
@@ -27,16 +29,18 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     fetchedOrganismos: false,
     tipoDocumento: "Obligación a Corto Plazo",
     entesPublicosMap: new Map<string  | null, string>(),
-    tipoEntePublico: ["", ""],
+    IdTipoEntePublico: "",
+    tipoEntePublico: "",
     solicitanteAutorizado: "",
     organismosMap: new Map<string | null, string>(),
-    organismo: ["", ""],
+    IdOrganismo: "",
+    organismo: "",
     fechaContratacion: new Date().toString(),
     cargoSolicitante: "",
     changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
-    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => set(() => ({ tipoEntePublico: [newId, newTipoEntePublico] })),
+    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => set(() => ({ tipoEntePublico: newTipoEntePublico, IdTipoEntePublico: newId})),
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
-    changeOrganismo: (newId: string, newOrganismo: string) => set(() => ({organismo: [newId, newOrganismo]})),
+    changeOrganismo: (newId: string, newOrganismo: string) => set(() => ({organismo: newOrganismo, IdOrganismo: newId})),
     changeFechaContratacion: (newFechaContratacion: string) => set(() => ({fechaContratacion: newFechaContratacion})),
     changeCargoSolicitante: (newCargoSolicitante: string) => set(() => ({cargoSolicitante: newCargoSolicitante})),
     fetchEntesPublicos: async () => {

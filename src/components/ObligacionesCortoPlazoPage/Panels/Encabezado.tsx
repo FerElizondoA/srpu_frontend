@@ -23,12 +23,12 @@ export function Encabezado(){
     const changeTipoDocumento: Function = useCortoPlazoStore(state => state.changeTipoDocumento);
     const fetchEntesPublicos: Function = useCortoPlazoStore(state => state.fetchEntesPublicos);
     const entesPublicosMap: Map<string | null, string> = useCortoPlazoStore(state => state.entesPublicosMap);
-    const tipoEntePublico: [string, string] = useCortoPlazoStore(state => state.tipoEntePublico);
+    const tipoEntePublico: string = useCortoPlazoStore(state => state.tipoEntePublico);
     const changeTipoEntePublico: Function = useCortoPlazoStore(state => state.changeTipoEntePublico);
     const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
     const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
     const organismosMap: Map<string | null, string>  = useCortoPlazoStore(state => state.organismosMap);
-    const organismo: [string, string] = useCortoPlazoStore(state => state.organismo);
+    const organismo: string = useCortoPlazoStore(state => state.organismo);
     const changeOrganismo: Function = useCortoPlazoStore(state => state.changeOrganismo);
     const fetchOrganismos: Function = useCortoPlazoStore(state => state.fetchOrganismos);
     const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
@@ -75,7 +75,7 @@ export function Encabezado(){
             </InputLabel>
             <Autocomplete
               fullWidth
-              value={tipoEntePublico[1]}
+              value={tipoEntePublico}
               onChange={(event: any, text: string | null) =>
                 changeTipoEntePublico(entesPublicosMap.get(text), text)
               }
@@ -129,7 +129,7 @@ export function Encabezado(){
             </InputLabel>
             <Autocomplete
               fullWidth
-              value={organismo[1]}
+              value={organismo}
               onChange={(event: any, text: string | null) =>
                 changeOrganismo(organismosMap.get(text), text)
               }
