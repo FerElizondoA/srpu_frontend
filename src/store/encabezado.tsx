@@ -4,18 +4,18 @@ import axios from "axios";
 export interface EncabezadoSlice{
     fetchedEntesPublicos: boolean;
     fetchedOrganismos: boolean;
-    entesPublicosCatalog: string[];
-    organismosCatalog: string[];
     tipoDocumento: string;
-    tipoEntePublico: string;
+    entesPublicosMap: Map<string | null, any>
+    tipoEntePublico: [string, string];
     solicitanteAutorizado: string;
-    organismo: string;
+    organismosMap: Map<string | null, any>,
+    organismo: [string, string];
     fechaContratacion: string;
     cargoSolicitante: string;
     changeTipoDocumento: (newTipoDocumento: string) => void;
-    changeTipoEntePublico: (newTipoEntePublico: string) => void;
+    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => void;
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void;
-    changeOrganismo: (newOrganismo: string) => void;
+    changeOrganismo: (newId: string, newOrganismo: string) => void;
     changeFechaContratacion: (newFechaContratacion: string) => void;
     changeCargoSolicitante: (newCargoSolicitante: string) => void;
     fetchEntesPublicos: () => void;
@@ -25,19 +25,18 @@ export interface EncabezadoSlice{
 export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) => ({
     fetchedEntesPublicos: false,
     fetchedOrganismos: false,
-    entesPublicosCatalog: [],
-    entesPublicosMap: new Map<string  | null, string>(),
-    organismosCatalog: [],
     tipoDocumento: "Obligación a Corto Plazo",
-    tipoEntePublico: "",
+    entesPublicosMap: new Map<string  | null, any>(),
+    tipoEntePublico: ["", ""],
     solicitanteAutorizado: "",
-    organismo: "",
+    organismosMap: new Map<string | null, any>(),
+    organismo: ["", ""],
     fechaContratacion: new Date().toString(),
     cargoSolicitante: "",
     changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
-    changeTipoEntePublico: (newTipoEntePublico: string) => set(() => ({tipoEntePublico: newTipoEntePublico})),
+    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => set(() => ({ tipoEntePublico: [newId, newTipoEntePublico] })),
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
-    changeOrganismo: (newOrganismo: string) => set(() => ({organismo: newOrganismo})),
+    changeOrganismo: (newId: string, newOrganismo: string) => set(() => ({organismo: [newId, newOrganismo]})),
     changeFechaContratacion: (newFechaContratacion: string) => set(() => ({fechaContratacion: newFechaContratacion})),
     changeCargoSolicitante: (newCargoSolicitante: string) => set(() => ({cargoSolicitante: newCargoSolicitante})),
     fetchEntesPublicos: async () => {
@@ -52,7 +51,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              entesPublicosCatalog: [...state.entesPublicosCatalog, e.Descripcion],
+              entesPublicosMap: state.entesPublicosMap.set(e.Descripcion, e)
             }));
           });
           set(() => ({fetchedEntesPublicos: true}))
@@ -70,7 +69,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              organismosCatalog: [...state.organismosCatalog, e.Descripcion],
+              organismosMap: state.organismosMap.set(e.Descripcion, e),
             }));
           });
           set(() => ({fetchedOrganismos: true}))
