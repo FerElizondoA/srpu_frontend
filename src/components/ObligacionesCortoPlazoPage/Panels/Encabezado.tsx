@@ -22,12 +22,12 @@ export function Encabezado(){
     const tipoDocumento: string = useCortoPlazoStore(state => state.tipoDocumento);
     const changeTipoDocumento: Function = useCortoPlazoStore(state => state.changeTipoDocumento);
     const fetchEntesPublicos: Function = useCortoPlazoStore(state => state.fetchEntesPublicos);
-    const entesPublicosMap: Map<string | null, any> = useCortoPlazoStore(state => state.entesPublicosMap);
+    const entesPublicosMap: Map<string | null, string> = useCortoPlazoStore(state => state.entesPublicosMap);
     const tipoEntePublico: [string, string] = useCortoPlazoStore(state => state.tipoEntePublico);
     const changeTipoEntePublico: Function = useCortoPlazoStore(state => state.changeTipoEntePublico);
     const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
     const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
-    const organismosMap: Map<string | null, any>  = useCortoPlazoStore(state => state.organismosMap);
+    const organismosMap: Map<string | null, string>  = useCortoPlazoStore(state => state.organismosMap);
     const organismo: [string, string] = useCortoPlazoStore(state => state.organismo);
     const changeOrganismo: Function = useCortoPlazoStore(state => state.changeOrganismo);
     const fetchOrganismos: Function = useCortoPlazoStore(state => state.fetchOrganismos);
@@ -77,7 +77,7 @@ export function Encabezado(){
               fullWidth
               value={tipoEntePublico[1]}
               onChange={(event: any, text: string | null) =>
-                changeTipoEntePublico(entesPublicosMap.get(text).Id, text)
+                changeTipoEntePublico(entesPublicosMap.get(text), text)
               }
               options={Array.from(entesPublicosMap.keys())}
               renderInput={(params) => (
@@ -131,7 +131,7 @@ export function Encabezado(){
               fullWidth
               value={organismo[1]}
               onChange={(event: any, text: string | null) =>
-                changeOrganismo(organismosMap.get(text).Id, text)
+                changeOrganismo(organismosMap.get(text), text)
               }
               options={Array.from(organismosMap.keys())}
               renderInput={(params) => (
