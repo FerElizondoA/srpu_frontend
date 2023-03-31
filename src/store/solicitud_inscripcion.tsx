@@ -11,11 +11,13 @@ export interface SolicitudInscripcionSlice {
   documentoAutorizado: string;
   identificacion: string;
   reglas: string[];
+  comentarios: string;
   changeServidorPublico: (newServidorPublico: string) => void;
   changeCargo: (newCargo: string) => void;
   changeDocumentoAutorizado: (newDocumentoAutorizado: string) => void;
   changeIdentificacion: (newIdentificacion: string) => void;
   changeReglas: (newReglas: string) => void;
+  changeComentarios: (newComentarios: string) => void;
   fetchDocumento: (reglasSeleccionadas: number[]) => void;
   fetchReglas: () => void;
   fetchBorrador: (reglasSeleccionadas: number[]) => void;
@@ -27,6 +29,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
   nombreServidorPublico: "Rosalba Aguilar Díaz",
   cargo: "Directora de Deuda Pública",
   documentoAutorizado: "",
+  comentarios: "",
   identificacion: "",
   reglas: [],
   changeServidorPublico: (newServidorPublico: string) => set(() => ({ nombreServidorPublico: newServidorPublico })),
@@ -34,6 +37,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
   changeDocumentoAutorizado: (newDocumentoAutorizado: string) => set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
   changeIdentificacion: (newIdetificacion: string) => set(() => ({ identificacion: newIdetificacion })),
   changeReglas: (newReglas: string) => set((state) => ({ reglas: [...state.reglas, newReglas] })),
+  changeComentarios: (newComentarios: string) => set((state) =>  ({ comentarios: newComentarios })),
   fetchDocumento: async (reglasSeleccionadas: number[]) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
@@ -109,7 +113,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
-            
+
           },
         }
       );
@@ -174,8 +178,10 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
       reglas: state.reglas,
       tasaEfectivaTable: state.tasaEfectivaTable,
       tasaInteresTable: state.tasaInteresTable,
+      
     }
-
+    
+    
     const response = await axios
       .post(
         "http://10.200.4.199:8000/api/create-solicitud",

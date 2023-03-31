@@ -20,6 +20,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
+import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
 
 interface Head {
   label: string;
@@ -35,6 +36,12 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
+  const [openDialog, changeOpenDialog] = React.useState(false);
+
+  const changeOpenDialogState = (open: boolean) => {
+    changeOpenDialog(open);
+  }
+
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
   );
@@ -77,11 +84,11 @@ export function SolicitudInscripcion() {
     (state) => state.fetchBorrador
   );
 
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [selected, setSelected] = React.useState<number[]>([]);
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -151,6 +158,7 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
+        
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
@@ -172,6 +180,7 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
+
       </Grid>
 
       <Grid
@@ -338,11 +347,24 @@ export function SolicitudInscripcion() {
           <Fab
             variant="extended"
             color="success"
-            onClick={() => fetchDocumento(selected)}
+            
+            
+            onClick={() => 
+              {
+                //fetchDocumento(selected)
+                //console.log("que soy ",selected);
+                changeOpenDialogState(!openDialog)
+              }}
           >
+            
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
+          <ConfirmacionDescargaSolicitud
+                handler={changeOpenDialogState}
+                openState={openDialog}
+                selected={selected}
+                />
         </Grid>
       </Grid>
     </Grid>
