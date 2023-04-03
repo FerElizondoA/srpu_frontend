@@ -6,7 +6,7 @@ import AddLinkIcon from "@mui/icons-material/AddLink";
 import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 
 export const Usuarios = () => {

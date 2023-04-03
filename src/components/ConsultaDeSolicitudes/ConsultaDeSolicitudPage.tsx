@@ -21,7 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import { useEffect, useState } from "react";
-import { getSolicitudes } from "../ObligacionesCortoPlazoPage/APIS/APISInformacionGeneral";
+import { getSolicitudes } from "../APIS/APIS Cortoplazo/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
 
