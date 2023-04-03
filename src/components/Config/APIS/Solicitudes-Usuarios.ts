@@ -1,6 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ICreateSolicitud } from "../Interfaces/IUsuarios";
+import { ICreateSolicitud, IUsuarios } from "../Interfaces/IUsuarios";
+import { log } from "console";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -14,26 +15,26 @@ const Toast = Swal.mixin({
   },
 });
 
-export const createSolicitud = ( comentario = '') => {
+export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comentario = '') => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud", 
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",
       {
-            Nombre: 'marlon',
-            APaterno: 'mendez',
-            AMaterno: 'maldonado',
-            NombreUsuario: 'mmaldonado',
-            Email: 'mimendez@cecapmex.com',
-            Puesto:'dev',
-            Curp: 'asdasd',
-            RFC: 'asdas',
-            Celular: 123123,
-            Telefono: 123123,
-            Extencion: 123,
-            DatosAdicionales: '',
-            TipoSolicitud: 'ALTA',
-            CreadoPor: localStorage.getItem("IdCentral")||'',
-            IdApp: localStorage.getItem("IdApp")||''
+        Nombre: datos.Nombre,
+        APaterno: datos.ApellidoPaterno,
+        AMaterno: datos.ApellidoMaterno,
+        NombreUsuario: datos.NombreUsuario,
+        Email: datos.CorreoElectronico,
+        Puesto: datos.Cargo,
+        Curp: datos.Curp,
+        RFC: datos.Rfc,
+        Celular: datos.Celular,
+        Telefono: datos.Telefono,
+        Extencion: datos.Ext,
+        DatosAdicionales: JSON.stringify({ Cargo: datos.Cargo, EntePublico: datos.MunicipioUOrganizacion, CorreoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        TipoSolicitud: tipoSolicitud,
+        CreadoPor: localStorage.getItem("IdCentral") || '',
+        IdApp: localStorage.getItem("IdApp") || ''
       },
       {
         headers: {
@@ -43,53 +44,64 @@ export const createSolicitud = ( comentario = '') => {
     )
     .then((r) => {
       if (r.status === 200) {
-        if (comentario !== "")
-          createComentarios(r.data.data[0][0].IdSolicitud, comentario);
 
-        Toast.fire({
-          icon: "success",
-          title: "¡Registro exitoso!",
-        });
+        console.log(r.data.data[0][0].Respuesta);
+        if (r.data.data[0][0].Respuesta === '403') {
+          Toast.fire({
+            icon: "error",
+            title: r.data.data[0][0].Mensaje,
+          });
+        } else {
+          if (comentario !== "")
+            createComentarios(r.data.data[0][0].IdSolicitud, comentario);
+
+          Toast.fire({
+            icon: "success",
+            title: "¡Registro exitoso!",
+          });
+        }
       }
+
     })
     .catch((r) => {
-      if (r.response.status === 409) {
-      }
+      Toast.fire({
+        icon: "error",
+        title: "¡No se realizo el registro!",
+      });
     });
 };
 
 const createComentarios = (idSolicitud: string, comentario: string) => {
-  if(comentario!=='')
-  {
+  if (comentario !== '') {
     axios
-    .post(
-      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
-      {
-        CreadoPor: localStorage.getItem("IdCentral"),
-        IdSolicitud: idSolicitud,
-        Comentario: comentario,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken") || "",
+      .post(
+        process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
+        {
+          CreadoPor: localStorage.getItem("IdCentral"),
+          IdSolicitud: idSolicitud,
+          Comentario: comentario,
         },
-      }
-    )
-    .then((r) => {
-      if (r.status === 201) {
-        Toast.fire({
-          icon: "success",
-          title: "¡Registro exitoso!",
-        });
-      }
-    })
-    .catch((r) => {
-      if (r.response.status === 409) {
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken") || "",
+          },
+        }
+      )
+      .then((r) => {
+        if (r.status === 201) {
+          Toast.fire({
+            icon: "success",
+            title: "¡Registro exitoso!",
+          });
+        }
+      })
+      .catch((r) => {
+        if (r.response.status === 409) {
 
-      }
-    });
+        }
+      });
   }
-  
+
 };
 
 export const getListadoUsuarios = (setState: Function) => {
@@ -102,12 +114,12 @@ export const getListadoUsuarios = (setState: Function) => {
       'Authorization': localStorage.getItem("jwtToken"),
       'Content-Type': 'application/json'
     }
-  }).then(({data}) => {
-    
-      console.log(data.data);
-      
-      setState(data.data)
-   
+  }).then(({ data }) => {
+
+    console.log(data.data);
+
+    setState(data.data)
+
   })
     .catch((r) => {
       if (r.response.status === 409) {
@@ -115,3 +127,6 @@ export const getListadoUsuarios = (setState: Function) => {
       }
     });
 };
+
+
+
