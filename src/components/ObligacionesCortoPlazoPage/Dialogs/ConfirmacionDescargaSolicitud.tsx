@@ -75,44 +75,62 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
             mr: 1,
             ml: 1,
             alignItems: "center",
-            borderColor: "#cfcfcf",
+
             fontSize: "20px",
             //border: "1px solid"
           }}
         >
-          <Typography sx={queries.bold_text}>Enviar</Typography>
+          <Typography sx={queries.medium_text}>Enviar Documento</Typography>
 
           <Grid mb={1}>
             <TextField
               fullWidth
               label="Comentarios        "
               multiline
+              variant="standard"
               maxRows={5}
               rows={10}
               value={comentarios}
-              
               onChange={(texto) => changeComentarios(texto.target.value)}
             />
           </Grid>
 
-          <Grid>
-            <Grid item container direction="row">
-              <Grid item md={6} lg={6}>
-                <ConfirmButton
+          <Grid sx={{ display: "flex", justifyContent: "space-between" , alignItems: 'center' }}>
+            <Grid container direction="row">
+              <Grid
+                item
+                md={6}
+                lg={6}
+               // sx={{ textAlign: "center", display: "flex" }}
+              >
+                <Button
+                  //sx={queries.italic_text}
                   //onClick={handleClick}
+                  //sx ={{textAlign: 'center'}}
                   onClick={() => {
                     fetchDocumento(props.selected);
                   }}
-                  variant="outlined"
+                  variant="text"
                 >
                   {comentarios == null || /^[\s]*$/.test(comentarios)
                     ? "Enviar sin comentarios "
                     : "Enviar con comentarios   "}
-                </ConfirmButton>
+                </Button>
               </Grid>
 
-              <Grid item md={6} lg={6}>
-                <DeleteButton variant="outlined" onClick={() => props.handler(false)} >Cancelar</DeleteButton>
+              <Grid
+                item
+                md={6}
+                lg={6}
+                sx={{ textAlign: "center", display: "flex",justifyContent:'center'}}
+              >
+                <Button
+                  //sx={queries.medium_text}
+                  variant="text"
+                  onClick={() => props.handler(false)}
+                >
+                  Cancelar
+                </Button>
               </Grid>
             </Grid>
           </Grid>

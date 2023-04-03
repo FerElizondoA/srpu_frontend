@@ -21,6 +21,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
 
 interface Head {
   label: string;
@@ -40,7 +41,13 @@ export function SolicitudInscripcion() {
 
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
-  }
+  };
+
+  const [openDialogBorrador, changeOpenDialogBorrador] = React.useState(false);
+
+  const changeOpenDialogBorradorState = (open: boolean) => {
+    changeOpenDialogBorrador(open);
+  };
 
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
@@ -158,7 +165,7 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
-        
+
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
@@ -180,7 +187,6 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
-
       </Grid>
 
       <Grid
@@ -334,12 +340,19 @@ export function SolicitudInscripcion() {
             {/* <IconButton>
               <Typography sx={queries.medium_text}>Autorizar</Typography>
               </IconButton> */}
-            <CheckIcon
-              sx={{ mr: 1 }}
-            />
+            <CheckIcon sx={{ mr: 1 }} />
             {buttodescription()}
           </Fab>
-          <Fab variant="extended" color="success"  onClick={() => fetchBorrador(selected)} sx={{ mb: "10px" }}>
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => fetchBorrador(selected)}
+            onClick={() => {
+              //fetchDocumento(selected)
+              //console.log("que soy ",selected);
+              changeOpenDialogBorradorState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>BORRADOR</Typography>
           </Fab>
@@ -347,24 +360,25 @@ export function SolicitudInscripcion() {
           <Fab
             variant="extended"
             color="success"
-            
-            
-            onClick={() => 
-              {
-                //fetchDocumento(selected)
-                //console.log("que soy ",selected);
-                changeOpenDialogState(!openDialog)
-              }}
+            onClick={() => {
+              //fetchDocumento(selected)
+              //console.log("que soy ",selected);
+              changeOpenDialogState(!openDialog);
+            }}
           >
-            
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
           <ConfirmacionDescargaSolicitud
-                handler={changeOpenDialogState}
-                openState={openDialog}
-                selected={selected}
-                />
+            handler={changeOpenDialogState}
+            openState={openDialog}
+            selected={selected}
+          />
+          <ConfirmacionBorradorSolicitud
+            handler={changeOpenDialogBorradorState}
+            openState={openDialogBorrador}
+            selected={selected}
+          />
         </Grid>
       </Grid>
     </Grid>
