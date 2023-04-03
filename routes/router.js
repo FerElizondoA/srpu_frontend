@@ -247,9 +247,11 @@ router.post("/create-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.get("/get-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
+
+router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
+
 
 router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
@@ -257,7 +259,7 @@ router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) 
 
 router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoCortoPlazo(req, res);
-});
+}); 
 
 router.put("/modify-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   modifyTipoDocumento(req, res);
