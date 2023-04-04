@@ -39,6 +39,7 @@ interface IData {
   MontoOriginalContratado: number;
   Acciones: string;
   Solicitud: string;
+  tipoDocumento: string;
 }
 
 interface Head {
@@ -82,6 +83,11 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Acciones",
   },
+  {
+    id: "tipoDocumento",
+    isNumeric: true,
+    label: "TipoDocumento",
+  },
 ];
 
 export function ConsultaDeSolicitudPage() {
@@ -122,7 +128,7 @@ export function ConsultaDeSolicitudPage() {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-        console.log(elemento);
+        
 
         return elemento;
       }
@@ -146,13 +152,13 @@ export function ConsultaDeSolicitudPage() {
   const navigate = useNavigate();
 
   const handleNavigate = (solicitud: any) => {
-    console.log("solicitud!: ", solicitud);
+    //console.log("solicitud!: ", solicitud);
     let aux: any = JSON.parse(solicitud);
     console.log("aux!: ", aux);
     navigate("../ObligacionesCortoPlazo");
   };
 const idsolicitud =(id: any) =>{
-  console.log(id);
+
   
 }
   const fetchDocumento: Function = useCortoPlazoStore(
@@ -226,6 +232,7 @@ const idsolicitud =(id: any) =>{
                   );
                 }
 
+                
                 return (
                   <StyledTableRow
                   //sx={{ alignItems: "center", justifyContent: "center" }}
@@ -239,12 +246,17 @@ const idsolicitud =(id: any) =>{
                     </StyledTableCell>
 
                     <StyledTableCell component="th" scope="row">
+                      {row.tipoDocumento.toString()}
+                    </StyledTableCell> 
+
+                    <StyledTableCell component="th" scope="row">
                       {chip}
                     </StyledTableCell>
 
                     <StyledTableCell component="th" scope="row">
                       {row.ClaveDeInscripcion.toString()}
                     </StyledTableCell>
+
 
                     <StyledTableCell component="th" scope="row">
                       {"$" + row.MontoOriginalContratado.toString()}
@@ -274,7 +286,6 @@ const idsolicitud =(id: any) =>{
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
-
                       <Tooltip title="Edit">
                         <IconButton
                           type="button"
@@ -285,9 +296,6 @@ const idsolicitud =(id: any) =>{
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
-
-
-
                       <Tooltip title="Descargar">
                         <IconButton
                           type="button"
@@ -296,14 +304,13 @@ const idsolicitud =(id: any) =>{
                         >
                           <DownloadIcon
                             onClick={() => {
-                              console.log(JSON.parse(row.Solicitud));
+                              //console.log(JSON.parse(row.Solicitud));
                               DescargarConsultaSolicitud(row.Solicitud)
                             }}
                           />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
-
                       <Tooltip title="Comentarios">
                         <IconButton
                           type="button"

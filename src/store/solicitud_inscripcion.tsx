@@ -193,22 +193,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
       tasaInteresTable: state.tasaInteresTable,
     };
 
+    console.log(solicitud);
     const response = await axios
+    
+    
       .post(
         "http://10.200.4.199:8000/api/create-solicitud",
 
         {
-          CreadoPor: localStorage.getItem("IdUsuario"),
+          IdEntePublico: "",
+          IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
+          TipoSolicitud: solicitud.tipoDocumento,
           IdInstitucionFinanciera: "ac903b28-acb7-11ed-b719-2c4138b7dab1",
           IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
           IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-          IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
-          Solicitud: JSON.stringify(solicitud),
           MontoOriginalContratado: solicitud.montoOriginal,
-          FechaContratacion: format(
-            new Date(state.fechaContratacion),
-            "yyyy-MM-dd"
-          ),
+          FechaContratacion: format(new Date(state.fechaContratacion),"yyyy-MM-dd"),
+          Solicitud: JSON.stringify(solicitud),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+  
         },
         {
           headers: {
