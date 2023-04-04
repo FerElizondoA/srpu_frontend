@@ -8,6 +8,7 @@ import {
   TextField,
   MenuItem,
   DialogActions,
+  Typography,
 } from "@mui/material";
 
 import SendIcon from "@mui/icons-material/Send";
@@ -18,6 +19,10 @@ import { createSolicitud } from "../APIS/Solicitudes-Usuarios";
 import Swal from "sweetalert2";
 import DialogContentText from "@mui/material/DialogContentText";
 import { log } from "console";
+import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
+import { setSeconds } from "date-fns";
+//import validator from 'validator';
+
 
 
 
@@ -71,6 +76,7 @@ export const DialogUsuarios = ({
   useEffect(() => {
     getCatalogo(setTipoUsuario, "roles");
     getCatalogo(setEntesPublicos, "entePublicoObligado");
+    
   }, []);
 
 
@@ -90,6 +96,15 @@ export const DialogUsuarios = ({
   /*///// ***********  VALIDACIONES  **********/ /////
 
   const [comentario, setComentario] = useState("");
+
+  const [statusSolicitud,setStatusSolicitud]=useState(false);
+
+  useEffect(() => {
+    if(statusSolicitud===true){
+      handleClose();
+    }
+  }, [statusSolicitud])
+  
 
   const validaUsuario = (dato: string) => {
     var format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
@@ -230,6 +245,22 @@ export const DialogUsuarios = ({
   ////////////////////////////////////////////////////////
 
   /* *********** ERRORES ***************/
+  
+  const [ErrorUsuario, setErrorUsuario] = useState(false);
+  const [ErrorEmail, setErrorEmail] = useState(false);
+  const [ErrorNombre, setErrorNombre] = useState(false);
+  const [ErrorAPaterno, setErrorAPaterno] = useState(false);
+  const [ErrorAMaterno, setErrorAMaterno] = useState(false);
+  const [ErrorCargo, setErrorCargo] = useState(false);
+  const [ErrorMunicipio, setErrorMunicipio] = useState(false);
+  const [ErrorRfc, setErrorRfc] = useState(false);
+  const [ErrorCurp, setErrorCurp] = useState(false);
+  const [ErrorTelefono, setErrorTelefono] = useState(false);
+  const [ErrorCelular, setErrorCelular] = useState(false);
+  const [ErrorExt, setErrorExt] = useState(false);
+  const [ErrorEmailAlt, setErrorEmailAlt] = useState(false);
+
+
 
   const [ErroresCurp, setErroresCurp] = useState(false);
   const [ErroresRfc, setErroresRfc] = useState(false);
@@ -243,6 +274,55 @@ export const DialogUsuarios = ({
   const [LeyendaErrorCelular, setLeyendaErrorCelular] = useState("");
   const [LeyendaErrorTelefono, setLeyendaErrorTelefono] = useState("");
 
+  const [error, setError] = useState("");
+
+  const checkedForm=()=>{
+
+    if (registroDatos.Nombre == null || /^[\s]*$/.test(registroDatos.Nombre )) 
+    {setErrorNombre(true)}else  {setErrorNombre(false)}
+
+    if (registroDatos.NombreUsuario == null || /^[\s]*$/.test(registroDatos.NombreUsuario )) 
+    {setErrorUsuario(true)}else  {setErrorUsuario(false)}
+
+    if (registroDatos.CorreoElectronico == null || /^[\s]*$/.test(registroDatos.CorreoElectronico )) 
+    {setErrorEmail(true)}else  {setErrorEmail(false)}
+
+    if (registroDatos.ApellidoPaterno == null || /^[\s]*$/.test(registroDatos.ApellidoPaterno )) 
+    {setErrorAPaterno(true)}else  {setErrorAPaterno(false)}
+
+    if (registroDatos.ApellidoMaterno == null || /^[\s]*$/.test(registroDatos.ApellidoMaterno )) 
+    {setErrorAMaterno(true)}else  {setErrorAMaterno(false)}
+
+    if (registroDatos.Cargo == null || /^[\s]*$/.test(registroDatos.Cargo )) 
+    {setErrorCargo(true)}else  {setErrorCargo(false)}
+
+    if (registroDatos.MunicipioUOrganizacion == null || /^[\s]*$/.test(registroDatos.MunicipioUOrganizacion )) 
+    {setErrorMunicipio(true)}else  {setErrorMunicipio(false)}
+
+    //if (registroDatos.MunicipioUOrganizacion == null || /^[\s]*$/.test(registroDatos.MunicipioUOrganizacion )) 
+    //{setErrorUsuario(true)}else  {setErrorUsuario(false)}
+
+    if (registroDatos.Curp == null || /^[\s]*$/.test(registroDatos.Curp )) 
+    {setErrorCurp(true)}else  {setErrorCurp(false)}
+
+    if (registroDatos.Rfc == null || /^[\s]*$/.test(registroDatos.Rfc )) 
+    {setErrorRfc(true)}else  {setErrorRfc(false)}
+
+    if (registroDatos.Telefono == null || /^[\s]*$/.test(registroDatos.Telefono )) 
+    {setErrorTelefono(true)}else  {setErrorTelefono(false)}
+
+    if (registroDatos.Celular == null || /^[\s]*$/.test(registroDatos.Celular )) 
+    {setErrorCelular(true)}else  {setErrorCelular(false)}
+
+    if (registroDatos.Ext == null || /^[\s]*$/.test(registroDatos.Ext )) 
+    {setErrorExt(true)}else  {setErrorExt(false)}
+
+    if (registroDatos.CorreoDeRecuperacion == null || /^[\s]*$/.test(registroDatos.CorreoDeRecuperacion )) 
+    {setErrorEmailAlt(true)}else  {setErrorEmailAlt(false)}
+
+    
+  }
+
   ////////////////////////////////////////////////////////
  
   return (<>
@@ -254,7 +334,10 @@ export const DialogUsuarios = ({
       open={open}
       sx={{height:'100vh'}}
     >
-      <DialogTitle  > {title}</DialogTitle>
+      <DialogTitle sx={{display:'flex',justifyContent:'space-between'}} > 
+        <Typography sx={{height:'90%'}}> {title}</Typography>
+        <Typography sx={{height:'90%'}} color={'red'}> {error!==''?error:null}</Typography>
+        </DialogTitle>
       <DialogContent >
         <Grid container spacing={1}>
           <Grid item textTransform={"uppercase"} xs={12} md={4} lg={4} sm={12}>
@@ -268,6 +351,8 @@ export const DialogUsuarios = ({
                 validaUsuario(e.target.value);
               }}
               value={registroDatos.NombreUsuario}
+              helperText={ErrorUsuario?'Usuario  inválido':''}
+              error={ErrorUsuario}
             />
           </Grid>
 
@@ -283,6 +368,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaEmail(e.target.value);
               }}
+              helperText={ErrorEmail?'Correo electrónico inválido':''}
+              error={ErrorEmail}
             />
           </Grid>
 
@@ -297,6 +384,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaNombre(e.target.value);
               }}
+              helperText={ErrorNombre?'Nombre inválido':''}
+              error={ErrorNombre}
             />
           </Grid>
 
@@ -311,6 +400,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaApellidoP(e.target.value);
               }}
+              helperText={ErrorAPaterno?'Apellido paterno inválido':''}
+              error={ErrorAPaterno}
             />
           </Grid>
 
@@ -325,6 +416,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaApellidoM(e.target.value);
               }}
+              helperText={ErrorAMaterno?'Apellido materno inválido':''}
+              error={ErrorAMaterno}
             />
           </Grid>
 
@@ -360,6 +453,9 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCargo(e.target.value);
               }}
+              helperText={ErrorCargo?'Apellido paterno inválido':''}
+              error={ErrorCargo}
+
             />
           </Grid>
 
@@ -375,6 +471,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaMunicipio(e.target.value);
               }}
+              helperText={ErrorMunicipio?'Municipio inválido':''}
+              error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (
                 <MenuItem key={option.Id} value={option.Descripcion}>
@@ -392,11 +490,12 @@ export const DialogUsuarios = ({
               label="CURP"
               required
               value={registroDatos.Curp}
-              helperText={LeyendaErrorCurp}
-              error={ErroresCurp}
               onChange={(e) => {
                 validaCURP(e.target.value);
               }}
+              helperText={ErrorCurp?'Curp inválido':''}
+              error={ErrorCurp}
+              
             />
           </Grid>
 
@@ -408,11 +507,11 @@ export const DialogUsuarios = ({
               label="RFC"
               required
               value={registroDatos.Rfc}
-              helperText={LeyendaErrorRfc}
-              error={ErroresRfc}
               onChange={(e) => {
                 validaRFC(e.target.value);
               }}
+              helperText={ErrorRfc?'RFC invalido':''}
+              error={ErrorRfc}
             />
           </Grid>
 
@@ -424,10 +523,10 @@ export const DialogUsuarios = ({
               variant="outlined"
               label="Telefono"
               value={
-                registroDatos.Telefono == "0" ? "" : registroDatos.Telefono
+                registroDatos.Telefono === "0" ? "" : registroDatos.Telefono
               }
-              helperText={LeyendaErrorTelefono}
-              error={ErroresTelefono}
+              helperText={ErrorTelefono?'Telefono inválido':''}
+              error={ErrorCurp||ErroresTelefono}
               onChange={(e) => {
                 validaTelefono(parseInt(e.target.value));
               }}
@@ -442,9 +541,9 @@ export const DialogUsuarios = ({
               label="Celular"
               fullWidth
               required
-              value={registroDatos.Celular == "0" ? "" : registroDatos.Celular}
-              helperText={LeyendaErrorCelular}
-              error={ErroresCelular}
+              value={registroDatos.Celular === "0" ? "" : registroDatos.Celular}
+              helperText={ErrorCelular?'Celular inválido':''}
+              error={ErrorCelular}
               onChange={(e) => {
                 validaCelular(parseInt(e.target.value));
               }}
@@ -463,6 +562,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaExtension(parseInt(e.target.value));
               }}
+              helperText={ErrorExt?'Extension inválido':''}
+              error={ErrorExt}
             />
           </Grid>
 
@@ -485,6 +586,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaEmailRecuperacion(e.target.value);
               }}
+              helperText={ErrorEmailAlt?'Correo electrónico inválido.':''}
+              error={ErrorEmailAlt}
             />
           </Grid>
 
@@ -548,6 +651,7 @@ export const DialogUsuarios = ({
               onClick={() => {
                 
                 handleClose();
+                setError('');
               }}
             >
               Cancelar
@@ -569,14 +673,9 @@ export const DialogUsuarios = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{setOpenDialogConfirm(!openDialogConfirm)}}>Cancelar</Button>
+          <Button onClick={()=>{setOpenDialogConfirm(!openDialogConfirm);setError('');}}>Cancelar</Button>
           <Button onClick={()=>{ 
-            createSolicitud(registroDatos,ActionButton==='Agregar'?'ALTA':'MODIFICACION',comentario);
-            
-            setOpenDialogConfirm(!openDialogConfirm);
-            handleClose();
-        
-        }}autoFocus>Aceptar</Button>
+           createSolicitud(registroDatos,ActionButton==='Agregar'?'ALTA':'MODIFICACION',comentario,setStatusSolicitud,setError); setOpenDialogConfirm(!openDialogConfirm);}}autoFocus>Aceptar</Button>
         </DialogActions>
       </Dialog>
   </>

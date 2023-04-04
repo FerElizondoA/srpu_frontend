@@ -15,7 +15,7 @@ const Toast = Swal.mixin({
   },
 });
 
-export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comentario = '') => {
+export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comentario = '', setStatus: Function,setError:Function) => {
   axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",
@@ -43,64 +43,77 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-      if (r.status === 200) {
+      console.log(r);
 
-        console.log(r.data.data[0][0].Respuesta);
-        if (r.data.data[0][0].Respuesta === '403') {
+      if (r.status === 200) {
+       
+        if (r.data.data[0][0].Respuesta === '403' || r.data.data[0][0].Respuesta === '406') {
           Toast.fire({
             icon: "error",
             title: r.data.data[0][0].Mensaje,
           });
+          setError(r.data.data[0][0].Mensaje)
+          setStatus(false);
         } else {
-          if (comentario !== "")
-            createComentarios(r.data.data[0][0].IdSolicitud, comentario);
-
+          if (comentario !== "") { createComentarios(r.data.data[0][0].IdSolicitud, comentario); }
           Toast.fire({
             icon: "success",
             title: "¡Registro exitoso!",
           });
+          setStatus(true);
+
         }
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "¡No se realizo el registro!",
+        });
+        setError('¡No se realizo el registro, error del sistema!')
+        setStatus(false);
       }
 
     })
     .catch((r) => {
+
       Toast.fire({
         icon: "error",
-        title: "¡No se realizo el registro!",
+        title: '¡No se realizo el registro, error del sistema!',
       });
+      setError('¡No se realizo el registro, error del sistema!')
+      setStatus(false);
     });
 };
 
 const createComentarios = (idSolicitud: string, comentario: string) => {
-  if (comentario !== '') {
-    axios
-      .post(
-        process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
-        {
-          CreadoPor: localStorage.getItem("IdCentral"),
-          IdSolicitud: idSolicitud,
-          Comentario: comentario,
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken") || "",
-          },
-        }
-      )
-      .then((r) => {
-        if (r.status === 201) {
-          Toast.fire({
-            icon: "success",
-            title: "¡Registro exitoso!",
-          });
-        }
-      })
-      .catch((r) => {
-        if (r.response.status === 409) {
 
-        }
-      });
-  }
+  axios
+    .post(
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
+      {
+        CreadoPor: localStorage.getItem("IdCentral"),
+        IdSolicitud: idSolicitud,
+        Comentario: comentario,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken") || "",
+        },
+      }
+    )
+    .then((r) => {
+      if (r.status === 201) {
+        Toast.fire({
+          icon: "success",
+          title: "¡Registro exitoso!",
+        });
+      }
+    })
+    .catch((r) => {
+      if (r.response.status === 409) {
+
+      }
+    });
+
 
 };
 

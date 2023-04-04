@@ -181,44 +181,46 @@ export const Usuarios = () => {
 
 
   /* BUSCADOR */
-  const [usuarioEdit, setUsuarioEdit] = useState<IUsuarios>();
-  const openNewUsuario = () => {
-    setButonLabel("Agregar");
-    setTitle("Agregar Usuario.");
 
+
+  const [usuarioEdit,setUsuarioEdit]=useState<IUsuarios>();
+
+  const openNewUsuario=()=>{
+    setButonLabel('Agregar');
+    setTitle('AGREGAR USUARIO.');
+    
     setUsuarioEdit({
-      id: "",
-      IdCentral: "",
-      Nombre: "",
-      ApellidoPaterno: "",
-      ApellidoMaterno: "",
-      NombreUsuario: "",
-      CorreoElectronico: "",
-      Curp: "",
-      Rfc: "",
-      Telefono: "",
-      Ext: "",
-      Celular: "",
-      Cargo: "",
-      CorreoDeRecuperacion: "",
-      IdRol: "",
-      Rol: "",
-      MunicipioUOrganizacion: "",
-    });
-    openDialogUser();
-  };
-
-  const openEditarUsuario = (name: string, usuario: IUsuarios) => {
-    setButonLabel("Editar");
-    setTitle("Editar Usuario " + name + ".");
-
+      id: '',
+      IdCentral: '',
+      Nombre: '',
+      ApellidoPaterno: '',
+      ApellidoMaterno:'',
+      NombreUsuario: '',
+      CorreoElectronico: '',
+      Curp: '',
+      Rfc: '',
+      Telefono: '',
+      Ext: '',
+      Celular: '',
+      Cargo: '',
+      CorreoDeRecuperacion: '',
+      IdRol: '',
+      Rol: '',
+      MunicipioUOrganizacion: '',
+  
+  })
+  openDialogUser();
+  }
+  const openEditarUsuario=(name:string,usuario:IUsuarios)=>{
+    setButonLabel('Editar');
+    setTitle('EDITAR USUARIO ' + name.toUpperCase +'.');
+    
     setUsuarioEdit(usuario);
     openDialogUser();
-  };
-  const [butonLabel, setButonLabel] = useState("Agregar");
-  const [title, setTitle] = useState("Agregar Usuario.");
-  /* BUSCADOR */
+  }
 
+  const [butonLabel, setButonLabel]= useState('Agregar');
+  const [title, setTitle] = useState("AGREGAR  USUARIO.");
 
   /*DIALOG */
   const [openDialog, setOpenDialog] = useState(false);
