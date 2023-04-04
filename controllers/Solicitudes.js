@@ -14,16 +14,6 @@ module.exports = {
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
     const CreadoPor = req.body.CreadoPor;
-    console.log("holiwi")
-    console.log(req.body.IdInstitucionFinanciera);
-    console.log(req.body.IdTipoEntePublico);
-    console.log(req.body.IdEstatus);
-    
-    console.log(req.body.IdClaveInscripcion);
-    console.log(req.body.MontoOriginalContratado);
-    console.log(req.body.FechaContratacion);
-    console.log(req.body.Solicitud);
-    console.log(req.body.CreadoPor);
     if (IdInstitucionFinanciera== null || /^[\s]*$/.test(IdInstitucionFinanciera)) {
       return res.status(409).send({
         error: "Ingrese IdInsitucionFinanciera",
