@@ -77,7 +77,7 @@ export function Documentacion() {
       return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
     })
   );
-
+  
   useEffect(() => {
 
     getTiposDocumentos(setTiposDocumentos);
