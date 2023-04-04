@@ -276,6 +276,7 @@ export const DialogUsuarios = ({
 
   const [error, setError] = useState("");
 
+
   const checkedForm=()=>{
 
     if (registroDatos.Nombre == null || /^[\s]*$/.test(registroDatos.Nombre )) 
@@ -351,7 +352,7 @@ export const DialogUsuarios = ({
                 validaUsuario(e.target.value);
               }}
               value={registroDatos.NombreUsuario}
-              helperText={ErrorUsuario?'Usuario  inválido':''}
+              helperText={ErrorUsuario?'Usuario inválido':''}
               error={ErrorUsuario}
             />
           </Grid>
@@ -493,7 +494,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCURP(e.target.value);
               }}
-              helperText={ErrorCurp?'Curp inválido':''}
+              helperText={ErrorCurp?'Curp incompleto o invalido':''}
               error={ErrorCurp}
               
             />
@@ -511,7 +512,7 @@ export const DialogUsuarios = ({
                 validaRFC(e.target.value);
               }}
               helperText={ErrorRfc?'RFC invalido':''}
-              error={ErrorRfc}
+              error={ErrorRfc || ErroresRfc}
             />
           </Grid>
 
@@ -525,8 +526,8 @@ export const DialogUsuarios = ({
               value={
                 registroDatos.Telefono === "0" ? "" : registroDatos.Telefono
               }
-              helperText={ErrorTelefono?'Telefono inválido':''}
-              error={ErrorCurp||ErroresTelefono}
+              helperText={LeyendaErrorTelefono ||ErrorTelefono?'Telefono inválido':''}
+              error={ErrorTelefono||ErroresTelefono}
               onChange={(e) => {
                 validaTelefono(parseInt(e.target.value));
               }}
@@ -542,8 +543,8 @@ export const DialogUsuarios = ({
               fullWidth
               required
               value={registroDatos.Celular === "0" ? "" : registroDatos.Celular}
-              helperText={ErrorCelular?'Celular inválido':''}
-              error={ErrorCelular}
+              helperText={ LeyendaErrorCelular  || ErrorCelular  ?'Celular inválido':''}
+              error={ErrorCelular || ErroresCelular}
               onChange={(e) => {
                 validaCelular(parseInt(e.target.value));
               }}
@@ -562,7 +563,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaExtension(parseInt(e.target.value));
               }}
-              helperText={ErrorExt?'Extension inválido':''}
+              helperText={ ErrorExt?'Extension inválido':''}
               error={ErrorExt}
             />
           </Grid>
