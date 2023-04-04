@@ -96,7 +96,8 @@ export function Encabezado(){
             </InputLabel>
             <TextField
               fullWidth
-              value={solicitanteAutorizado}
+              disabled
+              value={localStorage.getItem("NombreUsuario")}
               variant="standard"
               onChange={(text) => {
                 changeSolicitanteAutorizado(text.target.value);
@@ -168,7 +169,8 @@ export function Encabezado(){
             <TextField
               fullWidth
               variant="standard"
-              value={cargoSolicitante}
+              disabled
+              value={localStorage.getItem("Rol")}
               onChange={(text) => changeCargoSolicitante(text.target.value)}
               sx={queries.medium_text}
               InputLabelProps={{

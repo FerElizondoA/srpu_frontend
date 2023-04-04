@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { getTiposDocumentos } from "../../APIS/APIS Cortoplazo/APISDocumentacion";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
+import { useCortoPlazoStore } from "../../../store/main";
 
 interface Data {
   Documento: String;
@@ -167,6 +168,17 @@ export function Documentacion() {
     console.log(archivos);
     
   }
+
+  const documentosObligatoriosArreglo: string[] =useCortoPlazoStore(state => state.documentosObligatoriosArreglo)
+  const documentosObligatorios: string =useCortoPlazoStore(state => state.documentosObligatorios)
+
+  const changedocumentosObligatoriosArreglo: Function =useCortoPlazoStore(state => state.changeDocumentosObligatoriosArreglo)
+  const changedocumentosObligatorios: Function =useCortoPlazoStore(state => state.changeDocumentosObligatorios)
+
+  useEffect(() =>{
+    
+  },[]);
+  
 
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
