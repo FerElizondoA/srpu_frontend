@@ -166,7 +166,7 @@ useEffect(() =>{
 
   const openNewUsuario=()=>{
     setButonLabel('Agregar');
-    setTitle('Agregar Usuario.');
+    setTitle('AGREGAR USUARIO.');
     
     setUsuarioEdit({
       id: '',
@@ -192,14 +192,14 @@ useEffect(() =>{
   }
   const openEditarUsuario=(name:string,usuario:IUsuarios)=>{
     setButonLabel('Editar');
-    setTitle('Editar Usuario ' + name +'.');
+    setTitle('EDITAR USUARIO ' + name.toUpperCase +'.');
     
     setUsuarioEdit(usuario);
     openDialogUser();
   }
 
   const [butonLabel, setButonLabel]= useState('Agregar');
-  const [title, setTitle] = useState("Agregar Usuario.");
+  const [title, setTitle] = useState("AGREGAR  USUARIO.");
 
   /*DIALOGf */
   const [openDialog, setOpenDialog] = useState(false);
