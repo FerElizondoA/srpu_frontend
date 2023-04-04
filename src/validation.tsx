@@ -49,7 +49,7 @@ export const getUserDetails = (idCentral: string) => {
     })
     .then((r) => {
       if (r.status === 200) {
-        console.log(r.data.data);
+        console.log(r.data);
         
         localStorage.setItem("IdUsuario", r.data.data.Id);
         localStorage.setItem(
@@ -59,6 +59,8 @@ export const getUserDetails = (idCentral: string) => {
 
         localStorage.setItem("Rol", r.data.data.Rol);
         localStorage.setItem("Puesto", r.data.data.Cargo);
+        localStorage.setItem("EntePublicoObligado", r.data.data.EntePublicoObligado);
+        localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
         return true;
       }
