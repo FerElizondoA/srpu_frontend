@@ -100,7 +100,7 @@ export const DialogUsuarios = ({
 
   const validaEmail = (dato: string) => {
     const format =
-      /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+    /^ [A-Z0-9._%+-]+@ [A-Z0-9.-]+\\. [A-Z] {2,}$/i;
     if (dato.length < 101 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, CorreoElectronico: dato });
     }

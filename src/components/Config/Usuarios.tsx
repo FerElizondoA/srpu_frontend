@@ -7,13 +7,16 @@ import {
   TableContainer,
   Table,
   TableHead,
-  TableBody
+  TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import { IUsuarios } from "./Interfaces/IUsuarios";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
+
+import { Navigate, useNavigate } from "react-router-dom";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -28,10 +31,11 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { DialogUsuarios } from "./DialogUsuarios/DialogUsuarios";
 
-
 export const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
+    []
+  );
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
@@ -40,8 +44,6 @@ export const Usuarios = () => {
   useEffect(() => {
     setUsuariosFiltrados(usuarios);
   }, [usuarios]);
-
-  
 
   const heads = [
     {
@@ -105,108 +107,124 @@ export const Usuarios = () => {
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IUsuarios>>([]);
 
-  const handleChange =(dato: string)=>{
-    setBusqueda(dato)
-  }
+  const handleChange = (dato: string) => {
+    setBusqueda(dato);
+  };
 
-  const handleSearch =() =>{
+  const handleSearch = () => {
     filtrarDatos();
-  }
+  };
 
-  const filtrarDatos= () =>{
-    let ResultadoBusqueda = datos.filter((elemento)=>{
+  const filtrarDatos = () => {
+    let ResultadoBusqueda = datos.filter((elemento) => {
+      if (
+        elemento.Nombre.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.ApellidoPaterno.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.ApellidoMaterno.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MunicipioUOrganizacion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Cargo.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Rol.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.CorreoElectronico.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Telefono.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Ext.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Celular.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Curp.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Rfc.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
+        console.log(elemento);
 
-    if (elemento.Nombre.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.ApellidoPaterno.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.ApellidoMaterno.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.MunicipioUOrganizacion.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Cargo.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Rol.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.CorreoElectronico.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Telefono.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Ext.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Celular.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Curp.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-    || elemento.Rfc.toString().toLocaleLowerCase().includes(busqueda.toLocaleLowerCase())
-      
-    ){
-      console.log(elemento);
-      
-      return elemento;
-    }
-      
-    
-  })
-  setUsuariosFiltrados(ResultadoBusqueda);
-  
-}
+        return elemento;
+      }
+    });
+    setUsuariosFiltrados(ResultadoBusqueda);
+  };
 
-useEffect(()=>{
-  getListadoUsuarios(setDatos);
-},[])
+  useEffect(() => {
+    getListadoUsuarios(setDatos);
+  }, []);
 
-useEffect(()=>{
-  setUsuariosFiltrados(datos);
-},[datos])
+  useEffect(() => {
+    setUsuariosFiltrados(datos);
+  }, [datos]);
 
-useEffect(()=>{
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  busqueda.length!=0 ? setUsuariosFiltrados(datos):null
-},[busqueda])
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
+  }, [busqueda]);
 
-useEffect(() =>{
+  useEffect(() => {}, []);
 
-},[])
-  
-  
+
+
+  /* BUSCADOR */
+  const [usuarioEdit, setUsuarioEdit] = useState<IUsuarios>();
+  const openNewUsuario = () => {
+    setButonLabel("Agregar");
+    setTitle("Agregar Usuario.");
+
+    setUsuarioEdit({
+      id: "",
+      IdCentral: "",
+      Nombre: "",
+      ApellidoPaterno: "",
+      ApellidoMaterno: "",
+      NombreUsuario: "",
+      CorreoElectronico: "",
+      Curp: "",
+      Rfc: "",
+      Telefono: "",
+      Ext: "",
+      Celular: "",
+      Cargo: "",
+      CorreoDeRecuperacion: "",
+      IdRol: "",
+      Rol: "",
+      MunicipioUOrganizacion: "",
+    });
+    openDialogUser();
+  };
+
+  const openEditarUsuario = (name: string, usuario: IUsuarios) => {
+    setButonLabel("Editar");
+    setTitle("Editar Usuario " + name + ".");
+
+    setUsuarioEdit(usuario);
+    openDialogUser();
+  };
+  const [butonLabel, setButonLabel] = useState("Agregar");
+  const [title, setTitle] = useState("Agregar Usuario.");
   /* BUSCADOR */
 
 
-  const [usuarioEdit,setUsuarioEdit]=useState<IUsuarios>();
-
-  const openNewUsuario=()=>{
-    setButonLabel('Agregar');
-    setTitle('Agregar Usuario.');
-    
-    setUsuarioEdit({
-      id: '',
-      IdCentral: '',
-      Nombre: '',
-      ApellidoPaterno: '',
-      ApellidoMaterno:'',
-      NombreUsuario: '',
-      CorreoElectronico: '',
-      Curp: '',
-      Rfc: '',
-      Telefono: '',
-      Ext: '',
-      Celular: '',
-      Cargo: '',
-      CorreoDeRecuperacion: '',
-      IdRol: '',
-      Rol: '',
-      MunicipioUOrganizacion: '',
-  
-  })
-  openDialogUser();
-  }
-  const openEditarUsuario=(name:string,usuario:IUsuarios)=>{
-    setButonLabel('Editar');
-    setTitle('Editar Usuario ' + name +'.');
-    
-    setUsuarioEdit(usuario);
-    openDialogUser();
-  }
-
-  const [butonLabel, setButonLabel]= useState('Agregar');
-  const [title, setTitle] = useState("Agregar Usuario.");
-
-  /*DIALOGf */
+  /*DIALOG */
   const [openDialog, setOpenDialog] = useState(false);
-  
   const openDialogUser = () => {
     setOpenDialog(!openDialog);
-  /*DIALOGf */
+  /*DIALOG*/
 
   };
 
@@ -244,49 +262,72 @@ useEffect(() =>{
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               value={busqueda}
-              onChange={(e) => {handleChange(e.target.value)
+              onChange={(e) => {
+                handleChange(e.target.value);
               }}
-              onKeyPress = {(ev) => {//cuando se presiona Enter
-                if (ev.key === "Enter"){
-                  handleSearch()
+              onKeyPress={(ev) => {
+                //cuando se presiona Enter
+                if (ev.key === "Enter") {
+                  handleSearch();
                   ev.preventDefault();
-                  return false
+                  return false;
                 }
               }}
             />
-            <IconButton  type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon 
-              onClick={() => {handleSearch()}} />
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <SearchIcon
+                onClick={() => {
+                  handleSearch();
+                }}
+              />
             </IconButton>
-
           </Paper>
         </Grid>
 
         <Grid
           item
-          xs={4}
-          lg={4}
-          sm={4}
+          xs={2}
+          lg={2}
+          sm={2}
           sx={{ display: "flex", justifyContent: "flex-end" }}
         >
           <Button
-            
+            color="info"
             variant="contained"
-            size="large"
+            sx={{ width: "80%" }}
+            endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+            onClick={() => {
+              
+            }}
+          >
+            Ver Solicitudes
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          lg={2}
+          sm={2}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button
+            variant="contained"
+            size="medium"
             endIcon={<PersonAddAlt1Icon />}
-            sx={{ mr: "2vw" }}
-            onClick={()=>{openNewUsuario()}}
+            sx={{ width: "80%" }}
+            onClick={() => {
+              openNewUsuario();
+            }}
           >
             Añadir Usuario
           </Button>
-         
         </Grid>
       </Grid>
 
       <Grid item sx={{ height: "70vh" }}>
         <TableContainer>
           <Table>
-          <TableHead>
+            <TableHead>
               {heads.map((head) => (
                 <StyledTableCell key={head.id} align="center">
                   {head.label}
@@ -296,29 +337,39 @@ useEffect(() =>{
             <TableBody>
               {usuariosFiltrados?.map((row) => (
                 <StyledTableRow>
-                  <StyledTableCell sx={{display:"flex"}}  component="th" scope="row" align="center">
-                    <><Tooltip title="Editar Usuario">
-                      <IconButton
-                        
-                        size="large"
-                        onClick={()=>{openEditarUsuario(row.Nombre+' '+row.ApellidoPaterno,row)}}
-                      >
-                        <Edit fontSize="inherit" />
-                      </IconButton>
-                    </Tooltip>
+                  <StyledTableCell
+                    sx={{ display: "flex" }}
+                    component="th"
+                    scope="row"
+                    align="center"
+                  >
+                    <>
+                      <Tooltip title="Editar Usuario">
+                        <IconButton
+                          size="large"
+                          onClick={() => {
+                            openEditarUsuario(
+                              row.Nombre + " " + row.ApellidoPaterno,
+                              row
+                            );
+                          }}
+                        >
+                          <Edit fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
 
-                    <Tooltip title="Eliminar Usuario">
-                      <IconButton
-                        aria-label="delete"
-                        size="large"
-                        onClick={() => {
-                          console.log(row.id, row.ApellidoPaterno.toString());
-                        }}
-                      >
-                        <DeleteIcon fontSize="inherit" />
-                      </IconButton>
-                    </Tooltip ></>
-                  
+                      <Tooltip title="Eliminar Usuario">
+                        <IconButton
+                          aria-label="delete"
+                          size="large"
+                          onClick={() => {
+                            console.log(row.id, row.ApellidoPaterno.toString());
+                          }}
+                        >
+                          <DeleteIcon fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
+                    </>
                   </StyledTableCell>
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Nombre.toString()}
@@ -366,14 +417,19 @@ useEffect(() =>{
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Rfc.toString()}
                   </StyledTableCell>
-                  
                 </StyledTableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Grid>
-      <DialogUsuarios ActionButton={butonLabel} open={openDialog} title={title} handleClose={openDialogUser} UserObject={usuarioEdit}/>
+      <DialogUsuarios
+        ActionButton={butonLabel}
+        open={openDialog}
+        title={title}
+        handleClose={openDialogUser}
+        UserObject={usuarioEdit}
+      />
     </Grid>
   );
 };
