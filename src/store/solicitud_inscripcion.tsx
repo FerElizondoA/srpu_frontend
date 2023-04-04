@@ -92,7 +92,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         servidorpublico: servidorpublico,
         contrato: contrato,
         periodopago: periodopago,
-        obligadoSolidario: obligadoSolidario,
+        obligadoSolidarioAvalTable: obligadoSolidario,
 
         fechaContrato: format(new Date(fecha), "yyyy-MM-dd"),
         fechaVencimiento: format(new Date(fechav), "yyyy-MM-dd"),
@@ -230,7 +230,12 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   //let stringi =JSON.stringify(Solicitud)
   let solicitud: ISolicitud = JSON.parse(Solicitud);
   console.log(solicitud);
-  // const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
+  
+
+  const solicitudfechas: any = {
+    fechaContratacion: format(new Date(solicitud.fechaContratacion),"yyyy-MM-dd"),
+    fechaVencimiento: format(new Date(solicitud.fechaVencimiento), "yyyy-MM-dd"),
+  }
   axios
     .post(
       "http://10.200.4.46:7000/documento_srpu",
@@ -254,8 +259,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         contrato: solicitud.tipoDocumento,
         periodopago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
-        fechaContrato: solicitud.fechaContratacion,
-        fechaVencimiento: solicitud.fechaVencimiento,
+        fechaContrato: solicitudfechas.fechaContratacion,
+        fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
       {
         headers: {
