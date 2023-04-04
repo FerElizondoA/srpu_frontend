@@ -49,6 +49,10 @@ export function SolicitudInscripcion() {
     changeOpenDialogBorrador(open);
   };
 
+  const changeCloseDialogBorradorState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
   );

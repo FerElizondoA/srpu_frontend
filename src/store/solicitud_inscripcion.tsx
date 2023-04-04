@@ -1,8 +1,8 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
-import { format } from 'date-fns'
-
+import { format } from "date-fns";
+import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
   reglasCatalog: string[];
@@ -23,7 +23,9 @@ export interface SolicitudInscripcionSlice {
   fetchBorrador: (reglasSeleccionadas: number[]) => void;
 }
 
-export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionSlice> = (set, get) => ({
+export const createSolicitudInscripcionSlice: StateCreator<
+  SolicitudInscripcionSlice
+> = (set, get) => ({
   fetchedReglas: false,
   reglasCatalog: [],
   nombreServidorPublico: "Rosalba Aguilar Díaz",
@@ -32,12 +34,17 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
   comentarios: "",
   identificacion: "",
   reglas: [],
-  changeServidorPublico: (newServidorPublico: string) => set(() => ({ nombreServidorPublico: newServidorPublico })),
+  changeServidorPublico: (newServidorPublico: string) =>
+    set(() => ({ nombreServidorPublico: newServidorPublico })),
   changeCargo: (newCargo: string) => set(() => ({ cargo: newCargo })),
-  changeDocumentoAutorizado: (newDocumentoAutorizado: string) => set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
-  changeIdentificacion: (newIdetificacion: string) => set(() => ({ identificacion: newIdetificacion })),
-  changeReglas: (newReglas: string) => set((state) => ({ reglas: [...state.reglas, newReglas] })),
-  changeComentarios: (newComentarios: string) => set((state) =>  ({ comentarios: newComentarios })),
+  changeDocumentoAutorizado: (newDocumentoAutorizado: string) =>
+    set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
+  changeIdentificacion: (newIdetificacion: string) =>
+    set(() => ({ identificacion: newIdetificacion })),
+  changeReglas: (newReglas: string) =>
+    set((state) => ({ reglas: [...state.reglas, newReglas] })),
+  changeComentarios: (newComentarios: string) =>
+    set((state) => ({ comentarios: newComentarios })),
   fetchDocumento: async (reglasSeleccionadas: number[]) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
@@ -52,15 +59,18 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     const fechav = useCortoPlazoStore.getState().fechaVencimiento;
     const destino = useCortoPlazoStore.getState().destino;
     const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublico;
-    const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado;
+    const tipoEntePublicoObligado =
+      useCortoPlazoStore.getState().tipoEntePublico;
+    const entePublicoObligado =
+      useCortoPlazoStore.getState().entePublicoObligado;
     const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
     const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
     const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
     const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
-    const obligadoSolidario = useCortoPlazoStore.getState().obligadoSolidarioAval;
-    const tasaInteres = useCortoPlazoStore.getState().tasaReferencia  
-    
+    const obligadoSolidario =
+      useCortoPlazoStore.getState().obligadoSolidarioAval;
+    const tasaInteres = useCortoPlazoStore.getState().tasaReferencia;
+
     const response = await axios.post(
       "http://10.200.4.46:7000/documento_srpu",
 
@@ -83,6 +93,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         contrato: contrato,
         periodopago: periodopago,
         obligadoSolidario: obligadoSolidario,
+
         fechaContrato: format(new Date(fecha), "yyyy-MM-dd"),
         fechaVencimiento: format(new Date(fechav), "yyyy-MM-dd"),
       },
@@ -106,6 +117,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     document.body.appendChild(link);
     link.click();
   },
+
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
@@ -113,7 +125,6 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
-
           },
         }
       );
@@ -131,27 +142,28 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-    
+    console.log(reglas);
+    let regla = reglas;
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
-      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago), "yyyy-MM-dd"),
+      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago),"yyyy-MM-dd"),
       capitalNumeroPago: state.capitalNumeroPago,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
       cargo: state.cargo,
       cargoSolicitante: state.cargoSolicitante,
       denominacion: state.denominacion,
-      destino: state.destino, 
-      disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion), "yyyy-MM-dd"),
+      destino: state.destino,
+      disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion),"yyyy-MM-dd"),
       disposicionImporte: state.disposicionImporte,
       documentoAutorizado: state.documentoAutorizado,
       efectivaDiasEjercicio: state.efectivaDiasEjercicio,
-      efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion), "yyyy-MM-dd"),
+      efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion),"yyyy-MM-dd"),
       efectivaMontoFijo: state.efectivaMontoFijo,
       efectivaPeriocidadPago: state.efectivaPeriocidadPago,
       efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
       entePublicoObligado: state.entePublicoObligado,
-      fechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
+      fechaContratacion: format(new Date(state.fechaContratacion),"yyyy-MM-dd"),
       fechaVencimiento: format(new Date(state.fechaVencimiento), "yyyy-MM-dd"),
       hasIVA: state.hasIVA,
       hasMonto: state.hasMonto,
@@ -166,22 +178,21 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
       solicitanteAutorizado: state.solicitanteAutorizado,
       tasaDiasEjercicio: state.tasaDiasEjercicio,
       tasaEfectiva: state.tasaEfectiva,
-      tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago), "yyyy-MM-dd"),
+      tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago),"yyyy-MM-dd"),
       tasaPeriocidadPago: state.tasaPeriocidadPago,
       tasaReferencia: state.tasaReferencia,
       tipoComision: state.tipoComision,
       tipoDocumento: state.tipoDocumento,
       tipoEntePublico: state.tipoEntePublico,
       tipoEntePublicoObligado: state.tipoEntePublicoObligado,
+      obligadoSolidarioAval: state.obligadoSolidarioAval,
       obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
       condicionFinancieraTable: state.condicionFinancieraTable,
-      reglas: state.reglas,
+      reglas: regla,
       tasaEfectivaTable: state.tasaEfectivaTable,
       tasaInteresTable: state.tasaInteresTable,
-      
-    }
-    
-    
+    };
+
     const response = await axios
       .post(
         "http://10.200.4.199:8000/api/create-solicitud",
@@ -194,7 +205,10 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
           IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
           Solicitud: JSON.stringify(solicitud),
           MontoOriginalContratado: solicitud.montoOriginal,
-          FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
+          FechaContratacion: format(
+            new Date(state.fechaContratacion),
+            "yyyy-MM-dd"
+          ),
         },
         {
           headers: {
@@ -211,3 +225,57 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
       });
   },
 });
+
+export function DescargarConsultaSolicitud(Solicitud: string) {
+  //let stringi =JSON.stringify(Solicitud)
+  let solicitud: ISolicitud = JSON.parse(Solicitud);
+  console.log(solicitud);
+  // const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
+  axios
+    .post(
+      "http://10.200.4.46:7000/documento_srpu",
+
+      {
+        nombre: solicitud.nombreServidorPublico,
+        oficionum: "10",
+        cargo: solicitud.cargo,
+        organismo: solicitud.organismo,
+        InstitucionBancaria: solicitud.institucion,
+        monto: solicitud.montoOriginal,
+        destino: solicitud.destino,
+        dias: solicitud.plazoDias,
+        tipoEntePublicoObligado: solicitud.tipoEntePublicoObligado,
+        entePublicoObligado: solicitud.entePublicoObligado,
+        tasaefectiva: solicitud.tasaEfectiva,
+        tasaInteres: solicitud.tasaReferencia,
+        reglas: solicitud.reglas,
+        tipocomisiones: solicitud.tipoComision,
+        servidorpublico: solicitud.nombreServidorPublico,
+        contrato: solicitud.tipoDocumento,
+        periodopago: solicitud.capitalPeriocidadPago,
+        obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        fechaContrato: solicitud.fechaContratacion,
+        fechaVencimiento: solicitud.fechaVencimiento,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      let link = document.createElement("a");
+
+      link.setAttribute("download", `contrato.pdf`);
+      link.setAttribute("href", url);
+      document.body.appendChild(link);
+      link.click();
+    });
+}

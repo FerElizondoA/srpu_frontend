@@ -55,7 +55,14 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   );
 
   return (
-    <Dialog open={props.openState} TransitionComponent={Transition}>
+    <Dialog
+      open={props.openState}
+      keepMounted
+      TransitionComponent={Transition}
+      onClose={() => {
+        props.handler(false);
+      }}
+    >
       <DialogTitle>
         <Typography
           align="center"
@@ -72,7 +79,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
           <Grid
             sx={{
               flexDirection: "row",
-              
+
               alignItems: "center",
 
               fontSize: "20px",
@@ -82,7 +89,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
           >
             <Grid mb={1}>
               <DialogContentText id="alert-dialog-slide-description">
-                En este apartado de guardara un borrador de la informacion que
+                En este apartado se guardara un borrador de la informacion que
                 podras visualizar en un futuro
               </DialogContentText>
             </Grid>
@@ -98,6 +105,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //sx={queries.text}
                 //onClick={handleClick}
                 onClick={() => {
+                  props.handler(false);
                   fetchBorrador(props.selected);
                 }}
                 variant="text"

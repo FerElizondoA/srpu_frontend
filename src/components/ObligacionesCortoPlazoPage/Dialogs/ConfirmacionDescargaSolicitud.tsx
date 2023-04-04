@@ -65,7 +65,12 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
     fetchReglas();
   }, []);
   return (
-    <Dialog open={props.openState} TransitionComponent={Transition}>
+    <Dialog
+      open={props.openState}
+      keepMounted
+      TransitionComponent={Transition}
+      onClose={() => {props.handler(false)}}
+    >
       <Grid container>
         <Grid
           sx={{
@@ -95,19 +100,26 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
             />
           </Grid>
 
-          <Grid sx={{ display: "flex", justifyContent: "space-between" , alignItems: 'center' }}>
+          <Grid
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Grid container direction="row">
               <Grid
                 item
                 md={6}
                 lg={6}
-               // sx={{ textAlign: "center", display: "flex" }}
+                // sx={{ textAlign: "center", display: "flex" }}
               >
                 <Button
                   //sx={queries.italic_text}
                   //onClick={handleClick}
                   //sx ={{textAlign: 'center'}}
                   onClick={() => {
+                    props.handler(false);
                     fetchDocumento(props.selected);
                   }}
                   variant="text"
@@ -122,7 +134,11 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                 item
                 md={6}
                 lg={6}
-                sx={{ textAlign: "center", display: "flex",justifyContent:'center'}}
+                sx={{
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
               >
                 <Button
                   //sx={queries.medium_text}
