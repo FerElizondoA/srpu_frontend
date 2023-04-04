@@ -226,8 +226,7 @@ export const Usuarios = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogUser = () => {
     setOpenDialog(!openDialog);
-  /*DIALOG*/
-
+ 
   };
 
   return (
