@@ -16,15 +16,7 @@ import { IUsuarios } from "../Interfaces/IUsuarios";
 import { getCatalogo } from "../APIS/APISCatalogos";
 import { ICatalogo } from "../Catalogos";
 import { createSolicitud } from "../APIS/Solicitudes-Usuarios";
-import Swal from "sweetalert2";
 import DialogContentText from "@mui/material/DialogContentText";
-import { log } from "console";
-import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
-import { setSeconds } from "date-fns";
-//import validator from 'validator';
-
-
-
 
 export const DialogUsuarios = ({
   open,
@@ -40,28 +32,26 @@ export const DialogUsuarios = ({
   ActionButton: string;
 }) => {
   const [registroDatos, setRegistroDatos] = useState<IUsuarios>({
-    id: UserObject?.id||'',
-    IdCentral:UserObject?.IdCentral|| '',
-    Nombre: UserObject?.Nombre||'',
-    ApellidoPaterno:UserObject?.ApellidoPaterno|| '',
-    ApellidoMaterno: UserObject?.ApellidoMaterno||'',
-    NombreUsuario: UserObject?.NombreUsuario||'',
-    CorreoElectronico: UserObject?.CorreoElectronico||'',
-    Curp: UserObject?.Curp||'',
-    Rfc: UserObject?.Rfc||'',
-    Telefono: UserObject?.Telefono||'',
-    Ext: UserObject?.Ext||'',
-    Celular: UserObject?.Celular||'',
-    Cargo: UserObject?.Cargo||'',
-    CorreoDeRecuperacion: UserObject?.CorreoDeRecuperacion||'',
-    Rol: UserObject?.Rol||'',
-    IdRol:UserObject?.IdRol||'',
-    MunicipioUOrganizacion: UserObject?.MunicipioUOrganizacion||'',
+    id: UserObject?.id || '',
+    IdCentral: UserObject?.IdCentral || '',
+    Nombre: UserObject?.Nombre || '',
+    ApellidoPaterno: UserObject?.ApellidoPaterno || '',
+    ApellidoMaterno: UserObject?.ApellidoMaterno || '',
+    NombreUsuario: UserObject?.NombreUsuario || '',
+    CorreoElectronico: UserObject?.CorreoElectronico || '',
+    Curp: UserObject?.Curp || '',
+    Rfc: UserObject?.Rfc || '',
+    Telefono: UserObject?.Telefono || '',
+    Ext: UserObject?.Ext || '',
+    Celular: UserObject?.Celular || '',
+    Cargo: UserObject?.Cargo || '',
+    CorreoDeRecuperacion: UserObject?.CorreoDeRecuperacion || '',
+    Rol: UserObject?.Rol || '',
+    IdRol: UserObject?.IdRol || '',
+    MunicipioUOrganizacion: UserObject?.MunicipioUOrganizacion || '',
   });
 
   /*DIALOGF */
-
-  const [] = useState("");
 
   const [tipoUsuario, setTipoUsuario] = useState<Array<ICatalogo>>([]);
 
@@ -76,35 +66,37 @@ export const DialogUsuarios = ({
   useEffect(() => {
     getCatalogo(setTipoUsuario, "roles");
     getCatalogo(setEntesPublicos, "entePublicoObligado");
-    
+    setErrorNombre(false)
+    setErrorUsuario(false)
+    setErrorEmail(false)
+    setErrorAPaterno(false)
+    setErrorAMaterno(false)
+    setErrorCargo(false)
+    setErrorMunicipio(false)
+    setErrorTipoUsuario(false)
+    setErrorCurp(false)
+    setErrorRfc(false)
+    setErrorTelefono(false)
+    setErrorCelular(false)
+    setErrorExt(false)
+    setErrorEmailAlt(false)
   }, []);
 
-
-  
-
-  /*const mostrarAlerta=() => {
-    Swal.fire({
-      icon: 'success',
-      title: "Confirmacion",
-      text: "El usuario se ha agregado correctamente"
-    })
-  }*/
-
   /* Variables Dialog confirmacion*/
-  const [openDialogConfirm,setOpenDialogConfirm]=useState(false);
+  const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
 
   /*///// ***********  VALIDACIONES  **********/ /////
 
   const [comentario, setComentario] = useState("");
 
-  const [statusSolicitud,setStatusSolicitud]=useState(false);
+  const [statusSolicitud, setStatusSolicitud] = useState(false);
 
   useEffect(() => {
-    if(statusSolicitud===true){
+    if (statusSolicitud === true) {
       handleClose();
     }
   }, [statusSolicitud])
-  
+
 
   const validaUsuario = (dato: string) => {
     var format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
@@ -115,7 +107,7 @@ export const DialogUsuarios = ({
 
   const validaEmail = (dato: string) => {
     const format =
-    /^ [A-Z0-9._%+-]+@ [A-Z0-9.-]+\\. [A-Z] {2,}$/i;
+      /^ [A-Z0-9._%+-]+@ [A-Z0-9.-]+\\. [A-Z] {2,}$/i;
     if (dato.length < 101 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, CorreoElectronico: dato });
     }
@@ -126,7 +118,7 @@ export const DialogUsuarios = ({
     if (dato.length < 20 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Nombre: dato });
       console.log(registroDatos);
-      
+
     }
   };
 
@@ -134,7 +126,7 @@ export const DialogUsuarios = ({
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 20 && !format.test(dato)) {
 
-      setRegistroDatos((registroDatos)=>({...registroDatos,...{ApellidoPaterno: dato}}));
+      setRegistroDatos((registroDatos) => ({ ...registroDatos, ...{ ApellidoPaterno: dato } }));
     }
   };
 
@@ -245,7 +237,6 @@ export const DialogUsuarios = ({
   ////////////////////////////////////////////////////////
 
   /* *********** ERRORES ***************/
-  
   const [ErrorUsuario, setErrorUsuario] = useState(false);
   const [ErrorEmail, setErrorEmail] = useState(false);
   const [ErrorNombre, setErrorNombre] = useState(false);
@@ -253,14 +244,13 @@ export const DialogUsuarios = ({
   const [ErrorAMaterno, setErrorAMaterno] = useState(false);
   const [ErrorCargo, setErrorCargo] = useState(false);
   const [ErrorMunicipio, setErrorMunicipio] = useState(false);
+  const [ErrorTipoUsuario, setErrorTipoUsuario] = useState(false);
   const [ErrorRfc, setErrorRfc] = useState(false);
   const [ErrorCurp, setErrorCurp] = useState(false);
   const [ErrorTelefono, setErrorTelefono] = useState(false);
   const [ErrorCelular, setErrorCelular] = useState(false);
   const [ErrorExt, setErrorExt] = useState(false);
   const [ErrorEmailAlt, setErrorEmailAlt] = useState(false);
-
-
 
   const [ErroresCurp, setErroresCurp] = useState(false);
   const [ErroresRfc, setErroresRfc] = useState(false);
@@ -277,68 +267,115 @@ export const DialogUsuarios = ({
   const [error, setError] = useState("");
 
 
-  const checkedForm=()=>{
+  const checkedForm = () => {
 
-    if (registroDatos.Nombre == null || /^[\s]*$/.test(registroDatos.Nombre )) 
-    {setErrorNombre(true)}else  {setErrorNombre(false)}
+    let check = false;
 
-    if (registroDatos.NombreUsuario == null || /^[\s]*$/.test(registroDatos.NombreUsuario )) 
-    {setErrorUsuario(true)}else  {setErrorUsuario(false)}
+    if (registroDatos.Nombre === null || /^[\s]*$/.test(registroDatos.Nombre)) {
+      setErrorNombre(true)
+      check = true;
+    }
+    else { setErrorNombre(false) }
 
-    if (registroDatos.CorreoElectronico == null || /^[\s]*$/.test(registroDatos.CorreoElectronico )) 
-    {setErrorEmail(true)}else  {setErrorEmail(false)}
+    if (registroDatos.NombreUsuario === null || /^[\s]*$/.test(registroDatos.NombreUsuario)) {
+      setErrorUsuario(true)
+      check = true;
+    }
+    else { setErrorUsuario(false) }
 
-    if (registroDatos.ApellidoPaterno == null || /^[\s]*$/.test(registroDatos.ApellidoPaterno )) 
-    {setErrorAPaterno(true)}else  {setErrorAPaterno(false)}
+    if (registroDatos.CorreoElectronico === null || /^[\s]*$/.test(registroDatos.CorreoElectronico)) {
+      setErrorEmail(true)
+      check = true;
+    }
+    else { setErrorEmail(false) }
 
-    if (registroDatos.ApellidoMaterno == null || /^[\s]*$/.test(registroDatos.ApellidoMaterno )) 
-    {setErrorAMaterno(true)}else  {setErrorAMaterno(false)}
+    if (registroDatos.ApellidoPaterno === null || /^[\s]*$/.test(registroDatos.ApellidoPaterno)) {
+      setErrorAPaterno(true)
+      check = true;
+    }
+    else { setErrorAPaterno(false) }
 
-    if (registroDatos.Cargo == null || /^[\s]*$/.test(registroDatos.Cargo )) 
-    {setErrorCargo(true)}else  {setErrorCargo(false)}
+    if (registroDatos.ApellidoMaterno === null || /^[\s]*$/.test(registroDatos.ApellidoMaterno)) {
+      setErrorAMaterno(true)
+      check = true;
+    }
+    else { setErrorAMaterno(false) }
 
-    if (registroDatos.MunicipioUOrganizacion == null || /^[\s]*$/.test(registroDatos.MunicipioUOrganizacion )) 
-    {setErrorMunicipio(true)}else  {setErrorMunicipio(false)}
+    if (registroDatos.Cargo === null || /^[\s]*$/.test(registroDatos.Cargo)) {
+      setErrorCargo(true)
+      check = true;
+    }
+    else { setErrorCargo(false) }
 
-    //if (registroDatos.MunicipioUOrganizacion == null || /^[\s]*$/.test(registroDatos.MunicipioUOrganizacion )) 
-    //{setErrorUsuario(true)}else  {setErrorUsuario(false)}
+    if (registroDatos.MunicipioUOrganizacion === null || /^[\s]*$/.test(registroDatos.MunicipioUOrganizacion)) {
+      setErrorMunicipio(true)
+      check = true;
+    }
+    else { setErrorMunicipio(false) }
 
-    if (registroDatos.Curp == null || /^[\s]*$/.test(registroDatos.Curp )) 
-    {setErrorCurp(true)}else  {setErrorCurp(false)}
+    if (registroDatos.Rol === null || /^[\s]*$/.test(registroDatos.Rol)) {
+      setErrorTipoUsuario(true)
+      check = true;
+    }
+    else { setErrorTipoUsuario(false) }
 
-    if (registroDatos.Rfc == null || /^[\s]*$/.test(registroDatos.Rfc )) 
-    {setErrorRfc(true)}else  {setErrorRfc(false)}
+    if (registroDatos.Curp === null || /^[\s]*$/.test(registroDatos.Curp)) {
+      setErrorCurp(true)
+      check = true;
+    }
+    else { setErrorCurp(false) }
 
-    if (registroDatos.Telefono == null || /^[\s]*$/.test(registroDatos.Telefono )) 
-    {setErrorTelefono(true)}else  {setErrorTelefono(false)}
+    if (registroDatos.Rfc === null || /^[\s]*$/.test(registroDatos.Rfc)) {
+      setErrorRfc(true)
+      check = true;
+    }
+    else { setErrorRfc(false) }
 
-    if (registroDatos.Celular == null || /^[\s]*$/.test(registroDatos.Celular )) 
-    {setErrorCelular(true)}else  {setErrorCelular(false)}
+    if (registroDatos.Telefono === null || /^[\s]*$/.test(registroDatos.Telefono)) {
+      setErrorTelefono(true)
+      check = true;
+    }
+    else { setErrorTelefono(false) }
 
-    if (registroDatos.Ext == null || /^[\s]*$/.test(registroDatos.Ext )) 
-    {setErrorExt(true)}else  {setErrorExt(false)}
+    if (registroDatos.Celular === null || /^[\s]*$/.test(registroDatos.Celular)) {
+      setErrorCelular(true)
+      check = true;
+    }
+    else { setErrorCelular(false) }
 
-    if (registroDatos.CorreoDeRecuperacion == null || /^[\s]*$/.test(registroDatos.CorreoDeRecuperacion )) 
-    {setErrorEmailAlt(true)}else  {setErrorEmailAlt(false)}
+    if (registroDatos.Ext === null || /^[\s]*$/.test(registroDatos.Ext)) {
+      setErrorExt(true)
+      check = true;
+    }
+    else { setErrorExt(false) }
 
-    
+    if (registroDatos.CorreoDeRecuperacion === null || /^[\s]*$/.test(registroDatos.CorreoDeRecuperacion)) {
+      setErrorEmailAlt(true)
+      check = true;
+    }
+    else { setErrorEmailAlt(false) }
+
+    if (!check) {
+      setOpenDialogConfirm(true)
+    }
+
   }
 
   ////////////////////////////////////////////////////////
- 
+
   return (<>
-  <Dialog
+    <Dialog
       fullWidth
       maxWidth="md"
       onClose={() => handleClose()}
       aria-labelledby="customized-dialog-title"
       open={open}
-      sx={{height:'100vh'}}
+      sx={{ height: '100vh' }}
     >
-      <DialogTitle sx={{display:'flex',justifyContent:'space-between'}} > 
-        <Typography sx={{height:'90%'}}> {title}</Typography>
-        <Typography sx={{height:'90%'}} color={'red'}> {error!==''?error:null}</Typography>
-        </DialogTitle>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between' }} >
+        <Typography sx={{ height: '90%' }}> {title}</Typography>
+        <Typography sx={{ height: '90%' }} color={'red'}> {error !== '' ? error : null}</Typography>
+      </DialogTitle>
       <DialogContent >
         <Grid container spacing={1}>
           <Grid item textTransform={"uppercase"} xs={12} md={4} lg={4} sm={12}>
@@ -352,7 +389,7 @@ export const DialogUsuarios = ({
                 validaUsuario(e.target.value);
               }}
               value={registroDatos.NombreUsuario}
-              helperText={ErrorUsuario?'Usuario inválido':''}
+              helperText={ErrorUsuario ? 'Usuario inválido' : ''}
               error={ErrorUsuario}
             />
           </Grid>
@@ -369,7 +406,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaEmail(e.target.value);
               }}
-              helperText={ErrorEmail?'Correo electrónico inválido':''}
+              helperText={ErrorEmail ? 'Correo electrónico inválido' : ''}
               error={ErrorEmail}
             />
           </Grid>
@@ -385,7 +422,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaNombre(e.target.value);
               }}
-              helperText={ErrorNombre?'Nombre inválido':''}
+              helperText={ErrorNombre ? 'Nombre inválido' : ''}
               error={ErrorNombre}
             />
           </Grid>
@@ -401,7 +438,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaApellidoP(e.target.value);
               }}
-              helperText={ErrorAPaterno?'Apellido paterno inválido':''}
+              helperText={ErrorAPaterno ? 'Apellido paterno inválido' : ''}
               error={ErrorAPaterno}
             />
           </Grid>
@@ -417,7 +454,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaApellidoM(e.target.value);
               }}
-              helperText={ErrorAMaterno?'Apellido materno inválido':''}
+              helperText={ErrorAMaterno ? 'Apellido materno inválido' : ''}
               error={ErrorAMaterno}
             />
           </Grid>
@@ -434,6 +471,8 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaTipoUsuario(e.target.value);
               }}
+              helperText={ErrorTipoUsuario ? 'Seleccione tipo de usuario' : ''}
+              error={ErrorTipoUsuario}
             >
               {tipoUsuario?.map((option) => (
                 <MenuItem key={option.Id} value={option.Descripcion}>
@@ -454,7 +493,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCargo(e.target.value);
               }}
-              helperText={ErrorCargo?'Apellido paterno inválido':''}
+              helperText={ErrorCargo ? 'Apellido paterno inválido' : ''}
               error={ErrorCargo}
 
             />
@@ -472,7 +511,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaMunicipio(e.target.value);
               }}
-              helperText={ErrorMunicipio?'Municipio inválido':''}
+              helperText={ErrorMunicipio ? 'Municipio inválido' : ''}
               error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (
@@ -494,9 +533,9 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCURP(e.target.value);
               }}
-              helperText={ErrorCurp?'Curp incompleto o invalido':''}
-              error={ErrorCurp}
-              
+              helperText={LeyendaErrorCurp || ErrorCurp ? 'Curp incompleto o invalido' : ''}
+              error={ErrorCurp || ErroresCurp}
+
             />
           </Grid>
 
@@ -511,7 +550,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaRFC(e.target.value);
               }}
-              helperText={ErrorRfc?'RFC invalido':''}
+              helperText={LeyendaErrorRfc || ErrorRfc ? 'RFC invalido' : ''}
               error={ErrorRfc || ErroresRfc}
             />
           </Grid>
@@ -526,27 +565,10 @@ export const DialogUsuarios = ({
               value={
                 registroDatos.Telefono === "0" ? "" : registroDatos.Telefono
               }
-              helperText={LeyendaErrorTelefono ||ErrorTelefono?'Telefono inválido':''}
-              error={ErrorTelefono||ErroresTelefono}
+              helperText={LeyendaErrorTelefono || ErrorTelefono ? 'Telefono inválido' : ''}
+              error={ErrorTelefono || ErroresTelefono}
               onChange={(e) => {
                 validaTelefono(parseInt(e.target.value));
-              }}
-            />
-          </Grid>
-
-          <Grid item textTransform={"uppercase"} xs={12} md={5} lg={5} sm={12}>
-            <TextField
-              inputProps={{ inputMode: "numeric", pattern: "/[0-9]{10}/" }}
-              margin="dense"
-              variant="outlined"
-              label="Celular"
-              fullWidth
-              required
-              value={registroDatos.Celular === "0" ? "" : registroDatos.Celular}
-              helperText={ LeyendaErrorCelular  || ErrorCelular  ?'Celular inválido':''}
-              error={ErrorCelular || ErroresCelular}
-              onChange={(e) => {
-                validaCelular(parseInt(e.target.value));
               }}
             />
           </Grid>
@@ -563,8 +585,25 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaExtension(parseInt(e.target.value));
               }}
-              helperText={ ErrorExt?'Extension inválido':''}
+              helperText={ErrorExt ? 'Extension inválido' : ''}
               error={ErrorExt}
+            />
+          </Grid>
+
+          <Grid item textTransform={"uppercase"} xs={12} md={5} lg={5} sm={12}>
+            <TextField
+              inputProps={{ inputMode: "numeric", pattern: "/[0-9]{10}/" }}
+              margin="dense"
+              variant="outlined"
+              label="Celular"
+              fullWidth
+              required
+              value={registroDatos.Celular === "0" ? "" : registroDatos.Celular}
+              helperText={ErroresCelular ? LeyendaErrorCelular : ErrorCelular ? 'Celular inválido' : ''}
+              error={ErrorCelular || ErroresCelular}
+              onChange={(e) => {
+                validaCelular(parseInt(e.target.value));
+              }}
             />
           </Grid>
 
@@ -587,7 +626,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaEmailRecuperacion(e.target.value);
               }}
-              helperText={ErrorEmailAlt?'Correo electrónico inválido.':''}
+              helperText={ErrorEmailAlt ? 'Correo electrónico inválido.' : ''}
               error={ErrorEmailAlt}
             />
           </Grid>
@@ -615,72 +654,75 @@ export const DialogUsuarios = ({
             />
           </Grid>
 
-          
+
         </Grid>
       </DialogContent>
-      <DialogActions sx={{display:'flex', alignItems:"flex-end"}}>
-            {ActionButton === "Agregar" ? (
-              <Button
-                sx={{ mb: 1.5, mr: 1.5 }}
-                type="submit"
-                variant="contained"
-                onClick={() => {
-                  setOpenDialogConfirm(!openDialogConfirm)
-                }}
-                endIcon={<SendIcon />}
-              >
-                Crear Usuario
-              </Button>
-            ) : ActionButton === "Editar" ? (
-              <Button
-                sx={{ mb: 1.5, mr: 1.5 }}
-                type="submit"
-                variant="contained"
-                onClick={() => {setOpenDialogConfirm(!openDialogConfirm)}}
-                endIcon={<SendIcon />}
-              >
-               Editar Usuario
-               
-              </Button>
-              
-            ) : null}
+      <DialogActions sx={{ display: 'flex', alignItems: "flex-end" }}>
+        {ActionButton === "Agregar" ? (
+          <Button
+            sx={{ mb: 1.5, mr: 1.5 }}
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              checkedForm();
+            }}
+            endIcon={<SendIcon />}
+          >
+            Crear Usuario
+          </Button>
+        ) : ActionButton === "Editar" ? (
+          <Button
+            sx={{ mb: 1.5, mr: 1.5 }}
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              checkedForm();
+            }}
+            endIcon={<SendIcon />}
+          >
+            Editar Usuario
 
-            <Button
-              sx={{ mb: 1.5 }}
-              color="error"
-              variant="contained"
-              onClick={() => {
-                
-                handleClose();
-                setError('');
-              }}
-            >
-              Cancelar
-            </Button>
-            
-          </DialogActions>
+          </Button>
+
+        ) : null}
+
+        <Button
+          sx={{ mb: 1.5 }}
+          color="error"
+          variant="contained"
+          onClick={() => {
+
+            handleClose();
+            setError('');
+          }}
+        >
+          Cancelar
+        </Button>
+
+      </DialogActions>
     </Dialog>
 
     <Dialog
-        open={openDialogConfirm}
-        onClose={() =>{setOpenDialogConfirm(!openDialogConfirm)}}
-      >
-        <DialogTitle >
-          {"Confirmacion"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText >
-            {'¿Estas seguro de que quieres "'+ActionButton+'" el usuario: '+ registroDatos?.Nombre+' '+registroDatos?.ApellidoPaterno+'?'}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={()=>{setOpenDialogConfirm(!openDialogConfirm);setError('');}}>Cancelar</Button>
-          <Button onClick={()=>{ 
-           createSolicitud(registroDatos,ActionButton==='Agregar'?'ALTA':'MODIFICACION',comentario,setStatusSolicitud,setError); setOpenDialogConfirm(!openDialogConfirm);}}autoFocus>Aceptar</Button>
-        </DialogActions>
-      </Dialog>
+      open={openDialogConfirm}
+      onClose={() => { setOpenDialogConfirm(!openDialogConfirm) }}
+    >
+      <DialogTitle >
+        {"Confirmacion"}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText >
+          {'¿Estas seguro de que quieres "' + ActionButton + '" el usuario: ' + registroDatos?.Nombre + ' ' + registroDatos?.ApellidoPaterno + '?'}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => { setOpenDialogConfirm(!openDialogConfirm); setError(''); }}>Cancelar</Button>
+        <Button onClick={() => {
+          createSolicitud(registroDatos, ActionButton === 'Agregar' ? 'ALTA' : 'MODIFICACION', comentario, setStatusSolicitud, setError); setOpenDialogConfirm(!openDialogConfirm);
+        }} autoFocus>Aceptar</Button>
+      </DialogActions>
+    </Dialog>
   </>
-    
-    
+
+
   );
 };
