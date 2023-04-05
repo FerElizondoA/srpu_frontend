@@ -55,7 +55,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              entesPublicosMap: state.entesPublicosMap.set(e.Descripcion, e.Id)
+              entesPublicosMap: new Map(state.entesPublicosMap).set(e.Descripcion, e.Id)
             }));
           });
           set(() => ({fetchedEntesPublicos: true}))
@@ -73,7 +73,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              organismosMap: state.organismosMap.set(e.Descripcion, e.Id),
+              organismosMap: new Map(state.organismosMap).set(e.Descripcion, e.Id),
             }));
           });
           set(() => ({fetchedOrganismos: true}))
