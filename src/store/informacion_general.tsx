@@ -39,12 +39,10 @@ export interface InformacionGeneralSlice {
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
   changeDestino: (newId: string, newDestino: string) => void;
-  changeInstitucionValue: (newId: string, newInstitucion: string) => void;
-  changeInstitucion: (newInstitucion: string) => void;
+  changeInstitucion: (newId: string, newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
   changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => void;
-  changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => void;
-  changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
+  changeTipoEntePublicoObligado: (newId: string, newTipoEntePublicoObligado: string) => void;
   changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
   fetchDestinos: () => void;
   fetchInstituciones: () => void;
@@ -83,12 +81,10 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
     changeDestino: (newId: string, newDestino: string) => set(() => ({ destino: newDestino, IdDestino: newId })),
-    changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
-    changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
+    changeInstitucion: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
     changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
-    changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado, IdTipoEntePublicoObligado: newId})),
-    changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
+    changeTipoEntePublicoObligado: (newId: string, newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado, IdTipoEntePublicoObligado: newId})),
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
     fetchDestinos: async () => {
         if (!get().fetchedDestino) {
@@ -102,7 +98,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              destinoMap: state.destinoMap.set(e.Descripcion, e.Id)
+              destinoMap: new Map(state.destinoMap).set(e.Descripcion, e.Id)
             }));
           });
           set(() => ({fetchedDestino: true}))
@@ -121,8 +117,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            institucionCatalog: [...state.institucionCatalog, e.Descripcion],
-            institucionMap: state.institucionMap.set(e.Descripcion, e.Id)
+            institucionMap: new Map(state.institucionMap).set(e.Descripcion, e.Id)
           }));
         });
       }
@@ -139,11 +134,13 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           }
         );
         response.data.data.forEach((e: any) => {
+          console.log("tipoEntePublicoObligado: ", e)
           set((state) => ({
-            tipoEntePublicoObligadoCatalog: [...state.tipoEntePublicoObligadoCatalog, e.Descripcion],
+            tipoEntePublicoObligadoMap: new Map(state.tipoEntePublicoObligadoMap).set(e.Descripcion, e.Id)
           }));
         });
       }
+      console.log("tipoEntePublicoObligadoMap: ", get().tipoEntePublicoObligadoMap)
       set(() => ({fetchedTipoEntePublicoObligado: true}))
     },
     fetchObligadoSolidarioAval: async () => {
@@ -158,7 +155,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            obligadoSolidarioAvalMap: state.obligadoSolidarioAvalMap.set(e.Descripcion, e.Id)
+            obligadoSolidarioAvalMap: new Map(state.obligadoSolidarioAvalMap).set(e.Descripcion, e.Id)
           }));
         });
       }

@@ -56,7 +56,7 @@ export function InformacionGeneral() {
 
   const institucion: string = useCortoPlazoStore(state => state.institucion);
   const changeInstitucion: Function = useCortoPlazoStore(state => state.changeInstitucion);
-  const institucionCatalog: string[] = useCortoPlazoStore(state => state.institucionCatalog);
+  const institucionMap: Map<string | null, string> = useCortoPlazoStore(state => state.institucionMap);
   const fetchInstituciones: Function = useCortoPlazoStore(state => state.fetchInstituciones);
   const destino: string = useCortoPlazoStore(state => state.destino);
   const changeDestino: Function = useCortoPlazoStore(state => state.changeDestino);
@@ -78,7 +78,7 @@ export function InformacionGeneral() {
   const fetchObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.fetchObligadoSolidarioAval);
   const tipoEntePublicoObligado: string = useCortoPlazoStore(state => state.tipoEntePublicoObligado);
   const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
-  const tipoEntePublicoObligadoCatalog: string[] = useCortoPlazoStore(state => state.tipoEntePublicoObligadoCatalog);
+  const tipoEntePublicoObligadoMap: Map<string | null, string> = useCortoPlazoStore(state => state.tipoEntePublicoObligadoMap);
   const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
   const entePublicoObligado: string = useCortoPlazoStore(state => state.entePublicoObligado);
   const changeEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeEntePublicoObligado);
@@ -291,9 +291,9 @@ export function InformacionGeneral() {
             fullWidth
             value={institucion}
             onChange={(event: any, text: string | null) =>
-              changeInstitucion(text)
+              changeInstitucion(institucionMap.get(text), text)
             }
-            options={institucionCatalog}
+            options={Array.from(institucionMap.keys())}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -340,9 +340,9 @@ export function InformacionGeneral() {
           <Autocomplete
             fullWidth
             value={tipoEntePublicoObligado}
-            options={tipoEntePublicoObligadoCatalog}
+            options={Array.from(tipoEntePublicoObligadoMap.keys())}
             onChange={(event: any, text: string | null) =>
-              changeTipoEntePublicoObligado(text)
+              changeTipoEntePublicoObligado(tipoEntePublicoObligadoMap.get(text), text)
             }
             renderInput={(params) => (
               <TextField
