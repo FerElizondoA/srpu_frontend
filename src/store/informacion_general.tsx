@@ -3,7 +3,6 @@ import axios from "axios";
 
 export type ObligadoSolidarioAval = {
   id: string;
-  //isSelected: boolean;
   obligadoSolidario: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
@@ -15,6 +14,7 @@ export interface InformacionGeneralSlice {
   fetchedDestino: boolean;
   fetchedObligadoSolidarioAval: boolean;
   fetchedTipoEntePublicoObligado: boolean;
+  institucionMap: Map<string | null, string>;
   institucionCatalog: string[];
   destinoCatalog: string[];
   obligadoSolidarioAvalCatalog: string[];
@@ -26,6 +26,7 @@ export interface InformacionGeneralSlice {
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
   obligadoSolidarioAval: string;
+  IdInstitucion: string;
   institucion: string;
   denominacion: string;
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => void;
@@ -34,6 +35,7 @@ export interface InformacionGeneralSlice {
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
   changeDestino: (newDestino: string) => void;
+  changeInstitucionValue: (newId: string, newInstitucion: string) => void;
   changeInstitucion: (newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
   changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
@@ -51,6 +53,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchedDestino: false,
     fetchedObligadoSolidarioAval: false,
     fetchedTipoEntePublicoObligado: false,
+    institucionMap: new Map<string | null, string>(),
     institucionCatalog: [],
     destinoCatalog: [],
     obligadoSolidarioAvalCatalog: [],
@@ -59,6 +62,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     montoOriginal: 0,
     fechaVencimiento: new Date().toString(),
     destino: "",
+    IdInstitucion: "",
     institucion: "",
     tipoEntePublicoObligado: "",
     entePublicoObligado: "",
@@ -70,6 +74,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
     changeDestino: (newDestino: string) => set(() => ({ destino: newDestino })),
+    changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
     changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
@@ -107,6 +112,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         response.data.data.forEach((e: any) => {
           set((state) => ({
             institucionCatalog: [...state.institucionCatalog, e.Descripcion],
+            institucionMap: state.institucionMap.set(e.Descripcion, e.Id)
           }));
         });
       }
