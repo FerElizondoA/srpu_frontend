@@ -74,7 +74,7 @@ export function InformacionGeneral() {
   const changeDenominacion: Function = useCortoPlazoStore(state => state.changeDenominacion);
   const obligadoSolidarioAval: string = useCortoPlazoStore(state => state.obligadoSolidarioAval);
   const changeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.changeObligadoSolidarioAval);
-  const obligadoSolidarioAvalCatalog: string[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalCatalog);
+  const obligadoSolidarioAvalMap: Map<string | null, string> = useCortoPlazoStore(state => state.obligadoSolidarioAvalMap);
   const fetchObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.fetchObligadoSolidarioAval);
   const tipoEntePublicoObligado: string = useCortoPlazoStore(state => state.tipoEntePublicoObligado);
   const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
@@ -319,9 +319,9 @@ export function InformacionGeneral() {
           <Autocomplete
             fullWidth
             value={obligadoSolidarioAval}
-            options={obligadoSolidarioAvalCatalog}
+            options={Array.from(obligadoSolidarioAvalMap.keys())}
             onChange={(event: any, text: string | null) =>
-              changeObligadoSolidarioAval(text)
+              changeObligadoSolidarioAval(obligadoSolidarioAvalMap.get(text), text)
             }
             renderInput={(params) => (
               <TextField

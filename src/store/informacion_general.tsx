@@ -18,7 +18,6 @@ export interface InformacionGeneralSlice {
   institucionCatalog: string[];
   destinoMap: Map<string | null, string>;
   obligadoSolidarioAvalMap: Map<string | null, string>;
-  obligadoSolidarioAvalCatalog: string[];
   tipoEntePublicoObligadoMap: Map<string | null, string>;
   tipoEntePublicoObligadoCatalog: string[];
   plazoDias: number;
@@ -43,8 +42,7 @@ export interface InformacionGeneralSlice {
   changeInstitucionValue: (newId: string, newInstitucion: string) => void;
   changeInstitucion: (newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
-  changeObligadoSolidarioAvalValue: (newId: string, newObligadoSolidarioAval: string) => void;
-  changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
+  changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => void;
   changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => void;
   changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
   changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
@@ -64,7 +62,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     institucionCatalog: [],
     destinoMap: new Map<string | null, string>(),
     obligadoSolidarioAvalMap: new Map<string | null, string>(),
-    obligadoSolidarioAvalCatalog: [],
     tipoEntePublicoObligadoMap: new Map<string | null, string>(),
     tipoEntePublicoObligadoCatalog: [],
     plazoDias: 0,
@@ -89,8 +86,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
-    changeObligadoSolidarioAvalValue: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
-    changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
+    changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
     changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado, IdTipoEntePublicoObligado: newId})),
     changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
@@ -162,7 +158,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            obligadoSolidarioAvalCatalog: [...state.obligadoSolidarioAvalCatalog, e.Descripcion],
+            obligadoSolidarioAvalMap: state.obligadoSolidarioAvalMap.set(e.Descripcion, e.Id)
           }));
         });
       }
