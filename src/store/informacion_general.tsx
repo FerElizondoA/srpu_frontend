@@ -18,6 +18,7 @@ export interface InformacionGeneralSlice {
   institucionCatalog: string[];
   destinoMap: Map<string | null, string>;
   destinoCatalog: string[];
+  obligadoSolidarioAvalMap: Map<string | null, string>;
   obligadoSolidarioAvalCatalog: string[];
   tipoEntePublicoObligadoCatalog: string[];
   plazoDias: number;
@@ -27,6 +28,7 @@ export interface InformacionGeneralSlice {
   destino: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
+  IdObligadoSolidarioAval: string;
   obligadoSolidarioAval: string;
   IdInstitucion: string;
   institucion: string;
@@ -41,6 +43,7 @@ export interface InformacionGeneralSlice {
   changeInstitucionValue: (newId: string, newInstitucion: string) => void;
   changeInstitucion: (newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
+  changeObligadoSolidarioAvalMap: (newId: string, newObligadoSolidarioAval: string) => void;
   changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
   changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
   changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
@@ -60,6 +63,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     institucionCatalog: [],
     destinoCatalog: [],
     destinoMap: new Map<string | null, string>(),
+    obligadoSolidarioAvalMap: new Map<string | null, string>(),
     obligadoSolidarioAvalCatalog: [],
     tipoEntePublicoObligadoCatalog: [],
     plazoDias: 0,
@@ -71,6 +75,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     institucion: "",
     tipoEntePublicoObligado: "",
     entePublicoObligado: "",
+    IdObligadoSolidarioAval: "",
     obligadoSolidarioAval: "",
     denominacion: "Pesos",
     addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => set((state) => ({ obligadoSolidarioAvalTable: [...state.obligadoSolidarioAvalTable, newObligadoSolidarioAval]})),
@@ -83,6 +88,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
+    changeObligadoSolidarioAvalMap: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
     changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
     changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
