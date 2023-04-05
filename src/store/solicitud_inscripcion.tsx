@@ -153,6 +153,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
       hasMonto: state.hasMonto,
       hasPorcentaje: state.hasPorcentaje,
       identificacion: state.identificacion,
+      IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
       montoOriginal: state.montoOriginal,
       nombreServidorPublico: state.nombreServidorPublico,
@@ -167,6 +168,7 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
       tasaReferencia: state.tasaReferencia,
       tipoComision: state.tipoComision,
       tipoDocumento: state.tipoDocumento,
+      IdTipoEntePublico: state.IdTipoEntePublico,
       tipoEntePublico: state.tipoEntePublico,
       tipoEntePublicoObligado: state.tipoEntePublicoObligado,
       obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
@@ -182,10 +184,10 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
 
         {
           CreadoPor: localStorage.getItem("IdUsuario"),
-          IdInstitucionFinanciera: "ac903b28-acb7-11ed-b719-2c4138b7dab1",
+          IdInstitucionFinanciera: solicitud.IdInstitucion,
           IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
           IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-          IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
+          IdTipoEntePublico: solicitud.IdTipoEntePublico,
           Solicitud: JSON.stringify(solicitud),
           MontoOriginalContratado: solicitud.montoOriginal,
           FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
