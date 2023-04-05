@@ -72,21 +72,21 @@ export function DisposicionPagosCapital(){
     const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(state => state.changeCapitalFechaPrimerPago);
     const capitalPeriocidadPago: string = useCortoPlazoStore(state => state.capitalPeriocidadPago);
     const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(state => state.changeCapitalPeriocidadPago);
-    const periocidadDePagoCatalog: string[] = useCortoPlazoStore(state => state.periocidadDePagoCatalog);
+    const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(state => state.periocidadDePagoMap);
     const capitalNumeroPago: number = useCortoPlazoStore(state => state.capitalNumeroPago);
     const changeCapitalNumeroPago: Function = useCortoPlazoStore(state => state.changeCapitalNumeroPago);
     const tasaFechaPrimerPago: string = useCortoPlazoStore(state => state.tasaFechaPrimerPago);
     const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(state => state.changeTasaFechaPrimerPago);
     const tasaPeriocidadPago: string = useCortoPlazoStore(state => state.tasaPeriocidadPago);
     const changeTasaPeriocidadPago: Function = useCortoPlazoStore(state => state.changeTasaPeriocidadPago);
-    const tasaReferenciaCatalog: string[] = useCortoPlazoStore(state => state.tasaReferenciaCatalog);
+    const tasaReferenciaMap: Map<string | null, string> = useCortoPlazoStore(state => state.tasaReferenciaMap);
     const tasaReferencia: string = useCortoPlazoStore(state => state.tasaReferencia);
     const changeTasaReferencia: Function = useCortoPlazoStore(state => state.changeTasaReferencia);
     const sobreTasa: string = useCortoPlazoStore(state => state.sobreTasa);
     const changeSobreTasa: Function = useCortoPlazoStore(state => state.changeSobreTasa);
     const tasaDiasEjercicio: string = useCortoPlazoStore(state => state.tasaDiasEjercicio);
     const changeTasaDiasEjercicio: Function = useCortoPlazoStore(state => state.changeTasaDiasEjercicio);
-    const diasEjercicioCatalog: string[] = useCortoPlazoStore(state => state.diasEjercicioCatalog);
+    const diasEjercicioMap: Map<string | null, string> = useCortoPlazoStore(state => state.diasEjercicioMap);
     const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(state => state.tasaInteresTable);
     const addTasaInteres: Function = useCortoPlazoStore(state => state.addTasaInteres);
     const removeTasaInteres: Function = useCortoPlazoStore(state => state.removeTasaInteres);
@@ -234,9 +234,9 @@ export function DisposicionPagosCapital(){
                   fullWidth
                   value={capitalPeriocidadPago}
                   onChange={(event: any, text: string | null) =>
-                    changeCapitalPeriocidadPago(text)
+                    changeCapitalPeriocidadPago(periocidadDePagoMap.get(text), text)
                   }
-                  options={periocidadDePagoCatalog}
+                  options={Array.from(periocidadDePagoMap.keys())}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -307,7 +307,7 @@ export function DisposicionPagosCapital(){
                   onChange={(event: any, text: string | null) =>
                     changeTasaPeriocidadPago(text)
                   }
-                  options={periocidadDePagoCatalog}
+                  options={Array.from(periocidadDePagoMap.keys())}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -328,7 +328,7 @@ export function DisposicionPagosCapital(){
                   onChange={(event: any, text: string | null) =>
                     changeTasaReferencia(text)
                   }
-                  options={tasaReferenciaCatalog}
+                  options={Array.from(tasaReferenciaMap.keys())}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -369,7 +369,7 @@ export function DisposicionPagosCapital(){
                   onChange={(event: any, text: string | null) =>
                     changeTasaDiasEjercicio(text)
                   }
-                  options={diasEjercicioCatalog}
+                  options={Array.from(diasEjercicioMap.keys())}
                   renderInput={(params) => (
                     <TextField
                       {...params}
