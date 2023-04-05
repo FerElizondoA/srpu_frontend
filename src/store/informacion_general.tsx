@@ -20,12 +20,14 @@ export interface InformacionGeneralSlice {
   destinoCatalog: string[];
   obligadoSolidarioAvalMap: Map<string | null, string>;
   obligadoSolidarioAvalCatalog: string[];
+  tipoEntePublicoObligadoMap: Map<string | null, string>;
   tipoEntePublicoObligadoCatalog: string[];
   plazoDias: number;
   montoOriginal: number;
   fechaVencimiento: string;
   IdDestino: string;
   destino: string;
+  IdTipoEntePublicoObligado: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
   IdObligadoSolidarioAval: string;
@@ -43,8 +45,9 @@ export interface InformacionGeneralSlice {
   changeInstitucionValue: (newId: string, newInstitucion: string) => void;
   changeInstitucion: (newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
-  changeObligadoSolidarioAvalMap: (newId: string, newObligadoSolidarioAval: string) => void;
+  changeObligadoSolidarioAvalValue: (newId: string, newObligadoSolidarioAval: string) => void;
   changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
+  changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => void;
   changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
   changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
   fetchDestinos: () => void;
@@ -65,6 +68,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     destinoMap: new Map<string | null, string>(),
     obligadoSolidarioAvalMap: new Map<string | null, string>(),
     obligadoSolidarioAvalCatalog: [],
+    tipoEntePublicoObligadoMap: new Map<string | null, string>(),
     tipoEntePublicoObligadoCatalog: [],
     plazoDias: 0,
     montoOriginal: 0,
@@ -73,6 +77,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     destino: "",
     IdInstitucion: "",
     institucion: "",
+    IdTipoEntePublicoObligado: "",
     tipoEntePublicoObligado: "",
     entePublicoObligado: "",
     IdObligadoSolidarioAval: "",
@@ -88,8 +93,9 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
-    changeObligadoSolidarioAvalMap: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
+    changeObligadoSolidarioAvalValue: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
     changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
+    changeTipoEntePublicoObligadoValue: (newId: string, newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado, IdTipoEntePublicoObligado: newId})),
     changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
     fetchDestinos: async () => {
