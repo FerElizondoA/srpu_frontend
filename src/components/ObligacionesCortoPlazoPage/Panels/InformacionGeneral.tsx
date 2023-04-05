@@ -60,7 +60,7 @@ export function InformacionGeneral() {
   const fetchInstituciones: Function = useCortoPlazoStore(state => state.fetchInstituciones);
   const destino: string = useCortoPlazoStore(state => state.destino);
   const changeDestino: Function = useCortoPlazoStore(state => state.changeDestino);
-  const destinoCatalog: string[] = useCortoPlazoStore(state => state.destinoCatalog);
+  const destinoMap: Map<string | null, string> = useCortoPlazoStore(state => state.destinoMap);
   const fetchDestinos: Function = useCortoPlazoStore(state => state.fetchDestinos);
   const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
   const changeFechaContratacion: Function = useCortoPlazoStore(state => state.changeFechaContratacion);
@@ -249,8 +249,8 @@ export function InformacionGeneral() {
           <Autocomplete
             fullWidth
             value={destino}
-            onChange={(event: any, text: string | null) => changeDestino(text)}
-            options={destinoCatalog}
+            onChange={(event: any, text: string | null) => changeDestino(destinoMap.get(text), text)}
+            options={Array.from(destinoMap.keys())}
             renderInput={(params) => (
               <TextField
                 {...params}

@@ -17,7 +17,6 @@ export interface InformacionGeneralSlice {
   institucionMap: Map<string | null, string>;
   institucionCatalog: string[];
   destinoMap: Map<string | null, string>;
-  destinoCatalog: string[];
   obligadoSolidarioAvalMap: Map<string | null, string>;
   obligadoSolidarioAvalCatalog: string[];
   tipoEntePublicoObligadoMap: Map<string | null, string>;
@@ -40,8 +39,7 @@ export interface InformacionGeneralSlice {
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
-  changeDestinoValue: (newId: string, newDestino: string) => void;
-  changeDestino: (newDestino: string) => void;
+  changeDestino: (newId: string, newDestino: string) => void;
   changeInstitucionValue: (newId: string, newInstitucion: string) => void;
   changeInstitucion: (newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
@@ -64,7 +62,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchedTipoEntePublicoObligado: false,
     institucionMap: new Map<string | null, string>(),
     institucionCatalog: [],
-    destinoCatalog: [],
     destinoMap: new Map<string | null, string>(),
     obligadoSolidarioAvalMap: new Map<string | null, string>(),
     obligadoSolidarioAvalCatalog: [],
@@ -88,8 +85,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changePlazoDias: (newPlazoDias: number) => set(() => ({ plazoDias: newPlazoDias })),
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
-    changeDestinoValue: (newId: string, newDestino: string) => set(() => ({ destino: newDestino, IdDestino: newId })),
-    changeDestino: (newDestino: string) => set(() => ({ destino: newDestino })),
+    changeDestino: (newId: string, newDestino: string) => set(() => ({ destino: newDestino, IdDestino: newId })),
     changeInstitucionValue: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
@@ -110,7 +106,6 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              destinoCatalog: [...state.destinoCatalog, e.Descripcion],
               destinoMap: state.destinoMap.set(e.Descripcion, e.Id)
             }));
           });
