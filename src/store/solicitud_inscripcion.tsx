@@ -217,15 +217,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
     };
 
     if (solicitud.IdSolicitud.length === 0) {
+      console.log("ente publico: ", state.IdTipoEntePublico);
+      console.log("ente publico: ",state.entePublicoObligado);
+      
+      
       await axios
         .post(
-          "http://10.200.4.199:8000/api/create-solicitud",
+          process.env.REACT_APP_APPLICATION_BACK+ "/api/create-solicitud",
           {
             CreadoPor: localStorage.getItem("IdUsuario"),
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: solicitud.IdTipoEntePublico,
             Solicitud: JSON.stringify(solicitud),
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
