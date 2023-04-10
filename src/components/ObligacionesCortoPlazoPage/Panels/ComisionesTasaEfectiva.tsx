@@ -77,12 +77,10 @@ export function ComisionesTasaEfectiva(){
 
     const changePercentageOrAmount = () => {
       if(radioValue !== "fixedPercentage"){
-        console.log("Amount is now 0!");
         changeHasPorcentaje(true);
         changeEfectivaMontoFijo(0);
         changeHasMonto(false);
       }else{
-        console.log("Porcentaje is now 0!");
         changeHasPorcentaje(false);
         changeEfectivaPorcentajeFijo(0);
         changeHasMonto(true);
@@ -126,20 +124,16 @@ export function ComisionesTasaEfectiva(){
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, id);
       } else if (selectedIndex === 0) {
-        console.log("selectedIndex === 0 !")
         newSelected = newSelected.concat(selected.slice(1));
       } else if (selectedIndex === selected.length - 1) {
-        console.log("selectedIndex === selected.length -1 !")
         newSelected = newSelected.concat(selected.slice(0, -1));
       } else if (selectedIndex > 0) {
-        console.log("selectedIndex === selected.length > 0 !")
         newSelected = newSelected.concat(
           selected.slice(0, selectedIndex),
           selected.slice(selectedIndex + 1),
         );
       }
       setSelected(newSelected);
-      console.log(newSelected);
     };
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
@@ -158,7 +152,6 @@ export function ComisionesTasaEfectiva(){
     }
 
     const deleteRows = () => {
-      console.log("selected: ", selected)
       selected.forEach((it) => {
         removeTasaEfectiva(it);
       })

@@ -37,7 +37,7 @@ interface Head {
   label: string;
 }
 
-interface IFiLe {
+export interface IFile {
   archivo: File;
   tipoArchivo: string;
 }
@@ -73,11 +73,14 @@ export function Documentacion() {
   const [numArchivosObligatorios, setNumArchivosObligatosios] = useState<number>(0);
   const [archivosObligatorios, setarchivosObligatosios] = useState<Array<ITiposDocumento>>([]);
   //array con objeto que tiene  archivo:File y tipoArchivo:string
-  const [archivos, setArchivos] = useState<Array<IFiLe>>(
+  const [archivos, setArchivos] = useState<Array<IFile>>(
     numArchivos.map(() => {
       return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
     })
   );
+
+  const documentosObligatoriosArreglo: IFile[] =useCortoPlazoStore(state => state.documentosObligatoriosArreglo)
+  const adddocumentosObligatoriosArreglo: Function =useCortoPlazoStore(state => state.addDocumentosObligatoriosArreglo)
   
   useEffect(() => {
 
@@ -95,19 +98,8 @@ export function Documentacion() {
         return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: auxTpoDocFiltered[index].Id} ;
       })
     );
-    
-    console.log("xxxxxxxxxxxxxxxxxxxxxxx");
-    
-    console.log([...archivosObligatorios]);
   }, [tiposDocumentos]);
 
-  useEffect(() => {
-    console.log("------------------------------------------------------------actualizado");
-    
-    console.log(numArchivos);
-    console.log((archivos));
-    
-  }, [numArchivos]);
 // nombre del archivo antes de dar click en agregar
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -151,7 +143,7 @@ export function Documentacion() {
   };
 
   const quitDocument = (index: number) => {
-    let auxArrayFile: IFiLe[] = [];
+    let auxArrayFile: IFile[] = [];
     archivos.map((archivo, x) => {
       if (x !== index) auxArrayFile.push(archivo);
     });
@@ -165,20 +157,13 @@ export function Documentacion() {
     let aux = [...archivos]
     aux[index].tipoArchivo = valor;
     setArchivos(aux);
-    console.log(archivos);
     
   }
 
-  const documentosObligatoriosArreglo: string[] =useCortoPlazoStore(state => state.documentosObligatoriosArreglo)
-  const documentosObligatorios: string =useCortoPlazoStore(state => state.documentosObligatorios)
-
-  const changedocumentosObligatoriosArreglo: Function =useCortoPlazoStore(state => state.changeDocumentosObligatoriosArreglo)
-  const changedocumentosObligatorios: Function =useCortoPlazoStore(state => state.changeDocumentosObligatorios)
-
-  useEffect(() =>{
-    
-  },[]);
   
+
+
+
 
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>
