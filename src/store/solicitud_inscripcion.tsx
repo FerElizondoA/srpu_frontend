@@ -220,9 +220,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     console.log("solicitud! :", solicitud);
 
     if (solicitud.IdSolicitud.length === 0) {
+      console.log("ente publico: ", state.IdTipoEntePublico);
+      console.log("ente publico: ",state.entePublicoObligado);
+      
+      
       await axios
         .post(
-          "http://10.200.4.200:8000/api/create-solicitud",
+          process.env.REACT_APP_APPLICATION_BACK+ "/api/create-solicitud",
           {
             TipoSolicitud: state.tipoDocumento,
             CreadoPor: localStorage.getItem("IdUsuario"),
