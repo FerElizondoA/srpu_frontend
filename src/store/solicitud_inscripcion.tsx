@@ -157,8 +157,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
-
-      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago),"yyyy-MM-dd"),
+      IdSolicitud: state.IdSolicitud,
+      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago), "yyyy-MM-dd"),
       capitalNumeroPago: state.capitalNumeroPago,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
       cargo: state.cargo,
@@ -168,49 +168,45 @@ export const createSolicitudInscripcionSlice: StateCreator<
       disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion),"yyyy-MM-dd"),
       disposicionImporte: state.disposicionImporte,
       documentoAutorizado: state.documentoAutorizado,
-      efectivaDiasEjercicio: state.efectivaDiasEjercicio,
-      efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion),"yyyy-MM-dd"),
-      efectivaMontoFijo: state.efectivaMontoFijo,
-      efectivaPeriocidadPago: state.efectivaPeriocidadPago,
-      efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
-      entePublicoObligado: state.entePublicoObligado,
-      fechaContratacion: format(new Date(state.fechaContratacion),"yyyy-MM-dd"),
+      //efectivaDiasEjercicio: state.efectivaDiasEjercicio,
+      //efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion), "yyyy-MM-dd"),
+      //efectivaMontoFijo: state.efectivaMontoFijo,
+      //efectivaPeriocidadPago: state.efectivaPeriocidadPago,
+      //efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
+      //entePublicoObligado: state.entePublicoObligado,
+      fechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
       fechaVencimiento: format(new Date(state.fechaVencimiento), "yyyy-MM-dd"),
-      hasIVA: state.hasIVA,
-      hasMonto: state.hasMonto,
-      hasPorcentaje: state.hasPorcentaje,
+      //hasIVA: state.hasIVA,
+      //hasMonto: state.hasMonto,
+      //hasPorcentaje: state.hasPorcentaje,
       identificacion: state.identificacion,
       institucion: state.institucion,
       montoOriginal: state.montoOriginal,
       nombreServidorPublico: state.nombreServidorPublico,
       organismo: state.organismo,
       plazoDias: state.plazoDias,
-      sobreTasa: state.sobreTasa,
+      //sobreTasa: state.sobreTasa,
       solicitanteAutorizado: state.solicitanteAutorizado,
-      tasaDiasEjercicio: state.tasaDiasEjercicio,
-      tasaEfectiva: state.tasaEfectiva,
-      tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago),"yyyy-MM-dd"),
-      tasaPeriocidadPago: state.tasaPeriocidadPago,
-      tasaReferencia: state.tasaReferencia,
-      tipoComision: state.tipoComision,
+      //tasaDiasEjercicio: state.tasaDiasEjercicio,
+      //tasaEfectiva: state.tasaEfectiva,
+      //tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago), "yyyy-MM-dd"),
+      //tasaPeriocidadPago: state.tasaPeriocidadPago,
+      //tasaReferencia: state.tasaReferencia,
+      //tipoComision: state.tipoComision,
       tipoDocumento: state.tipoDocumento,
       tipoEntePublico: state.tipoEntePublico,
-      tipoEntePublicoObligado: state.tipoEntePublicoObligado,
-      obligadoSolidarioAval: state.obligadoSolidarioAval,
-      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
-      condicionFinancieraTable: state.condicionFinancieraTable,
-      reglas: regla,
-      tasaEfectivaTable: state.tasaEfectivaTable,
-      tasaInteresTable: state.tasaInteresTable,
-    };
+      //tipoEntePublicoObligado: state.tipoEntePublicoObligado,
+      obligadoSolidarioAvalTable: JSON.stringify(state.obligadoSolidarioAvalTable),
+      condicionFinancieraTable: JSON.stringify(state.condicionFinancieraTable),
+      reglas: state.reglas,
+      tasaEfectivaTable: JSON.stringify(state.tasaEfectivaTable),
+      tasaInteresTable: JSON.stringify(state.tasaInteresTable),
+    }
 
-    console.log(solicitud);
-    const response = await axios
-    
-    
-      .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
 
+    if(solicitud.IdSolicitud.length === 0){
+      await axios.post(
+        "http://10.200.4.199:8000/api/create-solicitud",
         {
           IdEntePublico: "f45e24df-bc38-11ed-b789-2c4138b7dab1",
           IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
@@ -229,11 +225,36 @@ export const createSolicitudInscripcionSlice: StateCreator<
             Authorization: localStorage.getItem("jwtToken"),
           },
         }
-      )
-      .then(function (response) {
+      ).then((response) => {
+        console.log("RESPONSE: ", response);
+      }).catch((e) => {
+        console.log("Stack trace {", e, "}");
       })
-      .catch(function (error) {
-      });
+    }else{
+      await axios.put(
+        "http://10.200.4.199:8000/api/modify-solicitud",
+        {
+          IdSolicitud: state.IdSolicitud,
+          CreadoPor: localStorage.getItem("IdUsuario"),
+          IdInstitucionFinanciera: solicitud.IdInstitucion,
+          IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
+          IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
+          IdTipoEntePublico: solicitud.IdTipoEntePublico,
+          Solicitud: JSON.stringify(solicitud),
+          MontoOriginalContratado: solicitud.montoOriginal,
+          FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      ).then((response) => {
+        console.log("RESPONSE: ", response);
+      }).catch((e) => {
+        console.log("Stack trace {", e, "}");
+      })
+    }
   },
 
   fetchBorrarSolicitud: (Id: string) =>{

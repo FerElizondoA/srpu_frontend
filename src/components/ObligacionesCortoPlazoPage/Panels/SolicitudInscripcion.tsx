@@ -209,9 +209,10 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Solicitante autorizado
+            Solicitante Autorizado
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             variant="standard"
             value={solicitanteAutorizado}

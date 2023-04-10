@@ -2,6 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 
 export interface EncabezadoSlice{
+    IdSolicitud: string;
     fetchedEntesPublicos: boolean;
     fetchedOrganismos: boolean;
     entesPublicosCatalog: string[];
@@ -12,6 +13,7 @@ export interface EncabezadoSlice{
     organismo: string;
     fechaContratacion: string;
     cargoSolicitante: string;
+    changeIdSolicitud: (newId: string) => void;
     changeTipoDocumento: (newTipoDocumento: string) => void;
     changeTipoEntePublico: (newTipoEntePublico: string) => void;
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void;
@@ -23,6 +25,7 @@ export interface EncabezadoSlice{
 }
 
 export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) => ({
+    IdSolicitud: "",
     fetchedEntesPublicos: false,
     fetchedOrganismos: false,
     entesPublicosCatalog: [],
@@ -33,7 +36,8 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     solicitanteAutorizado:  localStorage.getItem("NombreUsuario") || '',
     organismo: "",
     fechaContratacion: new Date().toString(),
-    cargoSolicitante: localStorage.getItem("Puesto") || '',
+    cargoSolicitante: "",
+    changeIdSolicitud: (newId: string) => set(() => ({IdSolicitud: newId})),
     changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
     changeTipoEntePublico: (newTipoEntePublico: string) => set(() => ({tipoEntePublico: newTipoEntePublico})),
     changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
