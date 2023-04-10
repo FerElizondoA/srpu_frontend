@@ -16,7 +16,7 @@ import { IUsuarios } from "./Interfaces/IUsuarios";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, Route, useNavigate } from "react-router-dom";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -31,7 +31,11 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { DialogUsuarios } from "./DialogUsuarios/DialogUsuarios";
 
+
 export const Usuarios = () => {
+  const navigate = useNavigate();
+
+
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
     []
@@ -297,9 +301,7 @@ export const Usuarios = () => {
             variant="contained"
             sx={{ width: "80%" }}
             endIcon={<FolderSharedRoundedIcon fontSize="large" />}
-            onClick={() => {
-              
-            }}
+            onClick={() => {navigate("../solicitudes-usuarios")}}
           >
             Ver Solicitudes
           </Button>

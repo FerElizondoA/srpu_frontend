@@ -14,6 +14,7 @@ import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/Cons
 import { Catalogos } from "./components/Config/Catalogos";
 import { Usuarios } from "./components/Config/Usuarios";
 import { Configuracion } from "./components/Config/Config";
+import { Solicitudes } from "./screens/Solicitudes/Solicitudes";
 
 export const appTheme = createTheme({
   palette: {
@@ -64,6 +65,7 @@ function App() {
           <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
           <Route path="users" element={<Usuarios />}></Route>
+          <Route path="solicitudes-usuarios" element={<Solicitudes/>}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
