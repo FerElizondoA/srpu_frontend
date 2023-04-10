@@ -108,8 +108,8 @@ export function ComisionesTasaEfectiva(){
     const hasIVA: boolean = useCortoPlazoStore(state => state.hasIVA);
     const changeHasIVA: Function = useCortoPlazoStore(state => state.changeHasIVA);
     const tiposComisionCatalog: string[] = useCortoPlazoStore(state => state.tiposComisionCatalog);
-    const periocidadDePagoCatalog: string[] = useCortoPlazoStore(state => state.periocidadDePagoCatalog);
-    const diasEjercicioCatalog: string[] = useCortoPlazoStore(state => state.diasEjercicioCatalog);
+    const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(state => state.periocidadDePagoMap);
+    const diasEjercicioMap: Map<string | null, string> = useCortoPlazoStore(state => state.diasEjercicioMap);
     const addTasaEfectiva: Function = useCortoPlazoStore(state => state.addTasaEfectiva);
     const removeTasaEfectiva: Function = useCortoPlazoStore(state => state.removeTasaEfectiva);
     const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(state => state.tasaEfectivaTable);
@@ -208,9 +208,9 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={efectivaPeriocidadPago}
               onChange={(event: any, text: string | null) =>
-                changeEfectivaPeriocidadPago(text)
+                changeEfectivaPeriocidadPago(periocidadDePagoMap.get(text), text)
               }
-              options={periocidadDePagoCatalog}
+              options={Array.from(periocidadDePagoMap.keys())}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -304,9 +304,9 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={efectivaDiasEjercicio}
               onChange={(event: any, text: string | null) =>
-                changeEfectivaDiasEjercicio(text)
+                changeEfectivaDiasEjercicio(diasEjercicioMap.get(text), text)
               }
-              options={diasEjercicioCatalog}
+              options={Array.from(diasEjercicioMap.keys())}
               renderInput={(params) => (
                 <TextField
                   {...params}

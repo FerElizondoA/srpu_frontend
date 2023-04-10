@@ -2,9 +2,9 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
-import React, { useState, useEffect} from "react";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
+
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
   reglasCatalog: string[];
@@ -49,9 +49,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   changeComentarios: (newComentarios: string) =>
     set((state) => ({ comentarios: newComentarios })),
 
-
   //////////////////////////////
-  
+
   /////////////////////////////
 
   fetchDocumento: async (reglasSeleccionadas: number[]) => {
@@ -59,7 +58,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-  
 
     const organismo = useCortoPlazoStore.getState().organismo;
     const contrato = useCortoPlazoStore.getState().tipoDocumento;
@@ -131,7 +129,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-reglaDeFinanciamiento",
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -158,14 +157,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     const solicitud: any = {
       IdSolicitud: state.IdSolicitud,
-      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago), "yyyy-MM-dd"),
+      capitalFechaPrimerPago: format(
+        new Date(state.capitalFechaPrimerPago),
+        "yyyy-MM-dd"
+      ),
       capitalNumeroPago: state.capitalNumeroPago,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
       cargo: state.cargo,
       cargoSolicitante: state.cargoSolicitante,
       denominacion: state.denominacion,
       destino: state.destino,
-      disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion),"yyyy-MM-dd"),
+      disposicionFechaContratacion: format(
+        new Date(state.disposicionFechaContratacion),
+        "yyyy-MM-dd"
+      ),
       disposicionImporte: state.disposicionImporte,
       documentoAutorizado: state.documentoAutorizado,
       //efectivaDiasEjercicio: state.efectivaDiasEjercicio,
@@ -174,12 +179,16 @@ export const createSolicitudInscripcionSlice: StateCreator<
       //efectivaPeriocidadPago: state.efectivaPeriocidadPago,
       //efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
       //entePublicoObligado: state.entePublicoObligado,
-      fechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
+      fechaContratacion: format(
+        new Date(state.fechaContratacion),
+        "yyyy-MM-dd"
+      ),
       fechaVencimiento: format(new Date(state.fechaVencimiento), "yyyy-MM-dd"),
       //hasIVA: state.hasIVA,
       //hasMonto: state.hasMonto,
       //hasPorcentaje: state.hasPorcentaje,
       identificacion: state.identificacion,
+      IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
       montoOriginal: state.montoOriginal,
       nombreServidorPublico: state.nombreServidorPublico,
@@ -194,141 +203,109 @@ export const createSolicitudInscripcionSlice: StateCreator<
       //tasaReferencia: state.tasaReferencia,
       //tipoComision: state.tipoComision,
       tipoDocumento: state.tipoDocumento,
+      IdTipoEntePublico: state.IdTipoEntePublico,
       tipoEntePublico: state.tipoEntePublico,
-      //tipoEntePublicoObligado: state.tipoEntePublicoObligado,
-      obligadoSolidarioAvalTable: JSON.stringify(state.obligadoSolidarioAvalTable),
+      tipoEntePublicoObligado: state.tipoEntePublicoObligado,
+      obligadoSolidarioAvalTable: JSON.stringify(
+        state.obligadoSolidarioAvalTable
+      ),
       condicionFinancieraTable: JSON.stringify(state.condicionFinancieraTable),
       reglas: state.reglas,
       tasaEfectivaTable: JSON.stringify(state.tasaEfectivaTable),
       tasaInteresTable: JSON.stringify(state.tasaInteresTable),
-    }
+    };
 
-
-    if(solicitud.IdSolicitud.length === 0){
-      await axios.post(
-        "http://10.200.4.199:8000/api/create-solicitud",
-        {
-          IdEntePublico: "f45e24df-bc38-11ed-b789-2c4138b7dab1",
-          IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
-          TipoSolicitud: solicitud.tipoDocumento,
-          IdInstitucionFinanciera: "ac903b28-acb7-11ed-b719-2c4138b7dab1",
-          IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-          IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-          MontoOriginalContratado: solicitud.montoOriginal,
-          FechaContratacion: format(new Date(state.fechaContratacion),"yyyy-MM-dd"),
-          Solicitud: JSON.stringify(solicitud),
-          CreadoPor: localStorage.getItem("IdUsuario"),
-  
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
+    if (solicitud.IdSolicitud.length === 0) {
+      await axios
+        .post(
+          "http://10.200.4.199:8000/api/create-solicitud",
+          {
+            CreadoPor: localStorage.getItem("IdUsuario"),
+            IdInstitucionFinanciera: solicitud.IdInstitucion,
+            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
+            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            Solicitud: JSON.stringify(solicitud),
+            MontoOriginalContratado: solicitud.montoOriginal,
+            FechaContratacion: format(
+              new Date(state.fechaContratacion),
+              "yyyy-MM-dd"
+            ),
           },
-        }
-      ).then((response) => {
-        console.log("RESPONSE: ", response);
-      }).catch((e) => {
-        console.log("Stack trace {", e, "}");
-      })
-    }else{
-      await axios.put(
-        "http://10.200.4.199:8000/api/modify-solicitud",
-        {
-          IdSolicitud: state.IdSolicitud,
-          CreadoPor: localStorage.getItem("IdUsuario"),
-          IdInstitucionFinanciera: solicitud.IdInstitucion,
-          IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-          IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-          IdTipoEntePublico: solicitud.IdTipoEntePublico,
-          Solicitud: JSON.stringify(solicitud),
-          MontoOriginalContratado: solicitud.montoOriginal,
-          FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      ).then((response) => {
-        console.log("RESPONSE: ", response);
-      }).catch((e) => {
-        console.log("Stack trace {", e, "}");
-      })
-    }
-  },
-
-  fetchBorrarSolicitud: (Id: string) =>{
-
-
- 
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 1000,
-    timerProgressBar: true,
-   
-  })
-
-  
-
- 
-
-    console.log("soy el id: ",Id);
-    
-    const response = axios
-    .delete(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
-      {
-        data: {
-          IdSolicitud: Id,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-        },
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      }
-    )
-    .then(function (response) {
-      console.log("hola no se si funcione");
-      
-      if (response.status === 200) {
-        
-        Toast.fire({
-          icon: "success",
-          title: "Eliminado con exito",
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then((response) => {
+          console.log("RESPONSE: ", response);
+        })
+        .catch((e) => {
+          console.log("Stack trace {", e, "}");
         });
-      }
-      return true
-     
-      
-    })
-    .catch(function (error) {
-      Toast.fire({
-        icon: "error",
-        title: "No se elimino la solicitud.",
-      })
-      
-    });
-    return false
+    }
   },
 
+  fetchBorrarSolicitud: (Id: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+    });
+    console.log("soy el id: ", Id);
 
+    const response = axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
+        {
+          data: {
+            IdSolicitud: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(function (response) {
+        console.log("hola no se si funcione");
+
+        if (response.status === 200) {
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+          });
+        }
+        return true;
+      })
+      .catch(function (error) {
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino la solicitud.",
+        });
+      });
+    return false;
+  },
 });
-
-
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
   //let stringi =JSON.stringify(Solicitud)
   let solicitud: ISolicitud = JSON.parse(Solicitud);
   console.log(solicitud);
-  
 
   const solicitudfechas: any = {
-    fechaContratacion: format(new Date(solicitud.fechaContratacion),"yyyy-MM-dd"),
-    fechaVencimiento: format(new Date(solicitud.fechaVencimiento), "yyyy-MM-dd"),
-  }
+    fechaContratacion: format(
+      new Date(solicitud.fechaContratacion),
+      "yyyy-MM-dd"
+    ),
+    fechaVencimiento: format(
+      new Date(solicitud.fechaVencimiento),
+      "yyyy-MM-dd"
+    ),
+  };
   axios
     .post(
       "http://10.200.4.46:7000/documento_srpu",
