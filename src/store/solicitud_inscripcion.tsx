@@ -152,7 +152,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
     console.log(reglas);
-    let regla = reglas;
+
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
@@ -160,6 +160,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       IdInstitucion: state.IdInstitucion,
       IdTipoEntePublico: state.IdTipoEntePublico,
       IdOrganismo: state.IdOrganismo,
+      IdDestino: state.IdDestino,
       capitalFechaPrimerPago: format(
         new Date(state.capitalFechaPrimerPago),
         "yyyy-MM-dd"
@@ -215,6 +216,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
       tasaEfectivaTable: JSON.stringify(state.tasaEfectivaTable),
       tasaInteresTable: JSON.stringify(state.tasaInteresTable),
     };
+
+    console.log("solicitud! :", solicitud);
 
     if (solicitud.IdSolicitud.length === 0) {
       await axios
