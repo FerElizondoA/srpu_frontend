@@ -157,6 +157,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     const solicitud: any = {
       IdSolicitud: state.IdSolicitud,
+      IdInstitucion: state.IdInstitucion,
+      IdTipoEntePublico: state.IdTipoEntePublico,
+      IdOrganismo: state.IdOrganismo,
       capitalFechaPrimerPago: format(
         new Date(state.capitalFechaPrimerPago),
         "yyyy-MM-dd"
@@ -188,7 +191,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       //hasMonto: state.hasMonto,
       //hasPorcentaje: state.hasPorcentaje,
       identificacion: state.identificacion,
-      IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
       montoOriginal: state.montoOriginal,
       nombreServidorPublico: state.nombreServidorPublico,
@@ -203,7 +205,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       //tasaReferencia: state.tasaReferencia,
       //tipoComision: state.tipoComision,
       tipoDocumento: state.tipoDocumento,
-      IdTipoEntePublico: state.IdTipoEntePublico,
       tipoEntePublico: state.tipoEntePublico,
       tipoEntePublicoObligado: state.tipoEntePublicoObligado,
       obligadoSolidarioAvalTable: JSON.stringify(
