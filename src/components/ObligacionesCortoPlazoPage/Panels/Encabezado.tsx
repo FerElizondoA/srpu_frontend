@@ -39,6 +39,14 @@ export function Encabezado(){
     React.useEffect(() => {
       fetchEntesPublicos();
       fetchOrganismos();
+
+      if(localStorage.getItem("EntePublicoObligado")?.length !== 0){
+        changeTipoEntePublico(entesPublicosMap.get(localStorage.getItem("TipoEntePublicoObligado")), localStorage.getItem("TipoEntePublicoObligado"));
+      }
+
+      if(localStorage.getItem("EntePublicoObligado")?.length !== 0){
+        changeOrganismo(organismosMap.get((localStorage.getItem("EntePublicoObligado"))), localStorage.getItem("EntePublicoObligado"));
+      }
     });
 
     return (
