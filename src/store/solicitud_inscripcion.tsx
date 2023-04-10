@@ -222,13 +222,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
     if (solicitud.IdSolicitud.length === 0) {
       await axios
         .post(
-          "http://10.200.4.199:8000/api/create-solicitud",
+          "http://10.200.4.200:8000/api/create-solicitud",
           {
+            TipoSolicitud: state.tipoDocumento,
             CreadoPor: localStorage.getItem("IdUsuario"),
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: solicitud.IdOrganismo,
             Solicitud: JSON.stringify(solicitud),
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -256,7 +258,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       toast: true,
       position: "top-end",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 3000,
       timerProgressBar: true,
     });
     console.log("soy el id: ", Id);
@@ -276,7 +278,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(function (response) {
         console.log("hola no se si funcione");
-
         if (response.status === 200) {
           Toast.fire({
             icon: "success",
@@ -286,6 +287,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         return true;
       })
       .catch(function (error) {
+        console.log("Stack Trace: ", error);
         Toast.fire({
           icon: "error",
           title: "No se elimino la solicitud.",
