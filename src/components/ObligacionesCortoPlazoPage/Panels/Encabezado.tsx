@@ -75,7 +75,7 @@ export function Encabezado(){
             </InputLabel>
             <Autocomplete
               fullWidth
-              value={tipoEntePublico}
+              value={tipoEntePublico || localStorage.getItem("TipoEntePublicoObligado") }
               onChange={(event: any, text: string | null) =>
                 changeTipoEntePublico(text)
               }
@@ -130,7 +130,7 @@ export function Encabezado(){
             </InputLabel>
             <Autocomplete
               fullWidth
-              value={organismo}
+              value={organismo || localStorage.getItem("EntePublicoObligado")}
               onChange={(event: any, text: string | null) =>
                 changeOrganismo(text)
               }

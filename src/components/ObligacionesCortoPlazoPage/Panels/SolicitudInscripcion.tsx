@@ -22,6 +22,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
 
 interface Head {
   label: string;
@@ -37,19 +38,28 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
-  const [openDialog, changeOpenDialog] = React.useState(false);
 
+  const [openDialog, changeOpenDialog] = React.useState(false);
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
   };
 
   const [openDialogBorrador, changeOpenDialogBorrador] = React.useState(false);
-
   const changeOpenDialogBorradorState = (open: boolean) => {
     changeOpenDialogBorrador(open);
   };
 
   const changeCloseDialogBorradorState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
+
+  const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
+  const changeOpenDialogCancelarState = (open: boolean) => {
+    changeOpenDialogCancelar(open);
+  };
+
+  const changeCloseDialogCancelarState = () => {
     changeOpenDialogBorrador(false);
   };
 
@@ -84,7 +94,6 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-
   const fetchDocumento: Function = useCortoPlazoStore(
     (state) => state.fetchDocumento
   );
@@ -104,20 +113,17 @@ export function SolicitudInscripcion() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !");
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !");
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !");
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
-   
+    console.log(newSelected);
   };
 
   const buttodescription = () => {
@@ -148,7 +154,7 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>
-            Nombre del servidor publico a quien va dirigido
+            Servidor publico a quien va dirigido
           </InputLabel>
           <TextField
             fullWidth
@@ -322,7 +328,10 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="error" sx={{ mb: "10px" }}>
+          <Fab variant="extended" color="error" onClick={() => {
+              
+              changeOpenDialogCancelarState(!openDialog);
+            }}sx={{ mb: "10px" }}>
             <CancelIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
@@ -341,18 +350,15 @@ export function SolicitudInscripcion() {
                 : true
             }
           >
-            {/* <IconButton>
-              <Typography sx={queries.medium_text}>Autorizar</Typography>
-              </IconButton> */}
             <CheckIcon sx={{ mr: 1 }} />
             {buttodescription()}
           </Fab>
+
           <Fab
             variant="extended"
             color="success" //onClick={() => fetchBorrador(selected)}
             onClick={() => {
-              //fetchDocumento(selected)
-              //console.log("que soy ",selected);
+              
               changeOpenDialogBorradorState(!openDialog);
             }}
             sx={{ mb: "10px" }}
@@ -365,14 +371,13 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
-              //fetchDocumento(selected)
-              //console.log("que soy ",selected);
               changeOpenDialogState(!openDialog);
             }}
           >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
+
           <ConfirmacionDescargaSolicitud
             handler={changeOpenDialogState}
             openState={openDialog}
@@ -381,6 +386,11 @@ export function SolicitudInscripcion() {
           <ConfirmacionBorradorSolicitud
             handler={changeOpenDialogBorradorState}
             openState={openDialogBorrador}
+            selected={selected}
+          />
+          <ConfirmacionCancelarSolicitud
+            handler={changeOpenDialogCancelarState}
+            openState={openDialogCancelar}
             selected={selected}
           />
         </Grid>
