@@ -2,7 +2,9 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
+import React, { useState, useEffect} from "react";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
+import Swal from "sweetalert2";
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
   reglasCatalog: string[];
@@ -21,6 +23,7 @@ export interface SolicitudInscripcionSlice {
   fetchDocumento: (reglasSeleccionadas: number[]) => void;
   fetchReglas: () => void;
   fetchBorrador: (reglasSeleccionadas: number[]) => void;
+  fetchBorrarSolicitud: (Id: string) => boolean;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
@@ -45,11 +48,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
     set((state) => ({ reglas: [...state.reglas, newReglas] })),
   changeComentarios: (newComentarios: string) =>
     set((state) => ({ comentarios: newComentarios })),
+
+
+  //////////////////////////////
+  
+  /////////////////////////////
+
   fetchDocumento: async (reglasSeleccionadas: number[]) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
+  
 
     const organismo = useCortoPlazoStore.getState().organismo;
     const contrato = useCortoPlazoStore.getState().tipoDocumento;
@@ -121,7 +131,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
-        "http://10.200.4.199:8000/api/get-reglaDeFinanciamiento",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -147,6 +157,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
+
       capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago),"yyyy-MM-dd"),
       capitalNumeroPago: state.capitalNumeroPago,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
@@ -198,10 +209,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
     
     
       .post(
-        "http://10.200.4.199:8000/api/create-solicitud",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
 
         {
-          IdEntePublico: "",
+          IdEntePublico: "f45e24df-bc38-11ed-b789-2c4138b7dab1",
           IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
           TipoSolicitud: solicitud.tipoDocumento,
           IdInstitucionFinanciera: "ac903b28-acb7-11ed-b719-2c4138b7dab1",
@@ -220,14 +231,72 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(function (response) {
-        console.log("response: ", response);
-        console.log("solicitud: ", response.data.data.Solicitud);
       })
       .catch(function (error) {
-        console.log(error);
       });
   },
+
+  fetchBorrarSolicitud: (Id: string) =>{
+
+
+ 
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+   
+  })
+
+  
+
+ 
+
+    console.log("soy el id: ",Id);
+    
+    const response = axios
+    .delete(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
+      {
+        data: {
+          IdSolicitud: Id,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    )
+    .then(function (response) {
+      console.log("hola no se si funcione");
+      
+      if (response.status === 200) {
+        
+        Toast.fire({
+          icon: "success",
+          title: "Eliminado con exito",
+        });
+      }
+      return true
+     
+      
+    })
+    .catch(function (error) {
+      Toast.fire({
+        icon: "error",
+        title: "No se elimino la solicitud.",
+      })
+      
+    });
+    return false
+  },
+
+
 });
+
+
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
   //let stringi =JSON.stringify(Solicitud)

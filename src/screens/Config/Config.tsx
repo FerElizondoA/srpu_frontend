@@ -25,7 +25,7 @@ export function Configuracion() {
     { id: 15, label: "Usuarios" },
   ];
   const navegar = (id: number, label: string) => {
-    if (id === 11) {
+    if (id === 15) {
       navigate("../users");
     } else {
       navigate(`../catalogos?id=${id}&label=${label}`);

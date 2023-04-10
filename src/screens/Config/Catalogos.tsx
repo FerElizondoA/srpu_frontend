@@ -397,7 +397,6 @@ export function Catalogos() {
             <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
               <Button
                 onClick={() => {
-                  console.log(edit);
                   setEdit((edit) => ({
                     ...edit,
                     ...{ Crud: "crea" },
