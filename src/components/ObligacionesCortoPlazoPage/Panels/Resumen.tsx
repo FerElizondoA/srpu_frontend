@@ -21,8 +21,8 @@ export function Resumen() {
   const changeTipoDocumento: Function = useCortoPlazoStore(
     (state) => state.changeTipoDocumento
   );
-  const tiposEntePublicoCatalog: string[] = useCortoPlazoStore(
-    (state) => state.entesPublicosCatalog
+  const tiposEntePublicoMap: Map<string| null,string> = useCortoPlazoStore(
+    (state) => state.entesPublicosMap
   );
   const fetchEntesPublicos: Function = useCortoPlazoStore(
     (state) => state.fetchEntesPublicos
@@ -43,8 +43,8 @@ export function Resumen() {
   const changeOrganismo: Function = useCortoPlazoStore(
     (state) => state.changeOrganismo
   );
-  const organismosCatalog: string[] = useCortoPlazoStore(
-    (state) => state.organismosCatalog
+  const organismosMap: Map<string| null,string> = useCortoPlazoStore(
+    (state) => state.organismosMap
   );
   const fetchOrganismos: Function = useCortoPlazoStore(
     (state) => state.fetchOrganismos
@@ -107,14 +107,14 @@ export function Resumen() {
     const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(state => state.changeCapitalFechaPrimerPago);
     const capitalPeriocidadPago: string = useCortoPlazoStore(state => state.capitalPeriocidadPago);
     const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(state => state.changeCapitalPeriocidadPago);
-    const periocidadDePagoCatalog: string[] = useCortoPlazoStore(state => state.periocidadDePagoCatalog);
+    const periocidadDePagoMap: Map<string| null,string> = useCortoPlazoStore(state => state.periocidadDePagoMap);
     const capitalNumeroPago: number = useCortoPlazoStore(state => state.capitalNumeroPago);
     const changeCapitalNumeroPago: Function = useCortoPlazoStore(state => state.changeCapitalNumeroPago);
     const tasaFechaPrimerPago: string = useCortoPlazoStore(state => state.tasaFechaPrimerPago);
     const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(state => state.changeTasaFechaPrimerPago);
     const tasaPeriocidadPago: string = useCortoPlazoStore(state => state.tasaPeriocidadPago);
     const changeTasaPeriocidadPago: Function = useCortoPlazoStore(state => state.changeTasaPeriocidadPago);
-    const tasaReferenciaCatalog: string[] = useCortoPlazoStore(state => state.tasaReferenciaCatalog);
+    const tasaReferenciaMap: Map<string| null,string> = useCortoPlazoStore(state => state.tasaReferenciaMap);
     const tasaReferencia: string = useCortoPlazoStore(state => state.tasaReferencia);
     const changeTasaReferencia: Function = useCortoPlazoStore(state => state.changeTasaReferencia);
     const sobreTasa: string = useCortoPlazoStore(state => state.sobreTasa);

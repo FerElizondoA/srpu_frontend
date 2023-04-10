@@ -31,7 +31,6 @@ import { SolicitudInscripcion } from "../ObligacionesCortoPlazoPage/Panels/Solic
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
 
-
 interface IData {
   Id: string;
   Institucion: string;
@@ -335,12 +334,9 @@ export function ConsultaDeSolicitudPage() {
                         >
                           <DeleteIcon
                             onClick={() => {
-                              if (fetchBorrarSolicitud(row.Id))
-                                getSolicitudes(setDatos);
-                              else {
-                                  console.log("no funcione xd");
-                                  
-                              }
+                              getSolicitudes(setDatos);
+                              fetchBorrarSolicitud(row.Id);
+                              getSolicitudes(setDatos);
                             }}
                           />
                           {row.Acciones}
@@ -357,7 +353,6 @@ export function ConsultaDeSolicitudPage() {
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           selected={selected}
-          //Solicitud={}
         />
       </Grid>
     </Grid>
