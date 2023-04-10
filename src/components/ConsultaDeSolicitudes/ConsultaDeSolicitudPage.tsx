@@ -22,15 +22,18 @@ import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../APIS/APIS Cortoplazo/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
 import { SolicitudInscripcion } from "../ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
+
 
 interface IData {
-  Id:string;
+  Id: string;
   Institucion: string;
   TipoEntePublico: string;
   ClaveDeInscripcion: string;
@@ -40,6 +43,7 @@ interface IData {
   Acciones: string;
   Solicitud: string;
   tipoDocumento: string;
+  TipoSolicitud: string;
 }
 
 interface Head {
@@ -78,21 +82,20 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Fecha de contratacion",
   },
-  {
-    id: "Acciones",
-    isNumeric: true,
-    label: "Acciones",
-  },
+
   {
     id: "tipoDocumento",
     isNumeric: true,
     label: "TipoDocumento",
   },
+  {
+    id: "Acciones",
+    isNumeric: true,
+    label: "Acciones",
+  },
 ];
 
 export function ConsultaDeSolicitudPage() {
-  
-  
   const [datos, setDatos] = useState<Array<IData>>([]);
   // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -126,10 +129,12 @@ export function ConsultaDeSolicitudPage() {
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.TipoEntePublico.toString()
           .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.tipoDocumento
+          .toString()
+          .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-        
-
         return elemento;
       }
     });
@@ -142,6 +147,7 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
+    console.log("soy los datos: ", datos);
   }, [datos]);
 
   useEffect(() => {
@@ -157,16 +163,28 @@ export function ConsultaDeSolicitudPage() {
     console.log("aux!: ", aux);
     navigate("../ObligacionesCortoPlazo");
   };
-const idsolicitud =(id: any) =>{
 
-  
-}
   const fetchDocumento: Function = useCortoPlazoStore(
     (state) => state.fetchDocumento
   );
-   
-  
-    
+
+  const fetchBorrarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.fetchBorrarSolicitud
+  );
+
+  /////////////////////////////////////////////
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const [openDialogVer, changeOpenDialogVer] = useState(false);
+  const changeOpenDialogVerState = (open: boolean) => {
+    changeOpenDialogVer(open);
+  };
+
+  const changeCloseDialogVerState = () => {
+    changeOpenDialogVer(false);
+  };
+  /////////////////////////////////////77
+
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -210,18 +228,17 @@ const idsolicitud =(id: any) =>{
             <TableHead>
               {heads.map((head) => (
                 <StyledTableCell key={head.id}>
-                  
                   <TableSortLabel>{head.label} </TableSortLabel>
-                  
                 </StyledTableCell>
               ))}
             </TableHead>
             <TableBody>
-              
               {datosFiltrados.map((row) => {
                 let chip = <></>;
+
                 if (row.Estatus === "En_actualizacion ") {
-                  
+                  console.log("soy el row Id: ", row.Id);
+
                   chip = (
                     <Chip
                       label="En verificación"
@@ -232,7 +249,6 @@ const idsolicitud =(id: any) =>{
                   );
                 }
 
-                
                 return (
                   <StyledTableRow
                   //sx={{ alignItems: "center", justifyContent: "center" }}
@@ -246,17 +262,12 @@ const idsolicitud =(id: any) =>{
                     </StyledTableCell>
 
                     <StyledTableCell component="th" scope="row">
-                      {row.tipoDocumento.toString()}
-                    </StyledTableCell> 
-
-                    <StyledTableCell component="th" scope="row">
                       {chip}
                     </StyledTableCell>
 
                     <StyledTableCell component="th" scope="row">
                       {row.ClaveDeInscripcion.toString()}
                     </StyledTableCell>
-
 
                     <StyledTableCell component="th" scope="row">
                       {"$" + row.MontoOriginalContratado.toString()}
@@ -266,58 +277,72 @@ const idsolicitud =(id: any) =>{
                       {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                     </StyledTableCell>
 
+                    <StyledTableCell component="th" scope="row">
+                      {row.TipoSolicitud}
+                    </StyledTableCell>
+
                     <StyledTableCell
-                      sx={{ display: "flex", flexDirection: "row" }}
+                      sx={{ flexDirection: "row" }}
                       align="center"
                       component="th"
                       scope="row"
                     >
                       <Tooltip title="Ver">
-                        <IconButton
-                          type="button"
-                          sx={{ p: "10px" }}
-                          aria-label="search"
-                        >
+                        <IconButton type="button" aria-label="search">
                           <VisibilityIcon
                             onClick={() => {
-                              handleNavigate(row.Solicitud);
+                              //console.log(JSON.parse(row.Solicitud));
+                              changeOpenDialogVer(!openDialogVer);
                             }}
                           />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
+
                       <Tooltip title="Edit">
-                        <IconButton
-                          type="button"
-                          sx={{ p: "10px" }}
-                          aria-label="search"
-                        >
+                        <IconButton type="button" aria-label="search">
                           <EditIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Descargar">
-                        <IconButton
-                          type="button"
-                          sx={{ p: "10px" }}
-                          aria-label="search"
-                        >
+                        <IconButton type="button" aria-label="search">
                           <DownloadIcon
                             onClick={() => {
                               //console.log(JSON.parse(row.Solicitud));
-                              DescargarConsultaSolicitud(row.Solicitud)
+                              DescargarConsultaSolicitud(row.Solicitud);
                             }}
                           />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Comentarios">
+                        <IconButton type="button" aria-label="search">
+                          <CommentIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Borrar">
                         <IconButton
                           type="button"
-                          sx={{ p: "10px" }}
+                          disabled={
+                            localStorage.getItem("Rol") === "Capturador"
+                              ? true
+                              : false
+                          }
                           aria-label="search"
                         >
-                          <CommentIcon />
+                          <DeleteIcon
+                            onClick={() => {
+                              if (fetchBorrarSolicitud(row.Id))
+                                getSolicitudes(setDatos);
+                              else {
+                                  console.log("no funcione xd");
+                                  
+                              }
+                            }}
+                          />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
@@ -328,6 +353,12 @@ const idsolicitud =(id: any) =>{
             </TableBody>
           </Table>
         </TableContainer>
+        <VerBorradorDocumento
+          handler={changeOpenDialogVer}
+          openState={openDialogVer}
+          selected={selected}
+          //Solicitud={}
+        />
       </Grid>
     </Grid>
   );
