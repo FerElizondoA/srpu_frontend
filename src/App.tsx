@@ -14,7 +14,7 @@ import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/Cons
 import { Catalogos } from "./components/Config/Catalogos";
 import { Usuarios } from "./components/Config/Usuarios";
 import { Configuracion } from "./components/Config/Config";
-import { Solicitudes } from "./screens/Solicitudes/Solicitudes";
+import { Solicitudes } from "./screens/Solicitudes/solicitudes";
 
 export const appTheme = createTheme({
   palette: {
