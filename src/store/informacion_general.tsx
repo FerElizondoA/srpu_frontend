@@ -15,11 +15,9 @@ export interface InformacionGeneralSlice {
   fetchedObligadoSolidarioAval: boolean;
   fetchedTipoEntePublicoObligado: boolean;
   institucionMap: Map<string | null, string>;
-  institucionCatalog: string[];
   destinoMap: Map<string | null, string>;
   obligadoSolidarioAvalMap: Map<string | null, string>;
   tipoEntePublicoObligadoMap: Map<string | null, string>;
-  tipoEntePublicoObligadoCatalog: string[];
   plazoDias: number;
   montoOriginal: number;
   fechaVencimiento: string;
