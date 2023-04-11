@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Grid, Box, Radio, TextField } from "@mui/material";
+import { Grid, Box, Radio, TextField, Button, TableHead, TableContainer } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { queries } from "../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import shadows from "@mui/material/styles/shadows";
 import InputLabel from "@mui/material/InputLabel";
@@ -13,27 +12,36 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
-import { Fragment } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
 import { getPreviewSolicitud } from "./APIGetSolicitudes";
-import InboxIcon from "@mui/icons-material/Inbox";
-import DraftsIcon from "@mui/icons-material/Drafts";
+import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+
+import Stack from "@mui/material/Stack";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import { queriesSolicitud } from "./queriesSolicitudes";
 
 export function Solicitudes() {
+  //Declaraciones
+  const [value, setValue] = useState<Dayjs | null>(dayjs(new Date()));
+
+  const cambioFecha = (newValue: Dayjs | null) => {
+    setValue(newValue);
+  };
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
   // Llamada a la base de datos
   const [age, setAge] = useState("");
-  const [solicitudes, setSolicitudes] = useState<Array<number>>([
-    1, 2, 3, 4, 5, 6,
-  ]);
+  const [solicitudes, setSolicitudes] = useState<Array<number>>([]);
+
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
   };
@@ -46,25 +54,18 @@ export function Solicitudes() {
   // Llamada a la base de datos
 
   return (
-    <Grid container direction="column">
+    <Grid container direction="column" >
       {/* grid  columna del encabezado */}
-
       <Grid>{query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}</Grid>
 
-      {/* grid  columna del cuerpo */}
-      <Grid  display={"flex"} flexDirection={"row"}
-      >
-        {/* grid  columna del previsualizacion y filtro*/}
-        <Grid 
-        sm={12}
-        xl={3}
-        xs={12}
-        md={3}
-        lg={3}
 
-        display={"flex"} 
-        flexDirection={"column"}>
-          <Grid >
+      {/* grid  columna del cuerpo */}
+      <Grid display={"flex"} flexDirection={"row"} >
+        
+
+        {/* grid  columna del previsualizacion y filtro*/}
+        <Grid sm={4} xl={4} xs={12} md={4} lg={4} mt={3} ml={2}>
+          <Grid mb={4} sm={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
               <Select
@@ -81,8 +82,8 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid flexDirection={"column"}>
-            <List sx={{ overflow: "scroll" }}>
+          <Grid  md={12} sm={12} xl={12} lg={12} >
+            <List sx={queriesSolicitud.buscador}>
               {solicitudes?.map(() => {
                 return (
                   <>
@@ -103,72 +104,241 @@ export function Solicitudes() {
             </List>
           </Grid>
         </Grid>
-        <Grid
-          flexDirection={"row"}
-          item
-          display={"flex"}
-          justifyContent={"space-evenly"}
-          mt={5}
-
-          sm={12}
-          xl={12}
-          xs={12}
-          md={12}
-          lg={12}
-        >
-          {/* grid contenido*/}
-          <Grid  item
-           gridColumn={"span 4"}
+        <Grid  xl={12} mt={2} height={"100%"}>
+       
+          <Grid
+            container
+            item
+            mt={3}
+            ml={5}
             sm={12}
-            xl={3}
+            xl={12}
             xs={12}
-            md={3}
-            lg={3}>
-            <TextField fullWidth
-              InputProps={{readOnly:true}}
-              id="outlined-basic"
-              label="Solicitado Por"
-              variant="standard"
-            ></TextField>
-          </Grid>
-
-          <Grid item
-            gridColumn={"span 4"}
-            sm={12}
-            xl={3}
-            xs={12}
-            md={3}
-            lg={3}
+            md={12}
+            lg={12}
           >
-            <TextField fullWidth
-              InputProps={{readOnly:true}}
-              id="outlined-basic"
-              label="Solicitado Por"
-              variant="standard"
-            ></TextField>
-          </Grid>
+            {/* grid contenido*/}
+            <Grid item mr={5} sm={2} xl={3} xs={6} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Usuario"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
 
-          <Grid item
-           gridColumn={"span 5"}
+            <Grid item mr={5} sm={2} xl={3} xs={6} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Solicitado Por"
+                
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item  sm={3} xl={4} xs={7} md={4} lg={4} sx={queriesSolicitud.calendaro}>
+            <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Fecha de Creacion"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            container
+            mt={5}
+            ml={5}
             sm={12}
-            xl={3}
+            xl={12}
             xs={12}
-            md={3}
-            lg={3}
+            md={12}
+            lg={12}
           >
-            <TextField fullWidth
-              InputProps={{readOnly:true}}
-              id="outlined-basic"
-              label="Solicitado Por"
-              variant="standard"
-            ></TextField>
+            <Grid item mr={5} xs={8} sm={3} md={3} lg={3} xl={3} >
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Nombre(s)"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={5} sm={2} xl={3} xs={8} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Apellido Paterno"
+                variant="standard"
+               
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={5} sm={2} xl={3} xs={8} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Apellido Materno"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
           </Grid>
 
+          <Grid
+            container
+            item
+            mt={5}
+            ml={5}
+            sm={12}
+            xl={12}
+            xs={12}
+            md={12}
+            lg={12}
+          >
+            {/* grid contenido*/}
+            <Grid item mr={4} xl={2} md={2} sm={1.5}>
+              <TextField
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Usuario"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={4} sm={3} xl={2.5} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Correo Electronico"
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={4} xl={2} md={2} sm={1.5}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Celular"
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item xs={12} sm={1.5} md={2} lg={2} xl={2.5}>
+              <TextField
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Puesto"
+                variant="standard"
+              ></TextField>
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            item
+            mt={5}
+            ml={5}
+            sm={12}
+            xl={12}
+            xs={12}
+            md={12}
+            lg={12}
+          >
+            {/* grid contenido*/}
+            <Grid item mr={5} sm={2.5} xl={3} xs={8} md={3} lg={2.5}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="CURP"
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={5} sm={2} xl={3} xs={8} md={2} lg={2.5}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="RFC"
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item mr={2} xl={1.5} sm={1.5} xs={8}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Telefono"
+                variant="standard"
+              ></TextField>
+            </Grid>
+
+            <Grid item  xl={1.5} md={1} sm={1} xs={8}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Extension"
+                variant="standard"
+                
+              ></TextField>
+            </Grid>
+          </Grid>
+
+      
+          <Grid container item mt={5} ml={5}>
+            <Grid item sm={8} xl={10} xs={8} md={10} lg={10}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Comentario"
+                variant="filled"
+                multiline
+                rows={2}
+                maxRows={3}
+                
+              ></TextField>
+            </Grid>
+          </Grid>
           
-          
+
+          <Grid item  mt={3} sx={queriesSolicitud.botones} >
+            <Button
+              sx={{  ml: 2, mr: 8 }}
+              color="info"
+              variant="contained"
+              onClick={() => {}}
+            >
+              Aceptar
+            </Button>
+            <Button
+              sx={{mr: 1.5 }}
+              color="error"
+              variant="contained"
+              onClick={() => {}}
+            >
+              Cancelar
+            </Button>
+          </Grid>
         </Grid>
-
-        
       </Grid>
     </Grid>
   );
