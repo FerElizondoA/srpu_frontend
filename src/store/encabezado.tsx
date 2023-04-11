@@ -50,7 +50,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     fetchEntesPublicos: async () => {
         if (!get().fetchedEntesPublicos) {
           const response = await axios.get(
-            "http://10.200.4.199:8000/api/get-tiposEntePublico",
+            process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
             {
               headers: {
                 Authorization: localStorage.getItem("jwtToken"),
@@ -68,7 +68,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) =
     fetchOrganismos: async () => {
         if (!get().fetchedOrganismos) {
           const response = await axios.get(
-            "http://10.200.4.199:8000/api/get-entePublicoObligado",
+            process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
             {
               headers: {
                 Authorization: localStorage.getItem("jwtToken"),

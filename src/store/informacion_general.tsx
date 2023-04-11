@@ -89,7 +89,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchDestinos: async () => {
         if (!get().fetchedDestino) {
           const response = await axios.get(
-            "http://10.200.4.199:8000/api/get-destinos",
+            process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos",
             {
               headers: {
                 Authorization: localStorage.getItem("jwtToken"),
@@ -108,7 +108,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchInstituciones: async () => {
       if (!get().fetchedInstitucion) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-institucionesFinancieras",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-institucionesFinancieras",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),
@@ -126,7 +126,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchTipoEntePublicoObligado: async () => {
       if (!get().fetchedTipoEntePublicoObligado) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-tiposEntePublico",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),
@@ -146,7 +146,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchObligadoSolidarioAval: async () => {
       if (!get().fetchedObligadoSolidarioAval) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-obligadoSolidarioAval",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-obligadoSolidarioAval",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),

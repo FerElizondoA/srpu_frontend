@@ -81,7 +81,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     fetchPeriocidadPago: async () => {
         if(!get().fetchedPeriocidadPago){
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-periodicidadDePago",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-periodicidadDePago",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
@@ -99,7 +99,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     fetchTasaReferencia: async () => {
         if(!get().fetchedTasaReferencia){
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-tasaDeReferencia",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-tasaDeReferencia",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
@@ -117,7 +117,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     fetchDiasEjercicio: async () => {
         if(!get().fetchedDiasEjercicio){
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-diasDelEjercicio",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-diasDelEjercicio",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
