@@ -27,7 +27,6 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import { SolicitudInscripcion } from "../ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
 
@@ -156,16 +155,12 @@ export function ConsultaDeSolicitudPage() {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (solicitud: any) => {
-    //console.log("solicitud!: ", solicitud);
-    let aux: any = JSON.parse(solicitud);
-    console.log("aux!: ", aux);
+  const editarSolicitud = (solicitud: IData) => {
+    let aux: any = JSON.parse(solicitud.Solicitud);
+    aux.IdSolicitud = solicitud.Id;
+    useCortoPlazoStore.setState(aux);
     navigate("../ObligacionesCortoPlazo");
   };
-
-  const fetchDocumento: Function = useCortoPlazoStore(
-    (state) => state.fetchDocumento
-  );
 
   const fetchBorrarSolicitud: Function = useCortoPlazoStore(
     (state) => state.fetchBorrarSolicitud
@@ -299,22 +294,25 @@ export function ConsultaDeSolicitudPage() {
                       </Tooltip>
 
                       <Tooltip title="Edit">
-                        <IconButton type="button" aria-label="search">
+                        <IconButton type="button" aria-label="search"
+                          onClick={() => editarSolicitud(row)}
+                        >
                           <EditIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
+
                       <Tooltip title="Descargar">
-                        <IconButton type="button" aria-label="search">
-                          <DownloadIcon
-                            onClick={() => {
-                              //console.log(JSON.parse(row.Solicitud));
-                              DescargarConsultaSolicitud(row.Solicitud);
-                            }}
-                          />
+                        <IconButton type="button" aria-label="search"
+                          onClick={() => {
+                            DescargarConsultaSolicitud(row.Solicitud);
+                          }}
+                        >
+                          <DownloadIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
+
                       <Tooltip title="Comentarios">
                         <IconButton type="button" aria-label="search">
                           <CommentIcon />
@@ -331,14 +329,13 @@ export function ConsultaDeSolicitudPage() {
                               : false
                           }
                           aria-label="search"
+                          onClick={() => {
+                            getSolicitudes(setDatos);
+                            fetchBorrarSolicitud(row.Id);
+                            getSolicitudes(setDatos);
+                          }}
                         >
-                          <DeleteIcon
-                            onClick={() => {
-                              getSolicitudes(setDatos);
-                              fetchBorrarSolicitud(row.Id);
-                              getSolicitudes(setDatos);
-                            }}
-                          />
+                          <DeleteIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
