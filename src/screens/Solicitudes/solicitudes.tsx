@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Grid, Box, Radio, TextField, Button, TableHead, TableContainer } from "@mui/material";
+import { Grid, Box, TextField, Button } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import shadows from "@mui/material/styles/shadows";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -14,26 +13,11 @@ import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import { getPreviewSolicitud } from "./APIGetSolicitudes";
-import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-
-import Stack from "@mui/material/Stack";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { queriesSolicitud } from "./queriesSolicitudes";
 
 export function Solicitudes() {
   //Declaraciones
-  const [value, setValue] = useState<Dayjs | null>(dayjs(new Date()));
-
-  const cambioFecha = (newValue: Dayjs | null) => {
-    setValue(newValue);
-  };
-
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
