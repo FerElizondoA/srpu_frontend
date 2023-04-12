@@ -22,19 +22,5 @@ export const queriesSolicitud = {
       background: "orange",
       height: 750,
     },
-    botones: {
-      marginleft: 90,
-      marginRigth: 8,
-    },
-  },
-  calendaro: {
-    "@media (max-width: 513px)": {
-      marginTop: 4,
-    },
-  },
-  botones: {
-    "@media (max-width: 513px)": {
-      mb: 10,
-    },
   },
 };

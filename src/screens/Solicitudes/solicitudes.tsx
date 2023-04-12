@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, Box, TextField, Button } from "@mui/material";
+import { Grid, Box, TextField, Button, IconButton } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -13,6 +13,9 @@ import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import { getPreviewSolicitud } from "./APIGetSolicitudes";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+
 
 import { queriesSolicitud } from "./queriesSolicitudes";
 
@@ -88,30 +91,25 @@ export function Solicitudes() {
             </List>
           </Grid>
         </Grid>
-        <Grid  xl={12} mt={2} height={"100%"}>
+
+
+        {/* grid Formulario*/}
+        <Grid sx={{display:"flex", justifyContent:"center", flexDirection:"column"}}  xl={12} mt={2} >
        
           <Grid
             container
+            
             item
             mt={3}
-            ml={5}
-            sm={12}
-            xl={12}
-            xs={12}
-            md={12}
-            lg={12}
+            sm={11}
+            xl={11}
+            xs={11}
+            md={11}
+            lg={11}
+            justifyContent={"space-around"}
           >
             {/* grid contenido*/}
-            <Grid item mr={5} sm={2} xl={3} xs={6} md={3} lg={3}>
-              <TextField
-                fullWidth
-                InputProps={{ readOnly: true }}
-                id="outlined-basic"
-                label="Usuario"
-                variant="standard"
-                
-              ></TextField>
-            </Grid>
+           
 
             <Grid item mr={5} sm={2} xl={3} xs={6} md={3} lg={3}>
               <TextField
@@ -119,19 +117,17 @@ export function Solicitudes() {
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
                 label="Solicitado Por"
-                
                 variant="standard"
               ></TextField>
             </Grid>
 
-            <Grid item  sm={3} xl={4} xs={7} md={4} lg={4} sx={queriesSolicitud.calendaro}>
+            <Grid item  sm={3} xl={4} xs={7} md={4} lg={4}>
             <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
                 label="Fecha de Creacion"
                 variant="standard"
-                
               ></TextField>
             </Grid>
           </Grid>
@@ -139,12 +135,12 @@ export function Solicitudes() {
             item
             container
             mt={5}
-            ml={5}
             sm={12}
             xl={12}
             xs={12}
             md={12}
             lg={12}
+            justifyContent={"space-evenly"}
           >
             <Grid item mr={5} xs={8} sm={3} md={3} lg={3} xl={3} >
               <TextField
@@ -184,7 +180,7 @@ export function Solicitudes() {
             container
             item
             mt={5}
-            ml={5}
+            justifyContent={"space-evenly"}
             sm={12}
             xl={12}
             xs={12}
@@ -236,7 +232,7 @@ export function Solicitudes() {
             container
             item
             mt={5}
-            ml={5}
+            justifyContent={"space-evenly"}
             sm={12}
             xl={12}
             xs={12}
@@ -287,8 +283,18 @@ export function Solicitudes() {
           </Grid>
 
       
-          <Grid container item mt={5} ml={5}>
-            <Grid item sm={8} xl={10} xs={8} md={10} lg={10}>
+          <Grid   
+           container
+           item
+           mt={5}
+           justifyContent={"space-evenly"}
+           sm={12}
+           xl={12}
+           xs={12}
+           md={12}
+           lg={12}
+          >
+            <Grid item justifyContent={"space-between"} sm={8} xl={10} xs={8} md={10} lg={10}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -298,28 +304,26 @@ export function Solicitudes() {
                 multiline
                 rows={2}
                 maxRows={3}
-                
               ></TextField>
             </Grid>
           </Grid>
           
 
-          <Grid item  mt={3} sx={queriesSolicitud.botones} >
+          <Grid item display={"flex"} justifyContent={"space-evenly"} mt={3} >
             <Button
-              sx={{  ml: 2, mr: 8 }}
-              color="info"
+              color="primary"
               variant="contained"
               onClick={() => {}}
+              endIcon={<ArrowBackIosNewOutlinedIcon />}
+              
             >
-              Aceptar
             </Button>
             <Button
-              sx={{mr: 1.5 }}
-              color="error"
+              color="primary"
               variant="contained"
               onClick={() => {}}
+              endIcon={<ArrowForwardIosOutlinedIcon />}
             >
-              Cancelar
             </Button>
           </Grid>
         </Grid>
