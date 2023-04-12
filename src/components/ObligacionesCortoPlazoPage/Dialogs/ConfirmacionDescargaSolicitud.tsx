@@ -18,6 +18,7 @@ import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ConfirmButton, DeleteButton } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -38,9 +39,12 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  const fetchDocumento: Function = useCortoPlazoStore(
-    (state) => state.fetchDocumento
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
+
+    
   );
+
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
@@ -64,6 +68,11 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
   React.useEffect(() => {
     fetchReglas();
   }, []);
+
+  const fetchComentario: Function = useCortoPlazoStore(
+    (state) => state.fetchComentario
+  );
+
   return (
     <Dialog
       open={props.openState}
@@ -120,7 +129,9 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                   //sx ={{textAlign: 'center'}}
                   onClick={() => {
                     props.handler(false);
-                    fetchDocumento(props.selected);
+
+                    crearSolicitud(props.selected)
+
                   }}
                   variant="text"
                 >
