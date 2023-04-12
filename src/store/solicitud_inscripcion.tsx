@@ -122,7 +122,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     };
 
-    console.log("solicitud! :", solicitud);
+    
 
     if (solicitud.IdSolicitud.length === 0) {
      
@@ -151,9 +151,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          console.log("RESPONSE.data.data: ", response.data.data);
-          get().fetchComentario(response.data.data.Id, get().comentarios)
-          console.log("i am a commentary ", get().comentarios);
+          
+          if(get().comentarios === null || get().comentarios === ''){
+            
+          }else{
+            get().fetchComentario(response.data.Id, get().comentarios)
+          
+          }
           
         })
         .catch((e) => {
@@ -187,9 +191,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          console.log("RESPONSE.DATA: : ", response.data);
-          get().fetchComentario(response.data.Id, get().comentarios)
+          console.log("hola");
+          
+          if(get().comentarios === null || get().comentarios === ''){
+            
+          }else{
+            get().fetchComentario(response.data.Id, get().comentarios)
           console.log("i am a commentary ", get().comentarios);
+          }
+          
           
         })
         .catch((e) => {
@@ -206,7 +216,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       timer: 3000,
       timerProgressBar: true,
     });
-    console.log("soy el id: ", Id);
+    
 
     const response = axios
       .delete(
@@ -222,7 +232,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(function (response) {
-        console.log("hola no se si funcione");
+        
         if (response.status === 200) {
           Toast.fire({
             icon: "success",
@@ -242,7 +252,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
-    //console.log("soy el id",Id);
+  
     console.log(comentario);
     const response = axios.post(
       process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
@@ -258,7 +268,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       }
     )
     .then((response) => {
-      console.log("RESPONSE.DATA2: ", response.data);
+      
     })
     .catch((e) => {
       console.log("Stack trace {", e, "}");
