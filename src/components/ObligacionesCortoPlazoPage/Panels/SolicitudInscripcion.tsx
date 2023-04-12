@@ -24,6 +24,7 @@ import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSo
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
 
+
 interface Head {
   label: string;
 }
@@ -94,14 +95,12 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-  const fetchDocumento: Function = useCortoPlazoStore(
-    (state) => state.fetchDocumento
-  );
+  
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
-  const fetchBorrador: Function = useCortoPlazoStore(
-    (state) => state.fetchBorrador
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
   );
 
   const [selected, setSelected] = React.useState<number[]>([]);
@@ -357,7 +356,7 @@ export function SolicitudInscripcion() {
 
           <Fab
             variant="extended"
-            color="success" //onClick={() => fetchBorrador(selected)}
+            color="success" //onClick={() => crearSolicitud(selected)}
             onClick={() => {
               
               changeOpenDialogBorradorState(!openDialog);

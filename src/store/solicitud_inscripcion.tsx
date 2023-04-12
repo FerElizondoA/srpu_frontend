@@ -4,6 +4,7 @@ import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
+import { log } from "console";
 
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
@@ -20,10 +21,11 @@ export interface SolicitudInscripcionSlice {
   changeIdentificacion: (newIdentificacion: string) => void;
   changeReglas: (newReglas: string) => void;
   changeComentarios: (newComentarios: string) => void;
-  fetchDocumento: (reglasSeleccionadas: number[]) => void;
+  
   fetchReglas: () => void;
-  fetchBorrador: (reglasSeleccionadas: number[]) => void;
+  crearSolicitud: (reglasSeleccionadas: number[]) => void;
   fetchBorrarSolicitud: (Id: string) => boolean;
+  fetchComentario: (Id: string, comentario: string) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
@@ -53,82 +55,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   /////////////////////////////
 
-  fetchDocumento: async (reglasSeleccionadas: number[]) => {
-    let reglas: string[] = [];
-    reglasSeleccionadas.forEach((it) => {
-      reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
-    });
-
-    const organismo = useCortoPlazoStore.getState().organismo;
-    const contrato = useCortoPlazoStore.getState().tipoDocumento;
-    const banco = useCortoPlazoStore.getState().institucion;
-    const monto = useCortoPlazoStore.getState().montoOriginal;
-    const fecha = useCortoPlazoStore.getState().fechaContratacion;
-    const fechav = useCortoPlazoStore.getState().fechaVencimiento;
-    const destino = useCortoPlazoStore.getState().destino;
-    const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado =
-      useCortoPlazoStore.getState().tipoEntePublico;
-    const entePublicoObligado =
-      useCortoPlazoStore.getState().entePublicoObligado;
-    const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
-    const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
-    const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
-    const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
-    const obligadoSolidario =
-      useCortoPlazoStore.getState().obligadoSolidarioAval;
-    const tasaInteres = useCortoPlazoStore.getState().tasaReferencia;
-
-    const response = await axios.post(
-      "http://10.200.4.46:7000/documento_srpu",
-
-      {
-        nombre: servidorpublico,
-        oficionum: "10",
-        cargo: get().cargo,
-        organismo: organismo,
-        InstitucionBancaria: banco,
-        monto: monto.toString(),
-        destino: destino,
-        dias: plazoDias,
-        tipoEntePublicoObligado: tipoEntePublicoObligado,
-        entePublicoObligado: entePublicoObligado,
-        tasaefectiva: tasaefectiva,
-        tasaInteres: tasaInteres,
-        reglas: reglas,
-        tipocomisiones: tipocomisiones,
-        servidorpublico: servidorpublico,
-        contrato: contrato,
-        periodopago: periodopago,
-        obligadoSolidarioAvalTable: obligadoSolidario,
-
-        fechaContrato: format(new Date(fecha), "yyyy-MM-dd"),
-        fechaVencimiento: format(new Date(fechav), "yyyy-MM-dd"),
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-        responseType: "arraybuffer",
-      }
-    );
-    const a = window.URL || window.webkitURL;
-
-    const url = a.createObjectURL(
-      new Blob([response.data], { type: "application/pdf" })
-    );
-
-    let link = document.createElement("a");
-
-    link.setAttribute("download", `contrato.pdf`);
-    link.setAttribute("href", url);
-    document.body.appendChild(link);
-    link.click();
-  },
+ 
 
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
+        
+        
         process.env.REACT_APP_APPLICATION_BACK +
           "/api/get-reglaDeFinanciamiento",
         {
@@ -138,6 +71,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       );
       response.data.data.forEach((e: any) => {
+        console.log("response 2", response);
+        
         set((state) => ({
           reglasCatalog: [...state.reglasCatalog, e.Descripcion],
         }));
@@ -146,7 +81,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     }
   },
 
-  fetchBorrador: async (reglasSeleccionadas: number[]) => {
+  crearSolicitud: async (reglasSeleccionadas: number[]) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
@@ -178,13 +113,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
       destino: state.destino,
       denominacion: state.denominacion,
       IdInstitucion: state.IdInstitucion,
-      institucion: state.institucion
+      institucion: state.institucion,
       /* ---- INFORMACIÓN GENERAL ---- */
+
+      /* ---- SOLICITUD DE INSCRIPCION ---- */
+      reglas: reglasSeleccionadas
+
+
     };
 
     console.log("solicitud! :", solicitud);
 
     if (solicitud.IdSolicitud.length === 0) {
+     
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
@@ -210,7 +151,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          console.log("RESPONSE: ", response);
+          console.log("RESPONSE.data.data: ", response.data.data);
+          get().fetchComentario(response.data.data.Id, get().comentarios)
+          console.log("i am a commentary ", get().comentarios);
+          
         })
         .catch((e) => {
           console.log("Stack trace {", e, "}");
@@ -243,7 +187,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          console.log("RESPONSE: ", response);
+          console.log("RESPONSE.DATA: : ", response.data);
+          get().fetchComentario(response.data.Id, get().comentarios)
+          console.log("i am a commentary ", get().comentarios);
+          
         })
         .catch((e) => {
           console.log("Stack Trace: {", e, "}");
@@ -293,6 +240,31 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
+
+  fetchComentario: (Id: string, comentario: string) => {
+    //console.log("soy el id",Id);
+    console.log(comentario);
+    const response = axios.post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentarios",
+      {
+        IdSolicitud: Id,
+        Comentario: comentario,
+        IdUsuario: localStorage.getItem("IdUsuario"),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    )
+    .then((response) => {
+      console.log("RESPONSE.DATA2: ", response.data);
+    })
+    .catch((e) => {
+      console.log("Stack trace {", e, "}");
+    });
+  },
+  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
