@@ -6,36 +6,42 @@ import {
   TableContainer,
   TableHead,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../CustomComponents";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-
+import EditIcon from "@mui/icons-material/Edit";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../APIS/APIS Cortoplazo/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-
-import { format } from 'date-fns'
+import DownloadIcon from "@mui/icons-material/Download";
+import { format } from "date-fns";
+import { useCortoPlazoStore } from "../../store/main";
+import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
 
 interface IData {
+  Id: string;
   Institucion: string;
   TipoEntePublico: string;
   ClaveDeInscripcion: string;
   Estatus: string;
   FechaContratacion: Date;
   MontoOriginalContratado: number;
-  Ver: boolean;
+  Acciones: string;
   Solicitud: string;
+  tipoDocumento: string;
+  TipoSolicitud: string;
 }
 
 interface Head {
@@ -74,10 +80,16 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Fecha de contratacion",
   },
+
   {
-    id: "Ver",
+    id: "tipoDocumento",
     isNumeric: true,
-    label: "Ver",
+    label: "TipoDocumento",
+  },
+  {
+    id: "Acciones",
+    isNumeric: true,
+    label: "Acciones",
   },
 ];
 
@@ -115,9 +127,12 @@ export function ConsultaDeSolicitudPage() {
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.TipoEntePublico.toString()
           .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.tipoDocumento
+          .toString()
+          .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-
         return elemento;
       }
     });
@@ -130,6 +145,7 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
+    console.log("soy los datos: ", datos);
   }, [datos]);
 
   useEffect(() => {
@@ -139,10 +155,29 @@ export function ConsultaDeSolicitudPage() {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (solicitud: any) => {
-    let aux: any = JSON.parse(solicitud)
-    navigate("../ObligacionesCortoPlazo")
+  const editarSolicitud = (solicitud: IData) => {
+    let aux: any = JSON.parse(solicitud.Solicitud);
+    aux.IdSolicitud = solicitud.Id;
+    useCortoPlazoStore.setState(aux);
+    navigate("../ObligacionesCortoPlazo");
   };
+
+  const fetchBorrarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.fetchBorrarSolicitud
+  );
+
+  /////////////////////////////////////////////
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const [openDialogVer, changeOpenDialogVer] = useState(false);
+  const changeOpenDialogVerState = (open: boolean) => {
+    changeOpenDialogVer(open);
+  };
+
+  const changeCloseDialogVerState = () => {
+    changeOpenDialogVer(false);
+  };
+  /////////////////////////////////////77
 
   return (
     <Grid container direction="column">
@@ -150,14 +185,7 @@ export function ConsultaDeSolicitudPage() {
         <LateralMenu />
       </Grid>
 
-      <Grid
-        item
-        mt={5}
-        mb={5}
-        lg={12}
-        display="center"
-        justifyContent="center"
-      >
+      <Grid item mt={5} mb={5} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
@@ -174,7 +202,7 @@ export function ConsultaDeSolicitudPage() {
             }}
             onKeyPress={(ev) => {
               if (ev.key === "Enter") {
-                handleSearch()
+                handleSearch();
                 ev.preventDefault();
                 return false;
               }
@@ -194,26 +222,36 @@ export function ConsultaDeSolicitudPage() {
             <TableHead>
               {heads.map((head) => (
                 <StyledTableCell key={head.id}>
-                  <TableSortLabel>{head.label}</TableSortLabel>
+                  <TableSortLabel>{head.label} </TableSortLabel>
                 </StyledTableCell>
               ))}
             </TableHead>
             <TableBody>
               {datosFiltrados.map((row) => {
-
                 let chip = <></>;
-                if(row.Estatus === "En_actualizacion "){
-                  chip = <Chip label="En verificación" icon={<WarningAmberIcon/>} 
-                  color="warning" variant="outlined"/>
+
+                if (row.Estatus === "En_actualizacion ") {
+                  console.log("soy el row Id: ", row.Id);
+
+                  chip = (
+                    <Chip
+                      label="En verificación"
+                      icon={<WarningAmberIcon />}
+                      color="warning"
+                      variant="outlined"
+                    />
+                  );
                 }
 
                 return (
-                  <StyledTableRow>
+                  <StyledTableRow
+                  //sx={{ alignItems: "center", justifyContent: "center" }}
+                  >
                     <StyledTableCell component="th" scope="row">
                       {row.Institucion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" align="center">
+                    <StyledTableCell component="th" scope="row">
                       {row.TipoEntePublico.toString()}
                     </StyledTableCell>
 
@@ -221,11 +259,11 @@ export function ConsultaDeSolicitudPage() {
                       {chip}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" align="center">
+                    <StyledTableCell component="th" scope="row">
                       {row.ClaveDeInscripcion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" align="center">
+                    <StyledTableCell component="th" scope="row">
                       {"$" + row.MontoOriginalContratado.toString()}
                     </StyledTableCell>
 
@@ -234,25 +272,85 @@ export function ConsultaDeSolicitudPage() {
                     </StyledTableCell>
 
                     <StyledTableCell component="th" scope="row">
-                      <IconButton
-                        type="button"
-                        sx={{ p: "10px" }}
-                        aria-label="search"
-                      >
-                        <VisibilityIcon
+                      {row.TipoSolicitud}
+                    </StyledTableCell>
+
+                    <StyledTableCell
+                      sx={{ flexDirection: "row" }}
+                      align="center"
+                      component="th"
+                      scope="row"
+                    >
+                      <Tooltip title="Ver">
+                        <IconButton type="button" aria-label="search">
+                          <VisibilityIcon
+                            onClick={() => {
+                              //console.log(JSON.parse(row.Solicitud));
+                              changeOpenDialogVer(!openDialogVer);
+                            }}
+                          />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Edit">
+                        <IconButton type="button" aria-label="search"
+                          onClick={() => editarSolicitud(row)}
+                        >
+                          <EditIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Descargar">
+                        <IconButton type="button" aria-label="search"
                           onClick={() => {
-                            handleNavigate(row.Solicitud);
+                            DescargarConsultaSolicitud(row.Solicitud);
                           }}
-                        />
-                        {row.Ver}
-                      </IconButton>
+                        >
+                          <DownloadIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Comentarios">
+                        <IconButton type="button" aria-label="search">
+                          <CommentIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Borrar">
+                        <IconButton
+                          type="button"
+                          disabled={
+                            localStorage.getItem("Rol") === "Capturador"
+                              ? true
+                              : false
+                          }
+                          aria-label="search"
+                          onClick={() => {
+                            getSolicitudes(setDatos);
+                            fetchBorrarSolicitud(row.Id);
+                            getSolicitudes(setDatos);
+                          }}
+                        >
+                          <DeleteIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 );
-})}
+              })}
             </TableBody>
           </Table>
         </TableContainer>
+        <VerBorradorDocumento
+          handler={changeOpenDialogVer}
+          openState={openDialogVer}
+          selected={selected}
+        />
       </Grid>
     </Grid>
   );

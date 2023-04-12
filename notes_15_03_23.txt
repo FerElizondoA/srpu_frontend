@@ -1,0 +1,21 @@
+ 
+fecha de contratacion - fecha como dia uno - si la de contratacion es 5 y la finalizacion es 6 - son dos dias
+
+Ente Publico Obligado - ligado al usuario
+
+--- Disposicion/Pagos de Capital
+
+- Cambiar a Fecha de Disposicion - maximo un año
+
+- Fecha de Primer Pago - igual que el anterior
+
+- Fecha de Primer
+
+--- Comisiones
+
+- Fecha Pago de Comision - abierta a fecha posterior de hoy maximo un año
+
+
+--- Documento
+
+- Agregar tipografia

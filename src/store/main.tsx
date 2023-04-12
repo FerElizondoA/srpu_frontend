@@ -6,17 +6,19 @@ import { createSolicitudInscripcionSlice, SolicitudInscripcionSlice } from "./so
 import { createPagosCapitalSlice, PagosCapitalSlice } from "./pagos_capital";
 import { createTasaEfectivaSlice, TasaEfectivaSlice } from "./tasa_efectiva";
 import { createCondicionFinancieraSlice, CondicionFinancieraSlice } from "./condicion_financiera";
+import { createDocumentoSlice, DocumentosSlice } from "./documentacion";
 
-export type SolicitudSlice = EncabezadoSlice & InformacionGeneralSlice
+export type SolicitudStore = EncabezadoSlice & InformacionGeneralSlice
                 & SolicitudInscripcionSlice & PagosCapitalSlice
-                & TasaEfectivaSlice & CondicionFinancieraSlice;
+                & TasaEfectivaSlice & CondicionFinancieraSlice & DocumentosSlice;
 
-export const useCortoPlazoStore = create<SolicitudSlice>()((...x) => ({
+export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
     ...createEncabezadoSlice(...x),
     ...createInformacionGeneralSlice(...x),
     ...createSolicitudInscripcionSlice(...x),
     ...createPagosCapitalSlice(...x),
     ...createTasaEfectivaSlice(...x),
-    ...createCondicionFinancieraSlice(...x)
+    ...createCondicionFinancieraSlice(...x),
+    ...createDocumentoSlice(...x)
 }))
 

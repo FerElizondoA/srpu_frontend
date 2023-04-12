@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { getTiposDocumentos } from "../../APIS/APIS Cortoplazo/APISDocumentacion";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
+import { useCortoPlazoStore } from "../../../store/main";
 
 interface Data {
   Documento: String;
@@ -36,7 +37,7 @@ interface Head {
   label: string;
 }
 
-interface IFiLe {
+export interface IFile {
   archivo: File;
   tipoArchivo: string;
 }
@@ -72,12 +73,15 @@ export function Documentacion() {
   const [numArchivosObligatorios, setNumArchivosObligatosios] = useState<number>(0);
   const [archivosObligatorios, setarchivosObligatosios] = useState<Array<ITiposDocumento>>([]);
   //array con objeto que tiene  archivo:File y tipoArchivo:string
-  const [archivos, setArchivos] = useState<Array<IFiLe>>(
+  const [archivos, setArchivos] = useState<Array<IFile>>(
     numArchivos.map(() => {
       return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
     })
   );
 
+  const documentosObligatoriosArreglo: IFile[] =useCortoPlazoStore(state => state.documentosObligatoriosArreglo)
+  const adddocumentosObligatoriosArreglo: Function =useCortoPlazoStore(state => state.addDocumentosObligatoriosArreglo)
+  
   useEffect(() => {
 
     getTiposDocumentos(setTiposDocumentos);
@@ -139,7 +143,7 @@ export function Documentacion() {
   };
 
   const quitDocument = (index: number) => {
-    let auxArrayFile: IFiLe[] = [];
+    let auxArrayFile: IFile[] = [];
     archivos.map((archivo, x) => {
       if (x !== index) auxArrayFile.push(archivo);
     });
@@ -155,6 +159,11 @@ export function Documentacion() {
     setArchivos(aux);
     
   }
+
+  
+
+
+
 
   return (
     <Grid item container direction="column" sx={{ display: "flex" }}>

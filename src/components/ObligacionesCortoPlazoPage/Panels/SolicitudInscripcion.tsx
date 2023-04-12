@@ -20,6 +20,10 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
+import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
+
 
 interface Head {
   label: string;
@@ -35,6 +39,31 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
+
+  const [openDialog, changeOpenDialog] = React.useState(false);
+  const changeOpenDialogState = (open: boolean) => {
+    changeOpenDialog(open);
+  };
+
+  const [openDialogBorrador, changeOpenDialogBorrador] = React.useState(false);
+  const changeOpenDialogBorradorState = (open: boolean) => {
+    changeOpenDialogBorrador(open);
+  };
+
+  const changeCloseDialogBorradorState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
+
+  const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
+  const changeOpenDialogCancelarState = (open: boolean) => {
+    changeOpenDialogCancelar(open);
+  };
+
+  const changeCloseDialogCancelarState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
   );
@@ -66,21 +95,19 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-  const fetchDocumento: Function = useCortoPlazoStore(
-    (state) => state.fetchDocumento
-  );
+  
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
-  const fetchBorrador: Function = useCortoPlazoStore(
-    (state) => state.fetchBorrador
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
   );
 
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [selected, setSelected] = React.useState<number[]>([]);
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -146,6 +173,7 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
+
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
@@ -179,9 +207,10 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Solicitante autorizado
+            Solicitante Autorizado
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             variant="standard"
             value={solicitanteAutorizado}
@@ -298,7 +327,10 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="error" sx={{ mb: "10px" }}>
+          <Fab variant="extended" color="error" onClick={() => {
+              
+              changeOpenDialogCancelarState(!openDialog);
+            }}sx={{ mb: "10px" }}>
             <CancelIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
@@ -317,16 +349,17 @@ export function SolicitudInscripcion() {
                 : true
             }
           >
-            {/* <IconButton>
-              <Typography sx={queries.medium_text}>Autorizar</Typography>
-              </IconButton> */}
             <CheckIcon sx={{ mr: 1 }} />
             {buttodescription()}
           </Fab>
+
           <Fab
             variant="extended"
-            color="success"
-            onClick={() => fetchBorrador(selected)}
+            color="success" //onClick={() => crearSolicitud(selected)}
+            onClick={() => {
+              
+              changeOpenDialogBorradorState(!openDialog);
+            }}
             sx={{ mb: "10px" }}
           >
             <CheckIcon sx={{ mr: 1 }} />
@@ -336,11 +369,29 @@ export function SolicitudInscripcion() {
           <Fab
             variant="extended"
             color="success"
-            onClick={() => fetchDocumento(selected)}
+            onClick={() => {
+              changeOpenDialogState(!openDialog);
+            }}
           >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
+
+          <ConfirmacionDescargaSolicitud
+            handler={changeOpenDialogState}
+            openState={openDialog}
+            selected={selected}
+          />
+          <ConfirmacionBorradorSolicitud
+            handler={changeOpenDialogBorradorState}
+            openState={openDialogBorrador}
+            selected={selected}
+          />
+          <ConfirmacionCancelarSolicitud
+            handler={changeOpenDialogCancelarState}
+            openState={openDialogCancelar}
+            selected={selected}
+          />
         </Grid>
       </Grid>
     </Grid>

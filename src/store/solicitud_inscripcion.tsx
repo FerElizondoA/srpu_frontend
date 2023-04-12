@@ -1,7 +1,10 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
-import { format } from 'date-fns'
+import { format } from "date-fns";
+import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
+import Swal from "sweetalert2";
+import { log } from "console";
 
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
@@ -11,101 +14,56 @@ export interface SolicitudInscripcionSlice {
   documentoAutorizado: string;
   identificacion: string;
   reglas: string[];
+  comentarios: string;
   changeServidorPublico: (newServidorPublico: string) => void;
   changeCargo: (newCargo: string) => void;
   changeDocumentoAutorizado: (newDocumentoAutorizado: string) => void;
   changeIdentificacion: (newIdentificacion: string) => void;
   changeReglas: (newReglas: string) => void;
-  fetchDocumento: (reglasSeleccionadas: number[]) => void;
+  changeComentarios: (newComentarios: string) => void;
+  
   fetchReglas: () => void;
-  fetchBorrador: (reglasSeleccionadas: number[]) => void;
+  crearSolicitud: (reglasSeleccionadas: number[]) => void;
+  fetchBorrarSolicitud: (Id: string) => boolean;
+  fetchComentario: (Id: string, comentario: string) => void;
 }
 
-export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionSlice> = (set, get) => ({
+export const createSolicitudInscripcionSlice: StateCreator<
+  SolicitudInscripcionSlice
+> = (set, get) => ({
   fetchedReglas: false,
   reglasCatalog: [],
   nombreServidorPublico: "Rosalba Aguilar Díaz",
   cargo: "Directora de Deuda Pública",
   documentoAutorizado: "",
+  comentarios: "",
   identificacion: "",
   reglas: [],
-  changeServidorPublico: (newServidorPublico: string) => set(() => ({ nombreServidorPublico: newServidorPublico })),
+  changeServidorPublico: (newServidorPublico: string) =>
+    set(() => ({ nombreServidorPublico: newServidorPublico })),
   changeCargo: (newCargo: string) => set(() => ({ cargo: newCargo })),
-  changeDocumentoAutorizado: (newDocumentoAutorizado: string) => set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
-  changeIdentificacion: (newIdetificacion: string) => set(() => ({ identificacion: newIdetificacion })),
-  changeReglas: (newReglas: string) => set((state) => ({ reglas: [...state.reglas, newReglas] })),
-  fetchDocumento: async (reglasSeleccionadas: number[]) => {
-    let reglas: string[] = [];
-    reglasSeleccionadas.forEach((it) => {
-      reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
-    });
+  changeDocumentoAutorizado: (newDocumentoAutorizado: string) =>
+    set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
+  changeIdentificacion: (newIdetificacion: string) =>
+    set(() => ({ identificacion: newIdetificacion })),
+  changeReglas: (newReglas: string) =>
+    set((state) => ({ reglas: [...state.reglas, newReglas] })),
+  changeComentarios: (newComentarios: string) =>
+    set((state) => ({ comentarios: newComentarios })),
 
-    const organismo = useCortoPlazoStore.getState().organismo;
-    const contrato = useCortoPlazoStore.getState().tipoDocumento;
-    const banco = useCortoPlazoStore.getState().institucion;
-    const monto = useCortoPlazoStore.getState().montoOriginal;
-    const fecha = useCortoPlazoStore.getState().fechaContratacion;
-    const fechav = useCortoPlazoStore.getState().fechaVencimiento;
-    const destino = useCortoPlazoStore.getState().destino;
-    const plazoDias = useCortoPlazoStore.getState().plazoDias;
-    const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublico;
-    const entePublicoObligado = useCortoPlazoStore.getState().entePublicoObligado;
-    const tasaefectiva = useCortoPlazoStore.getState().tasaEfectiva;
-    const tipocomisiones = useCortoPlazoStore.getState().tipoComision;
-    const servidorpublico = useCortoPlazoStore.getState().nombreServidorPublico;
-    const periodopago = useCortoPlazoStore.getState().capitalPeriocidadPago;
-    const obligadoSolidario = useCortoPlazoStore.getState().obligadoSolidarioAval;
-    const tasaInteres = useCortoPlazoStore.getState().tasaReferencia  
-    
-    const response = await axios.post(
-      "http://10.200.4.46:7000/documento_srpu",
+  //////////////////////////////
 
-      {
-        nombre: servidorpublico,
-        oficionum: "10",
-        cargo: get().cargo,
-        organismo: organismo,
-        InstitucionBancaria: banco,
-        monto: monto.toString(),
-        destino: destino,
-        dias: plazoDias,
-        tipoEntePublicoObligado: tipoEntePublicoObligado,
-        entePublicoObligado: entePublicoObligado,
-        tasaefectiva: tasaefectiva,
-        tasaInteres: tasaInteres,
-        reglas: reglas,
-        tipocomisiones: tipocomisiones,
-        servidorpublico: servidorpublico,
-        contrato: contrato,
-        periodopago: periodopago,
-        obligadoSolidario: obligadoSolidario,
-        fechaContrato: format(new Date(fecha), "yyyy-MM-dd"),
-        fechaVencimiento: format(new Date(fechav), "yyyy-MM-dd"),
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-        responseType: "arraybuffer",
-      }
-    );
-    const a = window.URL || window.webkitURL;
+  /////////////////////////////
 
-    const url = a.createObjectURL(
-      new Blob([response.data], { type: "application/pdf" })
-    );
+ 
 
-    let link = document.createElement("a");
-
-    link.setAttribute("download", `contrato.pdf`);
-    link.setAttribute("href", url);
-    document.body.appendChild(link);
-    link.click();
-  },
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
-        "http://10.200.4.199:8000/api/get-reglaDeFinanciamiento",
+        
+        
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -113,6 +71,8 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
         }
       );
       response.data.data.forEach((e: any) => {
+        console.log("response 2", response);
+        
         set((state) => ({
           reglasCatalog: [...state.reglasCatalog, e.Descripcion],
         }));
@@ -121,83 +81,250 @@ export const createSolicitudInscripcionSlice: StateCreator<SolicitudInscripcionS
     }
   },
 
-  fetchBorrador: async (reglasSeleccionadas: number[]) => {
+  crearSolicitud: async (reglasSeleccionadas: number[]) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-    
+    console.log(reglas);
+
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
-      capitalFechaPrimerPago: format(new Date(state.capitalFechaPrimerPago), "yyyy-MM-dd"),
-      capitalNumeroPago: state.capitalNumeroPago,
-      capitalPeriocidadPago: state.capitalPeriocidadPago,
-      cargo: state.cargo,
-      cargoSolicitante: state.cargoSolicitante,
-      denominacion: state.denominacion,
-      destino: state.destino, 
-      disposicionFechaContratacion: format(new Date(state.disposicionFechaContratacion), "yyyy-MM-dd"),
-      disposicionImporte: state.disposicionImporte,
-      documentoAutorizado: state.documentoAutorizado,
-      efectivaDiasEjercicio: state.efectivaDiasEjercicio,
-      efectivaFechaContratacion: format(new Date(state.efectivaFechaContratacion), "yyyy-MM-dd"),
-      efectivaMontoFijo: state.efectivaMontoFijo,
-      efectivaPeriocidadPago: state.efectivaPeriocidadPago,
-      efectivaPorcentajeFijo: state.efectivaPorcentajeFijo,
-      entePublicoObligado: state.entePublicoObligado,
-      fechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
-      fechaVencimiento: format(new Date(state.fechaVencimiento), "yyyy-MM-dd"),
-      hasIVA: state.hasIVA,
-      hasMonto: state.hasMonto,
-      hasPorcentaje: state.hasPorcentaje,
-      identificacion: state.identificacion,
-      institucion: state.institucion,
-      montoOriginal: state.montoOriginal,
-      nombreServidorPublico: state.nombreServidorPublico,
-      organismo: state.organismo,
-      plazoDias: state.plazoDias,
-      sobreTasa: state.sobreTasa,
-      solicitanteAutorizado: state.solicitanteAutorizado,
-      tasaDiasEjercicio: state.tasaDiasEjercicio,
-      tasaEfectiva: state.tasaEfectiva,
-      tasaFechaPrimerPago: format(new Date(state.tasaFechaPrimerPago), "yyyy-MM-dd"),
-      tasaPeriocidadPago: state.tasaPeriocidadPago,
-      tasaReferencia: state.tasaReferencia,
-      tipoComision: state.tipoComision,
+
+      /* ---- ENCABEZADO ---- */
+      IdSolicitud: state.IdSolicitud,
       tipoDocumento: state.tipoDocumento,
+      IdTipoEntePublico: state.IdTipoEntePublico,
       tipoEntePublico: state.tipoEntePublico,
-      tipoEntePublicoObligado: state.tipoEntePublicoObligado,
-      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
-      condicionFinancieraTable: state.condicionFinancieraTable,
-      reglas: state.reglas,
-      tasaEfectivaTable: state.tasaEfectivaTable,
-      tasaInteresTable: state.tasaInteresTable,
+      solicitanteAutorizado: state.solicitanteAutorizado,
+      IdOrganismo: state.IdOrganismo,
+      organismo: state.organismo,
+      fechaContratacion: state.fechaContratacion,
+      cargoSolicitante: state.cargoSolicitante,
+      /* ---- ENCABEZADO ---- */
+
+
+      /* ---- INFORMACIÓN GENERAL ---- */
+      // plazo dias se calcula automaticamente
+      montoOriginal: state.montoOriginal,
+      fechaVencimiento: state.fechaVencimiento,
+      IdDestino: state.IdDestino,
+      destino: state.destino,
+      denominacion: state.denominacion,
+      IdInstitucion: state.IdInstitucion,
+      institucion: state.institucion,
+      /* ---- INFORMACIÓN GENERAL ---- */
+
+      /* ---- SOLICITUD DE INSCRIPCION ---- */
+      reglas: reglasSeleccionadas
+
+
+    };
+
+    console.log("solicitud! :", solicitud);
+
+    if (solicitud.IdSolicitud.length === 0) {
+     
+      await axios
+        .post(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
+          {
+            TipoSolicitud: solicitud.tipoDocumento,
+            CreadoPor: localStorage.getItem("IdUsuario"),
+            IdInstitucionFinanciera: solicitud.IdInstitucion,
+            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
+            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: solicitud.IdOrganismo,
+            Solicitud: JSON.stringify(solicitud),
+            MontoOriginalContratado: solicitud.montoOriginal,
+            FechaContratacion: format(
+              new Date(solicitud.fechaContratacion),
+              "yyyy-MM-dd"
+            ),
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then((response) => {
+          console.log("RESPONSE.data.data: ", response.data.data);
+          get().fetchComentario(response.data.data.Id, get().comentarios)
+          console.log("i am a commentary ", get().comentarios);
+          
+        })
+        .catch((e) => {
+          console.log("Stack trace {", e, "}");
+        });
+    }else{
+      await axios
+        .put(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
+          {
+            IdUsuario: localStorage.getItem("IdUsuario"),
+            IdSolicitud: solicitud.IdSolicitud,
+            TipoSolicitud: solicitud.tipoDocumento,
+            CreadoPor: localStorage.getItem("IdUsuario"),
+            IdInstitucionFinanciera: solicitud.IdInstitucion,
+            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
+            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: solicitud.IdOrganismo,
+            Solicitud: JSON.stringify(solicitud),
+            MontoOriginalContratado: solicitud.montoOriginal,
+            FechaContratacion: format(
+              new Date(solicitud.fechaContratacion),
+              "yyyy-MM-dd"
+            ),
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then((response) => {
+          console.log("RESPONSE.DATA: : ", response.data);
+          get().fetchComentario(response.data.Id, get().comentarios)
+          console.log("i am a commentary ", get().comentarios);
+          
+        })
+        .catch((e) => {
+          console.log("Stack Trace: {", e, "}");
+        });
     }
+  },
 
-    const response = await axios
-      .post(
-        "http://10.200.4.200:8000/api/create-solicitud",
+  fetchBorrarSolicitud: (Id: string )=> {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    console.log("soy el id: ", Id);
 
+    const response = axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
         {
-          CreadoPor: localStorage.getItem("IdUsuario"),
-          IdInstitucionFinanciera: "ac903b28-acb7-11ed-b719-2c4138b7dab1",
-          IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-          IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-          IdTipoEntePublico: "c277a6d3-bc39-11ed-b789-2c4138b7dab1",
-          Solicitud: JSON.stringify(solicitud),
-          MontoOriginalContratado: solicitud.montoOriginal,
-          FechaContratacion: format(new Date(state.fechaContratacion), "yyyy-MM-dd"),
-        },
-        {
+          data: {
+            IdSolicitud: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
           },
         }
       )
       .then(function (response) {
+        console.log("hola no se si funcione");
+        if (response.status === 200) {
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+          });
+        }
+        return true;
       })
       .catch(function (error) {
+        console.log("Stack Trace: ", error);
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino la solicitud.",
+        });
       });
+    return false;
   },
+
+  fetchComentario: (Id: string, comentario: string) => {
+    //console.log("soy el id",Id);
+    console.log(comentario);
+    const response = axios.post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+      {
+        IdSolicitud: Id,
+        Comentario: comentario,
+        IdUsuario: localStorage.getItem("IdUsuario"),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    )
+    .then((response) => {
+      console.log("RESPONSE.DATA2: ", response.data);
+    })
+    .catch((e) => {
+      console.log("Stack trace {", e, "}");
+    });
+  },
+  
 });
+
+export function DescargarConsultaSolicitud(Solicitud: string) {
+  let solicitud: ISolicitud = JSON.parse(Solicitud);
+
+  const solicitudfechas: any = {
+    fechaContratacion: format(
+      new Date(solicitud.fechaContratacion),
+      "yyyy-MM-dd"
+    ),
+    fechaVencimiento: format(
+      new Date(solicitud.fechaVencimiento),
+      "yyyy-MM-dd"
+    ),
+  };
+  axios
+    .post(
+      "http://10.200.4.46:7000/documento_srpu",
+
+      {
+        nombre: solicitud.nombreServidorPublico,
+        oficionum: "10",
+        cargo: solicitud.cargo,
+        organismo: solicitud.organismo,
+        InstitucionBancaria: solicitud.institucion,
+        monto: solicitud.montoOriginal,
+        destino: solicitud.destino,
+        dias: solicitud.plazoDias,
+        tipoEntePublicoObligado: solicitud.tipoEntePublicoObligado,
+        entePublicoObligado: solicitud.entePublicoObligado,
+        tasaefectiva: solicitud.tasaEfectiva,
+        tasaInteres: solicitud.tasaReferencia,
+        reglas: solicitud.reglas,
+        tipocomisiones: solicitud.tipoComision,
+        servidorpublico: solicitud.nombreServidorPublico,
+        contrato: solicitud.tipoDocumento,
+        periodopago: solicitud.capitalPeriocidadPago,
+        obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        fechaContrato: solicitudfechas.fechaContratacion,
+        fechaVencimiento: solicitudfechas.fechaVencimiento,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      let link = document.createElement("a");
+
+      link.setAttribute("download", `contrato.pdf`);
+      link.setAttribute("href", url);
+      document.body.appendChild(link);
+      link.click();
+    });
+}

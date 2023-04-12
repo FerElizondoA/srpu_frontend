@@ -38,7 +38,7 @@ export const sessionValid = () => {
 
 export const getUserDetails = (idCentral: string) => {
   return axios
-    .get("http://10.200.4.199:8000/api/usuario", {
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/usuario", {
       params: {
         IdUsuario: idCentral,
       },

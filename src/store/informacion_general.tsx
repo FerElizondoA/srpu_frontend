@@ -3,7 +3,6 @@ import axios from "axios";
 
 export type ObligadoSolidarioAval = {
   id: string;
-  //isSelected: boolean;
   obligadoSolidario: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
@@ -15,17 +14,21 @@ export interface InformacionGeneralSlice {
   fetchedDestino: boolean;
   fetchedObligadoSolidarioAval: boolean;
   fetchedTipoEntePublicoObligado: boolean;
-  institucionCatalog: string[];
-  destinoCatalog: string[];
-  obligadoSolidarioAvalCatalog: string[];
-  tipoEntePublicoObligadoCatalog: string[];
+  institucionMap: Map<string | null, string>;
+  destinoMap: Map<string | null, string>;
+  obligadoSolidarioAvalMap: Map<string | null, string>;
+  tipoEntePublicoObligadoMap: Map<string | null, string>;
   plazoDias: number;
   montoOriginal: number;
   fechaVencimiento: string;
+  IdDestino: string;
   destino: string;
+  IdTipoEntePublicoObligado: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
+  IdObligadoSolidarioAval: string;
   obligadoSolidarioAval: string;
+  IdInstitucion: string;
   institucion: string;
   denominacion: string;
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => void;
@@ -33,11 +36,11 @@ export interface InformacionGeneralSlice {
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
-  changeDestino: (newDestino: string) => void;
-  changeInstitucion: (newInstitucion: string) => void;
+  changeDestino: (newId: string, newDestino: string) => void;
+  changeInstitucion: (newId: string, newInstitucion: string) => void;
   changeDenominacion: (newDenominacion: string) => void;
-  changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => void;
-  changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => void;
+  changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => void;
+  changeTipoEntePublicoObligado: (newId: string, newTipoEntePublicoObligado: string) => void;
   changeEntePublicoObligado: (newEntePublicoObligado: string) => void;
   fetchDestinos: () => void;
   fetchInstituciones: () => void;
@@ -51,17 +54,23 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchedDestino: false,
     fetchedObligadoSolidarioAval: false,
     fetchedTipoEntePublicoObligado: false,
+    institucionMap: new Map<string | null, string>(),
     institucionCatalog: [],
-    destinoCatalog: [],
-    obligadoSolidarioAvalCatalog: [],
+    destinoMap: new Map<string | null, string>(),
+    obligadoSolidarioAvalMap: new Map<string | null, string>(),
+    tipoEntePublicoObligadoMap: new Map<string | null, string>(),
     tipoEntePublicoObligadoCatalog: [],
     plazoDias: 0,
     montoOriginal: 0,
     fechaVencimiento: new Date().toString(),
+    IdDestino: "",
     destino: "",
+    IdInstitucion: "",
     institucion: "",
+    IdTipoEntePublicoObligado: "",
     tipoEntePublicoObligado: "",
     entePublicoObligado: "",
+    IdObligadoSolidarioAval: "",
     obligadoSolidarioAval: "",
     denominacion: "Pesos",
     addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => set((state) => ({ obligadoSolidarioAvalTable: [...state.obligadoSolidarioAvalTable, newObligadoSolidarioAval]})),
@@ -69,16 +78,16 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     changePlazoDias: (newPlazoDias: number) => set(() => ({ plazoDias: newPlazoDias })),
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),
-    changeDestino: (newDestino: string) => set(() => ({ destino: newDestino })),
-    changeInstitucion: (newInstitucion: string) => set(() => ({ institucion: newInstitucion })),
+    changeDestino: (newId: string, newDestino: string) => set(() => ({ destino: newDestino, IdDestino: newId })),
+    changeInstitucion: (newId: string, newInstitucion: string) => set(() => ({ institucion: newInstitucion, IdInstitucion: newId })),
     changeDenominacion: (newDenominacion: string) => set(() => ({ denominacion: newDenominacion })),
-    changeObligadoSolidarioAval: (newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval})),
-    changeTipoEntePublicoObligado: (newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado})),
+    changeObligadoSolidarioAval: (newId: string, newObligadoSolidarioAval: string) => set(() => ({ obligadoSolidarioAval: newObligadoSolidarioAval, IdObligadoSolidarioAval: newId})),
+    changeTipoEntePublicoObligado: (newId: string, newTipoEntePublicoObligado: string) => set(() => ({ tipoEntePublicoObligado: newTipoEntePublicoObligado, IdTipoEntePublicoObligado: newId})),
     changeEntePublicoObligado: (newEntePublicoObligado: string) => set(() => ({ entePublicoObligado: newEntePublicoObligado})),
     fetchDestinos: async () => {
         if (!get().fetchedDestino) {
           const response = await axios.get(
-            "http://10.200.4.199:8000/api/get-destinos",
+            process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos",
             {
               headers: {
                 Authorization: localStorage.getItem("jwtToken"),
@@ -87,7 +96,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           );
           response.data.data.forEach((e: any) => {
             set((state) => ({
-              destinoCatalog: [...state.destinoCatalog, e.Descripcion],
+              destinoMap: new Map(state.destinoMap).set(e.Descripcion, e.Id)
             }));
           });
           set(() => ({fetchedDestino: true}))
@@ -97,7 +106,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchInstituciones: async () => {
       if (!get().fetchedInstitucion) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-institucionesFinancieras",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-institucionesFinancieras",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),
@@ -106,7 +115,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            institucionCatalog: [...state.institucionCatalog, e.Descripcion],
+            institucionMap: new Map(state.institucionMap).set(e.Descripcion, e.Id)
           }));
         });
       }
@@ -115,7 +124,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     fetchTipoEntePublicoObligado: async () => {
       if (!get().fetchedTipoEntePublicoObligado) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-tiposEntePublico",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),
@@ -123,17 +132,19 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           }
         );
         response.data.data.forEach((e: any) => {
+          console.log("tipoEntePublicoObligado: ", e)
           set((state) => ({
-            tipoEntePublicoObligadoCatalog: [...state.tipoEntePublicoObligadoCatalog, e.Descripcion],
+            tipoEntePublicoObligadoMap: new Map(state.tipoEntePublicoObligadoMap).set(e.Descripcion, e.Id)
           }));
         });
       }
+      console.log("tipoEntePublicoObligadoMap: ", get().tipoEntePublicoObligadoMap)
       set(() => ({fetchedTipoEntePublicoObligado: true}))
     },
     fetchObligadoSolidarioAval: async () => {
       if (!get().fetchedObligadoSolidarioAval) {
         const response = await axios.get(
-          "http://10.200.4.199:8000/api/get-obligadoSolidarioAval",
+          process.env.REACT_APP_APPLICATION_BACK + "/api/get-obligadoSolidarioAval",
           {
             headers: {
               Authorization: localStorage.getItem("jwtToken"),
@@ -142,7 +153,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
         );
         response.data.data.forEach((e: any) => {
           set((state) => ({
-            obligadoSolidarioAvalCatalog: [...state.obligadoSolidarioAvalCatalog, e.Descripcion],
+            obligadoSolidarioAvalMap: new Map(state.obligadoSolidarioAvalMap).set(e.Descripcion, e.Id)
           }));
         });
       }

@@ -34,12 +34,8 @@ import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsu
 
 export const Usuarios = () => {
   const navigate = useNavigate();
-
-
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
-    []
-  );
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
