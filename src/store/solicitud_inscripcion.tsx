@@ -245,7 +245,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     //console.log("soy el id",Id);
     console.log(comentario);
     const response = axios.post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentarios",
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
       {
         IdSolicitud: Id,
         Comentario: comentario,
