@@ -15,9 +15,7 @@ import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import { IUsuarios } from "./Interfaces/IUsuarios";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
-
 import { Navigate, Route, useNavigate } from "react-router-dom";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AccountTree as AccountTreeIcon,
@@ -107,8 +105,9 @@ export const Usuarios = () => {
   /* BUSCADOR */
 
   const [datos, setDatos] = useState<Array<IUsuarios>>([]);
-  // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
+
+
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IUsuarios>>([]);
 
   const handleChange = (dato: string) => {
@@ -180,7 +179,7 @@ export const Usuarios = () => {
     busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
   }, [busqueda]);
 
-  useEffect(() => {}, []);
+  
 
 
 

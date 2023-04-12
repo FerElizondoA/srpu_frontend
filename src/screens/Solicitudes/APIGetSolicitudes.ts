@@ -14,7 +14,8 @@ export function getPreviewSolicitud(setState: Function) {
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     })
-      .then(({ data }) => {
+      .then(({ data }) => {console.log(data.data);
+      
         setState(data.data);
       })
       .catch((error) => {

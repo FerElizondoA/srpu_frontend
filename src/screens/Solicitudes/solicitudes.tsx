@@ -18,6 +18,8 @@ import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutl
 
 
 import { queriesSolicitud } from "./queriesSolicitudes";
+import { ICreateSolicitud } from "../../components/Config/Interfaces/IUsuarios";
+import { ISolicitudes } from "./ISoliciudes";
 
 export function Solicitudes() {
   //Declaraciones
@@ -27,19 +29,26 @@ export function Solicitudes() {
   };
   // Llamada a la base de datos
   const [age, setAge] = useState("");
-  const [solicitudes, setSolicitudes] = useState<Array<number>>([]);
+  const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
+  useEffect(() => {
+    console.log("solicitudes", solicitudes);
+    
+  }, [solicitudes])
+  
+
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
   };
+
   useEffect(() => {
     getPreviewSolicitud(setSolicitudes);
   }, []);
   useEffect(() => {
     if (solicitudes.length > 1) console.log(solicitudes);
   }, [solicitudes]);
-  // Llamada a la base de datos
 
+  // Llamada a la base de datos
   return (
     <Grid container direction="column" >
       {/* grid  columna del encabezado */}
@@ -71,16 +80,20 @@ export function Solicitudes() {
 
           <Grid  md={12} sm={12} xl={12} lg={12} >
             <List sx={queriesSolicitud.buscador}>
-              {solicitudes?.map(() => {
+              {solicitudes?.map((dato) => {
                 return (
                   <>
                     <ListItem disablePadding>
                       <ListItemButton>
                         <Box>
-                          <ListItemText primary="Nombre: " />
-                          <ListItemText primary="Solicitante: " />
-                          <ListItemText primary="Tipo de solicitud: " />
-                          <ListItemText primary="Fecha: " />
+                        {dato.NombreUsuario}
+                        {dato.NombreSolicitante}
+                        {dato.tipoSoli}
+                        {dato.FechaDeCreacion}
+                          {/* <ListItemText primary="Nombre: " >Hola</ListItemText>
+                          <ListItemText primary="Solicitante: ">{dato.NombreSolicitante}</ListItemText>
+                          <ListItemText primary="Tipo de solicitud: ">{dato.tipoSoli}</ListItemText>
+                          <ListItemText primary="Fecha: " >{dato.FechaDeCreacion}</ListItemText> */}
                         </Box>
                       </ListItemButton>
                     </ListItem>
