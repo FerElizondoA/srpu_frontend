@@ -42,8 +42,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  const fetchBorrador: Function = useCortoPlazoStore(
-    (state) => state.fetchBorrador
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
   );
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
@@ -106,7 +106,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //onClick={handleClick}
                 onClick={() => {
                   props.handler(false);
-                  fetchBorrador(props.selected);
+                  crearSolicitud(props.selected);
+                  
                 }}
                 variant="text"
               >
