@@ -16,7 +16,7 @@ export interface ICreateSolicitud {
     IdApp: string;
 }
 
-export interface IUSuarios {
+export interface IUsuarios {
     id: string;
     IdCentral: string;
     Nombre: string;

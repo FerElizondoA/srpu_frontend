@@ -24,7 +24,7 @@ import {
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
@@ -85,6 +85,7 @@ export function InformacionGeneral() {
   const obligadoSolidarioAvalTable: ObligadoSolidarioAval[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalTable);
   const addObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.addObligadoSolidarioAval);
   const removeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.removeObligadoSolidarioAval);
+  const organismosMap: Map<string | null, string>  = useCortoPlazoStore(state => state.organismosMap);
 
   const [selected, setSelected] = React.useState<readonly number[]>([]);
 
@@ -101,7 +102,7 @@ export function InformacionGeneral() {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
@@ -114,16 +115,16 @@ export function InformacionGeneral() {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       obligadoSolidario: obligadoSolidarioAval,
       entePublicoObligado: entePublicoObligado,
-      tipoEntePublicoObligado: tipoEntePublicoObligado
-    }
+      tipoEntePublicoObligado: tipoEntePublicoObligado,
+    };
     addObligadoSolidarioAval(OSA);
-  }
+  };
 
   const deleteRows = () => {
     selected.forEach((it) => {
       removeObligadoSolidarioAval(it);
-    })
-  }
+    });
+  };
 
   React.useEffect(() => {
     fetchDestinos();
@@ -133,17 +134,29 @@ export function InformacionGeneral() {
   }, []);
 
   React.useEffect(() => {
-    if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
-    {
-      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
-    }else{
-      changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
-      changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+    if (
+      differenceInDays(
+        startOfDay(new Date(fechaVencimiento)),
+        startOfDay(new Date(fechaContratacion))
+      ) > 0
+    ) {
+      changePlazoDias(
+        differenceInDays(
+          startOfDay(new Date(fechaVencimiento)),
+          startOfDay(new Date(fechaContratacion))
+        )
+      );
+    } else {
+      changeFechaVencimiento(addDays(new Date(fechaContratacion), 1));
+      changePlazoDias(
+        differenceInDays(
+          startOfDay(new Date(fechaVencimiento)),
+          startOfDay(new Date(fechaContratacion))
+        )
+      );
     }
-    
-    
-  }, [fechaContratacion, fechaVencimiento])
-  
+  }, [fechaContratacion, fechaVencimiento]);
+
   return (
     <Grid container>
       <Grid
@@ -178,7 +191,7 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             variant="standard"
-            value={plazoDias||0}
+            value={plazoDias || 0}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -201,7 +214,11 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             value={montoOriginal}
-            onChange={(text) => changeMontoOriginal(text.target.value)}
+            onChange={(text) =>
+              /^[0-9,.]*$/.test(text.target.value)
+                ? changeMontoOriginal(text.target.value)
+                : null
+            }
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",
@@ -338,6 +355,7 @@ export function InformacionGeneral() {
             Tipo de ente público obligado
           </InputLabel>
           <Autocomplete
+            disabled={obligadoSolidarioAval.includes("No aplica") || /^[\s]*$/.test(obligadoSolidarioAval)}
             fullWidth
             value={tipoEntePublicoObligado}
             options={Array.from(tipoEntePublicoObligadoMap.keys())}
@@ -358,22 +376,21 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
-          <TextField
+          <Autocomplete
+            disabled={obligadoSolidarioAval.includes("No aplica") || /^[\s]*$/.test(tipoEntePublicoObligado)}
             fullWidth
             value={entePublicoObligado}
-            onChange={(text) => changeEntePublicoObligado(text.target.value)}
-            variant="standard"
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
+            onChange={(event: any, text: string | null) =>
+              changeEntePublicoObligado(text)
+            }
+            options={Array.from(organismosMap.keys())}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
           />
         </Grid>
 
@@ -382,44 +399,73 @@ export function InformacionGeneral() {
             <TableContainer sx={{ maxHeight: "200px" }}>
               <Table stickyHeader>
                 <TableHead>
-                  {heads.map((head) => (
-                    <StyledTableCell>
-                      <TableSortLabel>{head.label}</TableSortLabel>
+                  {heads.map((head, index) => (
+                    <StyledTableCell key={index}>
+                      {/* <TableSortLabel> */}
+                      {head.label}
+                      {/* </TableSortLabel> */}
                     </StyledTableCell>
                   ))}
                 </TableHead>
+
                 <TableBody>
-                  {obligadoSolidarioAvalTable.map((row, index) => {
-                    const isItemSelected = isSelected(index);
-                    return (
-                      <StyledTableRow>
-                        <StyledTableCell padding="checkbox">
-                          <Checkbox 
-                          onClick={(event) => handleClick(event, index)}
-                          checked={isItemSelected}
-                          />
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                          {row.obligadoSolidario}
-                        </StyledTableCell>
-                        <StyledTableCell component="th">
-                          {row.tipoEntePublicoObligado}
-                        </StyledTableCell>
-                        <StyledTableCell component="th">
-                          {row.entePublicoObligado}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })}
+                  {obligadoSolidarioAval.includes("No aplica") ? (
+                    <StyledTableRow>
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell>No aplica</StyledTableCell>
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  ) : (
+                    obligadoSolidarioAvalTable.map((row, index) => {
+                      const isItemSelected = isSelected(index);
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell padding="checkbox">
+                            <Checkbox
+                              onClick={(event) => handleClick(event, index)}
+                              checked={isItemSelected}
+                            />
+                          </StyledTableCell>
+                          <StyledTableCell component="th" scope="row">
+                            {row.obligadoSolidario}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.tipoEntePublicoObligado}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.entePublicoObligado}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <ConfirmButton variant="outlined" onClick={() => addRows()}>AGREGAR</ConfirmButton>
+            <ConfirmButton
+              disabled={
+                obligadoSolidarioAval.includes("No aplica") ||
+                /^[\s]*$/.test(obligadoSolidarioAval) || /^[\s]*$/.test(tipoEntePublicoObligado)
+              }
+              variant="outlined"
+              onClick={() => addRows()}
+            >
+              AGREGAR
+            </ConfirmButton>
           </Grid>
           <Grid item md={6} lg={4.5} mt={1}>
-            <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
+            <DeleteButton
+              disabled={
+                obligadoSolidarioAvalTable.length === 0
+              }
+              variant="outlined"
+              onClick={() => deleteRows()}
+            >
+              ELIMINAR
+            </DeleteButton>
           </Grid>
         </Grid>
       </Grid>

@@ -426,7 +426,7 @@ export function Catalogos() {
   );
 }
 
-interface ICatalogo {
+ export interface ICatalogo {
   Id: string;
   Descripcion: string;
   OCP: number;
