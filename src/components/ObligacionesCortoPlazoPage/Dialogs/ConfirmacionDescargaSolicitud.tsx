@@ -18,7 +18,7 @@ import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ConfirmButton, DeleteButton } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-
+import { useNavigate } from "react-router-dom";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -73,6 +73,8 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
     (state) => state.fetchComentario
   );
 
+  const navigate = useNavigate();
+//////////////// Este apartado es el de finalizar 
   return (
     <Dialog
       open={props.openState}
@@ -131,6 +133,7 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                     props.handler(false);
 
                     crearSolicitud(props.selected)
+                    navigate("../ConsultaDeSolicitudes");
 
                   }}
                   variant="text"
