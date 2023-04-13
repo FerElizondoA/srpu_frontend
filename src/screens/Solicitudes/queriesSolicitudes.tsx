@@ -1,6 +1,6 @@
 export const queriesSolicitud = {
   buscador: {
-    overflow: "scroll",
+    overflow: "auto",
 
     "@media (min-width: 513px)": {
       

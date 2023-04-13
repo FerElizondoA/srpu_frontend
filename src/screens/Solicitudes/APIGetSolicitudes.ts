@@ -1,5 +1,4 @@
 import axios from "axios";
-import { log } from "console";
 
 export function getPreviewSolicitud(setState: Function) {
     axios({
@@ -17,6 +16,29 @@ export function getPreviewSolicitud(setState: Function) {
       .then(({ data }) => {console.log(data.data);
       
         setState(data.data);
+      })
+      .catch((error) => {
+        
+        
+      });
+  }
+
+  export function getDetailSolicitudUsuario(idSolicitud:string,setState: Function) {
+    axios({
+      method: "get",
+      params:{
+        IdUsuario: localStorage.getItem('IdCentral'),
+        IdSolicitud: idSolicitud
+      },
+      url: process.env.REACT_APP_APPLICATION_LOGIN  + `/api/detalleSol`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    })
+      .then(({ data }) => {
+        // console.log(data.data);
+        setState(data.data[0]);
       })
       .catch((error) => {
         
