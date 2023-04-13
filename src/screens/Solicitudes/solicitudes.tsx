@@ -101,7 +101,7 @@ export function Solicitudes() {
         
 
         {/* grid  columna del previsualizacion y filtro*/}
-        <Grid sm={4} xl={3} xs={12} md={4} lg={4} mt={3} ml={2}>
+        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={3} ml={2}>
           <Grid mb={4} sm={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
@@ -145,26 +145,26 @@ export function Solicitudes() {
 
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                              <Typography color={index===indexSelect?'#af8c55 ':'black'}>USUARIO: </Typography>
-                              <Typography color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>
+                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>USUARIO: </Typography>
+                              <Typography fontSize={"14px"} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>
                             
-                            </Box>
-                            <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography color={index===indexSelect?'#af8c55 ':'black'}>FECHA: </Typography>
-                              <Typography color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>
+                            </Box >
+                            <Box   sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
+                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>FECHA: </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>
                              
                             </Box>
                           </Box>
 
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography  color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
-                              <Typography  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>
+                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>
                              
                             </Box>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography  color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
-                              <Typography  color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>
+                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>
                               
                             </Box>
                           </Box>
@@ -172,8 +172,8 @@ export function Solicitudes() {
                            
 
                           <Box sx={{display:'flex',flexDirection:'row',alignItems:"center"}}>
-                              <Typography color={index===indexSelect?'#af8c55 ':'black'}>SOLICITANTE: </Typography>
-                              <Typography color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreSolicitante.toUpperCase()}</Typography>
+                              <Typography padding={"1px 5px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>SOLICITANTE: </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreSolicitante.toUpperCase()}</Typography>
                             
                           </Box>
                       
@@ -190,11 +190,10 @@ export function Solicitudes() {
 
 
         {/* grid Formulario*/}
-        <Grid sx={{display:"flex", justifyContent:"center", flexDirection:"column"}}  xl={9} mt={2} >
-       
+        <Grid sx={{display:"flex" ,flexDirection:"column"}}  xl={9} mt={2} >
+        <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
           <Grid
             container
-            
             item
             mt={3}
             sm={11}
@@ -206,9 +205,10 @@ export function Solicitudes() {
           >
             {/* grid contenido*/}
            
-
-            <Grid item mr={5} sm={2} xl={3} xs={6} md={3} lg={3}>
+            
+            <Grid item  sm={2} xl={3.3} xs={6} md={3} lg={3}>
               <TextField
+              
                 fullWidth
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -218,8 +218,9 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item  sm={3} xl={4} xs={7} md={4} lg={4}>
+            <Grid item  sm={3} xl={3} xs={7} md={4} lg={4}>
             <TextField
+                
                 fullWidth
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -229,18 +230,22 @@ export function Solicitudes() {
              />
             </Grid>
           </Grid>
-          <Grid
+
+        </Box>
+         
+          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+            <Grid
             item
             container
-            mt={5}
+            mt={10}
             sm={12}
-            xl={12}
+            xl={11}
             xs={12}
             md={12}
             lg={12}
-            justifyContent={"space-evenly"}
+            justifyContent={"space-between"}
           >
-            <Grid item mr={5} xs={8} sm={3} md={3} lg={3} xl={3} >
+            <Grid item  xs={8} sm={3} md={3} lg={3} xl={3} >
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -252,7 +257,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={5} sm={2} xl={3} xs={8} md={3} lg={3}>
+            <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -264,7 +269,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={5} sm={2} xl={3} xs={8} md={3} lg={3}>
+            <Grid item  sm={2} xl={3} xs={8} md={3} lg={3}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -277,19 +282,23 @@ export function Solicitudes() {
             </Grid>
           </Grid>
 
-          <Grid
+
+          </Box>
+
+          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+            <Grid
             container
             item
-            mt={5}
-            justifyContent={"space-evenly"}
+            mt={10}
+            justifyContent={"space-between"}
             sm={12}
-            xl={12}
+            xl={11}
             xs={12}
             md={12}
             lg={12}
           >
             {/* grid contenido*/}
-            <Grid item mr={4} xl={2} md={2} sm={1.5}>
+            <Grid item xl={2} md={2} sm={1.5}>
               <TextField
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -299,7 +308,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={4} sm={3} xl={2.5} md={3} lg={3}>
+            <Grid item  sm={3} xl={2} md={3} lg={3}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -310,7 +319,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={4} xl={2} md={2} sm={1.5}>
+            <Grid item  xl={2} md={2} sm={2}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -321,7 +330,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item xs={12} sm={1.5} md={2} lg={2} xl={2.5}>
+            <Grid item xs={12} sm={2} md={2} lg={2} xl={1.5}>
               <TextField
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -331,12 +340,14 @@ export function Solicitudes() {
              />
             </Grid>
           </Grid>
+          </Box>
 
-          <Grid
+          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+             <Grid
             container
             item
-            mt={5}
-            justifyContent={"space-evenly"}
+            mt={10}
+            justifyContent={"space-around"}
             sm={12}
             xl={12}
             xs={12}
@@ -344,7 +355,7 @@ export function Solicitudes() {
             lg={12}
           >
             {/* grid contenido*/}
-            <Grid item mr={5} sm={2.5} xl={3} xs={8} md={3} lg={2.5}>
+            <Grid item  sm={2.5} xl={2} xs={8} md={3} lg={2}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -355,7 +366,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={5} sm={2} xl={3} xs={8} md={2} lg={2.5}>
+            <Grid item sm={2} xl={2} xs={8} md={2} lg={2}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -366,7 +377,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item mr={2} xl={1.5} sm={1.5} xs={8}>
+            <Grid item  xl={2} sm={1.5} xs={8}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -378,7 +389,7 @@ export function Solicitudes() {
               
             </Grid>
 
-            <Grid item  xl={1.5} md={1} sm={1} xs={8}>
+            <Grid item  xl={2} md={1} sm={1} xs={8}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -389,6 +400,10 @@ export function Solicitudes() {
              />
             </Grid>
           </Grid>
+          </Box>
+
+
+         
 
       
           <Grid   
