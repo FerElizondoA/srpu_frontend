@@ -76,8 +76,21 @@ export function Encabezado() {
         organismosMap.get(localStorage.getItem("EntePublicoObligado")),
         localStorage.getItem("EntePublicoObligado")
       );
+
+    
+    }
+    if (localStorage.getItem("NombreUsuario")?.length !== 0) {
+      // change(
+      //   NombreUsuario.get(localStorage.getItem("NombreUsuario")),
+      //   localStorage.getItem("NombreUsuario")
+      // );
+
+    
     }
   });
+
+  let usuario = localStorage.getItem("NombreUsuario")
+ // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
     <Grid container>
@@ -117,7 +130,7 @@ export function Encabezado() {
 
           <TextField
             fullWidth
-            disabled
+           
             value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
             variant="standard"
             onChange={(text) => {
@@ -132,6 +145,7 @@ export function Encabezado() {
               },
             }}
             InputProps={{
+              readOnly: true,
               style: {
                 fontFamily: "MontserratMedium",
               },
@@ -146,7 +160,7 @@ export function Encabezado() {
           <TextField
             fullWidth
             variant="standard"
-            disabled
+            
             value={localStorage.getItem("Rol")}
             onChange={(text) => changeCargoSolicitante(text.target.value)}
             sx={queries.medium_text}
@@ -156,6 +170,7 @@ export function Encabezado() {
               },
             }}
             InputProps={{
+              readOnly: true,
               style: {
                 fontFamily: "MontserratMedium",
               },
