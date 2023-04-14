@@ -16,11 +16,29 @@ export const queriesSolicitud = {
     },
     "@media (min-width: 1485px)": {
       
-      height: 550,
+      height: 575,
     },
     "@media (min-width: 1870px)": {
       
-      height: 750,
+      height: 782,
     },
   },
+
+  datosSolicitud: {
+    
+    
+    "@media (min-width: 1870px)": {
+      margintop: 10
+    }
+  },
+
+  botones: {
+    "@media (min-width: 1485px)": {
+      marginTop:10
+    },
+
+    "@media (min-width: 1870px)": {
+      marginTop: 20
+    }
+  }
 };

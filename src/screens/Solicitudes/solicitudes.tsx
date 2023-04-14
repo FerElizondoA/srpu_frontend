@@ -13,12 +13,10 @@ import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import { getDetailSolicitudUsuario, getPreviewSolicitud } from "./APIGetSolicitudes";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
-import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { queriesSolicitud } from "./queriesSolicitudes";
-import { IDetailSolicitudUsuario, ISolicitudes } from "./ISoliciudes";
-import { isTemplateExpression } from "typescript";
-import { log } from "console";
+import {  IDetailSolicitudUsuario, ISolicitudes } from "./ISoliciudes";
 
 export function Solicitudes() {
   //Declaraciones
@@ -31,6 +29,7 @@ export function Solicitudes() {
   const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
   const [solicitudesFiltered, setSolicitudesFiltered] = useState<Array<ISolicitudes>>([]);
   const [detailSolicitud, setDetailSolicitud] = useState<IDetailSolicitudUsuario>();
+  const [datosAdicionales, setDatosAdicionales] = useState<string>();
 
   const getEstatus=(estatus:number)=>{
     switch(estatus){
@@ -50,6 +49,8 @@ export function Solicitudes() {
     {id:3,label:'MODIFICACION'},
   ]
 
+
+
   const FiltraSolicitudes=(id:number)=>{
     if(id===4)
     {setSolicitudesFiltered(solicitudes);}
@@ -58,7 +59,6 @@ export function Solicitudes() {
     let aux=solicitudes.filter((item)=>item.Estatus===id)
     setSolicitudesFiltered(aux)
     }
-    ;
   }
 
   //const elmento Seleccionado
@@ -72,6 +72,14 @@ export function Solicitudes() {
     if(indexSelect<solicitudesFiltered.length-1)
     setIndexSelect(indexSelect+1);
   }
+
+  useEffect(() => {
+    //NOS QUEDAMOS AQUI
+    //if(detailSolicitud.DatosAdicionales!== undefined)
+    //setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales))
+
+  }, [detailSolicitud])
+  
 
   useEffect(() => {
     if(indexSelect>=0)
@@ -102,7 +110,7 @@ export function Solicitudes() {
 
         {/* grid  columna del previsualizacion y filtro*/}
         <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={3} ml={2}>
-          <Grid mb={4} sm={12}>
+          <Grid mb={2.5} sm={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
               <Select
@@ -146,35 +154,28 @@ export function Solicitudes() {
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
                               <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>USUARIO: </Typography>
-                              <Typography fontSize={"14px"} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>
-                            
+                              <Typography fontSize={"14px"} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>                            
                             </Box >
                             <Box   sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>FECHA: </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>
-                             
+                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>FECHA: </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>                             
                             </Box>
                           </Box>
 
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>
-                             
+                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>                             
                             </Box>
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                            <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>
-                              
+                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
+                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>                           
                             </Box>
                           </Box>
-
-                           
 
                           <Box sx={{display:'flex',flexDirection:'row',alignItems:"center"}}>
                               <Typography padding={"1px 5px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>SOLICITANTE: </Typography>
                               <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreSolicitante.toUpperCase()}</Typography>
-                            
                           </Box>
                       
                         </Box>
@@ -188,10 +189,9 @@ export function Solicitudes() {
           </Grid>
         </Grid>
 
-
         {/* grid Formulario*/}
-        <Grid sx={{display:"flex" ,flexDirection:"column"}}  xl={9} mt={2} >
-        <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+        <Grid   xl={9}   >
+        <Box sx={{alignItems:"center" , display:"flex", width:"100%", justifyContent:"center"}}>
           <Grid
             container
             item
@@ -203,12 +203,9 @@ export function Solicitudes() {
             lg={11}
             justifyContent={"space-between"}
           >
-            {/* grid contenido*/}
-           
-            
-            <Grid item  sm={2} xl={3.3} xs={6} md={3} lg={3}>
+            {/* grid contenido*/}                       
+            <Grid item  sm={2} xl={3} xs={6} md={3} lg={3}>
               <TextField
-              
                 fullWidth
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -220,7 +217,6 @@ export function Solicitudes() {
 
             <Grid item  sm={3} xl={3} xs={7} md={4} lg={4}>
             <TextField
-                
                 fullWidth
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -237,7 +233,7 @@ export function Solicitudes() {
             <Grid
             item
             container
-            mt={10}
+            mt={8}
             sm={12}
             xl={11}
             xs={12}
@@ -253,7 +249,6 @@ export function Solicitudes() {
                 label="Nombre(s)"
                 variant="standard"
                 value={detailSolicitud?.Nombre|| ''}
-                
              />
             </Grid>
 
@@ -265,7 +260,6 @@ export function Solicitudes() {
                 label="Apellido Paterno"
                 variant="standard"
                 value={detailSolicitud?.ApellidoPaterno|| ''}
-               
              />
             </Grid>
 
@@ -277,19 +271,64 @@ export function Solicitudes() {
                 label="Apellido Materno"
                 variant="standard"
                 value={detailSolicitud?.ApellidoMaterno|| ''}
-                
              />
             </Grid>
           </Grid>
-
-
           </Box>
+          
+          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+            <Grid
+            item
+            container
+            mt={8}
+            sm={12}
+            xl={11}
+            xs={12}
+            md={12}
+            lg={12}
+            justifyContent={"space-between"}
+          >
+            <Grid item  xs={8} sm={3} md={3} lg={3} xl={3} >
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Cargo"
+                variant="standard"
+                value={detailSolicitud?.Nombre|| ''}
+             />
+            </Grid>
+
+            <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Rol"
+                variant="standard"
+                value={detailSolicitud?.ApellidoPaterno|| ''}
+             />
+            </Grid>
+
+            <Grid item  sm={2} xl={3} xs={8} md={3} lg={3}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="Ente Publico"
+                variant="standard"
+                value={detailSolicitud?.ApellidoMaterno|| ''}
+             />
+            </Grid>
+          </Grid>
+          </Box>
+
 
           <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
             <Grid
             container
             item
-            mt={10}
+            mt={8}
             justifyContent={"space-between"}
             sm={12}
             xl={11}
@@ -308,7 +347,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item  sm={3} xl={2} md={3} lg={3}>
+            <Grid item  sm={3} xl={3} md={3} lg={3}>
               <TextField
                 fullWidth
                 InputProps={{ readOnly: true }}
@@ -330,7 +369,7 @@ export function Solicitudes() {
              />
             </Grid>
 
-            <Grid item xs={12} sm={2} md={2} lg={2} xl={1.5}>
+            <Grid item xs={12} sm={2} md={2} lg={2} xl={2}>
               <TextField
                 InputProps={{ readOnly: true }}
                 id="outlined-basic"
@@ -344,27 +383,17 @@ export function Solicitudes() {
 
           <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
              <Grid
-            container
-            item
-            mt={10}
-            justifyContent={"space-around"}
-            sm={12}
-            xl={12}
-            xs={12}
-            md={12}
-            lg={12}
+           container
+           item
+           mt={10}
+           justifyContent={"space-between"}
+           sm={12}
+           xl={11}
+           xs={12}
+           md={12}
+           lg={12}
           >
             {/* grid contenido*/}
-            <Grid item  sm={2.5} xl={2} xs={8} md={3} lg={2}>
-              <TextField
-                fullWidth
-                InputProps={{ readOnly: true }}
-                id="outlined-basic"
-                label="CURP"
-                variant="standard"
-                value={detailSolicitud?.Curp|| ''}
-             />
-            </Grid>
 
             <Grid item sm={2} xl={2} xs={8} md={2} lg={2}>
               <TextField
@@ -374,6 +403,17 @@ export function Solicitudes() {
                 label="RFC"
                 variant="standard"
                 value={detailSolicitud?.Rfc|| ''}
+             />
+            </Grid>
+
+            <Grid item  sm={2.5} xl={3} xs={8} md={3} lg={2}>
+              <TextField
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id="outlined-basic"
+                label="CURP"
+                variant="standard"
+                value={detailSolicitud?.Curp|| ''}
              />
             </Grid>
 
@@ -402,42 +442,12 @@ export function Solicitudes() {
           </Grid>
           </Box>
 
-
-         
-
-      
-          <Grid   
-           container
-           item
-           mt={5}
-           justifyContent={"space-evenly"}
-           sm={12}
-           xl={12}
-           xs={12}
-           md={12}
-           lg={12}
-          >
-            {/* <Grid item justifyContent={"space-between"} sm={8} xl={10} xs={8} md={10} lg={10}>
-              <TextField
-                fullWidth
-                InputProps={{ readOnly: true }}
-                id="outlined-basic"
-                label="Comentario"
-                variant="standard"
-                multiline
-                rows={2}
-                maxRows={3}
-             />
-            </Grid> */}
-          </Grid>
-          
-
-          <Grid item display={"flex"} justifyContent={"space-evenly"} mt={3} >
+          <Grid item display={"flex"} justifyContent={"space-evenly"} sx={queriesSolicitud.botones}>
             <Button
               color="primary"
               variant="contained"
               onClick={() => { prevSolicitud()}}
-              endIcon={<ArrowBackIosNewOutlinedIcon />}
+              endIcon={<ArrowBackIcon />}
               
             >
             </Button>
@@ -445,7 +455,7 @@ export function Solicitudes() {
               color="primary"
               variant="contained"
               onClick={() => {nextSolicitud()}}
-              endIcon={<ArrowForwardIosOutlinedIcon />}
+              endIcon={<ArrowForwardIcon />}
             >
             </Button>
           </Grid>
