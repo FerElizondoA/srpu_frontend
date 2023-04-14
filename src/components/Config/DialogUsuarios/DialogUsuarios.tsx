@@ -142,7 +142,8 @@ export const DialogUsuarios = ({
   };
 
   const validaTipoUsuario = (dato: string) => {
-    setRegistroDatos({ ...registroDatos, Rol: dato });
+    let aux=tipoUsuario.filter((item)=>{if(item.Id===dato){return item}})
+    setRegistroDatos({ ...registroDatos, IdRol: dato,Rol:aux[0].Descripcion});
   };
 
   const validaCargo = (dato: string) => {
@@ -467,7 +468,7 @@ export const DialogUsuarios = ({
               label="Tipo de Usuario"
               margin="dense"
               required
-              value={registroDatos.Rol}
+              value={registroDatos.IdRol}
               onChange={(e) => {
                 validaTipoUsuario(e.target.value);
               }}
@@ -475,7 +476,7 @@ export const DialogUsuarios = ({
               error={ErrorTipoUsuario}
             >
               {tipoUsuario?.map((option) => (
-                <MenuItem key={option.Id} value={option.Descripcion}>
+                <MenuItem key={option.Id} value={option.Id}>
                   {option.Descripcion}
                 </MenuItem>
               ))}
@@ -515,7 +516,7 @@ export const DialogUsuarios = ({
               error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (
-                <MenuItem key={option.Id} value={option.Descripcion}>
+                <MenuItem key={option.Id} value={option.Id}>
                   {option.Descripcion}
                 </MenuItem>
               ))}
