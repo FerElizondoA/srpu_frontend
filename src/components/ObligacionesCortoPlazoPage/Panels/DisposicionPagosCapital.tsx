@@ -171,9 +171,7 @@ export function DisposicionPagosCapital() {
 
   const [selected, setSelected] = useState<readonly number[]>([]);
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+  
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
@@ -761,5 +759,4 @@ export function DisposicionPagosCapital() {
       </Grid>
     </Grid>
   );
-}
 }
