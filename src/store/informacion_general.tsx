@@ -64,7 +64,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     montoOriginal: 0,
     fechaVencimiento: new Date().toString(),
     IdDestino: "",
-    destino: "",
+    destino: "Cubrir financiamientos u obligaciones ",
     IdInstitucion: "",
     institucion: "",
     IdTipoEntePublicoObligado: "",
