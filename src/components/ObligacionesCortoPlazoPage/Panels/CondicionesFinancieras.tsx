@@ -10,131 +10,46 @@ import {
     Checkbox
 } from "@mui/material";
 
-import { ReactNode } from 'react';
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 import {
   StyledTableCell,
   StyledTableRow,
   ConfirmButton,
   DeleteButton,
-  hashFunctionCYRB53,
 } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
-
-// dummy data
-
-interface Data {
-    isSelected: boolean;
-    dispositionDate: Date;
-    dispositionAmount: number;
-    capitalPaymentDate: Date;
-    capitalPaymentRange: string;
-    iFirstPaymentDate: Date;
-    iRate: number;
-    comission: number;
-}
+import { format } from "date-fns";
 
 interface Head {
-    id: keyof Data;
-    isNumeric: boolean;
     label: string;
 }
 
 const heads: readonly Head[] = [
     {
-        id: 'isSelected',
-        isNumeric: false,
         label: "Selección"
     },
     {
-        id: 'dispositionDate',
-        isNumeric: false,
         label: "Fecha de Disposición"
     },
     {
-        id: 'dispositionAmount',
-        isNumeric: true,
         label: "Importe de Disposición"
     },
     {
-        id: 'capitalPaymentDate',
-        isNumeric: false,
         label: "Fecha de Primer Pago Capital"
     },
     {
-        id: 'capitalPaymentRange',
-        isNumeric: false,
         label: "Periocidad de Pago Capital"
     },
     {
-        id: 'iFirstPaymentDate',
-        isNumeric: false,
         label: "Fecha de Primer Pago de Interés"
     },
     {
-        id: 'iRate',
-        isNumeric: true,
         label: "Tasa de Interés"
     },
     {
-        id: 'comission',
-        isNumeric: true,
         label: "Comisiones"
     },
-]
-
-////////////////////////////////////////////////////////
-
-function createDummyData(
-    dispositionDate: Date,
-    dispositionAmount: number,
-    capitalPaymentDate: Date,
-    capitalPaymentRange: string,
-    iFirstPaymentDate: Date,
-    iRate: number,
-    comission: number
-){
-    return {
-        dispositionDate,
-        dispositionAmount,
-        capitalPaymentDate,
-        capitalPaymentRange,
-        iFirstPaymentDate,
-        iRate,
-        comission
-    }
-}
-
-const rows = [
-    createDummyData(
-        new Date(2023, 2, 14), // AÑO - MES - DÍA
-        10000,
-        new Date(2023, 3, 14),
-        "1 año",
-        new Date(2023, 4, 14),
-        30,
-        350.05
-        ),
-    createDummyData(
-        new Date(2022, 1, 18),
-        2000,
-        new Date(2022, 2, 18),
-        "5 meses",
-        new Date(2022, 3, 18),
-        25.23,
-        370.05
-        ),
-    createDummyData(
-        new Date(2021, 5, 23),
-        4300,
-        new Date(2021, 6, 23),
-        "8 meses",
-        new Date(2021, 7, 23),
-        34.93,
-        632.65
-        )
 ]
 
 export function CondicionesFinancieras(){
@@ -156,26 +71,21 @@ export function CondicionesFinancieras(){
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !")
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !")
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !")
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const deleteRows = () => {
-    console.log("selected: ", selected)
     selected.forEach((it) => {
       removeCondicionFinanciera(it);
     })
@@ -187,7 +97,7 @@ export function CondicionesFinancieras(){
           <Table>
             <TableHead>
               {heads.map((head) => (
-                <StyledTableCell key={head.id}>
+                <StyledTableCell>
                   <TableSortLabel>{head.label}</TableSortLabel>
                 </StyledTableCell>
               ))}
@@ -204,19 +114,19 @@ export function CondicionesFinancieras(){
                         />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
-                      {row.fechaDisposicion}
+                      {format(new Date(row.fechaDisposicion), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {"$" + row.importeDisposicion}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.fechaPrimerPagoCapital}
+                      {format(new Date(row.fechaPrimerPagoCapital), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.periocidadPagoCapital}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.fechaPrimerPagoInteres}
+                      {format(new Date(row.fechaPrimerPagoInteres), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.tasaInteres}

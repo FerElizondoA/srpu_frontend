@@ -43,7 +43,7 @@ export interface TasaEfectivaSlice {
 export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, get) => ({
     fetchedTiposComision: false,
     tipoComision: "",
-    efectivaFechaContratacion: "",
+    efectivaFechaContratacion: new Date().toString(),
     efectivaPeriocidadPago: "",
     hasPorcentaje: false,
     hasMonto: false,
@@ -68,7 +68,6 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     removeTasaEfectiva: (index: number) => set((state) => ({tasaEfectivaTable: state.tasaEfectivaTable.filter((_, i) => i !== index)})),
     fetchTiposComision: async () => {
         if(!get().fetchedTiposComision){
-            console.log("fetchTiposComision executed!");
             const response = await axios.get(
               "http://10.200.4.199:8000/api/get-tipoDeComision",
               {
@@ -77,7 +76,6 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
                 tiposComisionCatalog: [...state.tiposComisionCatalog, e.Descripcion],

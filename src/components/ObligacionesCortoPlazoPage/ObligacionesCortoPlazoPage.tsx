@@ -11,6 +11,7 @@ import { queries } from "../../queries";
 import { Documentacion } from "./Panels/Documentacion";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { Resumen } from "./Panels/Resumen";
 
 export function ObligacionesCortoPlazoPage() {
   const [tabIndex, setTabIndex] = useState(0);
@@ -42,6 +43,7 @@ export function ObligacionesCortoPlazoPage() {
           <Tab label="Información General" sx={queries.text} />
           <Tab label="Condiciones Financieras" sx={queries.text} />
           <Tab label="Documentación" sx={queries.text} />
+          <Tab label="Resumen" sx={queries.text} />
           <Tab label="Solicitud de Inscripción" sx={queries.text} />
         </Tabs>
       </Grid>
@@ -50,7 +52,8 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion />}
-      {tabIndex === 4 && <SolicitudInscripcion />}
+      {tabIndex === 4 && <Resumen />}
+      {tabIndex === 5 && <SolicitudInscripcion />}
     </Grid>
   );
 }

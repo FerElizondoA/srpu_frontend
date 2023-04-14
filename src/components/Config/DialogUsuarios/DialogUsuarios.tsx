@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 
 import SendIcon from "@mui/icons-material/Send";
-import { IUsuarios } from "../Interfaces/IUsuarios";
-import { getCatalogo } from "../APIS/APISCatalogos";
-import { ICatalogo } from "../Catalogos";
-import { createSolicitud } from "../APIS/Solicitudes-Usuarios";
 import DialogContentText from "@mui/material/DialogContentText";
+import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
+import { ICatalogo } from "../../../screens/Config/Catalogos";
+import { getCatalogo } from "../../../screens/Config/APIS/APISCatalogos";
+import { createSolicitud } from "../../../screens/Config/APIS/Solicitudes-Usuarios";
 
 export const DialogUsuarios = ({
   open,
@@ -118,8 +118,6 @@ export const DialogUsuarios = ({
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 20 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Nombre: dato });
-      console.log(registroDatos);
-
     }
   };
 

@@ -10,9 +10,6 @@ import {
   TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
-import { getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
-import { IUsuarios } from "./Interfaces/IUsuarios";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 import { Navigate, Route, useNavigate } from "react-router-dom";
@@ -24,20 +21,19 @@ import {
   FileDownload as FileDownloadIcon,
   Input,
 } from "@mui/icons-material";
-import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import { DialogUsuarios } from "./DialogUsuarios/DialogUsuarios";
+import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
 
 
 export const Usuarios = () => {
   const navigate = useNavigate();
-
-
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
-    []
-  );
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
@@ -158,7 +154,6 @@ export const Usuarios = () => {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-        console.log(elemento);
 
         return elemento;
       }
