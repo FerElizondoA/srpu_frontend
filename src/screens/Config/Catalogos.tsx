@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getCatalogo } from "./APIS/APISCatalogos";
+import { getCatalogo } from "../../components/Config/APIS/APISCatalogos";
 import { Box } from "@mui/system";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
@@ -426,7 +426,7 @@ export function Catalogos() {
   );
 }
 
-interface ICatalogo {
+ export interface ICatalogo {
   Id: string;
   Descripcion: string;
   OCP: number;

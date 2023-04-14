@@ -11,10 +11,10 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
-
-import { Usuarios } from "./screens/Config/Usuarios";
-import { Configuracion } from "./screens/Config/Config";
+import { Solicitudes } from "./screens/Solicitudes/solicitudes";
+import { Configuracion } from "../src/components/Config/Configuracion";
 import { Catalogos } from "./screens/Config/Catalogos";
+import { Usuarios } from "./screens/Config/Usuarios";
 
 export const appTheme = createTheme({
   palette: {
@@ -65,6 +65,7 @@ function App() {
           <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
           <Route path="users" element={<Usuarios />}></Route>
+          <Route path="solicitudes-usuarios" element={<Solicitudes/>}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>

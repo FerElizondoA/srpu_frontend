@@ -123,7 +123,6 @@ export function SolicitudInscripcion() {
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const buttodescription = () => {

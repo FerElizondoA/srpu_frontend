@@ -10,13 +10,12 @@ import {
   TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import AddLinkIcon from "@mui/icons-material/AddLink";
-import SendIcon from "@mui/icons-material/Send";
-import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Navigate, Route, useNavigate } from "react-router-dom";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AccountTree as AccountTreeIcon,
   Edit,
@@ -26,14 +25,17 @@ import {
 } from "@mui/icons-material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
-import { IUSuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
+
 
 export const Usuarios = () => {
-  const [usuarios, setUsuarios] = useState<Array<IUSuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUSuarios>>([]);
+  const navigate = useNavigate();
+  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
@@ -54,15 +56,15 @@ export const Usuarios = () => {
     },
     {
       id: "ApellidoPaterno",
-      label: "ApellidoPaterno",
+      label: "Apellido Paterno",
     },
     {
       id: "ApellidoMaterno",
       label: "Apellido Materno",
     },
     {
-      id: "MunicipioUOrganizacion",
-      label: "Municipio u Organizacion",
+      id: "EntePublico",
+      label: "Ente Publico",
     },
     {
       id: "Cargo",
@@ -98,6 +100,135 @@ export const Usuarios = () => {
     },
   ];
 
+  /* BUSCADOR */
+
+  const [datos, setDatos] = useState<Array<IUsuarios>>([]);
+  // const [datostabla, setDatosTabla] =useState([]);
+  const [busqueda, setBusqueda] = useState("");
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IUsuarios>>([]);
+
+  const handleChange = (dato: string) => {
+    setBusqueda(dato);
+  };
+
+  const handleSearch = () => {
+    filtrarDatos();
+  };
+
+  const filtrarDatos = () => {
+    let ResultadoBusqueda = datos.filter((elemento) => {
+      if (
+        elemento.Nombre.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.ApellidoPaterno.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.ApellidoMaterno.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MunicipioUOrganizacion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Cargo.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Rol.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.CorreoElectronico.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Telefono.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Ext.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Celular.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Curp.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Rfc.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
+        console.log(elemento);
+
+        return elemento;
+      }
+    });
+    setUsuariosFiltrados(ResultadoBusqueda);
+  };
+
+  useEffect(() => {
+    getListadoUsuarios(setDatos);
+  }, []);
+
+  useEffect(() => {
+    setUsuariosFiltrados(datos);
+  }, [datos]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
+  }, [busqueda]);
+
+  useEffect(() => {}, []);
+
+
+
+  /* BUSCADOR */
+
+
+  const [usuarioEdit,setUsuarioEdit]=useState<IUsuarios>();
+
+  const openNewUsuario=()=>{
+    setButonLabel('Agregar');
+    setTitle('AGREGAR USUARIO.');
+    
+    setUsuarioEdit({
+      id: '',
+      IdCentral: '',
+      Nombre: '',
+      ApellidoPaterno: '',
+      ApellidoMaterno:'',
+      NombreUsuario: '',
+      CorreoElectronico: '',
+      Curp: '',
+      Rfc: '',
+      Telefono: '',
+      Ext: '',
+      Celular: '',
+      Cargo: '',
+      CorreoDeRecuperacion: '',
+      IdRol: '',
+      Rol: '',
+      MunicipioUOrganizacion: '',
+  
+  })
+  openDialogUser();
+  }
+  const openEditarUsuario=(name:string,usuario:IUsuarios)=>{
+    setButonLabel('Editar');
+    setTitle('EDITAR USUARIO ' + name.toUpperCase +'.');
+    
+    setUsuarioEdit(usuario);
+    openDialogUser();
+  }
+
+  const [butonLabel, setButonLabel]= useState('Agregar');
+  const [title, setTitle] = useState("AGREGAR  USUARIO.");
+
+  /*DIALOG */
+  const [openDialog, setOpenDialog] = useState(false);
+  const openDialogUser = () => {
+    setOpenDialog(!openDialog);
+ 
+  };
+
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -113,8 +244,13 @@ export const Usuarios = () => {
         display="flex"
         justifyContent="flex-end"
       >
-
-        <Grid item xs={8} lg={8} sm={8} sx={{display:'flex',justifyContent:'flex-end'}}>
+        <Grid
+          item
+          xs={8}
+          lg={8}
+          sm={8}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
           <Paper
             component="form"
             sx={{
@@ -126,26 +262,68 @@ export const Usuarios = () => {
             <InputBase
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
-
-              onChange={(e) => { }}
-            //inputProps={{ "aria-label": "search google maps" }}
+              value={busqueda}
+              onChange={(e) => {
+                handleChange(e.target.value);
+              }}
+              onKeyPress={(ev) => {
+                //cuando se presiona Enter
+                if (ev.key === "Enter") {
+                  handleSearch();
+                  ev.preventDefault();
+                  return false;
+                }
+              }}
             />
             <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon onClick={() => { }} />
+              <SearchIcon
+                onClick={() => {
+                  handleSearch();
+                }}
+              />
             </IconButton>
           </Paper>
         </Grid>
 
-        <Grid item xs={4} lg={4} sm={4} sx={{display:'flex',justifyContent:'flex-end'}}>
-          <Button variant="contained" size="large" endIcon={<PersonAddAlt1Icon />} sx={{ mr: '2vw' }}> Añadir Usuario</Button>
-
+        <Grid
+          item
+          xs={2}
+          lg={2}
+          sm={2}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button
+            color="info"
+            variant="contained"
+            sx={{ width: "80%" }}
+            endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+            onClick={() => {navigate("../solicitudes-usuarios")}}
+          >
+            Ver Solicitudes
+          </Button>
         </Grid>
-
-
-
+        <Grid
+          item
+          xs={2}
+          lg={2}
+          sm={2}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button
+            variant="contained"
+            size="medium"
+            endIcon={<PersonAddAlt1Icon />}
+            sx={{ width: "80%" }}
+            onClick={() => {
+              openNewUsuario();
+            }}
+          >
+            Añadir Usuario
+          </Button>
+        </Grid>
       </Grid>
 
-      <Grid item sx={{height:"80vh"}}>
+      <Grid item sx={{ height: "70vh" }}>
         <TableContainer>
           <Table>
             <TableHead>
@@ -156,22 +334,41 @@ export const Usuarios = () => {
               ))}
             </TableHead>
             <TableBody>
-              {usuariosFiltrados.map((row) => (
+              {usuariosFiltrados?.map((row) => (
                 <StyledTableRow>
-                  <StyledTableCell component="th" scope="row" align="center">
+                  <StyledTableCell
+                    sx={{ display: "flex" }}
+                    component="th"
+                    scope="row"
+                    align="center"
+                  >
+                    <>
+                      <Tooltip title="Editar Usuario">
+                        <IconButton
+                          size="large"
+                          onClick={() => {
+                            openEditarUsuario(
+                              row.Nombre + " " + row.ApellidoPaterno,
+                              row
+                            );
+                          }}
+                        >
+                          <Edit fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
 
-                    <Tooltip title="Editar Usuario">
-                      <IconButton aria-label="delete" size="large" onClick={() => {  }}>
-                        <Edit fontSize="inherit" />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Eliminar Usuario">
-                      <IconButton aria-label="delete" size="large" onClick={() => {  }}>
-                        <DeleteIcon fontSize="inherit" />
-                      </IconButton>
-                    </Tooltip>
-
+                      <Tooltip title="Eliminar Usuario">
+                        <IconButton
+                          aria-label="delete"
+                          size="large"
+                          onClick={() => {
+                            console.log(row.id, row.ApellidoPaterno.toString());
+                          }}
+                        >
+                          <DeleteIcon fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
+                    </>
                   </StyledTableCell>
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Nombre.toString()}
@@ -225,6 +422,13 @@ export const Usuarios = () => {
           </Table>
         </TableContainer>
       </Grid>
+      <DialogUsuarios
+        ActionButton={butonLabel}
+        open={openDialog}
+        title={title}
+        handleClose={openDialogUser}
+        UserObject={usuarioEdit}
+      />
     </Grid>
   );
 };

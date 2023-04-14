@@ -41,6 +41,7 @@ import { log } from "console";
 
 interface Head {
   label: string;
+ 
 }
 
 const heads: readonly Head[] = [
@@ -173,6 +174,9 @@ export function DisposicionPagosCapital() {
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -200,6 +204,7 @@ export function DisposicionPagosCapital() {
   }, []);
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  
 
   const addRows = () => {
     const TI: TasaInteres = {
@@ -305,10 +310,11 @@ export function DisposicionPagosCapital() {
           <Grid item>
             <Divider sx={queries.medium_text}>DISPOSICIÓN</Divider>
           </Grid>
+
           <Grid item container mt={5}>
             <Grid item ml={15} lg={4}>
               <InputLabel sx={queries.medium_text}>
-                Fecha de Contratación
+                Fecha de disposición
               </InputLabel>
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
@@ -329,7 +335,11 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
               <TextField
                 value={disposicionImporte}
-                onChange={(text) => changeDisposicionImporte(text.target.value)}
+                onChange={(text) =>
+                  /^[0-9,.]*$/.test(text.target.value)
+                    ? changeDisposicionImporte(text.target.value)
+                    : null
+                }
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -398,6 +408,29 @@ export function DisposicionPagosCapital() {
                 )}
               />
             </Grid>
+            <Grid item ml={10} lg={3}>
+              <InputLabel sx={queries.medium_text}>
+                Periocidad de Pago
+              </InputLabel>
+              <Autocomplete
+                fullWidth
+                value={capitalPeriocidadPago}
+                onChange={(event: any, text: string | null) =>
+                  changeCapitalPeriocidadPago(
+                    periocidadDePagoMap.get(text),
+                    text
+                  )
+                }
+                options={Array.from(periocidadDePagoMap.keys())}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+              />
+            </Grid>
 
             <Grid item ml={10} lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
@@ -421,7 +454,6 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
       </Grid>
-
       <Grid item container>
         <Grid item container direction="column">
           <Grid item mt={5} padding={2}>
@@ -729,4 +761,5 @@ export function DisposicionPagosCapital() {
       </Grid>
     </Grid>
   );
+}
 }
