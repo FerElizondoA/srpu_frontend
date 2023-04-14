@@ -1,7 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ICreateSolicitud, IUsuarios } from "../Interfaces/IUsuarios";
-import { log } from "console";
+import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -31,7 +30,7 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
         Celular: datos.Celular,
         Telefono: datos.Telefono,
         Extencion: datos.Ext,
-        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,rol:datos.Rol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
         TipoSolicitud: tipoSolicitud,
         CreadoPor: localStorage.getItem("IdCentral") || '',
         IdApp: localStorage.getItem("IdApp") || ''
@@ -43,7 +42,6 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-      console.log(r);
 
       if (r.status === 200) {
        
@@ -128,8 +126,6 @@ export const getListadoUsuarios = (setState: Function) => {
       'Content-Type': 'application/json'
     }
   }).then(({ data }) => {
-
-    console.log(data.data);
 
     setState(data.data)
 

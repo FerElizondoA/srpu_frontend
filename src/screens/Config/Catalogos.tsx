@@ -1,4 +1,4 @@
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import Button from "@mui/material/Button";
 import {
   Grid,
@@ -397,7 +397,6 @@ export function Catalogos() {
             <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
               <Button
                 onClick={() => {
-                  console.log(edit);
                   setEdit((edit) => ({
                     ...edit,
                     ...{ Crud: "crea" },

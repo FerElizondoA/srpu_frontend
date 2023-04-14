@@ -8,7 +8,8 @@ export const sessionValid = () => {
   const rft = params.get("rf") || "";
 
   return axios
-    .post("http://10.200.4.105:5000/api/verify",
+    .post(
+      "http://10.200.4.105:5000/api/verify",
       {},
       {
         headers: {
@@ -48,16 +49,28 @@ export const getUserDetails = (idCentral: string) => {
       },
     })
     .then((r) => {
-      if (r.status === 200) {
+      if (r.status === 200 && !r.data.data.error) {
         localStorage.setItem("IdUsuario", r.data.data.Id);
         localStorage.setItem(
           "NombreUsuario",
-          r.data.data.Nombre.split(" ")[0] + " " + r.data.data.ApellidoPaterno
+          r.data.data.Nombre +
+            " " +
+            r.data.data.ApellidoPaterno +
+            " " +
+            r.data.data.ApellidoMaterno
         );
 
         localStorage.setItem("Rol", r.data.data.Rol);
+        localStorage.setItem("Puesto", r.data.data.Cargo);
+        localStorage.setItem(
+          "EntePublicoObligado",
+          r.data.data.EntePublicoObligado
+        );
+        localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
         return true;
+      } else {
+        getDataSolicitud(idCentral);
       }
     })
     .catch((error) => {
@@ -81,8 +94,16 @@ const getDataSolicitud = (idSolicitud: string) => {
       },
     })
     .then((r) => {
+      console.log(JSON.parse(
+        r.data.data[0].DatosAdicionales
+      ));
+      
       if (r.status === 200) {
-        // window.location.reload();
+        let objetoDatosAdicionales = JSON.parse(
+          r.data.data[0].DatosAdicionales
+        );
+        let CreadoPor = r.data.data[0].CreadoPor;
+        signUp(idSolicitud, objetoDatosAdicionales, CreadoPor);
       }
     })
     .catch((error) => {
@@ -91,6 +112,30 @@ const getDataSolicitud = (idSolicitud: string) => {
     });
 };
 
+const signUp = (
+  IdUsuarioCentral: string,
+  datosAdicionales: IDatosAdicionales,
+  CreadoPor: string
+) => {
+  axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-usuario",
+      {
+        IdUsuarioCentral: IdUsuarioCentral,
+        Cargo: datosAdicionales.cargo,
+        IdRol: datosAdicionales.idRol,
+        CreadoPor: CreadoPor,
+        IdEntePublico: datosAdicionales.idEntePublico,
+        CorreoDeRecuperacion: datosAdicionales.correoDeRecuperacion,
+      },
+      { headers: { Authorization: localStorage.getItem("jwtToken") || "" } }
+    )
+    .then((r) => {
+      if (r.status === 200) {
+        window.location.reload();
+      }
+    });
+};
 
 export const continueSession = () => {
   return axios
@@ -129,3 +174,10 @@ export const logout = () => {
   localStorage.clear();
   window.location.assign("http://10.200.4.106/");
 };
+
+export interface IDatosAdicionales {
+  idEntePublico: string;
+  idRol: string;
+  correoDeRecuperacion: string;
+  cargo: string;
+}

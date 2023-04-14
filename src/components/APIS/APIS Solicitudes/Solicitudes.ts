@@ -1,6 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ICreateSolicitud } from "../Interfaces/ISolicitudes";
+//import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuarios/ISolicitudes";
+import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuario/ISolicitudes";
 
 const Toast = Swal.mixin({
     toast: true,

@@ -36,6 +36,8 @@ import {
 import { useCortoPlazoStore } from "../../../store/main";
 import { TasaEfectiva } from "../../../store/tasa_efectiva";
 
+import { format } from "date-fns";
+
 interface Head {
     label: string;
 }
@@ -75,12 +77,10 @@ export function ComisionesTasaEfectiva(){
 
     const changePercentageOrAmount = () => {
       if(radioValue !== "fixedPercentage"){
-        console.log("Amount is now 0!");
         changeHasPorcentaje(true);
         changeEfectivaMontoFijo(0);
         changeHasMonto(false);
       }else{
-        console.log("Porcentaje is now 0!");
         changeHasPorcentaje(false);
         changeEfectivaPorcentajeFijo(0);
         changeHasMonto(true);
@@ -108,8 +108,8 @@ export function ComisionesTasaEfectiva(){
     const hasIVA: boolean = useCortoPlazoStore(state => state.hasIVA);
     const changeHasIVA: Function = useCortoPlazoStore(state => state.changeHasIVA);
     const tiposComisionCatalog: string[] = useCortoPlazoStore(state => state.tiposComisionCatalog);
-    const periocidadDePagoCatalog: string[] = useCortoPlazoStore(state => state.periocidadDePagoCatalog);
-    const diasEjercicioCatalog: string[] = useCortoPlazoStore(state => state.diasEjercicioCatalog);
+    const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(state => state.periocidadDePagoMap);
+    const diasEjercicioMap: Map<string | null, string> = useCortoPlazoStore(state => state.diasEjercicioMap);
     const addTasaEfectiva: Function = useCortoPlazoStore(state => state.addTasaEfectiva);
     const removeTasaEfectiva: Function = useCortoPlazoStore(state => state.removeTasaEfectiva);
     const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(state => state.tasaEfectivaTable);
@@ -124,20 +124,16 @@ export function ComisionesTasaEfectiva(){
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, id);
       } else if (selectedIndex === 0) {
-        console.log("selectedIndex === 0 !")
         newSelected = newSelected.concat(selected.slice(1));
       } else if (selectedIndex === selected.length - 1) {
-        console.log("selectedIndex === selected.length -1 !")
         newSelected = newSelected.concat(selected.slice(0, -1));
       } else if (selectedIndex > 0) {
-        console.log("selectedIndex === selected.length > 0 !")
         newSelected = newSelected.concat(
           selected.slice(0, selectedIndex),
           selected.slice(selectedIndex + 1),
         );
       }
       setSelected(newSelected);
-      console.log(newSelected);
     };
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
@@ -156,7 +152,6 @@ export function ComisionesTasaEfectiva(){
     }
 
     const deleteRows = () => {
-      console.log("selected: ", selected)
       selected.forEach((it) => {
         removeTasaEfectiva(it);
       })
@@ -213,9 +208,9 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={efectivaPeriocidadPago}
               onChange={(event: any, text: string | null) =>
-                changeEfectivaPeriocidadPago(text)
+                changeEfectivaPeriocidadPago(periocidadDePagoMap.get(text), text)
               }
-              options={periocidadDePagoCatalog}
+              options={Array.from(periocidadDePagoMap.keys())}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -309,9 +304,9 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={efectivaDiasEjercicio}
               onChange={(event: any, text: string | null) =>
-                changeEfectivaDiasEjercicio(text)
+                changeEfectivaDiasEjercicio(diasEjercicioMap.get(text), text)
               }
-              options={diasEjercicioCatalog}
+              options={Array.from(diasEjercicioMap.keys())}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -343,7 +338,7 @@ export function ComisionesTasaEfectiva(){
           <Grid item>
             <FormControlLabel
               label="Causa IVA"
-              control={<Checkbox defaultChecked />}
+              control={<Checkbox onChange={(_) => changeHasIVA(!hasIVA)} />}
             ></FormControlLabel>
           </Grid>
 
@@ -372,7 +367,7 @@ export function ComisionesTasaEfectiva(){
                           {row.tipoComision}
                         </StyledTableCell>
                         <StyledTableCell align="center">
-                          {row.fechaPrimerPago}
+                          {format(new Date(row.fechaPrimerPago), "dd/MM/yyyy")}
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           {row.periocidadPago}
