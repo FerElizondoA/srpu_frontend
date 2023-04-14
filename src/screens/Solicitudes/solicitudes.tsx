@@ -35,9 +35,6 @@ export function Solicitudes() {
   useEffect(() => {
     getPreviewSolicitud(setSolicitudes);
   }, []);
-  useEffect(() => {
-    if (solicitudes.length > 1) console.log(solicitudes);
-  }, [solicitudes]);
   // Llamada a la base de datos
 
   return (

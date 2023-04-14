@@ -37,6 +37,7 @@ import { queries } from "../../queries";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
+import { TimerCounter } from "../../screens/Config/TimerCounter";
 
 export function LateralMenu() {
   const logout = () => {
@@ -62,8 +63,9 @@ export function LateralMenu() {
     setOpenFinanciamiento(!openFinanciamiento);
   };
 
-  const [openConsultaDeSolicitud, setConsultaDeSolicitud] = React.useState(false);
-  
+  const [openConsultaDeSolicitud, setConsultaDeSolicitud] =
+    React.useState(false);
+
   const handleConsultaDeSolicitudClick = () => {
     setConsultaDeSolicitud(!openConsultaDeSolicitud);
   };
@@ -71,7 +73,7 @@ export function LateralMenu() {
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
-        <Grid container>
+        <Grid container sx={{ alignItems: "center", justifyContent:'space-between' }}>
           <Grid item mt={0.5}>
             <IconButton
               size="large"
@@ -81,8 +83,11 @@ export function LateralMenu() {
               <MenuIcon />
             </IconButton>
           </Grid>
-          <Grid item ml={3} mt={0.5}>
+          <Grid item mt={0.5}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
+          </Grid>
+          <Grid >
+            <TimerCounter />
           </Grid>
         </Grid>
         <Grid item>
@@ -93,8 +98,7 @@ export function LateralMenu() {
           >
             <Grid container sx={{ width: query.isXs ? "40vw" : "30vw" }}>
               <Grid item container direction="column" mt={2}>
-
-              <Grid item sx={{ alignSelf: "center" }}>
+                <Grid item sx={{ alignSelf: "center" }}>
                   <Typography sx={queries.text}>
                     Sistema del Registro Público Único
                   </Typography>
@@ -134,10 +138,11 @@ export function LateralMenu() {
               <Grid item container direction="column">
                 <Grid item>
                   <List>
-                    <ListItemButton 
-                              onClick={() => {
-                                navigate("../");
-                              }}>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("../home");
+                      }}
+                    >
                       <ListItemIcon>
                         <HomeOutlinedIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -197,10 +202,12 @@ export function LateralMenu() {
                           </List>
                         </Collapse>
 
-                        <ListItemButton sx={{ marginLeft: 2 }}
-                         onClick={() => {
-                          navigate("../ConsultaDeSolicitudes");
-                        }}>
+                        <ListItemButton
+                          sx={{ marginLeft: 2 }}
+                          onClick={() => {
+                            navigate("../ConsultaDeSolicitudes");
+                          }}
+                        >
                           <ListItemIcon>
                             <KeyboardDoubleArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>

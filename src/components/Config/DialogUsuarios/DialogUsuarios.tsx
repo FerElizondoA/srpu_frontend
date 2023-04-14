@@ -117,8 +117,6 @@ export const DialogUsuarios = ({
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 20 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Nombre: dato });
-      console.log(registroDatos);
-
     }
   };
 

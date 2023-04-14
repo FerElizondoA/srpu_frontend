@@ -57,11 +57,8 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
   const [text, setText] = React.useState("Enviar sin comentarios");
   const validaciontext = () => {
     if (comentarios == null || /^[\s]*$/.test(comentarios)) {
-      console.log(" comentarios", comentarios);
-      console.log("texto", text);
       setText("Enviar");
     } else {
-      console.log("No estoy vacio pa");
     }
   };
 

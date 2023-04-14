@@ -1,6 +1,5 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { log } from "console";
 import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
@@ -43,7 +42,6 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-      console.log(r);
 
       if (r.status === 200) {
        
@@ -128,8 +126,6 @@ export const getListadoUsuarios = (setState: Function) => {
       'Content-Type': 'application/json'
     }
   }).then(({ data }) => {
-
-    console.log(data.data);
 
     setState(data.data)
 

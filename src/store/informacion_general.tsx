@@ -132,13 +132,11 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
           }
         );
         response.data.data.forEach((e: any) => {
-          console.log("tipoEntePublicoObligado: ", e)
           set((state) => ({
             tipoEntePublicoObligadoMap: new Map(state.tipoEntePublicoObligadoMap).set(e.Descripcion, e.Id)
           }));
         });
       }
-      console.log("tipoEntePublicoObligadoMap: ", get().tipoEntePublicoObligadoMap)
       set(() => ({fetchedTipoEntePublicoObligado: true}))
     },
     fetchObligadoSolidarioAval: async () => {

@@ -145,7 +145,6 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
-    console.log("soy los datos: ", datos);
   }, [datos]);
 
   useEffect(() => {
@@ -231,7 +230,6 @@ export function ConsultaDeSolicitudPage() {
                 let chip = <></>;
 
                 if (row.Estatus === "En_actualizacion ") {
-                  console.log("soy el row Id: ", row.Id);
 
                   chip = (
                     <Chip
@@ -285,7 +283,6 @@ export function ConsultaDeSolicitudPage() {
                         <IconButton type="button" aria-label="search">
                           <VisibilityIcon
                             onClick={() => {
-                              //console.log(JSON.parse(row.Solicitud));
                               changeOpenDialogVer(!openDialogVer);
                             }}
                           />
