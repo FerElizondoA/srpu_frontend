@@ -193,7 +193,7 @@ export const DialogUsuarios = ({
 
   const validaCURP = (dato: string) => {
     var format = /[ ¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    if (dato.length !== 19 && !format.test(dato)) {
+    if (dato.length < 19 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Curp: dato.toUpperCase() });
     }
     if (registroDatos.Curp.length < 18) {

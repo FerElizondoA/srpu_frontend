@@ -39,3 +39,13 @@ export interface IDetailSolicitudUsuario {
     Rfc: string;
     Telefono: string;
 }
+
+export interface IDatosAdicionales {
+    idRol: string;
+    rol: string;
+    cargo: string;
+    idEntePublico: string;
+    entePublico: string;
+    correoDeRecuperacion: string;
+
+}

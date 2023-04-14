@@ -16,7 +16,7 @@ import { getDetailSolicitudUsuario, getPreviewSolicitud } from "./APIGetSolicitu
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { queriesSolicitud } from "./queriesSolicitudes";
-import {  IDetailSolicitudUsuario, ISolicitudes } from "./ISoliciudes";
+import {IDatosAdicionales, IDetailSolicitudUsuario, ISolicitudes } from "./ISoliciudes";
 
 export function Solicitudes() {
   //Declaraciones
@@ -28,8 +28,36 @@ export function Solicitudes() {
   const [filtro, setFiltro] = useState<number>(4);
   const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
   const [solicitudesFiltered, setSolicitudesFiltered] = useState<Array<ISolicitudes>>([]);
-  const [detailSolicitud, setDetailSolicitud] = useState<IDetailSolicitudUsuario>();
-  const [datosAdicionales, setDatosAdicionales] = useState<string>();
+  const [detailSolicitud, setDetailSolicitud] = useState<IDetailSolicitudUsuario>({
+    ApellidoMaterno: '',
+    ApellidoPaterno: '',
+    Celular: '',
+    CorreoElectronico: '',
+    CreadoPor: '',
+    Curp: '',
+    DatosAdicionales: '',
+    Estatus: '',
+    Ext: '',
+    FechaDeCreacion: '',
+    Id: '',
+    Mensaje: '',
+    Nombre: '',
+    NombreApp: '',
+    NombreSolicitante: '',
+    NombreUsuario: '',
+    Puesto: '',
+    Respuesta: '',
+    Rfc: '',
+    Telefono: '',
+  });
+  const [datosAdicionales, setDatosAdicionales] = useState<IDatosAdicionales>({
+    idRol: '',
+    rol: '',
+    cargo: '',
+    idEntePublico: '',
+    entePublico: '',
+    correoDeRecuperacion: '' 
+  });
 
   const getEstatus=(estatus:number)=>{
     switch(estatus){
@@ -74,12 +102,13 @@ export function Solicitudes() {
   }
 
   useEffect(() => {
-    //NOS QUEDAMOS AQUI
-    //if(detailSolicitud.DatosAdicionales!== undefined)
-    //setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales))
-
+    if(detailSolicitud.DatosAdicionales!=='')
+    setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales))
   }, [detailSolicitud])
-  
+
+  useEffect(() => {
+    console.log(datosAdicionales);
+   }, [datosAdicionales])
 
   useEffect(() => {
     if(indexSelect>=0)
@@ -109,8 +138,8 @@ export function Solicitudes() {
         
 
         {/* grid  columna del previsualizacion y filtro*/}
-        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={3} ml={2}>
-          <Grid mb={2.5} sm={12}>
+        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={2} ml={2}>
+          <Grid mb={2.5} sm={10} xs={10} xl={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
               <Select
@@ -136,7 +165,7 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid  md={12} sm={12} xl={12} lg={12} >
+          <Grid  md={12} sm={12} xl={12} lg={5} xs={10}>
             <List sx={queriesSolicitud.buscador}>
               {solicitudesFiltered?.map((dato,index) => {
                 return (
@@ -149,33 +178,41 @@ export function Solicitudes() {
                         setIndexSelect(index);
                         
                         }}>
-                        <Box  sx={{width:'100%',height:'12vh',flexDirection:'column',justifyContent:'space-evenly',display:'flex'}}>
+
+                        {/* boxContenedorBuscador*/}
+                        <Box sx={queriesSolicitud.boxContenedorBuscador}>
 
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
-                            <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>USUARIO: </Typography>
-                              <Typography fontSize={"14px"} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>                            
+
+                            <Box sx={queriesSolicitud.boxContenidoBuscador}>
+                              <Typography sx={queriesSolicitud.typograhyCampoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>USUARIO: </Typography>
+                              <Typography sx={queriesSolicitud.typograhyResultadoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreUsuario.toUpperCase()}</Typography>                            
                             </Box >
+
                             <Box   sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
                               <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>FECHA: </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>                             
+                              <Typography sx={queriesSolicitud.typograhyResultadoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>{dato.FechaDeCreacion.toUpperCase()}</Typography>                             
                             </Box>
+
                           </Box>
 
                           <Box sx={{display:'flex',justifyContent:'space-between'}}>
+
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>                             
+                              <Typography sx={queriesSolicitud.typograhyCampoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>TIPO : </Typography>
+                              <Typography sx={queriesSolicitud.typograhyResultadoBuscador}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.tipoSoli.toUpperCase()}</Typography>                             
                             </Box>
+
                             <Box sx={{display:'flex', flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
-                              <Typography padding={"1px 4px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>                           
+                              <Typography sx={queriesSolicitud.typograhyCampoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>ESTATUS: </Typography>
+                              <Typography sx={queriesSolicitud.typograhyResultadoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>{getEstatus(dato.Estatus)}</Typography>                           
                             </Box>
+
                           </Box>
 
                           <Box sx={{display:'flex',flexDirection:'row',alignItems:"center"}}>
-                              <Typography padding={"1px 5px 1px 0"} fontSize={"14px"} fontWeight={"bold"} color={index===indexSelect?'#af8c55 ':'black'}>SOLICITANTE: </Typography>
-                              <Typography fontSize={"14px"}  color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreSolicitante.toUpperCase()}</Typography>
+                              <Typography sx={queriesSolicitud.typograhyCampoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>SOLICITANTE: </Typography>
+                              <Typography sx={queriesSolicitud.typograhyResultadoBuscador} color={index===indexSelect?'#af8c55 ':'black'}>{dato.NombreSolicitante.toUpperCase()}</Typography>
                           </Box>
                       
                         </Box>
@@ -190,12 +227,11 @@ export function Solicitudes() {
         </Grid>
 
         {/* grid Formulario*/}
-        <Grid   xl={9}   >
-        <Box sx={{alignItems:"center" , display:"flex", width:"100%", justifyContent:"center"}}>
+        <Grid xl={9}  >
+        <Box sx={queriesSolicitud.boxContenidoFormulario}>
+          <Box sx={queriesSolicitud.boxApartadosFormulario}>
           <Grid
             container
-            item
-            mt={3}
             sm={11}
             xl={11}
             xs={11}
@@ -227,13 +263,11 @@ export function Solicitudes() {
             </Grid>
           </Grid>
 
-        </Box>
+          </Box>
          
-          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+          <Box sx={queriesSolicitud.boxApartadosFormulario}>
             <Grid
-            item
-            container
-            mt={8}
+            container           
             sm={12}
             xl={11}
             xs={12}
@@ -276,11 +310,10 @@ export function Solicitudes() {
           </Grid>
           </Box>
           
-          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+          <Box sx={queriesSolicitud.boxApartadosFormulario}>
             <Grid
-            item
             container
-            mt={8}
+           
             sm={12}
             xl={11}
             xs={12}
@@ -295,7 +328,7 @@ export function Solicitudes() {
                 id="outlined-basic"
                 label="Cargo"
                 variant="standard"
-                value={detailSolicitud?.Nombre|| ''}
+                value={datosAdicionales?.cargo || ''}
              />
             </Grid>
 
@@ -306,7 +339,7 @@ export function Solicitudes() {
                 id="outlined-basic"
                 label="Rol"
                 variant="standard"
-                value={detailSolicitud?.ApellidoPaterno|| ''}
+                value={datosAdicionales?.rol|| ''}
              />
             </Grid>
 
@@ -317,18 +350,16 @@ export function Solicitudes() {
                 id="outlined-basic"
                 label="Ente Publico"
                 variant="standard"
-                value={detailSolicitud?.ApellidoMaterno|| ''}
+                value={datosAdicionales?.entePublico|| ''}
              />
             </Grid>
           </Grid>
           </Box>
 
 
-          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+          <Box sx={queriesSolicitud.boxApartadosFormulario}>
             <Grid
             container
-            item
-            mt={8}
             justifyContent={"space-between"}
             sm={12}
             xl={11}
@@ -381,17 +412,16 @@ export function Solicitudes() {
           </Grid>
           </Box>
 
-          <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
+          <Box sx={queriesSolicitud.boxApartadosFormulario}>
              <Grid
-           container
-           item
-           mt={10}
-           justifyContent={"space-between"}
-           sm={12}
-           xl={11}
-           xs={12}
-           md={12}
-           lg={12}
+              container
+              item
+              justifyContent={"space-between"}
+              sm={12}
+              xl={11}
+              xs={12}
+              md={12}
+              lg={12}
           >
             {/* grid contenido*/}
 
@@ -442,7 +472,7 @@ export function Solicitudes() {
           </Grid>
           </Box>
 
-          <Grid item display={"flex"} justifyContent={"space-evenly"} sx={queriesSolicitud.botones}>
+          <Grid item display={"flex"} justifyContent={"space-evenly"} >
             <Button
               color="primary"
               variant="contained"
@@ -459,7 +489,9 @@ export function Solicitudes() {
             >
             </Button>
           </Grid>
+          </Box>
         </Grid>
+        
 
       </Grid>
     </Grid>
