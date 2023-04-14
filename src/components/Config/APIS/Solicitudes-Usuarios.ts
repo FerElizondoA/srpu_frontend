@@ -31,7 +31,7 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
         Celular: datos.Celular,
         Telefono: datos.Telefono,
         Extencion: datos.Ext,
-        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,rol:datos.Rol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
         TipoSolicitud: tipoSolicitud,
         CreadoPor: localStorage.getItem("IdCentral") || '',
         IdApp: localStorage.getItem("IdApp") || ''
