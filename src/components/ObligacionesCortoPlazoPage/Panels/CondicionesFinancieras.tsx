@@ -7,7 +7,9 @@ import {
     TableSortLabel,
     TableContainer,
     TableHead,
-    Checkbox
+    Checkbox,
+    Tooltip,
+    IconButton
 } from "@mui/material";
 
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
@@ -20,6 +22,8 @@ import {
 import { useCortoPlazoStore } from "../../../store/main";
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
 import { format } from "date-fns";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 interface Head {
     label: string;
@@ -50,6 +54,9 @@ const heads: readonly Head[] = [
     {
         label: "Comisiones"
     },
+    {
+        label: "Acciones"
+    }
 ]
 
 export function CondicionesFinancieras(){
@@ -58,6 +65,7 @@ export function CondicionesFinancieras(){
   const [selected, setSelected] = React.useState<readonly number[]>([]);
 
   const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(state => state.condicionFinancieraTable);
+  const loadCondicionFinanciera: Function = useCortoPlazoStore(state => state.loadCondicionFinanciera);
   const removeCondicionFinanciera: Function = useCortoPlazoStore(state => state.removeCondicionFinanciera);
 
   const changeOpenAgregarState = (open: boolean) => {
@@ -108,10 +116,10 @@ export function CondicionesFinancieras(){
                 return (
                   <StyledTableRow>
                     <StyledTableCell padding="checkbox">
-                        <Checkbox
-                          onClick={(event) => handleClick(event, index)}
-                          checked={isItemSelected}
-                        />
+                      <Checkbox
+                        onClick={(event) => handleClick(event, index)}
+                        checked={isItemSelected}
+                      />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
                       {format(new Date(row.fechaDisposicion), "dd/MM/yyyy")}
@@ -120,19 +128,36 @@ export function CondicionesFinancieras(){
                       {"$" + row.importeDisposicion}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {format(new Date(row.fechaPrimerPagoCapital), "dd/MM/yyyy")}
+                      {format(
+                        new Date(row.fechaPrimerPagoCapital),
+                        "dd/MM/yyyy"
+                      )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.periocidadPagoCapital}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {format(new Date(row.fechaPrimerPagoInteres), "dd/MM/yyyy")}
+                      {format(
+                        new Date(row.fechaPrimerPagoInteres),
+                        "dd/MM/yyyy"
+                      )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.tasaInteres}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.comisiones}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <Tooltip title="Editar">
+                        <IconButton type="button" onClick={() => {
+                          changeOpenAgregarState(!openAgregarCondicion);
+                          loadCondicionFinanciera(row);
+                        }}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 );

@@ -27,6 +27,8 @@ import { useCortoPlazoStore } from "../../../store/main";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
+import { TasaInteres } from "../../../store/pagos_capital";
+import { TasaEfectiva } from "../../../store/tasa_efectiva";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -61,6 +63,9 @@ export function AgregarCondicionFinanciera(props: Props){
     const tasaFechaPrimerPago: string = useCortoPlazoStore(state => state.tasaFechaPrimerPago);
     const tipoComision: string = useCortoPlazoStore(state => state.tipoComision);
     const tasaReferencia: string = useCortoPlazoStore(state => state.tasaReferencia);
+    const capitalNumeroPago: number = useCortoPlazoStore(state => state.capitalNumeroPago);
+    const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(state => state.tasaInteresTable);
+    const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(state => state.tasaEfectivaTable);
     //const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore.getState().condicionFinancieraTable;
     const addCondicionFinanciera: Function = useCortoPlazoStore(state => state.addCondicionFinanciera);
     //const removeCondicionFinanciera: Function = useCortoPlazoStore.getState().removeCondicionFinanciera;
@@ -74,7 +79,10 @@ export function AgregarCondicionFinanciera(props: Props){
         periocidadPagoCapital: capitalPeriocidadPago,
         fechaPrimerPagoInteres: tasaFechaPrimerPago,
         tasaInteres: tasaReferencia,
-        comisiones: tipoComision
+        comisiones: tipoComision,
+        numeroPagoCapital: capitalNumeroPago,
+        tasasInteres: tasaInteresTable,
+        tasasEfectivas: tasaEfectivaTable
       }
       addCondicionFinanciera(CF);
     }
