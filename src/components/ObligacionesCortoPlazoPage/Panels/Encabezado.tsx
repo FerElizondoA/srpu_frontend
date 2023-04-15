@@ -87,6 +87,7 @@ export function Encabezado() {
 
     
     }
+    changeSolicitanteAutorizado(localStorage.getItem("NombreUsuario"));
   });
 
   let usuario = localStorage.getItem("NombreUsuario")
@@ -130,7 +131,6 @@ export function Encabezado() {
 
           <TextField
             fullWidth
-           
             value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
             variant="standard"
             onChange={(text) => {
