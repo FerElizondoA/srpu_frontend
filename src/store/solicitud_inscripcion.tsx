@@ -4,7 +4,6 @@ import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
-import { log } from "console";
 
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
@@ -109,10 +108,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
       plazoDias: state.plazoDias,
+      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
-      
       /* ---- CONDICIONES FINANCIERAS ---- */
 
       /* ---- SOLICITUD DE INSCRIPCION ---- */
