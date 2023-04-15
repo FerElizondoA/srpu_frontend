@@ -108,25 +108,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
       denominacion: state.denominacion,
       IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
-      dias: state.plazoDias,
-      obligadoSolidarioAval: state.obligadoSolidarioAval,
-      tasaInteres: state.tasaReferencia,
-      
+      plazoDias: state.plazoDias,
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
-      tipoComision: state.tipoComision,
-      tasaefectiva: state.tasaEfectiva,
-      periodoPago: state.capitalPeriocidadPago,
       
-      
-       /* ---- CONDICIONES FINANCIERAS ---- */
+      /* ---- CONDICIONES FINANCIERAS ---- */
 
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
 
       nombreServidorPublico: state.nombreServidorPublico,
-      nombre: state.solicitanteAutorizado,
     };
 
     console.log("periodoPago: ", state.tasaPeriocidadPago);
