@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 
 export type TasaInteres = {
-    id: string;
+    id: number;
     fechaPrimerPago: string;
     tasaFija: string;
     periocidadPago: string;
