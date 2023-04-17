@@ -12,6 +12,7 @@ import {
   TableHead,
   Fab,
   Typography,
+  Snackbar, 
 } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
@@ -213,7 +214,7 @@ export function SolicitudInscripcion() {
             disabled
             fullWidth
             variant="standard"
-            value={solicitanteAutorizado}
+            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
             onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{

@@ -12,7 +12,7 @@ import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Solicitudes } from "./screens/Solicitudes/solicitudes";
-import { Configuracion } from "./screens/Config/Config";
+import { Configuracion } from "../src/components/Config/Configuracion";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
 import { Init } from "./screens/int/Init";
