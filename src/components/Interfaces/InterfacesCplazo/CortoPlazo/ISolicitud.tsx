@@ -9,17 +9,16 @@ export interface ISolicitud {
   plazoDias: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string; 
-  tasaefectiva: string;
+  tasaEfectiva: string;
   tasaInteres: string;// tasa de referencia
   reglas: string[];
   tipoComision: string;
   nombreServidorPublico: string;
   tipoDocumento: string;
-  periodoPago: string;
+  capitalPeriocidadPago: string;
   obligadoSolidarioAval: string;
   fechaContratacion: Date;
   fechaVencimiento: Date;
-  dias: string;
   tipoEntePublico: string;
   
   

@@ -108,7 +108,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       denominacion: state.denominacion,
       IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
-      dias: state.plazoDias,
+      plazoDias: state.plazoDias,
       obligadoSolidarioAval: state.obligadoSolidarioAval,
       tasaInteres: state.tasaReferencia,
       
@@ -116,8 +116,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
       /* ---- CONDICIONES FINANCIERAS ---- */
       tipoComision: state.tipoComision,
-      tasaefectiva: state.tasaEfectiva,
-      periodoPago: state.capitalPeriocidadPago,
+      tasaEfectiva: state.tasaEfectiva,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
       
       
        /* ---- CONDICIONES FINANCIERAS ---- */
@@ -301,16 +301,16 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
         destino: solicitud.destino,
-        dias: solicitud.dias,
+        dias: solicitud.plazoDias,
         tipoEntePublicoObligado: solicitud.tipoEntePublico,
         entePublicoObligado: solicitud.tipoEntePublicoObligado,
-        tasaefectiva: solicitud.tasaefectiva,
+        tasaefectiva: solicitud.tasaEfectiva,
         tasaInteres: solicitud.tasaInteres,
         reglas: solicitud.reglas,
         tipocomisiones: solicitud.tipoComision,
         servidorpublico: solicitud.nombreServidorPublico,
         contrato: solicitud.tipoDocumento,
-        periodoPago: solicitud.periodoPago,
+        periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
