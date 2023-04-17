@@ -15,13 +15,8 @@ import {
   Toolbar,
 } from "@mui/material";
 
-// icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-// import PivotTableChartOutlinedIcon from "@mui/icons-material/PivotTableChartOutlined";
-// import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-// import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
-// import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -42,8 +37,16 @@ import { TimerCounter } from "../../screens/Config/TimerCounter";
 export function LateralMenu() {
   const logout = () => {
     localStorage.clear();
-    window.location.assign("http://10.200.4.106/");
+    window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
   };
+
+  const nombre = localStorage.getItem("NombreUsuario") || "";
+  const iniciales = `${nombre?.split(" ")[0].split("")[0] || ""} ${
+    nombre?.split(" ")[2].split("")[0] || ""
+  }`;
+
+  const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
+  const ente = localStorage.getItem("EntePublicoObligado");
 
   const navigate = useNavigate();
 
@@ -63,17 +66,29 @@ export function LateralMenu() {
     setOpenFinanciamiento(!openFinanciamiento);
   };
 
-  const [openConsultaDeSolicitud, setConsultaDeSolicitud] =
-    React.useState(false);
+  let hash = 0;
+  let i;
 
-  const handleConsultaDeSolicitudClick = () => {
-    setConsultaDeSolicitud(!openConsultaDeSolicitud);
-  };
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < nombre.length; i += 1) {
+    hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
 
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
-        <Grid container sx={{ alignItems: "center", justifyContent:'space-between' }}>
+        <Grid
+          container
+          sx={{ alignItems: "center", justifyContent: "space-between" }}
+        >
           <Grid item mt={0.5}>
             <IconButton
               size="large"
@@ -86,7 +101,7 @@ export function LateralMenu() {
           <Grid item mt={0.5}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
-          <Grid >
+          <Grid>
             <TimerCounter />
           </Grid>
         </Grid>
@@ -99,13 +114,17 @@ export function LateralMenu() {
             <Grid container sx={{ width: query.isXs ? "40vw" : "30vw" }}>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.text}>
+                  <Typography sx={queries.bold_text}>
                     Sistema del Registro Público Único
                   </Typography>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
+                  <Avatar
+                    sx={{ height: "100px", width: "100px", bgcolor: color }}
+                  >
+                    {iniciales}
+                  </Avatar>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
@@ -121,12 +140,8 @@ export function LateralMenu() {
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.italic_text}>Organismo</Typography>
-                </Grid>
-
-                <Grid item sx={{ alignSelf: "center" }}>
                   <Typography sx={queries.text}>
-                    Municipio: Monterrey
+                    {tipoEnte}: {ente}
                   </Typography>
                 </Grid>
 

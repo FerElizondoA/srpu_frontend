@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 
 import {
   Grid,
@@ -18,21 +18,45 @@ import {
 import { queries } from "../../queries";
 
 // icons
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
-import PivotTableChartOutlinedIcon from '@mui/icons-material/PivotTableChartOutlined';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import MenuIcon from '@mui/icons-material/Menu';
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import PivotTableChartOutlinedIcon from "@mui/icons-material/PivotTableChartOutlined";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export function LateralMenuMobile() {
+  const nombre = localStorage.getItem("NombreUsuario") || "";
+  const iniciales = `${nombre?.split(" ")[0].split("")[0] || ""} ${
+    nombre?.split(" ")[2].split("")[0] || ""
+  }`;
+
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < nombre.length; i += 1) {
+    hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
+  const ente = localStorage.getItem("EntePublicoObligado");
+
   const [openInscripcion, setOpenInscripcion] = React.useState(false);
   const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
@@ -48,20 +72,19 @@ export function LateralMenuMobile() {
   return (
     <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
       <Toolbar>
-
         <Grid container>
-          <Grid item >
+          <Grid item>
             <IconButton
               size="large"
               color="inherit"
               onClick={() => setIsDrawerOpen(true)}
             >
-              <MenuIcon/>
+              <MenuIcon />
             </IconButton>
           </Grid>
         </Grid>
 
-      <Grid item>
+        <Grid item>
           <Drawer
             anchor="bottom"
             open={isDrawerOpen}
@@ -70,23 +93,27 @@ export function LateralMenuMobile() {
             <Grid container>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Avatar sx={{ height: "100px", width: "100px" }}>JG</Avatar>
+                  <Avatar sx={{ height: "100px", width: "100px", bgcolor: color  }}>
+                    {iniciales}
+                  </Avatar>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.text}>Josvan Gonzalez</Typography>
+                  <Typography sx={queries.text}>
+                    {localStorage.getItem("NombreUsuario")}
+                  </Typography>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.bold_text}>Administrador</Typography>
+                  <Typography sx={queries.bold_text}>
+                    {localStorage.getItem("Rol")}
+                  </Typography>
                 </Grid>
 
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.italic_text}>Organismo</Typography>
-                </Grid>
-
-                <Grid item sx={{ alignSelf: "center" }}>
-                  <Typography sx={queries.text}>Municipio Monterrey</Typography>
+                  <Typography sx={queries.text}>
+                    {tipoEnte}: {ente}
+                  </Typography>
                 </Grid>
 
                 <Grid item>
@@ -225,7 +252,7 @@ export function LateralMenuMobile() {
               </Grid>
             </Grid>
           </Drawer>
-      </Grid>
+        </Grid>
       </Toolbar>
     </AppBar>
   );

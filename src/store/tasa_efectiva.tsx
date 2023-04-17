@@ -69,7 +69,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     fetchTiposComision: async () => {
         if(!get().fetchedTiposComision){
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-tipoDeComision",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-tipoDeComision",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),

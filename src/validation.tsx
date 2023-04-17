@@ -9,7 +9,7 @@ export const sessionValid = () => {
 
   return axios
     .post(
-      "http://10.200.4.105:5000/api/verify",
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},
       {
         headers: {
@@ -83,7 +83,7 @@ export const getUserDetails = (idCentral: string) => {
 
 const getDataSolicitud = (idSolicitud: string) => {
   axios
-    .get("http://10.200.4.105:5000/api/datosAdicionalesSolicitud", {
+    .get(process.env.REACT_APP_APPLICATION_LOGIN + "/api/datosAdicionalesSolicitud", {
       params: {
         IdUsuario: idSolicitud,
         IdApp: IdApp,
@@ -140,7 +140,7 @@ const signUp = (
 export const continueSession = () => {
   return axios
     .post(
-      "http://10.200.4.105:5000/api/verify",
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},
       {
         headers: {
@@ -172,7 +172,7 @@ export const continueSession = () => {
 
 export const logout = () => {
   localStorage.clear();
-  window.location.assign("http://10.200.4.106/");
+  window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || '');
 };
 
 export interface IDatosAdicionales {
