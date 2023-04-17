@@ -7,8 +7,10 @@ module.exports = {
     const IdUsuarioCreador = req.body.CreadoPor;
     const IdUsuarioCentral = req.body.IdUsuarioCentral;
     const Cargo = req.body.Cargo;
-    const Correo  = req.body.Correo;
+    const IdEntePublico = req.body.IdEntePublico;
+    const CorreoDeRecuperacion  = req.body.CorreoDeRecuperacion;
     const IdRol = req.body.IdRol;
+
     if (IdUsuarioCreador == null ||/^[\s]*$/.test(IdUsuarioCreador)) {
       return res.status(409).send({
         error: "Ingrese IdUsuarioCreador",
@@ -24,9 +26,14 @@ module.exports = {
         error: "Ingrese Cargo",
       });
     } 
-    if (Correo == null ||/^[\s]*$/.test(Correo)) {
+    if (IdEntePublico == null ||/^[\s]*$/.test(IdEntePublico)) {
       return res.status(409).send({
-        error: "Ingrese Correo",
+        error: "Ingrese IdEntePublico",
+      });
+    } 
+    if (CorreoDeRecuperacion == null ||/^[\s]*$/.test(CorreoDeRecuperacion)) {
+      return res.status(409).send({
+        error: "Ingrese CorreoDeRecuperacion",
       });
     } 
     if (IdRol == null ||/^[\s]*$/.test(IdRol)) {
@@ -35,14 +42,17 @@ module.exports = {
       });
     } 
       db.query(
-        `CALL sp_NuevoUsuario('${IdUsuarioCreador}', '${IdUsuarioCentral}''${Cargo}','${Correo}','${IdRol}', )`,
+        `CALL sp_NuevoUsuario('${IdUsuarioCreador}', '${IdUsuarioCentral}','${Cargo}','${IdEntePublico}','${CorreoDeRecuperacion}','${IdRol}' )`,
         (err, result) => {
+          
           if (err) {
+            console.log(err);
             return res.status(500).send({
               error: "Error",
             });
           }
           if (result.length) {
+            console.log(result);
             const data = result[0][0];
             if (data.error) {
               return res.status(409).send({
@@ -65,13 +75,20 @@ module.exports = {
   //LISTADO COMPLETO
   getUsuarios: (req, res) => {
     const IdApp = req.query.IdApp;
+    const  EntePublico=req.query.EntePublico;
+    console.log(req.query);
 
     if (IdApp == null ||/^[\s]*$/.test(IdApp)) {
       return res.status(409).send({
         error: "Ingrese IdApp",
       });
     } 
-    db.query(`CALL sp_ListadoUsuarios('${IdApp}')`, (err, result) => {
+    if (EntePublico == null ||/^[\s]*$/.test(EntePublico)) {
+      return res.status(409).send({
+        error: "Ingrese EntePublico",
+      });
+    } 
+    db.query(`CALL sp_ListadoUsuarios('${IdApp}','${EntePublico}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",

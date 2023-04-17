@@ -16,10 +16,10 @@ const { createRol, getRoles, getDetailRol, modifyRol, deleteRol } = require("../
 const { createTasaDeReferencia, getTasasDeReferencia, getDetailTasaDeReferencia, modifyTasaDeReferencia, deleteTasaDeReferencia } = require("../controllers/TasaDeReferencia.js");
 const { createTipoDeComision, getTiposDeComision, getDetailTipoDeComision, modifyTipoDeComision, deleteTipoDeComision } = require("../controllers/TipoDeComision.js");
 const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, getTiposEntePublico, getDetailTipoEntePublico } = require("../controllers/TipoEntePublico.js");
-const { createSolicitud, getSolicitudes } = require("../controllers/Solicitudes.js");
+const { createSolicitud, getSolicitudes, modifySolicitud, deleteSolicitud, createComentario, getComentarios } = require("../controllers/Solicitudes.js");
 const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento, modifyTipoDocumento } = require("../controllers/TipoDeDocumentos.js");
 
-const { getDetailUsuario, getUsuarios } = require("../controllers/usuarios.js");
+const { getDetailUsuario, getUsuarios, createUsuario } = require("../controllers/Usuarios.js");
 
 
 //#region Instituciones Financieras
@@ -247,9 +247,11 @@ router.post("/create-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   createTipoDeDocumento(req, res);
 });
 
-router.get("/get-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
+
+router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
+
 
 router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoLargoPlazo(req, res);
@@ -257,7 +259,7 @@ router.get("/get-tiposDocumentosLargoPlazo",  verifyToken.verifyJWT, (req, res) 
 
 router.get("/get-tiposDocumentosCortoPlazo",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumentoCortoPlazo(req, res);
-});
+}); 
 
 router.put("/modify-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
   modifyTipoDocumento(req, res);
@@ -422,6 +424,30 @@ router.post("/create-solicitud", verifyToken.verifyJWT, (req, res) => {
 router.get("/get-solicitudes",  verifyToken.verifyJWT, (req, res) => {
   getSolicitudes(req, res);
 });
+
+router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
+  modifySolicitud(req, res);
+});
+router.delete("/delete-solicitud", verifyToken.verifyJWT, (req, res) => {
+  deleteSolicitud(req, res);
+});
 //#endregion
+
+//#region Comentarios
+router.post("/create-comentario", verifyToken.verifyJWT, (req, res) => {
+  createComentario(req, res);
+});
+
+router.get("/get-comentarios",  verifyToken.verifyJWT, (req, res) => {
+  getComentarios(req, res);
+});
+
+//#endregion
+
+
+//#region  Usuarios
+router.post("/create-usuario", verifyToken.verifyJWT, (req, res) => {
+  createUsuario(req, res);
+});
 
 module.exports = router;
