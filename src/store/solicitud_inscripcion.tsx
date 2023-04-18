@@ -66,8 +66,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       );
       response.data.data.forEach((e: any) => {
-        console.log("response 2", response);
-
+        
         set((state) => ({
           reglasCatalog: [...state.reglasCatalog, e.Descripcion],
         }));
@@ -120,7 +119,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       nombreServidorPublico: state.nombreServidorPublico,
     };
 
-    console.log("periodoPago: ", state.tasaPeriocidadPago);
 
     if (solicitud.IdSolicitud.length === 0) {
       
@@ -155,7 +153,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         })
         .catch((e) => {
-          console.log("Stack trace {", e, "}");
         });
     } else {
       await axios
@@ -194,7 +191,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         })
         .catch((e) => {
-          console.log("Stack Trace: {", e, "}");
         });
     }
   },
@@ -231,7 +227,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         return true;
       })
       .catch(function (error) {
-        console.log("Stack Trace: ", error);
         Toast.fire({
           icon: "error",
           title: "No se elimino la solicitud.",

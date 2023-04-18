@@ -146,7 +146,6 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
-    console.log("soy los datos: ", datos);
   }, [datos]);
 
   useEffect(() => {
@@ -241,7 +240,6 @@ export function ConsultaDeSolicitudPage() {
                 let chip = <></>;
 
                 if (row.Estatus === "En_actualizacion ") {
-                  console.log("soy el row Id: ", row.Id);
 
                   chip = (
                     <Chip

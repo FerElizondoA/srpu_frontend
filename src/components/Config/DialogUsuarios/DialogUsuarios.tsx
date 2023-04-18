@@ -49,6 +49,7 @@ export const DialogUsuarios = ({
     Rol: UserObject?.Rol || '',
     IdRol: UserObject?.IdRol || '',
     MunicipioUOrganizacion: UserObject?.MunicipioUOrganizacion || '',
+    IdMunicipioUOrganizacion: UserObject?.IdMunicipioUOrganizacion || '',
   });
 
   /*DIALOGF */
