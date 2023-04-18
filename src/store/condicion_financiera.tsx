@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 
 export type CondicionFinanciera = {
-    id: string;
+    id: number;
     fechaDisposicion: string;
     importeDisposicion: string;
     fechaPrimerPagoCapital: string;
