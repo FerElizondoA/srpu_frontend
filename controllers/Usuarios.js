@@ -46,13 +46,11 @@ module.exports = {
         (err, result) => {
           
           if (err) {
-            console.log(err);
             return res.status(500).send({
               error: "Error",
             });
           }
           if (result.length) {
-            console.log(result);
             const data = result[0][0];
             if (data.error) {
               return res.status(409).send({
@@ -75,20 +73,20 @@ module.exports = {
   //LISTADO COMPLETO
   getUsuarios: (req, res) => {
     const IdApp = req.query.IdApp;
-    const  EntePublico=req.query.EntePublico;
-    console.log(req.query);
+    const  IdUsuario=req.query.IdUsuario;
 
     if (IdApp == null ||/^[\s]*$/.test(IdApp)) {
       return res.status(409).send({
         error: "Ingrese IdApp",
       });
     } 
-    if (EntePublico == null ||/^[\s]*$/.test(EntePublico)) {
+    if (IdUsuario == null ||/^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
-        error: "Ingrese EntePublico",
+        
+        error: "Ingrese IdUsuario",
       });
     } 
-    db.query(`CALL sp_ListadoUsuarios('${IdApp}','${EntePublico}')`, (err, result) => {
+    db.query(`CALL sp_ListadoUsuarios('${IdApp}','${IdUsuario}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
