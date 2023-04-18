@@ -173,12 +173,9 @@ export const Usuarios = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
   }, [busqueda]);
+  /*  FIN BUSCADOR */
 
 
-
-
-
-  /* BUSCADOR */
 
 
   const [usuarioEdit, setUsuarioEdit] = useState<IUsuarios>();
@@ -430,8 +427,6 @@ export const Usuarios = () => {
             </Table>
           </TableContainer>
         </Grid>
-         
-        
       </Grid>
 
       <DialogUsuarios
