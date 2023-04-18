@@ -19,7 +19,7 @@ const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, get
 const { createSolicitud, getSolicitudes, modifySolicitud, deleteSolicitud, createComentario, getComentarios } = require("../controllers/Solicitudes.js");
 const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento, modifyTipoDocumento } = require("../controllers/TipoDeDocumentos.js");
 
-const { getDetailUsuario, getUsuarios, createUsuario } = require("../controllers/Usuarios.js");
+const { getDetailUsuario, getUsuarios } = require("../controllers/Usuarios.js");
 
 
 //#region Instituciones Financieras
