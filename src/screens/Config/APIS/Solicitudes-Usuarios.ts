@@ -119,16 +119,18 @@ export const getListadoUsuarios = (setState: Function) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
-      IdApp: localStorage.getItem("IdApp")
+      IdApp: localStorage.getItem("IdApp"),
+      IdUsuario: localStorage.getItem("IdUsuario")
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),
       'Content-Type': 'application/json'
     }
   }).then(({ data }) => {
-
-    setState(data.data)
-
+    if(data.data[0].ERROR!=='Permisos Denegados')
+    {
+       setState(data.data)
+    }
   })
     .catch((r) => {
       if (r.response.status === 409) {
