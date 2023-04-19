@@ -157,7 +157,7 @@ export function LateralMenu() {
                       {openInscripcion ? <ExpandMore /> : <ExpandLess />}
                     </ListItemButton>
 
-                    <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
+                    <Collapse in={!openInscripcion} timeout="auto" unmountOnExit>
                       <List>
                         <ListItemButton
                           sx={{ marginLeft: 2 }}
@@ -172,7 +172,7 @@ export function LateralMenu() {
                           {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
                         </ListItemButton>
                         <Collapse
-                          in={openFinanciamiento}
+                          in={!openFinanciamiento}
                           timeout="auto"
                           unmountOnExit
                         >
