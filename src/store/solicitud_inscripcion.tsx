@@ -4,7 +4,6 @@ import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
-import { log } from "console";
 
 export interface SolicitudInscripcionSlice {
   fetchedReglas: boolean;
@@ -110,8 +109,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
       institucion: state.institucion,
       plazoDias: state.plazoDias,
       obligadoSolidarioAval: state.obligadoSolidarioAval,
-      tasaInteres: state.tasaReferencia,
-      
+      tasaReferencia: state.tasaReferencia,
+
+      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
@@ -121,12 +121,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
       
       
        /* ---- CONDICIONES FINANCIERAS ---- */
+      /* ---- CONDICIONES FINANCIERAS ---- */
 
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
 
       nombreServidorPublico: state.nombreServidorPublico,
-      nombre: state.solicitanteAutorizado,
     };
 
     console.log("periodoPago: ", state.tasaPeriocidadPago);
@@ -305,7 +305,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         tipoEntePublicoObligado: solicitud.tipoEntePublico,
         entePublicoObligado: solicitud.tipoEntePublicoObligado,
         tasaefectiva: solicitud.tasaEfectiva,
-        tasaInteres: solicitud.tasaInteres,
+        tasaInteres: solicitud.tasaReferencia,
         reglas: solicitud.reglas,
         tipocomisiones: solicitud.tipoComision,
         servidorpublico: solicitud.nombreServidorPublico,

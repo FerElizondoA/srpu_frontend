@@ -10,7 +10,7 @@ export interface ISolicitud {
   tipoEntePublicoObligado: string;
   entePublicoObligado: string; 
   tasaEfectiva: string;
-  tasaInteres: string;// tasa de referencia
+  tasaReferencia: string;// tasa de referencia
   reglas: string[];
   tipoComision: string;
   nombreServidorPublico: string;
