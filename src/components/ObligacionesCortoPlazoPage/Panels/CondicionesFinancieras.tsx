@@ -1,5 +1,5 @@
-import * as React from "react"
-
+import {useState} from "react"
+import { CondicionFinanciera } from "../../../store/condicion_financiera";
 import {
     Grid,
     Table,
@@ -20,10 +20,24 @@ import {
   DeleteButton,
 } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
+
 import { format } from "date-fns";
 
 import EditIcon from "@mui/icons-material/Edit";
+
+interface CFinancieras {
+  sobreTasa: string,
+  tasaDiasEjercicio: string,
+  tasaFija: string,
+  disposicionFechaContratacion: string ,
+  disposicionImporte: number,
+  capitalFechaPrimerPago: string,
+  capitalPeriocidadPago: string,
+  capitalNumeroPago: number,
+  tasaFechaPrimerPago: string,
+  tasaPeriocidadPago: string,
+
+}
 
 interface Head {
     label: string;
@@ -61,16 +75,49 @@ const heads: readonly Head[] = [
 
 export function CondicionesFinancieras(){
 
-  const [openAgregarCondicion, changeAgregarCondicion] = React.useState(false);
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
+  const [selected, setSelected] = useState<readonly number[]>([]);
 
   const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(state => state.condicionFinancieraTable);
   const loadCondicionFinanciera: Function = useCortoPlazoStore(state => state.loadCondicionFinanciera);
   const removeCondicionFinanciera: Function = useCortoPlazoStore(state => state.removeCondicionFinanciera);
 
-  const changeOpenAgregarState = (open: boolean) => {
+  const [accion, setAccion] = useState("Agregar");
+  const [indexA, setIndexA] = useState(0);
+
+  const changeOpenAgregarState = (open: boolean, ) => {
+    //useCortoPlazoStore.setState(condicionFinancieraTable: [""])
+    ////////////////////////////
+   //reset()
+    ///////////////////////////
     changeAgregarCondicion(open);
   }
+
+  const reset = ()=>{
+    useCortoPlazoStore.setState({
+      disposicionImporte: 0
+    });
+    useCortoPlazoStore.setState({
+      disposicionFechaContratacion: ""
+    });
+    useCortoPlazoStore.setState({
+      capitalFechaPrimerPago: ""
+    });
+    useCortoPlazoStore.setState({
+      capitalPeriocidadPago: ""
+    });
+    useCortoPlazoStore.setState({
+      capitalNumeroPago: 0
+    });
+    useCortoPlazoStore.setState({
+      tasaInteresTable: []
+    });
+    useCortoPlazoStore.setState({
+      tasaEfectivaTable: []
+    });
+  }
+
+  
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
@@ -98,6 +145,12 @@ export function CondicionesFinancieras(){
       removeCondicionFinanciera(it);
     })
   }
+  const editCondicionesFinancieras =(condicionFinanciera: CondicionFinanciera) =>{
+    let aux: any = JSON.parse(condicionFinanciera.importeDisposicion);
+    //aux.IdSolicitud = solicitud.Id;
+    useCortoPlazoStore.setState(aux);
+  }
+
   return (
     <Grid container direction="column">
       <Grid item>
@@ -153,7 +206,10 @@ export function CondicionesFinancieras(){
                       <Tooltip title="Editar">
                         <IconButton type="button" onClick={() => {
                           changeOpenAgregarState(!openAgregarCondicion);
+                          setAccion("Editar")
+                          setIndexA(index)
                           loadCondicionFinanciera(row);
+                          //editCondicionesFinancieras(row)
                         }}>
                           <EditIcon />
                         </IconButton>
@@ -172,15 +228,21 @@ export function CondicionesFinancieras(){
           <ConfirmButton
             variant="outlined"
             onClick={() =>
-              changeOpenAgregarState(!openAgregarCondicion)
+             { changeOpenAgregarState(!openAgregarCondicion)
+              setAccion("Agregar")
+              //reset()
+            }
             }
           >
             AGREGAR
           </ConfirmButton>
-          <AgregarCondicionFinanciera
+          {changeOpenAgregarState?<AgregarCondicionFinanciera
             handler={changeOpenAgregarState}
             openState={openAgregarCondicion}
-          />
+            accion={accion}
+            indexA={indexA}
+            
+          />: null}
         </Grid>
         <Grid item md={6} lg={6}>
           <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>

@@ -109,21 +109,24 @@ export const createSolicitudInscripcionSlice: StateCreator<
       institucion: state.institucion,
       plazoDias: state.plazoDias,
       obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
+
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
+      condicionFinancieraTable: state.condicionFinancieraTable,
+      tipoComision: state.tipoComision,
+      tasaEfectiva: state.tasaEfectiva,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
       /* ---- CONDICIONES FINANCIERAS ---- */
 
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
-
       nombreServidorPublico: state.nombreServidorPublico,
     };
 
     console.log("periodoPago: ", state.tasaPeriocidadPago);
 
     if (solicitud.IdSolicitud.length === 0) {
-      
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
@@ -198,7 +201,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
     }
   },
-
+//////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -267,7 +270,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   let solicitud: ISolicitud = JSON.parse(Solicitud);
   console.log(Solicitud);
   console.log(solicitud);
-  
 
   const solicitudfechas: any = {
     fechaContratacion: format(
@@ -292,7 +294,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
         destino: solicitud.destino,
-        dias: solicitud.dias,
+        dias: solicitud.plazoDias,
         tipoEntePublicoObligado: solicitud.tipoEntePublico,
         entePublicoObligado: solicitud.tipoEntePublicoObligado,
         tasaefectiva: solicitud.tasaefectiva,
