@@ -111,26 +111,23 @@ export const createSolicitudInscripcionSlice: StateCreator<
       tasaReferencia: state.tasaReferencia,
 
       obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
+
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
+      condicionFinancieraTable: state.condicionFinancieraTable,
       tipoComision: state.tipoComision,
       tasaEfectiva: state.tasaEfectiva,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
-      
-      
-       /* ---- CONDICIONES FINANCIERAS ---- */
       /* ---- CONDICIONES FINANCIERAS ---- */
 
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
-
       nombreServidorPublico: state.nombreServidorPublico,
     };
 
 
     if (solicitud.IdSolicitud.length === 0) {
-      
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
@@ -203,7 +200,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
     }
   },
-
+//////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -271,7 +268,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   let solicitud: ISolicitud = JSON.parse(Solicitud);
   console.log(Solicitud);
   console.log(solicitud);
-  
 
   const solicitudfechas: any = {
     fechaContratacion: format(
