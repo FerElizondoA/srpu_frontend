@@ -42,38 +42,6 @@ export const createCondicionFinancieraSlice: StateCreator<
 /////////////////////////////////////////////////////////////////
 
   upDataCondicionFinanciera: (condicionFinanciera: CondicionFinanciera,index: number) =>{
-
-    // const CondicionesFinancieras: any = {
-    //   disposicionImporte: condicionFinanciera.importeDisposicion,
-    //   disposicionFechaContratacion: condicionFinanciera.fechaDisposicion,
-    //   capitalFechaPrimerPago: condicionFinanciera.fechaPrimerPagoCapital,
-    //   capitalPeriocidadPago: condicionFinanciera.periocidadPagoCapital,
-    //   capitalNumeroPago: condicionFinanciera.numeroPagoCapital,
-    //   tasaInteresTable: condicionFinanciera.tasasInteres,
-    //   tasaEfectivaTable: condicionFinanciera.tasasEfectivas,
-
-    // };
-    
-    // set((state) => ({
-    //   condicionFinancieraTable: state.condicionFinancieraTable.map((item, i) =>
-    //   i === index ? condicionFinanciera : item
-    // ), 
-    // })),
-
-    //et aux: any = JSON.parse(solicitud.Solicitud);
-    //aux.IdSolicitud = solicitud.Id;
-
-    //useCortoPlazoStore.setState(aux);
-   
-    // condicionFinancieraTable: [
-    //   state.condicionFinancieraTable.map((item, index)=>{
-    //      if(index===index){
-    //       return condicionFinanciera
-    //      }else
-    //       return item;
-    //     }
-    //   ],
-    console.log("index ", index);
     
     set((state) => {
 
@@ -88,15 +56,9 @@ export const createCondicionFinancieraSlice: StateCreator<
             condicionFinancieraTable: nuevaTabla
         }
     });
-
-    
-    
-
   },
       
-      
-///////////////////////////////////////////////////////////////////
-   //let aux=state.
+
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
     // aqui va la logica
     const state = useCortoPlazoStore.getState();

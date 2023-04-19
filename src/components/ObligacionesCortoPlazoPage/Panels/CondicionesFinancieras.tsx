@@ -145,11 +145,7 @@ export function CondicionesFinancieras(){
       removeCondicionFinanciera(it);
     })
   }
-  const editCondicionesFinancieras =(condicionFinanciera: CondicionFinanciera) =>{
-    let aux: any = JSON.parse(condicionFinanciera.importeDisposicion);
-    //aux.IdSolicitud = solicitud.Id;
-    useCortoPlazoStore.setState(aux);
-  }
+  
 
   return (
     <Grid container direction="column">
