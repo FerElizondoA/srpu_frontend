@@ -3,7 +3,7 @@ import { useLayoutEffect } from "react";
 import "./App.css";
 import "./Fonts.css";
 
-import { Route, Routes } from "react-router-dom"; //, useNavigate
+import { Route, Routes, useNavigate } from "react-router-dom"; //, useNavigate
 
 import { HomePage } from "./components/HomePage/HomePage";
 import { continueSession, sessionValid } from "./validation";
@@ -15,6 +15,7 @@ import { Solicitudes } from "./screens/Solicitudes/solicitudes";
 import { Configuracion } from "../src/components/Config/Configuracion";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
+import { Init } from "./screens/int/Init";
 
 export const appTheme = createTheme({
   palette: {
@@ -26,7 +27,7 @@ export const appTheme = createTheme({
 
 
 function App() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const jt = params.get("jwt") || null;
   const IdApp = params.get("IdApp");
@@ -39,8 +40,8 @@ function App() {
         } else if ((r as boolean) === true) {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
-            // navigate("../");
-          }, 2000);
+            navigate("../home");
+          }, 1000);
         }
       });
     } else {
@@ -59,7 +60,9 @@ function App() {
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
         <Routes>
+          <Route index element={<Init />} />
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="home" element={<HomePage />}></Route>
           <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
           <Route path="config" element={<Configuracion />}></Route>
           <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>

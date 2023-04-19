@@ -1,6 +1,5 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { log } from "console";
 import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
@@ -31,7 +30,7 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
         Celular: datos.Celular,
         Telefono: datos.Telefono,
         Extencion: datos.Ext,
-        DatosAdicionales: JSON.stringify({ Cargo: datos.Cargo, EntePublico: datos.MunicipioUOrganizacion, CorreoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,rol:datos.Rol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
         TipoSolicitud: tipoSolicitud,
         CreadoPor: localStorage.getItem("IdCentral") || '',
         IdApp: localStorage.getItem("IdApp") || ''
@@ -43,7 +42,6 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-      console.log(r);
 
       if (r.status === 200) {
        
@@ -121,18 +119,18 @@ export const getListadoUsuarios = (setState: Function) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
-      IdApp: localStorage.getItem("IdApp")
+      IdApp: localStorage.getItem("IdApp"),
+      IdUsuario: localStorage.getItem("IdUsuario")
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),
       'Content-Type': 'application/json'
     }
   }).then(({ data }) => {
-
-    console.log(data.data);
-
-    setState(data.data)
-
+    if(data.data[0].ERROR!=='Permisos Denegados')
+    {
+       setState(data.data)
+    }
   })
     .catch((r) => {
       if (r.response.status === 409) {

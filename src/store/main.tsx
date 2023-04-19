@@ -19,6 +19,6 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
     ...createPagosCapitalSlice(...x),
     ...createTasaEfectivaSlice(...x),
     ...createCondicionFinancieraSlice(...x),
-    ...createDocumentoSlice(...x)
+    ...createDocumentoSlice(...x),
 }))
 
