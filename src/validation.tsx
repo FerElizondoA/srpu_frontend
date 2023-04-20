@@ -95,9 +95,6 @@ const getDataSolicitud = (idSolicitud: string) => {
       },
     })
     .then((r) => {
-      console.log(JSON.parse(
-        r.data.data[0].DatosAdicionales
-      ));
       
       if (r.status === 200) {
         let objetoDatosAdicionales = JSON.parse(

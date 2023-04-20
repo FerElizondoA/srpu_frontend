@@ -292,7 +292,6 @@ export function ConsultaDeSolicitudPage() {
                       <Tooltip title="Ver">
                         <IconButton type="button" aria-label="search"
                         onClick={() => {
-                          //console.log(JSON.parse(row.Solicitud));
                           changeOpenDialogVer(!openDialogVer);
                         }}>
                           

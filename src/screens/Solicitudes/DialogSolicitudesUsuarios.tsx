@@ -33,10 +33,6 @@ export const DialogSolicitudesUsuarios = ({
   comentarios: Array<IComentarios>;
 }) => {
 
-  useEffect(() => {
-    console.log('comentario', comentarios);
-  }, [])
-
   
 function createData(
   name: string,

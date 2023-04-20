@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, TextField, InputLabel, Autocomplete ,FormControl,Select,MenuItem} from "@mui/material";
+import { Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
 
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -11,8 +11,10 @@ import { subDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
-import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
-import { getListadoUsuarios, getRoles } from "../../Config/APIS/Solicitudes-Usuarios";
+import {
+  getListadoUsuarios,
+  // getRoles,
+} from "../../Config/APIS/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {
   id: string;
@@ -24,7 +26,7 @@ export interface IUsuariosCorto {
   Cargo: string;
 }
 
-export interface IRoles{
+export interface IRoles {
   Id: string;
   Descripcion: string;
 }
@@ -33,9 +35,9 @@ export function Encabezado() {
   const tipoDocumento: string = useCortoPlazoStore(
     (state) => state.tipoDocumento
   );
-  const changeTipoDocumento: Function = useCortoPlazoStore(
-    (state) => state.changeTipoDocumento
-  );
+  // const changeTipoDocumento: Function = useCortoPlazoStore(
+  //   (state) => state.changeTipoDocumento
+  // );
   const fetchEntesPublicos: Function = useCortoPlazoStore(
     (state) => state.fetchEntesPublicos
   );
@@ -93,38 +95,23 @@ export function Encabezado() {
         localStorage.getItem("EntePublicoObligado")
       );
     }
-  
-  },[]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([])
-  const [roles,setRoles]=useState<Array<IRoles>>([])
-
-  useEffect(() => {
-    
-    getRoles(setRoles);
-    getListadoUsuarios(setUsuarios,1);
-    if (solicitanteAutorizado === '') {
-      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario"));
-    }
-    
-  }, [])
-
-  if (cargoSolicitante==='' &&localStorage.getItem("Puesto")?.length !== 0) {
-        changeCargoSolicitante(localStorage.getItem("Puesto"));
-        }
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
+  // const [roles, setRoles] = useState<Array<IRoles>>([]);
 
   useEffect(() => {
-    console.log('cargo',cargoSolicitante);
-  }, [cargoSolicitante])
-  
+    // getRoles(setRoles);
+    getListadoUsuarios(setUsuarios, 1);
+  }, []);
 
   useEffect(() => {
-    let  x = usuarios.find(usuario=>usuario.id===solicitanteAutorizado);
+    let x = usuarios.find((usuario) => usuario.id === solicitanteAutorizado);
     changeCargoSolicitante(x?.Cargo);
-    console.log(x?.Cargo);
-    
-  }, [solicitanteAutorizado])
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [solicitanteAutorizado]);
+
   // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
@@ -159,22 +146,23 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-
-          
-            <InputLabel id="select-usuarios-label">Usuarios</InputLabel>
-            <Select
-              fullWidth
-              value={solicitanteAutorizado}
-              onChange={(e)=>changeSolicitanteAutorizado(e.target.value)}
-              variant="standard"
-            >
-              {usuarios.map(usuario => (
-                <MenuItem key={usuario.id} value={usuario.id}>
-                  {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
-                </MenuItem>
-              ))}
-            </Select>
-          
+          <InputLabel id="select-usuarios-label">
+            Solicitante Autorizado
+          </InputLabel>
+          <Select
+            fullWidth
+            value={solicitanteAutorizado || localStorage.getItem("IdUsuario")}
+            onChange={(e) => {
+              changeSolicitanteAutorizado(e.target.value);
+            }}
+            variant="standard"
+          >
+            {usuarios.map((usuario) => (
+              <MenuItem key={usuario.id} value={usuario.id}>
+                {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
+              </MenuItem>
+            ))}
+          </Select>
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>

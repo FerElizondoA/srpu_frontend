@@ -131,7 +131,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
 
     if (solicitud.IdSolicitud.length === 0) {
-      console.log('xd');
       
       await axios
         .post(
@@ -193,12 +192,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          console.log("hola");
 
           if (get().comentarios === null || get().comentarios === "") {
           } else {
             get().fetchComentario(response.data.Id, get().comentarios);
-            console.log("i am a commentary ", get().comentarios);
           }
         })
         .catch((e) => {
@@ -247,7 +244,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
-    console.log(comentario);
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
@@ -264,15 +260,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then((response) => {})
       .catch((e) => {
-        console.log("Stack trace {", e, "}");
       });
   },
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
   let solicitud: ISolicitud = JSON.parse(Solicitud);
-  console.log(Solicitud);
-  console.log(solicitud);
 
   const solicitudfechas: any = {
     fechaContratacion: format(
@@ -320,7 +313,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
-      console.log("asdffgasdf");
       
       const a = window.URL || window.webkitURL;
 
@@ -335,7 +327,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     }).catch((err)=>{
-      console.log("hqtrwehwerth");
       
     });
 }

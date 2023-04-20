@@ -14,7 +14,6 @@ export function getPreviewSolicitud(setState: Function) {
     },
   })
     .then(({ data }) => {
-      console.log(data.data);
 
       setState(data.data);
     })
@@ -38,7 +37,6 @@ export function getDetailSolicitudUsuario(idSolicitud: string, setState: Functio
     },
   })
     .then(({ data }) => {
-      // console.log(data.data);
       setState(data.data[0]);
     })
     .catch((error) => {
@@ -61,7 +59,6 @@ export function getComentarios(idSolicitud: string,cantComent: Function, setStat
     },
   })
   .then(({data}) => {
-    console.log(data.data);
     cantComent(data.data.length); //Obtienes la cantidad de comentarios
     
     setState(data.data); //Obtienes los comentarios en Si 

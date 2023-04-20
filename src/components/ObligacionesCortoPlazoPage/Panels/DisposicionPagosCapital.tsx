@@ -37,7 +37,6 @@ import {
 import { TasaInteres } from "../../../store/pagos_capital";
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
-import { log } from "console";
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
 
 interface Head {
@@ -183,20 +182,16 @@ export function DisposicionPagosCapital() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !");
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !");
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !");
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   useEffect(() => {
@@ -222,7 +217,6 @@ export function DisposicionPagosCapital() {
   };
 
   const deleteRows = () => {
-    console.log("selected: ", selected);
     selected.forEach((it) => {
       removeTasaInteres(it);
     });

@@ -382,7 +382,6 @@ export const Usuarios = () => {
                             aria-label="delete"
                             size="large"
                             onClick={() => {
-                              console.log(row.id, row.ApellidoPaterno.toString());
                             }}
                           >
                             <DeleteIcon fontSize="inherit" />

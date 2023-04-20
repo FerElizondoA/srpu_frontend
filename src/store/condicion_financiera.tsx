@@ -3,7 +3,6 @@ import { useCortoPlazoStore } from "./main";
 import { TasaInteres } from "./pagos_capital";
 import { TasaEfectiva } from "./tasa_efectiva";
 import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
-import { log } from "console";
 
 export type CondicionFinanciera = {
   id: number;
@@ -54,11 +53,8 @@ export const createCondicionFinancieraSlice: StateCreator<
   ) => {
     set((state) => {
       const nuevaTabla = [...state.condicionFinancieraTable];
-      console.log("nueva tabla info ", nuevaTabla);
 
       nuevaTabla[index] = condicionFinanciera;
-      console.log("nueva tabla info 2: ", nuevaTabla);
-      console.log();
 
       return {
         condicionFinancieraTable: nuevaTabla,
@@ -105,8 +101,6 @@ export const createCondicionFinancieraSlice: StateCreator<
     useCortoPlazoStore.setState({
       tasaEfectivaTable: condicionFinanciera.tasasEfectivas,
     });
-
-    console.log("Condicion: ", condicionFinanciera);
     //state.disposicionImporte = importeDisposicion;
   },
 
