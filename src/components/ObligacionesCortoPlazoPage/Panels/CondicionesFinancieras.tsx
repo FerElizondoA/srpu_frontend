@@ -22,7 +22,7 @@ import {
 import { useCortoPlazoStore } from "../../../store/main";
 
 import { format } from "date-fns";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from "@mui/icons-material/Edit";
 
 interface CFinancieras {
@@ -137,7 +137,7 @@ export function CondicionesFinancieras(){
               {condicionFinancieraTable.map((row, index) => {
                 const isItemSelected: boolean = isSelected(index);
                 return (
-                  <StyledTableRow>
+                  <StyledTableRow key={row.id}>
                     <StyledTableCell padding="checkbox">
                       <Checkbox
                         onClick={(event) => handleClick(event, index)}
@@ -184,6 +184,15 @@ export function CondicionesFinancieras(){
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton type="button" onClick={() => {
+                          
+                          //editCondicionesFinancieras(row)
+                        }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+
                     </StyledTableCell>
                   </StyledTableRow>
                 );

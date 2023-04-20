@@ -28,12 +28,16 @@ export interface CondicionFinancieraSlice {
     index: number
   ) => void;
   removeCondicionFinanciera: (index: number) => void;
+  updatecondicionFinancieraTable:(condicionFinancieraTable: CondicionFinanciera[]) => void;
+
 }
 
 export const createCondicionFinancieraSlice: StateCreator<
   CondicionFinancieraSlice
 > = (set, get) => ({
   condicionFinancieraTable: [],
+  updatecondicionFinancieraTable: (condicionFinancieraTable: CondicionFinanciera[]) => set(() => ({ condicionFinancieraTable: condicionFinancieraTable})),
+
 
   addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) =>
     set((state) => ({
@@ -112,4 +116,5 @@ export const createCondicionFinancieraSlice: StateCreator<
         (_, i) => i !== index
       ),
     })),
+
 });
