@@ -29,6 +29,7 @@ import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
+import { VerComentariosSolicitud } from "../ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 
 interface IData {
   Id: string;
@@ -176,6 +177,15 @@ export function ConsultaDeSolicitudPage() {
   const changeCloseDialogVerState = () => {
     changeOpenDialogVer(false);
   };
+
+  const [openVerComentarios, changeOpenVerComentarios] = useState(false);
+  const changeOpenDialogVerComentariosState = (open: boolean) => {
+    changeOpenVerComentarios(open);
+  };
+
+  const changeCloseVerComentarioState = () => {
+    changeOpenVerComentarios(false);
+  };
   /////////////////////////////////////77
 
   return (
@@ -280,11 +290,14 @@ export function ConsultaDeSolicitudPage() {
                       scope="row"
                     >
                       <Tooltip title="Ver">
-                        <IconButton type="button" aria-label="search">
+                        <IconButton type="button" aria-label="search"
+                        onClick={() => {
+                          //console.log(JSON.parse(row.Solicitud));
+                          changeOpenDialogVer(!openDialogVer);
+                        }}>
+                          
                           <VisibilityIcon
-                            onClick={() => {
-                              changeOpenDialogVer(!openDialogVer);
-                            }}
+                            
                           />
                           {row.Acciones}
                         </IconButton>
@@ -311,7 +324,10 @@ export function ConsultaDeSolicitudPage() {
                       </Tooltip>
 
                       <Tooltip title="Comentarios">
-                        <IconButton type="button" aria-label="search">
+                        <IconButton type="button" aria-label="search"
+                        onClick={() => {
+                          changeOpenVerComentarios(!openVerComentarios)
+                        }}>
                           <CommentIcon />
                           {row.Acciones}
                         </IconButton>
@@ -346,6 +362,11 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
+          selected={selected}
+        />
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
           selected={selected}
         />
       </Grid>

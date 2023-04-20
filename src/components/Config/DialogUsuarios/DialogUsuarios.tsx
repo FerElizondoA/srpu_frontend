@@ -501,6 +501,7 @@ export const DialogUsuarios = ({
 
           <Grid item textTransform={"uppercase"} xs={12} md={4} lg={4} sm={12}>
             <TextField
+            disabled={localStorage.getItem("Rol")==='Capturador'}
               required
               margin="dense"
               variant="outlined"

@@ -15,6 +15,8 @@ import {
   Toolbar,
 } from "@mui/material";
 
+////////////////////
+
 // icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
@@ -30,7 +32,9 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import { Notificaciones } from "../../screens/Notificaciones/notificaciones";
+import { useCortoPlazoStore } from "../../store/main";
 import { useState } from "react";
 
 import { queries } from "../../queries";
@@ -70,6 +74,58 @@ export function LateralMenu() {
     setConsultaDeSolicitud(!openConsultaDeSolicitud);
   };
 
+  const reset = () =>{
+  
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAvalTable: [],
+    });
+    
+    useCortoPlazoStore.setState({
+      condicionFinancieraTable: [],
+    });
+
+    useCortoPlazoStore.setState({
+      plazoDias: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      montoOriginal: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      fechaVencimiento: "",
+    });
+
+    useCortoPlazoStore.setState({
+      institucion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      tipoEntePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      entePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAval: "",
+    });
+
+    useCortoPlazoStore.setState({
+      documentoAutorizado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      identificacion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      reglas: [],
+    });
+
+  }
+  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -157,7 +213,7 @@ export function LateralMenu() {
                       {openInscripcion ? <ExpandMore /> : <ExpandLess />}
                     </ListItemButton>
 
-                    <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
+                    <Collapse in={!openInscripcion} timeout="auto" unmountOnExit>
                       <List>
                         <ListItemButton
                           sx={{ marginLeft: 2 }}
@@ -180,7 +236,11 @@ export function LateralMenu() {
                             <ListItemButton
                               sx={{ marginLeft: 4 }}
                               onClick={() => {
+                               
+                               
+                                reset()
                                 navigate("../ObligacionesCortoPlazo");
+                                
                               }}
                             >
                               <ListItemIcon>
@@ -218,14 +278,19 @@ export function LateralMenu() {
                       </List>
                     </Collapse>
 
-                    {/* <ListItemButton>
+                    <ListItemButton
+                    
+                    onClick={() => {
+                      navigate("../Notificaciones");
+                    }}
+                    >
                       <ListItemIcon>
-                        <PivotTableChartOutlinedIcon sx={queries.icon} />
+                        <NotificationsActiveIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
-                        Reestructuración
+                        Notificaciones
                       </Typography>
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                     {/* <ListItemButton>
                       <ListItemIcon>

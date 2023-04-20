@@ -22,6 +22,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useNavigate } from "react-router-dom";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -53,6 +54,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
+
+  const navigate = useNavigate();
 
   return (
     <Dialog
@@ -107,6 +110,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 onClick={() => {
                   props.handler(false);
                   crearSolicitud(props.selected);
+                  navigate("../ConsultaDeSolicitudes");
                   
                 }}
                 variant="text"
