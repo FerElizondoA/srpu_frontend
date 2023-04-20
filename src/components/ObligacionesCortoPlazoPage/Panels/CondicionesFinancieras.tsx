@@ -86,36 +86,10 @@ export function CondicionesFinancieras(){
   const [indexA, setIndexA] = useState(0);
 
   const changeOpenAgregarState = (open: boolean, ) => {
-    //useCortoPlazoStore.setState(condicionFinancieraTable: [""])
-    ////////////////////////////
-   //reset()
-    ///////////////////////////
     changeAgregarCondicion(open);
   }
 
-  const reset = ()=>{
-    useCortoPlazoStore.setState({
-      disposicionImporte: 0
-    });
-    useCortoPlazoStore.setState({
-      disposicionFechaContratacion: ""
-    });
-    useCortoPlazoStore.setState({
-      capitalFechaPrimerPago: ""
-    });
-    useCortoPlazoStore.setState({
-      capitalPeriocidadPago: ""
-    });
-    useCortoPlazoStore.setState({
-      capitalNumeroPago: 0
-    });
-    useCortoPlazoStore.setState({
-      tasaInteresTable: []
-    });
-    useCortoPlazoStore.setState({
-      tasaEfectivaTable: []
-    });
-  }
+  
 
   
 
@@ -226,7 +200,7 @@ export function CondicionesFinancieras(){
             onClick={() =>
              { changeOpenAgregarState(!openAgregarCondicion)
               setAccion("Agregar")
-              //reset()
+           
             }
             }
           >

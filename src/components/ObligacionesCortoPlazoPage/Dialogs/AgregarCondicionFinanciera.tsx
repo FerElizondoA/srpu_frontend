@@ -95,8 +95,6 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.condicionFinancieraTable
   );
 
- 
-  //const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore.getState().condicionFinancieraTable;
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
@@ -192,7 +190,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               <Typography sx={queries.bold_text}>
                 Agregar Condición Financiera
               </Typography><Typography sx={queries.bold_text}>
-                {props.accion+props.indexA}
+                {props.accion}
               </Typography>
             </Grid>
           </Grid>

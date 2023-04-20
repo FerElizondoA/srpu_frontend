@@ -121,6 +121,8 @@ export function ComisionesTasaEfectiva(){
       (state) => state.capitalPeriocidadPago
     );
 
+   // const tipoComisionPagoMap: Map<string | null, string> =  useCortoPlazoStore(state => state.tipoComision);
+
     const tasaPeriocidadPago: string = useCortoPlazoStore(
       (state) => state.tasaPeriocidadPago
     );
@@ -138,6 +140,7 @@ export function ComisionesTasaEfectiva(){
       //efectivaPeriocidadPago
       useCortoPlazoStore.setState({efectivaDiasEjercicio: ""}) 
       //efectivaDiasEjercicio
+      
       
       
     }   
@@ -220,7 +223,10 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={tipoComision}
               onChange={(event: any, text: string | null) =>
-                changeTipoComision(text)
+                
+                changeTipoComision(
+                  //tipoComisionPagoMap.get(text), no existe
+                  text)
               }
               options={tiposComisionCatalog}
               renderInput={(params) => (

@@ -75,9 +75,7 @@ export function Encabezado() {
       changeOrganismo(
         organismosMap.get(localStorage.getItem("EntePublicoObligado")),
         localStorage.getItem("EntePublicoObligado")
-      );
-
-    
+      ); 
     }
     if (localStorage.getItem("NombreUsuario")?.length !== 0) {
       // change(
@@ -90,6 +88,12 @@ export function Encabezado() {
     changeSolicitanteAutorizado(localStorage.getItem("NombreUsuario"));
   });
 
+  if (localStorage.getItem("Puesto")?.length !== 0) {
+    changeCargoSolicitante(
+        //entesPublicosMap.get(localStorage.getItem("Puesto")),
+        localStorage.getItem("Puesto")
+      );
+    }
   let usuario = localStorage.getItem("NombreUsuario")
  // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
@@ -161,7 +165,7 @@ export function Encabezado() {
             fullWidth
             variant="standard"
             
-            value={localStorage.getItem("Rol")}
+            value={cargoSolicitante ||localStorage.getItem("Puesto") }
             onChange={(text) => changeCargoSolicitante(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
