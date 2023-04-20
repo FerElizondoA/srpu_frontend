@@ -21,6 +21,7 @@ export interface IUsuariosCorto {
   ApellidoMaterno: string;
   IdMunicipioUOrganizacion: string;
   IdRol: string;
+  Cargo: string;
 }
 
 export interface IRoles{
@@ -86,25 +87,14 @@ export function Encabezado() {
         localStorage.getItem("TipoEntePublicoObligado")
       );
     }
-
     if (localStorage.getItem("EntePublicoObligado")?.length !== 0) {
       changeOrganismo(
         organismosMap.get(localStorage.getItem("EntePublicoObligado")),
         localStorage.getItem("EntePublicoObligado")
       );
-
-
     }
-    if (localStorage.getItem("NombreUsuario")?.length !== 0) {
-      // change(
-      //   NombreUsuario.get(localStorage.getItem("NombreUsuario")),
-      //   localStorage.getItem("NombreUsuario")
-      // );
-
-
-    }
-    changeSolicitanteAutorizado(localStorage.getItem("NombreUsuario"));
-  });
+  
+  },[]);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([])
   const [roles,setRoles]=useState<Array<IRoles>>([])
@@ -113,17 +103,26 @@ export function Encabezado() {
     
     getRoles(setRoles);
     getListadoUsuarios(setUsuarios,1);
-    console.log('IdRol', localStorage.getItem("IdRol"));
     if (solicitanteAutorizado === '') {
-      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario"))
-      changeCargoSolicitante(localStorage.getItem("IdRol"))
+      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario"));
     }
     
   }, [])
 
+  if (cargoSolicitante==='' &&localStorage.getItem("Puesto")?.length !== 0) {
+        changeCargoSolicitante(localStorage.getItem("Puesto"));
+        }
+
+  useEffect(() => {
+    console.log('cargo',cargoSolicitante);
+  }, [cargoSolicitante])
+  
+
   useEffect(() => {
     let  x = usuarios.find(usuario=>usuario.id===solicitanteAutorizado);
-    changeCargoSolicitante(x?.IdRol);
+    changeCargoSolicitante(x?.Cargo);
+    console.log(x?.Cargo);
+    
   }, [solicitanteAutorizado])
   
   // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
@@ -165,7 +164,7 @@ export function Encabezado() {
             <InputLabel id="select-usuarios-label">Usuarios</InputLabel>
             <Select
               fullWidth
-              value={solicitanteAutorizado || ''}
+              value={solicitanteAutorizado}
               onChange={(e)=>changeSolicitanteAutorizado(e.target.value)}
               variant="standard"
             >
@@ -183,19 +182,23 @@ export function Encabezado() {
             Cargo del Solicitante
           </InputLabel>
 
-          <Select
-              disabled
-              fullWidth
-              value={cargoSolicitante || 'xd'}
-              onChange={(e)=>changeCargoSolicitante(e.target.value)}
-              variant="standard"
-            >
-              {roles.map(rol => (
-                <MenuItem key={rol.Id} value={rol.Id}>
-                  {`${rol.Descripcion}`}
-                </MenuItem>
-              ))}
-            </Select>
+          <TextField
+            fullWidth
+            value={cargoSolicitante}
+            variant="standard"
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              readOnly: true,
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
         </Grid>
       </Grid>
 
