@@ -383,29 +383,7 @@ export function DisposicionPagosCapital() {
               </LocalizationProvider>
             </Grid>
 
-            <Grid item ml={10} lg={3}>
-              <InputLabel sx={queries.medium_text}>
-                Periocidad de Pago
-              </InputLabel>
-              <Autocomplete
-                fullWidth
-                value={capitalPeriocidadPago}
-                onChange={(event: any, text: string | null) =>
-                  changeCapitalPeriocidadPago(
-                    periocidadDePagoMap.get(text),
-                    text
-                  )
-                }
-                options={Array.from(periocidadDePagoMap.keys())}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    sx={queries.medium_text}
-                  />
-                )}
-              />
-            </Grid>
+          
             <Grid item ml={10} lg={3}>
               <InputLabel sx={queries.medium_text}>
                 Periocidad de Pago

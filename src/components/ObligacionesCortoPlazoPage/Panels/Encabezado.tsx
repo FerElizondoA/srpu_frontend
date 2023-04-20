@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Grid, TextField, InputLabel, Autocomplete } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Grid, TextField, InputLabel, Autocomplete ,FormControl,Select,MenuItem} from "@mui/material";
 
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -11,6 +11,16 @@ import { subDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
+import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
+import { getListadoUsuarios } from "../../Config/APIS/Solicitudes-Usuarios";
+
+export interface IUsuariosCorto {
+  id: string;
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  IdMunicipioUOrganizacion: string;
+}
 
 export function Encabezado() {
   const tipoDocumento: string = useCortoPlazoStore(
@@ -60,7 +70,7 @@ export function Encabezado() {
     (state) => state.changeCargoSolicitante
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchEntesPublicos();
     fetchOrganismos();
 
@@ -77,7 +87,7 @@ export function Encabezado() {
         localStorage.getItem("EntePublicoObligado")
       );
 
-    
+
     }
     if (localStorage.getItem("NombreUsuario")?.length !== 0) {
       // change(
@@ -85,12 +95,25 @@ export function Encabezado() {
       //   localStorage.getItem("NombreUsuario")
       // );
 
-    
+
     }
   });
 
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([])
+
+  useEffect(() => {
+    getListadoUsuarios(setUsuarios,1);
+    console.log('nombre', solicitanteAutorizado);
+    if (solicitanteAutorizado === '') {
+      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario")
+      )
+    }
+    console.log('idUsuario', localStorage.getItem("IdUsuario"));
+  }, [])
+
+ 
   let usuario = localStorage.getItem("NombreUsuario")
- // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
+  // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
     <Grid container>
@@ -124,19 +147,36 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Solicitante Autorizado
-          </InputLabel>
 
-          <TextField
+          
+            <InputLabel id="select-usuarios-label">Usuarios</InputLabel>
+            <Select
+              fullWidth
+              labelId="select-usuarios-label"
+              id="select-usuarios"
+              value={solicitanteAutorizado || ''}
+              onChange={(e)=>changeSolicitanteAutorizado(e.target.value)}
+              label="Usuarios"
+              variant="standard"
+            >
+              {usuarios.map(usuario => (
+                <MenuItem key={usuario.id} value={usuario.id}>
+                  {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
+                </MenuItem>
+              ))}
+            </Select>
+          
+
+
+          {/* <TextField
             fullWidth
            
-            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
+            value={solicitanteAutorizado}
             variant="standard"
             onChange={(text) => {
-              changeSolicitanteAutorizado(
-                localStorage.getItem("NombreUsuario")
-              );
+              // changeSolicitanteAutorizado(
+              //   localStorage.getItem("NombreUsuario")
+              // );
             }}
             sx={queries.medium_text}
             InputLabelProps={{
@@ -150,7 +190,7 @@ export function Encabezado() {
                 fontFamily: "MontserratMedium",
               },
             }}
-          />
+          /> */}
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
@@ -160,7 +200,7 @@ export function Encabezado() {
           <TextField
             fullWidth
             variant="standard"
-            
+
             value={localStorage.getItem("Rol")}
             onChange={(text) => changeCargoSolicitante(text.target.value)}
             sx={queries.medium_text}

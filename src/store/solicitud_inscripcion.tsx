@@ -111,12 +111,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
+      tipoComision: state.tipoComision,
+      tasaEfectiva: state.tasaEfectiva,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
       /* ---- CONDICIONES FINANCIERAS ---- */
-
+      obligadoSolidarioAval: state.obligadoSolidarioAval,
+      
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
 
       nombreServidorPublico: state.nombreServidorPublico,
+
+      tasaReferencia: state.tasaReferencia,
     };
 
 
@@ -276,7 +282,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+     "http://10.200.4.46:7000/documento_srpu",
 
       {
         nombre: solicitud.solicitanteAutorizado,
@@ -287,17 +293,18 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
         destino: solicitud.destino,
-        dias: solicitud.dias,
+        dias: solicitud.plazoDias,
         tipoEntePublicoObligado: solicitud.tipoEntePublico,
         entePublicoObligado: solicitud.tipoEntePublicoObligado,
-        tasaefectiva: solicitud.tasaefectiva,
-        tasaInteres: solicitud.tasaInteres,
+        tasaefectiva: solicitud.tasaEfectiva, 
+        tasaInteres: solicitud.tasaReferencia,
         reglas: solicitud.reglas,
         tipocomisiones: solicitud.tipoComision,
         servidorpublico: solicitud.nombreServidorPublico,
         contrato: solicitud.tipoDocumento,
-        periodoPago: solicitud.periodoPago,
+        periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -309,6 +316,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
+      console.log("asdffgasdf");
+      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -321,5 +330,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
+    }).catch((err)=>{
+      console.log("hqtrwehwerth");
+      
     });
 }

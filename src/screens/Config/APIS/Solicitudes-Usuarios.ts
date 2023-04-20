@@ -115,12 +115,13 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
 
 };
 
-export const getListadoUsuarios = (setState: Function) => {
+export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
       IdApp: localStorage.getItem("IdApp"),
-      IdUsuario: localStorage.getItem("IdUsuario")
+      IdUsuario: localStorage.getItem("IdUsuario"),
+      PermisosEspeciales:permisosEspeciales
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),
