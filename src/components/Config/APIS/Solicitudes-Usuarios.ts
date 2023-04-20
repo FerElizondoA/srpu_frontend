@@ -143,5 +143,28 @@ export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) =>
     });
 };
 
+export const getRoles= (setState: Function,) => {
+
+  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
+    headers: {
+      'Authorization': localStorage.getItem("jwtToken"),
+      'Content-Type': 'application/json'
+    }
+  }).then(({ data }) => {
+
+    console.log('data',data.data);
+
+    setState(data.data)
+
+  })
+    .catch((r) => {
+      if (r.response.status === 409) {
+
+      }
+    });
+};
+
+
+
 
 

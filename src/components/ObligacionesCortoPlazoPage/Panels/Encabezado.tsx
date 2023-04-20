@@ -12,7 +12,7 @@ import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
-import { getListadoUsuarios } from "../../Config/APIS/Solicitudes-Usuarios";
+import { getListadoUsuarios, getRoles } from "../../Config/APIS/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {
   id: string;
@@ -20,6 +20,12 @@ export interface IUsuariosCorto {
   ApellidoPaterno: string;
   ApellidoMaterno: string;
   IdMunicipioUOrganizacion: string;
+  IdRol: string;
+}
+
+export interface IRoles{
+  Id: string;
+  Descripcion: string;
 }
 
 export function Encabezado() {
@@ -100,19 +106,25 @@ export function Encabezado() {
   });
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([])
+  const [roles,setRoles]=useState<Array<IRoles>>([])
 
   useEffect(() => {
+    
+    getRoles(setRoles);
     getListadoUsuarios(setUsuarios,1);
-    console.log('nombre', solicitanteAutorizado);
+    console.log('IdRol', localStorage.getItem("IdRol"));
     if (solicitanteAutorizado === '') {
-      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario")
-      )
+      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario"))
+      changeCargoSolicitante(localStorage.getItem("IdRol"))
     }
-    console.log('idUsuario', localStorage.getItem("IdUsuario"));
+    
   }, [])
 
- 
-  let usuario = localStorage.getItem("NombreUsuario")
+  useEffect(() => {
+    let  x = usuarios.find(usuario=>usuario.id===solicitanteAutorizado);
+    changeCargoSolicitante(x?.IdRol);
+  }, [solicitanteAutorizado])
+  
   // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
@@ -152,11 +164,8 @@ export function Encabezado() {
             <InputLabel id="select-usuarios-label">Usuarios</InputLabel>
             <Select
               fullWidth
-              labelId="select-usuarios-label"
-              id="select-usuarios"
               value={solicitanteAutorizado || ''}
               onChange={(e)=>changeSolicitanteAutorizado(e.target.value)}
-              label="Usuarios"
               variant="standard"
             >
               {usuarios.map(usuario => (
@@ -166,56 +175,26 @@ export function Encabezado() {
               ))}
             </Select>
           
-
-
-          {/* <TextField
-            fullWidth
-           
-            value={solicitanteAutorizado}
-            variant="standard"
-            onChange={(text) => {
-              // changeSolicitanteAutorizado(
-              //   localStorage.getItem("NombreUsuario")
-              // );
-            }}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              readOnly: true,
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          /> */}
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
           </InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
 
-            value={localStorage.getItem("Rol")}
-            onChange={(text) => changeCargoSolicitante(text.target.value)}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              readOnly: true,
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+          <Select
+              disabled
+              fullWidth
+              value={cargoSolicitante || 'xd'}
+              onChange={(e)=>changeCargoSolicitante(e.target.value)}
+              variant="standard"
+            >
+              {roles.map(rol => (
+                <MenuItem key={rol.Id} value={rol.Id}>
+                  {`${rol.Descripcion}`}
+                </MenuItem>
+              ))}
+            </Select>
         </Grid>
       </Grid>
 
