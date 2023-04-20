@@ -23,7 +23,10 @@ export interface CondicionFinancieraSlice {
   condicionFinancieraTable: CondicionFinanciera[];
   addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) => void;
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => void;
-  upDataCondicionFinanciera: (condicionFinanciera: CondicionFinanciera,index: number) => void;
+  upDataCondicionFinanciera: (
+    condicionFinanciera: CondicionFinanciera,
+    index: number
+  ) => void;
   removeCondicionFinanciera: (index: number) => void;
 }
 
@@ -39,25 +42,25 @@ export const createCondicionFinancieraSlice: StateCreator<
         newCondicionFinanciera,
       ],
     })),
-/////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
 
-  upDataCondicionFinanciera: (condicionFinanciera: CondicionFinanciera,index: number) =>{
-    
+  upDataCondicionFinanciera: (
+    condicionFinanciera: CondicionFinanciera,
+    index: number
+  ) => {
     set((state) => {
+      const nuevaTabla = [...state.condicionFinancieraTable];
+      console.log("nueva tabla info ", nuevaTabla);
 
-        const nuevaTabla = [...state.condicionFinancieraTable];
-        console.log("nueva tabla info ",nuevaTabla);
-        
-        nuevaTabla[index] = condicionFinanciera;
-        console.log("nueva tabla info 2: ",nuevaTabla);
-        console.log();
-        
-        return {
-            condicionFinancieraTable: nuevaTabla
-        }
+      nuevaTabla[index] = condicionFinanciera;
+      console.log("nueva tabla info 2: ", nuevaTabla);
+      console.log();
+
+      return {
+        condicionFinancieraTable: nuevaTabla,
+      };
     });
   },
-      
 
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
     // aqui va la logica
@@ -84,6 +87,9 @@ export const createCondicionFinancieraSlice: StateCreator<
       capitalFechaPrimerPago: condicionFinanciera.fechaPrimerPagoCapital,
     });
     useCortoPlazoStore.setState({
+      tipoComision: condicionFinanciera.comisiones,
+    });
+    useCortoPlazoStore.setState({
       capitalPeriocidadPago: condicionFinanciera.periocidadPagoCapital,
     });
     useCortoPlazoStore.setState({
@@ -96,7 +102,6 @@ export const createCondicionFinancieraSlice: StateCreator<
       tasaEfectivaTable: condicionFinanciera.tasasEfectivas,
     });
 
-    
     console.log("Condicion: ", condicionFinanciera);
     //state.disposicionImporte = importeDisposicion;
   },
