@@ -1,5 +1,3 @@
-//Importaciones
-
 import { Fragment, useEffect, useState } from "react";
 import {
   Grid,
@@ -44,6 +42,8 @@ import {
   ISolicitudes,
 } from "./ISoliciudes";
 import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
+import Paper from '@mui/material/Paper';
+import escudo from "../../assets/logo/escudo.png";
 
 export function Solicitudes() {
   //Declaraciones
@@ -54,7 +54,9 @@ export function Solicitudes() {
   // Llamada a la base de datos
   const [filtro, setFiltro] = useState<number>(4);
   const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
-  const [solicitudesFiltered, setSolicitudesFiltered] = useState<Array<ISolicitudes>>([]);
+  const [solicitudesFiltered, setSolicitudesFiltered] = useState<
+    Array<ISolicitudes>
+  >([]);
 
   const [cantidadComentarios, setCantidadComentarios] = useState(0);
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
@@ -135,6 +137,8 @@ export function Solicitudes() {
       setIndexSelect(indexSelect + 1);
   };
 
+  const inicioFormulario = () => {};
+
   useEffect(() => {
     if (detailSolicitud.DatosAdicionales !== "")
       setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales));
@@ -162,13 +166,59 @@ export function Solicitudes() {
     setSolicitudesFiltered(solicitudes);
   }, [solicitudes]);
 
+  // useEffect(() => {
+  //   let x = comentarios;
+  //   x.push(
+  //     {
+  //       Comentario: "hola",
+  //       CreadoPor: "hola",
+  //       FechaDeCreacion:"hola",
+  //       Id: "hola",
+  //       Mensaje: "hola",
+  //       NombreCreador: "hola",
+  //   }
+  //   )
+  //   x.push(
+  //     {
+  //       Comentario: "hola",
+  //       CreadoPor: "hola",
+  //       FechaDeCreacion:"hola",
+  //       Id: "hola",
+  //       Mensaje: "hola",
+  //       NombreCreador: "hola",
+  //   }
+  //   )
+  //   x.push(
+  //     {
+  //       Comentario: "hola",
+  //       CreadoPor: "hola",
+  //       FechaDeCreacion:"hola",
+  //       Id: "hola",
+  //       Mensaje: "hola",
+  //       NombreCreador: "hola",
+  //   }
+  //   )
+  //   x.push(
+  //     {
+  //       Comentario: "hola",
+  //       CreadoPor: "hola",
+  //       FechaDeCreacion:"hola",
+  //       Id: "hola",
+  //       Mensaje: "hola",
+  //       NombreCreador: "hola",
+  //   }
+  //   )
+  //   setComentarios(x);
+  // }, [comentarios]);
+
+
+
+
   /****************DIALOG*******************/
   const [openDialogComentarios, setOpenDialogComentarios] = useState(false);
   const openDialogUser = () => {
     setOpenDialogComentarios(!openDialogComentarios);
-
   };
-
 
   return (
     <Grid container direction="column">
@@ -204,7 +254,7 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid md={12} sm={12} xl={12} lg={5} xs={10}>
+          <Grid md={12} sm={12} xl={12} lg={10} xs={10}>
             <List sx={queriesSolicitud.buscador}>
               {solicitudesFiltered?.map((dato, index) => {
                 return (
@@ -374,195 +424,202 @@ export function Solicitudes() {
         </Grid>
 
         {/********grid Formulario*********/}
-
-        <Grid xl={9}>
-          <Box sx={queriesSolicitud.boxContenidoFormulario}>
-            <Grid sx={queriesSolicitud.botonComentario}>
+        {indexSelect < 0 || solicitudesFiltered.length === 0  || detailSolicitud.Id === ''  ? (
+          <Grid xs={6} sm={7} md={8} lg={9} xl={10}  display={"flex"} alignItems={"center"} justifyContent={"center"}>
+            
+             <Box sx={queriesSolicitud.leyendaBusqueda}>
+                 Seleccione una solicitud del apartado de busqueda
+              </Box>
+            
+          </Grid>
+        ) : (
+          <Grid xl={9}>
+            <Box sx={queriesSolicitud.botonComentario}>
               <Badge badgeContent={cantidadComentarios} color="info">
                 <Tooltip title="Comentarios">
                   <IconButton
                     onClick={() => {
-                      openDialogUser();console.log(comentarios);
-                      
+                      openDialogUser();
+                      console.log(comentarios);
                     }}
                   >
-                    <SpeakerNotesIcon
-                      fontSize="large"
-                      color="primary"
-                      sx={{}}
-                    />
+                    <SpeakerNotesIcon fontSize="large" color="primary" />
                   </IconButton>
                 </Tooltip>
               </Badge>
-            </Grid>
-            <Box sx={queriesSolicitud.boxApartadosFormulario}>
-              <Grid
-                container
-                sm={11}
-                xl={11}
-                xs={11}
-                md={11}
-                lg={11}
-                justifyContent={"space-between"}
-              >
-                {/* grid contenido*/}
-                <Grid item sm={2} xl={3} xs={6} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Solicitado Por"
-                    variant="standard"
-                    value={detailSolicitud?.NombreSolicitante || ""}
-                  />
-                </Grid>
-
-                <Grid item sm={3} xl={3} xs={7} md={4} lg={4}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Fecha de Creacion"
-                    variant="standard"
-                    value={detailSolicitud?.FechaDeCreacion.split("T")[0] || ""}
-                  />
-                </Grid>
-              </Grid>
             </Box>
 
-            <Box sx={queriesSolicitud.boxApartadosFormulario}>
-              <Grid
-                container
-                sm={12}
-                xl={11}
-                xs={12}
-                md={12}
-                lg={12}
-                justifyContent={"space-between"}
-              >
-                <Grid item xs={8} sm={3} md={3} lg={3} xl={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Nombre(s)"
-                    variant="standard"
-                    value={detailSolicitud?.Nombre || ""}
-                  />
-                </Grid>
+            <Box sx={queriesSolicitud.boxContenidoFormulario}>
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  sm={11}
+                  xl={11}
+                  xs={11}
+                  md={11}
+                  lg={11}
+                  justifyContent={"space-between"}
+                >
+                  {/* grid contenido*/}
+                  <Grid item sm={2} xl={3} xs={6} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Solicitado Por"
+                      variant="standard"
+                      value={detailSolicitud?.NombreSolicitante || ""}
+                    />
+                  </Grid>
 
-                <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Apellido Paterno"
-                    variant="standard"
-                    value={detailSolicitud?.ApellidoPaterno || ""}
-                  />
+                  <Grid item sm={3} xl={3} xs={7} md={4} lg={4}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Fecha de Creacion"
+                      variant="standard"
+                      value={
+                        detailSolicitud?.FechaDeCreacion.split("T")[0] || ""
+                      }
+                    />
+                  </Grid>
                 </Grid>
+              </Box>
 
-                <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Apellido Materno"
-                    variant="standard"
-                    value={detailSolicitud?.ApellidoMaterno || ""}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  sm={12}
+                  xl={11}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  justifyContent={"space-between"}
+                >
+                  <Grid item xs={8} sm={3} md={3} lg={3} xl={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Nombre(s)"
+                      variant="standard"
+                      value={detailSolicitud?.Nombre || ""}
+                    />
+                  </Grid>
 
-            <Box sx={queriesSolicitud.boxApartadosFormulario}>
-              <Grid
-                container
-                sm={12}
-                xl={11}
-                xs={12}
-                md={12}
-                lg={12}
-                justifyContent={"space-between"}
-              >
-                <Grid item xs={8} sm={3} md={3} lg={3} xl={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Cargo"
-                    variant="standard"
-                    value={datosAdicionales.cargo || ""}
-                  />
-                </Grid>
+                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Apellido Paterno"
+                      variant="standard"
+                      value={detailSolicitud?.ApellidoPaterno || ""}
+                    />
+                  </Grid>
 
-                <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Rol"
-                    variant="standard"
-                    value={datosAdicionales?.rol || ""}
-                  />
+                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Apellido Materno"
+                      variant="standard"
+                      value={detailSolicitud?.ApellidoMaterno || ""}
+                    />
+                  </Grid>
                 </Grid>
+              </Box>
 
-                <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Ente Publico"
-                    variant="standard"
-                    value={datosAdicionales?.entePublico || ""}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  sm={12}
+                  xl={11}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  justifyContent={"space-between"}
+                >
+                  <Grid item xs={8} sm={3} md={3} lg={3} xl={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Cargo"
+                      variant="standard"
+                      value={datosAdicionales.cargo || ""}
+                    />
+                  </Grid>
 
-            <Box sx={queriesSolicitud.boxApartadosFormulario}>
-              <Grid
-                container
-                justifyContent={"space-between"}
-                sm={12}
-                xl={11}
-                xs={12}
-                md={12}
-                lg={12}
-              >
-                {/* grid contenido*/}
-                <Grid item xl={2} md={2} sm={1.5}>
-                  <TextField
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Usuario"
-                    variant="standard"
-                    value={detailSolicitud?.NombreUsuario || ""}
-                  />
-                </Grid>
+                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Rol"
+                      variant="standard"
+                      value={datosAdicionales?.rol || ""}
+                    />
+                  </Grid>
 
-                <Grid item sm={3} xl={3} md={3} lg={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Correo Electronico"
-                    variant="standard"
-                    value={detailSolicitud?.CorreoElectronico || ""}
-                  />
+                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Ente Publico"
+                      variant="standard"
+                      value={datosAdicionales?.entePublico || ""}
+                    />
+                  </Grid>
                 </Grid>
+              </Box>
 
-                <Grid item xl={2} md={2} sm={2}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Celular"
-                    variant="standard"
-                    value={detailSolicitud?.Celular || ""}
-                  />
-                </Grid>
-                {/*
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  justifyContent={"space-between"}
+                  sm={12}
+                  xl={11}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                >
+                  {/* grid contenido*/}
+                  <Grid item xl={2} md={2} sm={1.5}>
+                    <TextField
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Usuario"
+                      variant="standard"
+                      value={detailSolicitud?.NombreUsuario || ""}
+                    />
+                  </Grid>
+
+                  <Grid item sm={3} xl={3} md={3} lg={3}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Correo Electronico"
+                      variant="standard"
+                      value={detailSolicitud?.CorreoElectronico || ""}
+                    />
+                  </Grid>
+
+                  <Grid item xl={2} md={2} sm={2}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Celular"
+                      variant="standard"
+                      value={detailSolicitud?.Celular || ""}
+                    />
+                  </Grid>
+                  {/*
             <Grid item xs={12} sm={2} md={2} lg={2} xl={2}>
               <TextField
                 InputProps={{ readOnly: true }}
@@ -572,102 +629,101 @@ export function Solicitudes() {
                 value={detailSolicitud?.Puesto || ''}
              />
             </Grid>*/}
+                </Grid>
+              </Box>
+
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  item
+                  justifyContent={"space-between"}
+                  sm={12}
+                  xl={11}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                >
+                  {/* grid contenido*/}
+
+                  <Grid item sm={2} xl={2} xs={8} md={2} lg={2}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="RFC"
+                      variant="standard"
+                      value={detailSolicitud?.Rfc || ""}
+                    />
+                  </Grid>
+
+                  <Grid item sm={2.5} xl={3} xs={8} md={3} lg={2}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="CURP"
+                      variant="standard"
+                      value={detailSolicitud?.Curp || ""}
+                    />
+                  </Grid>
+
+                  <Grid item xl={2} sm={1.5} xs={8}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Telefono"
+                      variant="standard"
+                      value={detailSolicitud?.Telefono || ""}
+                    />
+                  </Grid>
+
+                  <Grid item xl={2} md={1} sm={1} xs={8}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Extension"
+                      variant="standard"
+                      value={detailSolicitud?.Ext || ""}
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Grid item display={"flex"} justifyContent={"space-evenly"}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => {
+                    prevSolicitud();
+                  }}
+                  endIcon={<ArrowBackIcon />}
+                ></Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => {
+                    nextSolicitud();
+                  }}
+                  endIcon={<ArrowForwardIcon />}
+                ></Button>
               </Grid>
             </Box>
-
-            <Box sx={queriesSolicitud.boxApartadosFormulario}>
-              <Grid
-                container
-                item
-                justifyContent={"space-between"}
-                sm={12}
-                xl={11}
-                xs={12}
-                md={12}
-                lg={12}
-              >
-                {/* grid contenido*/}
-
-                <Grid item sm={2} xl={2} xs={8} md={2} lg={2}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="RFC"
-                    variant="standard"
-                    value={detailSolicitud?.Rfc || ""}
-                  />
-                </Grid>
-
-                <Grid item sm={2.5} xl={3} xs={8} md={3} lg={2}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="CURP"
-                    variant="standard"
-                    value={detailSolicitud?.Curp || ""}
-                  />
-                </Grid>
-
-                <Grid item xl={2} sm={1.5} xs={8}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Telefono"
-                    variant="standard"
-                    value={detailSolicitud?.Telefono || ""}
-                  />
-                </Grid>
-
-                <Grid item xl={2} md={1} sm={1} xs={8}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    id="outlined-basic"
-                    label="Extension"
-                    variant="standard"
-                    value={detailSolicitud?.Ext || ""}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Grid item display={"flex"} justifyContent={"space-evenly"}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  prevSolicitud();
-                }}
-                endIcon={<ArrowBackIcon />}
-              ></Button>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  nextSolicitud();
-                }}
-                endIcon={<ArrowForwardIcon />}
-              ></Button>
-            </Grid>
-          </Box>
-        </Grid>
+          </Grid>
+        )}
       </Grid>
-      
+
       {/* Se manda como ternario para que los valores de los comentarios no se intenten mostrar
       luego luego al abrir la pagina por el userEffect
       */}
-      {openDialogComentarios?
-      <DialogSolicitudesUsuarios 
-      open={openDialogComentarios}
-      handleClose={openDialogUser}
-      comentarios={comentarios}
-      />:null}
-
-
-
+      {openDialogComentarios ? (
+        <DialogSolicitudesUsuarios
+          open={openDialogComentarios}
+          handleClose={openDialogUser}
+          comentarios={comentarios}
+        />
+      ) : null}
     </Grid>
   );
 }

@@ -1,3 +1,4 @@
+import { Height } from "@mui/icons-material";
 import { url } from "inspector";
 
 export const queriesSolicitud = {
@@ -27,6 +28,44 @@ export const queriesSolicitud = {
       height: 782,
     },
   },
+
+//Leyenda de busqueda
+leyendaBusqueda: {
+  backgroundColor:"#af8c55",
+  fontWeight:"bold",
+  color:"white",
+  display:"flex",
+  justifyContent:"center",
+  alignItems:"center",
+  borderRadius: "20px",
+  opacity: .7,
+  "@media (min-width: 513px)": {
+      
+    height: 470,
+  },
+  "@media (min-width: 600px)": {
+    
+    fontSize: 16,
+    width:400,
+    height:50
+  },
+  "@media (min-width: 900px)": {
+    
+    fontSize: 18,
+    width:450,
+    height:60  },
+  "@media (min-width: 1485px)": {
+    fontSize: 18,
+    width:650,
+    height:80
+  },
+  "@media (min-width: 1870px)": {
+    fontSize: 20,
+    width:750,
+    height:100
+  },
+},
+
 /////Estilos Buscador 
 
 boxContenedorBuscador: {
@@ -59,7 +98,7 @@ typograhyResultadoBuscador:{
 ///// Estilos Formulario
 boxContenidoFormulario:{
   flexDirection:"column", 
-  height:"100%" ,
+  height:"80%" ,
   display:"flex", 
   width:"100%", 
   justifyContent:"space-evenly"
@@ -73,9 +112,10 @@ boxApartadosFormulario:{
 /////////////////////
 botonComentario: {
    width:"95%",
-   display:"flex",
    justifyContent:"flex-end",
-   
+   height: 80,
+   alignItems: "center",
+   display:"flex"
 }
 
 };

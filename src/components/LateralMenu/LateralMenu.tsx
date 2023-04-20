@@ -547,12 +547,12 @@ export function LateralMenu() {
 
                 {/* <ListItemButton>
                       <ListItemIcon>
-                        <PivotTableChartOutlinedIcon sx={queries.icon} />
+                        <NotificationsActiveIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
-                        Reestructuración
+                        Notificaciones
                       </Typography>
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                 {/* <ListItemButton>
                       <ListItemIcon>
