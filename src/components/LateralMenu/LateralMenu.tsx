@@ -30,7 +30,8 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import { Notificaciones } from "../../screens/Notificaciones/notificaciones";
 import { useState } from "react";
 
 import { queries } from "../../queries";
@@ -218,14 +219,19 @@ export function LateralMenu() {
                       </List>
                     </Collapse>
 
-                    {/* <ListItemButton>
+                    <ListItemButton
+                    
+                    onClick={() => {
+                      navigate("../Notificaciones");
+                    }}
+                    >
                       <ListItemIcon>
-                        <PivotTableChartOutlinedIcon sx={queries.icon} />
+                        <NotificationsActiveIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.text}>
-                        Reestructuración
+                        Notificaciones
                       </Typography>
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                     {/* <ListItemButton>
                       <ListItemIcon>

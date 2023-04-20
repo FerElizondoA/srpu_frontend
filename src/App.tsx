@@ -12,6 +12,7 @@ import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./components/ObligacionesCortoPlazoPage/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./components/ConsultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Solicitudes } from "./screens/Solicitudes/solicitudes";
+import { Notificaciones } from "../src/screens/Notificaciones/notificaciones" ;
 import { Configuracion } from "./screens/Config/Config";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
@@ -69,6 +70,7 @@ function App() {
           <Route path="catalogos" element={<Catalogos />}></Route>
           <Route path="users" element={<Usuarios />}></Route>
           <Route path="solicitudes-usuarios" element={<Solicitudes/>}></Route>
+          <Route path="notificaciones" element={<Notificaciones/>}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>

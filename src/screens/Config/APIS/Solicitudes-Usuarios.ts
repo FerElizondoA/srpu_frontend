@@ -120,7 +120,7 @@ export const getListadoUsuarios = (setState: Function) => {
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
       IdApp: localStorage.getItem("IdApp"),
-      IdUsuario: localStorage.getItem("IdUsuario")
+      IdUsuario: localStorage.getItem("IdUsuario"),
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),

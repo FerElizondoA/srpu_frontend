@@ -42,7 +42,7 @@ export function getDetailSolicitudUsuario(idSolicitud: string, setState: Functio
       setState(data.data[0]);
     })
     .catch((error) => {
-
+      
 
     });
 }

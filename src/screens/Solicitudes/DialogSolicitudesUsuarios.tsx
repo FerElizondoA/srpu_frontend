@@ -17,77 +17,142 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Tooltip,
 } from "@mui/material";
 import { IComentarios } from "./ISoliciudes";
 import { queriesSolicitud } from "./queriesSolicitudes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+
+
 
 export const DialogSolicitudesUsuarios = ({
   open,
   handleClose,
   comentarios,
-}:{
+}: {
   open: boolean;
   handleClose: Function;
   comentarios: Array<IComentarios>;
 }) => {
-
   useEffect(() => {
-    console.log('comentario', comentarios);
-  }, [])
+    console.log("comentario", comentarios);
+  }, []);
 
-  
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
+  function createData(
+    name: string,
+    calories: number,
+    fat: number,
+    carbs: number,
+    protein: number
+  ) {
+    return { name, calories, fat, carbs, protein };
+  }
 
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  const rows = [createData("Frozen yoghurt", 159, 6.0, 24, 4.0)];
 
-  ];
-  
-return (
- 
-    <Dialog
-      open={open}
-      onClose={() => handleClose()}
-    >
-      <DialogTitle>{"Comentarios"}</DialogTitle>
+  const [alignComentarios, setAlignComentarios] = useState<string>("center")
+
+  const alinearComentarios = (dato:string) => {
+      setAlignComentarios("normal");
+     return dato
+  }
+  const pruebaComentario= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdasLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdas Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdas jasdasd jhsdkjad akjshkjasd aksjhaksdj  akshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuhakshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuhakshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuh";
+  const pruebaComentario1= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj"
+  const pruebaComentario2= " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj"
+  return (
+    <Dialog fullWidth maxWidth={"md"} open={open} onClose={() => handleClose()}>
+     
       <DialogContent>
         <Grid>
-          {comentarios?.map((dato, index) => (
-            <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 550 }} size="small" aria-label="a dense table">
-              <TableHead>
+          <TableContainer component={Paper}>
+            <Table
+              sx={{ minWidth: 550}}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead sx={{ bgcolor:"#AF8C55" }}>
                 <TableRow>
-                  <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                  <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                  <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                  <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Usuario&nbsp;(s)</TableCell>
+                  <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Comentario&nbsp;(s)</TableCell>
+                  <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Fecha de creacion</TableCell>
                 </TableRow>
+               
+       
+                
               </TableHead>
-              <TableBody>
-                {rows.map((row) => (
+              
+
+              <TableBody >
+                {comentarios.length !== 0 ? (
+                  comentarios?.map((dato) => (
+                    <StyledTableRow
+                      key={dato.Id}
+                      sx={{
+                        
+                        maxWidth: 300,
+                      }}
+                    >
+                      <StyledTableCell align="center">
+                        <Typography 
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "normal",
+                          width: 150,
+                          fontSize: 14
+                        }}>
+                          {dato.NombreCreador.toUpperCase()}
+                        </Typography>
+                        
+                      </StyledTableCell>
+
+                      <StyledTableCell sx={{ overflow: "auto" }} align="justify">
+                        <Tooltip title={dato.Comentario}>
+                          <Typography
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "normal",
+                              width: 500,
+                              fontSize: 14
+                            }}
+                          >
+                            {dato.Comentario.toUpperCase()}
+                            {/* {pruebaComentario.toUpperCase()} */}
+                          </Typography>
+                        </Tooltip>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <Typography 
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "normal",
+                          fontSize: 15
+                        }}>
+                          {dato.FechaDeCreacion.split("T")[0]}
+                        </Typography>
+                      </StyledTableCell>
+                    </StyledTableRow>  
+                  ))
+                ) : (
                   <TableRow
-                    key={row.name}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="center"></TableCell>
+                    <TableCell align="center">Sin comentarios</TableCell>
+                    <TableCell align="center"></TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
-
-          ))}
         </Grid>
         <DialogContentText></DialogContentText>
       </DialogContent>
@@ -101,5 +166,5 @@ return (
         </Button>
       </DialogActions>
     </Dialog>
-  
-);}
+  );
+};
