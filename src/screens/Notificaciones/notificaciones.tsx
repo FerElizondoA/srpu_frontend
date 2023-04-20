@@ -17,6 +17,7 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
+import { StyledTableCell } from "../../components/CustomComponents";
 
 export function Notificaciones() {
   //Declaraciones
@@ -140,7 +141,7 @@ export function Notificaciones() {
           </Grid>
           <Grid
             item
-            xl={3}
+            xl={2}
             xs={2}
             lg={2}
             sm={2}
@@ -161,7 +162,28 @@ export function Notificaciones() {
           </Grid>
         </Grid>
 
+        <Grid item sx={{ height: "72vh" }}>
+
+          <TableContainer>
+            <Table>
+              <TableHead>
+                {heads.map((head) => (
+                  <StyledTableCell
+                  key={head.id}
+                  align="center"
+                  sx={{height:"10vh"}}
+                  >
+                    {head.label}
+                  </StyledTableCell>
+                ))}
+              </TableHead>
+            </Table>
+          </TableContainer>
+        </Grid>
+
       </Grid>
+
+
     </Grid>
   );
 }

@@ -15,6 +15,7 @@ import {
   DialogActions,
   ListItemText,
 } from "@mui/material";
+import { Navigate, Route, useNavigate } from "react-router-dom";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -27,6 +28,7 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemButton from "@mui/material/ListItemButton";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   getComentarios,
   getDetailSolicitudUsuario,
@@ -57,7 +59,7 @@ export function Solicitudes() {
   const [solicitudesFiltered, setSolicitudesFiltered] = useState<
     Array<ISolicitudes>
   >([]);
-
+  const navigate = useNavigate();
   const [cantidadComentarios, setCantidadComentarios] = useState(0);
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
@@ -427,9 +429,13 @@ export function Solicitudes() {
         {indexSelect < 0 || solicitudesFiltered.length === 0  || detailSolicitud.Id === ''  ? (
           <Grid xs={6} sm={7} md={8} lg={9} xl={10}  display={"flex"} alignItems={"center"} justifyContent={"center"}>
             
-             <Box sx={queriesSolicitud.leyendaBusqueda}>
-                 Seleccione una solicitud del apartado de busqueda
-              </Box>
+            <Box sx={{ width: '50vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+          <InfoIcon sx={{ width: '100%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
+          <Typography color={"#AF8C55"} fontWeight={"bold"}>SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA</Typography>
+          
+
+
+        </Box>
             
           </Grid>
         ) : (
