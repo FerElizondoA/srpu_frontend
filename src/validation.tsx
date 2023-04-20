@@ -62,6 +62,7 @@ export const getUserDetails = (idCentral: string) => {
 
         localStorage.setItem("Rol", r.data.data.Rol);
         localStorage.setItem("Puesto", r.data.data.Cargo);
+        localStorage.setItem("IdRol",r.data.data.IdRol)
         localStorage.setItem(
           "EntePublicoObligado",
           r.data.data.EntePublicoObligado
@@ -71,7 +72,7 @@ export const getUserDetails = (idCentral: string) => {
         return true;
       } else {
         getDataSolicitud(idCentral);
-      }
+      } 
     })
     .catch((error) => {
       if (error.response.status === 401) {

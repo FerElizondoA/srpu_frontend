@@ -8,6 +8,8 @@ import {
   Table,
   TableHead,
   TableBody,
+  Box,
+  Typography
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -19,8 +21,9 @@ import {
   Edit,
   Edit as EditIcon,
   FileDownload as FileDownloadIcon,
-  Input,
+  Input
 } from "@mui/icons-material";
+import InfoIcon from '@mui/icons-material/Info';
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import IconButton from "@mui/material/IconButton";
@@ -36,7 +39,7 @@ export const Usuarios = () => {
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios(setUsuarios,0);
   }, []);
 
   useEffect(() => {
@@ -173,12 +176,9 @@ export const Usuarios = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
   }, [busqueda]);
+  /*  FIN BUSCADOR */
 
 
-
-
-
-  /* BUSCADOR */
 
 
   const [usuarioEdit, setUsuarioEdit] = useState<IUsuarios>();
@@ -228,6 +228,7 @@ export const Usuarios = () => {
   };
 
   return (
+    
     <Grid container direction="column" rowSpacing={{ xs: 6,sm:2, md: 4,xl:4,}}>
       {/* GRID  HEADER */}
       <Grid item width={"100%"}>
@@ -235,6 +236,16 @@ export const Usuarios = () => {
       </Grid>
 
       {/* GRID BODY */}
+  {usuarios.length<=0?
+<Box sx={{ width:'100vw',height:'90vh', justifyContent:'center',alignItems:'center', display:'flex',flexDirection:'column'}}>
+<InfoIcon  sx={{width:'80%',height:'80%',opacity:'10%'}} fontSize="large"></InfoIcon>
+<Typography color={'RED'}>ERROR</Typography>
+<Button variant="text" sx={{textDecoration:'underline'}}
+  onClick={()=>{navigate("../home")}}
+  >VOLVER AL INICIO</Button>
+
+
+</Box>:    
       <Grid item 
         xs={12}
         lg={12}
@@ -242,6 +253,7 @@ export const Usuarios = () => {
         
         >
 
+        
             {/* GRRID Filtro Y BOTONES */}
         <Grid
           item
@@ -430,10 +442,8 @@ export const Usuarios = () => {
             </Table>
           </TableContainer>
         </Grid>
-         
-        
       </Grid>
-
+}
       <DialogUsuarios
         ActionButton={butonLabel}
         open={openDialog}

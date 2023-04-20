@@ -91,8 +91,11 @@ export function ComisionesTasaEfectiva(){
     const changeEfectivaFechaContratacion: Function = useCortoPlazoStore(state => state.changeEfectivaFechaContratacion);
     const tipoComision: string = useCortoPlazoStore(state => state.tipoComision);
     const changeTipoComision: Function = useCortoPlazoStore(state => state.changeTipoComision);
+    
     const efectivaPeriocidadPago: string = useCortoPlazoStore(state => state.efectivaPeriocidadPago);
+
     const changeEfectivaPeriocidadPago: Function = useCortoPlazoStore(state => state.changeEfectivaPeriocidadPago);
+
     const hasPorcentaje: boolean = useCortoPlazoStore(state => state.hasPorcentaje);
     const changeHasPorcentaje: Function = useCortoPlazoStore(state => state.changeHasPorcentaje);
     const hasMonto: boolean = useCortoPlazoStore(state => state.hasMonto);
@@ -114,7 +117,33 @@ export function ComisionesTasaEfectiva(){
     const removeTasaEfectiva: Function = useCortoPlazoStore(state => state.removeTasaEfectiva);
     const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(state => state.tasaEfectivaTable);
     const fetchTiposComision: Function = useCortoPlazoStore(state => state.fetchTiposComision);
+    const capitalPeriocidadPago: string = useCortoPlazoStore(
+      (state) => state.capitalPeriocidadPago
+    );
 
+   // const tipoComisionPagoMap: Map<string | null, string> =  useCortoPlazoStore(state => state.tipoComision);
+
+    const tasaPeriocidadPago: string = useCortoPlazoStore(
+      (state) => state.tasaPeriocidadPago
+    );
+
+    const tasaDiasEjercicio: string = useCortoPlazoStore(
+      (state) => state.tasaDiasEjercicio
+    );
+    // Puse estas 2 ultimas variables porque salia un ID en ves del nombre
+    // entonces aqui deberia ser  efectiva en ves de tasa pero lo revisare despues
+
+    const reset =()=>{
+      useCortoPlazoStore.setState({tipoComision: ""})
+      
+      useCortoPlazoStore.setState({efectivaPeriocidadPago: ""})
+      //efectivaPeriocidadPago
+      useCortoPlazoStore.setState({efectivaDiasEjercicio: ""}) 
+      //efectivaDiasEjercicio
+      
+      
+      
+    }   
     const [selected, setSelected] = React.useState<readonly number[]>([]);
 
     const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
@@ -162,6 +191,10 @@ export function ComisionesTasaEfectiva(){
       changePercentageOrAmount();
     }, [])
 
+    // React.useEffect(()=>{
+    //   useCortoPlazoStore.setState({capitalPeriocidadPago: ""})
+    // }, [capitalPeriocidadPago])
+
     return (
       <Grid container direction="column">
         <Grid item container mt={2} spacing={5}>
@@ -190,7 +223,10 @@ export function ComisionesTasaEfectiva(){
               fullWidth
               value={tipoComision}
               onChange={(event: any, text: string | null) =>
-                changeTipoComision(text)
+                
+                changeTipoComision(
+                  //tipoComisionPagoMap.get(text), no existe
+                  text)
               }
               options={tiposComisionCatalog}
               renderInput={(params) => (
@@ -206,9 +242,11 @@ export function ComisionesTasaEfectiva(){
             <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
             <Autocomplete
               fullWidth
-              value={efectivaPeriocidadPago}
+              value={efectivaPeriocidadPago} 
               onChange={(event: any, text: string | null) =>
-                changeEfectivaPeriocidadPago(periocidadDePagoMap.get(text), text)
+                changeEfectivaPeriocidadPago(
+                  //periocidadDePagoMap.get(text), 
+                text)
               }
               options={Array.from(periocidadDePagoMap.keys())}
               renderInput={(params) => (
@@ -302,9 +340,11 @@ export function ComisionesTasaEfectiva(){
             <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
             <Autocomplete
               fullWidth
-              value={efectivaDiasEjercicio}
+              value={efectivaDiasEjercicio} 
               onChange={(event: any, text: string | null) =>
-                changeEfectivaDiasEjercicio(diasEjercicioMap.get(text), text)
+                changeEfectivaDiasEjercicio(
+                  //diasEjercicioMap.get(text), 
+                  text)
               }
               options={Array.from(diasEjercicioMap.keys())}
               renderInput={(params) => (
@@ -391,7 +431,10 @@ export function ComisionesTasaEfectiva(){
             </TableContainer>
             <Grid container>
               <Grid item md={6} lg={6}>
-                <ConfirmButton variant="outlined" onClick={() => addRows()}>
+                <ConfirmButton variant="outlined" onClick={() =>{ 
+                  addRows()
+                  reset()
+                  }}>
                   AGREGAR
                 </ConfirmButton>
               </Grid>

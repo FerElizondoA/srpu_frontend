@@ -107,20 +107,31 @@ export const createSolicitudInscripcionSlice: StateCreator<
       IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
       plazoDias: state.plazoDias,
+      obligadoSolidarioAval: state.obligadoSolidarioAval,
+      tasaReferencia: state.tasaReferencia,
+
       obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
+
       /* ---- INFORMACIÓN GENERAL ---- */
 
       /* ---- CONDICIONES FINANCIERAS ---- */
+      condicionFinancieraTable: state.condicionFinancieraTable,
+      tipoComision: state.tipoComision,
+      tasaEfectiva: state.tasaEfectiva,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
       /* ---- CONDICIONES FINANCIERAS ---- */
-
+     
+      
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
-
       nombreServidorPublico: state.nombreServidorPublico,
+
+     
     };
 
 
     if (solicitud.IdSolicitud.length === 0) {
+      console.log('xd');
       
       await axios
         .post(
@@ -194,7 +205,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
     }
   },
-
+//////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -236,23 +247,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
-    const response = axios.post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
-      {
-        IdSolicitud: Id,
-        Comentario: comentario,
-        IdUsuario: localStorage.getItem("IdUsuario"),
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
+    console.log(comentario);
+    const response = axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+        {
+          IdSolicitud: Id,
+          Comentario: comentario,
+          IdUsuario: localStorage.getItem("IdUsuario"),
         },
-      }
-    )
-    .then((response) => {
-    })
-    .catch((e) => {
-    });
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((response) => {})
+      .catch((e) => {
+        console.log("Stack trace {", e, "}");
+      });
   },
 });
 
@@ -260,7 +273,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   let solicitud: ISolicitud = JSON.parse(Solicitud);
   console.log(Solicitud);
   console.log(solicitud);
-  
 
   const solicitudfechas: any = {
     fechaContratacion: format(
@@ -285,17 +297,18 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
         destino: solicitud.destino,
-        dias: solicitud.dias,
+        dias: solicitud.plazoDias,
         tipoEntePublicoObligado: solicitud.tipoEntePublico,
         entePublicoObligado: solicitud.tipoEntePublicoObligado,
-        tasaefectiva: solicitud.tasaefectiva,
-        tasaInteres: solicitud.tasaInteres,
+        tasaefectiva: solicitud.tasaEfectiva,
+        tasaInteres: solicitud.tasaReferencia,
         reglas: solicitud.reglas,
         tipocomisiones: solicitud.tipoComision,
         servidorpublico: solicitud.nombreServidorPublico,
         contrato: solicitud.tipoDocumento,
-        periodoPago: solicitud.periodoPago,
+        periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -307,6 +320,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
+      console.log("asdffgasdf");
+      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -319,5 +334,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
+    }).catch((err)=>{
+      console.log("hqtrwehwerth");
+      
     });
 }

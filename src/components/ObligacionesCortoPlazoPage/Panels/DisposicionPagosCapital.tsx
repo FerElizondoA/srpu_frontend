@@ -38,6 +38,7 @@ import { TasaInteres } from "../../../store/pagos_capital";
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
 import { log } from "console";
+import { CondicionFinanciera } from "../../../store/condicion_financiera";
 
 interface Head {
   label: string;
@@ -93,6 +94,7 @@ export function DisposicionPagosCapital() {
   const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
     (state) => state.changeCapitalPeriocidadPago
   );
+
   const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(
     (state) => state.periocidadDePagoMap
   );
@@ -108,12 +110,14 @@ export function DisposicionPagosCapital() {
   const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
     (state) => state.changeTasaFechaPrimerPago
   );
+
   const tasaPeriocidadPago: string = useCortoPlazoStore(
     (state) => state.tasaPeriocidadPago
   );
   const changeTasaPeriocidadPago: Function = useCortoPlazoStore(
     (state) => state.changeTasaPeriocidadPago
   );
+  
   const tasaReferenciaMap: Map<string | null, string> = useCortoPlazoStore(
     (state) => state.tasaReferenciaMap
   );
@@ -263,6 +267,8 @@ export function DisposicionPagosCapital() {
     (state) => state.changeEfectivaTasaVariable
   );
 
+  
+  
   //////////////////////////////////////////////////////
 
   const reset = () => {
@@ -299,7 +305,7 @@ export function DisposicionPagosCapital() {
   }, [radioValue]);
 
   //const reset
- 
+  //useCortoPlazoStore.setState({  tasaInteresTable: tasaInteresTable })
   ////////////////////////////////////////////////////////
   return (
     <Grid container direction="column">
@@ -391,10 +397,7 @@ export function DisposicionPagosCapital() {
                 fullWidth
                 value={capitalPeriocidadPago}
                 onChange={(event: any, text: string | null) =>
-                  changeCapitalPeriocidadPago(
-                    periocidadDePagoMap.get(text),
-                    text
-                  )
+                  changeCapitalPeriocidadPago(periocidadDePagoMap.get(text), text)
                 }
                 options={Array.from(periocidadDePagoMap.keys())}
                 renderInput={(params) => (
@@ -406,29 +409,7 @@ export function DisposicionPagosCapital() {
                 )}
               />
             </Grid>
-            <Grid item ml={10} lg={3}>
-              <InputLabel sx={queries.medium_text}>
-                Periocidad de Pago
-              </InputLabel>
-              <Autocomplete
-                fullWidth
-                value={capitalPeriocidadPago}
-                onChange={(event: any, text: string | null) =>
-                  changeCapitalPeriocidadPago(
-                    periocidadDePagoMap.get(text),
-                    text
-                  )
-                }
-                options={Array.from(periocidadDePagoMap.keys())}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    sx={queries.medium_text}
-                  />
-                )}
-              />
-            </Grid>
+            
 
             <Grid item ml={10} lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
@@ -694,6 +675,7 @@ export function DisposicionPagosCapital() {
                   </TableHead>
                   <TableBody>
                     {tasaInteresTable.map((row, index) => {
+                      
                       const isItemSelected = isSelected(index);
                       return (
                         <StyledTableRow>

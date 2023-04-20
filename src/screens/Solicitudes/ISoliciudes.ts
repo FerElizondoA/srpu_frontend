@@ -14,7 +14,6 @@ export interface ISolicitudes {
     TipoSolicitud: string;
     UltimaModificacion: string;
     tipoSoli: string;
-
 }
 
 export interface IDetailSolicitudUsuario {
@@ -47,5 +46,13 @@ export interface IDatosAdicionales {
     idEntePublico: string;
     entePublico: string;
     correoDeRecuperacion: string;
+}
 
+export interface IComentarios {
+    Comentario: string;
+    CreadoPor: string;
+    FechaDeCreacion: string;
+    Id: string
+    Mensaje: string;
+    NombreCreador: string
 }

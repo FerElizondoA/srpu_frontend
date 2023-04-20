@@ -32,7 +32,9 @@ export interface InformacionGeneralSlice {
   institucion: string;
   denominacion: string;
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => void;
+
   updateObligadoSolidarioAvalTable: (obligadoSolidarioAvalTable: ObligadoSolidarioAval[]) => void;
+  
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;

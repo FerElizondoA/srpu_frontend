@@ -35,6 +35,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
+import { useCortoPlazoStore } from "../../store/main";
 import { useState } from "react";
 
 import { queries } from "../../queries";
@@ -303,6 +304,58 @@ export function LateralMenu() {
     );
   };
 
+  const reset = () =>{
+  
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAvalTable: [],
+    });
+    
+    useCortoPlazoStore.setState({
+      condicionFinancieraTable: [],
+    });
+
+    useCortoPlazoStore.setState({
+      plazoDias: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      montoOriginal: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      fechaVencimiento: "",
+    });
+
+    useCortoPlazoStore.setState({
+      institucion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      tipoEntePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      entePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAval: "",
+    });
+
+    useCortoPlazoStore.setState({
+      documentoAutorizado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      identificacion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      reglas: [],
+    });
+
+  }
+  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
