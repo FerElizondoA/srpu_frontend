@@ -28,7 +28,7 @@ export const TimerCounter = () => {
       setMessageSend(false);
       alertaSession();
     }
-    if (rest <= 0) {
+    if (rest < 0) {
       logout();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +41,9 @@ export const TimerCounter = () => {
       rest > 0
     ) {
       renewSession();
+    }
+    if (rest < 0) {
+      logout();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

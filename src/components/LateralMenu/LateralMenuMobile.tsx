@@ -149,7 +149,7 @@ export function LateralMenuMobile() {
                             <KeyboardDoubleArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.text}>
-                            Financiamiento y Obligaciones
+                            Financiamiento y obligaciones
                           </Typography>
                           {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
                         </ListItemButton>
@@ -164,7 +164,7 @@ export function LateralMenuMobile() {
                                 <KeyboardArrowRightIcon sx={queries.icon} />
                               </ListItemIcon>
                               <Typography sx={queries.text}>
-                                Obligaciones a Corto Plazo
+                                Crédito simple corto plazo
                               </Typography>
                             </ListItemButton>
 

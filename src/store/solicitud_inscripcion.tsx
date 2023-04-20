@@ -274,7 +274,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+     " http://10.200.4.94:9091/documento_srpu",
 
       {
         nombre: solicitud.solicitanteAutorizado,

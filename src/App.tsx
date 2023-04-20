@@ -16,6 +16,9 @@ import { Configuracion } from "../src/components/Config/Configuracion";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
 import { Init } from "./screens/int/Init";
+import { Firma } from "./components/e.firma/Firma";
+import { Bandeja } from "./components/e.firma/Bandeja";
+import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 
 export const appTheme = createTheme({
   palette: {
@@ -62,6 +65,10 @@ function App() {
         <Routes>
           <Route index element={<Init />} />
           <Route path="/" element={<HomePage />}></Route>
+          
+        <Route path="firmar" element={<Firma />} />
+        <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
+        <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
           <Route path="home" element={<HomePage />}></Route>
           <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
           <Route path="config" element={<Configuracion />}></Route>

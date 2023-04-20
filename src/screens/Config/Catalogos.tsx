@@ -94,7 +94,7 @@ export function Catalogos() {
     {
       id: 13,
       label: "Tipos de documento",
-      fnc: "tiposDocumento",
+      fnc: "tiposDocumentos",
     },
     {
       id: 14,
@@ -426,7 +426,7 @@ export function Catalogos() {
   );
 }
 
- export interface ICatalogo {
+export interface ICatalogo {
   Id: string;
   Descripcion: string;
   OCP: number;

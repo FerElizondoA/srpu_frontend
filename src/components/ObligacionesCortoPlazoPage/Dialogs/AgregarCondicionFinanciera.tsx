@@ -67,7 +67,7 @@ export function AgregarCondicionFinanciera(props: Props){
 
     const addRow = () => {
       const CF: CondicionFinanciera = {
-        id: hashFunctionCYRB53(new Date().getTime().toString()),
+        id: (hashFunctionCYRB53(new Date().getTime().toString())).toString(),
         fechaDisposicion: disposicionFechaContratacion,
         importeDisposicion: disposicionImporte.toString(),
         fechaPrimerPagoCapital: capitalFechaPrimerPago,
