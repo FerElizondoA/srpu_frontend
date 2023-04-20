@@ -131,6 +131,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
 
     if (solicitud.IdSolicitud.length === 0) {
+      console.log('xd');
+      
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
