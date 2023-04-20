@@ -39,7 +39,7 @@ export const Usuarios = () => {
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios(setUsuarios,0);
   }, []);
 
   useEffect(() => {
@@ -238,8 +238,6 @@ export const Usuarios = () => {
       {/* GRID BODY */}
   {usuarios.length<=0?
 <Box sx={{ width:'100vw',height:'90vh', justifyContent:'center',alignItems:'center', display:'flex',flexDirection:'column'}}>
-
-
 <InfoIcon  sx={{width:'80%',height:'80%',opacity:'10%'}} fontSize="large"></InfoIcon>
 <Typography color={'RED'}>ERROR</Typography>
 <Button variant="text" sx={{textDecoration:'underline'}}

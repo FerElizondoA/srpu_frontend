@@ -117,11 +117,13 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
 
 };
 
-export const getListadoUsuarios = (setState: Function) => {
+export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
-      IdApp: localStorage.getItem("IdApp")
+      IdApp: localStorage.getItem("IdApp"),
+      IdUsuario:localStorage.getItem("IdUsuario"),
+      PermisosEspeciales:permisosEspeciales
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),
@@ -140,6 +142,29 @@ export const getListadoUsuarios = (setState: Function) => {
       }
     });
 };
+
+export const getRoles= (setState: Function,) => {
+
+  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
+    headers: {
+      'Authorization': localStorage.getItem("jwtToken"),
+      'Content-Type': 'application/json'
+    }
+  }).then(({ data }) => {
+
+    console.log('data',data.data);
+
+    setState(data.data)
+
+  })
+    .catch((r) => {
+      if (r.response.status === 409) {
+
+      }
+    });
+};
+
+
 
 
 

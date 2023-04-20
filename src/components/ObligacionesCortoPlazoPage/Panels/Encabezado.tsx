@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Grid, TextField, InputLabel, Autocomplete } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Grid, TextField, InputLabel, Autocomplete ,FormControl,Select,MenuItem} from "@mui/material";
 
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -11,6 +11,22 @@ import { subDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/main";
+import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
+import { getListadoUsuarios, getRoles } from "../../Config/APIS/Solicitudes-Usuarios";
+
+export interface IUsuariosCorto {
+  id: string;
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  IdMunicipioUOrganizacion: string;
+  IdRol: string;
+}
+
+export interface IRoles{
+  Id: string;
+  Descripcion: string;
+}
 
 export function Encabezado() {
   const tipoDocumento: string = useCortoPlazoStore(
@@ -60,7 +76,7 @@ export function Encabezado() {
     (state) => state.changeCargoSolicitante
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchEntesPublicos();
     fetchOrganismos();
 
@@ -75,7 +91,9 @@ export function Encabezado() {
       changeOrganismo(
         organismosMap.get(localStorage.getItem("EntePublicoObligado")),
         localStorage.getItem("EntePublicoObligado")
-      ); 
+      );
+
+
     }
     if (localStorage.getItem("NombreUsuario")?.length !== 0) {
       // change(
@@ -83,19 +101,32 @@ export function Encabezado() {
       //   localStorage.getItem("NombreUsuario")
       // );
 
-    
+
     }
     changeSolicitanteAutorizado(localStorage.getItem("NombreUsuario"));
   });
 
-  if (localStorage.getItem("Puesto")?.length !== 0) {
-    changeCargoSolicitante(
-        //entesPublicosMap.get(localStorage.getItem("Puesto")),
-        localStorage.getItem("Puesto")
-      );
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([])
+  const [roles,setRoles]=useState<Array<IRoles>>([])
+
+  useEffect(() => {
+    
+    getRoles(setRoles);
+    getListadoUsuarios(setUsuarios,1);
+    console.log('IdRol', localStorage.getItem("IdRol"));
+    if (solicitanteAutorizado === '') {
+      changeSolicitanteAutorizado(localStorage.getItem("IdUsuario"))
+      changeCargoSolicitante(localStorage.getItem("IdRol"))
     }
-  let usuario = localStorage.getItem("NombreUsuario")
- // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
+    
+  }, [])
+
+  useEffect(() => {
+    let  x = usuarios.find(usuario=>usuario.id===solicitanteAutorizado);
+    changeCargoSolicitante(x?.IdRol);
+  }, [solicitanteAutorizado])
+  
+  // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
     <Grid container>
@@ -129,57 +160,42 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Solicitante Autorizado
-          </InputLabel>
 
-          <TextField
-            fullWidth
-            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
-            variant="standard"
-            onChange={(text) => {
-              changeSolicitanteAutorizado(
-                localStorage.getItem("NombreUsuario")
-              );
-            }}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              readOnly: true,
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+          
+            <InputLabel id="select-usuarios-label">Usuarios</InputLabel>
+            <Select
+              fullWidth
+              value={solicitanteAutorizado || ''}
+              onChange={(e)=>changeSolicitanteAutorizado(e.target.value)}
+              variant="standard"
+            >
+              {usuarios.map(usuario => (
+                <MenuItem key={usuario.id} value={usuario.id}>
+                  {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
+                </MenuItem>
+              ))}
+            </Select>
+          
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
           </InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            
-            value={cargoSolicitante ||localStorage.getItem("Puesto") }
-            onChange={(text) => changeCargoSolicitante(text.target.value)}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              readOnly: true,
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+
+          <Select
+              disabled
+              fullWidth
+              value={cargoSolicitante || 'xd'}
+              onChange={(e)=>changeCargoSolicitante(e.target.value)}
+              variant="standard"
+            >
+              {roles.map(rol => (
+                <MenuItem key={rol.Id} value={rol.Id}>
+                  {`${rol.Descripcion}`}
+                </MenuItem>
+              ))}
+            </Select>
         </Grid>
       </Grid>
 

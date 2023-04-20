@@ -120,10 +120,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
       tasaEfectiva: state.tasaEfectiva,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
       /* ---- CONDICIONES FINANCIERAS ---- */
-
+     
+      
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
       nombreServidorPublico: state.nombreServidorPublico,
+
+     
     };
 
 
@@ -281,7 +284,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+     "http://10.200.4.46:7000/documento_srpu",
 
       {
         nombre: solicitud.solicitanteAutorizado,
@@ -303,6 +306,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         contrato: solicitud.tipoDocumento,
         periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -314,6 +318,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
+      console.log("asdffgasdf");
+      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -326,5 +332,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
+    }).catch((err)=>{
+      console.log("hqtrwehwerth");
+      
     });
 }
