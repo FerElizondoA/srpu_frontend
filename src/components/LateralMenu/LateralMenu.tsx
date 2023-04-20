@@ -15,6 +15,8 @@ import {
   Toolbar,
 } from "@mui/material";
 
+////////////////////
+
 // icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
@@ -30,7 +32,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import { useCortoPlazoStore } from "../../store/main";
 import { useState } from "react";
 
 import { queries } from "../../queries";
@@ -70,6 +72,58 @@ export function LateralMenu() {
     setConsultaDeSolicitud(!openConsultaDeSolicitud);
   };
 
+  const reset = () =>{
+  
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAvalTable: [],
+    });
+    
+    useCortoPlazoStore.setState({
+      condicionFinancieraTable: [],
+    });
+
+    useCortoPlazoStore.setState({
+      plazoDias: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      montoOriginal: 0,
+    });
+
+    useCortoPlazoStore.setState({
+      fechaVencimiento: "",
+    });
+
+    useCortoPlazoStore.setState({
+      institucion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      tipoEntePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      entePublicoObligado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      obligadoSolidarioAval: "",
+    });
+
+    useCortoPlazoStore.setState({
+      documentoAutorizado: "",
+    });
+
+    useCortoPlazoStore.setState({
+      identificacion: "",
+    });
+
+    useCortoPlazoStore.setState({
+      reglas: [],
+    });
+
+  }
+  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -172,7 +226,7 @@ export function LateralMenu() {
                           {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
                         </ListItemButton>
                         <Collapse
-                          in={!openFinanciamiento}
+                          in={openFinanciamiento}
                           timeout="auto"
                           unmountOnExit
                         >
@@ -180,7 +234,11 @@ export function LateralMenu() {
                             <ListItemButton
                               sx={{ marginLeft: 4 }}
                               onClick={() => {
+                               
+                               
+                                reset()
                                 navigate("../ObligacionesCortoPlazo");
+                                
                               }}
                             >
                               <ListItemIcon>
