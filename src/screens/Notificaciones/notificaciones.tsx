@@ -97,11 +97,11 @@ export function Notificaciones() {
         >
           <Grid
             item
-            xl={8}
+            xl={4}
             xs={8}
             lg={8}
             sm={8}
-            sx={{ display: "flex", justifyContent: "flex-end" }}
+            sx={{ display: "flex", justifyContent: "center" }}
           >
             <Paper
               component="form"
@@ -109,7 +109,7 @@ export function Notificaciones() {
                 display: "flex",
                 //alignItems: "center"
                 borderRadius: "10px",
-                width: 600
+                width: 700
               }}
             >
               <InputBase
@@ -128,7 +128,7 @@ export function Notificaciones() {
                   }
                 }}
               />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <IconButton type="button"  sx={{ p: "10px" }} aria-label="search">
                 <SearchIcon
                   onClick={() => {
                     handleSearch();
@@ -140,7 +140,7 @@ export function Notificaciones() {
           </Grid>
           <Grid
             item
-            xl={4}
+            xl={3}
             xs={2}
             lg={2}
             sm={2}
@@ -151,7 +151,7 @@ export function Notificaciones() {
               variant="contained"
               size="large"
               endIcon={<AddCommentIcon />}
-              sx={{ width: 300 }}
+              sx={{ width: 250}}
               onClick={() => {
                 //Abrir dialog
               }}
@@ -159,10 +159,6 @@ export function Notificaciones() {
               Añadir Notificacion
             </Button>
           </Grid>
-
-
-
-
         </Grid>
 
       </Grid>

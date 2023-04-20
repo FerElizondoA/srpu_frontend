@@ -249,43 +249,14 @@ export const Usuarios = () => {
           >VOLVER AL INICIO</Button>
 
 
-        </Box> :
+        </Box> : 
+
         <Grid item
           xs={12}
           lg={12}
           sm={12}
 
         >
-
-
-          {/* GRRID Filtro Y BOTONES */}
-          <Grid
-            item
-            //ml={window.innerWidth / 22}
-            lg={12}
-            display="flex"
-            justifyContent="flex-end"
-            alignItems={''}
-
-          >
-            <InfoIcon
-              sx={{ width: "80%", height: "80%", opacity: "10%" }}
-              fontSize="large"
-            ></InfoIcon>
-            <Typography color={"RED"}>ERROR</Typography>
-            <Button
-              variant="text"
-              sx={{ textDecoration: "underline" }}
-              onClick={() => {
-                navigate("../home");
-              }}
-            >
-              VOLVER AL INICIO
-            </Button>
-          </Grid>
-          
-          
-          
           <Grid item xs={12} lg={12} sm={12}>
             {/* GRRID Filtro Y BOTONES */}
             <Grid
@@ -529,7 +500,7 @@ export const Usuarios = () => {
             </Grid>
           </Grid>
           </Grid>
-    }
+}
           <DialogUsuarios
             ActionButton={butonLabel}
             open={openDialog}
