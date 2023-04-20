@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 
 export type ObligadoSolidarioAval = {
-  id: string;
+  id: number;
   obligadoSolidario: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
@@ -32,7 +32,9 @@ export interface InformacionGeneralSlice {
   institucion: string;
   denominacion: string;
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => void;
-  removeObligadoSolidarioAval: (index: number) => void;
+
+  updateObligadoSolidarioAvalTable: (obligadoSolidarioAvalTable: ObligadoSolidarioAval[]) => void;
+  
   changePlazoDias: (newPlazoDias: number) => void;
   changeMontoOriginal: (newMontoOriginal: number) => void;
   changeFechaVencimiento: (newFechaVencimiento: string) => void;
@@ -64,7 +66,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     montoOriginal: 0,
     fechaVencimiento: new Date().toString(),
     IdDestino: "",
-    destino: "",
+    destino: "Cubrir financiamientos u obligaciones ",
     IdInstitucion: "",
     institucion: "",
     IdTipoEntePublicoObligado: "",
@@ -74,7 +76,7 @@ export const createInformacionGeneralSlice: StateCreator<InformacionGeneralSlice
     obligadoSolidarioAval: "",
     denominacion: "Pesos",
     addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) => set((state) => ({ obligadoSolidarioAvalTable: [...state.obligadoSolidarioAvalTable, newObligadoSolidarioAval]})),
-    removeObligadoSolidarioAval: (index: number) => set((state) => ({ obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable.filter((_, i) => i !== index)})),
+    updateObligadoSolidarioAvalTable: (obligadoSolidarioAvalTable: ObligadoSolidarioAval[]) => set(() => ({ obligadoSolidarioAvalTable: obligadoSolidarioAvalTable})),
     changePlazoDias: (newPlazoDias: number) => set(() => ({ plazoDias: newPlazoDias })),
     changeMontoOriginal: (newMontoOriginal: number) => set(() => ({ montoOriginal: newMontoOriginal })),
     changeFechaVencimiento: (newFechaVencimiento: string) => set(() => ({ fechaVencimiento: newFechaVencimiento})),

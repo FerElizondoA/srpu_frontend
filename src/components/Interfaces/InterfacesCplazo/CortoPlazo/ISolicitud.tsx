@@ -1,7 +1,7 @@
 export interface ISolicitud {
-  nombre: string;
+  solicitanteAutorizado: string; 
   oficionum: string;
-  cargo: string;
+  cargoSolicitante: string;
   organismo: string;
   institucion: string;
   montoOriginal: number;
@@ -10,7 +10,7 @@ export interface ISolicitud {
   tipoEntePublicoObligado: string;
   entePublicoObligado: string; 
   tasaEfectiva: string;
-  tasaReferencia: string;
+  tasaReferencia: string;// tasa de referencia
   reglas: string[];
   tipoComision: string;
   nombreServidorPublico: string;
@@ -19,4 +19,8 @@ export interface ISolicitud {
   obligadoSolidarioAval: string;
   fechaContratacion: Date;
   fechaVencimiento: Date;
+  tipoEntePublico: string;
+  
+  
+  
 }

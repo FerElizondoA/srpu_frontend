@@ -46,7 +46,7 @@ export const Usuarios = () => {
   );
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios(setUsuarios, 0);
   }, []);
 
   useEffect(() => {
@@ -240,34 +240,24 @@ export const Usuarios = () => {
       </Grid>
 
       {/* GRID BODY */}
-      {usuarios.length <= 0 ? (
-        <Box
-          sx={{
-            width: "100vw",
-            height: "90vh",
-            justifyContent: "center",
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "column",
-          }}
+      {usuarios.length <= 0 ? 
+        <Box sx={{ width: '100vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+          <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
+          <Typography color={'RED'}>ERROR</Typography>
+          <Button variant="text" sx={{ textDecoration: 'underline' }}
+            onClick={() => { navigate("../home") }}
+          >VOLVER AL INICIO</Button>
+
+
+        </Box> :
+        <Grid item
+          xs={12}
+          lg={12}
+          sm={12}
+
         >
-          <InfoIcon
-            sx={{ width: "80%", height: "80%", opacity: "10%" }}
-            fontSize="large"
-          ></InfoIcon>
-          <Typography color={"RED"}>ERROR</Typography>
-          <Button
-            variant="text"
-            sx={{ textDecoration: "underline" }}
-            onClick={() => {
-              navigate("../home");
-            }}
-          >
-            VOLVER AL INICIO
-          </Button>
-        </Box>
-      ) : (
-        <Grid item xs={12} lg={12} sm={12}>
+
+
           {/* GRRID Filtro Y BOTONES */}
           <Grid
             item
@@ -275,248 +265,278 @@ export const Usuarios = () => {
             lg={12}
             display="flex"
             justifyContent="flex-end"
-            alignItems={""}
+            alignItems={''}
+
           >
+            <InfoIcon
+              sx={{ width: "80%", height: "80%", opacity: "10%" }}
+              fontSize="large"
+            ></InfoIcon>
+            <Typography color={"RED"}>ERROR</Typography>
+            <Button
+              variant="text"
+              sx={{ textDecoration: "underline" }}
+              onClick={() => {
+                navigate("../home");
+              }}
+            >
+              VOLVER AL INICIO
+            </Button>
+          </Grid>
+          
+          
+          
+          <Grid item xs={12} lg={12} sm={12}>
+            {/* GRRID Filtro Y BOTONES */}
             <Grid
               item
-              xs={8}
-              lg={8}
-              sm={8}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
+              //ml={window.innerWidth / 22}
+              lg={12}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems={""}
             >
-              <Paper
-                component="form"
-                sx={{
-                  display: "flex",
-                  //alignItems: "center",
-                  width: 800,
-                }}
+              <Grid
+                item
+                xs={8}
+                lg={8}
+                sm={8}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
               >
-                <InputBase
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Buscar"
-                  value={busqueda}
-                  onChange={(e) => {
-                    handleChange(e.target.value);
+                <Paper
+                  component="form"
+                  sx={{
+                    display: "flex",
+                    //alignItems: "center",
+                    width: 800,
                   }}
-                  onKeyPress={(ev) => {
-                    //cuando se presiona Enter
-                    if (ev.key === "Enter") {
-                      handleSearch();
-                      ev.preventDefault();
-                      return false;
-                    }
-                  }}
-                />
-                <IconButton
-                  type="button"
-                  sx={{ p: "10px" }}
-                  aria-label="search"
                 >
-                  <SearchIcon
-                    onClick={() => {
-                      handleSearch();
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Buscar"
+                    value={busqueda}
+                    onChange={(e) => {
+                      handleChange(e.target.value);
+                    }}
+                    onKeyPress={(ev) => {
+                      //cuando se presiona Enter
+                      if (ev.key === "Enter") {
+                        handleSearch();
+                        ev.preventDefault();
+                        return false;
+                      }
                     }}
                   />
-                </IconButton>
-              </Paper>
-            </Grid>
+                  <IconButton
+                    type="button"
+                    sx={{ p: "10px" }}
+                    aria-label="search"
+                  >
+                    <SearchIcon
+                      onClick={() => {
+                        handleSearch();
+                      }}
+                    />
+                  </IconButton>
+                </Paper>
+              </Grid>
 
-            <Grid
-              item
-              xs={2}
-              lg={2}
-              sm={2}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <Button
-                color="info"
-                variant="contained"
-                sx={{ width: "80%" }}
-                endIcon={<FolderSharedRoundedIcon fontSize="large" />}
-                onClick={() => {
-                  navigate("../solicitudes-usuarios");
-                }}
+              <Grid
+                item
+                xs={2}
+                lg={2}
+                sm={2}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
               >
-                Ver Solicitudes
-              </Button>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              lg={2}
-              sm={2}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <Button
-                variant="contained"
-                size="medium"
-                endIcon={<PersonAddAlt1Icon />}
-                sx={{ width: "80%" }}
-                onClick={() => {
-                  openNewUsuario();
-                }}
+                <Button
+                  color="info"
+                  variant="contained"
+                  sx={{ width: "80%" }}
+                  endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+                  onClick={() => {
+                    navigate("../solicitudes-usuarios");
+                  }}
+                >
+                  Ver Solicitudes
+                </Button>
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                lg={2}
+                sm={2}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
               >
-                Añadir Usuario
-              </Button>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  endIcon={<PersonAddAlt1Icon />}
+                  sx={{ width: "80%" }}
+                  onClick={() => {
+                    openNewUsuario();
+                  }}
+                >
+                  Añadir Usuario
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
 
-          <Grid item sx={{ height: "80vh" }}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  {heads.map((head) => (
-                    <StyledTableCell
-                      key={head.id}
-                      align="center"
-                      sx={{ height: "10vh" }}
-                    >
-                      {head.label}
-                    </StyledTableCell>
-                  ))}
-                </TableHead>
-                <TableBody>
-                  {usuariosFiltrados?.map((row) => (
-                    <StyledTableRow>
+            <Grid item sx={{ height: "80vh" }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    {heads.map((head) => (
                       <StyledTableCell
-                        sx={{ display: "flex", height: "10vh" }}
-                        component="th"
-                        scope="row"
+                        key={head.id}
                         align="center"
+                        sx={{ height: "10vh" }}
                       >
-                        <>
-                          <Tooltip title="Editar Usuario">
-                            <IconButton
-                              size="large"
-                              onClick={() => {
-                                openEditarUsuario(
-                                  row.Nombre + " " + row.ApellidoPaterno,
-                                  row
-                                );
-                              }}
-                            >
-                              <Edit fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableHead>
+                  <TableBody>
+                    {usuariosFiltrados?.map((row) => (
+                      <StyledTableRow>
+                        <StyledTableCell
+                          sx={{ display: "flex", height: "10vh" }}
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          <>
+                            <Tooltip title="Editar Usuario">
+                              <IconButton
+                                size="large"
+                                onClick={() => {
+                                  openEditarUsuario(
+                                    row.Nombre + " " + row.ApellidoPaterno,
+                                    row
+                                  );
+                                }}
+                              >
+                                <Edit fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
 
-                          <Tooltip title="Eliminar Usuario">
-                            <IconButton
-                              aria-label="delete"
-                              size="large"
-                              onClick={() => {
-                                console.log(
-                                  row.id,
-                                  row.ApellidoPaterno.toString()
-                                );
-                              }}
-                            >
-                              <DeleteIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        </>
-                      </StyledTableCell>
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Nombre.toString()}
-                      </StyledTableCell>
+                            <Tooltip title="Eliminar Usuario">
+                              <IconButton
+                                aria-label="delete"
+                                size="large"
+                                onClick={() => {
+                                  console.log(
+                                    row.id,
+                                    row.ApellidoPaterno.toString()
+                                  );
+                                }}
+                              >
+                                <DeleteIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Nombre.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.ApellidoPaterno.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.ApellidoPaterno.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.ApellidoMaterno.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.ApellidoMaterno.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.MunicipioUOrganizacion.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.MunicipioUOrganizacion.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Cargo.toString()}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Rol.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Cargo.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Rol.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.CorreoElectronico.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.CorreoElectronico.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Telefono.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Telefono.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Ext.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Ext.toString()}
+                        </StyledTableCell>
 
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {row.Celular.toString()}
-                      </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Celular.toString()}
+                        </StyledTableCell>
 
-                      {/* <StyledTableCell component="th" scope="row" align="center">
+                        {/* <StyledTableCell component="th" scope="row" align="center">
                     {row.Curp.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Rfc.toString()}
                   </StyledTableCell> */}
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
           </Grid>
+          </Grid>
+    }
+          <DialogUsuarios
+            ActionButton={butonLabel}
+            open={openDialog}
+            title={title}
+            handleClose={openDialogUser}
+            UserObject={usuarioEdit}
+          />
         </Grid>
-      )}
-      <DialogUsuarios
-        ActionButton={butonLabel}
-        open={openDialog}
-        title={title}
-        handleClose={openDialogUser}
-        UserObject={usuarioEdit}
-      />
-    </Grid>
   );
 };

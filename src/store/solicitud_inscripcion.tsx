@@ -20,7 +20,7 @@ export interface SolicitudInscripcionSlice {
   changeIdentificacion: (newIdentificacion: string) => void;
   changeReglas: (newReglas: string) => void;
   changeComentarios: (newComentarios: string) => void;
-  
+
   fetchReglas: () => void;
   crearSolicitud: (reglasSeleccionadas: number[]) => void;
   fetchBorrarSolicitud: (Id: string) => boolean;
@@ -54,13 +54,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   /////////////////////////////
 
- 
-
   fetchReglas: async () => {
     if (!get().fetchedReglas) {
       const response = await axios.get(
-        
-        
         process.env.REACT_APP_APPLICATION_BACK +
           "/api/get-reglaDeFinanciamiento",
         {
@@ -88,7 +84,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
-
       /* ---- ENCABEZADO ---- */
       IdSolicitud: state.IdSolicitud,
       tipoDocumento: state.tipoDocumento,
@@ -99,8 +94,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
       organismo: state.organismo,
       fechaContratacion: state.fechaContratacion,
       cargoSolicitante: state.cargoSolicitante,
-      /* ---- ENCABEZADO ---- */
 
+      /* ---- ENCABEZADO ---- */
 
       /* ---- INFORMACIÓN GENERAL ---- */
       // plazo dias se calcula automaticamente
@@ -111,17 +106,33 @@ export const createSolicitudInscripcionSlice: StateCreator<
       denominacion: state.denominacion,
       IdInstitucion: state.IdInstitucion,
       institucion: state.institucion,
+      plazoDias: state.plazoDias,
+      obligadoSolidarioAval: state.obligadoSolidarioAval,
+      tasaReferencia: state.tasaReferencia,
+
+      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
+
       /* ---- INFORMACIÓN GENERAL ---- */
 
+      /* ---- CONDICIONES FINANCIERAS ---- */
+      condicionFinancieraTable: state.condicionFinancieraTable,
+      tipoComision: state.tipoComision,
+      tasaEfectiva: state.tasaEfectiva,
+      capitalPeriocidadPago: state.capitalPeriocidadPago,
+      /* ---- CONDICIONES FINANCIERAS ---- */
+     
+      
       /* ---- SOLICITUD DE INSCRIPCION ---- */
-      reglas: reglasSeleccionadas
+      reglas: reglas,
+      nombreServidorPublico: state.nombreServidorPublico,
 
-
+     
     };
 
 
     if (solicitud.IdSolicitud.length === 0) {
-     
+      console.log('xd');
+      
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
@@ -147,12 +158,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          get().fetchComentario(response.data.data.Id, get().comentarios)
-          
+          if (get().comentarios === null || get().comentarios === "") {
+          } else {
+            get().fetchComentario(response.data.Id, get().comentarios);
+          }
         })
         .catch((e) => {
         });
-    }else{
+    } else {
       await axios
         .put(
           process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
@@ -180,15 +193,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-          get().fetchComentario(response.data.Id, get().comentarios)
-          
+          console.log("hola");
+
+          if (get().comentarios === null || get().comentarios === "") {
+          } else {
+            get().fetchComentario(response.data.Id, get().comentarios);
+            console.log("i am a commentary ", get().comentarios);
+          }
         })
         .catch((e) => {
         });
     }
   },
-
-  fetchBorrarSolicitud: (Id: string )=> {
+//////////////////////////////////////////////////////////////////////
+  fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -229,29 +247,32 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
-    const response = axios.post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
-      {
-        IdSolicitud: Id,
-        Comentario: comentario,
-        IdUsuario: localStorage.getItem("IdUsuario"),
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
+    console.log(comentario);
+    const response = axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+        {
+          IdSolicitud: Id,
+          Comentario: comentario,
+          IdUsuario: localStorage.getItem("IdUsuario"),
         },
-      }
-    )
-    .then((response) => {
-    })
-    .catch((e) => {
-    });
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((response) => {})
+      .catch((e) => {
+        console.log("Stack trace {", e, "}");
+      });
   },
-  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
   let solicitud: ISolicitud = JSON.parse(Solicitud);
+  console.log(Solicitud);
+  console.log(solicitud);
 
   const solicitudfechas: any = {
     fechaContratacion: format(
@@ -265,27 +286,29 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-      "http://10.200.4.46:7000/documento_srpu",
+     "http://10.200.4.46:7000/documento_srpu",
 
       {
-        nombre: solicitud.nombreServidorPublico,
+        nombre: solicitud.solicitanteAutorizado,
+        cargoSolicitante: solicitud.cargoSolicitante,
         oficionum: "10",
-        cargo: solicitud.cargo,
+        cargo: solicitud.cargoSolicitante,
         organismo: solicitud.organismo,
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
         destino: solicitud.destino,
         dias: solicitud.plazoDias,
-        tipoEntePublicoObligado: solicitud.tipoEntePublicoObligado,
-        entePublicoObligado: solicitud.entePublicoObligado,
+        tipoEntePublicoObligado: solicitud.tipoEntePublico,
+        entePublicoObligado: solicitud.tipoEntePublicoObligado,
         tasaefectiva: solicitud.tasaEfectiva,
         tasaInteres: solicitud.tasaReferencia,
         reglas: solicitud.reglas,
         tipocomisiones: solicitud.tipoComision,
         servidorpublico: solicitud.nombreServidorPublico,
         contrato: solicitud.tipoDocumento,
-        periodopago: solicitud.capitalPeriocidadPago,
+        periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
+        
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -297,6 +320,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
+      console.log("asdffgasdf");
+      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -309,5 +334,8 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
+    }).catch((err)=>{
+      console.log("hqtrwehwerth");
+      
     });
 }
