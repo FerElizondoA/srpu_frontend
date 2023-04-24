@@ -197,7 +197,7 @@ export function Resumen() {
         sx={{
           justifyContent: "space-evenly",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           
         }}
       >
@@ -213,46 +213,47 @@ export function Resumen() {
                 borderColor: "#cfcfcf",
                 fontSize: "12px",
                 //border: "1px solid"
+                
               }}
             >
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tipo de Documento: {tipoDocumento}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tipo de Ente Público: {tipoEntePublico}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Solicitante Autorizado: {solicitanteAutorizado}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Municipio u Organismo: {organismo}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Contratacion: " +
                     format(new Date(fechaContratacion), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Cargo del Solicitante: {cargoSolicitante}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
             </Grid>
           </Grid>
 
@@ -269,57 +270,57 @@ export function Resumen() {
                 fontSize: "12px",
               }}
             >
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Contratación: " +
                     format(new Date(fechaContratacion), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Vencimiento: " +
                     format(new Date(fechaVencimiento), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Plazo(Días): {plazoDias}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Destino: {destino}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Monto Original Contratado: {montoOriginal}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Denominación: {denominacion}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Institución Financiera: {institucion}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Obligado Solidario / Aval: {obligadoSolidarioAval}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tipo de ente público obligado:{" "}
@@ -328,12 +329,12 @@ export function Resumen() {
                     : tipoEntePublicoObligado}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Ente público obligado: {entePublicoObligado}
                 </Typography>
-                <Divider color="#000000"></Divider>
+                <Divider color="lightGrey"></Divider>
               </Grid>
             </Grid>
           </Grid>
@@ -356,7 +357,7 @@ export function Resumen() {
                 //border: "1px solid"
               }}
             >
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
 
               <Grid>
                 <Typography sx={queries.medium_text}>
@@ -365,83 +366,83 @@ export function Resumen() {
                 </Typography>
               </Grid>
 
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
 
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Importe: {disposicionImporte}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Primer Pago: " +
                     format(new Date(capitalFechaPrimerPago), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Periocidad de Pago: {capitalPeriocidadPago}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Número de Pago: {capitalNumeroPago}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Primer Pago(Tasa de interés): " +
                     format(new Date(tasaFechaPrimerPago), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Periocidad de Pago(Tasa de interés): {tasaPeriocidadPago}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tasa de Referencia: {tasaReferencia}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Sobre Tasa: {sobreTasa}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Días del Ejercicio: {tasaDiasEjercicio}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   {"Fecha de Contratación(Comisiones): " +
                     format(new Date(efectivaFechaContratacion), "yyyy-MM-dd")}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tipo de Comisión: {tipoComision}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Periocidad de Pago(Comisiones): {tipoComision}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Porcentaje o Monto:{" "}
@@ -450,19 +451,19 @@ export function Resumen() {
                     : "Porcentaje " + efectivaPorcentajeFijo}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Dias del Ejercicio: {efectivaDiasEjercicio}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Tasa Efectiva: {tasaEfectiva}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
             </Grid>
           </Grid>
 
@@ -488,7 +489,7 @@ export function Resumen() {
                 //border: "1px solid"
               }}
             >
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
 
               <Grid>
                 <Typography sx={queries.medium_text}>
@@ -496,14 +497,14 @@ export function Resumen() {
                 </Typography>
               </Grid>
 
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
 
               <Grid>
                 <Typography sx={queries.medium_text}>
                   Denominación: {denominacion}
                 </Typography>
               </Grid>
-              <Divider color="#000000"></Divider>
+              <Divider color="lightGrey"></Divider>
             </Grid>
           </Grid>
 

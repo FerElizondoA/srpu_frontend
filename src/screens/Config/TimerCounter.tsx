@@ -35,6 +35,13 @@ export const TimerCounter = () => {
   }, [Math.floor(rest / 60 / 1000) < 2]);
 
   useEffect(() => {
+    if (rest < 0) {
+      logout();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rest]);
+
+  useEffect(() => {
     if (
       Math.floor(rest / 60 / 1000) <= 5 &&
       Math.floor(rest / 60 / 1000) > 2 &&

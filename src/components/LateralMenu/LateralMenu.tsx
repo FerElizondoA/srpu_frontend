@@ -304,12 +304,11 @@ export function LateralMenu() {
     );
   };
 
-  const reset = () =>{
-  
+  const reset = () => {
     useCortoPlazoStore.setState({
       obligadoSolidarioAvalTable: [],
     });
-    
+
     useCortoPlazoStore.setState({
       condicionFinancieraTable: [],
     });
@@ -353,9 +352,8 @@ export function LateralMenu() {
     useCortoPlazoStore.setState({
       reglas: [],
     });
+  };
 
-  }
-  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -401,7 +399,7 @@ export function LateralMenu() {
                 <Avatar
                   sx={{ height: "100px", width: "100px", bgcolor: color }}
                 >
-                  {iniciales}
+                  {iniciales.toUpperCase()}
                 </Avatar>
               </Grid>
 
