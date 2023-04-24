@@ -14,7 +14,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 import {
   getListadoUsuarios,
   // getRoles,
-} from "../../Config/APIS/Solicitudes-Usuarios";
+} from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {
   id: string;

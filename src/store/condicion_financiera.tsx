@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
 import { TasaInteres } from "./pagos_capital";
 import { TasaEfectiva } from "./tasa_efectiva";
-import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
+import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
 
 export type CondicionFinanciera = {
   id: number;

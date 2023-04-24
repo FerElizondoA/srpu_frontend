@@ -8,21 +8,14 @@ import {
   Badge,
   Tooltip,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  ListItemText,
 } from "@mui/material";
-import { Navigate, Route, useNavigate } from "react-router-dom";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
@@ -33,7 +26,7 @@ import {
   getComentarios,
   getDetailSolicitudUsuario,
   getPreviewSolicitud,
-} from "./APIGetSolicitudes";
+} from "../../components/APIS/solicitudesUsuarios/APIGetSolicitudes";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { queriesSolicitud } from "./queriesSolicitudes";
@@ -42,10 +35,8 @@ import {
   IDatosAdicionales,
   IDetailSolicitudUsuario,
   ISolicitudes,
-} from "./ISoliciudes";
+} from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
 import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
-import Paper from '@mui/material/Paper';
-import escudo from "../../assets/logo/escudo.png";
 
 export function Solicitudes() {
   //Declaraciones
@@ -59,7 +50,6 @@ export function Solicitudes() {
   const [solicitudesFiltered, setSolicitudesFiltered] = useState<
     Array<ISolicitudes>
   >([]);
-  const navigate = useNavigate();
   const [cantidadComentarios, setCantidadComentarios] = useState(0);
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
@@ -139,7 +129,6 @@ export function Solicitudes() {
       setIndexSelect(indexSelect + 1);
   };
 
-  const inicioFormulario = () => {};
 
   useEffect(() => {
     if (detailSolicitud.DatosAdicionales !== "")
@@ -158,6 +147,7 @@ export function Solicitudes() {
         setComentarios
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexSelect]);
 
   useEffect(() => {
@@ -443,7 +433,6 @@ export function Solicitudes() {
                   <IconButton
                     onClick={() => {
                       openDialogUser();
-                      console.log(comentarios);
                     }}
                   >
                     <SpeakerNotesIcon fontSize="large" color="primary" />

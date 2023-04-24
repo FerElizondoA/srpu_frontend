@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 //import { createSolicitud } from "../../APIS/APIS Solicitudes/Solicitudesss
-import { createSolicitud } from "../../APIS/APIS Solicitudes/Solicitudes";
+import { createSolicitud } from "../../APIS/solicitudInscipcion/Solicitudes";
 import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuario/ISolicitudes";
 //import { ICreateSolicitud } from "../../Interfaces/InterfacesUsuarios/ISolicitudes";
 export const Altas=()=>{
 
-    const [solicitud,setSolicitudes]=useState<ICreateSolicitud>({
+    const [solicitud, setSolicitudes]=useState<ICreateSolicitud>({
         Nombre: '',
         APaterno: '',
         AMaterno: '',

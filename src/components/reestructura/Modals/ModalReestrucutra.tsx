@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
-
-
 import TabInformacionGeneral from "./TabInformacionObligaciones";
+
+
 //import { Box } from "@mui/system";
 
 export default function ModalReestructura({

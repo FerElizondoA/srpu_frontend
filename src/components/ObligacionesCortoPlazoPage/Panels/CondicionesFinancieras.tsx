@@ -12,7 +12,7 @@ import {
   IconButton
 } from "@mui/material";
 
-import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
 import {
   StyledTableCell,
   StyledTableRow,

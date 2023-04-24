@@ -42,7 +42,7 @@ import { queries } from "../../queries";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import { TimerCounter } from "../../screens/Config/TimerCounter";
+import { TimerCounter } from "./TimerCounter";
 import axios from "axios";
 import Swal from "sweetalert2";
 

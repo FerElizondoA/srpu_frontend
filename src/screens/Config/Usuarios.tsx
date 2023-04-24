@@ -14,21 +14,13 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
-import { Navigate, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  AccountTree as AccountTreeIcon,
   Edit,
-  Edit as EditIcon,
-  FileDownload as FileDownloadIcon,
-  Input,
 } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import {
-  createSolicitud,
-  getListadoUsuarios,
-} from "./APIS/Solicitudes-Usuarios";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
@@ -36,7 +28,8 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
+import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { DialogUsuarios } from "../../components/Config/dialogUsuarios/DialogUsuarios";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
@@ -113,8 +106,6 @@ export const Usuarios = () => {
   const [datos, setDatos] = useState<Array<IUsuarios>>([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IUsuarios>>([]);
-
   const handleChange = (dato: string) => {
     setBusqueda(dato);
   };
@@ -124,6 +115,7 @@ export const Usuarios = () => {
   };
 
   const filtrarDatos = () => {
+    // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
         elemento.Nombre.toString()
@@ -179,7 +171,8 @@ export const Usuarios = () => {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
+    busqueda.length !== 0 ? setUsuariosFiltrados(datos) : null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
   /*  FIN BUSCADOR */
 
@@ -395,10 +388,6 @@ export const Usuarios = () => {
                                 aria-label="delete"
                                 size="large"
                                 onClick={() => {
-                                  console.log(
-                                    row.id,
-                                    row.ApellidoPaterno.toString()
-                                  );
                                 }}
                               >
                                 <DeleteIcon fontSize="inherit" />

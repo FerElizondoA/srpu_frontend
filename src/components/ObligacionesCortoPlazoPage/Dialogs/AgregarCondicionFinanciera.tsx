@@ -18,8 +18,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
-import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../panels/DisposicionPagosCapital";
+import { ComisionesTasaEfectiva } from "../panels/ComisionesTasaEfectiva";
 import { useCortoPlazoStore } from "../../../store/main";
 
 import { hashFunctionCYRB53 } from "../../CustomComponents";

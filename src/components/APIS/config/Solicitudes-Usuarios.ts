@@ -1,6 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,

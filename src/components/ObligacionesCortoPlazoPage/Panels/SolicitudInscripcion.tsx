@@ -21,9 +21,9 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
-import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
-import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
+import { ConfirmacionDescargaSolicitud } from "../dialogs/ConfirmacionDescargaSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../dialogs/ConfirmacionCancelarSolicitud";
 
 
 interface Head {

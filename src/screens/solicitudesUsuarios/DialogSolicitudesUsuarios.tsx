@@ -1,13 +1,8 @@
 import {
-  Box,
   Dialog,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  Divider,
   Grid,
-  List,
-  ListItem,
   Typography,
   DialogActions,
   Button,
@@ -20,15 +15,11 @@ import {
   TableBody,
   Tooltip,
 } from "@mui/material";
-import { IComentarios } from "./ISoliciudes";
-import { queriesSolicitud } from "./queriesSolicitudes";
-import { useEffect, useState } from "react";
+import { IComentarios } from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-
-
 
 export const DialogSolicitudesUsuarios = ({
   open,
@@ -39,28 +30,7 @@ export const DialogSolicitudesUsuarios = ({
   handleClose: Function;
   comentarios: Array<IComentarios>;
 }) => {
-  useEffect(() => {
-    console.log("comentario", comentarios);
-  }, []);
 
-  function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number
-  ) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [createData("Frozen yoghurt", 159, 6.0, 24, 4.0)];
-
-  const [alignComentarios, setAlignComentarios] = useState<string>("center")
-
-  const alinearComentarios = (dato:string) => {
-      setAlignComentarios("normal");
-     return dato
-  }
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={open} onClose={() => handleClose()}>

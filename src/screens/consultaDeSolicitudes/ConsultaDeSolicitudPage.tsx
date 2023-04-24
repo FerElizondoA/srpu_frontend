@@ -8,9 +8,9 @@ import {
   Chip,
   Tooltip,
 } from "@mui/material";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
-import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -20,7 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
-import { getSolicitudes } from "../APIS/APIS Cortoplazo/APISInformacionGeneral";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +28,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
-import { VerBorradorDocumento } from "../ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { VerComentariosSolicitud } from "../ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerBorradorDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerComentariosSolicitud";
 
 interface IData {
   Id: string;
@@ -109,6 +109,7 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const filtrarDatos = () => {
+    // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
         elemento.ClaveDeInscripcion.toString()
@@ -150,7 +151,8 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length != 0 ? setDatosFiltrados(datos) : null;
+    busqueda.length !== 0 ? setDatosFiltrados(datos) : null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
   const navigate = useNavigate();
@@ -167,26 +169,11 @@ export function ConsultaDeSolicitudPage() {
   );
 
   /////////////////////////////////////////////
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected] = useState<number[]>([]); //, setSelected
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
-  const changeOpenDialogVerState = (open: boolean) => {
-    changeOpenDialogVer(open);
-  };
-
-  const changeCloseDialogVerState = () => {
-    changeOpenDialogVer(false);
-  };
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
-  const changeOpenDialogVerComentariosState = (open: boolean) => {
-    changeOpenVerComentarios(open);
-  };
-
-  const changeCloseVerComentarioState = () => {
-    changeOpenVerComentarios(false);
-  };
-  /////////////////////////////////////77
 
   return (
     <Grid container direction="column">
