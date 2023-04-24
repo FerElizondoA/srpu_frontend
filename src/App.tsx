@@ -5,7 +5,7 @@ import "./Fonts.css";
 
 import { Route, Routes, useNavigate } from "react-router-dom"; //, useNavigate
 
-import { HomePage } from "./components/HomePage/HomePage";
+import { HomePage } from "./components/homePage/HomePage";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
