@@ -427,17 +427,14 @@ export function Solicitudes() {
 
         {/********grid Formulario*********/}
         {indexSelect < 0 || solicitudesFiltered.length === 0  || detailSolicitud.Id === ''  ? (
-          <Grid xs={6} sm={7} md={8} lg={9} xl={10}  display={"flex"} alignItems={"center"} justifyContent={"center"}>
+          <Grid xs={6} sm={7} md={8} lg={9} xl={9}  display={"flex"} alignItems={"center"} justifyContent={"center"}>
             
-            <Box sx={{ width: '50vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <InfoIcon sx={{ width: '100%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
-          <Typography color={"#AF8C55"} fontWeight={"bold"}>SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA</Typography>
-          
+            <Box sx={{ width: '40vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+              <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
+              <Typography color={"#AF8C55"} fontWeight={"bold"}>SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA</Typography>
+            </Box>
 
-
-        </Box>
-            
-          </Grid>
+            </Grid>
         ) : (
           <Grid xl={9}>
             <Box sx={queriesSolicitud.botonComentario}>

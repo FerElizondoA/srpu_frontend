@@ -18,6 +18,7 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell } from "../../components/CustomComponents";
+import { queriesNotificaciones } from "./queriesNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones
@@ -98,20 +99,15 @@ export function Notificaciones() {
         >
           <Grid
             item
-            xl={4}
+            xl={9}
             xs={8}
             lg={8}
-            sm={8}
-            sx={{ display: "flex", justifyContent: "center" }}
+            sm={7}
+            sx={{  display: "flex", justifyContent: "flex-end" }}
           >
             <Paper
               component="form"
-              sx={{
-                display: "flex",
-                //alignItems: "center"
-                borderRadius: "10px",
-                width: 700
-              }}
+              sx={queriesNotificaciones.buscador}
             >
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
@@ -141,9 +137,9 @@ export function Notificaciones() {
           </Grid>
           <Grid
             item
-            xl={2}
+            xl={4}
             xs={2}
-            lg={2}
+            lg={3}
             sm={2}
             sx={{ display: "flex", justifyContent: "center" }}
           >
@@ -162,9 +158,9 @@ export function Notificaciones() {
           </Grid>
         </Grid>
 
-        <Grid item sx={{ height: "72vh" }}>
+        <Grid item sx={{ alignItems:"center" }}>
 
-          <TableContainer>
+          <TableContainer >
             <Table>
               <TableHead>
                 {heads.map((head) => (
