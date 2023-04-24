@@ -46,13 +46,11 @@ module.exports = {
         (err, result) => {
           
           if (err) {
-            console.log(err);
             return res.status(500).send({
               error: "Error",
             });
           }
           if (result.length) {
-            console.log(result);
             const data = result[0][0];
             if (data.error) {
               return res.status(409).send({
@@ -76,7 +74,6 @@ module.exports = {
   getUsuarios: (req, res) => {
     const IdApp = req.query.IdApp;
     const  EntePublico=req.query.EntePublico;
-    console.log(req.query);
 
     if (IdApp == null ||/^[\s]*$/.test(IdApp)) {
       return res.status(409).send({
