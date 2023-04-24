@@ -18,7 +18,9 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell } from "../../components/CustomComponents";
-import { QueriesNotificaciones } from "./QueriesNotificaciones";
+import { QueriesNotificaciones } from "../Notificaciones/queriesNotificaciones";
+import {AñadirNotificaciones} from "./Dialog/AñadirNotificaciones"
+
 
 export function Notificaciones() {
   //Declaraciones
@@ -60,6 +62,12 @@ export function Notificaciones() {
       label: "Mensaje",
     },
   ];
+  //const [notificaciones, setNotificaciones] = useState<Array>(["hola", ""]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const openDialogNotificaciones = () => {
+    setOpenDialog(!openDialog);
+  };
 
   return (
     <Grid
@@ -140,17 +148,17 @@ export function Notificaciones() {
             xl={4}
             xs={2}
             lg={3}
-            sm={2}
-            sx={{ display: "flex", justifyContent: "center" }}
+            sm={4}
+            sx={{ display: "flex", justifyContent:"center"}}
           >
             <Button
               color="info"
               variant="contained"
               size="large"
               endIcon={<AddCommentIcon />}
-              sx={{ width: 250}}
+              sx={QueriesNotificaciones.boton}
               onClick={() => {
-                //Abrir dialog
+                openDialogNotificaciones()
               }}
             >
               Añadir Notificacion
@@ -176,10 +184,13 @@ export function Notificaciones() {
             </Table>
           </TableContainer>
         </Grid>
-
+        
+        <AñadirNotificaciones 
+        open={openDialog}
+        handleClose={openDialogNotificaciones}
+        />
       </Grid>
-
-
+      
     </Grid>
   );
 }

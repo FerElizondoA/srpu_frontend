@@ -21,7 +21,7 @@ import {
 import Box from "@mui/material/Box";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -521,6 +521,17 @@ export function LateralMenu() {
                   </ListItemIcon>
                   <Typography sx={queries.text}>Documentos</Typography>
                   {openBandejas ? <ExpandMore /> : <ExpandLess />}
+                </ListItemButton>
+
+                <ListItemButton
+                  onClick={() => {
+                    navigate("../notificaciones");
+                  }}
+                >
+                  <ListItemIcon>
+                    <NotificationsActiveIcon sx={queries.icon} />
+                  </ListItemIcon>
+                  <Typography sx={queries.text}>Notificaciones</Typography>
                 </ListItemButton>
 
                 <Collapse in={openBandejas} timeout="auto" unmountOnExit>

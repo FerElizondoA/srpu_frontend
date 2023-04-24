@@ -14,9 +14,10 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import DialogContentText from "@mui/material/DialogContentText";
 import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
-import { ICatalogo } from "../../../screens/config/Catalogos";
+
 import { getCatalogo } from "../../APIS/config/APISCatalogos";
 import { createSolicitud } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { ICatalogo } from "../../../screens/Config/Catalogos";
 
 export const DialogUsuarios = ({
   open,

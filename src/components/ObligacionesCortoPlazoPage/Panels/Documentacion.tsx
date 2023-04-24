@@ -22,7 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
 import { getTiposDocumentos } from "../../APIS/cortoplazo/APISDocumentacion";
-import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { ITiposDocumento } from "../../../components/Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
 import { useCortoPlazoStore } from "../../../store/main";
 
 interface Data {
