@@ -12,12 +12,19 @@ import {
   TableHead,
   Fab,
   Typography,
+  Snackbar, 
 } from "@mui/material";
 
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { IconButton } from "@mui/material";
+import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
+
 
 interface Head {
   label: string;
@@ -30,57 +37,109 @@ const heads: readonly Head[] = [
   {
     label: "Regla",
   },
- 
 ];
-
 
 export function SolicitudInscripcion() {
 
-  const nombreServidorPublico: string = useCortoPlazoStore(state => state.nombreServidorPublico);
-  const changeServidorPublico: Function = useCortoPlazoStore(state => state.changeServidorPublico);
-  const cargo: string = useCortoPlazoStore(state => state.cargo);
-  const changeCargo: Function = useCortoPlazoStore(state => state.changeCargo);
-  const solicitanteAutorizado: string = useCortoPlazoStore(state => state.solicitanteAutorizado);
-  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(state => state.changeSolicitanteAutorizado);
-  const documentoAutorizado: string = useCortoPlazoStore(state => state.documentoAutorizado);
-  const changeDocumentoAutorizado: Function = useCortoPlazoStore(state => state.changeDocumentoAutorizado);
-  const identificacion: string = useCortoPlazoStore(state => state.identificacion);
-  const changeIdentificacion: Function = useCortoPlazoStore(state => state.changeIdentificacion);
-  const reglasCatalog: string[] = useCortoPlazoStore(state => state.reglasCatalog);
+  const [openDialog, changeOpenDialog] = React.useState(false);
+  const changeOpenDialogState = (open: boolean) => {
+    changeOpenDialog(open);
+  };
 
-  const fetchDocumento: Function = useCortoPlazoStore(state => state.fetchDocumento);
-  const fetchReglas: Function = useCortoPlazoStore(state => state.fetchReglas);
+  const [openDialogBorrador, changeOpenDialogBorrador] = React.useState(false);
+  const changeOpenDialogBorradorState = (open: boolean) => {
+    changeOpenDialogBorrador(open);
+  };
 
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const changeCloseDialogBorradorState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
+
+  const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
+  const changeOpenDialogCancelarState = (open: boolean) => {
+    changeOpenDialogCancelar(open);
+  };
+
+  const changeCloseDialogCancelarState = () => {
+    changeOpenDialogBorrador(false);
+  };
+
+  const nombreServidorPublico: string = useCortoPlazoStore(
+    (state) => state.nombreServidorPublico
+  );
+  const changeServidorPublico: Function = useCortoPlazoStore(
+    (state) => state.changeServidorPublico
+  );
+  const cargo: string = useCortoPlazoStore((state) => state.cargo);
+  const changeCargo: Function = useCortoPlazoStore(
+    (state) => state.changeCargo
+  );
+  const solicitanteAutorizado: string = useCortoPlazoStore(
+    (state) => state.solicitanteAutorizado
+  );
+  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(
+    (state) => state.changeSolicitanteAutorizado
+  );
+  const documentoAutorizado: string = useCortoPlazoStore(
+    (state) => state.documentoAutorizado
+  );
+  const changeDocumentoAutorizado: Function = useCortoPlazoStore(
+    (state) => state.changeDocumentoAutorizado
+  );
+  const identificacion: string = useCortoPlazoStore(
+    (state) => state.identificacion
+  );
+  const changeIdentificacion: Function = useCortoPlazoStore(
+    (state) => state.changeIdentificacion
+  );
+  const reglasCatalog: string[] = useCortoPlazoStore(
+    (state) => state.reglasCatalog
+  );
+  
+  const fetchReglas: Function = useCortoPlazoStore(
+    (state) => state.fetchReglas
+  );
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
+  );
+
+  const [selected, setSelected] = React.useState<number[]>([]);
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      console.log("selectedIndex === 0 !")
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      console.log("selectedIndex === selected.length -1 !")
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      console.log("selectedIndex === selected.length > 0 !")
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
+  };
+
+  const buttodescription = () => {
+    if (localStorage.getItem("Rol") === "Capturador") {
+      return <Typography sx={queries.medium_text}>CAPTURAR</Typography>;
+    } else if (localStorage.getItem("Rol") === "Verificador") {
+      return <Typography sx={queries.medium_text}>AUTORIZAR</Typography>;
+    } else if (localStorage.getItem("Rol") === "Administrador") {
+      return <Typography sx={queries.medium_text}>FIRMAR</Typography>;
+    }
   };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  React.useEffect(() =>{
+  React.useEffect(() => {
     fetchReglas();
-  }, [])
+  }, []);
 
   return (
     <Grid item container>
@@ -94,13 +153,14 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>
-            Nombre del servidor publico a quien va dirigido
+            Servidor publico a quien va dirigido
           </InputLabel>
           <TextField
             fullWidth
             variant="standard"
             value={nombreServidorPublico}
             onChange={(text) => changeServidorPublico(text.target.value)}
+            disabled
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -114,6 +174,7 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
+
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
@@ -121,6 +182,7 @@ export function SolicitudInscripcion() {
             variant="standard"
             value={cargo}
             onChange={(text) => changeCargo(text.target.value)}
+            disabled
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -146,12 +208,13 @@ export function SolicitudInscripcion() {
       >
         <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Solicitante autorizado
+            Solicitante Autorizado
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             variant="standard"
-            value={solicitanteAutorizado}
+            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
             onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
@@ -243,10 +306,10 @@ export function SolicitudInscripcion() {
                       return (
                         <StyledTableRow>
                           <StyledTableCell padding="checkbox">
-                          <Checkbox 
-                          onClick={(event) => handleClick(event, index)}
-                          checked={isItemSelected}
-                          />
+                            <Checkbox
+                              onClick={(event) => handleClick(event, index)}
+                              checked={isItemSelected}
+                            />
                           </StyledTableCell>
                           <StyledTableCell component="th" scope="row">
                             {row}
@@ -254,7 +317,6 @@ export function SolicitudInscripcion() {
                         </StyledTableRow>
                       );
                     })}
-
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -266,10 +328,71 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="success" onClick={() => fetchDocumento(selected)}>
+          <Fab variant="extended" color="error" onClick={() => {
+              
+              changeOpenDialogCancelarState(!openDialog);
+            }}sx={{ mb: "10px" }}>
+            <CancelIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>Cancelar</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            sx={{ mb: "10px" }}
+            disabled={
+              localStorage.getItem("Rol") === "Capturador"
+                ? false
+                : localStorage.getItem("Rol") === "Verificador"
+                ? false
+                : localStorage.getItem("Rol") === "Administrador"
+                ? false
+                : true
+            }
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttodescription()}
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => crearSolicitud(selected)}
+            onClick={() => {
+              
+              changeOpenDialogBorradorState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>BORRADOR</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => {
+              changeOpenDialogState(!openDialog);
+            }}
+          >
             <CheckIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>FINALIZAR</Typography>
           </Fab>
+
+          <ConfirmacionDescargaSolicitud
+            handler={changeOpenDialogState}
+            openState={openDialog}
+            selected={selected}
+          />
+          <ConfirmacionBorradorSolicitud
+            handler={changeOpenDialogBorradorState}
+            openState={openDialogBorrador}
+            selected={selected}
+          />
+          <ConfirmacionCancelarSolicitud
+            handler={changeOpenDialogCancelarState}
+            openState={openDialogCancelar}
+            selected={selected}
+          />
         </Grid>
       </Grid>
     </Grid>

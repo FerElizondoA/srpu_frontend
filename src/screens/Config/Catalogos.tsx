@@ -1,4 +1,4 @@
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import Button from "@mui/material/Button";
 import {
   Grid,
@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getCatalogo } from "./APIS/APISCatalogos";
+import { getCatalogo } from "../../components/Config/APIS/APISCatalogos";
 import { Box } from "@mui/system";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
@@ -94,7 +94,7 @@ export function Catalogos() {
     {
       id: 13,
       label: "Tipos de documento",
-      fnc: "tiposDocumento",
+      fnc: "tiposDocumentos",
     },
     {
       id: 14,
@@ -397,7 +397,6 @@ export function Catalogos() {
             <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
               <Button
                 onClick={() => {
-                  console.log(edit);
                   setEdit((edit) => ({
                     ...edit,
                     ...{ Crud: "crea" },
@@ -427,7 +426,7 @@ export function Catalogos() {
   );
 }
 
-interface ICatalogo {
+export interface ICatalogo {
   Id: string;
   Descripcion: string;
   OCP: number;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ICreateSolicitud } from "../Interfaces/ISolicitudes";
+import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -14,26 +14,26 @@ const Toast = Swal.mixin({
   },
 });
 
-export const createSolicitud = ( comentario = '') => {
+export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comentario = '', setStatus: Function,setError:Function) => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud", 
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",
       {
-            Nombre: 'marlon',
-            APaterno: 'mendez',
-            AMaterno: 'maldonado',
-            NombreUsuario: 'mmaldonado',
-            Email: 'mimendez@cecapmex.com',
-            Puesto:'dev',
-            Curp: 'asdasd',
-            RFC: 'asdas',
-            Celular: 123123,
-            Telefono: 123123,
-            Extencion: 123,
-            DatosAdicionales: '',
-            TipoSolicitud: 'ALTA',
-            CreadoPor: localStorage.getItem("IdCentral")||'',
-            IdApp: localStorage.getItem("IdApp")||''
+        Nombre: datos.Nombre,
+        APaterno: datos.ApellidoPaterno,
+        AMaterno: datos.ApellidoMaterno,
+        NombreUsuario: datos.NombreUsuario,
+        Email: datos.CorreoElectronico,
+        Puesto: datos.Cargo,
+        Curp: datos.Curp,
+        RFC: datos.Rfc,
+        Celular: datos.Celular,
+        Telefono: datos.Telefono,
+        Extencion: datos.Ext,
+        DatosAdicionales: JSON.stringify({ Cargo: datos.Cargo, EntePublico: datos.MunicipioUOrganizacion, CorreoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        TipoSolicitud: tipoSolicitud,
+        CreadoPor: localStorage.getItem("IdCentral") || '',
+        IdApp: localStorage.getItem("IdApp") || ''
       },
       {
         headers: {
@@ -42,26 +42,49 @@ export const createSolicitud = ( comentario = '') => {
       }
     )
     .then((r) => {
-      if (r.status === 200) {
-        if (comentario !== "")
-          createComentarios(r.data.data[0][0].IdSolicitud, comentario);
 
+      if (r.status === 200) {
+       
+        if (r.data.data[0][0].Respuesta === '403' || r.data.data[0][0].Respuesta === '406') {
+          Toast.fire({
+            icon: "error",
+            title: r.data.data[0][0].Mensaje,
+          });
+          setError(r.data.data[0][0].Mensaje)
+          setStatus(false);
+        } else {
+          if (comentario !== "") { createComentarios(r.data.data[0][0].IdSolicitud, comentario); }
+          Toast.fire({
+            icon: "success",
+            title: "¡Registro exitoso!",
+          });
+          setStatus(true);
+
+        }
+      } else {
         Toast.fire({
-          icon: "success",
-          title: "¡Registro exitoso!",
+          icon: "error",
+          title: "¡No se realizo el registro!",
         });
+        setError('¡No se realizo el registro, error del sistema!')
+        setStatus(false);
       }
+
     })
     .catch((r) => {
-      if (r.response.status === 409) {
-      }
+
+      Toast.fire({
+        icon: "error",
+        title: '¡No se realizo el registro, error del sistema!',
+      });
+      setError('¡No se realizo el registro, error del sistema!')
+      setStatus(false);
     });
 };
 
 const createComentarios = (idSolicitud: string, comentario: string) => {
-  if(comentario!=='')
-  {
-    axios
+
+  axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
       {
@@ -88,26 +111,27 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
 
       }
     });
-  }
-  
+
+
 };
 
-export const getListadoUsuarios = () => {
+export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
 
   axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
     params: {
-      IdApp: localStorage.getItem("IdApp")
+      IdApp: localStorage.getItem("IdApp"),
+      IdUsuario:localStorage.getItem("IdUsuario"),
+      PermisosEspeciales:permisosEspeciales
     },
     headers: {
       'Authorization': localStorage.getItem("jwtToken"),
       'Content-Type': 'application/json'
     }
-  }).then((r) => {
-    
-      console.log(r.data.data);
-      
-      return r.data
-   
+  }).then(({ data }) => {
+
+
+    setState(data.data)
+
   })
     .catch((r) => {
       if (r.response.status === 409) {
@@ -115,3 +139,27 @@ export const getListadoUsuarios = () => {
       }
     });
 };
+
+export const getRoles= (setState: Function,) => {
+
+  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
+    headers: {
+      'Authorization': localStorage.getItem("jwtToken"),
+      'Content-Type': 'application/json'
+    }
+  }).then(({ data }) => {
+
+    setState(data.data)
+
+  })
+    .catch((r) => {
+      if (r.response.status === 409) {
+
+      }
+    });
+};
+
+
+
+
+

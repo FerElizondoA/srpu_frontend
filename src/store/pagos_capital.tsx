@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 
 export type TasaInteres = {
-    id: string;
+    id: number;
     fechaPrimerPago: string;
     tasaFija: string;
     periocidadPago: string;
@@ -18,6 +18,7 @@ export interface PagosCapitalSlice {
     disposicionFechaContratacion: string;
     disposicionImporte: number;
     capitalFechaPrimerPago: string;
+    IdCapitalPeriocidadPago: string;
     capitalPeriocidadPago: string;
     capitalNumeroPago: number;
     tasaFechaPrimerPago: string;
@@ -26,17 +27,17 @@ export interface PagosCapitalSlice {
     sobreTasa: string;
     tasaDiasEjercicio: string;
     tasaInteresTable: TasaInteres[];
-    periocidadDePagoCatalog: string[];
-    tasaReferenciaCatalog: string[];
-    diasEjercicioCatalog: string[];
+    periocidadDePagoMap: Map<string | null, string>;
+    tasaReferenciaMap: Map<string | null, string>;
+    diasEjercicioMap: Map<string | null, string>;
     changeDisposicionFechaContratacion: (newFechaContratacion: string) => void;
     changeDisposicionImporte: (newImporte: number) => void;
     changeCapitalFechaPrimerPago: (newFechaPrimerPago: string) => void;
-    changeCapitalPeriocidadPago: (newPeriocidadPago: string) => void;
+    changeCapitalPeriocidadPago: (newId: string, newPeriocidadPago: string) => void;
     changeCapitalNumeroPago: (newNumeroPago: number) => void;
     changeTasaFechaPrimerPago: (newFechaPrimerPago: string) => void;
     changeTasaPeriocidadPago: (newPeriocidadPago: string) => void;
-    changeTasaReferencia: (newTasaReferencia: string) => void;
+    changeTasaReferencia: (newId: string, newTasaReferencia: string) => void;
     changeSobreTasa: (newSobreTasa: string) => void;
     changeTasaDiasEjercicio: (newDiasEjercicio: string) => void;
     addTasaInteres: (newTasaInteres: TasaInteres) => void;
@@ -44,30 +45,36 @@ export interface PagosCapitalSlice {
     fetchPeriocidadPago: () => void;
     fetchTasaReferencia: () => void;
     fetchDiasEjercicio: () => void;
+    updatePagosCapitalTable:(tasaInteresTable: TasaInteres[]) => void;
+
 }
 
 export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, get) => ({
     fetchedPeriocidadPago: false,
     fetchedTasaReferencia: false,
     fetchedDiasEjercicio: false,
-    disposicionFechaContratacion: "",
+    disposicionFechaContratacion: new Date().toString(),
     disposicionImporte: 0,
-    capitalFechaPrimerPago: "",
+    capitalFechaPrimerPago: new Date().toString(),
+    IdCapitalPeriocidadPago: "",
     capitalPeriocidadPago: "",
     capitalNumeroPago: 0,
-    tasaFechaPrimerPago: "",
+    tasaFechaPrimerPago: new Date().toString(),
     tasaPeriocidadPago: "",
     tasaReferencia: "",
     sobreTasa: "",
     tasaDiasEjercicio: "",
     tasaInteresTable: [],
-    periocidadDePagoCatalog: [],
-    tasaReferenciaCatalog: [],
-    diasEjercicioCatalog: [],
+    periocidadDePagoMap: new Map<string | null, string>(),
+    tasaReferenciaMap: new Map<string | null, string>(),
+    diasEjercicioMap: new Map<string | null, string>(),
+
+    updatePagosCapitalTable: (tasaInteresTable: TasaInteres[]) => set(() => ({ tasaInteresTable: tasaInteresTable})),
+
     changeDisposicionFechaContratacion: (newFechaContratacion: string) => set(() => ({disposicionFechaContratacion: newFechaContratacion})),
     changeDisposicionImporte: (newImporte: number) => set(() => ({disposicionImporte: newImporte})),
     changeCapitalFechaPrimerPago: (newFechaPrimerPago: string) => set(() => ({capitalFechaPrimerPago: newFechaPrimerPago})),
-    changeCapitalPeriocidadPago: (newPeriocidadPago: string) => set(() => ({capitalPeriocidadPago: newPeriocidadPago})),
+    changeCapitalPeriocidadPago: (newId: string, newPeriocidadPago: string) => set(() => ({capitalPeriocidadPago: newPeriocidadPago, IdCapitalPeriocidadPago: newId})),
     changeCapitalNumeroPago: (newNumeroPago: number) => set(() => ({capitalNumeroPago: newNumeroPago})),
     changeTasaFechaPrimerPago: (newFechaPrimerPago: string) => set(() => ({tasaFechaPrimerPago: newFechaPrimerPago})),
     changeTasaPeriocidadPago: (newPeriocidadPago: string) => set(() => ({tasaPeriocidadPago: newPeriocidadPago})),
@@ -78,19 +85,17 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     removeTasaInteres: (index: number) => set((state) => ({tasaInteresTable: state.tasaInteresTable.filter((_, i) => i !== index)})),
     fetchPeriocidadPago: async () => {
         if(!get().fetchedPeriocidadPago){
-            console.log("fetchPeriocidadPago executed!");
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-periodicidadDePago",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-periodicidadDePago",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
-                periocidadDePagoCatalog: [...state.periocidadDePagoCatalog, e.Descripcion],
+                periocidadDePagoMap: new Map(state.periocidadDePagoMap).set(e.Descripcion, e.Id)
               }));
             });
             set(() => ({fetchedPeriocidadPago: true}))
@@ -98,19 +103,17 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     },
     fetchTasaReferencia: async () => {
         if(!get().fetchedTasaReferencia){
-            console.log("fetchTasaReferencia executed!");
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-tasaDeReferencia",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-tasaDeReferencia",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
-                tasaReferenciaCatalog: [...state.tasaReferenciaCatalog, e.Descripcion],
+                tasaReferenciaMap: new Map(state.tasaReferenciaMap).set(e.Descripcion, e.Id)
               }));
             });
             set(() => ({fetchedTasaReferencia: true}))
@@ -118,19 +121,17 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     },
     fetchDiasEjercicio: async () => {
         if(!get().fetchedDiasEjercicio){
-            console.log("fetchDiasEjercicio executed!");
             const response = await axios.get(
-              "http://10.200.4.199:8000/api/get-diasDelEjercicio",
+              process.env.REACT_APP_APPLICATION_BACK + "/api/get-diasDelEjercicio",
               {
                 headers: {
                   Authorization: localStorage.getItem("jwtToken"),
                 },
               }
             );
-            console.log(response)
             response.data.data.forEach((e: any) => {
               set((state) => ({
-                diasEjercicioCatalog: [...state.diasEjercicioCatalog, e.Descripcion],
+                diasEjercicioMap: new Map(state.diasEjercicioMap).set(e.Descripcion, e.Id)
               }));
             });
             set(() => ({fetchedDiasEjercicio: true}))
