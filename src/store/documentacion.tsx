@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { IFile } from "../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import{IFile} from "../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
+
 
 export interface DocumentosSlice{
     

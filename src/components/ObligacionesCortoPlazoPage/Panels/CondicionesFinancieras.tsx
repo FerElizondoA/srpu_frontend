@@ -12,7 +12,7 @@ import {
   IconButton
 } from "@mui/material";
 
-import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
+
 import {
   StyledTableCell,
   StyledTableRow,
@@ -28,6 +28,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import { TasaInteres } from "../../../store/pagos_capital";
 import { TasaEfectiva } from "../../../store/tasa_efectiva";
+import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
 interface CFinancieras {
   id: number,

@@ -136,5 +136,10 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
             });
             set(() => ({fetchedDiasEjercicio: true}))
         }
+    },
+
+    clearStore: () => {
+      set({}, true)
     }
+
 })
