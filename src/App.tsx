@@ -20,7 +20,7 @@ import { Notificaciones } from "./screens/Notificaciones/notificaciones";
 import { HomePage } from "./components/HomePage/HomePage";
 import { Configuracion } from "./components/Config/Configuracion";
 import { Usuarios } from "./screens/Config/Usuarios";
-import { Catalogos } from "./screens/config/Catalogos";
+import { Catalogos } from "./screens/Config/Catalogos";
 
 export const appTheme = createTheme({
   palette: {

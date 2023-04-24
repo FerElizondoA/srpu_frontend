@@ -129,6 +129,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
      
     };
 
+    console.log("Crear solicitud info: ", solicitud);
+    
 
     if (solicitud.IdSolicitud.length === 0) {
       
@@ -136,19 +138,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
           {
+            IdEntePublico: solicitud.IdOrganismo,
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
             TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
-            IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
               new Date(solicitud.fechaContratacion),
               "yyyy-MM-dd"
             ),
+            Solicitud: JSON.stringify(solicitud),
+            CreadoPor: localStorage.getItem("IdUsuario"),
           },
           {
             headers: {
@@ -262,9 +264,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .catch((e) => {
       });
   },
+
+
+
+
+
+  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
+  console.log("Info de solicitud: ", Solicitud);
+  
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
