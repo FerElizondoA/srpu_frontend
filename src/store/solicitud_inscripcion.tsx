@@ -171,21 +171,21 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .put(
           process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
           {
-            IdUsuario: localStorage.getItem("IdUsuario"),
             IdSolicitud: solicitud.IdSolicitud,
+            IdEntePublico: solicitud.IdOrganismo,
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
             TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
-            IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
               new Date(solicitud.fechaContratacion),
               "yyyy-MM-dd"
             ),
+            IdUsuario: localStorage.getItem("IdUsuario"),
+            Solicitud: JSON.stringify(solicitud),
+            CreadoPor: localStorage.getItem("IdUsuario"),
           },
           {
             headers: {
