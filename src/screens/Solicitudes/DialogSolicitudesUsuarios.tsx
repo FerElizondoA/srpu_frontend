@@ -61,9 +61,7 @@ export const DialogSolicitudesUsuarios = ({
       setAlignComentarios("normal");
      return dato
   }
-  const pruebaComentario= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdasLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdas Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj kasjhdas jasdasd jhsdkjad akjshkjasd aksjhaksdj  akshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuhakshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuhakshdaskhd  akjsdkajs  askbaskjd kjasd kjah dkjhasd uhasid89asd8jfujh 4iu i4uh5i3u45iu43h 5iuh";
-  const pruebaComentario1= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj"
-  const pruebaComentario2= " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc at dignissim orci. Nulla lacinia, nunc ac vestibulum suscipit, erat kajsdsj"
+
   return (
     <Dialog fullWidth maxWidth={"md"} open={open} onClose={() => handleClose()}>
      
@@ -81,9 +79,6 @@ export const DialogSolicitudesUsuarios = ({
                   <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Comentario&nbsp;(s)</TableCell>
                   <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Fecha de creacion</TableCell>
                 </TableRow>
-               
-       
-                
               </TableHead>
               
 
@@ -93,7 +88,6 @@ export const DialogSolicitudesUsuarios = ({
                     <StyledTableRow
                       key={dato.Id}
                       sx={{
-                        
                         maxWidth: 300,
                       }}
                     >
@@ -146,7 +140,20 @@ export const DialogSolicitudesUsuarios = ({
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell align="center"></TableCell>
-                    <TableCell align="center">Sin comentarios</TableCell>
+
+                    <TableCell align="center">
+                      <Typography 
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "normal",
+                        width: 500,
+                        fontSize: 14
+                      }}
+                      >
+                        Sin comentarios
+                      </Typography>
+                    </TableCell>
                     <TableCell align="center"></TableCell>
                   </TableRow>
                 )}
