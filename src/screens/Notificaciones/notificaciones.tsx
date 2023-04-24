@@ -18,7 +18,7 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell } from "../../components/CustomComponents";
-import { queriesNotificaciones } from "./queriesNotificaciones";
+import { QueriesNotificaciones } from "./QueriesNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones
@@ -107,7 +107,7 @@ export function Notificaciones() {
           >
             <Paper
               component="form"
-              sx={queriesNotificaciones.buscador}
+              sx={QueriesNotificaciones.buscador}
             >
               <InputBase
                 sx={{ ml: 1, flex: 1 }}

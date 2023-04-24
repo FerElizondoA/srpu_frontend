@@ -1,4 +1,4 @@
-export const queriesNotificaciones = {
+export const QueriesNotificaciones = {
     buscador : {
         display: "flex",
         //alignItems: "center"

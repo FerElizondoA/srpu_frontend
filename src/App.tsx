@@ -11,7 +11,7 @@ import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
-import { Notificaciones } from "./screens/notificaciones/notificaciones" ;
+import { Notificaciones } from "./screens/notificaciones/Notificaciones" ;
 import { Configuracion } from "./screens/config/Config";
 import { Catalogos } from "./screens/config/Catalogos";
 import { Usuarios } from "./screens/config/Usuarios";
