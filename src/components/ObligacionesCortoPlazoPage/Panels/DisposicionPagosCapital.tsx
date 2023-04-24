@@ -16,10 +16,12 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 
 import { queries } from "../../../queries";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -46,7 +48,7 @@ interface Head {
 
 const heads: readonly Head[] = [
   {
-    label: "Selección",
+    label: "Borrar",
   },
   {
     label: "Fecha de Primer Pago",
@@ -297,6 +299,9 @@ export function DisposicionPagosCapital() {
       
     }
   }, [radioValue]);
+
+  
+  const updatePagosCapitalTable: Function = useCortoPlazoStore(state => state.updatePagosCapitalTable)
 
   //const reset
   //useCortoPlazoStore.setState({  tasaInteresTable: tasaInteresTable })
@@ -670,14 +675,21 @@ export function DisposicionPagosCapital() {
                   <TableBody>
                     {tasaInteresTable.map((row, index) => {
                       
-                      const isItemSelected = isSelected(index);
+                      //onst isItemSelected = isSelected(index);
                       return (
                         <StyledTableRow>
-                          <StyledTableCell padding="checkbox">
-                            <Checkbox
-                              onClick={(event) => handleClick(event, index)}
-                              checked={isItemSelected}
-                            />
+                          <StyledTableCell align="center">
+                          <Tooltip title="Eliminar">
+                          <IconButton type="button"
+                          onClick={() => updatePagosCapitalTable(tasaInteresTable.filter(
+                            item => item.id !== row.id
+                          ))}
+                          
+                          >
+
+                          <DeleteIcon />
+                          </IconButton>
+                          </Tooltip>
                           </StyledTableCell>
                           <StyledTableCell component="th" scope="row">
                             {lightFormat(

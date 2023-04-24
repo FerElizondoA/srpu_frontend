@@ -15,7 +15,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
@@ -61,29 +61,67 @@ export function AgregarCondicionFinanciera(props: Props) {
   const disposicionFechaContratacion: string = useCortoPlazoStore(
     (state) => state.disposicionFechaContratacion
   );
+
+  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicionFechaContratacion
+  )
+
   const disposicionImporte: number = useCortoPlazoStore(
     (state) => state.disposicionImporte
   );
+
+  const changeDisposicionImporte: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicionImporte
+  )
 
   const capitalFechaPrimerPago: string = useCortoPlazoStore(
     (state) => state.capitalFechaPrimerPago
   );
 
+  const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(
+    (state) => state.changeCapitalFechaPrimerPago
+  )
+
   const capitalPeriocidadPago: string = useCortoPlazoStore(
     (state) => state.capitalPeriocidadPago
   );
+
+  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
+    (state) => state.changeCapitalPeriocidadPago
+  )
+
   const tasaFechaPrimerPago: string = useCortoPlazoStore(
     (state) => state.tasaFechaPrimerPago
   );
+
+  const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
+    (state) => state.changeTasaFechaPrimerPago
+  )
+
   const tipoComision: string = useCortoPlazoStore(
     (state) => state.tipoComision
   );
+
+  const changeTipoComision: Function = useCortoPlazoStore(
+    (state) => state.changeTipoComision
+  )
+  
   const tasaReferencia: string = useCortoPlazoStore(
     (state) => state.tasaReferencia
   );
+
+  const changeTasaReferencia: Function = useCortoPlazoStore(
+    (state) => state.changeTasaReferencia
+  )
+
   const capitalNumeroPago: number = useCortoPlazoStore(
     (state) => state.capitalNumeroPago
   );
+
+  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
+    (state) => state.changeCapitalNumeroPago
+  )
+
   const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
     (state) => state.tasaInteresTable
   );
@@ -102,6 +140,8 @@ export function AgregarCondicionFinanciera(props: Props) {
   const upDataCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.upDataCondicionFinanciera
   )
+
+  
   const addRow = () => {
       const CF: CondicionFinanciera = {
 
@@ -179,7 +219,9 @@ export function AgregarCondicionFinanciera(props: Props) {
             edge="start"
             onClick={() => {
               props.handler(false)
-              reset()
+             
+              
+              
             }}
             sx={{ color: "white" }}
           >
@@ -207,6 +249,8 @@ export function AgregarCondicionFinanciera(props: Props) {
                 },
               }}
               onClick={() => {
+                //reset()
+                
                 if(props.accion === "Agregar"){
                   addRow();
                   props.handler(false)
@@ -220,6 +264,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               <CheckIcon sx={{ mr: 1 }} />
               <Typography sx={queries.medium_text}>FINALIZAR</Typography>
             </Button>
+
           </Grid>
         </Toolbar>
       </AppBar>

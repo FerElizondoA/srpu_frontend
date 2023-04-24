@@ -64,6 +64,8 @@ export interface TasaEfectivaSlice {
     addTasaEfectiva: (newTasaEfectiva: TasaEfectiva) => void;
     removeTasaEfectiva: (index: number) => void;
     fetchTiposComision: () => void;
+
+    updateTasaEfectivaTable: (tasaEfectivaTable: TasaEfectiva[]) => void;
 }
 
 export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, get) => ({
@@ -118,6 +120,8 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     changeTasaFija: (newTasaFija: string) => set(() => ({tasaFija: newTasaFija})),
     
     changeSetTasaReferencia: (newSetTasaRefencia: string) => set(() => ({setTasaReferencia:  newSetTasaRefencia})), 
+
+    updateTasaEfectivaTable: (tasaEfectivaTable: TasaEfectiva[]) => set(()=>({tasaEfectivaTable: tasaEfectivaTable})),
 
     fetchTiposComision: async () => {
         if(!get().fetchedTiposComision){
