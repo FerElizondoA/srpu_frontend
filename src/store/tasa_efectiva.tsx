@@ -28,13 +28,13 @@ export interface TasaEfectivaSlice {
     efectivaPorcentajeFijo: number;
     efectivaMontoFijo: number;
 
-    hasTasaFija: boolean;
+    hasTasaInteres: boolean;
     hasTasaVariable: boolean;
 
-    efectivaTasaFija: number;
+    efectivaTasaInteres: number;
     efectivaTasaVariable: number;
 
-    tasaFija: string;
+    tasaInteres: string;
     setTasaReferencia: string;
 
     changeTipoComision: (newTipoComision: string) => void;
@@ -76,19 +76,19 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     hasPorcentaje: false,
     hasMonto: false,
 
-    hasTasaFija: false,
+    hasTasaInteres: false,
     hasTasaVariable: false,
 
     efectivaPorcentajeFijo: 0,
     efectivaMontoFijo: 0,
 
-    efectivaTasaFija: 0,
+    efectivaTasaInteres: 0,
     efectivaTasaVariable: 0,
 
     efectivaDiasEjercicio: "",
     tasaEfectiva: "",
 
-    tasaFija: "",
+    tasaInteres: "",
 
     setTasaReferencia: " ",
     
@@ -104,7 +104,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     changeEfectivaPorcentajeFijo: (newEfectivaPorcentajeFijo: number) => set(() => ({efectivaPorcentajeFijo: newEfectivaPorcentajeFijo})),
     changeEfectivaMontoFijo: (newEfectivaMontoFIjo: number) => set(() => ({efectivaMontoFijo: newEfectivaMontoFIjo})),
 
-    changeEfectivaTasaFija:  (newEfectivaTasaFija: number) => set(() => ({efectivaTasaFija: newEfectivaTasaFija})),
+    changeEfectivaTasaFija:  (newEfectivaTasaFija: number) => set(() => ({efectivaTasaInteres: newEfectivaTasaFija})),
 
     changeEfectivaTasaVariable:  (newEfectivaTasaVariable: number) => set(() => ({efectivaTasaVariable: newEfectivaTasaVariable})),
 
@@ -117,7 +117,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, ge
     changeHasTasaFija: (newHasTasaFija: boolean) => set(() => ({hasPorcentaje: newHasTasaFija})),
     changeHasTasaVariable: (newHasTasaVariable: boolean) => set(() => ({hasMonto: newHasTasaVariable})), 
 
-    changeTasaFija: (newTasaFija: string) => set(() => ({tasaFija: newTasaFija})),
+    changeTasaFija: (newTasaFija: string) => set(() => ({tasaInteres: newTasaFija})),
     
     changeSetTasaReferencia: (newSetTasaRefencia: string) => set(() => ({setTasaReferencia:  newSetTasaRefencia})), 
 
