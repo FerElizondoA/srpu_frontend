@@ -139,32 +139,6 @@ export function CondicionesFinancieras() {
 
   const updatecondicionFinancieraTable: Function = useCortoPlazoStore(state => state.updatecondicionFinancieraTable);
 
-  // const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-  //   const selectedIndex = selected.indexOf(id);
-  //   let newSelected: readonly number[] = [];
-
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1),
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
-
-  // const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
-  // const deleteRows = () => {
-  //   selected.forEach((it) => {
-  //     removeCondicionFinanciera(it);
-  //   })
-  // }
 
   const addRow = () => {
     const CF: CondicionFinanciera = {
@@ -200,7 +174,7 @@ export function CondicionesFinancieras() {
             </TableHead>
             <TableBody>
               {condicionFinancieraTable.map((row, index) => {
-                //  const isItemSelected: boolean = isSelected(index);
+
                 return (
 
 
@@ -280,8 +254,10 @@ export function CondicionesFinancieras() {
           <ConfirmButton
             variant="outlined"
             onClick={() => {
+            
               changeOpenAgregarState(!openAgregarCondicion)
               setAccion("Agregar")
+            
 
             }
             }
@@ -297,12 +273,7 @@ export function CondicionesFinancieras() {
           /> : null}
         </Grid>
 
-        {/* <Grid item md={6} lg={6}>
-          <DeleteButton variant="outlined" 
-          //onClick={() =>
-             //deleteRows()}
-             >ELIMINAR</DeleteButton>
-        </Grid> */}
+      
 
       </Grid>
     </Grid>

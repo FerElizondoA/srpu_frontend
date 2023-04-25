@@ -191,6 +191,9 @@ export function ComisionesTasaEfectiva() {
     //efectivaPeriocidadPago
     useCortoPlazoStore.setState({ efectivaDiasEjercicio: "" });
     //efectivaDiasEjercicio
+    useCortoPlazoStore.setState({ tasaEfectiva: "" });
+
+    
   };
   
 

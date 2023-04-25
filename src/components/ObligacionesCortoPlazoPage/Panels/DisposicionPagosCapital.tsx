@@ -54,7 +54,7 @@ const heads: readonly Head[] = [
     label: "Fecha de Primer Pago",
   },
   {
-    label: "Tasa Fija",
+    label: "Tasa Interes",
   },
   {
     label: "Periocidad de Pago",
@@ -122,7 +122,7 @@ export function DisposicionPagosCapital() {
   const tasaReferenciaMap: Map<string | null, string> = useCortoPlazoStore(
     (state) => state.tasaReferenciaMap
   );
-  //////////////////////////////////////////////////////////////////
+
 
   const [tasaReferencia, setTasaReferencia] = useCortoPlazoStore((state) => [
     state.tasaReferencia,
@@ -169,32 +169,15 @@ export function DisposicionPagosCapital() {
     (state) => state.fetchDiasEjercicio
   );
 
-  const tasaFija: string = useCortoPlazoStore((state) => state.tasaFija);
+  const tasaFija: string = useCortoPlazoStore((state) => state.tasaInteres);
   const changeTasaFija: Function = useCortoPlazoStore(
     (state) => state.changeTasaFija
   );
 
-  const [selected, setSelected] = useState<readonly number[]>([]);
+
 
   
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
 
   useEffect(() => {
     fetchPeriocidadPago();
@@ -202,14 +185,14 @@ export function DisposicionPagosCapital() {
     fetchDiasEjercicio();
   }, []);
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
   
 
   const addRows = () => {
     const TI: TasaInteres = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       fechaPrimerPago: tasaFechaPrimerPago,
-      tasaFija: tasaFija,
+      tasaInteres: tasaFija,
       periocidadPago: tasaPeriocidadPago,
       tasaReferencia: tasaReferencia,
       sobreTasa: sobreTasa,
@@ -218,11 +201,7 @@ export function DisposicionPagosCapital() {
     addTasaInteres(TI);
   };
 
-  const deleteRows = () => {
-    selected.forEach((it) => {
-      removeTasaInteres(it);
-    });
-  };
+ 
   /////////////////////////////////////////////////////
 
   const [radioValue, setRadioValue] = useState("fixedPercentage");
@@ -237,10 +216,7 @@ export function DisposicionPagosCapital() {
       changeHasTasaFija(true);
       changeEfectivaTasaFija(0);
       changeHasTasaVariable(false);
-      // tasaReferencia = "NA",
-      // sobreTasa = "NA"
-      //changeSobreTasa("NA");
-      //useCortoPlazoStore.setState({tasaReferencia: "NA"});
+    
     } else {
       changeHasTasaFija(false);
       changeEfectivaTasaVariable(0);
@@ -268,18 +244,14 @@ export function DisposicionPagosCapital() {
   //////////////////////////////////////////////////////
 
   const reset = () => {
-    //useCortoPlazoStore.setState({ tasaReferencia: "" });
-    //useCortoPlazoStore.setState({ tasaFija: "" });
-    //useCortoPlazoStore.setState({ sobreTasa: "" });
+
     useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
     useCortoPlazoStore.setState({ tasaPeriocidadPago: "" });
+    useCortoPlazoStore.setState({ tasaReferencia: "" });
+    useCortoPlazoStore.setState({ sobreTasa: "" });
 
-    // fechaPrimerPago: tasaFechaPrimerPago,
-    //   tasaFija: tasaFija,
-    //   periocidadPago: tasaPeriocidadPago,
-    //   tasaReferencia: tasaReferencia,
-    //   sobreTasa: sobreTasa,
-    //   diasEjercicio: tasaDiasEjercicio,
+
+  
   };
 
   
@@ -287,11 +259,11 @@ export function DisposicionPagosCapital() {
     if (radioValue === "fixedPercentage") {
       useCortoPlazoStore.setState({ tasaReferencia: "NA" });
       useCortoPlazoStore.setState({ sobreTasa: "NA" });
-      useCortoPlazoStore.setState({ tasaFija: "" });
+      useCortoPlazoStore.setState({ tasaInteres: "Tasa Fija" });
       useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
       useCortoPlazoStore.setState({ tasaPeriocidadPago: "" });
     } else {
-      useCortoPlazoStore.setState({ tasaFija: "NA" });
+      useCortoPlazoStore.setState({ tasaInteres: "Tasa Variable" });
       useCortoPlazoStore.setState({ tasaReferencia: "" });
       useCortoPlazoStore.setState({ sobreTasa: "" });
       useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
@@ -303,9 +275,7 @@ export function DisposicionPagosCapital() {
   
   const updatePagosCapitalTable: Function = useCortoPlazoStore(state => state.updatePagosCapitalTable)
 
-  //const reset
-  //useCortoPlazoStore.setState({  tasaInteresTable: tasaInteresTable })
-  ////////////////////////////////////////////////////////
+  
   return (
     <Grid container direction="column">
       <Grid item container>
@@ -505,6 +475,7 @@ export function DisposicionPagosCapital() {
                         onChange={(text) => {
                           changeTasaFija(text.target.value);
                         }}
+                        
                         fullWidth
                         InputLabelProps={{
                           style: {
@@ -512,6 +483,7 @@ export function DisposicionPagosCapital() {
                           },
                         }}
                         InputProps={{
+                          readOnly: true,
                           style: {
                             fontFamily: "MontserratMedium",
                           },
@@ -698,7 +670,7 @@ export function DisposicionPagosCapital() {
                             )}
                           </StyledTableCell>
                           <StyledTableCell align="center">
-                            {row.tasaFija}
+                            {row.tasaInteres}
                           </StyledTableCell>
                           <StyledTableCell align="center">
                             {row.periocidadPago}
@@ -719,7 +691,7 @@ export function DisposicionPagosCapital() {
                 </Table>
               </TableContainer>
               <Grid container>
-                <Grid item md={6} lg={6}>
+                <Grid item md={12} lg={12}>
                   <ConfirmButton
                     variant="outlined"
                     onClick={() => {
@@ -730,16 +702,7 @@ export function DisposicionPagosCapital() {
                     AGREGAR
                   </ConfirmButton>
                 </Grid>
-                <Grid item md={6} lg={6}>
-                  <DeleteButton
-                    variant="outlined"
-                    onClick={() => {
-                      deleteRows();
-                    }}
-                  >
-                    ELIMINAR
-                  </DeleteButton>
-                </Grid>
+                
               </Grid>
             </Grid>
           </Grid>
