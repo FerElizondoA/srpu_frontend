@@ -12,8 +12,15 @@ import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panel
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 
+//export const [ste,setste]=useState<array<tipo>>([]);
+
 
 export function ObligacionesCortoPlazoPage() {
+
+  // useEffect(() => {
+    
+  // }, [third])
+  
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
