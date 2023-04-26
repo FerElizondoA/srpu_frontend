@@ -129,7 +129,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
      
     };
 
-    console.log("Crear solicitud info: ", solicitud);
+ 
     
 
     if (solicitud.IdSolicitud.length === 0) {
