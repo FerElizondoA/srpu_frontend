@@ -30,9 +30,9 @@ import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-
-
-interface IData {
+import { getComentariosSolicitudPlazo} from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { IComentarios } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
+export interface IData {
   Id: string;
   Institucion: string;
   TipoEntePublico: string;
@@ -100,6 +100,7 @@ export function ConsultaDeSolicitudPage() {
   // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+ 
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -148,6 +149,7 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
+    
   }, [datos]);
 
   useEffect(() => {
@@ -155,7 +157,8 @@ export function ConsultaDeSolicitudPage() {
     busqueda.length !== 0 ? setDatosFiltrados(datos) : null;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
-
+ 
+  
   const navigate = useNavigate();
 
   const editarSolicitud = (solicitud: IData) => {
@@ -169,6 +172,7 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.fetchBorrarSolicitud
   );
 
+
   /////////////////////////////////////////////
   const [selected] = useState<number[]>([]); //, setSelected
 
@@ -176,6 +180,9 @@ export function ConsultaDeSolicitudPage() {
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
+  const[idSolicitud, setIdSolicitud] = useState('')
+
+  console.log("idSolicitud antes del return", idSolicitud);
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -218,7 +225,7 @@ export function ConsultaDeSolicitudPage() {
           <Table>
             <TableHead>
               {heads.map((head) => (
-                <StyledTableCell key={head.id}>
+                <StyledTableCell align="center" key={head.id}>
                   <TableSortLabel>{head.label} </TableSortLabel>
                 </StyledTableCell>
               ))}
@@ -243,31 +250,31 @@ export function ConsultaDeSolicitudPage() {
                   <StyledTableRow
                   //sx={{ alignItems: "center", justifyContent: "center" }}
                   >
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoEntePublico.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {chip}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.ClaveDeInscripcion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {"$" + row.MontoOriginalContratado.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoSolicitud}
                     </StyledTableCell>
 
@@ -292,7 +299,10 @@ export function ConsultaDeSolicitudPage() {
 
                       <Tooltip title="Edit">
                         <IconButton type="button" aria-label="search"
-                          onClick={() => editarSolicitud(row)}
+                          onClick={() => {
+                            //setIdSolicitud(row)
+                           editarSolicitud(row)
+                          }}
                         >
                           <EditIcon />
                           {row.Acciones}
@@ -313,6 +323,9 @@ export function ConsultaDeSolicitudPage() {
                       <Tooltip title="Comentarios">
                         <IconButton type="button" aria-label="search"
                         onClick={() => {
+                          console.log("idSolicitud dentro del boton de comentarios",row.Id );
+                          setIdSolicitud(row.Id)
+                            
                           changeOpenVerComentarios(!openVerComentarios)
                         }}>
                           <CommentIcon />
@@ -333,6 +346,7 @@ export function ConsultaDeSolicitudPage() {
                             getSolicitudes(setDatos);
                             fetchBorrarSolicitud(row.Id);
                             getSolicitudes(setDatos);
+
                           }}
                         >
                           <DeleteIcon />
@@ -351,11 +365,12 @@ export function ConsultaDeSolicitudPage() {
           openState={openDialogVer}
           selected={selected}
         />
-        <VerComentariosSolicitud
+        {openVerComentarios?<VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
           selected={selected}
-        />
+          IdSolicitud = {idSolicitud}
+        />:null}
       </Grid>
     </Grid>
   );

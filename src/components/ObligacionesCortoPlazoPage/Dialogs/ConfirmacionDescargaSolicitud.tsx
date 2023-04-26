@@ -41,8 +41,6 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
 
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
-
-    
   );
 
   const fetchReglas: Function = useCortoPlazoStore(
@@ -53,7 +51,7 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
-
+  const MAX_COMMENTS_LENGTH = 200;
   const [text, setText] = React.useState("Enviar sin comentarios");
   const validaciontext = () => {
     if (comentarios == null || /^[\s]*$/.test(comentarios)) {
@@ -71,13 +69,15 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
   );
 
   const navigate = useNavigate();
-//////////////// Este apartado es el de finalizar 
+  //////////////// Este apartado es el de finalizar
   return (
     <Dialog
       open={props.openState}
       keepMounted
       TransitionComponent={Transition}
-      onClose={() => {props.handler(false)}}
+      onClose={() => {
+        props.handler(false);
+      }}
     >
       <Grid container>
         <Grid
@@ -129,15 +129,16 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                   onClick={() => {
                     props.handler(false);
 
-                    crearSolicitud(props.selected)
+                    crearSolicitud(props.selected);
                     navigate("../ConsultaDeSolicitudes");
-
                   }}
                   variant="text"
                 >
                   {comentarios == null || /^[\s]*$/.test(comentarios)
-                    ? "Enviar sin comentarios "
-                    : "Enviar con comentarios   "}
+                    ? "Enviar sin comentarios"
+                    : comentarios.length > MAX_COMMENTS_LENGTH
+                    ? "Los comentarios no pueden tener más de 200 caracteres"
+                    : "Enviar con comentarios"}
                 </Button>
               </Grid>
 

@@ -23,7 +23,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import InfoIcon from "@mui/icons-material/Info";
 import {
-  getComentarios,
+  getComentariosUsuarios,
   getDetailSolicitudUsuario,
   getPreviewSolicitud,
 } from "../../components/APIS/solicitudesUsuarios/APIGetSolicitudes";
@@ -141,7 +141,7 @@ export function Solicitudes() {
         solicitudesFiltered[indexSelect].Id,
         setDetailSolicitud
       );
-      getComentarios(
+      getComentariosUsuarios(
         solicitudesFiltered[indexSelect].Id,
         setCantidadComentarios,
         setComentarios
@@ -158,55 +158,7 @@ export function Solicitudes() {
     setSolicitudesFiltered(solicitudes);
   }, [solicitudes]);
 
-  // useEffect(() => {
-  //   let x = comentarios;
-  //   x.push(
-  //     {
-  //       Comentario: "hola",
-  //       CreadoPor: "hola",
-  //       FechaDeCreacion:"hola",
-  //       Id: "hola",
-  //       Mensaje: "hola",
-  //       NombreCreador: "hola",
-  //   }
-  //   )
-  //   x.push(
-  //     {
-  //       Comentario: "hola",
-  //       CreadoPor: "hola",
-  //       FechaDeCreacion:"hola",
-  //       Id: "hola",
-  //       Mensaje: "hola",
-  //       NombreCreador: "hola",
-  //   }
-  //   )
-  //   x.push(
-  //     {
-  //       Comentario: "hola",
-  //       CreadoPor: "hola",
-  //       FechaDeCreacion:"hola",
-  //       Id: "hola",
-  //       Mensaje: "hola",
-  //       NombreCreador: "hola",
-  //   }
-  //   )
-  //   x.push(
-  //     {
-  //       Comentario: "hola",
-  //       CreadoPor: "hola",
-  //       FechaDeCreacion:"hola",
-  //       Id: "hola",
-  //       Mensaje: "hola",
-  //       NombreCreador: "hola",
-  //   }
-  //   )
-  //   setComentarios(x);
-  // }, [comentarios]);
 
-
-
-
-  /****************DIALOG*******************/
   const [openDialogComentarios, setOpenDialogComentarios] = useState(false);
   const openDialogUser = () => {
     setOpenDialogComentarios(!openDialogComentarios);
