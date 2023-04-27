@@ -197,6 +197,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
           if (get().comentarios === null || get().comentarios === "") {
           } else {
+           
             get().fetchComentario(response.data.Id, get().comentarios);
           }
         })
@@ -204,6 +205,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
     }
   },
+  
 //////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
@@ -246,11 +248,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
+    const state = useCortoPlazoStore.getState();
+
+    const IdSolicitud = state.IdSolicitud
+  
+    console.log("IdSolicitud: ",IdSolicitud );
+    
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
-          IdSolicitud: Id,
+          IdSolicitud:IdSolicitud,
           Comentario: comentario,
           IdUsuario: localStorage.getItem("IdUsuario"),
         },

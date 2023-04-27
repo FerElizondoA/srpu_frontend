@@ -30,8 +30,6 @@ import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { getComentariosSolicitudPlazo} from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
-import { IComentarios } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -164,6 +162,7 @@ export function ConsultaDeSolicitudPage() {
   const editarSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
     aux.IdSolicitud = solicitud.Id;
+    
     useCortoPlazoStore.setState(aux);
     navigate("../ObligacionesCortoPlazo");
   };
@@ -182,7 +181,7 @@ export function ConsultaDeSolicitudPage() {
 
   const[idSolicitud, setIdSolicitud] = useState('')
 
-  console.log("idSolicitud antes del return", idSolicitud);
+  
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -301,6 +300,8 @@ export function ConsultaDeSolicitudPage() {
                         <IconButton type="button" aria-label="search"
                           onClick={() => {
                             //setIdSolicitud(row)
+                            
+                            
                            editarSolicitud(row)
                           }}
                         >
@@ -323,9 +324,9 @@ export function ConsultaDeSolicitudPage() {
                       <Tooltip title="Comentarios">
                         <IconButton type="button" aria-label="search"
                         onClick={() => {
-                          console.log("idSolicitud dentro del boton de comentarios",row.Id );
+                       
+                          //console.log("idSolicitud dentro del boton de comentarios",row.Id );
                           setIdSolicitud(row.Id)
-                            
                           changeOpenVerComentarios(!openVerComentarios)
                         }}>
                           <CommentIcon />
