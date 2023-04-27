@@ -10,7 +10,7 @@ export const QueriesNotificaciones = {
 
     },
     "@media (min-width: 600px)": {
-
+      width: 250
 
     },
     "@media (min-width: 900px)": {
@@ -32,18 +32,21 @@ export const QueriesNotificaciones = {
 
   },
   boton: {
-    
+    display: "flex", 
+    justifyContent:"center",
 
     "@media (min-width: 513px)": {
-
+      
+      fontSize:11
 
     },
     "@media (min-width: 600px)": {
-
+      fontSize:13
 
     },
     "@media (min-width: 900px)": {
-      width: 250
+      width: 250,
+      fontSize:13
 
     },
   

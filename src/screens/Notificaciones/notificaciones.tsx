@@ -17,9 +17,14 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
-import { StyledTableCell } from "../../components/CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
 import { QueriesNotificaciones } from "../Notificaciones/queriesNotificaciones";
-import {AñadirNotificaciones} from "./Dialog/AñadirNotificaciones"
+import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones"
+import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
+import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
+import { format } from "date-fns";
+import { Destinatarios } from "./Dialog/InfoAdicional";
+import InfoIcon from '@mui/icons-material/Info';
 
 
 export function Notificaciones() {
@@ -34,25 +39,13 @@ export function Notificaciones() {
     setBusqueda(dato);
   };
 
-  const handleSearch = () => {
-    filtrarDatos();
-  };
+  // const handleSearch = () => {
+  //   filtrarDatos();
+  // };
 
   const filtrarDatos = () => { };
 
   const heads = [
-    {
-      id: "CreadoPor",
-      label: "Usuario",
-    },
-    {
-      id: "FechaCreacion",
-      label: "Fecha Envio",
-    },
-    {
-      id: "Estatus",
-      label: "Estatus",
-    },
     {
       id: "Titulo",
       label: "Titulo",
@@ -60,14 +53,48 @@ export function Notificaciones() {
     {
       id: "Mensaje",
       label: "Mensaje",
+    }, {
+      id: "FechaCreacion",
+      label: "Fecha Envio",
+    }, {
+      id: "hora",
+      label: "Hora de envio",
+    }, {
+      id: "CreadoPor",
+      label: "Informacion Adicional",
     },
   ];
+  const [notificaciones, setNotificaciones] = useState<Array<INotificaciones>>([]);
+  const [historial, setHistorial] = useState<Array<IHistorial>>([]);
+  const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
+  const [cantNoti, setCantNoti] = useState<number>();
+  const [idNoti, setIdNoti] = useState<string>('');
+
+  
+
+  
+
   //const [notificaciones, setNotificaciones] = useState<Array>(["hola", ""]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogNotificaciones = () => {
     setOpenDialog(!openDialog);
   };
+
+  const [openDestinatarios, setOpenDestinatarios] = useState(false)
+  const openDialogDestinatarios = () => {
+    setOpenDestinatarios(!openDestinatarios);
+  };
+
+  useEffect(() => {
+    getNotificaciones(
+      setNotificaciones,
+      setCantNoti);
+
+    getHistorialNotificaciones(setHistorial)
+
+
+  }, [openDialog]);
 
   return (
     <Grid
@@ -111,9 +138,9 @@ export function Notificaciones() {
             xs={8}
             lg={8}
             sm={7}
-            sx={{  display: "flex", justifyContent: "flex-end" }}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
           >
-            <Paper
+            {/* <Paper
               component="form"
               sx={QueriesNotificaciones.buscador}
             >
@@ -140,16 +167,17 @@ export function Notificaciones() {
                   }}
                 />
               </IconButton>
-            </Paper>
+            </Paper> */}
 
           </Grid>
           <Grid
             item
             xl={4}
-            xs={2}
             lg={3}
+            md={3}
+            xs={3}
             sm={4}
-            sx={{ display: "flex", justifyContent:"center"}}
+            sx={{ display: "flex", justifyContent: "center" }}
           >
             <Button
               color="info"
@@ -166,31 +194,90 @@ export function Notificaciones() {
           </Grid>
         </Grid>
 
-        <Grid item sx={{ alignItems:"center" }}>
-
+        <Grid item sx={{ alignItems: "center" }}>
           <TableContainer >
             <Table>
               <TableHead>
                 {heads.map((head) => (
                   <StyledTableCell
-                  key={head.id}
-                  align="center"
-                  sx={{height:"10vh"}}
+                    key={head.id}
+                    align="center"
+                    sx={{ height: "10vh" }}
                   >
                     {head.label}
                   </StyledTableCell>
                 ))}
               </TableHead>
+              <TableBody>
+                {historial?.map((noti, index) => (
+                  <StyledTableRow>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      align="center"
+                    >
+                      {noti.Titulo}
+                    </StyledTableCell>
+
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      align="center"
+                      sx={{ width: "30%" }}
+                    >
+                      {noti.Mensaje}
+                    </StyledTableCell>
+
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      align="center"
+                    >
+                      {noti.Fecha}
+                    </StyledTableCell>
+
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      align="center"
+                    >
+                      {noti.Hora}
+                    </StyledTableCell>
+
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      align="center"
+                    >
+                      <IconButton
+                        onClick={() => {setIdNoti(noti.Id); openDialogDestinatarios() }}
+
+                      >
+                        <InfoIcon />
+                      </IconButton>
+
+                    </StyledTableCell>
+
+                  </StyledTableRow>
+
+
+                ))}
+              </TableBody>
+              <Destinatarios
+                open={openDestinatarios}
+                handleClose={openDialogDestinatarios}
+                IdNotificacion={idNoti}
+              />
             </Table>
           </TableContainer>
         </Grid>
-        
-        <AñadirNotificaciones 
-        open={openDialog}
-        handleClose={openDialogNotificaciones}
-        />
+        {openDialog ? <AñadirNotificaciones
+          open={openDialog}
+          handleClose={openDialogNotificaciones}
+        /> : null}
+
       </Grid>
-      
+
     </Grid>
   );
 }

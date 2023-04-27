@@ -494,7 +494,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCargo(e.target.value);
               }}
-              helperText={ErrorCargo ? 'Apellido paterno inválido' : ''}
+              helperText={ErrorCargo ? 'Cargo inválido' : ''}
               error={ErrorCargo}
 
             />
@@ -513,7 +513,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaMunicipio(e.target.value);
               }}
-              helperText={ErrorMunicipio ? 'Municipio inválido' : ''}
+              helperText={ErrorMunicipio ? 'Seleccione Municipio' : ''}
               error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (

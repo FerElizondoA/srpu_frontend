@@ -25,7 +25,7 @@ export const queries = {
     },
   },
   bold_text: {
-    fontSize: "2ch",
+    fontSize: "1.9ch",
     fontFamily: "MontserratBold",
     "@media (max-width: 600px)": {
       // XS (extra small) screen
