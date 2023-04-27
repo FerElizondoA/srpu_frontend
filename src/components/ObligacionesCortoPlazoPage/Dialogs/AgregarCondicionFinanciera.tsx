@@ -90,7 +90,7 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
     (state) => state.changeCapitalPeriocidadPago
-  )
+  );
 
   const tasaFechaPrimerPago: string = useCortoPlazoStore(
     (state) => state.tasaFechaPrimerPago
@@ -98,7 +98,7 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
     (state) => state.changeTasaFechaPrimerPago
-  )
+  );
 
   const tipoComision: string = useCortoPlazoStore(
     (state) => state.tipoComision
@@ -106,7 +106,7 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   const changeTipoComision: Function = useCortoPlazoStore(
     (state) => state.changeTipoComision
-  )
+  );
   
   const tasaReferencia: string = useCortoPlazoStore(
     (state) => state.tasaReferencia
@@ -184,14 +184,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   
   const reset = () => {
     useCortoPlazoStore.setState({
-      disposicionFechaContratacion: "",
-    });
-    useCortoPlazoStore.setState({
       disposicionImporte: 0,
-    });
-
-    useCortoPlazoStore.setState({
-      capitalFechaPrimerPago: "",
     });
 
     useCortoPlazoStore.setState({
@@ -221,7 +214,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             edge="start"
             onClick={() => {
               props.handler(false)
-             
+              reset()
               
               
             }}
@@ -251,7 +244,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                 },
               }}
               onClick={() => {
-                //reset()
+                reset()
                 
                 if(props.accion === "Agregar"){
                   addRow();
