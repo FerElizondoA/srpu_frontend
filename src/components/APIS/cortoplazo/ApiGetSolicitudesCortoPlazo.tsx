@@ -1,8 +1,13 @@
 import axios from "axios";
+import { useCortoPlazoStore } from "../../../store/main";
 
 export function getComentariosSolicitudPlazo(idSolicitud: string, setState: Function){
-  console.log("idSolicitud en el axios: ", idSolicitud);
-  
+ 
+  const state = useCortoPlazoStore.getState();
+
+  const IdSolicitud = state.IdSolicitud
+
+ 
     axios({
       method: "get",
       params: {
@@ -17,11 +22,11 @@ export function getComentariosSolicitudPlazo(idSolicitud: string, setState: Func
     })
     .then(({data}) => {
       
-      console.log("data.data", data.data)
+      
       setState(data.data); //Obtienes los comentarios en Si 
     })
     .catch((error) => {
-      console.log(error);
+      
       
     });
   }

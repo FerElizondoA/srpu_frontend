@@ -12,7 +12,7 @@ import {
   TableHead,
   Fab,
   Typography,
-  Snackbar, 
+  Snackbar,
 } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
@@ -24,7 +24,6 @@ import { IconButton } from "@mui/material";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
-
 
 interface Head {
   label: string;
@@ -40,7 +39,6 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
-
   const [openDialog, changeOpenDialog] = React.useState(false);
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
@@ -54,7 +52,6 @@ export function SolicitudInscripcion() {
   const changeCloseDialogBorradorState = () => {
     changeOpenDialogBorrador(false);
   };
-
 
   const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
   const changeOpenDialogCancelarState = (open: boolean) => {
@@ -96,7 +93,7 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-  
+
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
@@ -214,7 +211,9 @@ export function SolicitudInscripcion() {
             disabled
             fullWidth
             variant="standard"
-            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
+            value={
+              solicitanteAutorizado || localStorage.getItem("NombreUsuario")
+            }
             onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
@@ -328,10 +327,14 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="error" onClick={() => {
-              
+          <Fab
+            variant="extended"
+            color="error"
+            onClick={() => {
               changeOpenDialogCancelarState(!openDialog);
-            }}sx={{ mb: "10px" }}>
+            }}
+            sx={{ mb: "10px" }}
+          >
             <CancelIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
@@ -358,7 +361,6 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success" //onClick={() => crearSolicitud(selected)}
             onClick={() => {
-              
               changeOpenDialogBorradorState(!openDialog);
             }}
             sx={{ mb: "10px" }}
@@ -383,11 +385,15 @@ export function SolicitudInscripcion() {
             openState={openDialog}
             selected={selected}
           />
-          <ConfirmacionBorradorSolicitud
-            handler={changeOpenDialogBorradorState}
-            openState={openDialogBorrador}
-            selected={selected}
-          />
+
+          {changeOpenDialogBorradorState ? (
+            <ConfirmacionBorradorSolicitud
+              handler={changeOpenDialogBorradorState}
+              openState={openDialogBorrador}
+              selected={selected}
+            />
+          ) : null}
+          
           <ConfirmacionCancelarSolicitud
             handler={changeOpenDialogCancelarState}
             openState={openDialogCancelar}

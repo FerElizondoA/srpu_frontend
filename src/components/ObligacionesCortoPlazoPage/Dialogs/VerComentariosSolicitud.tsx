@@ -100,8 +100,11 @@ export function VerComentariosSolicitud({
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
   useEffect(() => {
+
+    
+    
     getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
-    console.log("Comentarios", comentarios);
+    
   }, []);
 
   return (
@@ -136,7 +139,7 @@ export function VerComentariosSolicitud({
               <TableBody>
                 {comentarios.length !== 0 ? (
                   comentarios?.map((row, index) => {
-                    console.log("soy la row: ", row);
+                   
 
                     return (
                       <StyledTableRow>
