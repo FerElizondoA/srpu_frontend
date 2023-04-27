@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import {
   Grid,
   Tabs,
@@ -49,13 +50,48 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
-
   const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
+  ////////////////////////////////////////////////////////
+  const institucion: string = useCortoPlazoStore((state) => state.institucion);
+  const tipoEntePublico: string = useCortoPlazoStore(
+    (state) => state.tipoEntePublico
+  );
+  const montoOriginal: number = useCortoPlazoStore(
+    (state) => state.montoOriginal
+  );
+  ///////////////////////////////////////////////////////
 
   const navigate = useNavigate();
+
+  const [info, setInfo] = useState(
+    "En este apartado se guardara un borrador de la informacion quepodras visualizar en un futuro"
+  );
+
+  const notnull = () => {
+    const isMissingInstitution = institucion === "" || institucion === null;
+    const isMissingOriginalAmount = montoOriginal === null || montoOriginal === 0 || montoOriginal === undefined 
+
+    
+  
+    if (isMissingInstitution && isMissingOriginalAmount) {
+      setInfo("No se ha seleccionado la institución bancaria y no se ha proporcionado un monto válido en INFORMACIÓN GENERAL.");
+    } else if (isMissingInstitution) {
+      setInfo("No se ha seleccionado la institución bancaria en INFORMACIÓN GENERAL.");
+    } else if (isMissingOriginalAmount) {
+      setInfo("No se ha proporcionado un monto en INFORMACIÓN GENERAL.");
+    } else {
+      setInfo("En este apartado se guardará un borrador de la información que podrás visualizar en el futuro.");
+    }
+  };
+
+  useEffect(() => {
+    console.log("hola", tipoEntePublico);
+
+    notnull();
+  }, []);
 
   return (
     <Dialog
@@ -92,8 +128,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
           >
             <Grid mb={1}>
               <DialogContentText id="alert-dialog-slide-description">
-                En este apartado se guardara un borrador de la informacion que
-                podras visualizar en un futuro
+                {info}
               </DialogContentText>
             </Grid>
           </Grid>
@@ -109,11 +144,19 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //onClick={handleClick}
                 onClick={() => {
                   props.handler(false);
+                  // notnull()
                   crearSolicitud(props.selected);
                   navigate("../ConsultaDeSolicitudes");
-                  
                 }}
                 variant="text"
+                disabled={
+                  institucion === "" ||
+                  institucion === null ||
+                  tipoEntePublico === "" ||
+                  tipoEntePublico === null ||
+                  montoOriginal === null ||
+                  montoOriginal === 0
+                }
               >
                 Confirmar
               </Button>

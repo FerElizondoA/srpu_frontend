@@ -132,6 +132,7 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                     crearSolicitud(props.selected);
                     navigate("../ConsultaDeSolicitudes");
                   }}
+                  disabled={comentarios.length >= 200}
                   variant="text"
                 >
                   {comentarios == null || /^[\s]*$/.test(comentarios)
@@ -156,6 +157,7 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                   //sx={queries.medium_text}
                   variant="text"
                   onClick={() => props.handler(false)}
+                
                 >
                   Cancelar
                 </Button>
