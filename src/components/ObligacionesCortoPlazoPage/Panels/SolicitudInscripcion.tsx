@@ -144,22 +144,27 @@ export function SolicitudInscripcion() {
     }
   };
 
-  const buttonAdminVerificador = () => {
-    if (localStorage.getItem("Rol") === "Verificador" && IdSolicitud !== "") {
-      return (
-        <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
-      );
-    } else if (
-      localStorage.getItem("Rol") === "Verificador" &&
-      IdSolicitud === ""
-    ) {
-      return (
-        <Typography sx={queries.medium_text}>
-          Solicitud aun no creada
-        </Typography>
-      );
-    }
-  };
+  // const buttonAdminVerificador = () => {
+  //   if (localStorage.getItem("Rol") === "Verificador") {
+  //     return (
+  //       <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
+  //     );
+  //   }
+
+
+  //   // else if (
+  //   //   localStorage.getItem("Rol") === "Verificador" &&
+  //   //   IdSolicitud === ""
+  //   // ) {
+  //   //   return (
+  //   //     <Typography sx={queries.medium_text}>
+  //   //       Solicitud aun no creada
+  //   //     </Typography>
+  //   //   );
+  //   // }
+
+
+  // };
 
   const opciones = () => {
     if (localStorage.getItem("Rol") === "Capturador") {
@@ -238,12 +243,15 @@ export function SolicitudInscripcion() {
             onClick={() => changeOpenDialogUsuariosState(!openDialogUsuarios)}
             sx={{
               mb: "10px",
-              "&:disabled": { backgroundColor: "#D42C2C", color: "white" },
+             // "&:disabled": { backgroundColor: "#D42C2C", color: "white" },
             }}
-            disabled={IdSolicitud === ""}
+            //disabled={IdSolicitud === ""}
           >
             <CheckIcon sx={{ mr: 1 }} />
-            {buttonAdminVerificador()}
+            <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
+
+
+
           </Fab>
 
           <Fab
