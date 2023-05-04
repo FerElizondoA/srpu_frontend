@@ -1,87 +1,106 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
+import {
+  ICatalogo,
+  IEntePublico,
+} from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
-export interface EncabezadoSlice{
-    IdSolicitud: string;
-    fetchedEntesPublicos: boolean;
-    fetchedOrganismos: boolean;
+export interface EncabezadoSlice {
+  encabezado: {
     tipoDocumento: string;
-    entesPublicosMap: Map<string | null, string>;
-    IdTipoEntePublico: string;
-    tipoEntePublico: string;
-    solicitanteAutorizado: string;
-    organismosMap: Map<string | null, any>;
-    IdOrganismo: string;
-    organismo: string;
+    solicitanteAutorizado: {
+      Solicitante: string;
+      Cargo: string;
+      Nombre: string;
+    };
+
+    tipoEntePublico: { Id: string; TipoEntePublico: string };
+    organismo: { Id: string; Organismo: string };
     fechaContratacion: string;
-    cargoSolicitante: string;
-    changeIdSolicitud: (newId: string) => void;
-    changeTipoDocumento: (newTipoDocumento: string) => void;
-    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => void;
-    changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => void;
-    changeOrganismo: (newId: string, newOrganismo: string) => void;
-    changeFechaContratacion: (newFechaContratacion: string) => void;
-    changeCargoSolicitante: (newCargoSolicitante: string) => void;
-    fetchEntesPublicos: () => void;
-    fetchOrganismos: () => void;
+  };
+
+  catalogoOrganismos: IEntePublico[];
+  catalogoTiposEntePublico: ICatalogo[];
+
+  changeEncabezado: (
+    tipoDocumento: string,
+    solicitanteAutorizado: {
+      Solicitante: string;
+      Cargo: string;
+      Nombre: string;
+    },
+    tipoEntePublico: { Id: string; TipoEntePublico: string },
+    organismo: { Id: string; Organismo: string },
+    fechaContratacion: string
+  ) => void;
+
+  // changeIdSolicitud: (newId: string) => void;getTiposEntesPublicos: () => void;
+  getOrganismos: () => void;
+  getTiposEntesPublicos: () => void;
 }
 
-export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (set, get) => ({
-    IdSolicitud: "",
-    fetchedEntesPublicos: false,
-    fetchedOrganismos: false,
-    tipoDocumento: "Obligación a Corto Plazo",
-    entesPublicosMap: new Map<string  | null, string>(),
-    IdTipoEntePublico: "",
-    tipoEntePublico: "",
-    solicitanteAutorizado:  '',
-    organismosMap: new Map<string | null, string>(),
-    IdOrganismo: "",
-    organismo: "",
-    fechaContratacion: new Date().toString(),
-    cargoSolicitante: '',
-    changeIdSolicitud: (newId: string) => set(() => ({IdSolicitud: newId})),
-    changeTipoDocumento: (newTipoDocumento: string) => set(() => ({tipoDocumento: newTipoDocumento})),
-    changeTipoEntePublico: (newId: string, newTipoEntePublico: string) => set(() => ({ tipoEntePublico: newTipoEntePublico, IdTipoEntePublico: newId})),
-    changeSolicitanteAutorizado: (newSolicitanteAutorizado: string) => set(() => ({solicitanteAutorizado: newSolicitanteAutorizado})),
-    changeOrganismo: (newId: string, newOrganismo: string) => set(() => ({organismo: newOrganismo, IdOrganismo: newId})),
-    changeFechaContratacion: (newFechaContratacion: string) => set(() => ({fechaContratacion: newFechaContratacion})),
-    changeCargoSolicitante: (newCargoSolicitante: string) => set(() => ({cargoSolicitante: newCargoSolicitante})),
-    fetchEntesPublicos: async () => {
-        if (!get().fetchedEntesPublicos) {
-          const response = await axios.get(
-            process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-            {
-              headers: {
-                Authorization: localStorage.getItem("jwtToken"),
-              },
-            }
-          );
-          response.data.data.forEach((e: any) => {
-            set((state) => ({
-              entesPublicosMap: new Map(state.entesPublicosMap).set(e.Descripcion, e.Id)
-            }));
-          });
-          set(() => ({fetchedEntesPublicos: true}))
-        }
+export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
+  set,
+  get
+) => ({
+  // IdSolicitud: "",
+  encabezado: {
+    tipoDocumento: "Crédito simple a corto plazo",
+    solicitanteAutorizado: {
+      Solicitante: localStorage.getItem("IdUsuario") || "",
+      Cargo: localStorage.getItem("Puesto") || "",
+      Nombre: localStorage.getItem("NombreUsuario") || "",
     },
-    fetchOrganismos: async () => {
-        if (!get().fetchedOrganismos) {
-          const response = await axios.get(
-            process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
-            {
-              headers: {
-                Authorization: localStorage.getItem("jwtToken"),
-              },
-            }
-          );
-          response.data.data.forEach((e: any) => {
-            set((state) => ({
-              organismosMap: new Map(state.organismosMap).set(e.Descripcion, e.Id),
-            }));
-          });
-          set(() => ({fetchedOrganismos: true}))
-        }
-    }
-})
+    tipoEntePublico: {
+      Id: "",
+      TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+    },
+    organismo: {
+      Id: "",
+      Organismo: localStorage.getItem("EntePublicoObligado") || "",
+    },
+    fechaContratacion: new Date().toString(),
+  },
 
+  catalogoOrganismos: [],
+  catalogoTiposEntePublico: [],
+  // changeIdSolicitud: (newId: string) => set(() => ({ IdSolicitud: newId })),
+
+  changeEncabezado: (encabezado: any) =>
+    set(() => ({
+      encabezado: encabezado,
+    })),
+
+  getTiposEntesPublicos: async () => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        set((state) => ({
+          catalogoTiposEntePublico: data.data,
+        }));
+      });
+  },
+  getOrganismos: async () => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        set((state) => ({
+          catalogoOrganismos: data.data,
+        }));
+      });
+  },
+});

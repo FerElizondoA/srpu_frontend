@@ -4,59 +4,51 @@ import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
+import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface SolicitudInscripcionSlice {
-  fetchedReglas: boolean;
-  reglasCatalog: string[];
-  nombreServidorPublico: string;
-  cargo: string;
-  documentoAutorizado: string;
-  identificacion: string;
-  reglas: string[];
-  comentarios: string;
-  changeServidorPublico: (newServidorPublico: string) => void;
-  changeCargo: (newCargo: string) => void;
-  changeDocumentoAutorizado: (newDocumentoAutorizado: string) => void;
-  changeIdentificacion: (newIdentificacion: string) => void;
-  changeReglas: (newReglas: string) => void;
-  changeComentarios: (newComentarios: string) => void;
+  inscripcion: {
+    servidorPublicoDirigido: string;
+    cargo: string;
+  };
 
-  fetchReglas: () => void;
-  crearSolicitud: (reglasSeleccionadas: number[]) => void;
-  fetchBorrarSolicitud: (Id: string) => boolean;
-  fetchComentario: (Id: string, comentario: string) => void;
+  reglasAplicables: string[];
+
+  catalogoReglas: ICatalogo[];
+
+  changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
+  changeReglasAplicables: (newReglas: string) => void;
+
+  getReglas: () => void;
+
+  crearSolicitud: (
+    idCreador: string,
+    idEditor: string,
+    estatus: string
+  ) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-  fetchedReglas: false,
-  reglasCatalog: [],
-  nombreServidorPublico: "Rosalba Aguilar Díaz",
-  cargo: "Directora de Deuda Pública",
-  documentoAutorizado: "",
-  comentarios: "",
-  identificacion: "",
-  reglas: [],
-  changeServidorPublico: (newServidorPublico: string) =>
-    set(() => ({ nombreServidorPublico: newServidorPublico })),
-  changeCargo: (newCargo: string) => set(() => ({ cargo: newCargo })),
-  changeDocumentoAutorizado: (newDocumentoAutorizado: string) =>
-    set(() => ({ documentoAutorizado: newDocumentoAutorizado })),
-  changeIdentificacion: (newIdetificacion: string) =>
-    set(() => ({ identificacion: newIdetificacion })),
-  changeReglas: (newReglas: string) =>
-    set((state) => ({ reglas: [...state.reglas, newReglas] })),
-  changeComentarios: (newComentarios: string) =>
-    set((state) => ({ comentarios: newComentarios })),
+  inscripcion: {
+    servidorPublicoDirigido: "Rosalba Aguilar Díaz",
+    cargo: "Directora de Deuda Pública",
+  },
 
-  //////////////////////////////
+  reglasAplicables: [],
 
-  /////////////////////////////
+  catalogoReglas: [],
 
-  fetchReglas: async () => {
-    if (!get().fetchedReglas) {
-      const response = await axios.get(
+  changeInscripcion: (inscripcion: any) =>
+    set(() => ({ inscripcion: inscripcion })),
+
+  changeReglasAplicables: (newReglas: any) =>
+    set(() => ({ reglasAplicables: newReglas })),
+
+  getReglas: async () => {
+    await axios
+      .get(
         process.env.REACT_APP_APPLICATION_BACK +
           "/api/get-reglaDeFinanciamiento",
         {
@@ -64,145 +56,64 @@ export const createSolicitudInscripcionSlice: StateCreator<
             Authorization: localStorage.getItem("jwtToken"),
           },
         }
-      );
-      response.data.data.forEach((e: any) => {
-        
+      )
+      .then(({ data }) => {
+        console.log(data.data);
+
+        let r = data.data;
         set((state) => ({
-          reglasCatalog: [...state.reglasCatalog, e.Descripcion],
+          catalogoReglas: r,
         }));
       });
-      set(() => ({ fetchedReglas: true }));
-    }
   },
 
-  crearSolicitud: async (reglasSeleccionadas: number[]) => {
-    let reglas: string[] = [];
-    reglasSeleccionadas.forEach((it) => {
-      reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
-    });
-
+  crearSolicitud: async (
+    idCreador: string,
+    idEditor: string,
+    estatus: string
+  ) => {
     const state = useCortoPlazoStore.getState();
-
     const solicitud: any = {
-      /* ---- ENCABEZADO ---- */
-      IdSolicitud: state.IdSolicitud,
-      tipoDocumento: state.tipoDocumento,
-      IdTipoEntePublico: state.IdTipoEntePublico,
-      tipoEntePublico: state.tipoEntePublico,
-      solicitanteAutorizado: state.solicitanteAutorizado,
-      IdOrganismo: state.IdOrganismo,
-      organismo: state.organismo,
-      fechaContratacion: state.fechaContratacion,
-      cargoSolicitante: state.cargoSolicitante,
-
-      /* ---- ENCABEZADO ---- */
-
-      /* ---- INFORMACIÓN GENERAL ---- */
-      // plazo dias se calcula automaticamente
-      montoOriginal: state.montoOriginal,
-      fechaVencimiento: state.fechaVencimiento,
-      IdDestino: state.IdDestino,
-      destino: state.destino,
-      denominacion: state.denominacion,
-      IdInstitucion: state.IdInstitucion,
-      institucion: state.institucion,
-      plazoDias: state.plazoDias,
-      obligadoSolidarioAval: state.obligadoSolidarioAval,
-      tasaReferencia: state.tasaReferencia,
-
-      obligadoSolidarioAvalTable: state.obligadoSolidarioAvalTable,
-
-      /* ---- INFORMACIÓN GENERAL ---- */
-
-      /* ---- CONDICIONES FINANCIERAS ---- */
-      condicionFinancieraTable: state.condicionFinancieraTable,
-      tipoComision: state.tipoComision,
-      tasaEfectiva: state.tasaEfectiva,
-      capitalPeriocidadPago: state.capitalPeriocidadPago,
-      /* ---- CONDICIONES FINANCIERAS ---- */
-     
-      
-      /* ---- SOLICITUD DE INSCRIPCION ---- */
-      reglas: reglas,
-      nombreServidorPublico: state.nombreServidorPublico,
-
-     
+      encabezado: state.encabezado,
+      informacionGeneral: {
+        ...state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval,
+      },
+      condicionesFinancieras: state.tablaCondicionesFinancieras,
+      documentacion: state.tablaDocumentos.map((v, i) => {
+        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+      }),
+      inscripcion: {
+        servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
+        cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
+        declaratorias: state.reglasAplicables,
+      },
     };
 
-
-    if (solicitud.IdSolicitud.length === 0) {
-      
-      await axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
-          {
-            TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
-            IdInstitucionFinanciera: solicitud.IdInstitucion,
-            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
-            IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
-            MontoOriginalContratado: solicitud.montoOriginal,
-            FechaContratacion: format(
-              new Date(solicitud.fechaContratacion),
-              "yyyy-MM-dd"
-            ),
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then((response) => {
-          if (get().comentarios === null || get().comentarios === "") {
-          } else {
-            get().fetchComentario(response.data.Id, get().comentarios);
-          }
-        })
-        .catch((e) => {
-        });
-    } else {
-      await axios
-        .put(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
-          {
-            IdUsuario: localStorage.getItem("IdUsuario"),
-            IdSolicitud: solicitud.IdSolicitud,
-            TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
-            IdInstitucionFinanciera: solicitud.IdInstitucion,
-            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
-            IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
-            MontoOriginalContratado: solicitud.montoOriginal,
-            FechaContratacion: format(
-              new Date(solicitud.fechaContratacion),
-              "yyyy-MM-dd"
-            ),
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then((response) => {
-
-          if (get().comentarios === null || get().comentarios === "") {
-          } else {
-            get().fetchComentario(response.data.Id, get().comentarios);
-          }
-        })
-        .catch((e) => {
-        });
-    }
+    await axios.post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
+      {
+        IdTipoEntePublico: state.encabezado.tipoEntePublico.Id || '00b0470d-acb9-11ed-b719-2c4138b7dab1',
+        IdEntePublico: state.encabezado.organismo.Id || 'f45b91b9-bc38-11ed-b789-2c4138b7dab1',
+        TipoSolicitud: state.encabezado.tipoDocumento,
+        IdInstitucionFinanciera:
+          state.informacionGeneral.institucionFinanciera.Id,
+        Estatus: estatus,
+        IdClaveInscripcion: "1",
+        MontoOriginalContratado: state.informacionGeneral.monto,
+        FechaContratacion: '2023-05-03 00:00:00',
+        Solicitud: JSON.stringify(solicitud),
+        IdEditor: idEditor,
+        CreadoPor: idCreador,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
   },
-//////////////////////////////////////////////////////////////////////
+
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -259,8 +170,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((response) => {})
-      .catch((e) => {
-      });
+      .catch((e) => {});
   },
 });
 
@@ -279,13 +189,13 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-     " http://10.200.4.94:9091/documento_srpu",
+      " http://10.200.4.94:9091/documento_srpu",
 
       {
         nombre: solicitud.solicitanteAutorizado,
-        cargoSolicitante: solicitud.cargoSolicitante,
+        cargoServidorPublicoSolicitante: solicitud.cargoSolicitante,
         oficionum: "10",
-        cargo: solicitud.cargoSolicitante,
+        cargoServidorPublico: solicitud.cargoSolicitante,
         organismo: solicitud.organismo,
         InstitucionBancaria: solicitud.institucion,
         monto: solicitud.montoOriginal,
@@ -301,7 +211,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         contrato: solicitud.tipoDocumento,
         periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
-        
+
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -313,7 +223,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
-      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -326,7 +235,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
-    }).catch((err)=>{
-      
-    });
+    })
+    .catch((err) => {});
 }

@@ -1,25 +1,44 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
-import { TasaInteres } from "./pagos_capital";
-import { TasaEfectiva } from "./tasa_efectiva";
-import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
+
+export interface TasaInteres {
+  tasaFija: boolean;
+  tasaVariable: boolean;
+  tasa: string;
+  fechaPrimerPago: string;
+  diasEjercicio: string;
+  periocidadPago: string;
+  tasaReferencia: string;
+  sobreTasa: string;
+}
+
+export interface IComisiones {
+  fechaContratacion: string;
+  tipoDeComision: string;
+  periodicidadDePago: string;
+  porcentajeFijo: boolean;
+  montoFijo: boolean;
+  porcentaje: string;
+  monto: string;
+  iva: boolean;
+}
 
 export type CondicionFinanciera = {
   id: number;
-  fechaDisposicion: string;
-  importeDisposicion: string;
-  fechaPrimerPagoCapital: string;
-  periocidadPagoCapital: string;
-  fechaPrimerPagoInteres: string;
-  tasaInteres: string;
-  comisiones: string;
-  numeroPagoCapital: number;
-  tasasInteres: TasaInteres[];
-  tasasEfectivas: TasaEfectiva[];
+  disposicion: { fechaDisposicion: string; importe: number };
+  pagosDeCapital: {
+    fechaPrimerPago: string;
+    periodicidadDePago: string;
+    numeroDePago: number;
+  };
+  tasaInteres: TasaInteres[];
+  comisiones: IComisiones[];
+  tasaEfectiva: string;
+  diasEjercicio: string;
 };
 
 export interface CondicionFinancieraSlice {
-  condicionFinancieraTable: CondicionFinanciera[];
+  tablaCondicionesFinancieras: CondicionFinanciera[];
   addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) => void;
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => void;
   upDataCondicionFinanciera: (
@@ -27,88 +46,64 @@ export interface CondicionFinancieraSlice {
     index: number
   ) => void;
   removeCondicionFinanciera: (index: number) => void;
-  updatecondicionFinancieraTable:(condicionFinancieraTable: CondicionFinanciera[]) => void;
-
+  updatecondicionFinancieraTable: (
+    tablaCondicionesFinancieras: CondicionFinanciera[]
+  ) => void;
 }
 
 export const createCondicionFinancieraSlice: StateCreator<
   CondicionFinancieraSlice
 > = (set, get) => ({
-  condicionFinancieraTable: [],
-  updatecondicionFinancieraTable: (condicionFinancieraTable: CondicionFinanciera[]) => set(() => ({ condicionFinancieraTable: condicionFinancieraTable})),
-
-
+  tablaCondicionesFinancieras: [],
   addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) =>
     set((state) => ({
-      condicionFinancieraTable: [
-        ...state.condicionFinancieraTable,
+      tablaCondicionesFinancieras: [
+        ...state.tablaCondicionesFinancieras,
         newCondicionFinanciera,
       ],
     })),
-  /////////////////////////////////////////////////////////////////
-
+    
+  loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
+    useCortoPlazoStore.setState({
+      disposicion: condicionFinanciera.disposicion
+    });
+    useCortoPlazoStore.setState({
+      pagosDeCapital:{
+        fechaPrimerPago: condicionFinanciera.pagosDeCapital.fechaPrimerPago,
+        periodicidadDePago:{ Id: '0', Descripcion: condicionFinanciera.pagosDeCapital.periodicidadDePago } ,
+        numeroDePago: condicionFinanciera.pagosDeCapital.numeroDePago,
+      } 
+    });
+    useCortoPlazoStore.setState({
+      tablaTasaInteres:
+        condicionFinanciera.tasaInteres,
+    });
+    useCortoPlazoStore.setState({
+      tablaComisiones:
+        condicionFinanciera.comisiones,
+    });
+  },
   upDataCondicionFinanciera: (
     condicionFinanciera: CondicionFinanciera,
     index: number
   ) => {
     set((state) => {
-      const nuevaTabla = [...state.condicionFinancieraTable];
+      const nuevaTabla = [...state.tablaCondicionesFinancieras];
 
       nuevaTabla[index] = condicionFinanciera;
 
       return {
-        condicionFinancieraTable: nuevaTabla,
+        tablaCondicionesFinancieras: nuevaTabla,
       };
     });
   },
-
-  loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
-    // aqui va la logica
-    const state = useCortoPlazoStore.getState();
-
-    const CondicionesFinancieras: any = {
-      condicionFinancieraTable: state.condicionFinancieraTable,
-      tipoComision: condicionFinanciera.comisiones,
-      //tasasEfectivas: condicionFinanciera.tasasEfectivas,
-      importeDisposicion: condicionFinanciera.importeDisposicion,
-      numeroPagoCapital: condicionFinanciera.numeroPagoCapital,
-      capitalPeriocidadPago: state.capitalPeriocidadPago,
-      tasaInteresTable: state.tasaInteresTable,
-      tasaEfectivaTable: state.tasaEfectivaTable,
-    };
-
-    useCortoPlazoStore.setState({
-      disposicionImporte: parseInt(condicionFinanciera.importeDisposicion),
-    });
-    useCortoPlazoStore.setState({
-      disposicionFechaContratacion: condicionFinanciera.fechaDisposicion,
-    });
-    useCortoPlazoStore.setState({
-      capitalFechaPrimerPago: condicionFinanciera.fechaPrimerPagoCapital,
-    });
-    useCortoPlazoStore.setState({
-      tipoComision: condicionFinanciera.comisiones,
-    });
-    useCortoPlazoStore.setState({
-      capitalPeriocidadPago: condicionFinanciera.periocidadPagoCapital,
-    });
-    useCortoPlazoStore.setState({
-      capitalNumeroPago: condicionFinanciera.numeroPagoCapital,
-    });
-    useCortoPlazoStore.setState({
-      tasaInteresTable: condicionFinanciera.tasasInteres,
-    });
-    useCortoPlazoStore.setState({
-      tasaEfectivaTable: condicionFinanciera.tasasEfectivas,
-    });
-    //state.disposicionImporte = importeDisposicion;
-  },
-
   removeCondicionFinanciera: (index: number) =>
     set((state) => ({
-      condicionFinancieraTable: state.condicionFinancieraTable.filter(
+      tablaCondicionesFinancieras: state.tablaCondicionesFinancieras.filter(
         (_, i) => i !== index
       ),
     })),
-
+  updatecondicionFinancieraTable: (
+    tablaCondicionesFinancieras: CondicionFinanciera[]
+  ) => set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),
 });

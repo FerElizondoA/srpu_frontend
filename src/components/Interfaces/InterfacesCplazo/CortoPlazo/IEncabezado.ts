@@ -8,13 +8,16 @@ export interface IEncabezado {
   }
 
 export interface IInformacionGeneral {
-    fechaContratacion: string;
-    fechaVencimiento: string;
-    plazo: string;
-    destino: string;
-    montoOriginalContratado: string;
-    Denominacion:string;
-    InstitucionFinanciera:string
+  fechaContratacion: string;
+  fechaVencimiento: string;
+  plazo: number;
+  destino: {
+    Id: string;
+    Descripcion: string;
+  };
+  monto: number;
+  denominacion: string;
+  institucionFinanciera: { Id: string; Descripcion: string };
 }
 
 export interface ISolCortoPlazo {

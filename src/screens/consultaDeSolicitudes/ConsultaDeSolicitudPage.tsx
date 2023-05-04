@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -43,6 +46,7 @@ interface IData {
   Solicitud: string;
   tipoDocumento: string;
   TipoSolicitud: string;
+  IdEditor: string;
 }
 
 interface Head {
@@ -152,21 +156,41 @@ export function ConsultaDeSolicitudPage() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length !== 0 ? setDatosFiltrados(datos) : null;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
   const navigate = useNavigate();
-
+  const changeEncabezado: Function = useCortoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+  const changeInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
+  const addCondicionFinanciera: Function = useCortoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
   const editarSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
     aux.IdSolicitud = solicitud.Id;
-    useCortoPlazoStore.setState(aux);
+    // useCortoPlazoStore.setState(aux);
+    console.log(aux);
+    changeEncabezado(aux?.encabezado);
+    changeInformacionGeneral(aux?.informacionGeneral);
+    aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
+      addObligadoSolidarioAval(v);
+    });
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      addCondicionFinanciera(v);
+    });
     navigate("../ObligacionesCortoPlazo");
   };
 
-  const fetchBorrarSolicitud: Function = useCortoPlazoStore(
-    (state) => state.fetchBorrarSolicitud
-  );
+  // const fetchBorrarSolicitud: Function = useCortoPlazoStore(
+  //   (state) => state.fetchBorrarSolicitud
+  // );
 
   /////////////////////////////////////////////
   const [selected] = useState<number[]>([]); //, setSelected
@@ -227,7 +251,6 @@ export function ConsultaDeSolicitudPage() {
                 let chip = <></>;
 
                 if (row.Estatus === "En_actualizacion ") {
-
                   chip = (
                     <Chip
                       label="En verificación"
@@ -277,21 +300,25 @@ export function ConsultaDeSolicitudPage() {
                       scope="row"
                     >
                       <Tooltip title="Ver">
-                        <IconButton type="button" aria-label="search"
-                        onClick={() => {
-                          changeOpenDialogVer(!openDialogVer);
-                        }}>
-                          
-                          <VisibilityIcon
-                            
-                          />
+                        <IconButton
+                          type="button"
+                          aria-label="search"
+                          onClick={() => {
+                            changeOpenDialogVer(!openDialogVer);
+                          }}
+                        >
+                          <VisibilityIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
 
                       <Tooltip title="Edit">
-                        <IconButton type="button" aria-label="search"
-                          onClick={() => editarSolicitud(row)}
+                        <IconButton
+                          type="button"
+                          aria-label="search"
+                          onClick={() => {
+                            editarSolicitud(row);
+                          }}
                         >
                           <EditIcon />
                           {row.Acciones}
@@ -299,7 +326,9 @@ export function ConsultaDeSolicitudPage() {
                       </Tooltip>
 
                       <Tooltip title="Descargar">
-                        <IconButton type="button" aria-label="search"
+                        <IconButton
+                          type="button"
+                          aria-label="search"
                           onClick={() => {
                             DescargarConsultaSolicitud(row.Solicitud);
                           }}
@@ -310,10 +339,13 @@ export function ConsultaDeSolicitudPage() {
                       </Tooltip>
 
                       <Tooltip title="Comentarios">
-                        <IconButton type="button" aria-label="search"
-                        onClick={() => {
-                          changeOpenVerComentarios(!openVerComentarios)
-                        }}>
+                        <IconButton
+                          type="button"
+                          aria-label="search"
+                          onClick={() => {
+                            changeOpenVerComentarios(!openVerComentarios);
+                          }}
+                        >
                           <CommentIcon />
                           {row.Acciones}
                         </IconButton>
@@ -330,7 +362,7 @@ export function ConsultaDeSolicitudPage() {
                           aria-label="search"
                           onClick={() => {
                             getSolicitudes(setDatos);
-                            fetchBorrarSolicitud(row.Id);
+                            // fetchBorrarSolicitud(row.Id);
                             getSolicitudes(setDatos);
                           }}
                         >

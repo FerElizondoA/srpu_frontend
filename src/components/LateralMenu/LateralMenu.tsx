@@ -304,55 +304,55 @@ export function LateralMenu() {
     );
   };
 
-  const reset = () => {
-    useCortoPlazoStore.setState({
-      obligadoSolidarioAvalTable: [],
-    });
+  // const reset = () => {
+  //   useCortoPlazoStore.setState({
+  //     obligadoSolidarioAvalTable: [],
+  //   });
 
-    useCortoPlazoStore.setState({
-      condicionFinancieraTable: [],
-    });
+  //   useCortoPlazoStore.setState({
+  //     tablaCondicionesFinancieras: [],
+  //   });
 
-    useCortoPlazoStore.setState({
-      plazoDias: 0,
-    });
+  //   useCortoPlazoStore.setState({
+  //     plazoDias: 0,
+  //   });
 
-    useCortoPlazoStore.setState({
-      montoOriginal: 0,
-    });
+  //   useCortoPlazoStore.setState({
+  //     montoOriginal: 0,
+  //   });
 
-    useCortoPlazoStore.setState({
-      fechaVencimiento: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     fechaVencimiento: "",
+  //   });
 
-    useCortoPlazoStore.setState({
-      institucion: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     institucion: { Id: '', Institucion: '' },
+  //   });
 
-    useCortoPlazoStore.setState({
-      tipoEntePublicoObligado: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     tipoEntePublicoObligado: { Id: '', TipoEntePublicoObligado: '' },
+  //   });
 
-    useCortoPlazoStore.setState({
-      entePublicoObligado: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     entePublicoObligado: { Id: '', EntePublicoObligado: '' },
+  //   });
 
-    useCortoPlazoStore.setState({
-      obligadoSolidarioAval: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     obligadoSolidarioAval: { Id: '', ObligadoSolidarioAval: '' },
+  //   });
 
-    useCortoPlazoStore.setState({
-      documentoAutorizado: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     documentoAutorizado: "",
+  //   });
 
-    useCortoPlazoStore.setState({
-      identificacion: "",
-    });
+  //   useCortoPlazoStore.setState({
+  //     identificacion: "",
+  //   });
 
-    useCortoPlazoStore.setState({
-      reglas: [],
-    });
-  };
+  //   useCortoPlazoStore.setState({
+  //     reglas: [],
+  //   });
+  // };
 
   return (
     <AppBar position="static">
@@ -467,6 +467,7 @@ export function LateralMenu() {
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             navigate("../ObligacionesCortoPlazo");
+                            window.location.reload();
                           }}
                         >
                           <ListItemIcon>

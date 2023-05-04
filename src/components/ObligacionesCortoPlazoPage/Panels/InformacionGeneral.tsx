@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   InputLabel,
@@ -10,7 +10,9 @@ import {
   TableBody,
   Grid,
   IconButton,
-  Tooltip
+  Tooltip,
+  Typography,
+  TableRow,
 } from "@mui/material";
 
 import {
@@ -31,13 +33,15 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import { ObligadoSolidarioAval } from "../../../store/informacion_general";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { IInformacionGeneral } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IEncabezado";
 
 interface Head {
   label: string;
 }
 
-const heads: readonly Head[] = [
+const heads: Head[] = [
   {
     label: "Acción",
   },
@@ -53,73 +57,146 @@ const heads: readonly Head[] = [
 ];
 
 export function InformacionGeneral() {
+  // GET CATALOGOS
+  const getDestinos: Function = useCortoPlazoStore(
+    (state) => state.getDestinos
+  );
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
+  );
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
+  );
+  const getObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.getObligadoSolidarioAval
+  );
 
-  const institucion: string = useCortoPlazoStore(state => state.institucion);
-  const changeInstitucion: Function = useCortoPlazoStore(state => state.changeInstitucion);
-  const institucionMap: Map<string | null, string> = useCortoPlazoStore(state => state.institucionMap);
-  const fetchInstituciones: Function = useCortoPlazoStore(state => state.fetchInstituciones);
-  const destino: string = useCortoPlazoStore(state => state.destino);
-  const changeDestino: Function = useCortoPlazoStore(state => state.changeDestino);
-  const destinoMap: Map<string | null, string> = useCortoPlazoStore(state => state.destinoMap);
-  const fetchDestinos: Function = useCortoPlazoStore(state => state.fetchDestinos);
-  const fechaContratacion: string = useCortoPlazoStore(state => state.fechaContratacion);
-  const changeFechaContratacion: Function = useCortoPlazoStore(state => state.changeFechaContratacion);
-  const plazoDias: number = useCortoPlazoStore(state => state.plazoDias);
-  const changePlazoDias: Function = useCortoPlazoStore(state => state.changePlazoDias);
-  const montoOriginal: number = useCortoPlazoStore(state => state.montoOriginal);
-  const changeMontoOriginal: Function = useCortoPlazoStore(state => state.changeMontoOriginal);
-  const fechaVencimiento: string = useCortoPlazoStore(state => state.fechaVencimiento);
-  const changeFechaVencimiento: Function = useCortoPlazoStore(state => state.changeFechaVencimiento);
-  const denominacion: string = useCortoPlazoStore(state => state.denominacion);
-  const changeDenominacion: Function = useCortoPlazoStore(state => state.changeDenominacion);
-  const obligadoSolidarioAval: string = useCortoPlazoStore(state => state.obligadoSolidarioAval);
-  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.changeObligadoSolidarioAval);
-  const obligadoSolidarioAvalMap: Map<string | null, string> = useCortoPlazoStore(state => state.obligadoSolidarioAvalMap);
-  const fetchObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.fetchObligadoSolidarioAval);
-  const tipoEntePublicoObligado: string = useCortoPlazoStore(state => state.tipoEntePublicoObligado);
-  const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeTipoEntePublicoObligado);
-  const tipoEntePublicoObligadoMap: Map<string | null, string> = useCortoPlazoStore(state => state.tipoEntePublicoObligadoMap);
-  const fetchTipoEntePublicoObligado: Function = useCortoPlazoStore(state => state.fetchTipoEntePublicoObligado);
-  const entePublicoObligado: string = useCortoPlazoStore(state => state.entePublicoObligado);
-  const changeEntePublicoObligado: Function = useCortoPlazoStore(state => state.changeEntePublicoObligado);
-  const obligadoSolidarioAvalTable: ObligadoSolidarioAval[] = useCortoPlazoStore(state => state.obligadoSolidarioAvalTable);
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(state => state.addObligadoSolidarioAval);
-  const updateObligadoSolidarioAvalTable: Function = useCortoPlazoStore(state => state.updateObligadoSolidarioAvalTable);
-  const organismosMap: Map<string | null, string>  = useCortoPlazoStore(state => state.organismosMap);
+  // CATALOGOS
+  const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoObligadoSolidarioAval
+  );
+  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+  const catalogoDestinos: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoDestinos
+  );
+  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoTipoEntePublicoObligado
+  );
+
+  // INFORMACION GENERAL
+  const fechaContratacion: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaContratacion
+  );
+  const fechaVencimiento: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaVencimiento
+  );
+  const plazo: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.plazo
+  );
+  const destino: { Id: string; Descripcion: string } = useCortoPlazoStore(
+    (state) => state.informacionGeneral.destino
+  );
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+  const denominacion: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.denominacion
+  );
+  const institucionFinanciera: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.informacionGeneral.institucionFinanciera
+    );
+
+  const changeInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+
+  // OBLIGADO SOLIDARIO AVAL
+  const generalObligadoSolidario: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.generalObligadoSolidarioAval.obligadoSolidario
+    );
+  const generalTipoEntePublico: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
+    );
+  const generalEntePublico: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.generalObligadoSolidarioAval.entePublicoObligado
+    );
+
+  // TABLA OBLIGADO SOLIDARIO AVAL
+  const tablaObligados: any = useCortoPlazoStore(
+    (state) => state.tablaObligadoSolidarioAval
+  );
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
+  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.changeObligadoSolidarioAval
+  );
+
+  const removeObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.removeObligadoSolidarioAval
+  );
 
   const addRows = () => {
-    const OSA: ObligadoSolidarioAval = {
-      id: hashFunctionCYRB53(new Date().getTime().toString()),
-      obligadoSolidario: obligadoSolidarioAval,
-      entePublicoObligado: entePublicoObligado,
-      tipoEntePublicoObligado: tipoEntePublicoObligado,
+    let tab = {
+      obligadoSolidario: generalObligadoSolidario.Descripcion,
+      tipoEntePublicoObligado: generalTipoEntePublico.Descripcion,
+      entePublicoObligado: generalEntePublico.Descripcion,
     };
-    addObligadoSolidarioAval(OSA);
+    addObligadoSolidarioAval(tab);
   };
 
-  React.useEffect(() => {
-    if (
-      differenceInDays(
-        startOfDay(new Date(fechaVencimiento)),
-        startOfDay(new Date(fechaContratacion))
-      ) > 0
-    ) {
-      changePlazoDias(
-        differenceInDays(
-          startOfDay(new Date(fechaVencimiento)),
-          startOfDay(new Date(fechaContratacion))
-        )
-      );
-    } else {
-      changeFechaVencimiento(addDays(new Date(fechaContratacion), 1));
-      changePlazoDias(
-        differenceInDays(
-          startOfDay(new Date(fechaVencimiento)),
-          startOfDay(new Date(fechaContratacion))
-        )
-      );
-    }
-  }, [fechaContratacion, fechaVencimiento]);
+  useEffect(() => {
+    getInstituciones();
+    getDestinos();
+    getTipoEntePublicoObligado();
+    getObligadoSolidarioAval();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {
+  //   if (/^[\s]*$/.test(obligadoSolidarioAval.ObligadoSolidarioAval)) {
+  //     changeTipoEntePublicoObligado("", "");
+  //     changeEntePublicoObligado("", "");
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [obligadoSolidarioAval]);
+
+  const [contratacion, setContratacion] = useState(fechaContratacion);
+
+  const [vencimiento, setVencimiento] = useState(fechaVencimiento);
+
+  const [plazoD, setPlazo] = useState(0);
+
+  useEffect(() => {
+    const res = differenceInDays(
+      startOfDay(new Date(vencimiento)),
+      startOfDay(new Date(contratacion))
+    );
+
+    setPlazo(res);
+
+    changeInformacionGeneral({
+      fechaContratacion: contratacion,
+      fechaVencimiento: vencimiento,
+      plazo: res,
+      destino: destino,
+      monto: monto,
+      denominacion: denominacion,
+      institucionFinanciera: institucionFinanciera,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contratacion, vencimiento]);
 
   return (
     <Grid container>
@@ -139,8 +216,10 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DatePicker
-              value={new Date(fechaContratacion)}
-              onChange={(date) => changeFechaContratacion(date?.toString())}
+              value={new Date(contratacion)}
+              onChange={(date) => {
+                setContratacion(date?.toString() || "");
+              }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{
@@ -155,7 +234,7 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             variant="standard"
-            value={plazoDias || 0}
+            value={plazoD}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -177,11 +256,17 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             fullWidth
-            value={montoOriginal}
-            onChange={(text) =>
-              /^[0-9,.]*$/.test(text.target.value)
-                ? changeMontoOriginal(text.target.value)
-                : null
+            value={monto}
+            onChange={(v) =>
+              changeInformacionGeneral({
+                fechaContratacion: contratacion,
+                fechaVencimiento: vencimiento,
+                plazo: plazo,
+                destino: destino,
+                monto: v.target.value,
+                denominacion: denominacion,
+                institucionFinanciera: institucionFinanciera,
+              })
             }
             InputLabelProps={{
               style: {
@@ -215,9 +300,9 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DatePicker
-              value={new Date(fechaVencimiento)}
-              onChange={(date) => changeFechaVencimiento(date?.toString())}
-              minDate={new Date(addDays(new Date(fechaContratacion), 1))}
+              value={new Date(vencimiento)}
+              onChange={(date) => setVencimiento(date?.toString() || "")}
+              minDate={new Date(addDays(new Date(contratacion), 1))}
               slots={{
                 textField: DateInput,
               }}
@@ -229,11 +314,33 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             fullWidth
-            value={destino || ''}
-            onChange={(event: any, text: string | null) =>
-              changeDestino(destinoMap.get(text), text)
-            }
-            options={Array.from(destinoMap.keys())}
+            options={catalogoDestinos}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: destino.Id || "",
+              Descripcion: destino.Descripcion || "",
+            }}
+            onChange={(event, text) => {
+              changeInformacionGeneral({
+                fechaContratacion: contratacion,
+                fechaVencimiento: vencimiento,
+                plazo: plazo,
+                destino: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                monto: monto,
+                denominacion: denominacion,
+                institucionFinanciera: institucionFinanciera,
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -241,7 +348,9 @@ export function InformacionGeneral() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
           />
         </Grid>
 
@@ -249,8 +358,18 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <TextField
             fullWidth
-            value={denominacion || ''}
-            onChange={(text) => changeDenominacion(text.target.value)}
+            value={denominacion || ""}
+            onChange={(v) =>
+              changeInformacionGeneral({
+                fechaContratacion: contratacion,
+                fechaVencimiento: vencimiento,
+                plazo: plazo,
+                destino: destino,
+                monto: monto,
+                denominacion: v.target.value,
+                institucionFinanciera: institucionFinanciera,
+              })
+            }
             variant="standard"
             InputLabelProps={{
               style: {
@@ -273,11 +392,33 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             fullWidth
-            value={institucion || ''}
-            onChange={(event: any, text: string | null) =>
-              changeInstitucion(institucionMap.get(text), text)
+            options={catalogoInstituciones}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: institucionFinanciera.Id || "",
+              Descripcion: institucionFinanciera.Descripcion || "",
+            }}
+            onChange={(event, text) =>
+              changeInformacionGeneral({
+                fechaContratacion: contratacion,
+                fechaVencimiento: vencimiento,
+                plazo: plazo,
+                destino: destino,
+                monto: monto,
+                denominacion: denominacion,
+                institucionFinanciera: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+              })
             }
-            options={Array.from(institucionMap.keys())}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -285,7 +426,9 @@ export function InformacionGeneral() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
           />
         </Grid>
       </Grid>
@@ -303,13 +446,34 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             fullWidth
-            value={obligadoSolidarioAval || ''}
-            options={Array.from(obligadoSolidarioAvalMap.keys())}
-            onChange={(event: any, text: string | null) =>
-              changeObligadoSolidarioAval(
-                obligadoSolidarioAvalMap.get(text),
-                text
-              )
+            options={catalogoObligadoSolidarioAval}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: generalObligadoSolidario.Id || "",
+              Descripcion: generalObligadoSolidario.Descripcion || "",
+            }}
+            onChange={(event, text) =>
+              changeObligadoSolidarioAval({
+                obligadoSolidario: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                tipoEntePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+                entePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              })
             }
             renderInput={(params) => (
               <TextField
@@ -318,7 +482,9 @@ export function InformacionGeneral() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
           />
         </Grid>
 
@@ -328,17 +494,35 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              obligadoSolidarioAval.includes("No aplica") ||
-              /^[\s]*$/.test(obligadoSolidarioAval)
+              generalObligadoSolidario.Descripcion === "No aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
             }
             fullWidth
-            value={tipoEntePublicoObligado || ''}
-            options={Array.from(tipoEntePublicoObligadoMap.keys())}
-            onChange={(event: any, text: string | null) =>
-              changeTipoEntePublicoObligado(
-                tipoEntePublicoObligadoMap.get(text),
-                text
-              )
+            options={catalogoTipoEntePublicoObligado}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: generalTipoEntePublico.Id || "",
+              Descripcion: generalTipoEntePublico.Descripcion || "",
+            }}
+            onChange={(event, text) =>
+              changeObligadoSolidarioAval({
+                obligadoSolidario: generalObligadoSolidario,
+                tipoEntePublicoObligado: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                entePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              })
             }
             renderInput={(params) => (
               <TextField
@@ -347,7 +531,10 @@ export function InformacionGeneral() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
           />
         </Grid>
 
@@ -357,15 +544,36 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              obligadoSolidarioAval.includes("No aplica") ||
-              /^[\s]*$/.test(tipoEntePublicoObligado)
+              generalObligadoSolidario.Descripcion === "No aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              /^[\s]*$/.test(generalTipoEntePublico.Descripcion)
             }
             fullWidth
-            value={entePublicoObligado || ''}
-            onChange={(event: any, text: string | null) =>
-              changeEntePublicoObligado(text)
+            options={catalogoOrganismos.filter(
+              (td: any) => td.IdTipoEntePublico === generalTipoEntePublico.Id
+            )}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: generalEntePublico.Id || "",
+              Descripcion: generalEntePublico.Descripcion || "",
+            }}
+            onChange={(event, text) =>
+              changeObligadoSolidarioAval({
+                obligadoSolidario: generalObligadoSolidario,
+                tipoEntePublicoObligado: generalTipoEntePublico,
+                entePublicoObligado: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+              })
             }
-            options={Array.from(organismosMap.keys())}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -373,7 +581,9 @@ export function InformacionGeneral() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
           />
         </Grid>
 
@@ -382,17 +592,17 @@ export function InformacionGeneral() {
             <TableContainer sx={{ maxHeight: "200px" }}>
               <Table stickyHeader>
                 <TableHead>
-                  {heads.map((head, index) => (
-                    <StyledTableCell key={index}>
-                      {/* <TableSortLabel> */}
-                      {head.label}
-                      {/* </TableSortLabel> */}
-                    </StyledTableCell>
-                  ))}
+                  <TableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {obligadoSolidarioAval.includes("No aplica") ? (
+                  {generalObligadoSolidario.Descripcion === "No aplica" ? (
                     <StyledTableRow>
                       <StyledTableCell />
                       <StyledTableCell />
@@ -400,16 +610,16 @@ export function InformacionGeneral() {
                       <StyledTableCell />
                     </StyledTableRow>
                   ) : (
-                    obligadoSolidarioAvalTable.map((row, index) => {
+                    tablaObligados.map((row: any, index: number) => {
                       return (
-                        <StyledTableRow key={row.id}>
+                        <StyledTableRow key={index}>
                           <StyledTableCell align="left">
                             <Tooltip title="Eliminar">
                               <IconButton
                                 type="button"
-                                onClick={() => updateObligadoSolidarioAvalTable(obligadoSolidarioAvalTable.filter(
-                                  item => item.id !== row.id
-                                ))}
+                                onClick={() =>
+                                  removeObligadoSolidarioAval(index)
+                                }
                               >
                                 <DeleteIcon />
                               </IconButton>
@@ -431,19 +641,20 @@ export function InformacionGeneral() {
                 </TableBody>
               </Table>
             </TableContainer>
-              <Grid item>
-                <ConfirmButton
-                  disabled={
-                    obligadoSolidarioAval.includes("No aplica") ||
-                    /^[\s]*$/.test(obligadoSolidarioAval) ||
-                    /^[\s]*$/.test(tipoEntePublicoObligado)
-                  }
-                  variant="outlined"
-                  onClick={() => addRows()}
-                >
-                  AGREGAR
-                </ConfirmButton>
-              </Grid>
+            <Grid item>
+              <ConfirmButton
+                disabled={
+                  generalObligadoSolidario.Descripcion === "No aplica" ||
+                  /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+                  /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
+                  /^[\s]*$/.test(generalEntePublico.Descripcion)
+                }
+                variant="outlined"
+                onClick={() => addRows()}
+              >
+                AGREGAR
+              </ConfirmButton>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

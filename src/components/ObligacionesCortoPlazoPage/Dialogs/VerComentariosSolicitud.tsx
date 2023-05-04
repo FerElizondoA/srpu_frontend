@@ -74,8 +74,7 @@ type Props = {
 
 ////////////////////////////////////////////////////////////////////////
 export function VerComentariosSolicitud(props: Props, Solicitud: string) {
-
-    const comentarios: string = useCortoPlazoStore(state => state.comentarios);
+  // const comentarios: string = useCortoPlazoStore(state => state.comentarios);
   return (
     <Dialog
       open={props.openState}
@@ -95,12 +94,11 @@ export function VerComentariosSolicitud(props: Props, Solicitud: string) {
             ))}
           </TableHead>
           <TableBody>
-                {/* {comentarios.localeCompare((row, index) =>(
+            {/* {comentarios.localeCompare((row, index) =>(
                     <StyledTableRow>
 
                     </StyledTableRow>
                 ))} */}
-            
           </TableBody>
         </Table>
       </Grid>

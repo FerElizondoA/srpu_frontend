@@ -33,89 +33,41 @@ export interface IRoles {
 
 export function Encabezado() {
   const tipoDocumento: string = useCortoPlazoStore(
-    (state) => state.tipoDocumento
+    (state) => state.encabezado.tipoDocumento
   );
-  // const changeTipoDocumento: Function = useCortoPlazoStore(
-  //   (state) => state.changeTipoDocumento
-  // );
-  const fetchEntesPublicos: Function = useCortoPlazoStore(
-    (state) => state.fetchEntesPublicos
+  const getTiposEntesPublicos: Function = useCortoPlazoStore(
+    (state) => state.getTiposEntesPublicos
   );
-  const entesPublicosMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.entesPublicosMap
+  const tipoEntePublico: { Id: string; TipoEntePublico: string } =
+    useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
+  const solicitanteAutorizado: { Solicitante: string; Cargo: string, Nombre: string } =
+    useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
+
+  const organismo: { Id: string; Organismo: string } = useCortoPlazoStore(
+    (state) => state.encabezado.organismo
   );
-  const tipoEntePublico: string = useCortoPlazoStore(
-    (state) => state.tipoEntePublico
-  );
-  const changeTipoEntePublico: Function = useCortoPlazoStore(
-    (state) => state.changeTipoEntePublico
-  );
-  const solicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.solicitanteAutorizado
-  );
-  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(
-    (state) => state.changeSolicitanteAutorizado
-  );
-  const organismosMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.organismosMap
-  );
-  const organismo: string = useCortoPlazoStore((state) => state.organismo);
-  const changeOrganismo: Function = useCortoPlazoStore(
-    (state) => state.changeOrganismo
-  );
-  const fetchOrganismos: Function = useCortoPlazoStore(
-    (state) => state.fetchOrganismos
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
   );
   const fechaContratacion: string = useCortoPlazoStore(
-    (state) => state.fechaContratacion
+    (state) => state.encabezado.fechaContratacion
   );
-  const changeFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeFechaContratacion
-  );
-  const cargoSolicitante: string = useCortoPlazoStore(
-    (state) => state.cargoSolicitante
-  );
-  const changeCargoSolicitante: Function = useCortoPlazoStore(
-    (state) => state.changeCargoSolicitante
+
+  const changeEncabezado: Function = useCortoPlazoStore(
+    (state) => state.changeEncabezado
   );
 
   useEffect(() => {
-    fetchEntesPublicos();
-    fetchOrganismos();
-
-    if (localStorage.getItem("EntePublicoObligado")?.length !== 0) {
-      changeTipoEntePublico(
-        entesPublicosMap.get(localStorage.getItem("TipoEntePublicoObligado")),
-        localStorage.getItem("TipoEntePublicoObligado")
-      );
-    }
-    if (localStorage.getItem("EntePublicoObligado")?.length !== 0) {
-      changeOrganismo(
-        organismosMap.get(localStorage.getItem("EntePublicoObligado")),
-        localStorage.getItem("EntePublicoObligado")
-      );
-    }
+    getTiposEntesPublicos();
+    getOrganismos();
+    getListadoUsuarios(setUsuarios, 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
-  // const [roles, setRoles] = useState<Array<IRoles>>([]);
-
-  useEffect(() => {
-    // getRoles(setRoles);
-    getListadoUsuarios(setUsuarios, 1);
-  }, []);
-
-  useEffect(() => {
-    let x = usuarios.find((usuario) => usuario.id === solicitanteAutorizado);
-    changeCargoSolicitante(x?.Cargo);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [solicitanteAutorizado]);
-
-  // useCortoPlazoStore.setState({ solicitanteAutorizado: usuario });
 
   return (
-    <Grid container>
+    <Grid container >
       <Grid
         item
         container
@@ -146,14 +98,23 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel id="select-usuarios-label">
-            Solicitante Autorizado
-          </InputLabel>
+          <InputLabel>Solicitante Autorizado</InputLabel>
           <Select
             fullWidth
-            value={solicitanteAutorizado || localStorage.getItem("IdUsuario")}
+            value={solicitanteAutorizado.Solicitante}
             onChange={(e) => {
-              changeSolicitanteAutorizado(e.target.value);
+              let x = usuarios.find((usuario) => usuario.id === e.target.value);
+              changeEncabezado({
+                tipoDocumento: tipoDocumento,
+                solicitanteAutorizado: {
+                  Solicitante: x?.id,
+                  Cargo: x?.Cargo,
+                  Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
+                },
+                tipoEntePublico: tipoEntePublico,
+                organismo: organismo,
+                fechaContratacion: fechaContratacion,
+              });
             }}
             variant="standard"
           >
@@ -172,7 +133,7 @@ export function Encabezado() {
 
           <TextField
             fullWidth
-            value={cargoSolicitante}
+            value={solicitanteAutorizado.Cargo}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -202,9 +163,7 @@ export function Encabezado() {
 
           <TextField
             fullWidth
-            value={
-              tipoEntePublico || localStorage.getItem("TipoEntePublicoObligado")
-            }
+            value={tipoEntePublico.TipoEntePublico}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -228,7 +187,7 @@ export function Encabezado() {
 
           <TextField
             fullWidth
-            value={organismo || localStorage.getItem("EntePublicoObligado")}
+            value={organismo.Organismo}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -255,7 +214,7 @@ export function Encabezado() {
           >
             <DatePicker
               value={new Date(fechaContratacion)}
-              onChange={(date) => changeFechaContratacion(date?.toString())}
+              // onChange={(date) => changeFechaContratacion(date?.toString())}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{
