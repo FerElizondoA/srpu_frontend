@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 
 import SendIcon from "@mui/icons-material/Send";
-import { IUsuarios } from "../Interfaces/IUsuarios";
-import { getCatalogo } from "../APIS/APISCatalogos";
-import { ICatalogo } from "../Catalogos";
-import { createSolicitud } from "../APIS/Solicitudes-Usuarios";
 import DialogContentText from "@mui/material/DialogContentText";
+import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
+import { ICatalogo } from "../../../screens/config/Catalogos";
+import { getCatalogo } from "../../APIS/config/APISCatalogos";
+import { createSolicitud } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export const DialogUsuarios = ({
   open,
@@ -49,6 +49,7 @@ export const DialogUsuarios = ({
     Rol: UserObject?.Rol || '',
     IdRol: UserObject?.IdRol || '',
     MunicipioUOrganizacion: UserObject?.MunicipioUOrganizacion || '',
+    IdMunicipioUOrganizacion: UserObject?.IdMunicipioUOrganizacion || '',
   });
 
   /*DIALOGF */
@@ -117,8 +118,6 @@ export const DialogUsuarios = ({
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 20 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Nombre: dato });
-      console.log(registroDatos);
-
     }
   };
 
@@ -142,7 +141,8 @@ export const DialogUsuarios = ({
   };
 
   const validaTipoUsuario = (dato: string) => {
-    setRegistroDatos({ ...registroDatos, Rol: dato });
+    let aux=tipoUsuario.filter((item)=>{if(item.Id===dato){return item}})
+    setRegistroDatos({ ...registroDatos, IdRol: dato,Rol:aux[0].Descripcion});
   };
 
   const validaCargo = (dato: string) => {
@@ -192,7 +192,7 @@ export const DialogUsuarios = ({
 
   const validaCURP = (dato: string) => {
     var format = /[ ¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    if (dato.length !== 19 && !format.test(dato)) {
+    if (dato.length < 19 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Curp: dato.toUpperCase() });
     }
     if (registroDatos.Curp.length < 18) {
@@ -467,7 +467,7 @@ export const DialogUsuarios = ({
               label="Tipo de Usuario"
               margin="dense"
               required
-              value={registroDatos.Rol}
+              value={registroDatos.IdRol}
               onChange={(e) => {
                 validaTipoUsuario(e.target.value);
               }}
@@ -475,7 +475,7 @@ export const DialogUsuarios = ({
               error={ErrorTipoUsuario}
             >
               {tipoUsuario?.map((option) => (
-                <MenuItem key={option.Id} value={option.Descripcion}>
+                <MenuItem key={option.Id} value={option.Id}>
                   {option.Descripcion}
                 </MenuItem>
               ))}
@@ -501,6 +501,7 @@ export const DialogUsuarios = ({
 
           <Grid item textTransform={"uppercase"} xs={12} md={4} lg={4} sm={12}>
             <TextField
+            disabled={localStorage.getItem("Rol")==='Capturador'}
               required
               margin="dense"
               variant="outlined"
@@ -515,7 +516,7 @@ export const DialogUsuarios = ({
               error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (
-                <MenuItem key={option.Id} value={option.Descripcion}>
+                <MenuItem key={option.Id} value={option.Id}>
                   {option.Descripcion}
                 </MenuItem>
               ))}

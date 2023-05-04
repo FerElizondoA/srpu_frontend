@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 
 export type TasaInteres = {
-    id: string;
+    id: number;
     fechaPrimerPago: string;
     tasaFija: string;
     periocidadPago: string;
@@ -45,6 +45,8 @@ export interface PagosCapitalSlice {
     fetchPeriocidadPago: () => void;
     fetchTasaReferencia: () => void;
     fetchDiasEjercicio: () => void;
+    updatePagosCapitalTable:(tasaInteresTable: TasaInteres[]) => void;
+
 }
 
 export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, get) => ({
@@ -66,6 +68,9 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
     periocidadDePagoMap: new Map<string | null, string>(),
     tasaReferenciaMap: new Map<string | null, string>(),
     diasEjercicioMap: new Map<string | null, string>(),
+
+    updatePagosCapitalTable: (tasaInteresTable: TasaInteres[]) => set(() => ({ tasaInteresTable: tasaInteresTable})),
+
     changeDisposicionFechaContratacion: (newFechaContratacion: string) => set(() => ({disposicionFechaContratacion: newFechaContratacion})),
     changeDisposicionImporte: (newImporte: number) => set(() => ({disposicionImporte: newImporte})),
     changeCapitalFechaPrimerPago: (newFechaPrimerPago: string) => set(() => ({capitalFechaPrimerPago: newFechaPrimerPago})),

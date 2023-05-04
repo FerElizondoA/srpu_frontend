@@ -8,37 +8,38 @@ import {
   Table,
   TableHead,
   TableBody,
+  Box,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
-
-import { Navigate, Route, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  AccountTree as AccountTreeIcon,
   Edit,
-  Edit as EditIcon,
-  FileDownload as FileDownloadIcon,
-  Input,
 } from "@mui/icons-material";
+import InfoIcon from "@mui/icons-material/Info";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { createSolicitud, getListadoUsuarios } from "./APIS/Solicitudes-Usuarios";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
-
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { DialogUsuarios } from "../../components/Config/dialogUsuarios/DialogUsuarios";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
+    []
+  );
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios(setUsuarios, 0);
   }, []);
 
   useEffect(() => {
@@ -90,22 +91,20 @@ export const Usuarios = () => {
       id: "Celular",
       label: "Celular",
     },
-    {
-      id: "Curp",
-      label: "Curp",
-    },
-    {
-      id: "Rfc",
-      label: "Rfc",
-    },
+    // {
+    //   id: "Curp",
+    //   label: "Curp",
+    // },
+    // {
+    //   id: "Rfc",
+    //   label: "Rfc",
+    // },
   ];
 
   /* BUSCADOR */
 
   const [datos, setDatos] = useState<Array<IUsuarios>>([]);
-  // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IUsuarios>>([]);
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -116,6 +115,7 @@ export const Usuarios = () => {
   };
 
   const filtrarDatos = () => {
+    // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
         elemento.Nombre.toString()
@@ -155,8 +155,6 @@ export const Usuarios = () => {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
-        console.log(elemento);
-
         return elemento;
       }
     });
@@ -173,262 +171,332 @@ export const Usuarios = () => {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length != 0 ? setUsuariosFiltrados(datos) : null;
+    busqueda.length !== 0 ? setUsuariosFiltrados(datos) : null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
+  /*  FIN BUSCADOR */
 
-  useEffect(() => {}, []);
+  const [usuarioEdit, setUsuarioEdit] = useState<IUsuarios>();
 
+  const openNewUsuario = () => {
+    setButonLabel("Agregar");
+    setTitle("AGREGAR USUARIO.");
 
-
-  /* BUSCADOR */
-
-
-  const [usuarioEdit,setUsuarioEdit]=useState<IUsuarios>();
-
-  const openNewUsuario=()=>{
-    setButonLabel('Agregar');
-    setTitle('AGREGAR USUARIO.');
-    
     setUsuarioEdit({
-      id: '',
-      IdCentral: '',
-      Nombre: '',
-      ApellidoPaterno: '',
-      ApellidoMaterno:'',
-      NombreUsuario: '',
-      CorreoElectronico: '',
-      Curp: '',
-      Rfc: '',
-      Telefono: '',
-      Ext: '',
-      Celular: '',
-      Cargo: '',
-      CorreoDeRecuperacion: '',
-      IdRol: '',
-      Rol: '',
-      MunicipioUOrganizacion: '',
-  
-  })
-  openDialogUser();
-  }
-  const openEditarUsuario=(name:string,usuario:IUsuarios)=>{
-    setButonLabel('Editar');
-    setTitle('EDITAR USUARIO ' + name.toUpperCase +'.');
-    
+      id: "",
+      IdCentral: "",
+      Nombre: "",
+      ApellidoPaterno: "",
+      ApellidoMaterno: "",
+      NombreUsuario: "",
+      CorreoElectronico: "",
+      Curp: "",
+      Rfc: "",
+      Telefono: "",
+      Ext: "",
+      Celular: "",
+      Cargo: "",
+      CorreoDeRecuperacion: "",
+      IdRol: "",
+      Rol: "",
+      MunicipioUOrganizacion: "",
+      IdMunicipioUOrganizacion: "",
+    });
+    openDialogUser();
+  };
+  const openEditarUsuario = (name: string, usuario: IUsuarios) => {
+    setButonLabel("Editar");
+    setTitle("EDITAR USUARIO " + name.toUpperCase + ".");
+
     setUsuarioEdit(usuario);
     openDialogUser();
-  }
+  };
 
-  const [butonLabel, setButonLabel]= useState('Agregar');
+  const [butonLabel, setButonLabel] = useState("Agregar");
   const [title, setTitle] = useState("AGREGAR  USUARIO.");
 
   /*DIALOG */
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogUser = () => {
     setOpenDialog(!openDialog);
- 
   };
 
   return (
-    <Grid container direction="column">
+    <Grid
+      container
+      direction="column"
+      rowSpacing={{ xs: 6, sm: 2, md: 4, xl: 4 }}
+    >
+      {/* GRID  HEADER */}
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
 
-      <Grid
-        item
-        //ml={window.innerWidth / 22}
-        mt={5}
-        mb={5}
-        lg={12}
-        display="flex"
-        justifyContent="flex-end"
-      >
-        <Grid
-          item
-          xs={8}
-          lg={8}
-          sm={8}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <Paper
-            component="form"
-            sx={{
-              display: "flex",
-              //alignItems: "center",
-              width: 800,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Buscar"
-              value={busqueda}
-              onChange={(e) => {
-                handleChange(e.target.value);
-              }}
-              onKeyPress={(ev) => {
-                //cuando se presiona Enter
-                if (ev.key === "Enter") {
-                  handleSearch();
-                  ev.preventDefault();
-                  return false;
-                }
-              }}
-            />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon
-                onClick={() => {
-                  handleSearch();
-                }}
-              />
-            </IconButton>
-          </Paper>
-        </Grid>
+      {/* GRID BODY */}
+      {usuarios.length <= 0 ? 
+        <Box sx={{ width: '100vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+          <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
+          <Typography color={'RED'}>ERROR</Typography>
+          <Button variant="text" sx={{ textDecoration: 'underline' }}
+            onClick={() => { navigate("../home") }}
+          >VOLVER AL INICIO</Button>
 
-        <Grid
-          item
-          xs={2}
-          lg={2}
-          sm={2}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <Button
-            color="info"
-            variant="contained"
-            sx={{ width: "80%" }}
-            endIcon={<FolderSharedRoundedIcon fontSize="large" />}
-            onClick={() => {navigate("../solicitudes-usuarios")}}
-          >
-            Ver Solicitudes
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={2}
-          lg={2}
-          sm={2}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <Button
-            variant="contained"
-            size="medium"
-            endIcon={<PersonAddAlt1Icon />}
-            sx={{ width: "80%" }}
-            onClick={() => {
-              openNewUsuario();
-            }}
-          >
-            Añadir Usuario
-          </Button>
-        </Grid>
-      </Grid>
 
-      <Grid item sx={{ height: "70vh" }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              {heads.map((head) => (
-                <StyledTableCell key={head.id} align="center">
-                  {head.label}
-                </StyledTableCell>
-              ))}
-            </TableHead>
-            <TableBody>
-              {usuariosFiltrados?.map((row) => (
-                <StyledTableRow>
-                  <StyledTableCell
-                    sx={{ display: "flex" }}
-                    component="th"
-                    scope="row"
-                    align="center"
+        </Box> : 
+
+        <Grid item
+          xs={12}
+          lg={12}
+          sm={12}
+
+        >
+          <Grid item xs={12} lg={12} sm={12}>
+            {/* GRRID Filtro Y BOTONES */}
+            <Grid
+              item
+              //ml={window.innerWidth / 22}
+              lg={12}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems={""}
+            >
+              <Grid
+                item
+                xs={8}
+                lg={8}
+                sm={8}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Paper
+                  component="form"
+                  sx={{
+                    display: "flex",
+                    //alignItems: "center",
+                    width: 800,
+                  }}
+                >
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Buscar"
+                    value={busqueda}
+                    onChange={(e) => {
+                      handleChange(e.target.value);
+                    }}
+                    onKeyPress={(ev) => {
+                      //cuando se presiona Enter
+                      if (ev.key === "Enter") {
+                        handleSearch();
+                        ev.preventDefault();
+                        return false;
+                      }
+                    }}
+                  />
+                  <IconButton
+                    type="button"
+                    sx={{ p: "10px" }}
+                    aria-label="search"
                   >
-                    <>
-                      <Tooltip title="Editar Usuario">
-                        <IconButton
-                          size="large"
-                          onClick={() => {
-                            openEditarUsuario(
-                              row.Nombre + " " + row.ApellidoPaterno,
-                              row
-                            );
-                          }}
+                    <SearchIcon
+                      onClick={() => {
+                        handleSearch();
+                      }}
+                    />
+                  </IconButton>
+                </Paper>
+              </Grid>
+
+              <Grid
+                item
+                xs={2}
+                lg={2}
+                sm={2}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Button
+                  color="info"
+                  variant="contained"
+                  sx={{ width: "80%" }}
+                  endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+                  onClick={() => {
+                    navigate("../solicitudes-usuarios");
+                  }}
+                >
+                  Ver Solicitudes
+                </Button>
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                lg={2}
+                sm={2}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Button
+                  variant="contained"
+                  size="medium"
+                  endIcon={<PersonAddAlt1Icon />}
+                  sx={{ width: "80%" }}
+                  onClick={() => {
+                    openNewUsuario();
+                  }}
+                >
+                  Añadir Usuario
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid item sx={{ height: "80vh" }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    {heads.map((head) => (
+                      <StyledTableCell
+                        key={head.id}
+                        align="center"
+                        sx={{ height: "10vh" }}
+                      >
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableHead>
+                  <TableBody>
+                    {usuariosFiltrados?.map((row) => (
+                      <StyledTableRow>
+                        <StyledTableCell
+                          sx={{ display: "flex", height: "10vh" }}
+                          component="th"
+                          scope="row"
+                          align="center"
                         >
-                          <Edit fontSize="inherit" />
-                        </IconButton>
-                      </Tooltip>
+                          <>
+                            <Tooltip title="Editar Usuario">
+                              <IconButton
+                                size="large"
+                                onClick={() => {
+                                  openEditarUsuario(
+                                    row.Nombre + " " + row.ApellidoPaterno,
+                                    row
+                                  );
+                                }}
+                              >
+                                <Edit fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
 
-                      <Tooltip title="Eliminar Usuario">
-                        <IconButton
-                          aria-label="delete"
-                          size="large"
-                          onClick={() => {
-                            console.log(row.id, row.ApellidoPaterno.toString());
-                          }}
+                            <Tooltip title="Eliminar Usuario">
+                              <IconButton
+                                aria-label="delete"
+                                size="large"
+                                onClick={() => {
+                                }}
+                              >
+                                <DeleteIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
                         >
-                          <DeleteIcon fontSize="inherit" />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Nombre.toString()}
-                  </StyledTableCell>
+                          {row.Nombre.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.ApellidoPaterno.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.ApellidoPaterno.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.ApellidoMaterno.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.ApellidoMaterno.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.MunicipioUOrganizacion.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.MunicipioUOrganizacion.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Cargo.toString()}
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Rol.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Cargo.toString()}
+                        </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Rol.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.CorreoElectronico.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.CorreoElectronico.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Telefono.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Telefono.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Ext.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Ext.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
-                    {row.Celular.toString()}
-                  </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          align="center"
+                        >
+                          {row.Celular.toString()}
+                        </StyledTableCell>
 
-                  <StyledTableCell component="th" scope="row" align="center">
+                        {/* <StyledTableCell component="th" scope="row" align="center">
                     {row.Curp.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Rfc.toString()}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
-      <DialogUsuarios
-        ActionButton={butonLabel}
-        open={openDialog}
-        title={title}
-        handleClose={openDialogUser}
-        UserObject={usuarioEdit}
-      />
-    </Grid>
+                  </StyledTableCell> */}
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+          </Grid>
+}
+          <DialogUsuarios
+            ActionButton={butonLabel}
+            open={openDialog}
+            title={title}
+            handleClose={openDialogUser}
+            UserObject={usuarioEdit}
+          />
+        </Grid>
   );
 };

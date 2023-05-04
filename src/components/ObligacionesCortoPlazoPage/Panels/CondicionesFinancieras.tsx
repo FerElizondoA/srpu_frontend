@@ -1,99 +1,194 @@
-import * as React from "react"
-
+import { useState } from "react"
+import { CondicionFinanciera } from "../../../store/condicion_financiera";
 import {
-    Grid,
-    Table,
-    TableBody,
-    TableSortLabel,
-    TableContainer,
-    TableHead,
-    Checkbox
+  Grid,
+  Table,
+  TableBody,
+  TableSortLabel,
+  TableContainer,
+  TableHead,
+  Checkbox,
+  Tooltip,
+  IconButton
 } from "@mui/material";
 
-import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
 import {
   StyledTableCell,
   StyledTableRow,
   ConfirmButton,
   DeleteButton,
+  hashFunctionCYRB53,
 } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
+
 import { format } from "date-fns";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+
+import { TasaInteres } from "../../../store/pagos_capital";
+import { TasaEfectiva } from "../../../store/tasa_efectiva";
+
+interface CFinancieras {
+  id: number,
+  sobreTasa: string,
+  tasaDiasEjercicio: string,
+  tasaFija: string,
+  disposicionFechaContratacion: string,
+  disposicionImporte: number,
+  capitalFechaPrimerPago: string,
+  capitalPeriocidadPago: string,
+  capitalNumeroPago: number,
+  tasaFechaPrimerPago: string,
+  tasaPeriocidadPago: string,
+
+}
 
 interface Head {
-    label: string;
+  label: string;
 }
 
 const heads: readonly Head[] = [
-    {
-        label: "Selección"
-    },
-    {
-        label: "Fecha de Disposición"
-    },
-    {
-        label: "Importe de Disposición"
-    },
-    {
-        label: "Fecha de Primer Pago Capital"
-    },
-    {
-        label: "Periocidad de Pago Capital"
-    },
-    {
-        label: "Fecha de Primer Pago de Interés"
-    },
-    {
-        label: "Tasa de Interés"
-    },
-    {
-        label: "Comisiones"
-    },
+  // {
+  //   label: "Selección"
+  // },
+  {
+    label: "Acciones"
+  },
+  {
+    label: "Fecha de Disposición"
+  },
+  {
+    label: "Importe de Disposición"
+  },
+  {
+    label: "Fecha de Primer Pago Capital"
+  },
+  {
+    label: "Periocidad de Pago Capital"
+  },
+  {
+    label: "Fecha de Primer Pago de Interés"
+  },
+  {
+    label: "Tasa de Interés"
+  },
+  {
+    label: "Comisiones"
+  },
+ 
 ]
 
-export function CondicionesFinancieras(){
+export function CondicionesFinancieras() {
 
-  const [openAgregarCondicion, changeAgregarCondicion] = React.useState(false);
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
+  const [selected, setSelected] = useState<readonly number[]>([]);
 
   const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(state => state.condicionFinancieraTable);
+  const loadCondicionFinanciera: Function = useCortoPlazoStore(state => state.loadCondicionFinanciera);
   const removeCondicionFinanciera: Function = useCortoPlazoStore(state => state.removeCondicionFinanciera);
 
-  const changeOpenAgregarState = (open: boolean) => {
+  const [accion, setAccion] = useState("Agregar");
+  const [indexA, setIndexA] = useState(0);
+
+  const changeOpenAgregarState = (open: boolean,) => {
     changeAgregarCondicion(open);
   }
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
+  const disposicionFechaContratacion: string = useCortoPlazoStore(
+    (state) => state.disposicionFechaContratacion
+  );
+  const disposicionImporte: number = useCortoPlazoStore(
+    (state) => state.disposicionImporte
+  );
+
+  const capitalFechaPrimerPago: string = useCortoPlazoStore(
+    (state) => state.capitalFechaPrimerPago
+  );
+
+  const capitalPeriocidadPago: string = useCortoPlazoStore(
+    (state) => state.capitalPeriocidadPago
+  );
+  const tasaFechaPrimerPago: string = useCortoPlazoStore(
+    (state) => state.tasaFechaPrimerPago
+  );
+  const tipoComision: string = useCortoPlazoStore(
+    (state) => state.tipoComision
+  );
+  const tasaReferencia: string = useCortoPlazoStore(
+    (state) => state.tasaReferencia
+  );
+  const capitalNumeroPago: number = useCortoPlazoStore(
+    (state) => state.capitalNumeroPago
+  );
+  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
+    (state) => state.tasaInteresTable
+  );
+  const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(
+    (state) => state.tasaEfectivaTable
+  );
+  // const upDataCondicionFinanciera: Function = useCortoPlazoStore(
+  //   (state) => state.upDataCondicionFinanciera
+  // )
+  const addCondicionFinanciera: Function = useCortoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
+
+
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(state => state.updatecondicionFinancieraTable);
+
+  // const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  //   const selectedIndex = selected.indexOf(id);
+  //   let newSelected: readonly number[] = [];
+
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, id);
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1));
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1),
+  //     );
+  //   }
+  //   setSelected(newSelected);
+  // };
+
+  // const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  // const deleteRows = () => {
+  //   selected.forEach((it) => {
+  //     removeCondicionFinanciera(it);
+  //   })
+  // }
+
+  const addRow = () => {
+    const CF: CondicionFinanciera = {
+
+
+      id: hashFunctionCYRB53(new Date().getTime().toString()),
+      fechaDisposicion: disposicionFechaContratacion,
+      importeDisposicion: disposicionImporte.toString(),
+      fechaPrimerPagoCapital: capitalFechaPrimerPago,
+      periocidadPagoCapital: capitalPeriocidadPago,
+      fechaPrimerPagoInteres: tasaFechaPrimerPago,
+      tasaInteres: tasaReferencia,
+      comisiones: tipoComision,
+      numeroPagoCapital: capitalNumeroPago,
+      tasasInteres: tasaInteresTable,
+      tasasEfectivas: tasaEfectivaTable,
+    };
+    addCondicionFinanciera(CF);
+    //}
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
-  const deleteRows = () => {
-    selected.forEach((it) => {
-      removeCondicionFinanciera(it);
-    })
-  }
   return (
     <Grid container direction="column">
       <Grid item>
-        <TableContainer sx={{ minHeight: "100%" }}>
+        <TableContainer sx={{ minHeight: "100%" }} >
           <Table>
             <TableHead>
               {heads.map((head) => (
@@ -104,29 +199,63 @@ export function CondicionesFinancieras(){
             </TableHead>
             <TableBody>
               {condicionFinancieraTable.map((row, index) => {
-                const isItemSelected: boolean = isSelected(index);
+                //  const isItemSelected: boolean = isSelected(index);
                 return (
-                  <StyledTableRow>
-                    <StyledTableCell padding="checkbox">
-                        <Checkbox
-                          onClick={(event) => handleClick(event, index)}
-                          checked={isItemSelected}
-                        />
+
+
+
+                  <StyledTableRow key={row.id}  >
+                    {/* <StyledTableCell padding="checkbox">
+                      <Checkbox
+                        // onClick={(event) => handleClick(event, index)}
+                        // checked={isItemSelected}
+                      />
+                    </StyledTableCell> */}
+
+                    <StyledTableCell align="left">
+                      <Tooltip title="Editar">
+                        <IconButton type="button" onClick={() => {
+                          changeOpenAgregarState(!openAgregarCondicion);
+                          setAccion("Editar")
+                          setIndexA(index)
+                          loadCondicionFinanciera(row);
+                          //editCondicionesFinancieras(row)
+                        }}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar">
+                        <IconButton type="button" onClick={() => {
+                          updatecondicionFinancieraTable(condicionFinancieraTable.filter(
+                            item => item.id !== row.id))
+                          //editCondicionesFinancieras(row)
+                        }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+
                     </StyledTableCell>
-                    <StyledTableCell component="th" scope="row">
+
+                    <StyledTableCell component="th" scope="row" >
                       {format(new Date(row.fechaDisposicion), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {"$" + row.importeDisposicion}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {format(new Date(row.fechaPrimerPagoCapital), "dd/MM/yyyy")}
+                      {format(
+                        new Date(row.fechaPrimerPagoCapital),
+                        "dd/MM/yyyy"
+                      )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.periocidadPagoCapital}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {format(new Date(row.fechaPrimerPagoInteres), "dd/MM/yyyy")}
+                      {format(
+                        new Date(row.fechaPrimerPagoInteres),
+                        "dd/MM/yyyy"
+                      )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.tasaInteres}
@@ -134,32 +263,46 @@ export function CondicionesFinancieras(){
                     <StyledTableCell align="center">
                       {row.comisiones}
                     </StyledTableCell>
+
+
+
                   </StyledTableRow>
                 );
-                })}
+              })}
             </TableBody>
           </Table>
         </TableContainer>
       </Grid>
 
       <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
-        <Grid item md={6}lg={6}>
+        <Grid item md={12} lg={12}>
           <ConfirmButton
             variant="outlined"
-            onClick={() =>
+            onClick={() => {
               changeOpenAgregarState(!openAgregarCondicion)
+              setAccion("Agregar")
+
+            }
             }
           >
             AGREGAR
           </ConfirmButton>
-          <AgregarCondicionFinanciera
+          {changeOpenAgregarState ? <AgregarCondicionFinanciera
             handler={changeOpenAgregarState}
             openState={openAgregarCondicion}
-          />
+            accion={accion}
+            indexA={indexA}
+
+          /> : null}
         </Grid>
-        <Grid item md={6} lg={6}>
-          <DeleteButton variant="outlined" onClick={() => deleteRows()}>ELIMINAR</DeleteButton>
-        </Grid>
+
+        {/* <Grid item md={6} lg={6}>
+          <DeleteButton variant="outlined" 
+          //onClick={() =>
+             //deleteRows()}
+             >ELIMINAR</DeleteButton>
+        </Grid> */}
+
       </Grid>
     </Grid>
   );

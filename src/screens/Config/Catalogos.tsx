@@ -12,15 +12,15 @@ import {
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getCatalogo } from "./APIS/APISCatalogos";
 import { Box } from "@mui/system";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { DialogCatalogos, IDialog } from "./DialogCatalogos";
+import { DialogCatalogos, IDialog } from "../../components/Config/dialogCatalogos/DialogCatalogos";
 import InfoIcon from "@mui/icons-material/Info";
+import { getCatalogo } from "../../components/APIS/config/APISCatalogos";
 
 export function Catalogos() {
   const params = new URLSearchParams(window.location.search);
@@ -94,7 +94,7 @@ export function Catalogos() {
     {
       id: 13,
       label: "Tipos de documento",
-      fnc: "tiposDocumento",
+      fnc: "tiposDocumentos",
     },
     {
       id: 14,
@@ -426,7 +426,7 @@ export function Catalogos() {
   );
 }
 
- export interface ICatalogo {
+export interface ICatalogo {
   Id: string;
   Descripcion: string;
   OCP: number;

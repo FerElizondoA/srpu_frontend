@@ -33,5 +33,6 @@ export interface IUsuarios {
     CorreoDeRecuperacion: string;
     IdRol: string;
     Rol: string;
+    IdMunicipioUOrganizacion: string;
     MunicipioUOrganizacion: string;
 }
