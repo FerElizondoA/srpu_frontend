@@ -261,7 +261,7 @@ export function ConsultaDeSolicitudPage() {
                     <Chip
                     label={row.Estatus}
                       icon={<RateReviewSharpIcon />}
-                      color="secondary"
+                      color="info"
                       variant="outlined"
                     />
                   );
@@ -272,7 +272,7 @@ export function ConsultaDeSolicitudPage() {
                     <Chip
                     label={row.Estatus}
                       icon={<CheckIcon />}
-                      color="secondary"
+                      color="info"
                       variant="outlined"
                     />
                   );

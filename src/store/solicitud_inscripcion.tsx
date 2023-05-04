@@ -179,7 +179,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Swal.fire({
             icon: "error",
             title: "Mensaje",
-            text: "La solicitud no se ha creada exitosamente.",
+            text: "La solicitud no se ha creada.",
           })
         });
     } else {
@@ -220,7 +220,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Swal.fire({
             icon: "success",
             title: "Mensaje",
-            text: "La solicitud ha sido modificado exitosamente.",
+            text: "La solicitud se ha sido modificado exitosamente.",
           });
         })
         .catch((e) => {
@@ -296,18 +296,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((response) => {
-        Swal.fire({
-          icon: "success",
-          title: "Mensaje",
-          text: "Se ha creado el comentario exitosamente.",
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Mensaje",
+        //   text: "Se ha creado el comentario exitosamente.",
+        // });
       })
       .catch((e) => {
-        Swal.fire({
-          icon: "error",
-          title: "Mensaje",
-          text: "No se ha creado el comentario.",
-        })
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Mensaje",
+        //   text: "No se ha creado el comentario.",
+        // })
       });
   },
 
