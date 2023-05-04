@@ -33,7 +33,6 @@ type Props = {
   handler: Function;
   openState: boolean;
   selected: number[];
-  
 };
 
 export function ConfirmacionSolicitud(props: Props) {
@@ -41,9 +40,7 @@ export function ConfirmacionSolicitud(props: Props) {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-
-  const [estatus, setEstatus] =useState("")
-
+  let estatus = "";
 
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -53,9 +50,7 @@ export function ConfirmacionSolicitud(props: Props) {
     (state) => state.fetchReglas
   );
 
-  const IdSolicitud: string= useCortoPlazoStore(
-    (state) => state.IdSolicitud
-  )
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
   const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
@@ -79,6 +74,8 @@ export function ConfirmacionSolicitud(props: Props) {
 
   const navigate = useNavigate();
   //////////////// Este apartado es el de finalizar
+
+  const handlerEstatus = (Estatus: string) => {};
   return (
     <Dialog
       open={props.openState}
@@ -137,15 +134,16 @@ export function ConfirmacionSolicitud(props: Props) {
                   //sx ={{textAlign: 'center'}}
                   onClick={() => {
                     props.handler(false);
-                    console.log("hola ",IdSolicitud);
+                    
 
-                    if(localStorage.getItem("Rol") === "Verificador"){
-                      setEstatus("Por Firmar")
+                    if (localStorage.getItem("Rol") === "Verificador") {
+                      estatus = "Por Firmar";
                     }
-                    if(localStorage.getItem("Rol") === "Capturador"){
-                      setEstatus("En verificacion")
+                    if (localStorage.getItem("Rol") === "Capturador") {
+                      estatus = "En verificacion";
                     }
 
+                    console.log("estatus: ", estatus);
 
                     crearSolicitud(props.selected, estatus);
 
@@ -176,7 +174,6 @@ export function ConfirmacionSolicitud(props: Props) {
                   //sx={queries.medium_text}
                   variant="text"
                   onClick={() => props.handler(false)}
-                
                 >
                   Cancelar
                 </Button>

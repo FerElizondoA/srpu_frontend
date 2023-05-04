@@ -93,7 +93,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     notnull();
   }, []);
 
-  const [estatus, setEstatus] =useState("")
+
+  let estatus = "";
 
   return (
     <Dialog
@@ -152,11 +153,13 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                   // notnull()
 
                   if(localStorage.getItem("Rol") === "Verificador"){
-                    setEstatus("Capturar")
+                    estatus = "Capturar"
                   }
                   if(localStorage.getItem("Rol") === "Capturador"){
-                    setEstatus("En captura")
+                    estatus = "En Captura" 
                   }
+
+                  console.log("estatus: ", estatus);
 
                   crearSolicitud(props.selected, estatus);
                   navigate("../ConsultaDeSolicitudes");

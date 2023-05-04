@@ -234,7 +234,7 @@ export function ConsultaDeSolicitudPage() {
               {datosFiltrados.map((row) => {
                 let chip = <></>;
 
-                if (row.Estatus === "Captura") {
+                if (row.Estatus === "En captura") {
                   chip = (
                     <Chip
                       label= {row.Estatus}
@@ -244,7 +244,7 @@ export function ConsultaDeSolicitudPage() {
                     />
                   );
                 }
-                if (row.Estatus === "En captura") {
+                if (row.Estatus === "Capturar") {
                   chip = (
                     <Chip
                       label={row.Estatus}
@@ -259,8 +259,8 @@ export function ConsultaDeSolicitudPage() {
                   chip = (
                     <Chip
                     label={row.Estatus}
-                      icon={<CheckIcon />}
-                      color="success"
+                      icon={<RateReviewSharpIcon />}
+                      color="secondary"
                       variant="outlined"
                     />
                   );
@@ -330,7 +330,7 @@ export function ConsultaDeSolicitudPage() {
 
                       {localStorage.getItem("Rol") === "Verificador" || 
                       // revisar
-                      (localStorage.getItem("Rol") === "Capturador" && row.Estatus ==="Captura")
+                      (localStorage.getItem("Rol") === "Capturador" && row.Estatus ==="En Captura")
                        ? (
                         <Tooltip title="Editar">
                           <IconButton

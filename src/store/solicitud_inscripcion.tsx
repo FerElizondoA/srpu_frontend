@@ -80,7 +80,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-    console.log("Estatus", Estatus);
+    console.log("Estatus: ", Estatus);
     
     const state = useCortoPlazoStore.getState();
 
@@ -144,6 +144,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
+            IdEditor: 1,
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -192,6 +193,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
+            IdEditor: 1,
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
