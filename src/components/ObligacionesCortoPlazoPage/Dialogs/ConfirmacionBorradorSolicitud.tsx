@@ -24,6 +24,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
+import { getUsuariosAsignables } from "../../../store/solicitud_inscripcion";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -38,6 +39,12 @@ type Props = {
   openState: boolean;
   selected: number[];
 };
+
+interface IUsuariosAsignables {
+  Id: string;
+  Nombre: string;
+  Rol: string;
+}
 
 export function ConfirmacionBorradorSolicitud(props: Props) {
   const query = {
@@ -87,6 +94,9 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     }
   };
 
+  
+
+
   useEffect(() => {
     console.log("hola", tipoEntePublico);
 
@@ -94,7 +104,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   }, []);
 
 
-  let estatus = "";
+  let estatus = "Captura";
 
   return (
     <Dialog
@@ -146,22 +156,17 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //sx={queries.text}
                 //onClick={handleClick}
                 onClick={() => {
-
-
-                  
                   props.handler(false);
                   // notnull()
-
                   if(localStorage.getItem("Rol") === "Verificador"){
                     estatus = "Capturar"
                   }
                   if(localStorage.getItem("Rol") === "Capturador"){
-                    estatus = "En Captura" 
+                    estatus = "Capturar" 
                   }
-
                   console.log("estatus: ", estatus);
-
-                  crearSolicitud(props.selected, estatus);
+                
+                  crearSolicitud(props.selected, estatus, localStorage.getItem("IdUsuario") );
                   navigate("../ConsultaDeSolicitudes");
                 }}
                 variant="text"

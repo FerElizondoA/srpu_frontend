@@ -52,7 +52,9 @@ export  function getSolicitudes (setState:Function){
   axios({
      method: 'get',
      url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-solicitudes',
-     data: {},
+     params: {
+      IdUsuario: localStorage.getItem("IdUsuario")
+    },
      headers: {
          "Content-Type": "application/json",
          Authorization: localStorage.getItem("jwtToken") || "",

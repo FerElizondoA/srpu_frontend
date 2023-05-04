@@ -28,6 +28,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 import { useNavigate } from "react-router-dom";
 import { getUsuariosAsignables } from "../../../store/solicitud_inscripcion";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { createNotification } from "../../LateralMenu/APINotificaciones";
 
 
 interface IUsuariosAsignables {
@@ -86,16 +87,21 @@ export function ConfirmacionSolicitud({
   const navigate = useNavigate();
   //////////////// Este apartado es el de finalizar
 
-  const [usuariosAsignables, setUsuariosAsignables] = useState<
-    Array<IUsuariosAsignables>
-  >([]);
+  const [usuariosAsignables, setUsuariosAsignables] = useState<Array<IUsuariosAsignables>>([]);
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+ 
+  let usuario = idUsuarioAsignado
 
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
   useEffect(() => {
     getUsuariosAsignables(setUsuariosAsignables);
   }, []);
+
+  useEffect(() => {
+    console.log('usuario asignado' ,idUsuarioAsignado)
+  }, [idUsuarioAsignado])
+  
 
   useEffect(() => {
     console.log(usuariosAsignables);
@@ -120,14 +126,14 @@ export function ConfirmacionSolicitud({
             value={idUsuarioAsignado}
             onChange={(e) => {
               setidUsuarioAsignado(e.target.value);
-
+              usuario = e.target.value
             }}
           >
             {usuariosAsignables.map((usuario, index) => {
               return (
                 <MenuItem value={usuario.Id}>
                   {usuario.Nombre + " " + usuario.Rol}
-                  
+
                 </MenuItem>
               );
             })}
@@ -137,7 +143,7 @@ export function ConfirmacionSolicitud({
         <Grid mb={1} mt={2}>
           <TextField
             fullWidth
-            label="Comentarios        "
+            label="Comentarios"
             multiline
             variant="standard"
             maxRows={5}
@@ -150,8 +156,7 @@ export function ConfirmacionSolicitud({
       <DialogActions>
         <Button
           onClick={() => {
-            handler(false);
-
+            
             if (localStorage.getItem("Rol") === "Verificador") {
               estatus = "Por Firmar";
             }
@@ -161,9 +166,14 @@ export function ConfirmacionSolicitud({
 
             console.log("estatus: ", estatus);
 
-            crearSolicitud(selected, estatus);
+            crearSolicitud(selected, estatus, usuario);
 
             navigate("../ConsultaDeSolicitudes");
+              let arrUsuarios=[idUsuarioAsignado]
+            createNotification( 'Tienes una solicitud ', 'Prueba', arrUsuarios)
+            
+            handler(false);
+
           }}
           disabled={comentarios.length >= 200}
           variant="text"

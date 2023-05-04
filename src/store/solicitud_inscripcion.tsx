@@ -22,7 +22,7 @@ export interface SolicitudInscripcionSlice {
   changeComentarios: (newComentarios: string) => void;
 
   fetchReglas: () => void;
-  crearSolicitud: (reglasSeleccionadas: number[], Estatus: string) => void;
+  crearSolicitud: (reglasSeleccionadas: number[], Estatus: string, idUsuarioAsignado:string) => void;
   fetchBorrarSolicitud: (Id: string) => boolean;
   fetchComentario: (Id: string, comentario: string) => void;
 }
@@ -75,11 +75,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
     }
   },
 
-  crearSolicitud: async (reglasSeleccionadas: number[], Estatus: string) => {
+  crearSolicitud: async (reglasSeleccionadas: number[], Estatus: string, idUsuarioAsignado:string) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
+    console.log("idUsuarioAsignado: ", idUsuarioAsignado);
     console.log("Estatus: ", Estatus);
     
     const state = useCortoPlazoStore.getState();
@@ -144,7 +145,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: localStorage.getItem("IdUsuario"),
+            IdEditor: idUsuarioAsignado,
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -193,7 +194,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: localStorage.getItem("IdUsuario"),
+            IdEditor: idUsuarioAsignado,
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
