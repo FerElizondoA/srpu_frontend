@@ -93,6 +93,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     notnull();
   }, []);
 
+  const [estatus, setEstatus] =useState("")
+
   return (
     <Dialog
       open={props.openState}
@@ -143,9 +145,20 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //sx={queries.text}
                 //onClick={handleClick}
                 onClick={() => {
+
+
+                  
                   props.handler(false);
                   // notnull()
-                  crearSolicitud(props.selected);
+
+                  if(localStorage.getItem("Rol") === "Verificador"){
+                    setEstatus("Capturar")
+                  }
+                  if(localStorage.getItem("Rol") === "Capturador"){
+                    setEstatus("En captura")
+                  }
+
+                  crearSolicitud(props.selected, estatus);
                   navigate("../ConsultaDeSolicitudes");
                 }}
                 variant="text"
