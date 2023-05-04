@@ -53,7 +53,7 @@ export function ConfirmacionSolicitud({
   };
 
   let estatus = "";
-
+  let numero2 = asignar
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -79,6 +79,8 @@ export function ConfirmacionSolicitud({
   useEffect(() => {
     fetchReglas();
   }, []);
+  
+  
 
   const fetchComentario: Function = useCortoPlazoStore(
     (state) => state.fetchComentario
@@ -95,7 +97,7 @@ export function ConfirmacionSolicitud({
 
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
   useEffect(() => {
-    getUsuariosAsignables(setUsuariosAsignables);
+    getUsuariosAsignables(setUsuariosAsignables, asignar);
   }, []);
 
   useEffect(() => {
@@ -161,7 +163,11 @@ export function ConfirmacionSolicitud({
               estatus = "Por Firmar";
             }
             if (localStorage.getItem("Rol") === "Capturador") {
-              estatus = "En verificacion";
+              estatus = "Verificacion";
+            }
+
+            if (localStorage.getItem("Rol") === "Verificador" && asignar === 2) {
+              estatus = "Captura";
             }
 
             console.log("estatus: ", estatus);

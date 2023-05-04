@@ -234,7 +234,7 @@ export function ConsultaDeSolicitudPage() {
               {datosFiltrados.map((row) => {
                 let chip = <></>;
 
-                if (row.Estatus === "En captura") {
+                if (row.Estatus === "Captura") {
                   chip = (
                     <Chip
                       label={row.Estatus}
@@ -244,7 +244,7 @@ export function ConsultaDeSolicitudPage() {
                     />
                   );
                 }
-                if (row.Estatus === "Capturar") {
+                if (row.Estatus === "Captura") {
                   chip = (
                     <Chip
                       label={row.Estatus}
@@ -255,7 +255,7 @@ export function ConsultaDeSolicitudPage() {
                   );
                 }
 
-                if (row.Estatus === "En verificacion") {
+                if (row.Estatus === "Verificacion") {
                   chip = (
                     <Chip
                       label={row.Estatus}
@@ -271,7 +271,7 @@ export function ConsultaDeSolicitudPage() {
                     <Chip
                       label={row.Estatus}
                       icon={<CheckIcon />}
-                      color="secondary"
+                      color="info"
                       variant="outlined"
                     />
                   );

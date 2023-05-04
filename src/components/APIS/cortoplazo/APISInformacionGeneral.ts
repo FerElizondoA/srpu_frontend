@@ -53,7 +53,7 @@ export  function getSolicitudes (setState:Function){
      method: 'get',
      url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-solicitudes',
      params: {
-      IdUsuario: localStorage.getItem("IdUsuario")
+      IdUsuario: localStorage.getItem("IdUsuario"),
     },
      headers: {
          "Content-Type": "application/json",

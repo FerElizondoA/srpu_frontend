@@ -42,6 +42,8 @@ const heads: readonly Head[] = [
 
 export function SolicitudInscripcion() {
 
+  
+
   const [openDialog, changeOpenDialog] = useState(false);
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
@@ -52,19 +54,15 @@ export function SolicitudInscripcion() {
     changeOpenDialogBorrador(open);
   };
 
-  
-
   const [openDialogCancelar, changeOpenDialogCancelar] = useState(false);
   const changeOpenDialogCancelarState = (open: boolean) => {
     changeOpenDialogCancelar(open);
   };
 
-  
   const [openDialogUsuarios, changeOpenDialogUsuarios] = useState(false);
-  const changeOpenDialogUsuariosState =(open: boolean) =>{
+  const changeOpenDialogUsuariosState = (open: boolean) => {
     changeOpenDialogUsuarios(open);
   };
-
 
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
@@ -104,6 +102,7 @@ export function SolicitudInscripcion() {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
 
   const [selected, setSelected] = React.useState<number[]>([]);
 
@@ -130,7 +129,9 @@ export function SolicitudInscripcion() {
     if (localStorage.getItem("Rol") === "Capturador") {
       return <Typography sx={queries.medium_text}>CAPTURAR</Typography>;
     } else if (localStorage.getItem("Rol") === "Verificador") {
-      return <Typography sx={queries.medium_text}>FINALIZAR SOLICITUD</Typography>;
+      return (
+        <Typography sx={queries.medium_text}>FINALIZAR SOLICITUD</Typography>
+      );
     } else if (localStorage.getItem("Rol") === "Administrador") {
       return <Typography sx={queries.medium_text}>FINALIZAR</Typography>;
     }
@@ -145,18 +146,9 @@ export function SolicitudInscripcion() {
       return <Typography sx={queries.medium_text}> FINALIZAR</Typography>;
     }
   };
-
-  const buttonAdminVerificador = () => {
-    if (localStorage.getItem("Rol") === "Verificador") {
-      return (
-        <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
-      );
-    } else if (localStorage.getItem("Rol") === "Administrador") {
-      return <Typography sx={queries.medium_text}>FIRMAR</Typography>;
-    }
-  };
-
-  const opciones = () => {
+  
+  const [numero, setNumero] = useState(0);
+  const opciones = (numero: number) => {
     if (localStorage.getItem("Rol") === "Capturador") {
       return (
         <Grid
@@ -176,7 +168,7 @@ export function SolicitudInscripcion() {
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
 
-          {localStorage.getItem("Rol") !== "Capturador" &&  (
+          {localStorage.getItem("Rol") !== "Capturador" && (
             <Fab variant="extended" color="success" sx={{ mb: "10px" }}>
               <CheckIcon sx={{ mr: 1 }} />
               {buttonEstatus()}
@@ -227,16 +219,25 @@ export function SolicitudInscripcion() {
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
 
-         
-
           <Fab
             variant="extended"
-            color="success" 
-            onClick={() => changeOpenDialogUsuariosState(!openDialogUsuarios)}
-            sx={{ mb: "10px" }}
+            color="success"
+            onClick={() => {
+              numero = 2;
+              
+              setNumero(numero)
+              changeOpenDialogState(!openDialog);
+            }}
+            sx={{
+              mb: "10px",
+              // "&:disabled": { backgroundColor: "#D42C2C", color: "white" },
+            }}
+            //disabled={IdSolicitud === ""}
           >
             <CheckIcon sx={{ mr: 1 }} />
-            {buttonAdminVerificador()}
+            <Typography sx={queries.medium_text}>
+              SOLICITAR MODIFICACION
+            </Typography>
           </Fab>
 
           <Fab
@@ -255,6 +256,9 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
+              numero = 1;
+              
+              setNumero(numero)
               changeOpenDialogState(!openDialog);
             }}
           >
@@ -303,15 +307,6 @@ export function SolicitudInscripcion() {
           <Fab
             variant="extended"
             color="success" //onClick={() => crearSolicitud(selected)}
-            sx={{ mb: "10px" }}
-          >
-            <CheckIcon sx={{ mr: 1 }} />
-            {buttonAdminVerificador()}
-          </Fab>
-
-          <Fab
-            variant="extended"
-            color="success" //onClick={() => crearSolicitud(selected)}
             onClick={() => {
               changeOpenDialogBorradorState(!openDialog);
             }}
@@ -342,6 +337,7 @@ export function SolicitudInscripcion() {
     fetchReglas();
   }, []);
 
+ 
   return (
     <Grid item container>
       <Grid
@@ -532,16 +528,18 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          {opciones()}
+          {opciones(numero)}
         </Grid>
 
-        {openDialog?<ConfirmacionSolicitud
-          handler={changeOpenDialogState}
-          openState={openDialog}
-          //Id ={}
-          selected={selected}
-          asignar={1}
-        />:null}
+        {openDialog ? (
+          <ConfirmacionSolicitud
+            handler={changeOpenDialogState}
+            openState={openDialog}
+            //Id ={}
+            selected={selected}   
+            asignar={numero}
+          />
+        ) : null}
 
         {changeOpenDialogBorradorState ? (
           <ConfirmacionBorradorSolicitud
@@ -557,8 +555,8 @@ export function SolicitudInscripcion() {
           selected={selected}
         />
         <DialogCatalogoUsuarios
-        handler={changeOpenDialogUsuariosState}
-        openState={openDialogUsuarios}
+          handler={changeOpenDialogUsuariosState}
+          openState={openDialogUsuarios}
         />
       </Grid>
     </Grid>
