@@ -41,6 +41,9 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
+
+  
+
   const [openDialog, changeOpenDialog] = useState(false);
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
@@ -143,30 +146,9 @@ export function SolicitudInscripcion() {
       return <Typography sx={queries.medium_text}> FINALIZAR</Typography>;
     }
   };
-
-  // const buttonAdminVerificador = () => {
-  //   if (localStorage.getItem("Rol") === "Verificador") {
-  //     return (
-  //       <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
-  //     );
-  //   }
-
-
-  //   // else if (
-  //   //   localStorage.getItem("Rol") === "Verificador" &&
-  //   //   IdSolicitud === ""
-  //   // ) {
-  //   //   return (
-  //   //     <Typography sx={queries.medium_text}>
-  //   //       Solicitud aun no creada
-  //   //     </Typography>
-  //   //   );
-  //   // }
-
-
-  // };
-
-  const opciones = () => {
+  
+  const [numero, setNumero] = useState(0);
+  const opciones = (numero: number) => {
     if (localStorage.getItem("Rol") === "Capturador") {
       return (
         <Grid
@@ -209,7 +191,7 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
-              changeOpenDialogUsuariosState(!openDialogUsuarios);
+              // changeOpenDialogUsuariosState(!openDialogUsuarios)
               changeOpenDialogState(!openDialog);
             }}
           >
@@ -240,18 +222,22 @@ export function SolicitudInscripcion() {
           <Fab
             variant="extended"
             color="success"
-            onClick={() => changeOpenDialogUsuariosState(!openDialogUsuarios)}
+            onClick={() => {
+              numero = 2;
+              
+              setNumero(numero)
+              changeOpenDialogState(!openDialog);
+            }}
             sx={{
               mb: "10px",
-             // "&:disabled": { backgroundColor: "#D42C2C", color: "white" },
+              // "&:disabled": { backgroundColor: "#D42C2C", color: "white" },
             }}
             //disabled={IdSolicitud === ""}
           >
             <CheckIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
-
-
-
+            <Typography sx={queries.medium_text}>
+              SOLICITAR MODIFICACION
+            </Typography>
           </Fab>
 
           <Fab
@@ -270,6 +256,9 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
+              numero = 1;
+              
+              setNumero(numero)
               changeOpenDialogState(!openDialog);
             }}
           >
@@ -348,6 +337,7 @@ export function SolicitudInscripcion() {
     fetchReglas();
   }, []);
 
+ 
   return (
     <Grid item container>
       <Grid
@@ -538,15 +528,18 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          {opciones()}
+          {opciones(numero)}
         </Grid>
 
-        <ConfirmacionSolicitud
-          handler={changeOpenDialogState}
-          openState={openDialog}
-          //Id ={}
-          selected={selected}
-        />
+        {openDialog ? (
+          <ConfirmacionSolicitud
+            handler={changeOpenDialogState}
+            openState={openDialog}
+            //Id ={}
+            selected={selected}   
+            asignar={numero}
+          />
+        ) : null}
 
         {changeOpenDialogBorradorState ? (
           <ConfirmacionBorradorSolicitud

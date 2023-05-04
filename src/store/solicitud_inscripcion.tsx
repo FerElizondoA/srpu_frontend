@@ -66,7 +66,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       );
       response.data.data.forEach((e: any) => {
-        
         set((state) => ({
           reglasCatalog: [...state.reglasCatalog, e.Descripcion],
         }));
@@ -81,7 +80,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
     console.log("Estatus: ", Estatus);
-    
+
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
@@ -121,20 +120,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
       tasaEfectiva: state.tasaEfectiva,
       capitalPeriocidadPago: state.capitalPeriocidadPago,
       /* ---- CONDICIONES FINANCIERAS ---- */
-     
-      
+
       /* ---- SOLICITUD DE INSCRIPCION ---- */
       reglas: reglas,
       nombreServidorPublico: state.nombreServidorPublico,
-
-     
     };
 
- 
-    
-
     if (solicitud.IdSolicitud.length === 0) {
-      
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
@@ -144,7 +136,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: 1,
+            IdEditor: localStorage.getItem("IdUsuario"),
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -152,6 +144,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
               "yyyy-MM-dd"
             ),
             Solicitud: JSON.stringify(solicitud),
+            IdUsuario: localStorage.getItem("IdUsuario"),
             CreadoPor: localStorage.getItem("IdUsuario"),
           },
           {
@@ -163,24 +156,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then((response) => {
           if (get().comentarios === null || get().comentarios === "") {
           } else {
-            
-            
             get().fetchComentario(response.data.data.Id, get().comentarios);
-
-          };
+          }
           Swal.fire({
             icon: "success",
             title: "Mensaje",
             text: "La solicitud ha sido creada exitosamente.",
           });
-          
         })
         .catch((e) => {
           Swal.fire({
             icon: "error",
             title: "Mensaje",
-            text: "La solicitud no se ha creada.",
-          })
+            text: "La solicitud no ha sido creada.",
+          });
         });
     } else {
       await axios
@@ -193,7 +182,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: 1,
+            IdEditor: localStorage.getItem("IdUsuario"),
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -211,10 +200,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
-
           if (get().comentarios === null || get().comentarios === "") {
           } else {
-           
             get().fetchComentario(response.data.Id, get().comentarios);
           }
           Swal.fire({
@@ -228,12 +215,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
             icon: "error",
             title: "Mensaje",
             text: "La solicitud no se ha modificado.",
-          })
+          });
         });
     }
   },
-  
-//////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -277,15 +264,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
   fetchComentario: (Id: string, comentario: string) => {
     const state = useCortoPlazoStore.getState();
 
-    const IdSolicitud = state.IdSolicitud
-  
-    console.log("IdSolicitud: ",IdSolicitud );
-    
+    const IdSolicitud = state.IdSolicitud;
+
+    console.log("IdSolicitud: ", IdSolicitud);
+
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
-          IdSolicitud:Id,
+          IdSolicitud: Id,
           Comentario: comentario,
           IdUsuario: localStorage.getItem("IdUsuario"),
         },
@@ -296,31 +283,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((response) => {
-        // Swal.fire({
-        //   icon: "success",
-        //   title: "Mensaje",
-        //   text: "Se ha creado el comentario exitosamente.",
-        // });
+        // // Swal.fire({
+        // //   icon: "success",
+        // //   title: "Mensaje",
+        // //   text: "Se ha creado el comentario exitosamente.",
+        // // });
       })
       .catch((e) => {
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Mensaje",
-        //   text: "No se ha creado el comentario.",
-        // })
+        // // Swal.fire({
+        // //   icon: "error",
+        // //   title: "Mensaje",
+        // //   text: "No se ha creado el comentario.",
+        // // })
       });
   },
-
-
-
-
-
-  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
   console.log("Info de solicitud: ", Solicitud);
-  
+
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
@@ -335,7 +316,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   };
   axios
     .post(
-     " http://10.200.4.94:9091/documento_srpu",
+      " http://10.200.4.94:9091/documento_srpu",
 
       {
         nombre: solicitud.solicitanteAutorizado,
@@ -357,7 +338,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
         contrato: solicitud.tipoDocumento,
         periodoPago: solicitud.capitalPeriocidadPago,
         obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
-        
+
         fechaContrato: solicitudfechas.fechaContratacion,
         fechaVencimiento: solicitudfechas.fechaVencimiento,
       },
@@ -369,7 +350,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       }
     )
     .then((response) => {
-      
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -382,7 +362,56 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
-    }).catch((err)=>{
-      
-    });
+    })
+    .catch((err) => {});
 }
+
+export const getUsuariosAsignables = (setState: Function, numero: number) => {
+  console.log("Soy el numero en getUsuariosAsignables: ", numero);
+
+  axios
+    .get(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
+      {
+        params: {
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          Rol: localStorage.getItem("Rol"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(({ data }) => {
+      console.log("soy la data: en getUsuarios ", data);
+
+      if (data.data[0].ERROR !== "Permisos Denegados") {
+        if (numero === 1) {
+          setState(data.data);
+        }
+
+        if(numero === 2){
+          let aux = data.data
+          let arregloCapturador = []
+          let aux3 =[]
+          for (let i = 0; i < aux.length; i++) {
+             arregloCapturador = aux[i];
+          if(arregloCapturador.Rol ==='Capturador'){
+
+            aux3.push(arregloCapturador)
+            
+          }
+          
+
+        }
+        console.log("Soy el arregloUsuarios: ",aux3)
+        setState(aux3);
+      }
+    }
+    })
+    .catch((r) => {
+      if (r.response.status === 409) {
+      }
+    });
+};

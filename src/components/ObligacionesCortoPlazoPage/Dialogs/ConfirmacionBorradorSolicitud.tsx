@@ -153,10 +153,10 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                   // notnull()
 
                   if(localStorage.getItem("Rol") === "Verificador"){
-                    estatus = "Capturar"
+                    estatus = "Captura"
                   }
                   if(localStorage.getItem("Rol") === "Capturador"){
-                    estatus = "En Captura" 
+                    estatus = "Captura" 
                   }
 
                   console.log("estatus: ", estatus);
