@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -30,6 +33,9 @@ import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
+import { AgregarComentario } from "../../components/ObligacionesCortoPlazoPage/Dialogs/AgregarComentario";
+import CheckIcon from "@mui/icons-material/Check";
+import RateReviewSharpIcon from '@mui/icons-material/RateReviewSharp';
 export interface IData {
   Id: string;
   Institucion: string;
@@ -98,7 +104,6 @@ export function ConsultaDeSolicitudPage() {
   // const [datostabla, setDatosTabla] =useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
- 
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -147,22 +152,20 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     setDatosFiltrados(datos);
-    
   }, [datos]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length !== 0 ? setDatosFiltrados(datos) : null;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
- 
-  
+
   const navigate = useNavigate();
 
   const editarSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
     aux.IdSolicitud = solicitud.Id;
-    
+
     useCortoPlazoStore.setState(aux);
     navigate("../ObligacionesCortoPlazo");
   };
@@ -171,7 +174,6 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.fetchBorrarSolicitud
   );
 
-
   /////////////////////////////////////////////
   const [selected] = useState<number[]>([]); //, setSelected
 
@@ -179,9 +181,8 @@ export function ConsultaDeSolicitudPage() {
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
-  const[idSolicitud, setIdSolicitud] = useState('')
+  const [idSolicitud, setIdSolicitud] = useState("");
 
-  
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -233,13 +234,44 @@ export function ConsultaDeSolicitudPage() {
               {datosFiltrados.map((row) => {
                 let chip = <></>;
 
-                if (row.Estatus === "En_actualizacion ") {
-
+                if (row.Estatus === "Captura") {
                   chip = (
                     <Chip
-                      label="En verificación"
+                      label= {row.Estatus}
                       icon={<WarningAmberIcon />}
                       color="warning"
+                      variant="outlined"
+                    />
+                  );
+                }
+                if (row.Estatus === "En captura") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      icon={<WarningAmberIcon />}
+                      color="warning"
+                      variant="outlined"
+                    />
+                  );
+                }
+
+                if (row.Estatus === "En verificacion") {
+                  chip = (
+                    <Chip
+                    label={row.Estatus}
+                      icon={<CheckIcon />}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                }
+
+                if (row.Estatus === "Por Firmar") {
+                  chip = (
+                    <Chip
+                    label={row.Estatus}
+                      icon={<CheckIcon />}
+                      color="secondary"
                       variant="outlined"
                     />
                   );
@@ -284,34 +316,42 @@ export function ConsultaDeSolicitudPage() {
                       scope="row"
                     >
                       <Tooltip title="Ver">
-                        <IconButton type="button" aria-label="search"
-                        onClick={() => {
-                          changeOpenDialogVer(!openDialogVer);
-                        }}>
-                          
-                          <VisibilityIcon
-                            
-                          />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Edit">
-                        <IconButton type="button" aria-label="search"
+                        <IconButton
+                          type="button"
+                          aria-label="search"
                           onClick={() => {
-                            //setIdSolicitud(row)
-                            
-                            
-                           editarSolicitud(row)
+                            changeOpenDialogVer(!openDialogVer);
                           }}
                         >
-                          <EditIcon />
+                          <VisibilityIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
 
+                      {localStorage.getItem("Rol") === "Verificador" || 
+                      // revisar
+                      (localStorage.getItem("Rol") === "Capturador" && row.Estatus ==="Captura")
+                       ? (
+                        <Tooltip title="Editar">
+                          <IconButton
+                            type="button"
+                            aria-label="search"
+                            onClick={() => {
+                              //setIdSolicitud(row)
+
+                              editarSolicitud(row);
+                            }}
+                          >
+                            <EditIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+                      ) : null}
+
                       <Tooltip title="Descargar">
-                        <IconButton type="button" aria-label="search"
+                        <IconButton
+                          type="button"
+                          aria-label="search"
                           onClick={() => {
                             DescargarConsultaSolicitud(row.Solicitud);
                           }}
@@ -322,38 +362,37 @@ export function ConsultaDeSolicitudPage() {
                       </Tooltip>
 
                       <Tooltip title="Comentarios">
-                        <IconButton type="button" aria-label="search"
-                        onClick={() => {
-                       
-                          //console.log("idSolicitud dentro del boton de comentarios",row.Id );
-                          setIdSolicitud(row.Id)
-                          changeOpenVerComentarios(!openVerComentarios)
-                        }}>
+                        <IconButton
+                          type="button"
+                          aria-label="search"
+                          onClick={() => {
+                            //console.log("idSolicitud dentro del boton de comentarios",row.Id );
+                            setIdSolicitud(row.Id);
+                            changeOpenVerComentarios(!openVerComentarios);
+                          }}
+                        >
                           <CommentIcon />
                           {row.Acciones}
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Borrar">
-                        <IconButton
-                          type="button"
-                          disabled={
-                            localStorage.getItem("Rol") === "Capturador"
-                              ? true
-                              : false
-                          }
-                          aria-label="search"
-                          onClick={() => {
-                            getSolicitudes(setDatos);
-                            fetchBorrarSolicitud(row.Id);
-                            getSolicitudes(setDatos);
+                      {localStorage.getItem("Rol") === "Verificador"  ? (
+                        <Tooltip title="Borrar">
+                          <IconButton
+                            type="button"
+                            aria-label="search"
+                            onClick={() => {
+                              getSolicitudes(setDatos);
+                              fetchBorrarSolicitud(row.Id);
+                              getSolicitudes(setDatos);
+                            }}
+                          >
+                            <DeleteIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+                      ) : null}
 
-                          }}
-                        >
-                          <DeleteIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 );
@@ -366,12 +405,14 @@ export function ConsultaDeSolicitudPage() {
           openState={openDialogVer}
           selected={selected}
         />
-        {openVerComentarios?<VerComentariosSolicitud
-          handler={changeOpenVerComentarios}
-          openState={openVerComentarios}
-          selected={selected}
-          IdSolicitud = {idSolicitud}
-        />:null}
+        {openVerComentarios ? (
+          <VerComentariosSolicitud
+            handler={changeOpenVerComentarios}
+            openState={openVerComentarios}
+            selected={selected}
+            IdSolicitud={idSolicitud}
+          />
+        ) : null}
       </Grid>
     </Grid>
   );
