@@ -29,6 +29,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 //import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { AgregarComentario } from "./AgregarComentario";
 
 interface IDataComents {
   Id: string;
@@ -106,6 +107,18 @@ export function VerComentariosSolicitud({
     getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
     
   }, []);
+
+  const [openDialogCrear, changeOpenDialogCrear] = useState(false);
+  const changeOpenDialogState = (open: boolean) => {
+    changeOpenDialogCrear(open);
+  };
+
+  const changeIdSolicitud: Function = useCortoPlazoStore(
+    (state) => state.changeIdSolicitud
+  )
+  
+  changeIdSolicitud(IdSolicitud)
+  //useCortoPlazoStore.setState(IdSolicitud: IdSolicitud);
 
   return (
     <Dialog
@@ -191,7 +204,25 @@ export function VerComentariosSolicitud({
         >
           Cerrar
         </Button>
+        <Button
+          onClick={() => {
+            console.log("IdSolicitud en ver comentario",IdSolicitud);
+            
+            changeOpenDialogState(!openDialogCrear)
+            
+          }}
+        >
+          CREAR NUEVO COMENTARIO
+        </Button>
       </DialogActions>
+      {<AgregarComentario
+        handler={changeOpenDialogState}
+        openState={openDialogCrear}
+        IdSolicitud = {IdSolicitud}
+        setComentarios = {setComentarios}
+        comentarios ={comentarios}
+        />
+        }
     </Dialog>
   );
 }
