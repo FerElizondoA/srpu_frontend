@@ -19,7 +19,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-
 import { useCortoPlazoStore } from "../../../store/main";
 
 import { hashFunctionCYRB53 } from "../../CustomComponents";
@@ -29,6 +28,7 @@ import { TasaInteres } from "../../../store/pagos_capital";
 import { TasaEfectiva } from "../../../store/tasa_efectiva";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

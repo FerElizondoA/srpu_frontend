@@ -146,6 +146,7 @@ export function ConsultaDeSolicitudPage() {
     setDatosFiltrados(ResultadoBusqueda);
   };
 
+
   useEffect(() => {
     getSolicitudes(setDatos);
   }, []);

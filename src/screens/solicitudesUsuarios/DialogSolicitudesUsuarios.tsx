@@ -115,12 +115,14 @@ export const DialogSolicitudesUsuarios = ({
 
                     <TableCell align="center">
                       <Typography 
-                      sx={{
+                      sx={{ 
+                        marginLeft: 2.5,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "normal",
                         width: 500,
                         fontSize: 14
+                        
                       }}
                       >
                         Sin comentarios
