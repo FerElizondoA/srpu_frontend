@@ -36,7 +36,9 @@ export const DialogSolicitudesUsuarios = ({
     <Dialog fullWidth maxWidth={"md"} open={open} onClose={() => handleClose()}>
      
       <DialogContent>
+
         <Grid>
+          
           <TableContainer component={Paper}>
             <Table
               sx={{ minWidth: 550}}
@@ -132,9 +134,12 @@ export const DialogSolicitudesUsuarios = ({
               </TableBody>
             </Table>
           </TableContainer>
+
         </Grid>
+
         <DialogContentText></DialogContentText>
       </DialogContent>
+
       <DialogActions>
         <Button
           onClick={() => {

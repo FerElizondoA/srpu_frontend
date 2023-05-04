@@ -45,7 +45,7 @@ export function getDetailSolicitudUsuario(idSolicitud: string, setState: Functio
     });
 }
 
-export function getComentarios(idSolicitud: string,cantComent: Function, setState: Function){
+export function getComentariosUsuarios(idSolicitud: string,cantComent: Function, setState: Function){
   axios({
     method: "get",
     params: {

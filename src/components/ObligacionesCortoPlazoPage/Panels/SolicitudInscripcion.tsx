@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   InputLabel,
@@ -12,7 +13,7 @@ import {
   TableHead,
   Fab,
   Typography,
-  Snackbar, 
+  Snackbar,
 } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
@@ -21,10 +22,10 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
-import { ConfirmacionDescargaSolicitud } from "../../ObligacionesCortoPlazoPage/Dialogs/ConfirmacionDescargaSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../../ObligacionesCortoPlazoPage/Dialogs/ConfirmacionBorradorSolicitud";
-import { ConfirmacionCancelarSolicitud } from "../../ObligacionesCortoPlazoPage/Dialogs/ConfirmacionCancelarSolicitud";
-
+import { ConfirmacionSolicitud } from "../Dialogs/ConfirmacionSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
+import { DialogCatalogoUsuarios } from "../Dialogs/DialogCatalogoUsuarios";
 
 interface Head {
   label: string;
@@ -41,29 +42,29 @@ const heads: readonly Head[] = [
 
 export function SolicitudInscripcion() {
 
-  const [openDialog, changeOpenDialog] = React.useState(false);
+  const [openDialog, changeOpenDialog] = useState(false);
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialog(open);
   };
 
-  const [openDialogBorrador, changeOpenDialogBorrador] = React.useState(false);
+  const [openDialogBorrador, changeOpenDialogBorrador] = useState(false);
   const changeOpenDialogBorradorState = (open: boolean) => {
     changeOpenDialogBorrador(open);
   };
 
-  const changeCloseDialogBorradorState = () => {
-    changeOpenDialogBorrador(false);
-  };
+  
 
-
-  const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
+  const [openDialogCancelar, changeOpenDialogCancelar] = useState(false);
   const changeOpenDialogCancelarState = (open: boolean) => {
     changeOpenDialogCancelar(open);
   };
 
-  const changeCloseDialogCancelarState = () => {
-    changeOpenDialogBorrador(false);
+  
+  const [openDialogUsuarios, changeOpenDialogUsuarios] = useState(false);
+  const changeOpenDialogUsuariosState =(open: boolean) =>{
+    changeOpenDialogUsuarios(open);
   };
+
 
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.nombreServidorPublico
@@ -96,7 +97,7 @@ export function SolicitudInscripcion() {
   const reglasCatalog: string[] = useCortoPlazoStore(
     (state) => state.reglasCatalog
   );
-  
+
   const fetchReglas: Function = useCortoPlazoStore(
     (state) => state.fetchReglas
   );
@@ -129,9 +130,209 @@ export function SolicitudInscripcion() {
     if (localStorage.getItem("Rol") === "Capturador") {
       return <Typography sx={queries.medium_text}>CAPTURAR</Typography>;
     } else if (localStorage.getItem("Rol") === "Verificador") {
-      return <Typography sx={queries.medium_text}>AUTORIZAR</Typography>;
+      return <Typography sx={queries.medium_text}>FINALIZAR SOLICITUD</Typography>;
+    } else if (localStorage.getItem("Rol") === "Administrador") {
+      return <Typography sx={queries.medium_text}>FINALIZAR</Typography>;
+    }
+  };
+
+  const buttonEstatus = () => {
+    if (localStorage.getItem("Rol") === "Verificador") {
+      return (
+        <Typography sx={queries.medium_text}>ENVIAR A ADMINISTRADOR</Typography>
+      );
+    } else if (localStorage.getItem("Rol") === "Administrador") {
+      return <Typography sx={queries.medium_text}> FINALIZAR</Typography>;
+    }
+  };
+
+  const buttonAdminVerificador = () => {
+    if (localStorage.getItem("Rol") === "Verificador") {
+      return (
+        <Typography sx={queries.medium_text}>SOLICITAR MODIFICACION</Typography>
+      );
     } else if (localStorage.getItem("Rol") === "Administrador") {
       return <Typography sx={queries.medium_text}>FIRMAR</Typography>;
+    }
+  };
+
+  const opciones = () => {
+    if (localStorage.getItem("Rol") === "Capturador") {
+      return (
+        <Grid
+          item
+          position="fixed"
+          sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
+        >
+          <Fab
+            variant="extended"
+            color="error"
+            onClick={() => {
+              changeOpenDialogCancelarState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CancelIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>Cancelar</Typography>
+          </Fab>
+
+          {localStorage.getItem("Rol") !== "Capturador" &&  (
+            <Fab variant="extended" color="success" sx={{ mb: "10px" }}>
+              <CheckIcon sx={{ mr: 1 }} />
+              {buttonEstatus()}
+            </Fab>
+          )}
+
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => crearSolicitud(selected)}
+            onClick={() => {
+              changeOpenDialogBorradorState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>BORRADOR</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => {
+              changeOpenDialogUsuariosState(!openDialogUsuarios)
+              changeOpenDialogState(!openDialog);
+            }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttodescription()}
+          </Fab>
+        </Grid>
+      );
+    } else if (localStorage.getItem("Rol") === "Verificador") {
+      return (
+        <Grid
+          item
+          position="fixed"
+          sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
+        >
+          <Fab
+            variant="extended"
+            color="error"
+            onClick={() => {
+              changeOpenDialogCancelarState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CancelIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>Cancelar</Typography>
+          </Fab>
+
+         
+
+          <Fab
+            variant="extended"
+            color="success" 
+            onClick={() => changeOpenDialogUsuariosState(!openDialogUsuarios)}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttonAdminVerificador()}
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => crearSolicitud(selected)}
+            onClick={() => {
+              changeOpenDialogBorradorState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>BORRADOR</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => {
+              changeOpenDialogState(!openDialog);
+            }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttodescription()}
+          </Fab>
+        </Grid>
+      );
+    } else if (localStorage.getItem("Rol") === "Administrador") {
+      return (
+        <Grid
+          item
+          position="fixed"
+          sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
+        >
+          <Fab
+            variant="extended"
+            color="error"
+            onClick={() => {
+              changeOpenDialogCancelarState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CancelIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>Cancelar</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            sx={{ mb: "10px" }}
+            disabled={
+              localStorage.getItem("Rol") === "Capturador"
+                ? false
+                : localStorage.getItem("Rol") === "Verificador"
+                ? false
+                : localStorage.getItem("Rol") === "Administrador"
+                ? false
+                : true
+            }
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttonEstatus()}
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => crearSolicitud(selected)}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttonAdminVerificador()}
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success" //onClick={() => crearSolicitud(selected)}
+            onClick={() => {
+              changeOpenDialogBorradorState(!openDialog);
+            }}
+            sx={{ mb: "10px" }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            <Typography sx={queries.medium_text}>BORRADOR</Typography>
+          </Fab>
+
+          <Fab
+            variant="extended"
+            color="success"
+            onClick={() => {
+              changeOpenDialogState(!openDialog);
+            }}
+          >
+            <CheckIcon sx={{ mr: 1 }} />
+            {buttodescription()}
+          </Fab>
+        </Grid>
+      );
     }
   };
 
@@ -214,7 +415,9 @@ export function SolicitudInscripcion() {
             disabled
             fullWidth
             variant="standard"
-            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
+            value={
+              solicitanteAutorizado || localStorage.getItem("NombreUsuario")
+            }
             onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
@@ -323,77 +526,39 @@ export function SolicitudInscripcion() {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid
           item
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="error" onClick={() => {
-              
-              changeOpenDialogCancelarState(!openDialog);
-            }}sx={{ mb: "10px" }}>
-            <CancelIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>Cancelar</Typography>
-          </Fab>
+          {opciones()}
+        </Grid>
 
-          <Fab
-            variant="extended"
-            color="success"
-            sx={{ mb: "10px" }}
-            disabled={
-              localStorage.getItem("Rol") === "Capturador"
-                ? false
-                : localStorage.getItem("Rol") === "Verificador"
-                ? false
-                : localStorage.getItem("Rol") === "Administrador"
-                ? false
-                : true
-            }
-          >
-            <CheckIcon sx={{ mr: 1 }} />
-            {buttodescription()}
-          </Fab>
+        <ConfirmacionSolicitud
+          handler={changeOpenDialogState}
+          openState={openDialog}
+          //Id ={}
+          selected={selected}
+        />
 
-          <Fab
-            variant="extended"
-            color="success" //onClick={() => crearSolicitud(selected)}
-            onClick={() => {
-              
-              changeOpenDialogBorradorState(!openDialog);
-            }}
-            sx={{ mb: "10px" }}
-          >
-            <CheckIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>BORRADOR</Typography>
-          </Fab>
-
-          <Fab
-            variant="extended"
-            color="success"
-            onClick={() => {
-              changeOpenDialogState(!openDialog);
-            }}
-          >
-            <CheckIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>FINALIZAR</Typography>
-          </Fab>
-
-          <ConfirmacionDescargaSolicitud
-            handler={changeOpenDialogState}
-            openState={openDialog}
-            selected={selected}
-          />
+        {changeOpenDialogBorradorState ? (
           <ConfirmacionBorradorSolicitud
             handler={changeOpenDialogBorradorState}
             openState={openDialogBorrador}
             selected={selected}
           />
-          <ConfirmacionCancelarSolicitud
-            handler={changeOpenDialogCancelarState}
-            openState={openDialogCancelar}
-            selected={selected}
-          />
-        </Grid>
+        ) : null}
+
+        <ConfirmacionCancelarSolicitud
+          handler={changeOpenDialogCancelarState}
+          openState={openDialogCancelar}
+          selected={selected}
+        />
+        <DialogCatalogoUsuarios
+        handler={changeOpenDialogUsuariosState}
+        openState={openDialogUsuarios}
+        />
       </Grid>
     </Grid>
   );

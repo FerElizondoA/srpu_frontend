@@ -36,17 +36,29 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-
-import { useCortoPlazoStore } from "../../store/main";
+import { SolicitudStore, useCortoPlazoStore } from "../../store/main";
 import { useState } from "react";
-
 import { queries } from "../../queries";
-
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { TimerCounter } from "./TimerCounter";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { TasaEfectiva } from "../../store/tasa_efectiva";
+import { TasaInteres } from "../../store/pagos_capital";
+export interface IData {
+  Id: string;
+  Institucion: string;
+  TipoEntePublico: string;
+  ClaveDeInscripcion: string;
+  Estatus: string;
+  FechaContratacion: Date;
+  MontoOriginalContratado: number;
+  Acciones: string;
+  Solicitud: string;
+  tipoDocumento: string;
+  TipoSolicitud: string;
+}
 import { getListadoUsuarios } from "../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
@@ -328,53 +340,88 @@ export function LateralMenu() {
     );
   };
 
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
+  const changeIdSolicitud: Function = useCortoPlazoStore(
+    (state) => state.changeIdSolicitud
+  );
+  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicionFechaContratacion
+  );
+  const changeFechaContratacion: Function = useCortoPlazoStore(
+    (state) => state.changeFechaContratacion
+  );
+  const changeDisposicionImporte: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicionImporte
+  );
+  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
+    (state) => state.changeCapitalPeriocidadPago
+  );
+  const changeTipoComision: Function = useCortoPlazoStore(
+    (state) => state.changeTipoComision
+  );
+  const changeTasaReferencia: Function = useCortoPlazoStore(
+    (state) => state.changeTasaReferencia
+  );
+  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
+    (state) => state.changeCapitalNumeroPago
+  );
+  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
+    (state) => state.tasaInteresTable
+  );
+  const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(
+    (state) => state.tasaEfectivaTable
+  );
+
+  const changeInstitucion: Function = useCortoPlazoStore(
+    (state) => state.changeInstitucion
+  );
+  const changeDestino: Function = useCortoPlazoStore(
+    (state) => state.changeDestino
+  );
+  const changeMontoOriginal: Function = useCortoPlazoStore(
+    (state) => state.changeMontoOriginal
+  );
+  const changeDenominacion: Function = useCortoPlazoStore(
+    (state) => state.changeDenominacion
+  );
+  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.changeObligadoSolidarioAval
+  );
+  const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.changeTipoEntePublicoObligado
+  );
+  const changeEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.changeEntePublicoObligado
+  );
+  const changePlazoDias: Function = useCortoPlazoStore(
+    (state) => state.changePlazoDias
+  );
+
+  // const condicionFinancieraTable :Function = useCortoPlazoStore(
+  //   (state) => state.condicionFinancieraTable
+  // )
+
+
+  
   const reset = () => {
-    useCortoPlazoStore.setState({
-      obligadoSolidarioAvalTable: [],
-    });
+    changeIdSolicitud("");
+    changeDisposicionImporte(0);
+    changeCapitalPeriocidadPago("");
+    changeTipoComision("");
+    changeTasaReferencia("");
+    changeCapitalNumeroPago("");
 
-    useCortoPlazoStore.setState({
+     changeInstitucion("");
+     changeDestino("");
+     changeMontoOriginal(0);
+     changeDenominacion("Pesos");
+     changeObligadoSolidarioAval("");
+     changeTipoEntePublicoObligado("");
+     changeEntePublicoObligado("");
+     
+
+     useCortoPlazoStore.setState({
       condicionFinancieraTable: [],
-    });
-
-    useCortoPlazoStore.setState({
-      plazoDias: 0,
-    });
-
-    useCortoPlazoStore.setState({
-      montoOriginal: 0,
-    });
-
-    useCortoPlazoStore.setState({
-      fechaVencimiento: "",
-    });
-
-    useCortoPlazoStore.setState({
-      institucion: "",
-    });
-
-    useCortoPlazoStore.setState({
-      tipoEntePublicoObligado: "",
-    });
-
-    useCortoPlazoStore.setState({
-      entePublicoObligado: "",
-    });
-
-    useCortoPlazoStore.setState({
-      obligadoSolidarioAval: "",
-    });
-
-    useCortoPlazoStore.setState({
-      documentoAutorizado: "",
-    });
-
-    useCortoPlazoStore.setState({
-      identificacion: "",
-    });
-
-    useCortoPlazoStore.setState({
-      reglas: [],
     });
   };
 
@@ -505,6 +552,11 @@ export function LateralMenu() {
                         <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
+                            // changeOpenEncabezado(!openEncabezado)
+                            // setAccion("Agregar")
+                            // setTabIndex(0)
+                            //restart()
+                            reset();
                             navigate("../ObligacionesCortoPlazo");
                           }}
                         >
@@ -525,6 +577,11 @@ export function LateralMenu() {
                               </Typography>
                             </ListItemButton> */}
                       </List>
+                      {/* <Encabezado
+                      handler={changeOpenEncabezado}
+                      accion={accion}
+                      /> */}
+                      {/* {tabIndex === 0 && <Encabezado/>} */}
                     </Collapse>
 
                     <ListItemButton

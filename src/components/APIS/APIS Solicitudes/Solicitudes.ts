@@ -60,7 +60,6 @@ export const createSolicitud = (data: ICreateSolicitud, comentario:string) => {
   };
 
   const createComentarios = (idSolicitud: string,comentario:string) => {
-   
     axios
       .post(
         process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",

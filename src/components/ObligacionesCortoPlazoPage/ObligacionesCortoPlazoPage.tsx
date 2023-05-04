@@ -2,25 +2,18 @@ import { Grid, Tabs, Tab } from "@mui/material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useState } from "react";
+
+import { CondicionesFinancieras } from "./Panels/CondicionesFinancieras";
+import { Encabezado } from "./Panels/Encabezado";
+import { InformacionGeneral } from "./Panels/InformacionGeneral";
+import { SolicitudInscripcion } from "./Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
-import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
-import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
-import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
-import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
-import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
-
-//export const [ste,setste]=useState<array<tipo>>([]);
-
+import { Documentacion } from "./Panels/Documentacion";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { Resumen } from "./Panels/Resumen";
 
 export function ObligacionesCortoPlazoPage() {
-
-  // useEffect(() => {
-    
-  // }, [third])
-  
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {

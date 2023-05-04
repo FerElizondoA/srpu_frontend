@@ -4,7 +4,7 @@ import axios from "axios";
 export type TasaInteres = {
     id: number;
     fechaPrimerPago: string;
-    tasaFija: string;
+    tasaInteres: string;
     periocidadPago: string;
     tasaReferencia: string;
     sobreTasa: string;
@@ -136,5 +136,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (set, ge
             });
             set(() => ({fetchedDiasEjercicio: true}))
         }
-    }
+    },
+
+  
 })

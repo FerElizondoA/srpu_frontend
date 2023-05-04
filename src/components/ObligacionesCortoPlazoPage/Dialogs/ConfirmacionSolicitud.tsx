@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import {
   Grid,
   Tabs,
@@ -32,12 +33,17 @@ type Props = {
   handler: Function;
   openState: boolean;
   selected: number[];
+  
 };
 
-export function ConfirmacionDescargaSolicitud(props: Props) {
+export function ConfirmacionSolicitud(props: Props) {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
+
+
+  const [estatus, setEstatus] =useState("")
+
 
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -47,6 +53,9 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
     (state) => state.fetchReglas
   );
 
+  const IdSolicitud: string= useCortoPlazoStore(
+    (state) => state.IdSolicitud
+  )
   const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
@@ -93,7 +102,7 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
             //border: "1px solid"
           }}
         >
-          <Typography sx={queries.medium_text}>Enviar Documento</Typography>
+          <Typography sx={queries.medium_text}>Enviar Solicitud</Typography>
 
           <Grid mb={1}>
             <TextField
@@ -128,8 +137,18 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                   //sx ={{textAlign: 'center'}}
                   onClick={() => {
                     props.handler(false);
+                    console.log("hola ",IdSolicitud);
 
-                    crearSolicitud(props.selected);
+                    if(localStorage.getItem("Rol") === "Verificador"){
+                      setEstatus("Por Firmar")
+                    }
+                    if(localStorage.getItem("Rol") === "Capturador"){
+                      setEstatus("En verificacion")
+                    }
+
+
+                    crearSolicitud(props.selected, estatus);
+
                     navigate("../ConsultaDeSolicitudes");
                   }}
                   disabled={comentarios.length >= 200}

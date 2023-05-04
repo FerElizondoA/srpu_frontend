@@ -191,29 +191,11 @@ export function ComisionesTasaEfectiva() {
     //efectivaPeriocidadPago
     useCortoPlazoStore.setState({ efectivaDiasEjercicio: "" });
     //efectivaDiasEjercicio
+    useCortoPlazoStore.setState({ tasaEfectiva: "" });
+
+    
   };
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  
 
   const addRows = () => {
     const TE: TasaEfectiva = {
@@ -228,20 +210,14 @@ export function ComisionesTasaEfectiva() {
     addTasaEfectiva(TE);
   };
 
-  const deleteRows = () => {
-    selected.forEach((it) => {
-      removeTasaEfectiva(it);
-    });
-  };
+
 
   React.useEffect(() => {
     fetchTiposComision();
     changePercentageOrAmount();
   }, []);
 
-  // React.useEffect(()=>{
-  //   useCortoPlazoStore.setState({capitalPeriocidadPago: ""})
-  // }, [capitalPeriocidadPago])
+
 
   const updateTasaEfectivaTable: Function = useCortoPlazoStore(
     (state) => state.updateTasaEfectivaTable
@@ -493,7 +469,7 @@ export function ComisionesTasaEfectiva() {
             </Table>
           </TableContainer>
           <Grid container>
-            <Grid item md={6} lg={6}>
+            <Grid item md={12} lg={12}>
               <ConfirmButton
                 variant="outlined"
                 onClick={() => {
@@ -504,11 +480,7 @@ export function ComisionesTasaEfectiva() {
                 AGREGAR
               </ConfirmButton>
             </Grid>
-            <Grid item md={6} lg={6}>
-              <DeleteButton variant="outlined" onClick={() => deleteRows()}>
-                ELIMINAR
-              </DeleteButton>
-            </Grid>
+            
           </Grid>
         </Grid>
       </Grid>

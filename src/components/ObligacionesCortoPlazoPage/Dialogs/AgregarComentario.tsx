@@ -19,6 +19,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ConfirmButton, DeleteButton } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import { useNavigate } from "react-router-dom";
+
+interface IComentarios {
+    Comentarios: string;
+    CreadoPor: string;
+    FechaCreacion: string;
+    Id: string;
+    Mensaje: string;
+    Nombre: string;
+  }
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -28,55 +38,67 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-type Props = {
+export function AgregarComentario({
+  handler,
+  openState,
+  //comentarios2: Array<Icomentarios2>;
+  setComentarios,
+  comentarios,
+  IdSolicitud,
+}: {
   handler: Function;
   openState: boolean;
-  selected: number[];
-};
-
-export function ConfirmacionDescargaSolicitud(props: Props) {
+  //comentarios2: Array<Icomentarios2>;
+  setComentarios: Function;
+  IdSolicitud: string;
+  comentarios: IComentarios[];
+}) {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  const crearSolicitud: Function = useCortoPlazoStore(
-    (state) => state.crearSolicitud
-  );
 
-  const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
-  );
-
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  const comentarios2: string = useCortoPlazoStore((state) => state.comentarios);
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
   const MAX_COMMENTS_LENGTH = 200;
-  const [text, setText] = React.useState("Enviar sin comentarios");
+  const [text, setText] = React.useState("Enviar");
   const validaciontext = () => {
-    if (comentarios == null || /^[\s]*$/.test(comentarios)) {
+    if (comentarios2 == null || /^[\s]*$/.test(comentarios2)) {
       setText("Enviar");
     } else {
     }
   };
 
-  React.useEffect(() => {
-    fetchReglas();
-  }, []);
 
   const fetchComentario: Function = useCortoPlazoStore(
     (state) => state.fetchComentario
   );
 
   const navigate = useNavigate();
+
+  const IdSolicitud1: string = useCortoPlazoStore(
+    (state) => state.IdSolicitud
+  )
+
+  const agregarComentario = (nuevoComentario: string) => {
+
+    const arraycomentarios = Array.from(comentarios2);
+
+    arraycomentarios.push(nuevoComentario);
+
+    setComentarios(new Set(arraycomentarios));
+
+  }
   //////////////// Este apartado es el de finalizar
   return (
     <Dialog
-      open={props.openState}
+      open={openState}
       keepMounted
       TransitionComponent={Transition}
       onClose={() => {
-        props.handler(false);
+        handler(false);
       }}
     >
       <Grid container>
@@ -93,17 +115,17 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
             //border: "1px solid"
           }}
         >
-          <Typography sx={queries.medium_text}>Enviar Documento</Typography>
+          <Typography sx={queries.medium_text}>Enviar comentarios</Typography>
 
           <Grid mb={1}>
             <TextField
               fullWidth
-              label="Comentarios        "
+              label="comentarios"
               multiline
               variant="standard"
               maxRows={5}
               rows={10}
-              value={comentarios}
+              value={comentarios2}
               onChange={(texto) => changeComentarios(texto.target.value)}
             />
           </Grid>
@@ -120,27 +142,33 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                 item
                 md={6}
                 lg={6}
-                // sx={{ textAlign: "center", display: "flex" }}
+                
               >
                 <Button
-                  //sx={queries.italic_text}
-                  //onClick={handleClick}
-                  //sx ={{textAlign: 'center'}}
+                  
                   onClick={() => {
-                    props.handler(false);
+                    //console.log("IdSolicitud1: ",IdSolicitud1);
+                    //console.log("comentarios2: ",comentarios2);
 
-                    crearSolicitud(props.selected);
-                    navigate("../ConsultaDeSolicitudes");
+                    //agregarComentario(comentarios2);
+                    fetchComentario(IdSolicitud, comentarios2)
+                    handler(false);
+
+                    //crearSolicitud(selected);
+                    //navigate("../ConsultaDeSolicitudes");
                   }}
-                  disabled={comentarios.length >= 200}
+                  disabled={comentarios2.length >= 200 || comentarios2 == null || /^[\s]*$/.test(comentarios2) }
                   variant="text"
+                  sx={{
+                    textAlign: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
                 >
-                  {comentarios == null || /^[\s]*$/.test(comentarios)
-                    ? "Enviar sin comentarios"
-                    : comentarios.length > MAX_COMMENTS_LENGTH
-                    ? "Los comentarios no pueden tener más de 200 caracteres"
-                    : "Enviar con comentarios"}
+                Enviar Comentario
+                    
                 </Button>
+                
               </Grid>
 
               <Grid
@@ -156,12 +184,12 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                 <Button
                   //sx={queries.medium_text}
                   variant="text"
-                  onClick={() => props.handler(false)}
-                
+                  onClick={() => handler(false)}
                 >
                   Cancelar
                 </Button>
               </Grid>
+
             </Grid>
           </Grid>
         </Grid>

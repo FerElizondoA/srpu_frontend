@@ -31,7 +31,6 @@ import {
 import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
 
-
 export const Usuarios = () => {
   const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);

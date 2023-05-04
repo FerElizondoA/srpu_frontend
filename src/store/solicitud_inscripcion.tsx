@@ -22,7 +22,7 @@ export interface SolicitudInscripcionSlice {
   changeComentarios: (newComentarios: string) => void;
 
   fetchReglas: () => void;
-  crearSolicitud: (reglasSeleccionadas: number[]) => void;
+  crearSolicitud: (reglasSeleccionadas: number[], Estatus: string) => void;
   fetchBorrarSolicitud: (Id: string) => boolean;
   fetchComentario: (Id: string, comentario: string) => void;
 }
@@ -75,12 +75,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     }
   },
 
-  crearSolicitud: async (reglasSeleccionadas: number[]) => {
+  crearSolicitud: async (reglasSeleccionadas: number[], Estatus: string) => {
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-
+    console.log("Estatus", Estatus);
+    
     const state = useCortoPlazoStore.getState();
 
     const solicitud: any = {
@@ -129,6 +130,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
      
     };
 
+ 
+    
 
     if (solicitud.IdSolicitud.length === 0) {
       
@@ -136,19 +139,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
           {
-            TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
-            IdInstitucionFinanciera: solicitud.IdInstitucion,
-            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
             IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            TipoSolicitud: solicitud.tipoDocumento,
+            IdInstitucionFinanciera: solicitud.IdInstitucion,
+            Estatus: Estatus,
+            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
               new Date(solicitud.fechaContratacion),
               "yyyy-MM-dd"
             ),
+            Solicitud: JSON.stringify(solicitud),
+            CreadoPor: localStorage.getItem("IdUsuario"),
           },
           {
             headers: {
@@ -159,31 +162,45 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then((response) => {
           if (get().comentarios === null || get().comentarios === "") {
           } else {
-            get().fetchComentario(response.data.Id, get().comentarios);
-          }
+            
+            
+            get().fetchComentario(response.data.data.Id, get().comentarios);
+
+          };
+          Swal.fire({
+            icon: "success",
+            title: "Mensaje",
+            text: "La solicitud ha sido creada exitosamente.",
+          });
+          
         })
         .catch((e) => {
+          Swal.fire({
+            icon: "error",
+            title: "Mensaje",
+            text: "La solicitud no se ha creada exitosamente.",
+          })
         });
     } else {
       await axios
         .put(
           process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
           {
-            IdUsuario: localStorage.getItem("IdUsuario"),
             IdSolicitud: solicitud.IdSolicitud,
-            TipoSolicitud: solicitud.tipoDocumento,
-            CreadoPor: localStorage.getItem("IdUsuario"),
-            IdInstitucionFinanciera: solicitud.IdInstitucion,
-            IdEstatus: "6a9232f5-acb8-11ed-b719-2c4138b7dab1",
-            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
             IdEntePublico: solicitud.IdOrganismo,
-            Solicitud: JSON.stringify(solicitud),
+            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            TipoSolicitud: solicitud.tipoDocumento,
+            IdInstitucionFinanciera: solicitud.IdInstitucion,
+            Estatus: Estatus,
+            IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
               new Date(solicitud.fechaContratacion),
               "yyyy-MM-dd"
             ),
+            IdUsuario: localStorage.getItem("IdUsuario"),
+            Solicitud: JSON.stringify(solicitud),
+            CreadoPor: localStorage.getItem("IdUsuario"),
           },
           {
             headers: {
@@ -195,13 +212,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
           if (get().comentarios === null || get().comentarios === "") {
           } else {
+           
             get().fetchComentario(response.data.Id, get().comentarios);
           }
+          Swal.fire({
+            icon: "success",
+            title: "Mensaje",
+            text: "La solicitud ha sido modificado exitosamente.",
+          });
         })
         .catch((e) => {
+          Swal.fire({
+            icon: "error",
+            title: "Mensaje",
+            text: "La solicitud no se ha modificado.",
+          })
         });
     }
   },
+  
 //////////////////////////////////////////////////////////////////////
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
@@ -244,11 +273,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
+    const state = useCortoPlazoStore.getState();
+
+    const IdSolicitud = state.IdSolicitud
+  
+    console.log("IdSolicitud: ",IdSolicitud );
+    
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
-          IdSolicitud: Id,
+          IdSolicitud:Id,
           Comentario: comentario,
           IdUsuario: localStorage.getItem("IdUsuario"),
         },
@@ -258,13 +293,32 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((response) => {})
+      .then((response) => {
+        Swal.fire({
+          icon: "success",
+          title: "Mensaje",
+          text: "Se ha creado el comentario exitosamente.",
+        });
+      })
       .catch((e) => {
+        Swal.fire({
+          icon: "error",
+          title: "Mensaje",
+          text: "No se ha creado el comentario.",
+        })
       });
   },
+
+
+
+
+
+  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
+  console.log("Info de solicitud: ", Solicitud);
+  
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
