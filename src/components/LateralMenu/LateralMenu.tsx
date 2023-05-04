@@ -708,7 +708,7 @@ export function LateralMenu() {
                         <Box sx={{
                           width: "100%",
                           display: "flex",
-                          justifyContent: "space-between",
+                          justifyContent: "space-around",
 
                         }}>
                           <Typography
@@ -739,13 +739,15 @@ export function LateralMenu() {
                         <Box sx={{
                           display: "flex",
                           justifyContent: "center",
+                          
+                          alignItems:"center"
                         }}>
                           <Typography
                             sx={{
                               width: "100%",
-                              padding: "10px 4px 1px 0",
+                              padding: "10px 4px 1px 5px",
                               fontSize: "14px",
-                              textAlign: "justify"
+                              textAlign: "center"
                             }}
                             color="black"
                           >

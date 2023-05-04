@@ -218,7 +218,7 @@ export function Solicitudes() {
       <Grid display={"flex"} flexDirection={"row"}>
         {/* grid  columna del previsualizacion y filtro*/}
         <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={2} ml={2}>
-          <Grid mb={2.5} sm={10} xs={10} lg={12} xl={12}>
+          <Grid mb={2.5} sm={11} xs={11} md={11} lg={11} xl={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
               <Select
@@ -243,7 +243,7 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid md={12} sm={12} xl={12} lg={10} xs={10}
+          <Grid xs={11} sm={11} md={11} lg={11} xl={12} 
           sx={{ overflow: "auto",
           "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
             width: ".3vw",
@@ -434,7 +434,7 @@ export function Solicitudes() {
 
             </Grid>
         ) : (
-          <Grid xs={6} sm={7} md={8} lg={7} xl={9}>
+          <Grid xs={6} sm={7} md={7} lg={7} xl={9}>
             <Box sx={queriesSolicitud.botonComentario}>
               <Badge badgeContent={cantidadComentarios} color="info">
                 <Tooltip title="Comentarios">

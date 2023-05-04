@@ -60,7 +60,7 @@ export const Destinatarios = ({
             <TableHead sx={{ bgcolor: "#AF8C55" }}>
               <TableRow>
                 <TableCell sx={{ fontWeight: "bold", color: "white" }} align="center">Usuario&nbsp;(s)</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }} align="center">Estatus&nbsp;(s)</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }} align="center">Estatus</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

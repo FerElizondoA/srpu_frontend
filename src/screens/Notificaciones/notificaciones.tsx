@@ -74,7 +74,6 @@ export function Notificaciones() {
 
   
 
-  //const [notificaciones, setNotificaciones] = useState<Array>(["hola", ""]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogNotificaciones = () => {
@@ -223,7 +222,8 @@ export function Notificaciones() {
                       component="th"
                       scope="row"
                       align="center"
-                      sx={{ width: "30%" }}
+                      
+                      sx={{ textAlign:"justify" ,width: "30%" }}
                     >
                       {noti.Mensaje}
                     </StyledTableCell>
@@ -251,16 +251,11 @@ export function Notificaciones() {
                     >
                       <IconButton
                         onClick={() => {setIdNoti(noti.Id); openDialogDestinatarios() }}
-
                       >
                         <InfoIcon />
                       </IconButton>
-
                     </StyledTableCell>
-
                   </StyledTableRow>
-
-
                 ))}
               </TableBody>
               <Destinatarios

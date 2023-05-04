@@ -142,6 +142,7 @@ export function ConsultaDeSolicitudPage() {
     setDatosFiltrados(ResultadoBusqueda);
   };
 
+
   useEffect(() => {
     getSolicitudes(setDatos);
   }, []);
@@ -284,7 +285,6 @@ export function ConsultaDeSolicitudPage() {
                         }}>
                           
                           <VisibilityIcon
-                            
                           />
                           {row.Acciones}
                         </IconButton>
@@ -338,7 +338,7 @@ export function ConsultaDeSolicitudPage() {
                           <DeleteIcon />
                           {row.Acciones}
                         </IconButton>
-                      </Tooltip>
+                      </Tooltip>  
                     </StyledTableCell>
                   </StyledTableRow>
                 );
