@@ -144,7 +144,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: 1,
+            IdEditor: localStorage.getItem("IdUsuario"),
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -179,7 +179,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Swal.fire({
             icon: "error",
             title: "Mensaje",
-            text: "La solicitud no se ha creada exitosamente.",
+            text: "La solicitud no ha sido creada.",
           })
         });
     } else {
@@ -193,7 +193,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
-            IdEditor: 1,
+            IdEditor: localStorage.getItem("IdUsuario"),
             IdClaveInscripcion: "31990bff-acb9-11ed-b719-2c4138b7dab1",
             MontoOriginalContratado: solicitud.montoOriginal,
             FechaContratacion: format(
@@ -296,26 +296,21 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((response) => {
-        Swal.fire({
-          icon: "success",
-          title: "Mensaje",
-          text: "Se ha creado el comentario exitosamente.",
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Mensaje",
+        //   text: "Se ha creado el comentario exitosamente.",
+        // });
       })
       .catch((e) => {
-        Swal.fire({
-          icon: "error",
-          title: "Mensaje",
-          text: "No se ha creado el comentario.",
-        })
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Mensaje",
+        //   text: "No se ha creado el comentario.",
+        // })
       });
   },
 
-
-
-
-
-  
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
@@ -386,3 +381,30 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
       
     });
 }
+
+
+export const getUsuariosAsignables = (setState: Function) => {
+
+  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables", {
+    params: {
+      IdUsuario: localStorage.getItem("IdUsuario"),
+      Rol: localStorage.getItem("Rol")
+    },
+    headers: {
+      'Authorization': localStorage.getItem("jwtToken"),
+      'Content-Type': 'application/json'
+    }
+  }).then(({ data }) => {
+    console.log(data);
+    
+    if(data.data[0].ERROR!=='Permisos Denegados')
+    {
+       setState(data.data)
+    }
+  })
+    .catch((r) => {
+      if (r.response.status === 409) {
+
+      }
+    });
+};

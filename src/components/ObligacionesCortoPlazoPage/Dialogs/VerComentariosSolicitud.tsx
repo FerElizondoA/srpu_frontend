@@ -215,7 +215,7 @@ export function VerComentariosSolicitud({
           CREAR NUEVO COMENTARIO
         </Button>
       </DialogActions>
-      {<AgregarComentario
+      {openDialogCrear && <AgregarComentario
         handler={changeOpenDialogState}
         openState={openDialogCrear}
         IdSolicitud = {IdSolicitud}

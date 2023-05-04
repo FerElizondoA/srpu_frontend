@@ -35,7 +35,7 @@ import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazo
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
 import { AgregarComentario } from "../../components/ObligacionesCortoPlazoPage/Dialogs/AgregarComentario";
 import CheckIcon from "@mui/icons-material/Check";
-import RateReviewSharpIcon from '@mui/icons-material/RateReviewSharp';
+import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -48,6 +48,7 @@ export interface IData {
   Solicitud: string;
   tipoDocumento: string;
   TipoSolicitud: string;
+  IdEditor:string
 }
 
 interface Head {
@@ -86,7 +87,6 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Fecha de contratacion",
   },
-
   {
     id: "tipoDocumento",
     isNumeric: true,
@@ -145,7 +145,6 @@ export function ConsultaDeSolicitudPage() {
     });
     setDatosFiltrados(ResultadoBusqueda);
   };
-
 
   useEffect(() => {
     getSolicitudes(setDatos);
@@ -238,7 +237,7 @@ export function ConsultaDeSolicitudPage() {
                 if (row.Estatus === "En captura") {
                   chip = (
                     <Chip
-                      label= {row.Estatus}
+                      label={row.Estatus}
                       icon={<WarningAmberIcon />}
                       color="warning"
                       variant="outlined"
@@ -259,9 +258,9 @@ export function ConsultaDeSolicitudPage() {
                 if (row.Estatus === "En verificacion") {
                   chip = (
                     <Chip
-                    label={row.Estatus}
+                      label={row.Estatus}
                       icon={<RateReviewSharpIcon />}
-                      color="secondary"
+                      color="info"
                       variant="outlined"
                     />
                   );
@@ -270,7 +269,7 @@ export function ConsultaDeSolicitudPage() {
                 if (row.Estatus === "Por Firmar") {
                   chip = (
                     <Chip
-                    label={row.Estatus}
+                      label={row.Estatus}
                       icon={<CheckIcon />}
                       color="secondary"
                       variant="outlined"
@@ -329,14 +328,10 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      {localStorage.getItem("Rol") === "Verificador" || 
-                      // revisar
-                      (localStorage.getItem("Rol") === "Capturador" && row.Estatus ==="En Captura")
-                       ? (
+                      {localStorage.getItem("IdUsuario") === row.IdEditor  ? (
                         <Tooltip title="Editar">
                           <IconButton
                             type="button"
-                            aria-label="search"
                             onClick={() => {
                               //setIdSolicitud(row)
 
@@ -353,8 +348,8 @@ export function ConsultaDeSolicitudPage() {
                         <IconButton
                           type="button"
                           aria-label="search"
-                          onClick={() => {
-                            DescargarConsultaSolicitud(row.Solicitud);
+                          onClick={() => {console.log(row)
+                            // DescargarConsultaSolicitud(row.Solicitud);
                           }}
                         >
                           <DownloadIcon />
@@ -377,7 +372,7 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      {localStorage.getItem("Rol") === "Verificador"  ? (
+                      {localStorage.getItem("Rol") === "Verificador" ? (
                         <Tooltip title="Borrar">
                           <IconButton
                             type="button"
@@ -393,7 +388,6 @@ export function ConsultaDeSolicitudPage() {
                           </IconButton>
                         </Tooltip>
                       ) : null}
-
                     </StyledTableCell>
                   </StyledTableRow>
                 );

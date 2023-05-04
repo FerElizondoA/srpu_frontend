@@ -199,7 +199,7 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
-              changeOpenDialogUsuariosState(!openDialogUsuarios)
+              // changeOpenDialogUsuariosState(!openDialogUsuarios)
               changeOpenDialogState(!openDialog);
             }}
           >
@@ -535,12 +535,13 @@ export function SolicitudInscripcion() {
           {opciones()}
         </Grid>
 
-        <ConfirmacionSolicitud
+        {openDialog?<ConfirmacionSolicitud
           handler={changeOpenDialogState}
           openState={openDialog}
           //Id ={}
           selected={selected}
-        />
+          asignar={1}
+        />:null}
 
         {changeOpenDialogBorradorState ? (
           <ConfirmacionBorradorSolicitud

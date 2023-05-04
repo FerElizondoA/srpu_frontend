@@ -12,6 +12,8 @@ import {
   Slide,
   Button,
   TextField,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
@@ -29,14 +31,7 @@ interface IComentarios {
     Nombre: string;
   }
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+
 
 export function AgregarComentario({
   handler,
@@ -62,41 +57,18 @@ export function AgregarComentario({
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
-  const MAX_COMMENTS_LENGTH = 200;
-  const [text, setText] = React.useState("Enviar");
-  const validaciontext = () => {
-    if (comentarios2 == null || /^[\s]*$/.test(comentarios2)) {
-      setText("Enviar");
-    } else {
-    }
-  };
 
 
   const fetchComentario: Function = useCortoPlazoStore(
     (state) => state.fetchComentario
   );
 
-  const navigate = useNavigate();
 
-  const IdSolicitud1: string = useCortoPlazoStore(
-    (state) => state.IdSolicitud
-  )
-
-  const agregarComentario = (nuevoComentario: string) => {
-
-    const arraycomentarios = Array.from(comentarios2);
-
-    arraycomentarios.push(nuevoComentario);
-
-    setComentarios(new Set(arraycomentarios));
-
-  }
   //////////////// Este apartado es el de finalizar
   return (
     <Dialog
       open={openState}
       keepMounted
-      TransitionComponent={Transition}
       onClose={() => {
         handler(false);
       }}
@@ -115,9 +87,11 @@ export function AgregarComentario({
             //border: "1px solid"
           }}
         >
-          <Typography sx={queries.medium_text}>Enviar comentarios</Typography>
+          <DialogTitle><Typography sx={queries.medium_text}>Enviar comentarios</Typography></DialogTitle>
+          
+          <DialogContent>
 
-          <Grid mb={1}>
+            <Grid mb={1}>
             <TextField
               fullWidth
               label="comentarios"
@@ -129,6 +103,11 @@ export function AgregarComentario({
               onChange={(texto) => changeComentarios(texto.target.value)}
             />
           </Grid>
+          <Grid >
+            
+          </Grid>
+          </DialogContent>
+          
 
           <Grid
             sx={{
