@@ -132,8 +132,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
           {
-            IdEntePublico: solicitud.IdOrganismo,
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: "f45e24df-bc38-11ed-b789-2c4138b7dab1",
+            IdTipoEntePublico: "00b0470d-acb9-11ed-b719-2c4138b7dab1",
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
@@ -178,8 +178,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
           {
             IdSolicitud: solicitud.IdSolicitud,
-            IdEntePublico: solicitud.IdOrganismo,
-            IdTipoEntePublico: solicitud.IdTipoEntePublico,
+            IdEntePublico: "f45e24df-bc38-11ed-b789-2c4138b7dab1", //Valores mal
+            IdTipoEntePublico: "00b0470d-acb9-11ed-b719-2c4138b7dab1", //valotes seteados
             TipoSolicitud: solicitud.tipoDocumento,
             IdInstitucionFinanciera: solicitud.IdInstitucion,
             Estatus: Estatus,
@@ -203,6 +203,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then((response) => {
           if (get().comentarios === null || get().comentarios === "") {
           } else {
+            console.log(response.data.data.Id);
+            
             get().fetchComentario(response.data.Id, get().comentarios);
           }
           Swal.fire({
@@ -388,27 +390,8 @@ export const getUsuariosAsignables = (setState: Function, numero: number) => {
       console.log("soy la data: en getUsuarios ", data);
 
       if (data.data[0].ERROR !== "Permisos Denegados") {
-        if (numero === 1) {
-          setState(data.data);
-        }
-
-        if(numero === 2){
-          let aux = data.data
-          let arregloCapturador = []
-          let aux3 =[]
-          for (let i = 0; i < aux.length; i++) {
-             arregloCapturador = aux[i];
-          if(arregloCapturador.Rol ==='Capturador'){
-
-            aux3.push(arregloCapturador)
-            
-          }
-          
-
-        }
-        console.log("Soy el arregloUsuarios: ",aux3)
-        setState(aux3);
-      }
+        setState(data.data);
+      
     }
     })
     .catch((r) => {
