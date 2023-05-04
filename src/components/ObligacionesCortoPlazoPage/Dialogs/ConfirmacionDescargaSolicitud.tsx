@@ -31,7 +31,7 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
-  selected: number[];
+  // selected: number[];
 };
 
 export function ConfirmacionDescargaSolicitud(props: Props) {
@@ -46,29 +46,29 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
   );
 
   const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
+    (state) => state.getReglas
   );
 
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
 
   const [text, setText] = React.useState("Enviar sin comentarios");
-  const validaciontext = () => {
-    if (comentarios == null || /^[\s]*$/.test(comentarios)) {
-      setText("Enviar");
-    } else {
-    }
-  };
+  // const validaciontext = () => {
+  //   if (comentarios == null || /^[\s]*$/.test(comentarios)) {
+  //     setText("Enviar");
+  //   } else {
+  //   }
+  // };
 
   React.useEffect(() => {
     fetchReglas();
   }, []);
 
-  const fetchComentario: Function = useCortoPlazoStore(
-    (state) => state.fetchComentario
-  );
+  // const fetchComentario: Function = useCortoPlazoStore(
+  //   (state) => state.fetchComentario
+  // );
 
   const navigate = useNavigate();
 //////////////// Este apartado es el de finalizar 
@@ -103,8 +103,8 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
               variant="standard"
               maxRows={5}
               rows={10}
-              value={comentarios}
-              onChange={(texto) => changeComentarios(texto.target.value)}
+              // value={comentarios}
+              // onChange={(texto) => changeComentarios(texto.target.value)}
             />
           </Grid>
 
@@ -129,15 +129,15 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
                   onClick={() => {
                     props.handler(false);
 
-                    crearSolicitud(props.selected)
+                    // crearSolicitud(props.selected)
                     navigate("../ConsultaDeSolicitudes");
 
                   }}
                   variant="text"
                 >
-                  {comentarios == null || /^[\s]*$/.test(comentarios)
+                  {/* {comentarios == null || /^[\s]*$/.test(comentarios)
                     ? "Enviar sin comentarios "
-                    : "Enviar con comentarios   "}
+                    : "Enviar con comentarios   "} */}
                 </Button>
               </Grid>
 

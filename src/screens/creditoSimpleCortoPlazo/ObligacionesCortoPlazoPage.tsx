@@ -1,7 +1,7 @@
 import { Grid, Tabs, Tab } from "@mui/material";
 
+import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useState } from "react";
 
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
 import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
@@ -12,6 +12,7 @@ import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panel
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
+import { useCortoPlazoStore } from "../../store/main";
 
 export function ObligacionesCortoPlazoPage() {
   const [tabIndex, setTabIndex] = useState(0);
@@ -24,6 +25,13 @@ export function ObligacionesCortoPlazoPage() {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
+
+  const getTiposDocumentos: Function = useCortoPlazoStore(
+    (state) => state.getTiposDocumentos
+  );
+  useEffect(() => {
+    getTiposDocumentos();
+  }, []);
 
   return (
     <Grid container direction="column">
@@ -47,8 +55,8 @@ export function ObligacionesCortoPlazoPage() {
           <Tab label="Solicitud de Inscripción" sx={queries.text} />
         </Tabs>
       </Grid>
-      
-      {tabIndex === 0 && <Encabezado/>}
+
+      {tabIndex === 0 && <Encabezado />}
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion />}

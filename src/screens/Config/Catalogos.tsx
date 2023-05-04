@@ -94,7 +94,7 @@ export function Catalogos() {
     {
       id: 13,
       label: "Tipos de documento",
-      fnc: "tiposDocumentos",
+      fnc: "tiposDocumento",
     },
     {
       id: 14,

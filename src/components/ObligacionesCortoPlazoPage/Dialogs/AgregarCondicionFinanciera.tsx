@@ -1,4 +1,4 @@
-import{useEffect, useState, forwardRef} from "react";
+import { useState, forwardRef, useEffect } from "react";
 import {
   Grid,
   Tabs,
@@ -15,7 +15,6 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { DisposicionPagosCapital } from "../panels/DisposicionPagosCapital";
@@ -24,9 +23,11 @@ import { useCortoPlazoStore } from "../../../store/main";
 
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
-import { TasaInteres } from "../../../store/pagos_capital";
-import { TasaEfectiva } from "../../../store/tasa_efectiva";
+import {
+  CondicionFinanciera,
+  IComisiones,
+  TasaInteres,
+} from "../../../store/condicion_financiera";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -44,172 +45,132 @@ type Props = {
   indexA: number;
 };
 
-
-
-
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
+  // DISPOSICION
   const disposicionFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.disposicionFechaContratacion
+    (state) => state.disposicion.fechaDisposicion
   );
-
-  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionFechaContratacion
-  )
-
   const disposicionImporte: number = useCortoPlazoStore(
-    (state) => state.disposicionImporte
+    (state) => state.disposicion.importe
   );
 
-  const changeDisposicionImporte: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionImporte
-  )
-
+  // PAGOS DE CAPITAL
   const capitalFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.capitalFechaPrimerPago
+    (state) => state.pagosDeCapital.fechaPrimerPago
   );
-
-  const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalFechaPrimerPago
-  )
-
-  const capitalPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.capitalPeriocidadPago
-  );
-
-  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalPeriocidadPago
-  )
-
-  const tasaFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.tasaFechaPrimerPago
-  );
-
-  const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeTasaFechaPrimerPago
-  )
-
-  const tipoComision: string = useCortoPlazoStore(
-    (state) => state.tipoComision
-  );
-
-  const changeTipoComision: Function = useCortoPlazoStore(
-    (state) => state.changeTipoComision
-  )
-  
-  const tasaReferencia: string = useCortoPlazoStore(
-    (state) => state.tasaReferencia
-  );
-
-  const changeTasaReferencia: Function = useCortoPlazoStore(
-    (state) => state.changeTasaReferencia
-  )
-
+  const capitalPeriocidadPago: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
   const capitalNumeroPago: number = useCortoPlazoStore(
-    (state) => state.capitalNumeroPago
+    (state) => state.pagosDeCapital.numeroDePago
   );
 
-  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalNumeroPago
-  )
-
-  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
-    (state) => state.tasaInteresTable
-  );
-  const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(
-    (state) => state.tasaEfectivaTable
+  // TASA DE INTERES
+  const tablaTasaInteres: TasaInteres[] = useCortoPlazoStore(
+    (state) => state.tablaTasaInteres
   );
 
-  const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(
-    (state) => state.condicionFinancieraTable
+  // TASA EFECTIVA
+  const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
+  const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
+    (state) => state.tasaEfectiva.tasaEfectiva
   );
 
+  // COMISIONES
+  const tablaComisiones: IComisiones[] = useCortoPlazoStore(
+    (state) => state.tablaComisiones
+  );
+
+  // CLEAN
+  const changeCapital: Function = useCortoPlazoStore(
+    (state) => state.changeCapital
+  );
+  const changeDisposicion: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicion
+  );
+  const cleanTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.cleanTasaInteres
+  );
+  const cleanComision: Function = useCortoPlazoStore(
+    (state) => state.cleanComision
+  );
+
+  // CONDICION FINANCIERA
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-
   const upDataCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.upDataCondicionFinanciera
-  )
+  );
+  const changeTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.changeTasaInteres
+  );
 
-  
   const addRow = () => {
-      const CF: CondicionFinanciera = {
-
-
-        id: hashFunctionCYRB53(new Date().getTime().toString()),
-        fechaDisposicion: disposicionFechaContratacion,
-        importeDisposicion: disposicionImporte.toString(),
-        fechaPrimerPagoCapital: capitalFechaPrimerPago,
-        periocidadPagoCapital: capitalPeriocidadPago,
-        fechaPrimerPagoInteres: tasaFechaPrimerPago,
-        tasaInteres: tasaReferencia,
-        comisiones: tipoComision,
-        numeroPagoCapital: capitalNumeroPago,
-        tasasInteres: tasaInteresTable,
-        tasasEfectivas: tasaEfectivaTable,
-      };
-      addCondicionFinanciera(CF);
-    //}
-  };
-
-  const updateRow = (indexA: number) =>{
     const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      fechaDisposicion: disposicionFechaContratacion,
-      importeDisposicion: disposicionImporte.toString(),
-      fechaPrimerPagoCapital: capitalFechaPrimerPago,
-      periocidadPagoCapital: capitalPeriocidadPago,
-      fechaPrimerPagoInteres: tasaFechaPrimerPago,
-      tasaInteres: tasaReferencia,
-      comisiones: tipoComision,
-      numeroPagoCapital: capitalNumeroPago,
-      tasasInteres: tasaInteresTable,
-      tasasEfectivas: tasaEfectivaTable,
+      disposicion: {
+        fechaDisposicion: disposicionFechaContratacion,
+        importe: disposicionImporte,
+      },
+      pagosDeCapital: {
+        fechaPrimerPago: capitalFechaPrimerPago,
+        periodicidadDePago: capitalPeriocidadPago.Descripcion,
+        numeroDePago: capitalNumeroPago,
+      },
+      tasaInteres: tablaTasaInteres,
+      comisiones: tablaComisiones,
+      tasaEfectiva: tasaEfectivaTasaEfectiva,
+      diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
     };
-
-    upDataCondicionFinanciera(CF, indexA)
-  }
-  
-  const reset = () => {
-    useCortoPlazoStore.setState({
-      disposicionFechaContratacion: "",
-    });
-    useCortoPlazoStore.setState({
-      disposicionImporte: 0,
-    });
-
-    useCortoPlazoStore.setState({
-      capitalFechaPrimerPago: "",
-    });
-
-    useCortoPlazoStore.setState({
-      capitalPeriocidadPago: "",
-    });
-
-    useCortoPlazoStore.setState({
-      capitalNumeroPago: 0,
-    });
-
-    useCortoPlazoStore.setState({
-      tasaInteresTable: [],
-    });
-
-    useCortoPlazoStore.setState({
-      tasaEfectivaTable: [],
-    });
+    addCondicionFinanciera(CF);
   };
 
- 
+  const updateRow = (indexA: number) => {
+    const CF: CondicionFinanciera = {
+      id: hashFunctionCYRB53(new Date().getTime().toString()),
+      disposicion: {
+        fechaDisposicion: disposicionFechaContratacion,
+        importe: disposicionImporte,
+      },
+      pagosDeCapital: {
+        fechaPrimerPago: capitalFechaPrimerPago,
+        periodicidadDePago: capitalPeriocidadPago.Descripcion,
+        numeroDePago: capitalNumeroPago,
+      },
+      tasaInteres: tablaTasaInteres,
+      comisiones: tablaComisiones,
+      tasaEfectiva: "",
+      diasEjercicio: "",
+    };
+
+    upDataCondicionFinanciera(CF, indexA);
+  };
+
+  const reset = () => {
+    changeDisposicion(new Date().toString(), "");
+    changeCapital(new Date().toString(), { Id: "", Descripcion: "" }, "");
+    changeTasaInteres({
+      tasaFija: false,
+      tasaVariable: false,
+      tasa: "",
+      fechaPrimerPago: new Date().toString(),
+      diasEjercicio: { Id: "", Descripcion: "" },
+      periocidadPago: { Id: "", Descripcion: "" },
+      tasaReferencia: { Id: "", Descripcion: "" },
+      sobreTasa: "",
+    });
+    cleanTasaInteres();
+    cleanComision();
+  };
 
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
@@ -218,10 +179,8 @@ export function AgregarCondicionFinanciera(props: Props) {
           <IconButton
             edge="start"
             onClick={() => {
-              props.handler(false)
-             
-              
-              
+              props.handler(false);
+              reset();
             }}
             sx={{ color: "white" }}
           >
@@ -230,9 +189,7 @@ export function AgregarCondicionFinanciera(props: Props) {
           <Grid container>
             <Grid item>
               <Typography sx={queries.bold_text}>
-                Agregar Condición Financiera
-              </Typography><Typography sx={queries.bold_text}>
-                {props.accion}
+                {props.accion} Condición Financiera
               </Typography>
             </Grid>
           </Grid>
@@ -249,22 +206,20 @@ export function AgregarCondicionFinanciera(props: Props) {
                 },
               }}
               onClick={() => {
-                //reset()
-                
-                if(props.accion === "Agregar"){
+                if (props.accion === "Agregar") {
                   addRow();
-                  props.handler(false)
-                }else if(props.accion === "Editar"){
+                  props.handler(false);
+                  reset();
+                } else if (props.accion === "Editar") {
                   updateRow(props.indexA);
-                  props.handler(false)
+                  props.handler(false);
+                  reset();
                 }
-                 
               }}
             >
               <CheckIcon sx={{ mr: 1 }} />
-              <Typography sx={queries.medium_text}>FINALIZAR</Typography>
+              <Typography sx={queries.medium_text}>{props.accion}</Typography>
             </Button>
-
           </Grid>
         </Toolbar>
       </AppBar>
@@ -279,14 +234,12 @@ export function AgregarCondicionFinanciera(props: Props) {
             allowScrollButtonsMobile
           >
             <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
-            <Divider orientation="vertical" flexItem />
             <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
-            <Divider orientation="vertical" flexItem />
           </Tabs>
 
           {tabIndex === 0 && <DisposicionPagosCapital />}
 
-          {tabIndex === 2 && <ComisionesTasaEfectiva />}
+          {tabIndex === 1 && <ComisionesTasaEfectiva />}
         </Grid>
       </Grid>
     </Dialog>

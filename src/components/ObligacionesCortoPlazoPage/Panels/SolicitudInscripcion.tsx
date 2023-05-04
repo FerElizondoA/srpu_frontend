@@ -12,7 +12,7 @@ import {
   TableHead,
   Fab,
   Typography,
-  Snackbar, 
+  TableRow,
 } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
@@ -20,11 +20,10 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { IconButton } from "@mui/material";
 import { ConfirmacionDescargaSolicitud } from "../dialogs/ConfirmacionDescargaSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../dialogs/ConfirmacionBorradorSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../dialogs/ConfirmacionCancelarSolicitud";
-
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
@@ -40,6 +39,8 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudInscripcion() {
+  const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
+  let [a] = React.useState(new Array());
 
   const [openDialog, changeOpenDialog] = React.useState(false);
   const changeOpenDialogState = (open: boolean) => {
@@ -51,79 +52,27 @@ export function SolicitudInscripcion() {
     changeOpenDialogBorrador(open);
   };
 
-  const changeCloseDialogBorradorState = () => {
-    changeOpenDialogBorrador(false);
-  };
-
-
   const [openDialogCancelar, changeOpenDialogCancelar] = React.useState(false);
   const changeOpenDialogCancelarState = (open: boolean) => {
     changeOpenDialogCancelar(open);
   };
-
-  const changeCloseDialogCancelarState = () => {
-    changeOpenDialogBorrador(false);
-  };
-
   const nombreServidorPublico: string = useCortoPlazoStore(
-    (state) => state.nombreServidorPublico
+    (state) => state.inscripcion.servidorPublicoDirigido
   );
-  const changeServidorPublico: Function = useCortoPlazoStore(
-    (state) => state.changeServidorPublico
-  );
-  const cargo: string = useCortoPlazoStore((state) => state.cargo);
-  const changeCargo: Function = useCortoPlazoStore(
-    (state) => state.changeCargo
+  const cargoServidorPublico: string = useCortoPlazoStore(
+    (state) => state.inscripcion.cargo
   );
   const solicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.solicitanteAutorizado
+    (state) => state.encabezado.solicitanteAutorizado.Nombre
   );
-  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(
-    (state) => state.changeSolicitanteAutorizado
+  const catalogoReglas: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoReglas
   );
-  const documentoAutorizado: string = useCortoPlazoStore(
-    (state) => state.documentoAutorizado
-  );
-  const changeDocumentoAutorizado: Function = useCortoPlazoStore(
-    (state) => state.changeDocumentoAutorizado
-  );
-  const identificacion: string = useCortoPlazoStore(
-    (state) => state.identificacion
-  );
-  const changeIdentificacion: Function = useCortoPlazoStore(
-    (state) => state.changeIdentificacion
-  );
-  const reglasCatalog: string[] = useCortoPlazoStore(
-    (state) => state.reglasCatalog
-  );
-  
-  const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
-  );
-  const crearSolicitud: Function = useCortoPlazoStore(
-    (state) => state.crearSolicitud
+  const changeReglasAplicables: Function = useCortoPlazoStore(
+    (state) => state.changeReglasAplicables
   );
 
-  const [selected, setSelected] = React.useState<number[]>([]);
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
+  const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   const buttodescription = () => {
     if (localStorage.getItem("Rol") === "Capturador") {
@@ -135,10 +84,8 @@ export function SolicitudInscripcion() {
     }
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
   React.useEffect(() => {
-    fetchReglas();
+    getReglas();
   }, []);
 
   return (
@@ -159,7 +106,7 @@ export function SolicitudInscripcion() {
             fullWidth
             variant="standard"
             value={nombreServidorPublico}
-            onChange={(text) => changeServidorPublico(text.target.value)}
+            // onChange={(text) => changeServidorPublico(text.target.value)}
             disabled
             sx={queries.medium_text}
             InputLabelProps={{
@@ -180,8 +127,8 @@ export function SolicitudInscripcion() {
           <TextField
             fullWidth
             variant="standard"
-            value={cargo}
-            onChange={(text) => changeCargo(text.target.value)}
+            value={cargoServidorPublico}
+            // onChange={(text) => changeCargo(text.target.value)}
             disabled
             sx={queries.medium_text}
             InputLabelProps={{
@@ -202,9 +149,9 @@ export function SolicitudInscripcion() {
         item
         container
         flexDirection="row"
-        mt={{ sm: 2, md: 0, lg: 0 }}
-        ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ md: 10, lg: 10 }}
+        mt={4}
+        mb={4}
+        justifyContent={"center"}
       >
         <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
@@ -214,8 +161,10 @@ export function SolicitudInscripcion() {
             disabled
             fullWidth
             variant="standard"
-            value={solicitanteAutorizado || localStorage.getItem("NombreUsuario")}
-            onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
+            value={
+              solicitanteAutorizado || localStorage.getItem("NombreUsuario")
+            }
+            // onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -230,7 +179,7 @@ export function SolicitudInscripcion() {
           />
         </Grid>
 
-        <Grid item md={3} lg={3} xl={3}>
+        {/* <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Documento de autorización
           </InputLabel>
@@ -251,9 +200,9 @@ export function SolicitudInscripcion() {
               },
             }}
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid item md={3} lg={3} xl={3}>
+        {/* <Grid item md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Identificación</InputLabel>
           <TextField
             fullWidth
@@ -272,48 +221,79 @@ export function SolicitudInscripcion() {
               },
             }}
           />
-        </Grid>
-
-        <Grid item md={9} lg={9} xl={9}>
-          <Divider sx={queries.medium_text}>
-            Declaratorias aplicables al financiamiento u obligación.
-          </Divider>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Grid
         item
         container
         //flexDirection="row"
-        ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        justifyContent={"center"}
+        alignItems={"flex-start"}
         spacing={{ md: 10, lg: 10 }}
       >
         <Grid item md={9} lg={9} xl={9}>
+          <Divider sx={queries.medium_text}>
+            Declaratorias aplicables al financiamiento u obligación.
+          </Divider>
+        </Grid>
+        <Grid item md={9} lg={9} xl={9}>
           <Grid container direction="column">
             <Grid item>
-              <TableContainer sx={{ maxHeight: "350px" }}>
+              <TableContainer
+                sx={{
+                  height: "50vh",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".2vw",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
                 <Table>
                   <TableHead>
-                    {heads.map((head) => (
-                      <StyledTableCell>
-                        <TableSortLabel>{head.label}</TableSortLabel>
-                      </StyledTableCell>
-                    ))}
+                    <TableRow>
+                      {heads.map((head, index) => (
+                        <StyledTableCell key={index}>
+                          <TableSortLabel>{head.label}</TableSortLabel>
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
                   </TableHead>
                   <TableBody>
-                    {reglasCatalog.map((row, index) => {
-                      const isItemSelected = isSelected(index);
+                    {catalogoReglas.map((row, index) => {
                       return (
-                        <StyledTableRow>
+                        <StyledTableRow key={index}>
                           <StyledTableCell padding="checkbox">
                             <Checkbox
-                              onClick={(event) => handleClick(event, index)}
-                              checked={isItemSelected}
+                              disabled={
+                                (checkObj[1] === true && index === 2) ||
+                                (checkObj[2] === true && index === 1) ||
+                                (checkObj[3] === true && index === 4) ||
+                                (checkObj[4] === true && index === 3)
+                              }
+                              onChange={(v) => {
+                                v.target.checked
+                                  ? setCheckObj({ ...checkObj, [index]: true })
+                                  : setCheckObj({
+                                      ...checkObj,
+                                      [index]: false,
+                                    });
+
+                                v.target.checked
+                                  ? (a[index] = row.Descripcion)
+                                  : delete a[index];
+
+                                changeReglasAplicables(a);
+                              }}
                             />
                           </StyledTableCell>
-                          <StyledTableCell component="th" scope="row">
-                            {row}
-                          </StyledTableCell>
+                          <StyledTableCell>{row.Descripcion}</StyledTableCell>
                         </StyledTableRow>
                       );
                     })}
@@ -328,10 +308,14 @@ export function SolicitudInscripcion() {
           position="fixed"
           sx={{ top: "auto", bottom: 50, left: window.innerWidth - 300 }}
         >
-          <Fab variant="extended" color="error" onClick={() => {
-              
+          <Fab
+            variant="extended"
+            color="error"
+            onClick={() => {
               changeOpenDialogCancelarState(!openDialog);
-            }}sx={{ mb: "10px" }}>
+            }}
+            sx={{ mb: "10px" }}
+          >
             <CancelIcon sx={{ mr: 1 }} />
             <Typography sx={queries.medium_text}>Cancelar</Typography>
           </Fab>
@@ -358,7 +342,6 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success" //onClick={() => crearSolicitud(selected)}
             onClick={() => {
-              
               changeOpenDialogBorradorState(!openDialog);
             }}
             sx={{ mb: "10px" }}
@@ -381,20 +364,24 @@ export function SolicitudInscripcion() {
           <ConfirmacionDescargaSolicitud
             handler={changeOpenDialogState}
             openState={openDialog}
-            selected={selected}
+            // selected={selected}
           />
           <ConfirmacionBorradorSolicitud
             handler={changeOpenDialogBorradorState}
             openState={openDialogBorrador}
-            selected={selected}
+            // selected={selected}
           />
           <ConfirmacionCancelarSolicitud
             handler={changeOpenDialogCancelarState}
             openState={openDialogCancelar}
-            selected={selected}
+            // selected={selected}
           />
         </Grid>
       </Grid>
     </Grid>
   );
+}
+
+export interface checkBoxType {
+  [key: string]: boolean | undefined;
 }

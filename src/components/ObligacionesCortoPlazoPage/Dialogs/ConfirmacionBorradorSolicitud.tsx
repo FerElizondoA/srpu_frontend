@@ -35,7 +35,7 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
-  selected: number[];
+  // selected: number[];
 };
 
 export function ConfirmacionBorradorSolicitud(props: Props) {
@@ -46,14 +46,12 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
-  const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
-  );
+  const fetchReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
 
   const navigate = useNavigate();
 
@@ -109,9 +107,14 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 //onClick={handleClick}
                 onClick={() => {
                   props.handler(false);
-                  crearSolicitud(props.selected);
+                  crearSolicitud(
+                    localStorage.getItem("IdUsuario"),
+                    localStorage.getItem("IdUsuario"),
+                    localStorage.getItem("Rol") === "Capturador"
+                      ? "Captura"
+                      : "Verificacion"
+                  );
                   navigate("../ConsultaDeSolicitudes");
-                  
                 }}
                 variant="text"
               >

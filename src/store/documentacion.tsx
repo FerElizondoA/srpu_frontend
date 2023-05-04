@@ -1,19 +1,81 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { IFile } from "../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import { ITiposDocumento } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
-export interface DocumentosSlice{
-    
-    documentosObligatoriosArreglo: IFile[];
-    
-    addDocumentosObligatoriosArreglo: (newDocumentosObligatoriosArreglo: IFile) => void;
+export interface DocumentosSlice {
+  documentosObligatorios: [];
+
+  tablaDocumentos: IFile[];
+
+  catalogoTiposDocumentos: ITiposDocumento[];
+  catalogoTiposDocumentosObligatorios: ITiposDocumento[];
+
+  addDocumento: (newDocumentosObligatoriosArreglo: IFile) => void;
+  removeDocumento: (index: number) => void;
+  setTablaDocumentos: (docs: any) => any;
+
+  getTiposDocumentos: () => void;
 }
 
+export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
+  set,
+  get
+) => ({
+  documentosObligatorios: [],
 
-export const createDocumentoSlice: StateCreator<DocumentosSlice> = (set, get) => ({
+  tablaDocumentos: [],
 
+  catalogoTiposDocumentos: [],
+  catalogoTiposDocumentosObligatorios: [],
 
-documentosObligatoriosArreglo: [],
+  addDocumento: (newDocumento: IFile) =>
+    set((state) => ({
+      tablaDocumentos: [...state.tablaDocumentos, newDocumento],
+    })),
 
-addDocumentosObligatoriosArreglo: (newDocumentosObligatoriosArreglo: IFile) =>set((state) => ({ documentosObligatoriosArreglo: [...state.documentosObligatoriosArreglo, newDocumentosObligatoriosArreglo] })),
-})  
+  removeDocumento: (index: number) =>
+    set((state) => ({
+      tablaDocumentos: state.tablaDocumentos.filter((_, i) => i !== index),
+    })),
+
+  setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
+
+  getTiposDocumentos: async () => {
+    await axios({
+      method: "get",
+      url:
+        process.env.REACT_APP_APPLICATION_BACK +
+        "/api/get-tiposDocumentosCortoPlazo",
+      data: {},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+      set((state) => ({
+        catalogoTiposDocumentos: data.data,
+        catalogoTiposDocumentosObligatorios: data.data.filter(
+          (td: any) => td.Obligatorio === 1
+        ),
+        tablaDocumentos: data.data
+          .filter((td: any) => td.Obligatorio === 1)
+          .map((num: any, index: number) => {
+            return {
+              archivo: new File(
+                [],
+                "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO",
+                { type: "text/plain" }
+              ),
+              tipoArchivo: data.data.filter((td: any) => td.Obligatorio === 1)[
+                index
+              ].Id,
+              descripcionTipo: data.data.filter(
+                (td: any) => td.Obligatorio === 1
+              )[index].Descripcion,
+            };
+          }),
+      }));
+    });
+  },
+});
