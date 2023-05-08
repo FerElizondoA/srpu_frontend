@@ -121,7 +121,7 @@ export function DisposicionPagosCapital() {
   const tasaInteresTasaVariable: boolean = useCortoPlazoStore(
     (state) => state.tasaInteres.tasaVariable
   );
-  const tasaInteresTasa: string = useCortoPlazoStore(
+  const tasaInteresTasa: number = useCortoPlazoStore(
     (state) => state.tasaInteres.tasa
   );
   const tasaInteresFechaPrimerPago: string = useCortoPlazoStore(
@@ -182,8 +182,8 @@ export function DisposicionPagosCapital() {
   const changeTasa = () => {
     if (radioValue !== "Tasa Fija") {
       changeTasaInteres({
-        tasaFija: tasaInteresTasaFija,
-        tasaVariable: tasaInteresTasaVariable,
+        tasaFija: true,
+        tasaVariable: false,
         tasa: tasaInteresTasa,
         fechaPrimerPago: tasaInteresFechaPrimerPago,
         diasEjercicio: tasaInteresDiasEjercicio,
@@ -194,7 +194,7 @@ export function DisposicionPagosCapital() {
     } else {
       changeTasaInteres({
         tasaFija: false,
-        tasaVariable: tasaInteresTasaVariable,
+        tasaVariable: true,
         tasa: tasaInteresTasa,
         fechaPrimerPago: tasaInteresFechaPrimerPago,
         diasEjercicio: tasaInteresDiasEjercicio,
@@ -493,7 +493,6 @@ export function DisposicionPagosCapital() {
                           },
                         }}
                         InputProps={{
-                          readOnly: true,
                           style: {
                             fontFamily: "MontserratMedium",
                           },

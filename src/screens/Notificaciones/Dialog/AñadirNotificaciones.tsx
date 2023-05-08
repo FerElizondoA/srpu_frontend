@@ -46,20 +46,17 @@ export const AñadirNotificaciones = ({
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 201 && !format.test(dato)) {
       setRegistroNotificaciones({ ...registroNotificaciones, Mensaje: dato });
-      console.log(dato);
     }
   };
   const validaTitulo = (dato: string) => {
     const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (dato.length < 31 && !format.test(dato)) {
       setRegistroNotificaciones({ ...registroNotificaciones, Titulo: dato });
-      console.log(dato);
     }
   };
 
   const validaUsuario = (dato: string) => {
     setRegistroNotificaciones({ ...registroNotificaciones, Creador: dato });
-    console.log(dato);
   };
 
   //useEffect
@@ -74,10 +71,6 @@ export const AñadirNotificaciones = ({
   const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
 
   const [idDestinatarios, setIdDestinatarios] = useState([]);
-  useEffect(() => {
-    console.log(destinatarios);
-    console.log(idDestinatarios);
-  }, [destinatarios]);
 
   return usuarios.length > 0 ? (
     <Dialog fullWidth maxWidth={"sm"} open={open} onClose={() => handleClose()}>

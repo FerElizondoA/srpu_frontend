@@ -585,9 +585,9 @@ export function LateralMenu() {
                 <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                   <List>
                     {bandejaInfo.length > 0 &&
-                      bandejaInfo.map((b) => (
+                      bandejaInfo.map((b, index) => (
                         <ListItemButton
-                          key={b.Id}
+                          key={index}
                           onClick={() => {
                             navigate("../bandeja/" + b.Nombre + "/" + b.Id);
                           }}
@@ -721,7 +721,7 @@ export function LateralMenu() {
                 >
 
                   {notificaciones.map((noti, index) => (
-                    <Grid>
+                    <Grid key={index}>
                       <Grid>
                         <Box sx={{
                           width: "100%",
@@ -779,7 +779,6 @@ export function LateralMenu() {
                       }}>
                         <Button sx={{}}
                           onClick={() => {
-                            console.log(noti.Id);
                             leerMensaje(noti.Id); 
                             getNotificaciones(
                               setNotificaciones,

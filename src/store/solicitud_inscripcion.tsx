@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface SolicitudInscripcionSlice {
+  idSolicitud: string;
+
   inscripcion: {
     servidorPublicoDirigido: string;
     cargo: string;
@@ -18,6 +20,7 @@ export interface SolicitudInscripcionSlice {
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
   changeReglasAplicables: (newReglas: string) => void;
+  changeIdSolicitud: (id: string) => void;
 
   getReglas: () => void;
 
@@ -26,11 +29,21 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string
   ) => void;
+
+  modificaSolicitud: (
+    idCreador: string,
+    idEditor: string,
+    estatus: string
+  ) => void;
+
+  addComentario: (idSolicitud: string, comentario: string) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
+  idSolicitud: "",
+
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública",
@@ -42,6 +55,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   changeInscripcion: (inscripcion: any) =>
     set(() => ({ inscripcion: inscripcion })),
+
+  changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
   changeReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
@@ -58,21 +73,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data.data);
-
         let r = data.data;
         set((state) => ({
           catalogoReglas: r,
         }));
       });
   },
-
   crearSolicitud: async (
     idCreador: string,
     idEditor: string,
     estatus: string
   ) => {
     const state = useCortoPlazoStore.getState();
+
     const solicitud: any = {
       encabezado: state.encabezado,
       informacionGeneral: {
@@ -93,15 +106,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
     await axios.post(
       process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
       {
-        IdTipoEntePublico: state.encabezado.tipoEntePublico.Id || '00b0470d-acb9-11ed-b719-2c4138b7dab1',
-        IdEntePublico: state.encabezado.organismo.Id || 'f45b91b9-bc38-11ed-b789-2c4138b7dab1',
+        IdTipoEntePublico:
+          state.encabezado.tipoEntePublico.Id ||
+          "00b0470d-acb9-11ed-b719-2c4138b7dab1",
+        IdEntePublico:
+          state.encabezado.organismo.Id ||
+          "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
         TipoSolicitud: state.encabezado.tipoDocumento,
         IdInstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Id,
         Estatus: estatus,
         IdClaveInscripcion: "1",
         MontoOriginalContratado: state.informacionGeneral.monto,
-        FechaContratacion: '2023-05-03 00:00:00',
+        FechaContratacion: state.encabezado.fechaContratacion,
         Solicitud: JSON.stringify(solicitud),
         IdEditor: idEditor,
         CreadoPor: idCreador,
@@ -113,7 +130,58 @@ export const createSolicitudInscripcionSlice: StateCreator<
       }
     );
   },
+  modificaSolicitud: async (
+    idCreador: string,
+    idEditor: string,
+    estatus: string
+  ) => {
+    const state = useCortoPlazoStore.getState();
 
+    const solicitud: any = {
+      encabezado: state.encabezado,
+      informacionGeneral: {
+        ...state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval,
+      },
+      condicionesFinancieras: state.tablaCondicionesFinancieras,
+      documentacion: state.tablaDocumentos.map((v, i) => {
+        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+      }),
+      inscripcion: {
+        servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
+        cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
+        declaratorias: state.reglasAplicables,
+      },
+    };
+
+    await axios.put(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
+      {
+        IdSolicitud: state.idSolicitud,
+        IdTipoEntePublico:
+          state.encabezado.tipoEntePublico.Id ||
+          "00b0470d-acb9-11ed-b719-2c4138b7dab1",
+        IdEntePublico:
+          state.encabezado.organismo.Id ||
+          "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
+        TipoSolicitud: state.encabezado.tipoDocumento,
+        IdInstitucionFinanciera:
+          state.informacionGeneral.institucionFinanciera.Id,
+        Estatus: estatus,
+        IdClaveInscripcion: "1",
+        MontoOriginalContratado: state.informacionGeneral.monto,
+        FechaContratacion: state.encabezado.fechaContratacion,
+        Solicitud: JSON.stringify(solicitud),
+        IdEditor: idEditor,
+        IdUsuario: idCreador,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+  },
   fetchBorrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -153,15 +221,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
-
-  fetchComentario: (Id: string, comentario: string) => {
-    const state = useCortoPlazoStore.getState();
-
-    // const IdSolicitud = state.IdSolicitud;
-
-    // console.log("IdSolicitud: ", IdSolicitud);
-
-    const response = axios
+  addComentario: (Id: string, comentario: string) => {
+    axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
@@ -175,14 +236,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((response) => {})
+      .then(({ data }) => {})
       .catch((e) => {});
   },
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
-  console.log("Info de solicitud: ", Solicitud);
-
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
@@ -248,8 +307,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
 }
 
 export const getUsuariosAsignables = (setState: Function, numero: number) => {
-  console.log("Soy el numero en getUsuariosAsignables: ", numero);
-
   axios
     .get(
       process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
@@ -265,12 +322,9 @@ export const getUsuariosAsignables = (setState: Function, numero: number) => {
       }
     )
     .then(({ data }) => {
-      console.log("soy la data: en getUsuarios ", data);
-
       if (data.data[0].ERROR !== "Permisos Denegados") {
         setState(data.data);
-      
-    }
+      }
     })
     .catch((r) => {
       if (r.response.status === 409) {

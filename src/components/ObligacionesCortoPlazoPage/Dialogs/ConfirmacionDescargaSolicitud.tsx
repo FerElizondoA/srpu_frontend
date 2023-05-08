@@ -64,9 +64,6 @@ export function ConfirmacionDescargaSolicitud(props: Props) {
     fetchReglas();
   }, []);
 
-  // const fetchComentario: Function = useCortoPlazoStore(
-  //   (state) => state.fetchComentario
-  // );
 
   const navigate = useNavigate();
   //////////////// Este apartado es el de finalizar

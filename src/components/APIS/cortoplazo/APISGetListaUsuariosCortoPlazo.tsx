@@ -16,8 +16,6 @@ export const getListadoUsuariosCortoPlazo = (setState: Function,permisosEspecial
     }).then(({ data }) => {
   
       setState(data.data)
-      console.log(data.data)
-      
     })
       .catch((r) => {
         

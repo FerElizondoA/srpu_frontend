@@ -31,10 +31,7 @@ export const createNotification = (Titulo: string, mensaje: string, listadoUsuar
         }
 
     ).then((r) => {
-        console.log(r)
-
     }).catch((r) => {
-        console.log(r)
     })
 }
 
@@ -76,9 +73,6 @@ export const getHistorialNotificaciones = (setState: Function,) => {
             'Content-Type': 'application/json'
         }
     }).then(({ data }) => {
-
-        //cantidadNotificaciones(data.data.length); //Obtienes la cantidad de Notificaciones
-        console.log(data.data)
         setState(data.data)
     })
         .catch((r) => {
@@ -123,8 +117,6 @@ export const leerMensaje = (IdNotificacion: string) => {
                 'Content-Type': 'application/json'
             }
         }).then(({ data }) => {
-            console.log(data);
-
         })
         .catch((r) => {
             if (r.response.status === 409) {

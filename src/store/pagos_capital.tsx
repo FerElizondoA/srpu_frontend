@@ -16,7 +16,7 @@ export interface PagosCapitalSlice {
   tasaInteres: {
     tasaFija: false;
     tasaVariable: false;
-    tasa: string;
+    tasa: number;
     fechaPrimerPago: string;
     diasEjercicio: { Id: string; Descripcion: string };
     periocidadPago: { Id: string; Descripcion: string };
@@ -38,7 +38,6 @@ export interface PagosCapitalSlice {
   
 
   changeTasaInteres: (
-    id: number,
     tasaFija: boolean,
     tasaVariable: boolean,
     tasa: string,
@@ -73,7 +72,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   tasaInteres: {
     tasaFija: false,
     tasaVariable: false,
-    tasa: "",
+    tasa: 0,
     fechaPrimerPago: new Date().toString(),
     diasEjercicio: { Id: "", Descripcion: "" },
     periocidadPago: { Id: "", Descripcion: "" },

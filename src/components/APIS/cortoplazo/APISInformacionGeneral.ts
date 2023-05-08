@@ -58,7 +58,6 @@ export function getSolicitudes(setState: Function) {
     },
   })
     .then(({ data }) => {
-      console.log(data);
       setState(data.data);
     })
     .catch((error) => {
