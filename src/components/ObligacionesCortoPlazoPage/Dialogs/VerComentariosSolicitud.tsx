@@ -82,40 +82,28 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////
 export function VerComentariosSolicitud({
   handler,
   openState,
-  selected,
-  //comentarios: Array<IComentarios>;
-  IdSolicitud,
 }: {
   handler: Function;
   openState: boolean;
-  selected: number[];
-  //comentarios: Array<IComentarios>;
-  IdSolicitud: string;
 }) {
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
-  useEffect(() => {
-    getComentariosSolicitudPlazo(IdSolicitud, setComentarios);    
-  }, []);
-  
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
+
   const changeOpenDialogState = (open: boolean) => {
     changeOpenDialogCrear(open);
   };
 
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  )
-  
-  changeIdSolicitud(IdSolicitud)
-  //useCortoPlazoStore.setState(IdSolicitud: IdSolicitud);
+  useEffect(() => {
+    if (IdSolicitud !== "") {
+      getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
+    }
+  }, [IdSolicitud, openDialogCrear]);
 
   return (
     <Dialog
@@ -138,21 +126,21 @@ export function VerComentariosSolicitud({
               aria-label="a dense table"
             >
               <TableHead>
-                {heads.map((head) => (
-                  <StyledTableCell  key={head.id}>
-                    <TableSortLabel sx={{ color: "#AF8C55" }}>
-                      {head.label}{" "}
-                    </TableSortLabel>
-                  </StyledTableCell>
-                ))}
+                <StyledTableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell key={index}>
+                      <TableSortLabel sx={{ color: "#AF8C55" }}>
+                        {head.label}{" "}
+                      </TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </StyledTableRow>
               </TableHead>
               <TableBody>
                 {comentarios.length !== 0 ? (
                   comentarios?.map((row, index) => {
-                   
-
                     return (
-                      <StyledTableRow>
+                      <StyledTableRow key={index}>
                         <StyledTableCell component="th" scope="row">
                           {row.Nombre}
                         </StyledTableCell>
@@ -203,23 +191,17 @@ export function VerComentariosSolicitud({
         </Button>
         <Button
           onClick={() => {
-            console.log("IdSolicitud en ver comentario",IdSolicitud);
-            
-            changeOpenDialogState(!openDialogCrear)
-            
+            changeOpenDialogState(!openDialogCrear);
           }}
         >
           CREAR NUEVO COMENTARIO
         </Button>
       </DialogActions>
-      {openDialogCrear && <AgregarComentario
+      <AgregarComentario
         handler={changeOpenDialogState}
         openState={openDialogCrear}
-        IdSolicitud = {IdSolicitud}
-        setComentarios = {setComentarios}
-        comentarios ={comentarios}
-        />
-        }
+        IdSolicitud={IdSolicitud}
+      />
     </Dialog>
   );
 }

@@ -27,7 +27,7 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
-  selected: number[];
+  // selected: number[];
 };
 
 export function ConfirmacionCancelarSolicitud(props: Props) {
@@ -37,10 +37,10 @@ export function ConfirmacionCancelarSolicitud(props: Props) {
 
   
 
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
   const navigate = useNavigate();
   return (
     <Dialog

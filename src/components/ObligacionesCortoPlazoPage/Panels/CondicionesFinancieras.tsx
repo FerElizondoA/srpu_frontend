@@ -1,5 +1,9 @@
-import { useState } from "react"
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
+import { useState } from "react";
+import {
+  CondicionFinanciera,
+  IComisiones,
+  TasaInteres,
+} from "../../../store/condicion_financiera";
 import {
   Grid,
   Table,
@@ -7,9 +11,13 @@ import {
   TableSortLabel,
   TableContainer,
   TableHead,
-  Checkbox,
   Tooltip,
-  IconButton
+  IconButton,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TableRow,
 } from "@mui/material";
 
 
@@ -17,234 +25,347 @@ import {
   StyledTableCell,
   StyledTableRow,
   ConfirmButton,
-  DeleteButton,
-  hashFunctionCYRB53,
 } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-import { format } from "date-fns";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { format, lightFormat } from "date-fns";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { TasaInteres } from "../../../store/pagos_capital";
-import { TasaEfectiva } from "../../../store/tasa_efectiva";
+import CloseIcon from "@mui/icons-material/Close";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
-
-interface CFinancieras {
-  id: number,
-  sobreTasa: string,
-  tasaDiasEjercicio: string,
-  tasaFija: string,
-  disposicionFechaContratacion: string,
-  disposicionImporte: number,
-  capitalFechaPrimerPago: string,
-  capitalPeriocidadPago: string,
-  capitalNumeroPago: number,
-  tasaFechaPrimerPago: string,
-  tasaPeriocidadPago: string,
-
-}
 
 interface Head {
   label: string;
 }
 
+const headsTasa: readonly Head[] = [
+  {
+    label: "Fecha de Primer Pago",
+  },
+  {
+    label: "Tasa Fija",
+  },
+  {
+    label: "Periocidad de Pago",
+  },
+  {
+    label: "Tasa de Referencia",
+  },
+  {
+    label: "Sobre Tasa",
+  },
+  {
+    label: "Dias del Ejercicio",
+  },
+];
+
+const headsComision: readonly Head[] = [
+  {
+    label: "Tipo de comisión",
+  },
+  {
+    label: "Fecha de primer pago",
+  },
+  {
+    label: "Periocidad de Pago",
+  },
+  {
+    label: "Porcentaje",
+  },
+  {
+    label: "Monto",
+  },
+  {
+    label: "IVA",
+  },
+];
+
 const heads: readonly Head[] = [
-  // {
-  //   label: "Selección"
-  // },
   {
-    label: "Acciones"
+    label: "Acciones",
   },
   {
-    label: "Fecha de Disposición"
+    label: "Fecha de Disposición",
   },
   {
-    label: "Importe de Disposición"
+    label: "Importe de Disposición",
   },
   {
-    label: "Fecha de Primer Pago Capital"
+    label: "Fecha de Primer Pago Capital",
   },
   {
-    label: "Periocidad de Pago Capital"
+    label: "Periocidad de Pago Capital",
   },
   {
-    label: "Fecha de Primer Pago de Interés"
+    label: "Fecha de Primer Pago de Interés",
   },
   {
-    label: "Tasa de Interés"
+    label: "Tasa de Interés",
   },
   {
-    label: "Comisiones"
+    label: "Comisiones",
   },
- 
-]
+];
 
 export function CondicionesFinancieras() {
-
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
-  const [selected, setSelected] = useState<readonly number[]>([]);
-
-  const condicionFinancieraTable: CondicionFinanciera[] = useCortoPlazoStore(state => state.condicionFinancieraTable);
-  const loadCondicionFinanciera: Function = useCortoPlazoStore(state => state.loadCondicionFinanciera);
-  const removeCondicionFinanciera: Function = useCortoPlazoStore(state => state.removeCondicionFinanciera);
+  const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
+    (state) => state.tablaCondicionesFinancieras
+  );
+  const loadCondicionFinanciera: Function = useCortoPlazoStore(
+    (state) => state.loadCondicionFinanciera
+  );
 
   const [accion, setAccion] = useState("Agregar");
   const [indexA, setIndexA] = useState(0);
 
-  const changeOpenAgregarState = (open: boolean,) => {
+  const changeOpenAgregarState = (open: boolean) => {
     changeAgregarCondicion(open);
-  }
-
-
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.disposicionFechaContratacion
-  );
-  const disposicionImporte: number = useCortoPlazoStore(
-    (state) => state.disposicionImporte
-  );
-
-  const capitalFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.capitalFechaPrimerPago
-  );
-
-  const capitalPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.capitalPeriocidadPago
-  );
-  const tasaFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.tasaFechaPrimerPago
-  );
-  const tipoComision: string = useCortoPlazoStore(
-    (state) => state.tipoComision
-  );
-  const tasaReferencia: string = useCortoPlazoStore(
-    (state) => state.tasaReferencia
-  );
-  const capitalNumeroPago: number = useCortoPlazoStore(
-    (state) => state.capitalNumeroPago
-  );
-  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
-    (state) => state.tasaInteresTable
-  );
-  const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(
-    (state) => state.tasaEfectivaTable
-  );
-  // const upDataCondicionFinanciera: Function = useCortoPlazoStore(
-  //   (state) => state.upDataCondicionFinanciera
-  // )
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-
-
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(state => state.updatecondicionFinancieraTable);
-
-
-  const addRow = () => {
-    const CF: CondicionFinanciera = {
-
-
-      id: hashFunctionCYRB53(new Date().getTime().toString()),
-      fechaDisposicion: disposicionFechaContratacion,
-      importeDisposicion: disposicionImporte.toString(),
-      fechaPrimerPagoCapital: capitalFechaPrimerPago,
-      periocidadPagoCapital: capitalPeriocidadPago,
-      fechaPrimerPagoInteres: tasaFechaPrimerPago,
-      tasaInteres: tasaReferencia,
-      comisiones: tipoComision,
-      numeroPagoCapital: capitalNumeroPago,
-      tasasInteres: tasaInteresTable,
-      tasasEfectivas: tasaEfectivaTable,
-    };
-    addCondicionFinanciera(CF);
-    //}
   };
+
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+
+  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
+
+  const [openTasa, setOpenTasa] = useState(false);
+  const [openComision, setOpenComision] = useState(false);
 
   return (
     <Grid container direction="column">
       <Grid item>
-        <TableContainer sx={{ minHeight: "100%" }} >
+        <TableContainer sx={{ minHeight: "100%" }}>
           <Table>
             <TableHead>
-              {heads.map((head) => (
-                <StyledTableCell>
-                  <TableSortLabel>{head.label}</TableSortLabel>
-                </StyledTableCell>
-              ))}
+              <TableRow>
+                {heads.map((head, index) => (
+                  <StyledTableCell key={index}>
+                    <TableSortLabel>{head.label}</TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableRow>
             </TableHead>
             <TableBody>
-              {condicionFinancieraTable.map((row, index) => {
-
+              {tablaCondicionesFinancieras.map((row, index) => {
                 return (
-
-
-
-                  <StyledTableRow key={row.id}  >
-                    {/* <StyledTableCell padding="checkbox">
-                      <Checkbox
-                        // onClick={(event) => handleClick(event, index)}
-                        // checked={isItemSelected}
-                      />
-                    </StyledTableCell> */}
-
+                  <StyledTableRow key={index}>
                     <StyledTableCell align="left">
                       <Tooltip title="Editar">
-                        <IconButton type="button" onClick={() => {
-                          changeOpenAgregarState(!openAgregarCondicion);
-                          setAccion("Editar")
-                          setIndexA(index)
-                          loadCondicionFinanciera(row);
-                          //editCondicionesFinancieras(row)
-                        }}>
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            changeOpenAgregarState(!openAgregarCondicion);
+                            setAccion("Editar");
+                            setIndexA(index);
+                            loadCondicionFinanciera(row);
+                          }}
+                        >
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Eliminar">
-                        <IconButton type="button" onClick={() => {
-                          updatecondicionFinancieraTable(condicionFinancieraTable.filter(
-                            item => item.id !== row.id))
-                          //editCondicionesFinancieras(row)
-                        }}>
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            updatecondicionFinancieraTable(
+                              tablaCondicionesFinancieras.filter(
+                                (item) => item.id !== row.id
+                              )
+                            );
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </Tooltip>
-
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" >
-                      {format(new Date(row.fechaDisposicion), "dd/MM/yyyy")}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {"$" + row.importeDisposicion}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell component="th" scope="row">
                       {format(
-                        new Date(row.fechaPrimerPagoCapital),
+                        new Date(row.disposicion.fechaDisposicion),
                         "dd/MM/yyyy"
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.periocidadPagoCapital}
+                      {"$" + row.disposicion.importe}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {format(
-                        new Date(row.fechaPrimerPagoInteres),
+                        new Date(row.pagosDeCapital.fechaPrimerPago),
                         "dd/MM/yyyy"
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.tasaInteres}
+                      {row.pagosDeCapital.periodicidadDePago}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.comisiones}
+                      {format(
+                        new Date(row.pagosDeCapital.fechaPrimerPago),
+                        "dd/MM/yyyy"
+                      )}
                     </StyledTableCell>
-
-
-
+                    <StyledTableCell align="center">
+                      <Button
+                        onClick={() => {
+                          setRowTasa(row.tasaInteres);
+                          setOpenTasa(true);
+                        }}
+                      >
+                        <InfoOutlinedIcon />
+                      </Button>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Button
+                        onClick={() => {
+                          setRowComision(row.comisiones);
+                          setOpenComision(true);
+                        }}
+                      >
+                        <InfoOutlinedIcon />
+                      </Button>
+                    </StyledTableCell>
                   </StyledTableRow>
                 );
               })}
             </TableBody>
+            <Dialog
+              open={openTasa}
+              onClose={() => {
+                setOpenTasa(false);
+              }}
+              maxWidth={"lg"}
+            >
+              <DialogTitle sx={{ m: 0, p: 2 }}>
+                <IconButton
+                  onClick={() => {
+                    setOpenTasa(false);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: "black",
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                <TableContainer sx={{ maxHeight: "400px" }}>
+                  <Table>
+                    <TableHead sx={{ maxHeight: "200px" }}>
+                      <TableRow>
+                        {headsTasa.map((head, index) => (
+                          <StyledTableCell key={index}>
+                            <TableSortLabel>{head.label}</TableSortLabel>
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rowTasa.map((row, index) => {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell component="th" scope="row">
+                              {lightFormat(
+                                new Date(row.fechaPrimerPago),
+                                "dd-MM-yyyy"
+                              )}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.tasa}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.periocidadPago}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.tasaReferencia}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.sobreTasa}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.diasEjercicio}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog
+              open={openComision}
+              onClose={() => {
+                setOpenComision(false);
+              }}
+              maxWidth={"lg"}
+            >
+              <DialogTitle sx={{ m: 0, p: 2 }}>
+                <IconButton
+                  onClick={() => {
+                    setOpenComision(false);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: "black",
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                <TableContainer sx={{ maxHeight: "400px" }}>
+                  <Table>
+                    <TableHead sx={{ maxHeight: "200px" }}>
+                      <TableRow>
+                        {headsComision.map((head, index) => (
+                          <StyledTableCell key={index}>
+                            <TableSortLabel>{head.label}</TableSortLabel>
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rowComision.map((row, index) => {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell component="th" scope="row">
+                              {row.tipoDeComision}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {lightFormat(
+                                new Date(row.fechaContratacion),
+                                "dd-MM-yyyy"
+                              )}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.periodicidadDePago}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.porcentaje}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.monto}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              {row.iva}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </DialogContent>
+            </Dialog>
           </Table>
         </TableContainer>
       </Grid>
@@ -254,27 +375,28 @@ export function CondicionesFinancieras() {
           <ConfirmButton
             variant="outlined"
             onClick={() => {
-            
-              changeOpenAgregarState(!openAgregarCondicion)
-              setAccion("Agregar")
-            
-
-            }
-            }
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
           >
             AGREGAR
           </ConfirmButton>
-          {changeOpenAgregarState ? <AgregarCondicionFinanciera
-            handler={changeOpenAgregarState}
-            openState={openAgregarCondicion}
-            accion={accion}
-            indexA={indexA}
-
-          /> : null}
+          {/* {changeOpenAgregarState ? ( */}
+            <AgregarCondicionFinanciera
+              handler={changeOpenAgregarState}
+              openState={openAgregarCondicion}
+              accion={accion}
+              indexA={indexA}
+            />
+          {/* ) : null} */}
         </Grid>
 
-      
-
+        {/* <Grid item md={6} lg={6}>
+          <DeleteButton variant="outlined" 
+          //onClick={() =>
+             //deleteRows()}
+             >ELIMINAR</DeleteButton>
+        </Grid> */}
       </Grid>
     </Grid>
   );

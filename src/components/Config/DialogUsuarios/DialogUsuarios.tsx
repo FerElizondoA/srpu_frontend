@@ -17,7 +17,7 @@ import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
 import { getCatalogo } from "../../APIS/config/APISCatalogos";
 import { createSolicitud } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { ICatalogo } from "../../../screens/Config/Catalogos";
+import { ICatalogo } from "../../../screens/config/Catalogos";
 
 export const DialogUsuarios = ({
   open,

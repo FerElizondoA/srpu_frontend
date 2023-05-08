@@ -1,19 +1,18 @@
 import { Grid, Tabs, Tab } from "@mui/material";
 
+import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useState } from "react";
+
 import { queries } from "../../queries";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
-import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
-import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
-import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
-import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
-import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
-
-//export const [ste,setste]=useState<array<tipo>>([]);
-
+import { useCortoPlazoStore } from "../../store/main";
+import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
+import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
+import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
+import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
+import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
 
 export function ObligacionesCortoPlazoPage() {
 
@@ -31,6 +30,13 @@ export function ObligacionesCortoPlazoPage() {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
+
+  const getTiposDocumentos: Function = useCortoPlazoStore(
+    (state) => state.getTiposDocumentos
+  );
+  useEffect(() => {
+    getTiposDocumentos();
+  }, []);
 
   return (
     <Grid container direction="column">
@@ -54,8 +60,8 @@ export function ObligacionesCortoPlazoPage() {
           <Tab label="Solicitud de Inscripción" sx={queries.text} />
         </Tabs>
       </Grid>
-      
-      {tabIndex === 0 && <Encabezado/>}
+
+      {tabIndex === 0 && <Encabezado />}
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion />}

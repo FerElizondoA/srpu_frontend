@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Grid,
-  Checkbox,
   Divider,
   TextField,
   Table,
@@ -15,13 +14,15 @@ import {
   FormControl,
   RadioGroup,
   FormControlLabel,
+  Typography,
   Radio,
   Tooltip,
   IconButton,
+  TableRow,
 } from "@mui/material";
 
 import { queries } from "../../../queries";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -30,20 +31,16 @@ import { DateInput } from "../../CustomComponents";
 
 import {
   ConfirmButton,
-  DeleteButton,
   StyledTableCell,
   StyledTableRow,
-  hashFunctionCYRB53,
 } from "../../CustomComponents";
 
-import { TasaInteres } from "../../../store/pagos_capital";
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
- 
 }
 
 const heads: readonly Head[] = [
@@ -71,140 +68,111 @@ const heads: readonly Head[] = [
 ];
 
 export function DisposicionPagosCapital() {
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.disposicionFechaContratacion
+  // GET CATALOGOS
+  const getPeriocidadPago: Function = useCortoPlazoStore(
+    (state) => state.getPeriocidadPago
   );
-  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionFechaContratacion
+  const getTasaReferencia: Function = useCortoPlazoStore(
+    (state) => state.getTasaReferencia
+  );
+  const getDiasEjercicio: Function = useCortoPlazoStore(
+    (state) => state.getDiasEjercicio
+  );
+
+  // CATALOGOS
+  const catalogoPeriocidadDePago: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoPeriocidadDePago
+  );
+  const catalogoTasaReferencia: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoTasaReferencia
+  );
+  const catalogoDiasEjercicio: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoDiasEjercicio
+  );
+
+  // DISPOSICION
+  const disposicionFechaContratacion: string = useCortoPlazoStore(
+    (state) => state.disposicion.fechaDisposicion
   );
   const disposicionImporte: number = useCortoPlazoStore(
-    (state) => state.disposicionImporte
+    (state) => state.disposicion.importe
   );
-  const changeDisposicionImporte: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionImporte
+  const changeDisposicion: Function = useCortoPlazoStore(
+    (state) => state.changeDisposicion
   );
+
+  // PAGOS DE CAPITAL
   const capitalFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.capitalFechaPrimerPago
+    (state) => state.pagosDeCapital.fechaPrimerPago
   );
-  const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalFechaPrimerPago
-  );
-  const capitalPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.capitalPeriocidadPago
-  );
-  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalPeriocidadPago
-  );
-
-  const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.periocidadDePagoMap
-  );
+  const capitalPeriocidadPago: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
   const capitalNumeroPago: number = useCortoPlazoStore(
-    (state) => state.capitalNumeroPago
+    (state) => state.pagosDeCapital.numeroDePago
   );
-  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalNumeroPago
-  );
-  const tasaFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.tasaFechaPrimerPago
-  );
-  const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeTasaFechaPrimerPago
+  const changeCapital: Function = useCortoPlazoStore(
+    (state) => state.changeCapital
   );
 
-  const tasaPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.tasaPeriocidadPago
+  // TASA DE INTERES
+  const tasaInteresTasaFija: boolean = useCortoPlazoStore(
+    (state) => state.tasaInteres.tasaFija
   );
-  const changeTasaPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeTasaPeriocidadPago
+  const tasaInteresTasaVariable: boolean = useCortoPlazoStore(
+    (state) => state.tasaInteres.tasaVariable
   );
-  
-  const tasaReferenciaMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.tasaReferenciaMap
+  const tasaInteresTasa: number = useCortoPlazoStore(
+    (state) => state.tasaInteres.tasa
+  );
+  const tasaInteresFechaPrimerPago: string = useCortoPlazoStore(
+    (state) => state.tasaInteres.fechaPrimerPago
+  );
+  const tasaInteresDiasEjercicio: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.tasaInteres.diasEjercicio);
+  const tasaInteresPeriocidadPago: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.tasaInteres.periocidadPago);
+  const tasaInteresTasaReferencia: { Id: string; Descripcion: string } =
+    useCortoPlazoStore((state) => state.tasaInteres.tasaReferencia);
+  const tasaInteresSobreTasa: string = useCortoPlazoStore(
+    (state) => state.tasaInteres.sobreTasa
   );
 
-
-  const [tasaReferencia, setTasaReferencia] = useCortoPlazoStore((state) => [
-    state.tasaReferencia,
-    state.setTasaReferencia,
-  ]);
-
-  // const tasaReferencia: string = useCortoPlazoStore(
-  //   (state) => state.tasaReferencia
-  // );
-
-  const changeTasaReferencia: Function = useCortoPlazoStore(
-    (state) => state.changeTasaReferencia
-  );
-  /////////////////////////////////////////////////////////////////////
-  const sobreTasa: string = useCortoPlazoStore((state) => state.sobreTasa);
-  const changeSobreTasa: Function = useCortoPlazoStore(
-    (state) => state.changeSobreTasa
-  );
-  const tasaDiasEjercicio: string = useCortoPlazoStore(
-    (state) => state.tasaDiasEjercicio
-  );
-  const changeTasaDiasEjercicio: Function = useCortoPlazoStore(
-    (state) => state.changeTasaDiasEjercicio
-  );
-  const diasEjercicioMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.diasEjercicioMap
-  );
-  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
-    (state) => state.tasaInteresTable
+  // TABLA TASA DE INTERES
+  let tablaTasaInteres: any = useCortoPlazoStore(
+    (state) => state.tablaTasaInteres
   );
   const addTasaInteres: Function = useCortoPlazoStore(
     (state) => state.addTasaInteres
   );
+  const changeTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.changeTasaInteres
+  );
   const removeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.removeTasaInteres
   );
-  const fetchPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.fetchPeriocidadPago
-  );
-  const fetchTasaReferencia: Function = useCortoPlazoStore(
-    (state) => state.fetchTasaReferencia
-  );
-  const fetchDiasEjercicio: Function = useCortoPlazoStore(
-    (state) => state.fetchDiasEjercicio
-  );
-
-  const tasaFija: string = useCortoPlazoStore((state) => state.tasaInteres);
-  const changeTasaFija: Function = useCortoPlazoStore(
-    (state) => state.changeTasaFija
-  );
-
-
-
-  
-
 
   useEffect(() => {
-    fetchPeriocidadPago();
-    fetchTasaReferencia();
-    fetchDiasEjercicio();
+    getPeriocidadPago();
+    getTasaReferencia();
+    getDiasEjercicio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  
-
   const addRows = () => {
-    const TI: TasaInteres = {
-      id: hashFunctionCYRB53(new Date().getTime().toString()),
-      fechaPrimerPago: tasaFechaPrimerPago,
-      tasaInteres: tasaFija,
-      periocidadPago: tasaPeriocidadPago,
-      tasaReferencia: tasaReferencia,
-      sobreTasa: sobreTasa,
-      diasEjercicio: tasaDiasEjercicio,
+    let tab = {
+      tasaFija: tasaInteresTasaFija,
+      tasaVariable: tasaInteresTasaVariable,
+      tasa: tasaInteresTasa || "N/A",
+      fechaPrimerPago: tasaInteresFechaPrimerPago,
+      diasEjercicio: tasaInteresDiasEjercicio.Descripcion || "N/A",
+      periocidadPago: tasaInteresPeriocidadPago.Descripcion || "N/A",
+      tasaReferencia: tasaInteresTasaReferencia.Descripcion || "N/A",
+      sobreTasa: tasaInteresSobreTasa || "N/A",
     };
-    addTasaInteres(TI);
+    addTasaInteres(tab);
   };
 
- 
-  /////////////////////////////////////////////////////
-
-  const [radioValue, setRadioValue] = useState("fixedPercentage");
+  const [radioValue, setRadioValue] = useState("Tasa Fija");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
@@ -212,76 +180,50 @@ export function DisposicionPagosCapital() {
   };
 
   const changeTasa = () => {
-    if (radioValue !== "fixedPercentage") {
-      changeHasTasaFija(true);
-      changeEfectivaTasaFija(0);
-      changeHasTasaVariable(false);
-    
+    if (radioValue !== "Tasa Fija") {
+      changeTasaInteres({
+        tasaFija: true,
+        tasaVariable: false,
+        tasa: tasaInteresTasa,
+        fechaPrimerPago: tasaInteresFechaPrimerPago,
+        diasEjercicio: tasaInteresDiasEjercicio,
+        periocidadPago: tasaInteresPeriocidadPago,
+        tasaReferencia: tasaInteresTasaReferencia,
+        sobreTasa: tasaInteresSobreTasa,
+      });
     } else {
-      changeHasTasaFija(false);
-      changeEfectivaTasaVariable(0);
-      changeHasTasaVariable(true);
-
-      //changeSobreTasa("NA");
+      changeTasaInteres({
+        tasaFija: false,
+        tasaVariable: true,
+        tasa: tasaInteresTasa,
+        fechaPrimerPago: tasaInteresFechaPrimerPago,
+        diasEjercicio: tasaInteresDiasEjercicio,
+        periocidadPago: tasaInteresPeriocidadPago,
+        tasaReferencia: tasaInteresTasaReferencia,
+        sobreTasa: tasaInteresSobreTasa,
+      });
     }
   };
-  const changeHasTasaFija: Function = useCortoPlazoStore(
-    (state) => state.changeHasTasaFija
-  );
-  const changeHasTasaVariable: Function = useCortoPlazoStore(
-    (state) => state.changeHasTasaVariable
-  );
-
-  const changeEfectivaTasaFija: Function = useCortoPlazoStore(
-    (state) => state.changeEfectivaTasaFija
-  );
-  const changeEfectivaTasaVariable: Function = useCortoPlazoStore(
-    (state) => state.changeEfectivaTasaVariable
-  );
-
-  
-  
-  //////////////////////////////////////////////////////
 
   const reset = () => {
-
-    useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
-    useCortoPlazoStore.setState({ tasaPeriocidadPago: "" });
-    useCortoPlazoStore.setState({ tasaReferencia: "" });
-    useCortoPlazoStore.setState({ sobreTasa: "" });
-
-
-  
+    changeTasaInteres({
+      tasaFija: false,
+      tasaVariable: false,
+      tasa: "",
+      fechaPrimerPago: new Date().toString(),
+      diasEjercicio: { Id: "", Descripcion: "" },
+      periocidadPago: { Id: "", Descripcion: "" },
+      tasaReferencia: { Id: "", Descripcion: "" },
+      sobreTasa: "",
+    });
   };
 
-  
-  useEffect(() => {
-    if (radioValue === "fixedPercentage") {
-      useCortoPlazoStore.setState({ tasaReferencia: "NA" });
-      useCortoPlazoStore.setState({ sobreTasa: "NA" });
-      useCortoPlazoStore.setState({ tasaInteres: "Tasa Fija" });
-      useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
-      useCortoPlazoStore.setState({ tasaPeriocidadPago: "" });
-    } else {
-      useCortoPlazoStore.setState({ tasaInteres: "Tasa Variable" });
-      useCortoPlazoStore.setState({ tasaReferencia: "" });
-      useCortoPlazoStore.setState({ sobreTasa: "" });
-      useCortoPlazoStore.setState({ tasaDiasEjercicio: "" });
-      useCortoPlazoStore.setState({ tasaPeriocidadPago: "" });
-      
-    }
-  }, [radioValue]);
-
-  
-  const updatePagosCapitalTable: Function = useCortoPlazoStore(state => state.updatePagosCapitalTable)
-
-  
   return (
     <Grid container direction="column">
       <Grid item container>
         <Grid item container direction="column" lg={6} padding={2}>
           <Grid item>
-            <Divider sx={queries.medium_text}>DISPOSICIÓN</Divider>
+            <Divider>DISPOSICIÓN</Divider>
           </Grid>
 
           <Grid item container mt={5}>
@@ -296,7 +238,7 @@ export function DisposicionPagosCapital() {
                 <DatePicker
                   value={new Date(disposicionFechaContratacion)}
                   onChange={(date) =>
-                    changeDisposicionFechaContratacion(date?.toString())
+                    changeDisposicion(date?.toString(), disposicionImporte)
                   }
                   slots={{
                     textField: DateInput,
@@ -310,7 +252,10 @@ export function DisposicionPagosCapital() {
                 value={disposicionImporte}
                 onChange={(text) =>
                   /^[0-9,.]*$/.test(text.target.value)
-                    ? changeDisposicionImporte(text.target.value)
+                    ? changeDisposicion(
+                        disposicionFechaContratacion,
+                        text.target.value
+                      )
                     : null
                 }
                 fullWidth
@@ -335,7 +280,7 @@ export function DisposicionPagosCapital() {
 
         <Grid item container direction="column" lg={6} padding={2}>
           <Grid item>
-            <Divider sx={queries.medium_text}>PAGOS DE CAPITAL</Divider>
+            <Divider>PAGOS DE CAPITAL</Divider>
           </Grid>
           <Grid item container mt={5}>
             <Grid item lg={3} ml={5}>
@@ -349,7 +294,11 @@ export function DisposicionPagosCapital() {
                 <DatePicker
                   value={new Date(capitalFechaPrimerPago)}
                   onChange={(date) =>
-                    changeCapitalFechaPrimerPago(date?.toString())
+                    changeCapital(
+                      date?.toString(),
+                      capitalPeriocidadPago,
+                      capitalNumeroPago
+                    )
                   }
                   slots={{
                     textField: DateInput,
@@ -364,11 +313,26 @@ export function DisposicionPagosCapital() {
               </InputLabel>
               <Autocomplete
                 fullWidth
+                options={catalogoPeriocidadDePago}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Descripcion}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
                 value={capitalPeriocidadPago}
-                onChange={(event: any, text: string | null) =>
-                  changeCapitalPeriocidadPago(periocidadDePagoMap.get(text), text)
+                onChange={(event, text) =>
+                  changeCapital(
+                    capitalFechaPrimerPago,
+                    {
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    },
+                    capitalNumeroPago
+                  )
                 }
-                options={Array.from(periocidadDePagoMap.keys())}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -376,15 +340,24 @@ export function DisposicionPagosCapital() {
                     sx={queries.medium_text}
                   />
                 )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
               />
             </Grid>
-            
 
             <Grid item ml={10} lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 value={capitalNumeroPago}
-                onChange={(text) => changeCapitalNumeroPago(text.target.value)}
+                onChange={(c) =>
+                  changeCapital(
+                    capitalFechaPrimerPago,
+                    capitalPeriocidadPago,
+                    c.target.value
+                  )
+                }
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -405,7 +378,7 @@ export function DisposicionPagosCapital() {
       <Grid item container>
         <Grid item container direction="column">
           <Grid item mt={5} padding={2}>
-            <Divider sx={queries.medium_text}>TASA DE INTERÉS</Divider>
+            <Divider>TASA DE INTERÉS</Divider>
           </Grid>
 
           <Grid item container spacing={5}>
@@ -420,21 +393,21 @@ export function DisposicionPagosCapital() {
             >
               <FormControl>
                 <RadioGroup
-                  defaultValue="fixedPercentage"
+                  defaultValue="Tasa Fija"
                   value={radioValue}
                   onChange={handleChange}
                 >
                   <Grid container>
                     <Grid item>
                       <FormControlLabel
-                        value="fixedPercentage"
+                        value="Tasa Fija"
                         control={<Radio />}
                         label="Tasa Fija"
                       />
                     </Grid>
                     <Grid item>
                       <FormControlLabel
-                        value="fixedAmount"
+                        value="Tasa Variable"
                         control={<Radio />}
                         label="Tasa Variable"
                       />
@@ -454,7 +427,7 @@ export function DisposicionPagosCapital() {
                   alignItems: "center",
                 }}
               >
-                {radioValue === "fixedPercentage" ? (
+                {radioValue === "Tasa Fija" ? (
                   <Grid
                     item
                     container
@@ -467,13 +440,50 @@ export function DisposicionPagosCapital() {
                   >
                     <Grid item>
                       <InputLabel sx={queries.medium_text}>
+                        Fecha de Primer Pago
+                      </InputLabel>
+                      <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        adapterLocale={enGB}
+                      >
+                        <DatePicker
+                          value={new Date(tasaInteresFechaPrimerPago)}
+                          onChange={(date) =>
+                            changeTasaInteres({
+                              tasaFija: tasaInteresTasaFija,
+                              tasaVariable: tasaInteresTasaVariable,
+                              tasa: tasaInteresTasa,
+                              fechaPrimerPago: date?.toString(),
+                              diasEjercicio: tasaInteresDiasEjercicio,
+                              periocidadPago: tasaInteresPeriocidadPago,
+                              tasaReferencia: { Id: "", Descripcion: "" },
+                              sobreTasa: "",
+                            })
+                          }
+                          slots={{
+                            textField: DateInput,
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid item>
+                      <InputLabel sx={queries.medium_text}>
                         Tasa Fija
                       </InputLabel>
 
                       <TextField
-                        value={tasaFija}
-                        onChange={(text) => {
-                          changeTasaFija(text.target.value);
+                        value={tasaInteresTasa}
+                        onChange={(v) => {
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: v.target.value,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          });
                         }}
                         
                         fullWidth
@@ -483,7 +493,6 @@ export function DisposicionPagosCapital() {
                           },
                         }}
                         InputProps={{
-                          readOnly: true,
                           style: {
                             fontFamily: "MontserratMedium",
                           },
@@ -498,11 +507,31 @@ export function DisposicionPagosCapital() {
                       </InputLabel>
                       <Autocomplete
                         fullWidth
-                        value={tasaDiasEjercicio}
-                        onChange={(event: any, text: string | null) =>
-                          changeTasaDiasEjercicio(text)
+                        options={catalogoDiasEjercicio}
+                        getOptionLabel={(option) => option.Descripcion}
+                        renderOption={(props, option) => {
+                          return (
+                            <li {...props} key={option.Descripcion}>
+                              <Typography>{option.Descripcion}</Typography>
+                            </li>
+                          );
+                        }}
+                        value={tasaInteresDiasEjercicio}
+                        onChange={(event, text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: tasaInteresTasa,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: {
+                              Id: text?.Id || "",
+                              Descripcion: text?.Descripcion || "",
+                            },
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          })
                         }
-                        options={Array.from(diasEjercicioMap.keys())}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -510,6 +539,10 @@ export function DisposicionPagosCapital() {
                             sx={queries.medium_text}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.Descripcion === value.Descripcion ||
+                          value.Descripcion === ""
+                        }
                       />
                     </Grid>
 
@@ -519,11 +552,31 @@ export function DisposicionPagosCapital() {
                       </InputLabel>
                       <Autocomplete
                         fullWidth
-                        value={tasaPeriocidadPago}
-                        onChange={(event: any, text: string | null) =>
-                          changeTasaPeriocidadPago(text)
+                        options={catalogoPeriocidadDePago}
+                        getOptionLabel={(option) => option.Descripcion}
+                        renderOption={(props, option) => {
+                          return (
+                            <li {...props} key={option.Descripcion}>
+                              <Typography>{option.Descripcion}</Typography>
+                            </li>
+                          );
+                        }}
+                        value={tasaInteresPeriocidadPago}
+                        onChange={(event, text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: tasaInteresTasa,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: {
+                              Id: text?.Id || "",
+                              Descripcion: text?.Descripcion || "",
+                            },
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          })
                         }
-                        options={Array.from(periocidadDePagoMap.keys())}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -531,6 +584,10 @@ export function DisposicionPagosCapital() {
                             sx={queries.medium_text}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.Descripcion === value.Descripcion ||
+                          value.Descripcion === ""
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -547,15 +604,63 @@ export function DisposicionPagosCapital() {
                   >
                     <Grid item>
                       <InputLabel sx={queries.medium_text}>
+                        Fecha de Primer Pago
+                      </InputLabel>
+                      <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        adapterLocale={enGB}
+                      >
+                        <DatePicker
+                          value={new Date(tasaInteresFechaPrimerPago)}
+                          onChange={(date) =>
+                            changeTasaInteres({
+                              tasaFija: tasaInteresTasaFija,
+                              tasaVariable: tasaInteresTasaVariable,
+                              tasa: "",
+                              fechaPrimerPago: date?.toString(),
+                              diasEjercicio: tasaInteresDiasEjercicio,
+                              periocidadPago: tasaInteresPeriocidadPago,
+                              tasaReferencia: tasaInteresTasaReferencia,
+                              sobreTasa: tasaInteresSobreTasa,
+                            })
+                          }
+                          slots={{
+                            textField: DateInput,
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid item>
+                      <InputLabel sx={queries.medium_text}>
                         Periocidad de Pago
                       </InputLabel>
                       <Autocomplete
                         fullWidth
-                        value={tasaPeriocidadPago}
-                        onChange={(event: any, text: string | null) =>
-                          changeTasaPeriocidadPago(text)
+                        options={catalogoPeriocidadDePago}
+                        getOptionLabel={(option) => option.Descripcion}
+                        renderOption={(props, option) => {
+                          return (
+                            <li {...props} key={option.Descripcion}>
+                              <Typography>{option.Descripcion}</Typography>
+                            </li>
+                          );
+                        }}
+                        value={tasaInteresPeriocidadPago}
+                        onChange={(event, text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: {
+                              Id: text?.Id || "",
+                              Descripcion: text?.Descripcion || "",
+                            },
+                            tasaReferencia: tasaInteresTasaReferencia,
+                            sobreTasa: tasaInteresSobreTasa,
+                          })
                         }
-                        options={Array.from(periocidadDePagoMap.keys())}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -563,6 +668,10 @@ export function DisposicionPagosCapital() {
                             sx={queries.medium_text}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.Descripcion === value.Descripcion ||
+                          value.Descripcion === ""
+                        }
                       />
                     </Grid>
 
@@ -572,11 +681,31 @@ export function DisposicionPagosCapital() {
                       </InputLabel>
                       <Autocomplete
                         fullWidth
-                        value={tasaReferencia}
-                        onChange={(event: any, text: string | null) =>
-                          changeTasaReferencia(text)
+                        options={catalogoTasaReferencia}
+                        getOptionLabel={(option) => option.Descripcion}
+                        renderOption={(props, option) => {
+                          return (
+                            <li {...props} key={option.Descripcion}>
+                              <Typography>{option.Descripcion}</Typography>
+                            </li>
+                          );
+                        }}
+                        value={tasaInteresTasaReferencia}
+                        onChange={(event, text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: {
+                              Id: text?.Id || "",
+                              Descripcion: text?.Descripcion || "",
+                            },
+                            sobreTasa: tasaInteresSobreTasa,
+                          })
                         }
-                        options={Array.from(tasaReferenciaMap.keys())}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -584,6 +713,10 @@ export function DisposicionPagosCapital() {
                             sx={queries.medium_text}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.Descripcion === value.Descripcion ||
+                          value.Descripcion === ""
+                        }
                       />
                     </Grid>
 
@@ -592,8 +725,19 @@ export function DisposicionPagosCapital() {
                         Sobre Tasa
                       </InputLabel>
                       <TextField
-                        value={sobreTasa}
-                        onChange={(text) => changeSobreTasa(text.target.value)}
+                        value={tasaInteresSobreTasa}
+                        onChange={(text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: tasaInteresTasaReferencia,
+                            sobreTasa: text.target.value || "",
+                          })
+                        }
                         fullWidth
                         InputLabelProps={{
                           style: {
@@ -615,11 +759,31 @@ export function DisposicionPagosCapital() {
                       </InputLabel>
                       <Autocomplete
                         fullWidth
-                        value={tasaDiasEjercicio}
-                        onChange={(event: any, text: string | null) =>
-                          changeTasaDiasEjercicio(text)
+                        options={catalogoDiasEjercicio}
+                        getOptionLabel={(option) => option.Descripcion}
+                        renderOption={(props, option) => {
+                          return (
+                            <li {...props} key={option.Descripcion}>
+                              <Typography>{option.Descripcion}</Typography>
+                            </li>
+                          );
+                        }}
+                        value={tasaInteresDiasEjercicio}
+                        onChange={(event, text) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: {
+                              Id: text?.Id || "",
+                              Descripcion: text?.Descripcion || "",
+                            },
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: tasaInteresTasaReferencia,
+                            sobreTasa: tasaInteresSobreTasa,
+                          })
                         }
-                        options={Array.from(diasEjercicioMap.keys())}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -627,6 +791,10 @@ export function DisposicionPagosCapital() {
                             sx={queries.medium_text}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.Descripcion === value.Descripcion ||
+                          value.Descripcion === ""
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -638,30 +806,29 @@ export function DisposicionPagosCapital() {
               <TableContainer sx={{ maxHeight: "400px" }}>
                 <Table>
                   <TableHead sx={{ maxHeight: "200px" }}>
-                    {heads.map((head) => (
-                      <StyledTableCell>
-                        <TableSortLabel>{head.label}</TableSortLabel>
-                      </StyledTableCell>
-                    ))}
+                    <TableRow>
+                      {heads.map((head, index) => (
+                        <StyledTableCell key={index}>
+                          <TableSortLabel>{head.label}</TableSortLabel>
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
                   </TableHead>
                   <TableBody>
-                    {tasaInteresTable.map((row, index) => {
-                      
-                      //onst isItemSelected = isSelected(index);
+                    {tablaTasaInteres.map((row: any, index: number) => {
                       return (
-                        <StyledTableRow>
+                        <StyledTableRow key={index}>
                           <StyledTableCell align="center">
-                          <Tooltip title="Eliminar">
-                          <IconButton type="button"
-                          onClick={() => updatePagosCapitalTable(tasaInteresTable.filter(
-                            item => item.id !== row.id
-                          ))}
-                          
-                          >
-
-                          <DeleteIcon />
-                          </IconButton>
-                          </Tooltip>
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  removeTasaInteres(index);
+                                }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
                           </StyledTableCell>
                           <StyledTableCell component="th" scope="row">
                             {lightFormat(
@@ -670,7 +837,7 @@ export function DisposicionPagosCapital() {
                             )}
                           </StyledTableCell>
                           <StyledTableCell align="center">
-                            {row.tasaInteres}
+                            {row.tasa}
                           </StyledTableCell>
                           <StyledTableCell align="center">
                             {row.periocidadPago}
@@ -690,19 +857,20 @@ export function DisposicionPagosCapital() {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Grid container>
-                <Grid item md={12} lg={12}>
-                  <ConfirmButton
-                    variant="outlined"
-                    onClick={() => {
-                      addRows();
-                      reset();
-                    }}
-                  >
-                    AGREGAR
-                  </ConfirmButton>
-                </Grid>
-                
+              <Grid>
+                <ConfirmButton
+                  disabled={
+                    tasaInteresDiasEjercicio.Descripcion === "" ||
+                    tasaInteresPeriocidadPago.Descripcion === ""
+                  }
+                  variant="outlined"
+                  onClick={() => {
+                    addRows();
+                    reset();
+                  }}
+                >
+                  AGREGAR
+                </ConfirmButton>
               </Grid>
             </Grid>
           </Grid>

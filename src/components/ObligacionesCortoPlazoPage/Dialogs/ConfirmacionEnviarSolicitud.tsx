@@ -1,32 +1,24 @@
 import { useState, useEffect } from "react";
 import {
   Grid,
-  Tabs,
-  Tab,
   Typography,
-  Divider,
   Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Slide,
   Button,
   TextField,
   DialogTitle,
   DialogContent,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   DialogActions,
 } from "@mui/material";
-
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 import { useCortoPlazoStore } from "../../../store/main";
 import { useNavigate } from "react-router-dom";
 import { getUsuariosAsignables } from "../../../store/solicitud_inscripcion";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { createNotification } from "../../LateralMenu/APINotificaciones";
 
 interface IUsuariosAsignables {
   Id: string;
@@ -49,20 +41,21 @@ export function ConfirmacionEnviarSolicitud({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  const crearSolicitud: Function = useCortoPlazoStore(
-    (state) => state.crearSolicitud
-  );
+  const fetchReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
-  const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
-  );
-
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
+  // const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
   const MAX_COMMENTS_LENGTH = 200;
-  const [text, setText] = useState("Enviar sin comentarios");
+  // const [text, setText] = useState("Enviar sin comentarios");
+  // const validaciontext = () => {
+  //   if (comentarios == null || /^[\s]*$/.test(comentarios)) {
+  //     setText("Enviar");
+  //   } else {
+  //   }
+  // };
 
   useEffect(() => {
     fetchReglas();
@@ -76,13 +69,18 @@ export function ConfirmacionEnviarSolicitud({
   >([]);
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
   useEffect(() => {
     getUsuariosAsignables(setUsuariosAsignables, asignar);
   }, []);
 
-  useEffect(() => {
-    console.log("UsuariosAsignables: ", usuariosAsignables);
-  }, []);
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
+  );
+
+  const modificaSolicitud: Function = useCortoPlazoStore(
+    (state) => state.modificaSolicitud
+  );
 
   return (
     <Dialog
@@ -103,8 +101,6 @@ export function ConfirmacionEnviarSolicitud({
           <Select
             value={idUsuarioAsignado}
             onChange={(e) => {
-              console.log("e.target.value: ", e.target.value);
-
               setidUsuarioAsignado(e.target.value);
             }}
           >
@@ -125,8 +121,8 @@ export function ConfirmacionEnviarSolicitud({
             multiline
             variant="standard"
             maxRows={5}
-            value={comentarios}
-            onChange={(texto) => changeComentarios(texto.target.value)}
+            // value={comentarios}
+            // onChange={(texto) => changeComentarios(texto.target.value)}
           />
         </Grid>
       </DialogContent>
@@ -134,33 +130,46 @@ export function ConfirmacionEnviarSolicitud({
       <DialogActions>
         <Button
           onClick={() => {
-            handler(false);
+            let arrUsuarios = [idUsuarioAsignado];
 
             if (localStorage.getItem("Rol") === "Verificador") {
-              crearSolicitud(selected, "Por Firmar");
+              crearSolicitud(
+                localStorage.getItem("IdUsuario"),
+                idUsuarioAsignado,
+                "Por Firmar"
+              );
+
               navigate("../ConsultaDeSolicitudes");
-            }
-            if (localStorage.getItem("Rol") === "Capturador") {
-              crearSolicitud(selected, "Verificacion");
+              createNotification(
+                "Tienes una solicitud ",
+                "Prueba",
+                arrUsuarios
+              );
+            } else if (localStorage.getItem("Rol") === "Capturador") {
+              crearSolicitud(
+                localStorage.getItem("IdUsuario"),
+                idUsuarioAsignado,
+                "Verificacion"
+              );
+
               navigate("../ConsultaDeSolicitudes");
+              createNotification(
+                "Tienes una solicitud ",
+                "Prueba",
+                arrUsuarios
+              );
             }
 
-            if (
-              localStorage.getItem("Rol") === "Verificador" &&
-              asignar === 2
-            ) {
-              crearSolicitud(selected, "Captura");
-              navigate("../ConsultaDeSolicitudes");
-            }
+            handler(false);
           }}
-          disabled={comentarios.length >= 200}
+          // disabled={comentarios.length >= 200}
           variant="text"
         >
-          {comentarios == null || /^[\s]*$/.test(comentarios)
+          {/* {comentarios == null || /^[\s]*$/.test(comentarios)
             ? "Enviar sin comentarios"
             : comentarios.length > MAX_COMMENTS_LENGTH
             ? "Los comentarios no pueden tener más de 200 caracteres"
-            : "Enviar con comentarios"}
+            : "Enviar con comentarios"} */}
         </Button>
 
         <Button

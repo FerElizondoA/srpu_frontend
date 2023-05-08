@@ -44,8 +44,8 @@ import { useNavigate } from "react-router-dom";
 import { TimerCounter } from "./TimerCounter";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { TasaEfectiva } from "../../store/tasa_efectiva";
-import { TasaInteres } from "../../store/pagos_capital";
+import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
+import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -59,11 +59,6 @@ export interface IData {
   tipoDocumento: string;
   TipoSolicitud: string;
 }
-import { getListadoUsuarios } from "../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
-import { getNotificaciones, leerMensaje } from "./APINotificaciones";
-import { format } from "date-fns";
-
 export function LateralMenu() {
   const logout = () => {
     localStorage.clear();
@@ -340,90 +335,55 @@ export function LateralMenu() {
     );
   };
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionFechaContratacion
-  );
-  const changeFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeFechaContratacion
-  );
-  const changeDisposicionImporte: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionImporte
-  );
-  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalPeriocidadPago
-  );
-  const changeTipoComision: Function = useCortoPlazoStore(
-    (state) => state.changeTipoComision
-  );
-  const changeTasaReferencia: Function = useCortoPlazoStore(
-    (state) => state.changeTasaReferencia
-  );
-  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalNumeroPago
-  );
-  const tasaInteresTable: TasaInteres[] = useCortoPlazoStore(
-    (state) => state.tasaInteresTable
-  );
-  const tasaEfectivaTable: TasaEfectiva[] = useCortoPlazoStore(
-    (state) => state.tasaEfectivaTable
-  );
+  // const reset = () => {
+  //   useCortoPlazoStore.setState({
+  //     obligadoSolidarioAvalTable: [],
+  //   });
 
-  const changeInstitucion: Function = useCortoPlazoStore(
-    (state) => state.changeInstitucion
-  );
-  const changeDestino: Function = useCortoPlazoStore(
-    (state) => state.changeDestino
-  );
-  const changeMontoOriginal: Function = useCortoPlazoStore(
-    (state) => state.changeMontoOriginal
-  );
-  const changeDenominacion: Function = useCortoPlazoStore(
-    (state) => state.changeDenominacion
-  );
-  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.changeObligadoSolidarioAval
-  );
-  const changeTipoEntePublicoObligado: Function = useCortoPlazoStore(
-    (state) => state.changeTipoEntePublicoObligado
-  );
-  const changeEntePublicoObligado: Function = useCortoPlazoStore(
-    (state) => state.changeEntePublicoObligado
-  );
-  const changePlazoDias: Function = useCortoPlazoStore(
-    (state) => state.changePlazoDias
-  );
+  //   useCortoPlazoStore.setState({
+  //     tablaCondicionesFinancieras: [],
+  //   });
 
-  // const condicionFinancieraTable :Function = useCortoPlazoStore(
-  //   (state) => state.condicionFinancieraTable
-  // )
+  //   useCortoPlazoStore.setState({
+  //     plazoDias: 0,
+  //   });
 
+  //   useCortoPlazoStore.setState({
+  //     montoOriginal: 0,
+  //   });
 
-  
-  const reset = () => {
-    changeIdSolicitud("");
-    changeDisposicionImporte(0);
-    changeCapitalPeriocidadPago("");
-    changeTipoComision("");
-    changeTasaReferencia("");
-    changeCapitalNumeroPago("");
+  //   useCortoPlazoStore.setState({
+  //     fechaVencimiento: "",
+  //   });
 
-     changeInstitucion("");
-     changeDestino("");
-     changeMontoOriginal(0);
-     changeDenominacion("Pesos");
-     changeObligadoSolidarioAval("");
-     changeTipoEntePublicoObligado("");
-     changeEntePublicoObligado("");
-     
+  //   useCortoPlazoStore.setState({
+  //     institucion: { Id: '', Institucion: '' },
+  //   });
 
-     useCortoPlazoStore.setState({
-      condicionFinancieraTable: [],
-    });
-  };
+  //   useCortoPlazoStore.setState({
+  //     tipoEntePublicoObligado: { Id: '', TipoEntePublicoObligado: '' },
+  //   });
+
+  //   useCortoPlazoStore.setState({
+  //     entePublicoObligado: { Id: '', EntePublicoObligado: '' },
+  //   });
+
+  //   useCortoPlazoStore.setState({
+  //     obligadoSolidarioAval: { Id: '', ObligadoSolidarioAval: '' },
+  //   });
+
+  //   useCortoPlazoStore.setState({
+  //     documentoAutorizado: "",
+  //   });
+
+  //   useCortoPlazoStore.setState({
+  //     identificacion: "",
+  //   });
+
+  //   useCortoPlazoStore.setState({
+  //     reglas: [],
+  //   });
+  // };
 
   return (
     <AppBar position="static">
@@ -556,8 +516,9 @@ export function LateralMenu() {
                             // setAccion("Agregar")
                             // setTabIndex(0)
                             //restart()
-                            reset();
+                            // reset();
                             navigate("../ObligacionesCortoPlazo");
+                            window.location.reload();
                           }}
                         >
                           <ListItemIcon>
@@ -624,9 +585,9 @@ export function LateralMenu() {
                 <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                   <List>
                     {bandejaInfo.length > 0 &&
-                      bandejaInfo.map((b) => (
+                      bandejaInfo.map((b, index) => (
                         <ListItemButton
-                          key={b.Id}
+                          key={index}
                           onClick={() => {
                             navigate("../bandeja/" + b.Nombre + "/" + b.Id);
                           }}
@@ -760,7 +721,7 @@ export function LateralMenu() {
                 >
 
                   {notificaciones.map((noti, index) => (
-                    <Grid>
+                    <Grid key={index}>
                       <Grid>
                         <Box sx={{
                           width: "100%",
@@ -818,7 +779,6 @@ export function LateralMenu() {
                       }}>
                         <Button sx={{}}
                           onClick={() => {
-                            console.log(noti.Id);
                             leerMensaje(noti.Id); 
                             getNotificaciones(
                               setNotificaciones,

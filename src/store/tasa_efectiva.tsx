@@ -1,144 +1,97 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-
-export type TasaEfectiva = {
-    id: number;
-    tipoComision: string;
-    fechaPrimerPago: string;
-    periocidadPago: string;
-    porcentaje: number;
-    monto: number;
-    hasIVA: boolean;
-}
+import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { IComisiones } from "./condicion_financiera";
 
 export interface TasaEfectivaSlice {
-    fetchedTiposComision: boolean;
-    tipoComision: string;
-    efectivaFechaContratacion: string;
-    efectivaPeriocidadPago: string;
-    
-    efectivaDiasEjercicio: string;
+  tablaComisiones: IComisiones[];
+  comision: {
+    fechaContratacion: string;
+    tipoDeComision: { Id: string; Descripcion: string };
+    periodicidadDePago: { Id: string; Descripcion: string };
+    porcentajeFijo: boolean;
+    montoFijo: boolean;
+    porcentaje: string;
+    monto: string;
+    iva: string;
+  };
+
+  tasaEfectiva: {
+    diasEjercicio: { Id: string; Descripcion: string };
     tasaEfectiva: string;
-    hasIVA: boolean;
-    tasaEfectivaTable: TasaEfectiva[];
-    tiposComisionCatalog: string[];
+  };
 
-    hasPorcentaje: boolean;
-    hasMonto: boolean;
-    efectivaPorcentajeFijo: number;
-    efectivaMontoFijo: number;
+  catalogoTiposComision: ICatalogo[];
 
-    hasTasaInteres: boolean;
-    hasTasaVariable: boolean;
+  changeComision: (comision: any) => void;
 
-    efectivaTasaInteres: number;
-    efectivaTasaVariable: number;
+  changeTasaEfectiva: (
+    diasEjercicio: { Id: string; Descripcion: string },
+    tasaEfectiva: string
+  ) => void;
 
-    tasaInteres: string;
-    setTasaReferencia: string;
+  addComision: (newComision: IComisiones) => void;
+  updateTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
+  cleanComision: () => void;
+  removeComision: (index: number) => void;
 
-    changeTipoComision: (newTipoComision: string) => void;
-    changeEfectivaFechaContratacion: (newEfectivaFechaContratacion: string) => void;
-    changeEfectivaPeriocidadPago: (newPeriocidadPago: string) => void;
-
-    changeHasPorcentaje: (newHasPorcentaje: boolean) => void;
-    changeHasMonto: (newHasMonto: boolean) => void;
-    
-    changeHasTasaFija: (newHasTasaFija: boolean) => void;
-    changeHasTasaVariable: (newHasTasaVariable: boolean) => void;
-
-    changeEfectivaPorcentajeFijo: (newEfectivaPorcentajeFijo: number) => void;
-    changeEfectivaMontoFijo: (newEfectivaMontoFIjo: number) => void;
-
-    changeEfectivaTasaFija: (newEfectivaTasaFija: number) => void;
-    changeEfectivaTasaVariable: (newEfectivaTasaVariable: number) => void;
-
-    changeEfectivaDiasEjercicio: (newEfectivaDiasEjercicio: string) => void;
-    changeTasaEfectiva: (newTasaEfectiva: string) => void;
-
-    changeTasaFija: (newTasaFija: string) => void;
-
-    changeSetTasaReferencia: (newSetTasaRefencia: string) => void;
-
-    changeHasIVA: (newHasIVA: boolean) => void;
-    addTasaEfectiva: (newTasaEfectiva: TasaEfectiva) => void;
-    removeTasaEfectiva: (index: number) => void;
-    fetchTiposComision: () => void;
-
-    updateTasaEfectivaTable: (tasaEfectivaTable: TasaEfectiva[]) => void;
+  getTiposComision: () => void;
 }
 
-export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (set, get) => ({
-    fetchedTiposComision: false,
-    tipoComision: "",
-    efectivaFechaContratacion: new Date().toString(),
-    efectivaPeriocidadPago: "",
-    hasPorcentaje: false,
-    hasMonto: false,
-
-    hasTasaInteres: false,
-    hasTasaVariable: false,
-
-    efectivaPorcentajeFijo: 0,
-    efectivaMontoFijo: 0,
-
-    efectivaTasaInteres: 0,
-    efectivaTasaVariable: 0,
-
-    efectivaDiasEjercicio: "",
+export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
+  set,
+  get
+) => ({
+  tablaComisiones: [],
+  comision: {
+    fechaContratacion: new Date().toString(),
+    tipoDeComision: { Id: "", Descripcion: "" },
+    periodicidadDePago: { Id: "", Descripcion: "" },
+    porcentajeFijo: false,
+    montoFijo: false,
+    monto: "",
+    porcentaje: "",
+    iva: "NO",
+  },
+  tasaEfectiva: {
+    diasEjercicio: { Id: "", Descripcion: "" },
     tasaEfectiva: "",
+  },
 
-    tasaInteres: "",
+  catalogoTiposComision: [],
 
-    setTasaReferencia: " ",
-    
+  changeComision: (comision: any) =>
+    set(() => ({
+      comision: comision,
+    })),
 
-    hasIVA: false,
-    tasaEfectivaTable: [],
-    tiposComisionCatalog: [],
-    changeTipoComision: (newTipoComision: string) => set(() => ({tipoComision: newTipoComision})),
-    changeEfectivaFechaContratacion: (newEfectivaFechaContratacion: string) => set(() => ({efectivaFechaContratacion: newEfectivaFechaContratacion})),
-    changeEfectivaPeriocidadPago: (newPeriocidadPago: string) => set(() => ({efectivaPeriocidadPago: newPeriocidadPago})),
-    changeHasPorcentaje: (newHasPorcentaje: boolean) => set(() => ({hasPorcentaje: newHasPorcentaje})),
-    changeHasMonto: (newHasMonto: boolean) => set(() => ({hasMonto: newHasMonto})),
-    changeEfectivaPorcentajeFijo: (newEfectivaPorcentajeFijo: number) => set(() => ({efectivaPorcentajeFijo: newEfectivaPorcentajeFijo})),
-    changeEfectivaMontoFijo: (newEfectivaMontoFIjo: number) => set(() => ({efectivaMontoFijo: newEfectivaMontoFIjo})),
+  changeTasaEfectiva: (tasaEfectiva: any) =>
+    set(() => ({
+      tasaEfectiva: tasaEfectiva,
+    })),
 
-    changeEfectivaTasaFija:  (newEfectivaTasaFija: number) => set(() => ({efectivaTasaInteres: newEfectivaTasaFija})),
+  addComision: (newComision: IComisiones) =>
+    set((state) => ({
+      tablaComisiones: [...state.tablaComisiones, newComision],
+    })),
 
-    changeEfectivaTasaVariable:  (newEfectivaTasaVariable: number) => set(() => ({efectivaTasaVariable: newEfectivaTasaVariable})),
+  updateTablaComisiones: (newTablaComisiones: IComisiones[]) =>
+    set(() => ({ tablaComisiones: newTablaComisiones })),
 
-    changeEfectivaDiasEjercicio: (newEfectivaDiasEjercicio: string) => set(() => ({efectivaDiasEjercicio: newEfectivaDiasEjercicio})),
-    changeTasaEfectiva: (newTasaEfectiva: string) => set(() => ({tasaEfectiva: newTasaEfectiva})),
-    changeHasIVA: (newHasIVA: boolean) => set(() => ({hasIVA: newHasIVA})),
-    addTasaEfectiva: (newTasaEfectiva: TasaEfectiva) => set((state) => ({tasaEfectivaTable: [...state.tasaEfectivaTable, newTasaEfectiva]})),
-    removeTasaEfectiva: (index: number) => set((state) => ({tasaEfectivaTable: state.tasaEfectivaTable.filter((_, i) => i !== index)})),
+  removeComision: (index: number) =>
+    set((state) => ({
+      tablaComisiones: state.tablaComisiones.filter((_, i) => i !== index),
+    })),
 
-    changeHasTasaFija: (newHasTasaFija: boolean) => set(() => ({hasPorcentaje: newHasTasaFija})),
-    changeHasTasaVariable: (newHasTasaVariable: boolean) => set(() => ({hasMonto: newHasTasaVariable})), 
+  cleanComision: () => set((state) => ({ tablaComisiones: [] })),
 
-    changeTasaFija: (newTasaFija: string) => set(() => ({tasaInteres: newTasaFija})),
-    
-    changeSetTasaReferencia: (newSetTasaRefencia: string) => set(() => ({setTasaReferencia:  newSetTasaRefencia})), 
-
-    updateTasaEfectivaTable: (tasaEfectivaTable: TasaEfectiva[]) => set(()=>({tasaEfectivaTable: tasaEfectivaTable})),
-
-    fetchTiposComision: async () => {
-        if(!get().fetchedTiposComision){
-            const response = await axios.get(
-              process.env.REACT_APP_APPLICATION_BACK + "/api/get-tipoDeComision",
-              {
-                headers: {
-                  Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
-            );
-            response.data.data.forEach((e: any) => {
-              set((state) => ({
-                tiposComisionCatalog: [...state.tiposComisionCatalog, e.Descripcion],
-              }));
-            });
-            set(() => ({fetchedTiposComision: true}))
-        }
-    }
-})
+  getTiposComision: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-tipoDeComision", {
+        headers: { Authorization: localStorage.getItem("jwtToken") },
+      })
+      .then(({ data }) => {
+        set((state) => ({ catalogoTiposComision: data.data }));
+      });
+  },
+});

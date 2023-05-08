@@ -30,12 +30,11 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { AgregarComentario } from "../../components/ObligacionesCortoPlazoPage/Dialogs/AgregarComentario";
 import CheckIcon from "@mui/icons-material/Check";
 import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
+import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -48,7 +47,7 @@ export interface IData {
   Solicitud: string;
   tipoDocumento: string;
   TipoSolicitud: string;
-  IdEditor:string
+  IdEditor: string;
 }
 
 interface Head {
@@ -161,18 +160,38 @@ export function ConsultaDeSolicitudPage() {
   }, [busqueda]);
 
   const navigate = useNavigate();
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const changeIdSolicitud: Function = useCortoPlazoStore(
+    (state) => state.changeIdSolicitud
+  );
+  const changeEncabezado: Function = useCortoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+  const changeInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
+  const addCondicionFinanciera: Function = useCortoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
 
-  const editarSolicitud = (solicitud: IData) => {
+  const llenaSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
-    aux.IdSolicitud = solicitud.Id;
-
-    useCortoPlazoStore.setState(aux);
-    navigate("../ObligacionesCortoPlazo");
+    changeEncabezado(aux?.encabezado);
+    changeInformacionGeneral(aux?.informacionGeneral);
+    aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
+      addObligadoSolidarioAval(v);
+    });
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      addCondicionFinanciera(v);
+    });
   };
 
-  const fetchBorrarSolicitud: Function = useCortoPlazoStore(
-    (state) => state.fetchBorrarSolicitud
-  );
+  const editarSolicitud = () => {
+    navigate("../ObligacionesCortoPlazo");
+  };
 
   /////////////////////////////////////////////
   const [selected] = useState<number[]>([]); //, setSelected
@@ -180,8 +199,6 @@ export function ConsultaDeSolicitudPage() {
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
-
-  const [idSolicitud, setIdSolicitud] = useState("");
 
   return (
     <Grid container direction="column">
@@ -211,11 +228,14 @@ export function ConsultaDeSolicitudPage() {
                 return false;
               }
             }}
-
-            //inputProps={{ "aria-label": "search google maps" }}
           />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon onClick={() => handleSearch()} />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={() => handleSearch()}
+          >
+            <SearchIcon />
           </IconButton>
         </Paper>
       </Grid>
@@ -224,17 +244,19 @@ export function ConsultaDeSolicitudPage() {
         <TableContainer sx={{ maxHeight: "900px" }}>
           <Table>
             <TableHead>
-              {heads.map((head) => (
-                <StyledTableCell align="center" key={head.id}>
-                  <TableSortLabel>{head.label} </TableSortLabel>
-                </StyledTableCell>
-              ))}
+              <StyledTableRow>
+                {heads.map((head, index) => (
+                  <StyledTableCell align="center" key={index}>
+                    <TableSortLabel>{head.label} </TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
             </TableHead>
             <TableBody>
-              {datosFiltrados.map((row) => {
+              {datosFiltrados.map((row, index) => {
                 let chip = <></>;
 
-                if (row.Estatus === "Captura") {
+                if (row.Estatus === "En_actualizacion ") {
                   chip = (
                     <Chip
                       label={row.Estatus}
@@ -278,9 +300,7 @@ export function ConsultaDeSolicitudPage() {
                 }
 
                 return (
-                  <StyledTableRow
-                  //sx={{ alignItems: "center", justifyContent: "center" }}
-                  >
+                  <StyledTableRow key={index}>
                     <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion.toString()}
                     </StyledTableCell>
@@ -320,6 +340,7 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
+                            llenaSolicitud(row);
                             changeOpenDialogVer(!openDialogVer);
                           }}
                         >
@@ -328,28 +349,27 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      {localStorage.getItem("IdUsuario") === row.IdEditor  ? (
-                        <Tooltip title="Editar">
-                          <IconButton
-                            type="button"
-                            onClick={() => {
-                              //setIdSolicitud(row)
-
-                              editarSolicitud(row);
-                            }}
-                          >
-                            <EditIcon />
-                            {row.Acciones}
-                          </IconButton>
-                        </Tooltip>
-                      ) : null}
+                      <Tooltip title="Edit">
+                        <IconButton
+                          type="button"
+                          aria-label="search"
+                          onClick={() => {
+                            changeIdSolicitud(row?.Id || "");
+                            llenaSolicitud(row);
+                            editarSolicitud();
+                          }}
+                        >
+                          <EditIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
 
                       <Tooltip title="Descargar">
                         <IconButton
                           type="button"
                           aria-label="search"
-                          onClick={() => {console.log(row)
-                            // DescargarConsultaSolicitud(row.Solicitud);
+                          onClick={() => {
+                            DescargarConsultaSolicitud(row.Solicitud);
                           }}
                         >
                           <DownloadIcon />
@@ -362,8 +382,7 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
-                            //console.log("idSolicitud dentro del boton de comentarios",row.Id );
-                            setIdSolicitud(row.Id);
+                            changeIdSolicitud(row?.Id || "");
                             changeOpenVerComentarios(!openVerComentarios);
                           }}
                         >
@@ -372,22 +391,24 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      {localStorage.getItem("Rol") === "Verificador" ? (
-                        <Tooltip title="Borrar">
-                          <IconButton
-                            type="button"
-                            aria-label="search"
-                            onClick={() => {
-                              getSolicitudes(setDatos);
-                              fetchBorrarSolicitud(row.Id);
-                              getSolicitudes(setDatos);
-                            }}
-                          >
-                            <DeleteIcon />
-                            {row.Acciones}
-                          </IconButton>
-                        </Tooltip>
-                      ) : null}
+                      <Tooltip title="Borrar">
+                        <IconButton
+                          type="button"
+                          disabled={
+                            localStorage.getItem("Rol") === "Capturador"
+                              ? true
+                              : false
+                          }
+                          aria-label="search"
+                          onClick={() => {
+                            changeIdSolicitud(row?.Id || "");
+                            getSolicitudes(setDatos);
+                          }}
+                        >
+                          <DeleteIcon />
+                          {row.Acciones}
+                        </IconButton>
+                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 );
@@ -398,16 +419,11 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          selected={selected}
         />
-        {openVerComentarios ? (
-          <VerComentariosSolicitud
-            handler={changeOpenVerComentarios}
-            openState={openVerComentarios}
-            selected={selected}
-            IdSolicitud={idSolicitud}
-          />
-        ) : null}
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+        />
       </Grid>
     </Grid>
   );

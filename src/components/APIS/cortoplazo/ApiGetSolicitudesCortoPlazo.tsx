@@ -5,9 +5,6 @@ export function getComentariosSolicitudPlazo(idSolicitud: string, setState: Func
  
   const state = useCortoPlazoStore.getState();
 
-  const IdSolicitud = state.IdSolicitud
-
- 
     axios({
       method: "get",
       params: {
@@ -22,6 +19,7 @@ export function getComentariosSolicitudPlazo(idSolicitud: string, setState: Func
     })
     .then(({data}) => {
       
+      console.log(data);
       
       setState(data.data); //Obtienes los comentarios en Si 
     })

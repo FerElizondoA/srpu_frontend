@@ -15,6 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
+import { Resumen } from "../panels/Resumen";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -28,33 +29,22 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
-  selected: number[];
-  //Solicitud: string;
 };
 
 export function VerBorradorDocumento(props: Props, Solicitud: string){
 
-
-
-
     return(
         <Dialog
         open={props.openState}
-        keepMounted
+        fullWidth
+        maxWidth={'lg'}
         TransitionComponent={Transition}
         onClose={() => {
           props.handler(false);
         }}
         >
             
-            <Typography
-          align="center"
-          //position= "fixed"
-          sx={queries.medium_text}
-          mb={2}
-        >
-          Hola
-        </Typography>
+        <Resumen></Resumen>
 
         </Dialog>
     )

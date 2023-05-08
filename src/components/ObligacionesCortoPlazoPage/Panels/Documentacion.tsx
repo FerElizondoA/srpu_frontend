@@ -9,6 +9,7 @@ import {
   FormControl,
   Select,
   MenuItem,
+  TableRow,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -21,9 +22,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
-import { getTiposDocumentos } from "../../APIS/cortoplazo/APISDocumentacion";
 import { useCortoPlazoStore } from "../../../store/main";
-import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
 interface Data {
   Documento: String;
@@ -40,6 +40,7 @@ interface Head {
 export interface IFile {
   archivo: File;
   tipoArchivo: string;
+  descripcionTipo: string;
 }
 
 const heads: readonly Head[] = [
@@ -63,75 +64,62 @@ const heads: readonly Head[] = [
 export function Documentacion() {
   //guarda el ultimo archivo para comparar y no agregar 2 veces el mismo archivo
   const [lastFile, setLastFile] = useState<File>();
+
   //archivo cargado en el input antes  de dar click al boton  guardar
   const [uploadFile, setUploadFile] = useState<File>();
-  // despliega la lista de tipos de documentos
-  const [tiposDocumentos, setTiposDocumentos] = useState<Array<ITiposDocumento>>([]);
-  // array que mapea la  cantidad de numero d e archivos para que se actualice bien la informacion
-  const [numArchivos, setNumArchivos] = useState<Array<number>>([]);
 
-  const [numArchivosObligatorios, setNumArchivosObligatosios] = useState<number>(0);
-  const [archivosObligatorios, setarchivosObligatosios] = useState<Array<ITiposDocumento>>([]);
-  //array con objeto que tiene  archivo:File y tipoArchivo:string
-  const [archivos, setArchivos] = useState<Array<IFile>>(
-    numArchivos.map(() => {
-      return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: ''} ;
-    })
+  // despliega la lista de tipos de documentos
+  const tiposDocumentos: ITiposDocumento[] = useCortoPlazoStore(
+    (state) => state.catalogoTiposDocumentos
   );
 
-  const documentosObligatoriosArreglo: IFile[] =useCortoPlazoStore(state => state.documentosObligatoriosArreglo)
-  const adddocumentosObligatoriosArreglo: Function =useCortoPlazoStore(state => state.addDocumentosObligatoriosArreglo)
-  
-  useEffect(() => {
+  const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
+    useCortoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
-    getTiposDocumentos(setTiposDocumentos);
-  }, []);
+  const tablaDocumentos: IFile[] = useCortoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
 
-  useEffect(() => {
-    let auxNumTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio === 1 ).map((tpo,index)=>{return index;})
-    let auxTpoDocFiltered = tiposDocumentos.filter(tpoDco =>tpoDco.Obligatorio === 1 ).map((tpo)=>{return tpo;})
-    setarchivosObligatosios(auxTpoDocFiltered);
-    setNumArchivosObligatosios(auxNumTpoDocFiltered.length);
-    setNumArchivos(auxNumTpoDocFiltered);
-    setArchivos(
-      auxNumTpoDocFiltered.map((num,index) => {
-        return {archivo: new File([], "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO", { type: "text/plain" }), tipoArchivo: auxTpoDocFiltered[index].Id} ;
-      })
-    );
-  }, [tiposDocumentos]);
+  const addDocumento: Function = useCortoPlazoStore(
+    (state) => state.addDocumento
+  );
 
-// nombre del archivo antes de dar click en agregar
+  const setTablaDocumentos: Function = useCortoPlazoStore(
+    (state) => state.setTablaDocumentos
+  );
+
+  // nombre del archivo antes de dar click en agregar
   const [nombreArchivo, setNombreArchivo] = useState(
     "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
   );
 
-
   function cargarArchivo(event: any, index = -1) {
-    let auxFile = event.target.files[0]
+    let auxFile = event.target.files[0];
 
     setUploadFile(event.target.files[0]);
 
     if (index >= 0 && auxFile !== undefined) {
-      let auxArrayArchivos = archivos;
+      let auxArrayArchivos = tablaDocumentos;
       auxArrayArchivos[index].archivo = auxFile;
-      setArchivos(auxArrayArchivos);
+      // setArchivos(auxArrayArchivos);
       setLastFile(event.target.files[0]);
     } else {
-
       if (event.target.value !== "") {
         setNombreArchivo(event.target.value.split("\\")[2]);
       }
     }
   }
 
-
   const agregarArchivo = () => {
-
     if (lastFile !== uploadFile && uploadFile !== undefined) {
-      setNumArchivos([...numArchivos,numArchivos.length]);
-      let prevState=[...archivos]
-      prevState.push({archivo:uploadFile,tipoArchivo: ''});
-      setArchivos(prevState);
+      let prevState = [...tablaDocumentos];
+      prevState.push({
+        archivo: uploadFile,
+        tipoArchivo: "",
+        descripcionTipo: "",
+      });
+      // setArchivos(prevState);
+      addDocumento({ archivo: uploadFile, tipoArchivo: "" });
       setLastFile(uploadFile);
     }
 
@@ -142,52 +130,61 @@ export function Documentacion() {
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
   };
 
-  const quitDocument = (index: number) => {
-    let auxArrayFile: IFile[] = [];
-    archivos.map((archivo, x) => {
-      if (x !== index) auxArrayFile.push(archivo);
-    });
-    setArchivos(auxArrayFile);
-    let auxCountFile=numArchivos;
-    auxCountFile.pop();
-    setNumArchivos(auxCountFile);
+  // const quitDocument = (index: number) => {
+  //   let auxArrayFile: IFile[] = [];
+  //   tablaDocumentos.map((archivo, x) => {
+  //     if (x !== index) auxArrayFile.push(archivo);
+  //   });
+  //   setTablaDocumentos(auxArrayFile);
+  // };
+
+  const quitDocument: Function = useCortoPlazoStore(
+    (state) => state.removeDocumento
+  );
+
+  const asignarTpoDoc = (index: number, valor: string, descripcion: string) => {
+    let aux = [...tablaDocumentos];
+    aux[index].tipoArchivo = valor;
+    aux[index].descripcionTipo = descripcion;
+    // setArchivos(aux);
+    setTablaDocumentos(aux);
   };
 
-  const asignarTpoDoc = (index: number, valor: string) => {
-    let aux = [...archivos]
-    aux[index].tipoArchivo = valor;
-    setArchivos(aux);
-    
-  }
-
-  
-
-
-
-
   return (
-    <Grid item container direction="column" sx={{ display: "flex" }}>
+    <Grid
+      item
+      container
+      direction="column"
+      sx={{ maxHeight: "80vh", overflow: "auto" }}
+    >
       <Grid item>
-        <Grid item ml={window.innerWidth / 90} lg={10} sx={{ overflow: "auto" }}>
-          <TableContainer  sx={{ maxHeight: "600px" }}>
-            <Table sx={{}}>
+        <Grid item ml={window.innerWidth / 90} lg={10}>
+          <TableContainer>
+            <Table>
               <TableHead>
-                {heads.map((head) => (
-                  <StyledTableCell key={head.id}>
-                    <TableSortLabel>{head.label}</TableSortLabel>
-                  </StyledTableCell>
-                ))}
+                <TableRow>
+                  {heads.map((head) => (
+                    <StyledTableCell key={head.id}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
               </TableHead>
               <TableBody>
-
-
-                {numArchivos?.map((index) => (
+                {tablaDocumentos.map((val, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell scope="row">
-                      {index < numArchivosObligatorios ?<Typography>Obligatorio</Typography>:
-                      <IconButton  onClick={()=>{quitDocument(index);}}>
-                        <DeleteIcon />
-                      </IconButton>}
+                      {index < catalogoTiposDocumentosObligatorios.length ? (
+                        <Typography>Obligatorio</Typography>
+                      ) : (
+                        <IconButton
+                          onClick={() => {
+                            quitDocument(index);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </StyledTableCell>
 
                     <StyledTableCell sx={{ position: "relative" }}>
@@ -200,10 +197,13 @@ export function Documentacion() {
                           justifyContent: "center",
                           alignItems: "center",
                           width: "90%",
-                          height: "30%",
+                          height: "60%",
+                          fontSize: "80%",
+                          border: "2px dotted black",
                         }}
                       >
-                        {archivos[index]?.archivo.name ? archivos[index]?.archivo.name  : "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"}
+                        {val.archivo?.name ||
+                          "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"}
                       </Typography>
 
                       <input
@@ -213,20 +213,33 @@ export function Documentacion() {
                         style={{
                           opacity: 0,
                           width: "100%",
-                          height: "100%",
+                          height: "5vh",
                           cursor: "pointer",
                         }}
                       />
                     </StyledTableCell>
                     <StyledTableCell>
                       <FormControl required variant="standard" fullWidth>
-
                         <Select
-                          value={archivos[index]?.tipoArchivo}
-                          onChange={(v) =>  {  asignarTpoDoc(index, v.target.value);}}
+                          value={tablaDocumentos[index]?.tipoArchivo}
+                          onChange={(v) => {
+                            asignarTpoDoc(
+                              index,
+                              v.target.value,
+                              tiposDocumentos.filter(
+                                (td: any) => td.Id === v.target.value
+                              )[0].Descripcion
+                            );
+                          }}
                           sx={{ display: "flex", pt: 1 }}
-                          inputProps={{ readOnly: index<numArchivosObligatorios }}
-                          // disabled={}
+                          inputProps={{
+                            readOnly:
+                              index <
+                              catalogoTiposDocumentosObligatorios.length,
+                          }}
+                          disabled={
+                            index < catalogoTiposDocumentosObligatorios.length
+                          }
                         >
                           {tiposDocumentos.map((tipo) => (
                             <MenuItem key={tipo.Id} value={tipo.Id}>
@@ -272,7 +285,6 @@ export function Documentacion() {
               display: "flex",
               border: " 1px solid",
               borderBlockColor: "#AF8C55",
-              //backgroundColor: "#AF8C55",
               fontFamily: "MontserratMedium",
               textAlign: "center",
               justifyContent: "center",
@@ -298,7 +310,12 @@ export function Documentacion() {
           ></input>
         </Grid>
         <Grid item md={4} lg={4}>
-          <ConfirmButton variant="outlined" onClick={()=>{agregarArchivo();}}>
+          <ConfirmButton
+            variant="outlined"
+            onClick={() => {
+              agregarArchivo();
+            }}
+          >
             AGREGAR
           </ConfirmButton>
         </Grid>

@@ -6,510 +6,426 @@ import {
   Typography,
   Paper,
   Box,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  Tooltip,
+  IconButton,
+  TableSortLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useCortoPlazoStore } from "../../../store/main";
 import { queries } from "../../../queries";
 import InputLabel from "@mui/material/InputLabel/InputLabel";
 import { format } from "date-fns";
+import {
+  CondicionFinanciera,
+  IComisiones,
+  TasaInteres,
+} from "../../../store/condicion_financiera";
+import { ObligadoSolidarioAval } from "../../../store/informacion_general";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { IFile } from "./Documentacion";
+
+interface Head {
+  label: string;
+}
+const heads: Head[] = [
+  {
+    label: "Obligado solidario / aval",
+  },
+  {
+    label: "Tipo de ente público obligado",
+  },
+  {
+    label: "Ente público obligado",
+  },
+];
+
+const headsCondiciones: Head[] = [
+  {
+    label: "Fecha de Disposición",
+  },
+  {
+    label: "Importe de Disposición",
+  },
+  {
+    label: "Fecha de Primer Pago Capital",
+  },
+  {
+    label: "Periocidad de Pago Capital",
+  },
+  {
+    label: "Fecha de Primer Pago de Interés",
+  },
+  {
+    label: "Tasa de Interés",
+  },
+  {
+    label: "Comisiones",
+  },
+];
 
 export function Resumen() {
   // Encabezado
-  const tipoDocumento: string = useCortoPlazoStore(
-    (state) => state.tipoDocumento
+  const TipoDoc: string = useCortoPlazoStore(
+    (state) => state.encabezado.tipoDocumento
   );
-  const changeTipoDocumento: Function = useCortoPlazoStore(
-    (state) => state.changeTipoDocumento
+  const SolicitanteAutorizado: string = useCortoPlazoStore(
+    (state) => state.encabezado.solicitanteAutorizado.Nombre
   );
-  const tiposEntePublicoMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.entesPublicosMap
+  const CargoSolicitante: string = useCortoPlazoStore(
+    (state) => state.encabezado.solicitanteAutorizado.Cargo
   );
-  const fetchEntesPublicos: Function = useCortoPlazoStore(
-    (state) => state.fetchEntesPublicos
+  const eTipoEntePublico: string = useCortoPlazoStore(
+    (state) => state.encabezado.tipoEntePublico.TipoEntePublico
   );
-  const tipoEntePublico: string = useCortoPlazoStore(
-    (state) => state.tipoEntePublico
+  const EntePublico: string = useCortoPlazoStore(
+    (state) => state.encabezado.organismo.Organismo
   );
-  const changeTipoEntePublico: Function = useCortoPlazoStore(
-    (state) => state.changeTipoEntePublico
-  );
-  const solicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.solicitanteAutorizado
-  );
-  const changeSolicitanteAutorizado: Function = useCortoPlazoStore(
-    (state) => state.changeSolicitanteAutorizado
-  );
-  const organismo: string = useCortoPlazoStore((state) => state.organismo);
-  const changeOrganismo: Function = useCortoPlazoStore(
-    (state) => state.changeOrganismo
-  );
-  const organismosMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.organismosMap
-  );
-  const fetchOrganismos: Function = useCortoPlazoStore(
-    (state) => state.fetchOrganismos
-  );
-  const fechaContratacion: string = useCortoPlazoStore(
-    (state) => state.fechaContratacion
-  );
-  const changeFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeFechaContratacion
-  );
-  const cargoSolicitante: string = useCortoPlazoStore(
-    (state) => state.cargoSolicitante
-  );
-  const changeCargoSolicitante: Function = useCortoPlazoStore(
-    (state) => state.changeCargoSolicitante
+  const FechaContratacion: string = useCortoPlazoStore(
+    (state) => state.encabezado.fechaContratacion
   );
 
-  //////////////////////////////////////////////////////////////////////////////
   // Informacion general
-
-  const institucion: string = useCortoPlazoStore((state) => state.institucion);
-
-  const destino: string = useCortoPlazoStore((state) => state.destino);
-  const changeDestino: Function = useCortoPlazoStore(
-    (state) => state.changeDestino
+  const gFechaContratacion: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaContratacion
+  );
+  const gFechaVencimiento: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaVencimiento
+  );
+  const gPlazo: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.plazo
+  );
+  const gMonto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+  const gDestino: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.destino.Descripcion
+  );
+  const gDenominacion: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.denominacion
+  );
+  const gInstitucion: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
 
-  const plazoDias: number = useCortoPlazoStore((state) => state.plazoDias);
-  const changePlazoDias: Function = useCortoPlazoStore(
-    (state) => state.changePlazoDias
-  );
-  const montoOriginal: number = useCortoPlazoStore(
-    (state) => state.montoOriginal
+  const tablaObligados: ObligadoSolidarioAval[] = useCortoPlazoStore(
+    (state) => state.tablaObligadoSolidarioAval
   );
 
-  const fechaVencimiento: string = useCortoPlazoStore(
-    (state) => state.fechaVencimiento
+  // Condiciones Financieras
+  const dFechaDisposicion: string = useCortoPlazoStore(
+    (state) => state.disposicion.fechaDisposicion
+  );
+  const dImporte: number = useCortoPlazoStore(
+    (state) => state.disposicion.importe
   );
 
-  const denominacion: string = useCortoPlazoStore(
-    (state) => state.denominacion
+  const pFechaPrimerPago: string = useCortoPlazoStore(
+    (state) => state.pagosDeCapital.fechaPrimerPago
+  );
+  const pPeriodicidadPago: string = useCortoPlazoStore(
+    (state) => state.pagosDeCapital.periodicidadDePago.Descripcion
+  );
+  const pNumeroPagos: number = useCortoPlazoStore(
+    (state) => state.pagosDeCapital.numeroDePago
   );
 
-  const obligadoSolidarioAval: string = useCortoPlazoStore(
-    (state) => state.obligadoSolidarioAval
+  const tablaTasasInteres: TasaInteres[] = useCortoPlazoStore(
+    (state) => state.tablaTasaInteres
   );
 
-  const entePublicoObligado: string = useCortoPlazoStore(
-    (state) => state.entePublicoObligado
-  );
-  const tipoEntePublicoObligado = useCortoPlazoStore.getState().tipoEntePublico;
-  /////////////////////////////////////////////////////////////////////////////
-  ///Condiciones Financieras
-  ///Disposicion/pagos de capital
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.disposicionFechaContratacion
-  );
-  const changeDisposicionFechaContratacion: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionFechaContratacion
-  );
-  const disposicionImporte: number = useCortoPlazoStore(
-    (state) => state.disposicionImporte
-  );
-  const changeDisposicionImporte: Function = useCortoPlazoStore(
-    (state) => state.changeDisposicionImporte
-  );
-  const capitalFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.capitalFechaPrimerPago
-  );
-  const changeCapitalFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalFechaPrimerPago
-  );
-  const capitalPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.capitalPeriocidadPago
-  );
-  const changeCapitalPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalPeriocidadPago
-  );
-  const periocidadDePagoMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.periocidadDePagoMap
-  );
-  const capitalNumeroPago: number = useCortoPlazoStore(
-    (state) => state.capitalNumeroPago
-  );
-  const changeCapitalNumeroPago: Function = useCortoPlazoStore(
-    (state) => state.changeCapitalNumeroPago
-  );
-  const tasaFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.tasaFechaPrimerPago
-  );
-  const changeTasaFechaPrimerPago: Function = useCortoPlazoStore(
-    (state) => state.changeTasaFechaPrimerPago
-  );
-  const tasaPeriocidadPago: string = useCortoPlazoStore(
-    (state) => state.tasaPeriocidadPago
-  );
-  const changeTasaPeriocidadPago: Function = useCortoPlazoStore(
-    (state) => state.changeTasaPeriocidadPago
-  );
-  const tasaReferenciaMap: Map<string | null, string> = useCortoPlazoStore(
-    (state) => state.tasaReferenciaMap
-  );
-  const tasaReferencia: string = useCortoPlazoStore(
-    (state) => state.tasaReferencia
-  );
-  const changeTasaReferencia: Function = useCortoPlazoStore(
-    (state) => state.changeTasaReferencia
-  );
-  const sobreTasa: string = useCortoPlazoStore((state) => state.sobreTasa);
-  const changeSobreTasa: Function = useCortoPlazoStore(
-    (state) => state.changeSobreTasa
-  );
-  const tasaDiasEjercicio: string = useCortoPlazoStore(
-    (state) => state.tasaDiasEjercicio
+  const tDiasEjercicio: string = useCortoPlazoStore(
+    (state) => state.tasaEfectiva.diasEjercicio.Descripcion
   );
 
-  ///Comisiones/tasa efectiva
-  const efectivaFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.efectivaFechaContratacion
-  );
-  const efectivaPorcentajeFijo: number = useCortoPlazoStore(
-    (state) => state.efectivaPorcentajeFijo
-  );
-  const tipoComision: string = useCortoPlazoStore(
-    (state) => state.tipoComision
-  );
-  const efectivaMontoFijo: number = useCortoPlazoStore(
-    (state) => state.efectivaMontoFijo
+  const tTasaEfectiva: string = useCortoPlazoStore(
+    (state) => state.tasaEfectiva.tasaEfectiva
   );
 
-  const efectivaDiasEjercicio: string = useCortoPlazoStore(
-    (state) => state.efectivaDiasEjercicio
+  const tablaComisiones: IComisiones[] = useCortoPlazoStore(
+    (state) => state.tablaComisiones
   );
 
-  const tasaEfectiva: string = useCortoPlazoStore(
-    (state) => state.tasaEfectiva
+  const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
+    (state) => state.tablaCondicionesFinancieras
   );
 
-  const [radioValue, setRadioValue] = React.useState("fixedPercentage");
+  // Documentación
+  const documentos: IFile[] = useCortoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
+
   return (
-    <Grid item container>
+    <Grid
+      container
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        height: "85vh",
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0,0,0,5)",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+      }}
+    >
       <Grid
         item
-        container
-        flexDirection="row"
-         mt={{ sm: 0, md: 0, lg: 0 }}
-        // ml={{ sm: 10, md: 7, lg: 0 }}
-        
-        spacing={{ xs: 2, md: 2, lg: 4 }}
         sx={{
-          justifyContent: "space-evenly",
+          width: "80%",
           display: "flex",
-          alignItems: "flex-start",
-          
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        <Grid item xs={3.5} md={3.5} lg={3}>
-          <Grid>
-            <Typography sx={queries.bold_text}>Encabezado</Typography>
-            <Grid
-              sx={{
-                flexDirection: "row",
-                mt: 1,
-                alignItems: "center",
-                borderBottom: 1,
-                borderColor: "#cfcfcf",
-                fontSize: "12px",
-                //border: "1px solid"
-                
-              }}
-            >
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tipo de Documento: {tipoDocumento}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tipo de Ente Público: {tipoEntePublico}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Solicitante Autorizado: {solicitanteAutorizado}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Municipio u Organismo: {organismo}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Contratacion: " +
-                    format(new Date(fechaContratacion), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Cargo del Solicitante: {cargoSolicitante}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
+        <Grid mt={5}>
+          <Typography sx={queries.bold_text}>Encabezado</Typography>
+          <Grid
+            sx={{
+              flexDirection: "row",
+              mt: 1,
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "#cfcfcf",
+              fontSize: "12px",
+              //border: "1px solid"
+            }}
+          >
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Tipo de Documento: {TipoDoc}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Tipo de Ente Público: {eTipoEntePublico}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Solicitante Autorizado: {SolicitanteAutorizado}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Municipio u Organismo: {EntePublico}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                {"Fecha de Contratacion: " +
+                  format(new Date(FechaContratacion), "yyyy-MM-dd")}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Cargo del Solicitante: {CargoSolicitante}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+          </Grid>
+        </Grid>
+
+        <Grid mt={5}>
+          <Typography sx={queries.bold_text}>Información General</Typography>
+          <Grid
+            sx={{
+              flexDirection: "row",
+              mt: 1,
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "#cfcfcf",
+              fontSize: "12px",
+            }}
+          >
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                {"Fecha de Contratación: " +
+                  format(new Date(gFechaContratacion), "yyyy-MM-dd")}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                {"Fecha de Vencimiento: " +
+                  format(new Date(gFechaVencimiento), "yyyy-MM-dd")}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Plazo(Días): {gPlazo}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Destino: {gDestino}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Monto Original Contratado: {gMonto}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Denominación: {gDenominacion}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Institución Financiera: {gInstitucion}
+              </Typography>
+            </Grid>
+            <Divider color="lightGrey"></Divider>
+            <Grid item>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {heads.map((head, index) => (
+                        <StyledTableCell key={index}>
+                          {head.label}
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {tablaObligados.map((row: any, index: number) => {
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell component="th">
+                            {row.obligadoSolidario}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.tipoEntePublicoObligado}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.entePublicoObligado}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
           </Grid>
+        </Grid>
 
-          <Grid mt={5}>
-            <Typography sx={queries.bold_text}>INFORMACIÓN GENERAL</Typography>
+        <Grid mt={5}>
+          <Typography sx={queries.bold_text}>
+            Condiciones Financieras
+          </Typography>
+          <Grid
+            sx={{
+              flexDirection: "row",
+              mt: 1,
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "#cfcfcf",
+              fontSize: "12px",
+              //border: "1px solid"
+            }}
+          >
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {headsCondiciones.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        <TableSortLabel>{head.label}</TableSortLabel>
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tablaCondicionesFinancieras.map((row, index) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell component="th" scope="row">
+                          {format(
+                            new Date(row.disposicion.fechaDisposicion),
+                            "dd/MM/yyyy"
+                          )}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {"$" + row.disposicion.importe}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {format(
+                            new Date(row.pagosDeCapital.fechaPrimerPago),
+                            "dd/MM/yyyy"
+                          )}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.pagosDeCapital.periodicidadDePago}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {format(
+                            new Date(row.pagosDeCapital.fechaPrimerPago),
+                            "dd/MM/yyyy"
+                          )}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          Más info en pestaña
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          Más info en pestaña
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
 
-            <Grid
-              sx={{
-                flexDirection: "row",
-                mt: 1,
-                alignItems: "center",
-                borderBottom: 1,
-                borderColor: "#cfcfcf",
-                fontSize: "12px",
-              }}
-            >
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Contratación: " +
-                    format(new Date(fechaContratacion), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Vencimiento: " +
-                    format(new Date(fechaVencimiento), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Plazo(Días): {plazoDias}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Destino: {destino}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Monto Original Contratado: {montoOriginal}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Denominación: {denominacion}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Institución Financiera: {institucion}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Obligado Solidario / Aval: {obligadoSolidarioAval}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tipo de ente público obligado:{" "}
-                  {obligadoSolidarioAval === "No aplica "
-                    ? "No aplica"
-                    : tipoEntePublicoObligado}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Ente público obligado: {entePublicoObligado}
-                </Typography>
+        <Grid mt={5} mb={5}>
+          <Typography sx={queries.bold_text}>Documentación</Typography>
+          <Grid
+            sx={{
+              flexDirection: "row",
+              mt: 1,
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "#cfcfcf",
+              fontSize: "12px",
+              //border: "1px solid"
+            }}
+          >
+            {documentos.map((doc, index) => (
+              <Grid key={index}>
                 <Divider color="lightGrey"></Divider>
+                <Typography sx={queries.medium_text}>
+                  {doc.descripcionTipo}
+                </Typography>
               </Grid>
-            </Grid>
+            ))}
           </Grid>
         </Grid>
-
-        <Grid item xs={3.5} md={3.5} lg={3}>
-          <Grid>
-            <Typography sx={queries.bold_text}>
-              CONDICIONES FINANCIERAS
-            </Typography>
-
-            <Grid
-              sx={{
-                flexDirection: "row",
-                mt: 1,
-                alignItems: "center",
-                borderBottom: 1,
-                borderColor: "#cfcfcf",
-                fontSize: "12px",
-                //border: "1px solid"
-              }}
-            >
-              <Divider color="lightGrey"></Divider>
-
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Contratación: " +
-                    format(new Date(fechaContratacion), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-
-              <Divider color="lightGrey"></Divider>
-
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Importe: {disposicionImporte}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Primer Pago: " +
-                    format(new Date(capitalFechaPrimerPago), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Periocidad de Pago: {capitalPeriocidadPago}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Número de Pago: {capitalNumeroPago}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Primer Pago(Tasa de interés): " +
-                    format(new Date(tasaFechaPrimerPago), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Periocidad de Pago(Tasa de interés): {tasaPeriocidadPago}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tasa de Referencia: {tasaReferencia}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Sobre Tasa: {sobreTasa}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Días del Ejercicio: {tasaDiasEjercicio}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  {"Fecha de Contratación(Comisiones): " +
-                    format(new Date(efectivaFechaContratacion), "yyyy-MM-dd")}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tipo de Comisión: {tipoComision}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Periocidad de Pago(Comisiones): {tipoComision}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Porcentaje o Monto:{" "}
-                  {efectivaPorcentajeFijo.toString() === " "
-                    ? "Monto " + efectivaMontoFijo
-                    : "Porcentaje " + efectivaPorcentajeFijo}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Dias del Ejercicio: {efectivaDiasEjercicio}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Tasa Efectiva: {tasaEfectiva}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-            </Grid>
-          </Grid>
-
-          
-
-        </Grid>
-
-        <Grid item xs={3.5} md={3.5} lg={3}>
-          
-            
-
-          <Grid sx={{alignItems: "flex-start"}}>
-            <Typography sx={queries.bold_text}>Proximo resumen</Typography>
-
-            <Grid
-              sx={{
-                flexDirection: "row",
-                mt: 1,
-                alignItems: "center",
-                borderBottom: 1,
-                borderColor: "#cfcfcf",
-                fontSize: "12px",
-                //border: "1px solid"
-              }}
-            >
-              <Divider color="lightGrey"></Divider>
-
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Denominación: {denominacion}
-                </Typography>
-              </Grid>
-
-              <Divider color="lightGrey"></Divider>
-
-              <Grid>
-                <Typography sx={queries.medium_text}>
-                  Denominación: {denominacion}
-                </Typography>
-              </Grid>
-              <Divider color="lightGrey"></Divider>
-            </Grid>
-          </Grid>
-
-        </Grid>
-
       </Grid>
     </Grid>
   );

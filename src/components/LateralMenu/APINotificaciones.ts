@@ -31,10 +31,7 @@ export const createNotification = (Titulo: string, mensaje: string, listadoUsuar
         }
 
     ).then((r) => {
-        console.log(r)
-
     }).catch((r) => {
-        console.log(r)
     })
 }
 
@@ -123,8 +120,6 @@ export const leerMensaje = (IdNotificacion: string) => {
                 'Content-Type': 'application/json'
             }
         }).then(({ data }) => {
-            console.log(data);
-
         })
         .catch((r) => {
             if (r.response.status === 409) {
