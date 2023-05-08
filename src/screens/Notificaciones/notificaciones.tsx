@@ -18,7 +18,7 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell } from "../../components/CustomComponents";
-import { QueriesNotificaciones } from "./QueriesNotificaciones";
+import { QueriesNotificaciones } from "./queriesNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones

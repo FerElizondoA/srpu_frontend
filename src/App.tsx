@@ -11,7 +11,6 @@ import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
 import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
-import { Notificaciones } from "./screens/notificaciones/Notificaciones" ;
 import { Configuracion } from "./screens/config/Config";
 import { Catalogos } from "./screens/config/Catalogos";
 import { Usuarios } from "./screens/config/Usuarios";
@@ -20,6 +19,7 @@ import { Firma } from "./components/e.firma/Firma";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { continueSession, sessionValid } from "./components/APIS/config/validation";
+import { Notificaciones } from "./screens/notificaciones/notificaciones";
 
 export const appTheme = createTheme({
   palette: {
