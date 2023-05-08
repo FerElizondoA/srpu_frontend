@@ -32,9 +32,9 @@ import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
 import CheckIcon from "@mui/icons-material/Check";
 import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerBorradorDocumento";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerComentariosSolicitud";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
 export interface IData {
   Id: string;
   Institucion: string;

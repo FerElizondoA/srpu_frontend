@@ -34,7 +34,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import CloseIcon from "@mui/icons-material/Close";
-import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
+import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
 interface Head {
   label: string;

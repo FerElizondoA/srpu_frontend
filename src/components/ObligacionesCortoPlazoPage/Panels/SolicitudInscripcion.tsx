@@ -21,10 +21,10 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { ConfirmacionDescargaSolicitud } from "../dialogs/ConfirmacionDescargaSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../dialogs/ConfirmacionBorradorSolicitud";
-import { ConfirmacionCancelarSolicitud } from "../dialogs/ConfirmacionCancelarSolicitud";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
 
 interface Head {
   label: string;

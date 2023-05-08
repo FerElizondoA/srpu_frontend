@@ -238,7 +238,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
           </Tabs>
 
-          {tabIndex === 0 && <DisposicionPagosCapital />}
+          {tabIndex === 0 && <DisposicionPagosCapital/>}
 
           {tabIndex === 1 && <ComisionesTasaEfectiva />}
         </Grid>

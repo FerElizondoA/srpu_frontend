@@ -3,16 +3,16 @@ import { Grid, Tabs, Tab } from "@mui/material";
 import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
-import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
-import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
-import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
 import { queries } from "../../queries";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
 import { useCortoPlazoStore } from "../../store/main";
 import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
+import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
+import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
+import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
+import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
 
 export function ObligacionesCortoPlazoPage() {
 
