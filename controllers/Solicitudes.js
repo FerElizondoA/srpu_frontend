@@ -10,16 +10,23 @@ module.exports = {
     const IdTipoEntePublico = req.body.IdTipoEntePublico;
     const TipoSolicitud = req.body.TipoSolicitud;
     const IdInstitucionFinanciera = req.body.IdInstitucionFinanciera;
-    const IdEstatus= req.body.IdEstatus;
+    const Estatus= req.body.Estatus;
     const IdClaveInscripcion= req.body.IdClaveInscripcion;
     const MontoOriginalContratado = req.body.MontoOriginalContratado;
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
+    const IdEditor=req.body.IdEditor;
     const CreadoPor = req.body.CreadoPor;
   
     if (IdEntePublico== null || /^[\s]*$/.test(IdEntePublico)) {
       return res.status(409).send({
         error: "Ingrese IdEntePublico",
+      });
+    }
+
+    if (IdEditor== null || /^[\s]*$/.test(IdEditor)) {
+      return res.status(409).send({
+        error: "Ingrese IdEditor",
       });
     }
 
@@ -40,9 +47,9 @@ module.exports = {
         });
       }
 
-      if ( IdEstatus== null || /^[\s]*$/.test(IdEstatus)) {
+      if ( Estatus== null || /^[\s]*$/.test(Estatus)) {
         return res.status(409).send({
-          error: "Ingrese IdEstatus",
+          error: "Ingrese Estatus",
         });
       }
       if ( IdClaveInscripcion== null || /^[\s]*$/.test(IdClaveInscripcion)) {
@@ -71,7 +78,7 @@ module.exports = {
         });
       }
 
-      db.query(`CALL sp_AgregarSolicitud( '${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${CreadoPor}' )`, (err, result) => {
+      db.query(`CALL sp_AgregarSolicitud( '${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${CreadoPor}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
@@ -98,7 +105,15 @@ module.exports = {
 
   //LISTADO COMPLETO
   getSolicitudes: (req, res) => {
-    db.query(`CALL sp_ListadoSolicitudes()`, (err, result) => {
+    const IdUsuario = req.query.IdUsuario;
+   
+    if (IdUsuario== null || /^[\s]*$/.test(IdUsuario)) {
+      return res.status(409).send({
+        error: "Ingrese IdUsuario",
+      });
+    }
+    
+    db.query(`CALL sp_ListadoSolicitudes('${IdUsuario}')`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -161,16 +176,23 @@ module.exports = {
     const IdTipoEntePublico = req.body.IdTipoEntePublico;
     const TipoSolicitud = req.body.TipoSolicitud;
     const IdInstitucionFinanciera = req.body.IdInstitucionFinanciera;
-    const IdEstatus= req.body.IdEstatus;
+    const Estatus= req.body.Estatus;
     const IdClaveInscripcion= req.body.IdClaveInscripcion;
     const MontoOriginalContratado = req.body.MontoOriginalContratado;
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
+    const IdEditor=req.body.IdEditor;
     const IdUsuario = req.body.IdUsuario;
 
     if (IdSolicitud== null || /^[\s]*$/.test(IdSolicitud)) {
       return res.status(409).send({
         error: "Ingrese IdSolicitud",
+      });
+    }
+
+    if (IdEditor== null || /^[\s]*$/.test(IdEditor)) {
+      return res.status(409).send({
+        error: "Ingrese IdEditor",
       });
     }
   
@@ -197,7 +219,7 @@ module.exports = {
         });
       }
 
-      if ( IdEstatus== null || /^[\s]*$/.test(IdEstatus)) {
+      if ( Estatus== null || /^[\s]*$/.test(Estatus)) {
         return res.status(409).send({
           error: "Ingrese IdEstatus",
         });
@@ -228,7 +250,7 @@ module.exports = {
         });
       }
 
-      db.query(`CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${IdEstatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}', '${IdUsuario}' )`, (err, result) => {
+      db.query(`CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`, (err, result) => {
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
@@ -303,8 +325,7 @@ module.exports = {
 
   //LISTADO COMPLETO
   getComentarios: (req, res) => {
-    const IdSolicitud = req.body.IdSolicitud;
-  
+    const IdSolicitud = req.query.IdSolicitud;
     if (IdSolicitud== null || /^[\s]*$/.test(IdSolicitud)) {
       return res.status(409).send({
         error: "Ingrese IdSolicitud",
