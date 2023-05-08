@@ -27,7 +27,6 @@ import {
 } from "@mui/material";
 import { getListadoUsuariosCortoPlazo } from "../../APIS/cortoplazo/APISGetListaUsuariosCortoPlazo";
 import { useEffect, useState } from "react";
-import { IUsuariosCorto } from "../Panels/Encabezado";
 import { useCortoPlazoStore } from "../../../store/main";
 import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { INotificaciones } from "../../Interfaces/Notificaciones/NotificaconesUsuariosCortoPlazo";

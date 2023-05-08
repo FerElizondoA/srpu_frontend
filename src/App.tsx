@@ -16,11 +16,11 @@ import { Firma } from "./components/e.firma/Firma";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { continueSession, sessionValid } from "./components/APIS/config/validation";
-import { Notificaciones } from "./screens/Notificaciones/notificaciones";
-import { HomePage } from "./components/HomePage/HomePage";
 import { Configuracion } from "./components/Config/Configuracion";
-import { Usuarios } from "./screens/Config/Usuarios";
-import { Catalogos } from "./screens/Config/Catalogos";
+import { Usuarios } from "./screens/config/Usuarios";
+import { Catalogos } from "./screens/config/Catalogos";
+import { HomePage } from "./components/homePage/HomePage";
+import { Notificaciones } from "./screens/notificaciones/notificaciones";
 
 export const appTheme = createTheme({
   palette: {

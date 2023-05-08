@@ -22,10 +22,10 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
-import { ConfirmacionSolicitud } from "../Dialogs/ConfirmacionSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
-import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
-import { DialogCatalogoUsuarios } from "../Dialogs/DialogCatalogoUsuarios";
+import { ConfirmacionSolicitud } from "../dialogs/ConfirmacionSolicitud";
+import { ConfirmacionBorradorSolicitud } from "../dialogs/ConfirmacionBorradorSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../dialogs/ConfirmacionCancelarSolicitud";
+import { DialogCatalogoUsuarios } from "../dialogs/DialogCatalogoUsuarios";
 
 interface Head {
   label: string;

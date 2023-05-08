@@ -46,6 +46,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { TasaEfectiva } from "../../store/tasa_efectiva";
 import { TasaInteres } from "../../store/pagos_capital";
+import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
+import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -59,11 +61,6 @@ export interface IData {
   tipoDocumento: string;
   TipoSolicitud: string;
 }
-import { getListadoUsuarios } from "../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
-import { getNotificaciones, leerMensaje } from "./APINotificaciones";
-import { format } from "date-fns";
-
 export function LateralMenu() {
   const logout = () => {
     localStorage.clear();

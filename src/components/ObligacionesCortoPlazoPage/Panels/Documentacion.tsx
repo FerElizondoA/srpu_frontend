@@ -23,7 +23,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { getTiposDocumentos } from "../../APIS/cortoplazo/APISDocumentacion";
 import { useCortoPlazoStore } from "../../../store/main";
-import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
 interface Data {
   Documento: String;

@@ -26,8 +26,8 @@ import { hashFunctionCYRB53 } from "../../CustomComponents";
 import { CondicionFinanciera } from "../../../store/condicion_financiera";
 import { TasaInteres } from "../../../store/pagos_capital";
 import { TasaEfectiva } from "../../../store/tasa_efectiva";
-import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
-import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../panels/DisposicionPagosCapital";
+import { ComisionesTasaEfectiva } from "../panels/ComisionesTasaEfectiva";
 
 
 const Transition = forwardRef(function Transition(

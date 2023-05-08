@@ -30,12 +30,10 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { AgregarComentario } from "../../components/ObligacionesCortoPlazoPage/Dialogs/AgregarComentario";
 import CheckIcon from "@mui/icons-material/Check";
 import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerBorradorDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerComentariosSolicitud";
 export interface IData {
   Id: string;
   Institucion: string;
