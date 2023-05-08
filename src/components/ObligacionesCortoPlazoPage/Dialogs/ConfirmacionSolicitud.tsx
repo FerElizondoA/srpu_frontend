@@ -59,22 +59,22 @@ export function ConfirmacionSolicitud({
   );
 
   const fetchReglas: Function = useCortoPlazoStore(
-    (state) => state.fetchReglas
+    (state) => state.getReglas
   );
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
-  const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
+  // const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
   const MAX_COMMENTS_LENGTH = 200;
-  const [text, setText] = useState("Enviar sin comentarios");
-  const validaciontext = () => {
-    if (comentarios == null || /^[\s]*$/.test(comentarios)) {
-      setText("Enviar");
-    } else {
-    }
-  };
+  // const [text, setText] = useState("Enviar sin comentarios");
+  // const validaciontext = () => {
+  //   if (comentarios == null || /^[\s]*$/.test(comentarios)) {
+  //     setText("Enviar");
+  //   } else {
+  //   }
+  // };
 
   useEffect(() => {
     fetchReglas();
@@ -82,9 +82,9 @@ export function ConfirmacionSolicitud({
   
   
 
-  const fetchComentario: Function = useCortoPlazoStore(
-    (state) => state.fetchComentario
-  );
+  // const fetchComentario: Function = useCortoPlazoStore(
+  //   (state) => state.fetchComentario
+  // );
 
   const navigate = useNavigate();
   //////////////// Este apartado es el de finalizar
@@ -149,8 +149,8 @@ export function ConfirmacionSolicitud({
             multiline
             variant="standard"
             maxRows={5}
-            value={comentarios}
-            onChange={(texto) => changeComentarios(texto.target.value)}
+            // value={comentarios}
+            // onChange={(texto) => changeComentarios(texto.target.value)}
           />
         </Grid>
       </DialogContent>
@@ -181,14 +181,14 @@ export function ConfirmacionSolicitud({
             handler(false);
 
           }}
-          disabled={comentarios.length >= 200}
+          // disabled={comentarios.length >= 200}
           variant="text"
         >
-          {comentarios == null || /^[\s]*$/.test(comentarios)
+          {/* {comentarios == null || /^[\s]*$/.test(comentarios)
             ? "Enviar sin comentarios"
             : comentarios.length > MAX_COMMENTS_LENGTH
             ? "Los comentarios no pueden tener más de 200 caracteres"
-            : "Enviar con comentarios"}
+            : "Enviar con comentarios"} */}
         </Button>
         
           <Button

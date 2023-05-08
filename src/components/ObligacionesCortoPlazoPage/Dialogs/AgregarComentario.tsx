@@ -53,15 +53,15 @@ export function AgregarComentario({
   };
 
 
-  const comentarios2: string = useCortoPlazoStore((state) => state.comentarios);
-  const changeComentarios: Function = useCortoPlazoStore(
-    (state) => state.changeComentarios
-  );
+  // const comentarios2: string = useCortoPlazoStore((state) => state.comentarios);
+  // const changeComentarios: Function = useCortoPlazoStore(
+  //   (state) => state.changeComentarios
+  // );
 
 
-  const fetchComentario: Function = useCortoPlazoStore(
-    (state) => state.fetchComentario
-  );
+  // const fetchComentario: Function = useCortoPlazoStore(
+  //   (state) => state.fetchComentario
+  // );
 
 
   //////////////// Este apartado es el de finalizar
@@ -99,8 +99,8 @@ export function AgregarComentario({
               variant="standard"
               maxRows={5}
               rows={10}
-              value={comentarios2}
-              onChange={(texto) => changeComentarios(texto.target.value)}
+              // value={comentarios2}
+              // onChange={(texto) => changeComentarios(texto.target.value)}
             />
           </Grid>
           <Grid >
@@ -130,13 +130,13 @@ export function AgregarComentario({
                     //console.log("comentarios2: ",comentarios2);
 
                     //agregarComentario(comentarios2);
-                    fetchComentario(IdSolicitud, comentarios2)
+                    // fetchComentario(IdSolicitud, comentarios2)
                     handler(false);
 
                     //crearSolicitud(selected);
                     //navigate("../ConsultaDeSolicitudes");
                   }}
-                  disabled={comentarios2.length >= 200 || comentarios2 == null || /^[\s]*$/.test(comentarios2) }
+                  // disabled={comentarios2.length >= 200 || comentarios2 == null || /^[\s]*$/.test(comentarios2) }
                   variant="text"
                   sx={{
                     textAlign: "center",

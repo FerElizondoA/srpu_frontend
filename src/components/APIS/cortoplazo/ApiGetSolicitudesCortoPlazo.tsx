@@ -5,7 +5,7 @@ export function getComentariosSolicitudPlazo(idSolicitud: string, setState: Func
  
   const state = useCortoPlazoStore.getState();
 
-  const IdSolicitud = state.IdSolicitud
+  // const IdSolicitud = state.IdSolicitud
 
  
     axios({
