@@ -204,7 +204,7 @@ export const Usuarios = () => {
   };
   const openEditarUsuario = (name: string, usuario: IUsuarios) => {
     setButonLabel("Editar");
-    setTitle("EDITAR USUARIO " + name.toUpperCase + ".");
+    setTitle("EDITAR USUARIO " + name.toUpperCase() + ".");
 
     setUsuarioEdit(usuario);
     openDialogUser();
