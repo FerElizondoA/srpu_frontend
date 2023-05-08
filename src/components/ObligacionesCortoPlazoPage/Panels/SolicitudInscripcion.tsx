@@ -21,8 +21,7 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { IconButton } from "@mui/material";
-import { ConfirmacionSolicitud } from "../Dialogs/ConfirmacionSolicitud";
+import { ConfirmacionEnviarSolicitud } from "../Dialogs/ConfirmacionEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
 import { DialogCatalogoUsuarios } from "../Dialogs/DialogCatalogoUsuarios";
@@ -532,7 +531,7 @@ export function SolicitudInscripcion() {
         </Grid>
 
         {openDialog ? (
-          <ConfirmacionSolicitud
+          <ConfirmacionEnviarSolicitud
             handler={changeOpenDialogState}
             openState={openDialog}
             //Id ={}

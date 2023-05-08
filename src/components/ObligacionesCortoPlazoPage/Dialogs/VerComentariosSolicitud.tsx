@@ -101,12 +101,9 @@ export function VerComentariosSolicitud({
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
   useEffect(() => {
-
-    
-    
-    getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
-    
+    getComentariosSolicitudPlazo(IdSolicitud, setComentarios);    
   }, []);
+  
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
   const changeOpenDialogState = (open: boolean) => {

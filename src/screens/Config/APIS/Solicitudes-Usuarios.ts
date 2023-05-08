@@ -43,7 +43,7 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-      console.log(r);
+      
 
       if (r.status === 200) {
        

@@ -75,11 +75,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   crearSolicitud: async (reglasSeleccionadas: number[], Estatus: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
     let reglas: string[] = [];
     reglasSeleccionadas.forEach((it) => {
       reglas = [...reglas, useCortoPlazoStore.getState().reglasCatalog[it]];
     });
-    console.log("Estatus: ", Estatus);
 
     const state = useCortoPlazoStore.getState();
 
@@ -154,21 +161,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then((response) => {
+          console.log("response.data.Id: ", response.data.data.Id);
           if (get().comentarios === null || get().comentarios === "") {
           } else {
             get().fetchComentario(response.data.data.Id, get().comentarios);
           }
-          Swal.fire({
+          Toast.fire({
             icon: "success",
-            title: "Mensaje",
-            text: "La solicitud ha sido creada exitosamente.",
+            title: "La solicitud se ha sido creado exitosamente.",
           });
         })
         .catch((e) => {
-          Swal.fire({
+          Toast.fire({
             icon: "error",
-            title: "Mensaje",
-            text: "La solicitud no ha sido creada.",
+            title: "La solicitud no se ha creado.",
           });
         });
     } else {
@@ -202,19 +208,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then((response) => {
           if (get().comentarios === null || get().comentarios === "") {
           } else {
-            get().fetchComentario(response.data.Id, get().comentarios);
+            get().fetchComentario(state.IdSolicitud, get().comentarios);
           }
-          Swal.fire({
+          Toast.fire({
             icon: "success",
-            title: "Mensaje",
-            text: "La solicitud se ha sido modificado exitosamente.",
+            title: "La solicitud se ha sido modificado exitosamente.",
           });
         })
         .catch((e) => {
-          Swal.fire({
+          Toast.fire({
             icon: "error",
-            title: "Mensaje",
-            text: "La solicitud no se ha modificado.",
+            title: "La solicitud no se ha modificado.",
           });
         });
     }
@@ -266,8 +270,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     const IdSolicitud = state.IdSolicitud;
 
-    console.log("IdSolicitud: ", IdSolicitud);
-
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
@@ -300,8 +302,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
-  console.log("Info de solicitud: ", Solicitud);
-
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
@@ -367,8 +367,6 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
 }
 
 export const getUsuariosAsignables = (setState: Function, numero: number) => {
-  console.log("Soy el numero en getUsuariosAsignables: ", numero);
-
   axios
     .get(
       process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
@@ -383,33 +381,30 @@ export const getUsuariosAsignables = (setState: Function, numero: number) => {
         },
       }
     )
-    .then(({ data }) => {
-      console.log("soy la data: en getUsuarios ", data);
-
-      if (data.data[0].ERROR !== "Permisos Denegados") {
-        if (numero === 1) {
+    .then(
+      ({ data }) => {
+        //  if (data.data[0].ERROR !== "Permisos Denegados") {
+        if (numero === 1 && localStorage.getItem("Rol") === "Verificador") {
           setState(data.data);
         }
 
-        if(numero === 2){
-          let aux = data.data
-          let arregloCapturador = []
-          let aux3 =[]
+        if (numero === 2 && localStorage.getItem("Rol") === "Verificador") {
+          let aux = data.data;
+          let arregloCapturador = [];
+          let aux3 = [];
           for (let i = 0; i < aux.length; i++) {
-             arregloCapturador = aux[i];
-          if(arregloCapturador.Rol ==='Capturador'){
-
-            aux3.push(arregloCapturador)
-            
+            arregloCapturador = aux[i];
+            if (arregloCapturador.Rol === "Capturador") {
+              aux3.push(arregloCapturador);
+            }
           }
-          
-
+          setState(aux3);
+        } else {
+          setState(data.data);
         }
-        console.log("Soy el arregloUsuarios: ",aux3)
-        setState(aux3);
       }
-    }
-    })
+      // }
+    )
     .catch((r) => {
       if (r.response.status === 409) {
       }

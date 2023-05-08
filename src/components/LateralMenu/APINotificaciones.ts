@@ -78,7 +78,7 @@ export const getHistorialNotificaciones = (setState: Function,) => {
     }).then(({ data }) => {
 
         //cantidadNotificaciones(data.data.length); //Obtienes la cantidad de Notificaciones
-        console.log(data.data)
+        
         setState(data.data)
     })
         .catch((r) => {

@@ -20,15 +20,13 @@ import {
   MenuItem,
   DialogActions,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
+
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { ConfirmButton, DeleteButton } from "../../CustomComponents";
+
 import { useCortoPlazoStore } from "../../../store/main";
 import { useNavigate } from "react-router-dom";
 import { getUsuariosAsignables } from "../../../store/solicitud_inscripcion";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-
 
 interface IUsuariosAsignables {
   Id: string;
@@ -36,7 +34,7 @@ interface IUsuariosAsignables {
   Rol: string;
 }
 
-export function ConfirmacionSolicitud({
+export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
   selected,
@@ -51,8 +49,6 @@ export function ConfirmacionSolicitud({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  let estatus = "";
-  let numero2 = asignar
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -61,29 +57,16 @@ export function ConfirmacionSolicitud({
     (state) => state.fetchReglas
   );
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.IdSolicitud);
   const comentarios: string = useCortoPlazoStore((state) => state.comentarios);
   const changeComentarios: Function = useCortoPlazoStore(
     (state) => state.changeComentarios
   );
   const MAX_COMMENTS_LENGTH = 200;
   const [text, setText] = useState("Enviar sin comentarios");
-  const validaciontext = () => {
-    if (comentarios == null || /^[\s]*$/.test(comentarios)) {
-      setText("Enviar");
-    } else {
-    }
-  };
 
   useEffect(() => {
     fetchReglas();
   }, []);
-  
-  
-
-  const fetchComentario: Function = useCortoPlazoStore(
-    (state) => state.fetchComentario
-  );
 
   const navigate = useNavigate();
   //////////////// Este apartado es el de finalizar
@@ -93,15 +76,14 @@ export function ConfirmacionSolicitud({
   >([]);
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
-
   useEffect(() => {
     getUsuariosAsignables(setUsuariosAsignables, asignar);
   }, []);
 
   useEffect(() => {
-    console.log(usuariosAsignables);
-  }, [usuariosAsignables]);
+    console.log("UsuariosAsignables: ", usuariosAsignables);
+  }, []);
+
   return (
     <Dialog
       fullWidth
@@ -121,15 +103,15 @@ export function ConfirmacionSolicitud({
           <Select
             value={idUsuarioAsignado}
             onChange={(e) => {
-              setidUsuarioAsignado(e.target.value);
+              console.log("e.target.value: ", e.target.value);
 
+              setidUsuarioAsignado(e.target.value);
             }}
           >
             {usuariosAsignables.map((usuario, index) => {
               return (
                 <MenuItem value={usuario.Id}>
                   {usuario.Nombre + " " + usuario.Rol}
-                  
                 </MenuItem>
               );
             })}
@@ -139,7 +121,7 @@ export function ConfirmacionSolicitud({
         <Grid mb={1} mt={2}>
           <TextField
             fullWidth
-            label="Comentarios        "
+            label="Comentarios"
             multiline
             variant="standard"
             maxRows={5}
@@ -155,21 +137,21 @@ export function ConfirmacionSolicitud({
             handler(false);
 
             if (localStorage.getItem("Rol") === "Verificador") {
-              estatus = "Por Firmar";
+              crearSolicitud(selected, "Por Firmar");
+              navigate("../ConsultaDeSolicitudes");
             }
             if (localStorage.getItem("Rol") === "Capturador") {
-              estatus = "Verificacion";
+              crearSolicitud(selected, "Verificacion");
+              navigate("../ConsultaDeSolicitudes");
             }
 
-            if (localStorage.getItem("Rol") === "Verificador" && asignar === 2) {
-              estatus = "Captura";
+            if (
+              localStorage.getItem("Rol") === "Verificador" &&
+              asignar === 2
+            ) {
+              crearSolicitud(selected, "Captura");
+              navigate("../ConsultaDeSolicitudes");
             }
-
-            console.log("estatus: ", estatus);
-
-            crearSolicitud(selected, estatus);
-
-            navigate("../ConsultaDeSolicitudes");
           }}
           disabled={comentarios.length >= 200}
           variant="text"
@@ -180,16 +162,15 @@ export function ConfirmacionSolicitud({
             ? "Los comentarios no pueden tener más de 200 caracteres"
             : "Enviar con comentarios"}
         </Button>
-        
-          <Button
-            //sx={queries.medium_text}
-            variant="text"
-            onClick={() => handler(false)}
-          >
-            Cancelar
-          </Button>
-      </DialogActions>
 
+        <Button
+          //sx={queries.medium_text}
+          variant="text"
+          onClick={() => handler(false)}
+        >
+          Cancelar
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }

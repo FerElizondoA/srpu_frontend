@@ -88,8 +88,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   };
 
   useEffect(() => {
-    console.log("hola", tipoEntePublico);
-
+    // console.log("hola", tipoEntePublico);
     notnull();
   }, []);
 
@@ -159,7 +158,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     estatus = "Captura" 
                   }
 
-                  console.log("estatus: ", estatus);
+                
 
                   crearSolicitud(props.selected, estatus);
                   navigate("../ConsultaDeSolicitudes");
