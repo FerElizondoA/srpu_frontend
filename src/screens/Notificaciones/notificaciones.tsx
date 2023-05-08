@@ -18,14 +18,13 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones"
 import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
 import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
 import { format } from "date-fns";
-import { Destinatarios } from "./Dialog/InfoAdicional";
 import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
-
+import { Destinatarios } from "./Dialog/InfoAdicional";
+import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones
@@ -70,9 +69,9 @@ export function Notificaciones() {
   const [cantNoti, setCantNoti] = useState<number>();
   const [idNoti, setIdNoti] = useState<string>('');
 
-  
 
-  
+
+
 
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -222,8 +221,8 @@ export function Notificaciones() {
                       component="th"
                       scope="row"
                       align="center"
-                      
-                      sx={{ textAlign:"justify" ,width: "30%" }}
+
+                      sx={{ textAlign: "justify", width: "30%" }}
                     >
                       {noti.Mensaje}
                     </StyledTableCell>
@@ -250,7 +249,7 @@ export function Notificaciones() {
                       align="center"
                     >
                       <IconButton
-                        onClick={() => {setIdNoti(noti.Id); openDialogDestinatarios() }}
+                        onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
                       >
                         <InfoIcon />
                       </IconButton>
