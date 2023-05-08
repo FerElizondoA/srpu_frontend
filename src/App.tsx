@@ -5,7 +5,7 @@ import "./Fonts.css";
 
 import { Route, Routes, useNavigate } from "react-router-dom"; //, useNavigate
 
-import { HomePage } from "./components/homePage/HomePage";
+
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
@@ -20,6 +20,7 @@ import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { continueSession, sessionValid } from "./components/APIS/config/validation";
 import { Notificaciones } from "./screens/notificaciones/notificaciones";
+import { HomePage } from "./components/homePage/HomePage";
 
 export const appTheme = createTheme({
   palette: {

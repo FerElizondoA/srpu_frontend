@@ -8,6 +8,8 @@ import {
   Table,
   TableHead,
   TableBody,
+  TableSortLabel,
+  Checkbox,
   Grid,
   IconButton,
   Tooltip,
@@ -19,17 +21,17 @@ import {
   StyledTableCell,
   StyledTableRow,
   ConfirmButton,
+  DeleteButton,
   hashFunctionCYRB53,
 } from "../../CustomComponents";
 
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateInput } from "../../CustomComponents";
 import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
-
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import { ObligadoSolidarioAval } from "../../../store/informacion_general";
@@ -43,7 +45,7 @@ interface Head {
 
 const heads: Head[] = [
   {
-    label: "Acción",
+    label: "Selección",
   },
   {
     label: "Obligado solidario / aval",
@@ -198,6 +200,28 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
+//   React.useEffect(() => {
+//     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
+//     {
+//       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+//     }else{
+//       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
+//       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+//     }
+    
+    
+//   }, [fechaContratacion, fechaVencimiento])
+
+// const disableOption = (value2: string) =>{
+  
+//   if(obligadoSolidarioAval === "No aplica"){
+//     return value2 = "desactivar"
+//   }else{
+//     return value2 = "activar"
+//   }
+
+// }
+  
   return (
     <Grid container>
       <Grid
@@ -589,6 +613,9 @@ export function InformacionGeneral() {
 
         <Grid item container>
           <Grid item lg={9}>
+
+
+
             <TableContainer sx={{ maxHeight: "200px" }}>
               <Table stickyHeader>
                 <TableHead>
@@ -601,6 +628,7 @@ export function InformacionGeneral() {
                   </TableRow>
                 </TableHead>
 
+                
                 <TableBody>
                   {generalObligadoSolidario.Descripcion === "No aplica" ? (
                     <StyledTableRow>
@@ -624,21 +652,21 @@ export function InformacionGeneral() {
                                 <DeleteIcon />
                               </IconButton>
                             </Tooltip>
-                          </StyledTableCell>
-                          <StyledTableCell component="th" scope="row">
-                            {row.obligadoSolidario}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.tipoEntePublicoObligado}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.entePublicoObligado}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    })
-                  )}
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.obligadoSolidario}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.entePublicoObligado}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  }))}
                 </TableBody>
+
               </Table>
             </TableContainer>
             <Grid item>
@@ -656,8 +684,11 @@ export function InformacionGeneral() {
               </ConfirmButton>
             </Grid>
           </Grid>
+          </Grid>
+        
+          
         </Grid>
       </Grid>
-    </Grid>
+    // </Grid>
   );
 }

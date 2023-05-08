@@ -30,11 +30,12 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+import CheckIcon from "@mui/icons-material/Check";
+import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerBorradorDocumento";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/dialogs/VerComentariosSolicitud";
-
-interface IData {
+import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
+export interface IData {
   Id: string;
   Institucion: string;
   TipoEntePublico: string;
@@ -85,7 +86,6 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Fecha de contratacion",
   },
-
   {
     id: "tipoDocumento",
     isNumeric: true,
@@ -199,6 +199,8 @@ export function ConsultaDeSolicitudPage() {
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
+  const [idSolicitud, setIdSolicitud] = useState("");
+
   return (
     <Grid container direction="column">
       <Grid item width={"100%"}>
@@ -241,7 +243,7 @@ export function ConsultaDeSolicitudPage() {
           <Table>
             <TableHead>
               {heads.map((head) => (
-                <StyledTableCell key={head.id}>
+                <StyledTableCell align="center" key={head.id}>
                   <TableSortLabel>{head.label} </TableSortLabel>
                 </StyledTableCell>
               ))}
@@ -253,9 +255,41 @@ export function ConsultaDeSolicitudPage() {
                 if (row.Estatus === "En_actualizacion ") {
                   chip = (
                     <Chip
-                      label="En verificación"
+                      label={row.Estatus}
                       icon={<WarningAmberIcon />}
                       color="warning"
+                      variant="outlined"
+                    />
+                  );
+                }
+                if (row.Estatus === "Captura") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      icon={<WarningAmberIcon />}
+                      color="warning"
+                      variant="outlined"
+                    />
+                  );
+                }
+
+                if (row.Estatus === "Verificacion") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      icon={<RateReviewSharpIcon />}
+                      color="info"
+                      variant="outlined"
+                    />
+                  );
+                }
+
+                if (row.Estatus === "Por Firmar") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      icon={<CheckIcon />}
+                      color="info"
                       variant="outlined"
                     />
                   );
@@ -265,31 +299,31 @@ export function ConsultaDeSolicitudPage() {
                   <StyledTableRow
                   //sx={{ alignItems: "center", justifyContent: "center" }}
                   >
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoEntePublico.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {chip}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.ClaveDeInscripcion.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {"$" + row.MontoOriginalContratado.toString()}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoSolicitud}
                     </StyledTableCell>
 
@@ -382,11 +416,14 @@ export function ConsultaDeSolicitudPage() {
           openState={openDialogVer}
           selected={selected}
         />
-        <VerComentariosSolicitud
-          handler={changeOpenVerComentarios}
-          openState={openVerComentarios}
-          selected={selected}
-        />
+        {openVerComentarios ? (
+          <VerComentariosSolicitud
+            handler={changeOpenVerComentarios}
+            openState={openVerComentarios}
+            selected={selected}
+            IdSolicitud={idSolicitud}
+          />
+        ) : null}
       </Grid>
     </Grid>
   );

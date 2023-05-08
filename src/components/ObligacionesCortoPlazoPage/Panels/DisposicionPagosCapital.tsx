@@ -51,7 +51,7 @@ const heads: readonly Head[] = [
     label: "Fecha de Primer Pago",
   },
   {
-    label: "Tasa Fija",
+    label: "Tasa Interes",
   },
   {
     label: "Periocidad de Pago",
@@ -485,6 +485,7 @@ export function DisposicionPagosCapital() {
                             sobreTasa: "",
                           });
                         }}
+                        
                         fullWidth
                         InputLabelProps={{
                           style: {
@@ -492,6 +493,7 @@ export function DisposicionPagosCapital() {
                           },
                         }}
                         InputProps={{
+                          readOnly: true,
                           style: {
                             fontFamily: "MontserratMedium",
                           },

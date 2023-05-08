@@ -129,9 +129,8 @@ export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) =>
     }
   }).then(({ data }) => {
 
-
     setState(data.data)
-
+    
   })
     .catch((r) => {
       if (r.response.status === 409) {

@@ -36,7 +36,9 @@ export const DialogSolicitudesUsuarios = ({
     <Dialog fullWidth maxWidth={"md"} open={open} onClose={() => handleClose()}>
      
       <DialogContent>
+
         <Grid>
+          
           <TableContainer component={Paper}>
             <Table
               sx={{ minWidth: 550}}
@@ -113,12 +115,14 @@ export const DialogSolicitudesUsuarios = ({
 
                     <TableCell align="center">
                       <Typography 
-                      sx={{
+                      sx={{ 
+                        marginLeft: 2.5,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "normal",
                         width: 500,
                         fontSize: 14
+                        
                       }}
                       >
                         Sin comentarios
@@ -130,9 +134,12 @@ export const DialogSolicitudesUsuarios = ({
               </TableBody>
             </Table>
           </TableContainer>
+
         </Grid>
+
         <DialogContentText></DialogContentText>
       </DialogContent>
+
       <DialogActions>
         <Button
           onClick={() => {

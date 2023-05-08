@@ -8,13 +8,18 @@ import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/E
 import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
 import { useCortoPlazoStore } from "../../store/main";
+import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
 
 export function ObligacionesCortoPlazoPage() {
+
+  // useEffect(() => {
+    
+  // }, [third])
+  
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {

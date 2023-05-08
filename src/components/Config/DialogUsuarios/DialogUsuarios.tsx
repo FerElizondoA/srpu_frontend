@@ -14,9 +14,10 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import DialogContentText from "@mui/material/DialogContentText";
 import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
-import { ICatalogo } from "../../../screens/config/Catalogos";
+
 import { getCatalogo } from "../../APIS/config/APISCatalogos";
 import { createSolicitud } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { ICatalogo } from "../../../screens/config/Catalogos";
 
 export const DialogUsuarios = ({
   open,
@@ -493,7 +494,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaCargo(e.target.value);
               }}
-              helperText={ErrorCargo ? 'Apellido paterno inválido' : ''}
+              helperText={ErrorCargo ? 'Cargo inválido' : ''}
               error={ErrorCargo}
 
             />
@@ -512,7 +513,7 @@ export const DialogUsuarios = ({
               onChange={(e) => {
                 validaMunicipio(e.target.value);
               }}
-              helperText={ErrorMunicipio ? 'Municipio inválido' : ''}
+              helperText={ErrorMunicipio ? 'Seleccione Municipio' : ''}
               error={ErrorMunicipio}
             >
               {entesPublicos?.map((option) => (

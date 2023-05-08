@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   Typography,
@@ -10,6 +11,9 @@ import {
   TableSortLabel,
   TableContainer,
   TableHead,
+  Paper,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
@@ -22,34 +26,48 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 ////////////////////////////////////////////////////////////////////////
+//import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { AgregarComentario } from "./AgregarComentario";
 
-interface IData {
+interface IDataComents {
   Id: string;
   Comentario: string;
   Fecha: Date;
+  Usuario: string;
+}
+
+interface IComentarios {
+  Comentarios: string;
+  CreadoPor: string;
+  FechaCreacion: string;
+  Id: string;
+  Mensaje: string;
+  Nombre: string;
 }
 
 interface Head {
-  id: keyof IData;
+  id: keyof IComentarios;
   isNumeric: boolean;
   label: string;
 }
 
 const heads: readonly Head[] = [
   {
-    id: "Id",
+    id: "Nombre",
     isNumeric: true,
-    label: "Id's",
+    label: "Usuario",
   },
   {
-    id: "Comentario",
+    id: "Comentarios",
     isNumeric: true,
     label: "Comentarios",
   },
   {
-    id: "Fecha",
+    id: "FechaCreacion",
     isNumeric: true,
-    label: "Fechas",
+    label: "Fecha",
   },
 ];
 
@@ -64,44 +82,147 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-type Props = {
+////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////
+export function VerComentariosSolicitud({
+  handler,
+  openState,
+  selected,
+  //comentarios: Array<IComentarios>;
+  IdSolicitud,
+}: {
   handler: Function;
   openState: boolean;
   selected: number[];
-  //Solicitud: string;
-};
-////////////////////////////////////////////////////////////////////////
+  //comentarios: Array<IComentarios>;
+  IdSolicitud: string;
+}) {
+  const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
-////////////////////////////////////////////////////////////////////////
-export function VerComentariosSolicitud(props: Props, Solicitud: string) {
-  // const comentarios: string = useCortoPlazoStore(state => state.comentarios);
+  useEffect(() => {
+
+    
+    
+    getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
+    
+  }, []);
+
+  const [openDialogCrear, changeOpenDialogCrear] = useState(false);
+  const changeOpenDialogState = (open: boolean) => {
+    changeOpenDialogCrear(open);
+  };
+
+  // const changeIdSolicitud: Function = useCortoPlazoStore(
+  //   (state) => state.changeIdSolicitud
+  // )
+  
+  // changeIdSolicitud(IdSolicitud)
+  //useCortoPlazoStore.setState(IdSolicitud: IdSolicitud);
+
   return (
     <Dialog
-      open={props.openState}
+      fullWidth
+      maxWidth={"md"}
+      open={openState}
       keepMounted
       TransitionComponent={Transition}
       onClose={() => {
-        props.handler(false);
+        handler(false);
       }}
     >
-      <Grid item>
-        <Table>
-          <TableHead>
-            {heads.map((head) => (
-              <StyledTableCell key={head.id}>
-                <TableSortLabel>{head.label} </TableSortLabel>
-              </StyledTableCell>
-            ))}
-          </TableHead>
-          <TableBody>
-            {/* {comentarios.localeCompare((row, index) =>(
-                    <StyledTableRow>
+      <DialogTitle sx={{ color: "#AF8C55" }}>Comentarios</DialogTitle>
+      <DialogContent>
+        <Grid item>
+          <TableContainer component={Paper}>
+            <Table
+              sx={{ minWidth: 650 }}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                {heads.map((head) => (
+                  <StyledTableCell  key={head.id}>
+                    <TableSortLabel sx={{ color: "#AF8C55" }}>
+                      {head.label}{" "}
+                    </TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableHead>
+              <TableBody>
+                {comentarios.length !== 0 ? (
+                  comentarios?.map((row, index) => {
+                   
 
-                    </StyledTableRow>
-                ))} */}
-          </TableBody>
-        </Table>
-      </Grid>
+                    return (
+                      <StyledTableRow>
+                        <StyledTableCell component="th" scope="row">
+                          {row.Nombre}
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.Comentarios}
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {row.FechaCreacion.split("T")[0]}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })
+                ) : (
+                  <StyledTableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <StyledTableCell align="center"></StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "normal",
+                          width: 600,
+                          fontSize: 14,
+                        }}
+                      >
+                        Sin comentarios
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center"></StyledTableCell>
+                  </StyledTableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => {
+            handler(false);
+          }}
+        >
+          Cerrar
+        </Button>
+        <Button
+          onClick={() => {
+            console.log("IdSolicitud en ver comentario",IdSolicitud);
+            
+            changeOpenDialogState(!openDialogCrear)
+            
+          }}
+        >
+          CREAR NUEVO COMENTARIO
+        </Button>
+      </DialogActions>
+      {openDialogCrear && <AgregarComentario
+        handler={changeOpenDialogState}
+        openState={openDialogCrear}
+        IdSolicitud = {IdSolicitud}
+        setComentarios = {setComentarios}
+        comentarios ={comentarios}
+        />
+        }
     </Dialog>
   );
 }

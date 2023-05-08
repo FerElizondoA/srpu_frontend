@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
+
 import {
   StyledTableCell,
   StyledTableRow,
@@ -34,6 +34,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { AgregarCondicionFinanciera } from "../dialogs/AgregarCondicionFinanciera";
 
 interface Head {
   label: string;

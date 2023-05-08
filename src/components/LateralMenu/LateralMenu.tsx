@@ -17,11 +17,13 @@ import {
   AppBar,
   Toolbar,
   OutlinedInput,
+  Tooltip,
+  Badge,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -34,18 +36,29 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-
-import { useCortoPlazoStore } from "../../store/main";
+import { SolicitudStore, useCortoPlazoStore } from "../../store/main";
 import { useState } from "react";
-
 import { queries } from "../../queries";
-
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { TimerCounter } from "./TimerCounter";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
+import { getNotificaciones, leerMensaje } from "./APINotificaciones";
+export interface IData {
+  Id: string;
+  Institucion: string;
+  TipoEntePublico: string;
+  ClaveDeInscripcion: string;
+  Estatus: string;
+  FechaContratacion: Date;
+  MontoOriginalContratado: number;
+  Acciones: string;
+  Solicitud: string;
+  tipoDocumento: string;
+  TipoSolicitud: string;
+}
 export function LateralMenu() {
   const logout = () => {
     localStorage.clear();
@@ -53,9 +66,8 @@ export function LateralMenu() {
   };
 
   const nombre = localStorage.getItem("NombreUsuario") || "";
-  const iniciales = `${nombre?.split(" ")[0].split("")[0] || ""} ${
-    nombre?.split(" ")[2].split("")[0] || ""
-  }`;
+  const iniciales = `${nombre?.split(" ")[0].split("")[0] || ""} ${nombre?.split(" ")[2].split("")[0] || ""
+    }`;
 
   const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
   const ente = localStorage.getItem("EntePublicoObligado");
@@ -66,9 +78,16 @@ export function LateralMenu() {
     isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
   };
 
+
+
   const [openInscripcion, setOpenInscripcion] = React.useState(false);
   const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] = useState(false);
+
+  const [notificaciones, setNotificaciones] = useState<Array<INotificaciones>>([]);
+
+  const [cantNoti, setCantNoti] = useState<number>();
 
   const handleInscripcionClick = () => {
     setOpenInscripcion(!openInscripcion);
@@ -129,6 +148,18 @@ export function LateralMenu() {
           )
       );
   }, [bandejaInfo]);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      getNotificaciones(
+
+      setNotificaciones,
+      setCantNoti);
+    }, 2000);
+    
+
+  }, []);
+
 
   const [openPasswordChange, setOpenPasswordChange] = useState(false);
 
@@ -374,8 +405,23 @@ export function LateralMenu() {
           <Grid item mt={0.5}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
-          <Grid>
-            <TimerCounter />
+
+          <Grid mt={1.5} display={"flex"} justifyContent={"space-between"} width={85}>
+            <Grid>
+              <Badge badgeContent={cantNoti} color='info'>
+                <Tooltip title='Notificaciones'>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => setIsDrawerNotificationOpen(true)}
+                  >
+                    <NotificationsActiveIcon />
+                  </IconButton>
+                </Tooltip>
+              </Badge>
+            </Grid>
+            <Grid>
+              <TimerCounter />
+            </Grid>
           </Grid>
         </Grid>
 
@@ -466,6 +512,11 @@ export function LateralMenu() {
                         <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
+                            // changeOpenEncabezado(!openEncabezado)
+                            // setAccion("Agregar")
+                            // setTabIndex(0)
+                            //restart()
+                            // reset();
                             navigate("../ObligacionesCortoPlazo");
                             window.location.reload();
                           }}
@@ -487,6 +538,11 @@ export function LateralMenu() {
                               </Typography>
                             </ListItemButton> */}
                       </List>
+                      {/* <Encabezado
+                      handler={changeOpenEncabezado}
+                      accion={accion}
+                      /> */}
+                      {/* {tabIndex === 0 && <Encabezado/>} */}
                     </Collapse>
 
                     <ListItemButton
@@ -524,6 +580,8 @@ export function LateralMenu() {
                   {openBandejas ? <ExpandMore /> : <ExpandLess />}
                 </ListItemButton>
 
+
+
                 <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                   <List>
                     {bandejaInfo.length > 0 &&
@@ -543,6 +601,19 @@ export function LateralMenu() {
                       ))}
                   </List>
                 </Collapse>
+
+
+                <ListItemButton
+                  onClick={() => {
+                    navigate("../notificaciones");
+                  }}
+                >
+                  <ListItemIcon>
+                    <NotificationsActiveIcon sx={queries.icon} />
+                  </ListItemIcon>
+                  <Typography sx={queries.text}>Notificaciones</Typography>
+                </ListItemButton>
+
 
                 {/* <ListItemButton>
                       <ListItemIcon>
@@ -612,6 +683,124 @@ export function LateralMenu() {
                   <Typography sx={queries.text}>Cerrar Sesión</Typography>
                 </ListItemButton>
               </List>
+            </Grid>
+          </Grid>
+        </Drawer>
+
+        <Drawer
+          anchor="right"
+          open={isDrawerNotificationOpen}
+          onClose={() => setIsDrawerNotificationOpen(false)}
+        >
+          <Grid
+            container
+            sx={{
+              width: query.isXs ? "35vw" : "25vw",
+              height: "inherit",
+              overflow: "auto",
+              "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,.5)",
+                outline: "1px solid slategrey",
+                borderRadius: 10,
+              },
+            }}
+          >
+            <Grid item container direction="column" mt={2}>
+
+              <Typography sx={{ textAlign: "center", fontSize: "18px", fontWeight: "bold" }}>
+                Tus Notificaciones
+              </Typography>
+
+              <Divider variant='fullWidth' />
+              <Grid width={"100%"} item  >
+                <List sx={{
+                }}
+                >
+
+                  {notificaciones.map((noti, index) => (
+                    <Grid>
+                      <Grid>
+                        <Box sx={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "space-around",
+
+                        }}>
+                          <Typography
+                            sx={{
+                              padding: "1px 4px 1px 0",
+                              fontSize: "14px",
+                              fontWeight: "bold"
+                            }}
+                            color="#af8c55"
+                          >
+                            {noti.Titulo}
+                          </Typography>
+
+                          <Typography
+                            sx={
+                              {
+                                padding: "1px 4px 1px 0",
+                                fontSize: "14px",
+                                fontWeight: "bold"
+                              }}
+                            color="#af8c55 "
+                          >
+                            {noti.FechaDeCreacion}
+                          </Typography>
+
+                        </Box>
+
+                        <Box sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          
+                          alignItems:"center"
+                        }}>
+                          <Typography
+                            sx={{
+                              width: "100%",
+                              padding: "10px 4px 1px 5px",
+                              fontSize: "14px",
+                              textAlign: "center"
+                            }}
+                            color="black"
+                          >
+                            {noti.Mensaje}
+                          </Typography>
+                        </Box>
+                      </Grid>
+
+                      <Box sx={{
+                        textAlign: "end"
+                      }}>
+                        <Button sx={{}}
+                          onClick={() => {
+                            console.log(noti.Id);
+                            leerMensaje(noti.Id); 
+                            getNotificaciones(
+                              setNotificaciones,
+                              setCantNoti)
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: "10px",
+                            }}
+                            color="#af8c55 "
+                          >
+                            Marcar Como Leido
+                          </Typography>
+                        </Button>
+                        <Divider variant='fullWidth' />
+                      </Box>
+                    </Grid>
+                  ))}
+                </List>
+              </Grid>
             </Grid>
           </Grid>
         </Drawer>

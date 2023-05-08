@@ -155,6 +155,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   fetchComentario: (Id: string, comentario: string) => {
+    const state = useCortoPlazoStore.getState();
+
+    // const IdSolicitud = state.IdSolicitud;
+
+    // console.log("IdSolicitud: ", IdSolicitud);
+
     const response = axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
@@ -175,6 +181,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
+  console.log("Info de solicitud: ", Solicitud);
+
   let solicitud: ISolicitud = JSON.parse(Solicitud);
 
   const solicitudfechas: any = {
@@ -238,3 +246,34 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     })
     .catch((err) => {});
 }
+
+export const getUsuariosAsignables = (setState: Function, numero: number) => {
+  console.log("Soy el numero en getUsuariosAsignables: ", numero);
+
+  axios
+    .get(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
+      {
+        params: {
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          Rol: localStorage.getItem("Rol"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(({ data }) => {
+      console.log("soy la data: en getUsuarios ", data);
+
+      if (data.data[0].ERROR !== "Permisos Denegados") {
+        setState(data.data);
+      
+    }
+    })
+    .catch((r) => {
+      if (r.response.status === 409) {
+      }
+    });
+};
