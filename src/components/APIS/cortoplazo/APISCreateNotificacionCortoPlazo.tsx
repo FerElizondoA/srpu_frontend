@@ -18,9 +18,6 @@ export const createNotificationCortoPlazo = (Titulo: string, mensaje: string, li
         }
 
     ).then((r) => {
-        console.log(r)
-
     }).catch((r) => {
-        console.log(r)
     })
 }

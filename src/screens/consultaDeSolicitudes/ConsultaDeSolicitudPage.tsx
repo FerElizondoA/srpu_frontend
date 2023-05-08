@@ -160,6 +160,10 @@ export function ConsultaDeSolicitudPage() {
   }, [busqueda]);
 
   const navigate = useNavigate();
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const changeIdSolicitud: Function = useCortoPlazoStore(
+    (state) => state.changeIdSolicitud
+  );
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -172,11 +176,9 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const editarSolicitud = (solicitud: IData) => {
+
+  const llenaSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
-    aux.IdSolicitud = solicitud.Id;
-    // useCortoPlazoStore.setState(aux);
-    console.log(aux);
     changeEncabezado(aux?.encabezado);
     changeInformacionGeneral(aux?.informacionGeneral);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
@@ -185,12 +187,11 @@ export function ConsultaDeSolicitudPage() {
     aux?.condicionesFinancieras.map((v: any, index: number) => {
       addCondicionFinanciera(v);
     });
-    navigate("../ObligacionesCortoPlazo");
   };
 
-  // const fetchBorrarSolicitud: Function = useCortoPlazoStore(
-  //   (state) => state.fetchBorrarSolicitud
-  // );
+  const editarSolicitud = () => {
+    navigate("../ObligacionesCortoPlazo");
+  };
 
   /////////////////////////////////////////////
   const [selected] = useState<number[]>([]); //, setSelected
@@ -198,8 +199,6 @@ export function ConsultaDeSolicitudPage() {
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
-
-  const [idSolicitud, setIdSolicitud] = useState("");
 
   return (
     <Grid container direction="column">
@@ -229,11 +228,14 @@ export function ConsultaDeSolicitudPage() {
                 return false;
               }
             }}
-
-            //inputProps={{ "aria-label": "search google maps" }}
           />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon onClick={() => handleSearch()} />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={() => handleSearch()}
+          >
+            <SearchIcon />
           </IconButton>
         </Paper>
       </Grid>
@@ -242,14 +244,16 @@ export function ConsultaDeSolicitudPage() {
         <TableContainer sx={{ maxHeight: "900px" }}>
           <Table>
             <TableHead>
-              {heads.map((head) => (
-                <StyledTableCell align="center" key={head.id}>
-                  <TableSortLabel>{head.label} </TableSortLabel>
-                </StyledTableCell>
-              ))}
+              <StyledTableRow>
+                {heads.map((head, index) => (
+                  <StyledTableCell align="center" key={index}>
+                    <TableSortLabel>{head.label} </TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
             </TableHead>
             <TableBody>
-              {datosFiltrados.map((row) => {
+              {datosFiltrados.map((row, index) => {
                 let chip = <></>;
 
                 if (row.Estatus === "En_actualizacion ") {
@@ -296,9 +300,7 @@ export function ConsultaDeSolicitudPage() {
                 }
 
                 return (
-                  <StyledTableRow
-                  //sx={{ alignItems: "center", justifyContent: "center" }}
-                  >
+                  <StyledTableRow key={index}>
                     <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion.toString()}
                     </StyledTableCell>
@@ -338,6 +340,7 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
+                            llenaSolicitud(row);
                             changeOpenDialogVer(!openDialogVer);
                           }}
                         >
@@ -351,7 +354,9 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
-                            editarSolicitud(row);
+                            changeIdSolicitud(row?.Id || "");
+                            llenaSolicitud(row);
+                            editarSolicitud();
                           }}
                         >
                           <EditIcon />
@@ -377,6 +382,7 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
+                            changeIdSolicitud(row?.Id || "");
                             changeOpenVerComentarios(!openVerComentarios);
                           }}
                         >
@@ -395,8 +401,7 @@ export function ConsultaDeSolicitudPage() {
                           }
                           aria-label="search"
                           onClick={() => {
-                            getSolicitudes(setDatos);
-                            // fetchBorrarSolicitud(row.Id);
+                            changeIdSolicitud(row?.Id || "");
                             getSolicitudes(setDatos);
                           }}
                         >
@@ -414,16 +419,11 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          selected={selected}
         />
-        {openVerComentarios ? (
-          <VerComentariosSolicitud
-            handler={changeOpenVerComentarios}
-            openState={openVerComentarios}
-            selected={selected}
-            IdSolicitud={idSolicitud}
-          />
-        ) : null}
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+        />
       </Grid>
     </Grid>
   );
