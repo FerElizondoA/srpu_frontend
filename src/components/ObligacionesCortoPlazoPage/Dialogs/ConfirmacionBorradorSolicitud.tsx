@@ -128,22 +128,19 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                       localStorage.getItem("IdUsuario"),
                       localStorage.getItem("IdUsuario"),
                       "Captura"
+                      
                     );
+                    navigate("../ConsultaDeSolicitudes");
                   } else {
                     crearSolicitud(
                       localStorage.getItem("IdUsuario"),
                       localStorage.getItem("IdUsuario"),
                       "Captura"
                     );
+                    navigate("../ConsultaDeSolicitudes");
                   }
-                  if(localStorage.getItem("Rol") === "Capturador"){
-                    estatus = "Captura" 
-                  }
-
-                
-
-                  crearSolicitud(props.selected, estatus);
-                  navigate("../ConsultaDeSolicitudes");
+                 
+                  
                 }}
                 variant="text"
                 disabled={
