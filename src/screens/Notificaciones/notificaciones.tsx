@@ -18,13 +18,17 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones"
+
 import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
 import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
 import { format } from "date-fns";
-import { Destinatarios } from "./Dialog/InfoAdicional";
+
 import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
+import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
+import { Destinatarios } from "./Dialog/InfoAdicional";
+
+
 
 
 export function Notificaciones() {

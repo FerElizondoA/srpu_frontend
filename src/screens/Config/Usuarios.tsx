@@ -29,7 +29,8 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { DialogUsuarios } from "../../components/Config/dialogUsuarios/DialogUsuarios";
+import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
+
 
 export const Usuarios = () => {
   const navigate = useNavigate();
