@@ -93,9 +93,10 @@ module.exports = {
       });
     } 
     db.query(`CALL sp_ListadoUsuarios('${IdApp}','${IdUsuario}','${PermisosEspeciales}')`, (err, result) => {
+
       if (err) {
         return res.status(500).send({
-          error: "Error",
+          error: err.sqlMessage,
         });
       }
 
