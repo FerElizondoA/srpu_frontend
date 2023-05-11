@@ -121,7 +121,7 @@ export function ComisionesTasaEfectiva() {
   const comisionIva: string = useCortoPlazoStore((state) => state.comision.iva);
 
   // TABLA COMISIONES
-  const tablaComisiones: any = useCortoPlazoStore(
+   const tablaComisiones: any = useCortoPlazoStore(
     (state) => state.tablaComisiones
   );
   const addComision: Function = useCortoPlazoStore(

@@ -138,7 +138,7 @@ export function DisposicionPagosCapital() {
   );
 
   // TABLA TASA DE INTERES
-  let tablaTasaInteres: any = useCortoPlazoStore(
+   let tablaTasaInteres: any = useCortoPlazoStore(
     (state) => state.tablaTasaInteres
   );
   const addTasaInteres: Function = useCortoPlazoStore(
