@@ -79,6 +79,8 @@ module.exports = {
       }
 
       db.query(`CALL sp_AgregarSolicitud( '${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${CreadoPor}' )`, (err, result) => {
+        
+        
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
@@ -251,6 +253,7 @@ module.exports = {
       }
 
       db.query(`CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`, (err, result) => {
+       console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
