@@ -18,7 +18,14 @@ import {
   Button,
   Box,
   Paper,
+  TableCell,
+  createTheme,
+  ThemeProvider,
+  makeStyles,
+  createStyles,
+  Theme,
 } from "@mui/material";
+
 
 import {
   StyledTableCell,
@@ -42,6 +49,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { IInformacionGeneral } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IEncabezado";
 import CheckIcon from '@mui/icons-material/Check';
+import { styled } from "@mui/system";
+
 
 interface Head {
   label: string;
@@ -225,7 +234,7 @@ export function InformacionGeneral() {
   //   }
 
   // }
-
+  
   return (
     <Grid
       sx={{
@@ -567,7 +576,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item lg={3} >
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
@@ -615,82 +624,90 @@ export function InformacionGeneral() {
             }
           />
         </Grid>
+        {/* 
+        <Grid item display={"flex"} alignItems={"center"}  >
+          
+        </Grid> */}
+      </Grid>
+      <Grid display={"flex"} justifyContent={"center"}>
+        
+          <Button
+            
+            sx={queries.buttonContinuar}
+            disabled={
+              generalObligadoSolidario.Descripcion === "No aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
+              /^[\s]*$/.test(generalEntePublico.Descripcion)
+            }
+            variant="outlined"
+            onClick={() => addRows()}
+          >
+            <CheckIcon fontSize="small" />AGREGAR
+          </Button>
+        
+
       </Grid>
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
-        <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
-          <Paper sx={{ width:"75%" ,overflow:"clip", }}>
-            
-            <TableContainer  sx={{ maxHeight: "100%" }} >
-              <Table stickyHeader  aria-label="sticky table">
-                <TableHead>
-                  <TableRow >
-                    {heads.map((head, index) => (
-                      <StyledTableCell key={index}>
-                        {head.label}
-                      </StyledTableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
+      <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
+        <Paper sx={{ width: "88%", overflow: "clip", }}>
+
+          <TableContainer sx={{ maxHeight: "100%" }} >
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow >
+                  {heads.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      {head.label}
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
 
 
-                <TableBody>
-                  {generalObligadoSolidario.Descripcion === "No aplica" ? (
-                    <StyledTableRow>
-                      {/* <StyledTableCell />
+              <TableBody>
+                {generalObligadoSolidario.Descripcion === "No aplica" ? (
+                  <StyledTableRow>
+                    {/* <StyledTableCell />
                   <StyledTableCell /> */}
-                      <StyledTableCell>No aplica</StyledTableCell>
-                      {/* <StyledTableCell /> */}
-                    </StyledTableRow>
-                  ) : (
-                    tablaObligados.map((row: any, index: number) => {
-                      return (
-                        <StyledTableRow key={index}>
-                          <StyledTableCell align="left">
-                            <Tooltip title="Eliminar">
-                              <IconButton
-                                type="button"
-                                onClick={() =>
-                                  removeObligadoSolidarioAval(index)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </StyledTableCell>
-                          <StyledTableCell component="th" scope="row">
-                            {row.obligadoSolidario}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.tipoEntePublicoObligado}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.entePublicoObligado}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    }))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
+                    <StyledTableCell>No aplica</StyledTableCell>
+                    {/* <StyledTableCell /> */}
+                  </StyledTableRow>
+                ) : (
+                  tablaObligados.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center">
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() =>
+                                removeObligadoSolidarioAval(index)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th" scope="row">
+                          {row.obligadoSolidario}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.entePublicoObligado}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  }))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
 
-
-          <Grid item >
-            <Button
-              disabled={
-                generalObligadoSolidario.Descripcion === "No aplica" ||
-                /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-                /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
-                /^[\s]*$/.test(generalEntePublico.Descripcion)
-              }
-              variant="outlined"
-              onClick={() => addRows()}
-            >
-              <CheckIcon fontSize="small" />AGREGAR
-            </Button>
-          </Grid>
-        </Grid>
+      </Grid>
       {/* </Box> */}
     </Grid>
 
