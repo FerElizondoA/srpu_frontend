@@ -15,6 +15,9 @@ import {
   Tooltip,
   Typography,
   TableRow,
+  Button,
+  Box,
+  Paper,
 } from "@mui/material";
 
 import {
@@ -38,6 +41,7 @@ import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { IInformacionGeneral } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IEncabezado";
+import CheckIcon from '@mui/icons-material/Check';
 
 interface Head {
   label: string;
@@ -200,38 +204,44 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
-//   React.useEffect(() => {
-//     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
-//     {
-//       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
-//     }else{
-//       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
-//       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
-//     }
-    
-    
-//   }, [fechaContratacion, fechaVencimiento])
+  //   React.useEffect(() => {
+  //     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
+  //     {
+  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+  //     }else{
+  //       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
+  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+  //     }
 
-// const disableOption = (value2: string) =>{
-  
-//   if(obligadoSolidarioAval === "No aplica"){
-//     return value2 = "desactivar"
-//   }else{
-//     return value2 = "activar"
-//   }
 
-// }
-  
+  //   }, [fechaContratacion, fechaVencimiento])
+
+  // const disableOption = (value2: string) =>{
+
+  //   if(obligadoSolidarioAval === "No aplica"){
+  //     return value2 = "desactivar"
+  //   }else{
+  //     return value2 = "activar"
+  //   }
+
+  // }
+
   return (
-    <Grid container>
+    <Grid
+      sx={{
+        display: "flex", height: "85vh", flexDirection: "column",
+        justifyContent: "space-evenly",
+        // backgroundColor:"red"
+      }}
+
+
+    >
       <Grid
         item
-        container
-        mt={5}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={5}
+        display="flex"
+        justifyContent={"space-evenly"}
       >
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item lg={3} >
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -253,7 +263,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
             fullWidth
@@ -274,7 +284,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Original Contratado
           </InputLabel>
@@ -310,14 +320,8 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        container
-        mt={2}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={5}
-      >
-        <Grid item xs={3.5} md={3.5} lg={3}>
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid lg={3} >
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -334,7 +338,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             fullWidth
@@ -378,7 +382,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <TextField
             fullWidth
@@ -409,12 +413,14 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item container mt={2} ml={window.innerWidth / 50 - 13} spacing={5}>
-        <Grid item lg={8.5} ml={window.outerWidth / 150}>
+
+      <Grid item display={"flex"} justifyContent={"center"}>
+        <Grid item lg={10.5}>
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
           <Autocomplete
+
             fullWidth
             options={catalogoInstituciones}
             getOptionLabel={(option) => option.Descripcion}
@@ -459,12 +465,11 @@ export function InformacionGeneral() {
 
       <Grid
         item
-        container
-        mt={{ xs: 10, sm: 2, md: 5, lg: 2 }}
-        ml={38}
-        spacing={5}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+
       >
-        <Grid item xs={3} md={3} lg={3}>
+        <Grid item lg={3} >
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
@@ -512,7 +517,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} md={3} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Tipo de ente público obligado
           </InputLabel>
@@ -562,7 +567,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} md={3} lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
@@ -610,16 +615,16 @@ export function InformacionGeneral() {
             }
           />
         </Grid>
+      </Grid>
 
-        <Grid item container>
-          <Grid item lg={9}>
-
-
-
-            <TableContainer sx={{ maxHeight: "200px" }}>
-              <Table stickyHeader>
+      {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
+        <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
+          <Paper sx={{ width:"75%" ,overflow:"clip", }}>
+            
+            <TableContainer  sx={{ maxHeight: "100%" }} >
+              <Table stickyHeader  aria-label="sticky table">
                 <TableHead>
-                  <TableRow>
+                  <TableRow >
                     {heads.map((head, index) => (
                       <StyledTableCell key={index}>
                         {head.label}
@@ -628,14 +633,14 @@ export function InformacionGeneral() {
                   </TableRow>
                 </TableHead>
 
-                
+
                 <TableBody>
                   {generalObligadoSolidario.Descripcion === "No aplica" ? (
                     <StyledTableRow>
-                      <StyledTableCell />
-                      <StyledTableCell />
+                      {/* <StyledTableCell />
+                  <StyledTableCell /> */}
                       <StyledTableCell>No aplica</StyledTableCell>
-                      <StyledTableCell />
+                      {/* <StyledTableCell /> */}
                     </StyledTableRow>
                   ) : (
                     tablaObligados.map((row: any, index: number) => {
@@ -652,43 +657,42 @@ export function InformacionGeneral() {
                                 <DeleteIcon />
                               </IconButton>
                             </Tooltip>
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                          {row.obligadoSolidario}
-                        </StyledTableCell>
-                        <StyledTableCell component="th">
-                          {row.tipoEntePublicoObligado}
-                        </StyledTableCell>
-                        <StyledTableCell component="th">
-                          {row.entePublicoObligado}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  }))}
+                          </StyledTableCell>
+                          <StyledTableCell component="th" scope="row">
+                            {row.obligadoSolidario}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.tipoEntePublicoObligado}
+                          </StyledTableCell>
+                          <StyledTableCell component="th">
+                            {row.entePublicoObligado}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    }))}
                 </TableBody>
-
               </Table>
             </TableContainer>
-           
+          </Paper>
+
+
+          <Grid item >
+            <Button
+              disabled={
+                generalObligadoSolidario.Descripcion === "No aplica" ||
+                /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+                /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
+                /^[\s]*$/.test(generalEntePublico.Descripcion)
+              }
+              variant="outlined"
+              onClick={() => addRows()}
+            >
+              <CheckIcon fontSize="small" />AGREGAR
+            </Button>
           </Grid>
-          </Grid>
-          <Grid item width={"100%"}>
-              <ConfirmButton
-                disabled={
-                  generalObligadoSolidario.Descripcion === "No aplica" ||
-                  /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-                  /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
-                  /^[\s]*$/.test(generalEntePublico.Descripcion)
-                }
-                variant="outlined"
-                onClick={() => addRows()}
-              >
-                AGREGAR
-              </ConfirmButton>
-            </Grid>
-          
         </Grid>
-      </Grid>
-    // </Grid>
+      {/* </Box> */}
+    </Grid>
+
   );
 }
