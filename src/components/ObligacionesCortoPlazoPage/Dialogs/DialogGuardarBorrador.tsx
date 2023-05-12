@@ -1,15 +1,15 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Grid, Typography, Dialog, Slide, Button } from "@mui/material";
+import { Typography, Dialog, Slide, Button } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -23,14 +23,9 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
-  // selected: number[];
 };
 
 export function ConfirmacionBorradorSolicitud(props: Props) {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-  };
-
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -73,9 +68,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     } else if (isMissingOriginalAmount) {
       setInfo("No se ha proporcionado un monto en INFORMACIÓN GENERAL.");
     } else {
-      setInfo(
-        "En este apartado se guardará un borrador de la información que podrás visualizar en el futuro."
-      );
+      setInfo("La solicitud se guardará como borrador.");
     }
   };
 
@@ -99,69 +92,79 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       </DialogTitle>
 
       <DialogContent>
-        <Grid container>
-          <Grid
-            sx={{
-              flexDirection: "row",
-              alignItems: "center",
-              fontSize: "20px",
-            }}
-          >
-            <Grid mb={1}>
-              <DialogContentText>{info}</DialogContentText>
-            </Grid>
-          </Grid>
-        </Grid>
+        <DialogContentText>{info}</DialogContentText>
       </DialogContent>
 
       <DialogActions>
-        <Grid>
-          <Grid item container direction="row" spacing={1}>
-            <Grid item md={6} lg={6}>
-              <Button
-                onClick={() => {
-                  props.handler(false);
-                  
-                  if (idSolicitud !== "") {
-                    modificaSolicitud(
-                      localStorage.getItem("IdUsuario"),
-                      localStorage.getItem("IdUsuario"),
-                      "Captura"
-                    );
-                  } else {
-                    crearSolicitud(
-                      localStorage.getItem("IdUsuario"),
-                      localStorage.getItem("IdUsuario"),
-                      "Captura"
-                    );
-                  }
-                  navigate("../ConsultaDeSolicitudes");
-                }}
-                variant="text"
-                disabled={
-                  institucion === "" ||
-                  institucion === null ||
-                  tipoEntePublico === "" ||
-                  tipoEntePublico === null ||
-                  montoOriginal === null ||
-                  montoOriginal === 0
-                }
-              >
-                Confirmar
-              </Button>
-            </Grid>
-
-            <Grid item md={6} lg={6}>
-              <Button
-                //sx={queries.medium_text}
-                variant="text"
-                onClick={() => props.handler(false)}
-              >
-                Cancelar
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
+        <Button
+          variant="text"
+          onClick={() => props.handler(false)}
+          sx={queries.buttonCancelar}
+        >
+          Cancelar
+        </Button>
+        <Button
+          onClick={() => {
+            props.handler(false);
+            if (idSolicitud !== "") {
+              modificaSolicitud(
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("Rol") === "Capturador"
+                  ? "Captura"
+                  : "Verificacion"
+              )
+                .then(() => {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se guardó con éxito",
+                  });
+                })
+                .catch(() => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Mensaje",
+                    text: "Ocurrió un error, inténtelo de nuevo",
+                  });
+                });
+            } else {
+              crearSolicitud(
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("Rol") === "Capturador"
+                  ? "Captura"
+                  : "Verificacion"
+              )
+                .then(() => {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se guardó con éxito",
+                  });
+                })
+                .catch(() => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Mensaje",
+                    text: "Ocurrió un error, inténtelo de nuevo",
+                  });
+                });
+            }
+            navigate("../ConsultaDeSolicitudes");
+          }}
+          disabled={
+            institucion === "" ||
+            institucion === null ||
+            tipoEntePublico === "" ||
+            tipoEntePublico === null ||
+            montoOriginal === null ||
+            montoOriginal === 0
+          }
+          sx={queries.buttonContinuar}
+        >
+          Confirmar
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -103,6 +103,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         (_, i) => i !== index
       ),
     })),
+    
   updatecondicionFinancieraTable: (
     tablaCondicionesFinancieras: CondicionFinanciera[]
   ) => set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),

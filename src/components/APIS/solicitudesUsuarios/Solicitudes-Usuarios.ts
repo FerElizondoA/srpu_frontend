@@ -128,7 +128,6 @@ export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) =>
       'Content-Type': 'application/json'
     }
   }).then(({ data }) => {
-
     setState(data.data)
     
   })

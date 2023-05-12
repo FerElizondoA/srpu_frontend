@@ -33,8 +33,9 @@ import { useCortoPlazoStore } from "../../store/main";
 import CheckIcon from "@mui/icons-material/Check";
 import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+
 export interface IData {
   Id: string;
   Institucion: string;
@@ -48,6 +49,7 @@ export interface IData {
   tipoDocumento: string;
   TipoSolicitud: string;
   IdEditor: string;
+  CreadoPor: string;
 }
 
 interface Head {
@@ -160,7 +162,9 @@ export function ConsultaDeSolicitudPage() {
   }, [busqueda]);
 
   const navigate = useNavigate();
+
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
@@ -192,9 +196,6 @@ export function ConsultaDeSolicitudPage() {
   const editarSolicitud = () => {
     navigate("../ObligacionesCortoPlazo");
   };
-
-  /////////////////////////////////////////////
-  const [selected] = useState<number[]>([]); //, setSelected
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
@@ -256,21 +257,11 @@ export function ConsultaDeSolicitudPage() {
               {datosFiltrados.map((row, index) => {
                 let chip = <></>;
 
-                if (row.Estatus === "En_actualizacion ") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      icon={<WarningAmberIcon />}
-                      color="warning"
-                      variant="outlined"
-                    />
-                  );
-                }
                 if (row.Estatus === "Captura") {
                   chip = (
                     <Chip
                       label={row.Estatus}
-                      icon={<WarningAmberIcon />}
+                      // icon={<WarningAmberIcon />}
                       color="warning"
                       variant="outlined"
                     />
@@ -281,7 +272,7 @@ export function ConsultaDeSolicitudPage() {
                   chip = (
                     <Chip
                       label={row.Estatus}
-                      icon={<RateReviewSharpIcon />}
+                      // icon={<RateReviewSharpIcon />}
                       color="info"
                       variant="outlined"
                     />
@@ -292,8 +283,18 @@ export function ConsultaDeSolicitudPage() {
                   chip = (
                     <Chip
                       label={row.Estatus}
-                      icon={<CheckIcon />}
-                      color="info"
+                      // icon={<CheckIcon />}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  );
+                }
+                if (row.Estatus === "Firmado") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      // icon={<CheckIcon />}
+                      color="success"
                       variant="outlined"
                     />
                   );
@@ -330,7 +331,11 @@ export function ConsultaDeSolicitudPage() {
                     </StyledTableCell>
 
                     <StyledTableCell
-                      sx={{ flexDirection: "row" }}
+                      sx={{
+                        flexDirection: "row",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2,1fr)",
+                      }}
                       align="center"
                       component="th"
                       scope="row"
@@ -338,7 +343,6 @@ export function ConsultaDeSolicitudPage() {
                       <Tooltip title="Ver">
                         <IconButton
                           type="button"
-                          aria-label="search"
                           onClick={() => {
                             llenaSolicitud(row);
                             changeOpenDialogVer(!openDialogVer);
@@ -349,38 +353,39 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Edit">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-                            changeIdSolicitud(row?.Id || "");
-                            llenaSolicitud(row);
-                            editarSolicitud();
-                          }}
-                        >
-                          <EditIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
+                      {localStorage.getItem("IdUsuario") === row.IdEditor && (
+                        <Tooltip title="Edit">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              changeIdSolicitud(row?.Id || "");
+                              llenaSolicitud(row);
+                              editarSolicitud();
+                            }}
+                          >
+                            <EditIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
-                      <Tooltip title="Descargar">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-                            DescargarConsultaSolicitud(row.Solicitud);
-                          }}
-                        >
-                          <DownloadIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
+                      {row.Estatus === "Por Firmar" && (
+                        <Tooltip title="Descargar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              DescargarConsultaSolicitud(row.Solicitud);
+                            }}
+                          >
+                            <DownloadIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
                       <Tooltip title="Comentarios">
                         <IconButton
                           type="button"
-                          aria-label="search"
                           onClick={() => {
                             changeIdSolicitud(row?.Id || "");
                             changeOpenVerComentarios(!openVerComentarios);
@@ -391,24 +396,20 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Borrar">
-                        <IconButton
-                          type="button"
-                          disabled={
-                            localStorage.getItem("Rol") === "Capturador"
-                              ? true
-                              : false
-                          }
-                          aria-label="search"
-                          onClick={() => {
-                            changeIdSolicitud(row?.Id || "");
-                            getSolicitudes(setDatos);
-                          }}
-                        >
-                          <DeleteIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
+                      {localStorage.getItem("IdUsuario") === row.CreadoPor && (
+                        <Tooltip title="Borrar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              changeIdSolicitud(row?.Id || "");
+                              getSolicitudes(setDatos);
+                            }}
+                          >
+                            <DeleteIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 );

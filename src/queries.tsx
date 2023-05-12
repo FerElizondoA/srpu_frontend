@@ -66,4 +66,28 @@ export const queries = {
       fontSize: "2.5ch",
     },
   },
+  buttonCancelar: {
+    backgroundColor: "rgb(175, 140, 85)",
+    height: "4vh",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(175, 140, 85, 0.6)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+  },
+  buttonContinuar: {
+    backgroundColor: "#15212f",
+    height: "4vh",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(47, 47, 47, 0.4)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+  },
 };
