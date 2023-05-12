@@ -20,7 +20,6 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
@@ -30,8 +29,6 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import CheckIcon from "@mui/icons-material/Check";
-import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
@@ -163,7 +160,7 @@ export function ConsultaDeSolicitudPage() {
 
   const navigate = useNavigate();
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
@@ -180,17 +177,65 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
+  const setTablaDocumentos: Function = useCortoPlazoStore(
+    (state) => state.setTablaDocumentos
+  );
+
+  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+
+  const addDocumento: Function = useCortoPlazoStore(
+    (state) => state.addDocumento
+  );
 
   const llenaSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
     changeEncabezado(aux?.encabezado);
     changeInformacionGeneral(aux?.informacionGeneral);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
-      addObligadoSolidarioAval(v);
+      return addObligadoSolidarioAval(v);
     });
     aux?.condicionesFinancieras.map((v: any, index: number) => {
-      addCondicionFinanciera(v);
+      return addCondicionFinanciera(v);
     });
+    aux?.documentacion.map((v: any, index: number) => {
+      console.log(v);
+
+      return addDocumento(v);
+    });
+
+    console.log(aux);
+  };
+
+  const limpiaSolicitud = () => {
+    changeEncabezado({
+      tipoDocumento: "",
+      solicitanteAutorizado: {
+        Solicitante: "",
+        Cargo: "",
+        Nombre: "",
+      },
+      tipoEntePublico: { Id: "", TipoEntePublico: "" },
+      organismo: { Id: "", Organismo: "" },
+      fechaContratacion: new Date(),
+    });
+    changeInformacionGeneral({
+      fechaContratacion: new Date(),
+      fechaVencimiento: new Date(),
+      plazo: 0,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+    cleanObligadoSolidarioAval([]);
+    updatecondicionFinancieraTable([]);
+    setTablaDocumentos([]);
   };
 
   const editarSolicitud = () => {
@@ -200,6 +245,12 @@ export function ConsultaDeSolicitudPage() {
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
+
+  useEffect(() => {
+    if (openDialogVer === false) {
+      limpiaSolicitud();
+    }
+  }, [openDialogVer]);
 
   return (
     <Grid container direction="column">
@@ -353,21 +404,22 @@ export function ConsultaDeSolicitudPage() {
                         </IconButton>
                       </Tooltip>
 
-                      {localStorage.getItem("IdUsuario") === row.IdEditor && (
-                        <Tooltip title="Edit">
-                          <IconButton
-                            type="button"
-                            onClick={() => {
-                              changeIdSolicitud(row?.Id || "");
-                              llenaSolicitud(row);
-                              editarSolicitud();
-                            }}
-                          >
-                            <EditIcon />
-                            {row.Acciones}
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                      {localStorage.getItem("IdUsuario") === row.IdEditor &&
+                        localStorage.getItem("Rol") !== "Administrador" && (
+                          <Tooltip title="Edit">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                changeIdSolicitud(row?.Id || "");
+                                llenaSolicitud(row);
+                                editarSolicitud();
+                              }}
+                            >
+                              <EditIcon />
+                              {row.Acciones}
+                            </IconButton>
+                          </Tooltip>
+                        )}
 
                       {row.Estatus === "Por Firmar" && (
                         <Tooltip title="Descargar">
@@ -382,34 +434,37 @@ export function ConsultaDeSolicitudPage() {
                           </IconButton>
                         </Tooltip>
                       )}
-
-                      <Tooltip title="Comentarios">
-                        <IconButton
-                          type="button"
-                          onClick={() => {
-                            changeIdSolicitud(row?.Id || "");
-                            changeOpenVerComentarios(!openVerComentarios);
-                          }}
-                        >
-                          <CommentIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      {localStorage.getItem("IdUsuario") === row.CreadoPor && (
-                        <Tooltip title="Borrar">
+                      
+                      {localStorage.getItem("Rol") !== "Administrador" && (
+                        <Tooltip title="Comentarios">
                           <IconButton
                             type="button"
                             onClick={() => {
                               changeIdSolicitud(row?.Id || "");
-                              getSolicitudes(setDatos);
+                              changeOpenVerComentarios(!openVerComentarios);
                             }}
                           >
-                            <DeleteIcon />
+                            <CommentIcon />
                             {row.Acciones}
                           </IconButton>
                         </Tooltip>
                       )}
+
+                      {localStorage.getItem("IdUsuario") === row.CreadoPor &&
+                        localStorage.getItem("Rol") !== "Administrador" && (
+                          <Tooltip title="Borrar">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                changeIdSolicitud(row?.Id || "");
+                                getSolicitudes(setDatos);
+                              }}
+                            >
+                              <DeleteIcon />
+                              {row.Acciones}
+                            </IconButton>
+                          </Tooltip>
+                        )}
                     </StyledTableCell>
                   </StyledTableRow>
                 );

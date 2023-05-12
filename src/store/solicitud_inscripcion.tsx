@@ -97,7 +97,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
-        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+        return {
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
       }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
@@ -162,7 +165,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
-        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+        return {
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
       }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,

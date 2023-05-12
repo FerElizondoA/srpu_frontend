@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-
 import {
   StyledTableCell,
   StyledTableRow,
@@ -40,7 +39,7 @@ interface Head {
   label: string;
 }
 
-const headsTasa: readonly Head[] = [
+export const headsTasa: readonly Head[] = [
   {
     label: "Fecha de Primer Pago",
   },
@@ -61,7 +60,7 @@ const headsTasa: readonly Head[] = [
   },
 ];
 
-const headsComision: readonly Head[] = [
+export const headsComision: readonly Head[] = [
   {
     label: "Tipo de comisión",
   },
