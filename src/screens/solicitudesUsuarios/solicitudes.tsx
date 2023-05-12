@@ -572,15 +572,15 @@ export function Solicitudes() {
                     />
                   </Grid>
                   {/*
-            <Grid item xs={12} sm={2} md={2} lg={2} xl={2}>
-              <TextField
-                InputProps={{ readOnly: true }}
-                id="outlined-basic"
-                label="Puesto"
-                variant="standard"
-                value={detailSolicitud?.Puesto || ''}
-             />
-            </Grid>*/}
+                  <Grid item xs={12} sm={2} md={2} lg={2} xl={2}>
+                    <TextField
+                      InputProps={{ readOnly: true }}
+                      id="outlined-basic"
+                      label="Puesto"
+                      variant="standard"
+                      value={detailSolicitud?.Puesto || ''}
+                   />
+                  </Grid>*/}
                 </Grid>
               </Box>
 

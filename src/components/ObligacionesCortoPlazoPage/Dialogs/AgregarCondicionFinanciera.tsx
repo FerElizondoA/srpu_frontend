@@ -84,6 +84,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
+  const changeTasaEfectiva:Function = useCortoPlazoStore(
+   (state) => state.changeTasaEfectiva
+  )
 
   // COMISIONES
   const tablaComisiones: IComisiones[] = useCortoPlazoStore(
@@ -114,6 +117,8 @@ export function AgregarCondicionFinanciera(props: Props) {
   const changeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.changeTasaInteres
   );
+
+
 
   const addRow = () => {
     const CF: CondicionFinanciera = {
@@ -149,8 +154,8 @@ export function AgregarCondicionFinanciera(props: Props) {
       },
       tasaInteres: tablaTasaInteres,
       comisiones: tablaComisiones,
-      tasaEfectiva: "",
-      diasEjercicio: "",
+      tasaEfectiva: tasaEfectivaTasaEfectiva,
+      diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
     };
 
     upDataCondicionFinanciera(CF, indexA);
@@ -164,14 +169,28 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaVariable: false,
       tasa: "",
       fechaPrimerPago: new Date().toString(),
-      diasEjercicio: { Id: "", Descripcion: "" },
+       diasEjercicio: { Id: "", Descripcion: "" },
       periocidadPago: { Id: "", Descripcion: "" },
       tasaReferencia: { Id: "", Descripcion: "" },
       sobreTasa: "",
+      tasaEfectiva:"",
+    });
+    changeTasaEfectiva({
+      diasEjercicio: { Id: "", Descripcion: "" },
+      tasaEfectiva:"",
     });
     cleanTasaInteres();
     cleanComision();
   };
+
+
+
+
+
+
+
+
+
 
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
@@ -200,6 +219,10 @@ export function AgregarCondicionFinanciera(props: Props) {
             sx={{ top: 12, bottom: "auto", left: window.innerWidth - 300 }}
           >
             <Button
+              disabled={ 
+                tablaComisiones.length === 0 ||
+                tablaTasaInteres.length ===0 
+              }
               sx={{
                 backgroundColor: "white",
                 ":hover": {
@@ -220,6 +243,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             >
               <CheckIcon sx={{ mr: 1 }} />
               <Typography sx={queries.medium_text}>{props.accion}</Typography>
+
             </Button>
           </Grid>
         </Toolbar>

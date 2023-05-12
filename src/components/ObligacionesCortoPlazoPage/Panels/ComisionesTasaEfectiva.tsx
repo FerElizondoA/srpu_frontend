@@ -19,6 +19,8 @@ import {
   Tooltip,
   IconButton,
   TableRow,
+  Divider,
+  Box,
 } from "@mui/material";
 
 import enGB from "date-fns/locale/en-GB";
@@ -119,7 +121,7 @@ export function ComisionesTasaEfectiva() {
   const comisionIva: string = useCortoPlazoStore((state) => state.comision.iva);
 
   // TABLA COMISIONES
-  const tablaComisiones: any = useCortoPlazoStore(
+   const tablaComisiones: any = useCortoPlazoStore(
     (state) => state.tablaComisiones
   );
   const addComision: Function = useCortoPlazoStore(
@@ -196,9 +198,88 @@ export function ComisionesTasaEfectiva() {
   };
 
   return (
-    <Grid container direction="column">
-      <Grid item container mt={2} spacing={5}>
-        <Grid item ml={window.innerWidth / 50 + 20}>
+
+    <Grid container height={"150%"} flexDirection="column" justifyContent={"space-evenly"} >
+
+      <Grid item>
+        <Divider>
+          <Typography color={"#af8c55 "} fontWeight={"bold"}>TASA EFECTIVA</Typography>
+        </Divider>
+      </Grid>
+
+      <Box>
+        <Grid display={"flex"} justifyContent={"space-evenly"}>
+          <Grid item>
+            <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
+            <Autocomplete
+              fullWidth
+              options={catalogoDiasEjercicio}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Descripcion}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              value={tasaEfectivaDiasEjercicio}
+              onChange={(event, text) =>
+                changeTasaEfectiva({
+                  diasEjercicio: text || {
+                    Id: "",
+                    Descripcion: "",
+                  },
+                  tasaEfectiva: tasaEfectivaTasaEfectiva,
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Descripcion === value.Descripcion ||
+                value.Descripcion === ""
+              }
+            />
+          </Grid>
+          <Grid item>
+            <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
+            <TextField
+              value={tasaEfectivaTasaEfectiva}
+              onChange={(v) =>
+                changeTasaEfectiva({
+                  diasEjercicio: tasaEfectivaDiasEjercicio,
+                  tasaEfectiva: v.target.value,
+                })
+              }
+              fullWidth
+              InputLabelProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              InputProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              variant="standard"
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Grid item>
+        <Divider>
+          <Typography color={"#af8c55 "} fontWeight={"bold"}>COMISIONES</Typography>
+        </Divider>
+      </Grid>
+
+      <Grid item container justifyContent={"space-evenly"}>
+        <Grid item >
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -338,8 +419,8 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid item container mt={5} spacing={5}>
-        <Grid item ml={window.innerWidth / 50 + 20}>
+      <Grid item container justifyContent={"space-evenly"} >
+        <Grid item>
           {radioValue === "Porcentaje Fijo" ? (
             <InputLabel sx={queries.medium_text}>Porcentaje</InputLabel>
           ) : (
@@ -355,25 +436,25 @@ export function ComisionesTasaEfectiva() {
             onChange={(v) => {
               radioValue === "Porcentaje Fijo"
                 ? changeComision({
-                    fechaContratacion: comisionFechaContratacion,
-                    tipoDeComision: comisionTipoComision,
-                    periodicidadDePago: comisionPeriodicidadPago,
-                    porcentajeFijo: comisionPorcentajeFijo,
-                    montoFijo: comisionMontoFijo,
-                    porcentaje: v.target.value,
-                    monto: "",
-                    iva: comisionIva,
-                  })
+                  fechaContratacion: comisionFechaContratacion,
+                  tipoDeComision: comisionTipoComision,
+                  periodicidadDePago: comisionPeriodicidadPago,
+                  porcentajeFijo: comisionPorcentajeFijo,
+                  montoFijo: comisionMontoFijo,
+                  porcentaje: v.target.value,
+                  monto: "",
+                  iva: comisionIva,
+                })
                 : changeComision({
-                    fechaContratacion: comisionFechaContratacion,
-                    tipoDeComision: comisionTipoComision,
-                    periodicidadDePago: comisionPeriodicidadPago,
-                    porcentajeFijo: comisionPorcentajeFijo,
-                    montoFijo: comisionMontoFijo,
-                    porcentaje: "",
-                    monto: v.target.value,
-                    iva: comisionIva,
-                  });
+                  fechaContratacion: comisionFechaContratacion,
+                  tipoDeComision: comisionTipoComision,
+                  periodicidadDePago: comisionPeriodicidadPago,
+                  porcentajeFijo: comisionPorcentajeFijo,
+                  montoFijo: comisionMontoFijo,
+                  porcentaje: "",
+                  monto: v.target.value,
+                  iva: comisionIva,
+                });
             }}
             InputLabelProps={{
               style: {
@@ -412,7 +493,7 @@ export function ComisionesTasaEfectiva() {
             label="Causa IVA"
             control={
               <Checkbox
-              checked={comisionIva === 'SI'}
+                checked={comisionIva === 'SI'}
                 onChange={(v) => {
                   changeComision({
                     fechaContratacion: comisionFechaContratacion,
@@ -429,134 +510,83 @@ export function ComisionesTasaEfectiva() {
             }
           ></FormControlLabel>
         </Grid>
-        <Grid item>
-          <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
-          <Autocomplete
-            fullWidth
-            options={catalogoDiasEjercicio}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Descripcion}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            value={tasaEfectivaDiasEjercicio}
-            onChange={(event, text) =>
-              changeTasaEfectiva({
-                diasEjercicio: text || {
-                  Id: "",
-                  Descripcion: "",
-                },
-                tasaEfectiva: tasaEfectivaTasaEfectiva,
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
-              />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Descripcion === value.Descripcion ||
-              value.Descripcion === ""
-            }
-          />
-        </Grid>
-        <Grid item>
-          <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
-          <TextField
-            value={tasaEfectivaTasaEfectiva}
-            onChange={(v) =>
-              changeTasaEfectiva({
-                diasEjercicio: tasaEfectivaDiasEjercicio,
-                tasaEfectiva: v.target.value,
-              })
-            }
-            fullWidth
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            variant="standard"
-          />
-        </Grid>
-
-        <Grid item ml={window.innerWidth / 50 + 10}>
-          <TableContainer sx={{ maxHeight: "400px" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {heads.map((head, index) => (
-                    <StyledTableCell key={index}>
-                      <TableSortLabel>{head.label}</TableSortLabel>
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tablaComisiones.map((row: any, index: number) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        <Tooltip title="Eliminar">
-                          <IconButton
-                            type="button"
-                            onClick={() =>
-                              removeComision(index)
-                            }
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.tipoDeComision}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {format(new Date(row.fechaContratacion), "dd/MM/yyyy")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.periodicidadDePago}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.porcentaje > 0
-                          ? row.porcentaje.toString() + "%"
-                          : "N/A"}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.monto > 0 ? "$" + row.monto.toString() : "N/A"}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.iva}
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Grid>
-            <ConfirmButton
-              variant="outlined"
-              onClick={() => {
-                addRows();
-                reset();
-              }}
-            >
-              AGREGAR
-            </ConfirmButton>
-          </Grid>
-        </Grid>
       </Grid>
+
+      <Grid width={"100%"} display={"grid"} justifyContent={"center"} alignItems={"center"}>
+        <TableContainer >
+          <Table>
+            <TableHead>
+              <TableRow>
+                {heads.map((head, index) => (
+                  <StyledTableCell key={index}>
+                    <TableSortLabel>{head.label}</TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tablaComisiones.map((row: any, index: number) => {
+                return (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          type="button"
+                          onClick={() =>
+                            removeComision(index)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.tipoDeComision}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {format(new Date(row.fechaContratacion), "dd/MM/yyyy")}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.periodicidadDePago}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.porcentaje > 0
+                        ? row.porcentaje.toString() + "%"
+                        : "N/A"}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.monto > 0 ? "$" + row.monto.toString() : "N/A"}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.iva}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+
+      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <ConfirmButton
+        disabled={
+        comisionFechaContratacion === "" ||
+        comisionTipoComision.Descripcion ===""  ||
+        comisionPeriodicidadPago.Descripcion === "" ||
+        (radioValue ===  "Porcentaje Fijo" && comisionPorcentaje === "" ) || (radioValue ===  'Monto Fijo' && comisionMonto ==="") 
+        }
+          variant="outlined"
+          onClick={() => {
+            addRows();
+            reset();
+          }}
+        >
+          AGREGAR
+        </ConfirmButton>
+      </Grid>
+
     </Grid>
+
   );
 }

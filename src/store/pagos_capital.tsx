@@ -3,6 +3,8 @@ import axios from "axios";
 import { IComisiones, TasaInteres } from "./condicion_financiera";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
+
+
 export interface PagosCapitalSlice {
   disposicion: { fechaDisposicion: string; importe: number };
 

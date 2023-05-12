@@ -138,7 +138,7 @@ export function DisposicionPagosCapital() {
   );
 
   // TABLA TASA DE INTERES
-  let tablaTasaInteres: any = useCortoPlazoStore(
+   let tablaTasaInteres: any = useCortoPlazoStore(
     (state) => state.tablaTasaInteres
   );
   const addTasaInteres: Function = useCortoPlazoStore(
@@ -219,15 +219,17 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container direction="column">
+    <Grid container flexDirection="column" justifyContent={"space-evenly"} height={"150%"} >
       <Grid item container>
-        <Grid item container direction="column" lg={6} padding={2}>
+        <Grid item lg={6} flexDirection="column" justifyContent={"space-between"} >
           <Grid item>
-            <Divider>DISPOSICIÓN</Divider>
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>DISPOSICIÓN</Typography>
+            </Divider>
           </Grid>
 
-          <Grid item container mt={5}>
-            <Grid item ml={15} lg={4}>
+          <Grid item display={"flex"} justifyContent={"space-evenly"}>
+            <Grid item lg={4}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de disposición
               </InputLabel>
@@ -246,16 +248,16 @@ export function DisposicionPagosCapital() {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item ml={10} lg={4}>
+            <Grid item lg={4}>
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
               <TextField
                 value={disposicionImporte}
                 onChange={(text) =>
                   /^[0-9,.]*$/.test(text.target.value)
                     ? changeDisposicion(
-                        disposicionFechaContratacion,
-                        text.target.value
-                      )
+                      disposicionFechaContratacion,
+                      text.target.value
+                    )
                     : null
                 }
                 fullWidth
@@ -278,12 +280,14 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
 
-        <Grid item container direction="column" lg={6} padding={2}>
+        <Grid item container direction="column" lg={6} >
           <Grid item>
-            <Divider>PAGOS DE CAPITAL</Divider>
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>PAGOS DE CAPITAL</Typography>
+            </Divider>
           </Grid>
-          <Grid item container mt={5}>
-            <Grid item lg={3} ml={5}>
+          <Grid item display={"flex"} justifyContent={"space-evenly"} >
+            <Grid lg={4}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de Primer Pago
               </InputLabel>
@@ -307,7 +311,7 @@ export function DisposicionPagosCapital() {
               </LocalizationProvider>
             </Grid>
 
-            <Grid item ml={10} lg={3}>
+            <Grid item lg={3}>
               <InputLabel sx={queries.medium_text}>
                 Periocidad de Pago
               </InputLabel>
@@ -347,7 +351,7 @@ export function DisposicionPagosCapital() {
               />
             </Grid>
 
-            <Grid item ml={10} lg={3}>
+            <Grid item lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 value={capitalNumeroPago}
@@ -375,13 +379,16 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container>
-        <Grid item container direction="column">
-          <Grid item mt={5} padding={2}>
-            <Divider>TASA DE INTERÉS</Divider>
+      <Grid item >
+        <Grid item  >
+          <Grid item>
+
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}> TASA DE INTERÉS</Typography>
+            </Divider>
           </Grid>
 
-          <Grid item container spacing={5}>
+          <Grid item display={"block"} flexDirection={"column"} justifyContent={"space-evenly"}>
             <Grid
               item
               container
@@ -417,465 +424,463 @@ export function DisposicionPagosCapital() {
               </FormControl>
             </Grid>
 
-            <Grid item container mt={5} spacing={5}>
-              <Grid
-                item
-                container
-                sx={{
-                  justifyContent: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                {radioValue === "Tasa Fija" ? (
-                  <Grid
-                    item
-                    container
-                    sx={{
-                      justifyContent: "center",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    spacing={5}
-                  >
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Fecha de Primer Pago
-                      </InputLabel>
-                      <LocalizationProvider
-                        dateAdapter={AdapterDateFns}
-                        adapterLocale={enGB}
-                      >
-                        <DatePicker
-                          value={new Date(tasaInteresFechaPrimerPago)}
-                          onChange={(date) =>
-                            changeTasaInteres({
-                              tasaFija: tasaInteresTasaFija,
-                              tasaVariable: tasaInteresTasaVariable,
-                              tasa: tasaInteresTasa,
-                              fechaPrimerPago: date?.toString(),
-                              diasEjercicio: tasaInteresDiasEjercicio,
-                              periocidadPago: tasaInteresPeriocidadPago,
-                              tasaReferencia: { Id: "", Descripcion: "" },
-                              sobreTasa: "",
-                            })
-                          }
-                          slots={{
-                            textField: DateInput,
-                          }}
-                        />
-                      </LocalizationProvider>
-                    </Grid>
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Tasa Fija
-                      </InputLabel>
+            <Grid item container >
 
-                      <TextField
-                        value={tasaInteresTasa}
-                        onChange={(v) => {
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: v.target.value,
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: tasaInteresDiasEjercicio,
-                            periocidadPago: tasaInteresPeriocidadPago,
-                            tasaReferencia: { Id: "", Descripcion: "" },
-                            sobreTasa: "",
-                          });
-                        }}
-                        
-                        fullWidth
-                        InputLabelProps={{
-                          style: {
-                            fontFamily: "MontserratMedium",
-                          },
-                        }}
-                        InputProps={{
-                          style: {
-                            fontFamily: "MontserratMedium",
-                          },
-                        }}
-                        variant="standard"
-                      />
-                    </Grid>
+              {radioValue === "Tasa Fija" ? (
+                <Grid
+                  item
+                  container
+                  sx={{
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
 
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Días del Ejercicio
-                      </InputLabel>
-                      <Autocomplete
-                        fullWidth
-                        options={catalogoDiasEjercicio}
-                        getOptionLabel={(option) => option.Descripcion}
-                        renderOption={(props, option) => {
-                          return (
-                            <li {...props} key={option.Descripcion}>
-                              <Typography>{option.Descripcion}</Typography>
-                            </li>
-                          );
-                        }}
-                        value={tasaInteresDiasEjercicio}
-                        onChange={(event, text) =>
+                >
+                  <Grid item lg={2} display={"block"}>
+                    <InputLabel sx={queries.medium_text}>
+                      Fecha de Primer Pago
+                    </InputLabel>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      adapterLocale={enGB}
+                    >
+                      <DatePicker
+                        value={new Date(tasaInteresFechaPrimerPago)}
+                        onChange={(date) =>
                           changeTasaInteres({
                             tasaFija: tasaInteresTasaFija,
                             tasaVariable: tasaInteresTasaVariable,
                             tasa: tasaInteresTasa,
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: {
-                              Id: text?.Id || "",
-                              Descripcion: text?.Descripcion || "",
-                            },
+                            fechaPrimerPago: date?.toString(),
+                            diasEjercicio: tasaInteresDiasEjercicio,
                             periocidadPago: tasaInteresPeriocidadPago,
                             tasaReferencia: { Id: "", Descripcion: "" },
                             sobreTasa: "",
                           })
                         }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            sx={queries.medium_text}
-                          />
-                        )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.Descripcion === value.Descripcion ||
-                          value.Descripcion === ""
-                        }
-                      />
-                    </Grid>
-
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Periocidad de Pago
-                      </InputLabel>
-                      <Autocomplete
-                        fullWidth
-                        options={catalogoPeriocidadDePago}
-                        getOptionLabel={(option) => option.Descripcion}
-                        renderOption={(props, option) => {
-                          return (
-                            <li {...props} key={option.Descripcion}>
-                              <Typography>{option.Descripcion}</Typography>
-                            </li>
-                          );
+                        slots={{
+                          textField: DateInput,
                         }}
-                        value={tasaInteresPeriocidadPago}
-                        onChange={(event, text) =>
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: tasaInteresTasa,
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: tasaInteresDiasEjercicio,
-                            periocidadPago: {
-                              Id: text?.Id || "",
-                              Descripcion: text?.Descripcion || "",
-                            },
-                            tasaReferencia: { Id: "", Descripcion: "" },
-                            sobreTasa: "",
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            sx={queries.medium_text}
-                          />
-                        )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.Descripcion === value.Descripcion ||
-                          value.Descripcion === ""
-                        }
                       />
-                    </Grid>
+                    </LocalizationProvider>
                   </Grid>
-                ) : (
-                  <Grid
-                    item
-                    container
-                    sx={{
-                      justifyContent: "center",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    spacing={5}
-                  >
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Fecha de Primer Pago
-                      </InputLabel>
-                      <LocalizationProvider
-                        dateAdapter={AdapterDateFns}
-                        adapterLocale={enGB}
-                      >
-                        <DatePicker
-                          value={new Date(tasaInteresFechaPrimerPago)}
-                          onChange={(date) =>
-                            changeTasaInteres({
-                              tasaFija: tasaInteresTasaFija,
-                              tasaVariable: tasaInteresTasaVariable,
-                              tasa: "",
-                              fechaPrimerPago: date?.toString(),
-                              diasEjercicio: tasaInteresDiasEjercicio,
-                              periocidadPago: tasaInteresPeriocidadPago,
-                              tasaReferencia: tasaInteresTasaReferencia,
-                              sobreTasa: tasaInteresSobreTasa,
-                            })
-                          }
-                          slots={{
-                            textField: DateInput,
-                          }}
+                  <Grid lg={2} item>
+                    <InputLabel sx={queries.medium_text}>
+                      Tasa Fija
+                    </InputLabel>
+
+                    <TextField
+                      value={tasaInteresTasa}
+                      onChange={(v) => {
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: v.target.value,
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: { Id: "", Descripcion: "" },
+                          sobreTasa: "",
+                        });
+                      }}
+
+                      fullWidth
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      variant="standard"
+                    />
+                  </Grid>
+
+                  <Grid item lg={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Días del Ejercicio
+                    </InputLabel>
+                    <Autocomplete
+                      fullWidth
+                      options={catalogoDiasEjercicio}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresDiasEjercicio}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: tasaInteresTasa,
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: { Id: "", Descripcion: "" },
+                          sobreTasa: "",
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
                         />
-                      </LocalizationProvider>
-                    </Grid>
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Periocidad de Pago
-                      </InputLabel>
-                      <Autocomplete
-                        fullWidth
-                        options={catalogoPeriocidadDePago}
-                        getOptionLabel={(option) => option.Descripcion}
-                        renderOption={(props, option) => {
-                          return (
-                            <li {...props} key={option.Descripcion}>
-                              <Typography>{option.Descripcion}</Typography>
-                            </li>
-                          );
-                        }}
-                        value={tasaInteresPeriocidadPago}
-                        onChange={(event, text) =>
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: "",
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: tasaInteresDiasEjercicio,
-                            periocidadPago: {
-                              Id: text?.Id || "",
-                              Descripcion: text?.Descripcion || "",
-                            },
-                            tasaReferencia: tasaInteresTasaReferencia,
-                            sobreTasa: tasaInteresSobreTasa,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            sx={queries.medium_text}
-                          />
-                        )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.Descripcion === value.Descripcion ||
-                          value.Descripcion === ""
-                        }
-                      />
-                    </Grid>
-
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Tasa de Referencia
-                      </InputLabel>
-                      <Autocomplete
-                        fullWidth
-                        options={catalogoTasaReferencia}
-                        getOptionLabel={(option) => option.Descripcion}
-                        renderOption={(props, option) => {
-                          return (
-                            <li {...props} key={option.Descripcion}>
-                              <Typography>{option.Descripcion}</Typography>
-                            </li>
-                          );
-                        }}
-                        value={tasaInteresTasaReferencia}
-                        onChange={(event, text) =>
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: "",
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: tasaInteresDiasEjercicio,
-                            periocidadPago: tasaInteresPeriocidadPago,
-                            tasaReferencia: {
-                              Id: text?.Id || "",
-                              Descripcion: text?.Descripcion || "",
-                            },
-                            sobreTasa: tasaInteresSobreTasa,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            sx={queries.medium_text}
-                          />
-                        )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.Descripcion === value.Descripcion ||
-                          value.Descripcion === ""
-                        }
-                      />
-                    </Grid>
-
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Sobre Tasa
-                      </InputLabel>
-                      <TextField
-                        value={tasaInteresSobreTasa}
-                        onChange={(text) =>
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: "",
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: tasaInteresDiasEjercicio,
-                            periocidadPago: tasaInteresPeriocidadPago,
-                            tasaReferencia: tasaInteresTasaReferencia,
-                            sobreTasa: text.target.value || "",
-                          })
-                        }
-                        fullWidth
-                        InputLabelProps={{
-                          style: {
-                            fontFamily: "MontserratMedium",
-                          },
-                        }}
-                        InputProps={{
-                          style: {
-                            fontFamily: "MontserratMedium",
-                          },
-                        }}
-                        variant="standard"
-                      />
-                    </Grid>
-
-                    <Grid item>
-                      <InputLabel sx={queries.medium_text}>
-                        Días del Ejercicio
-                      </InputLabel>
-                      <Autocomplete
-                        fullWidth
-                        options={catalogoDiasEjercicio}
-                        getOptionLabel={(option) => option.Descripcion}
-                        renderOption={(props, option) => {
-                          return (
-                            <li {...props} key={option.Descripcion}>
-                              <Typography>{option.Descripcion}</Typography>
-                            </li>
-                          );
-                        }}
-                        value={tasaInteresDiasEjercicio}
-                        onChange={(event, text) =>
-                          changeTasaInteres({
-                            tasaFija: tasaInteresTasaFija,
-                            tasaVariable: tasaInteresTasaVariable,
-                            tasa: "",
-                            fechaPrimerPago: tasaInteresFechaPrimerPago,
-                            diasEjercicio: {
-                              Id: text?.Id || "",
-                              Descripcion: text?.Descripcion || "",
-                            },
-                            periocidadPago: tasaInteresPeriocidadPago,
-                            tasaReferencia: tasaInteresTasaReferencia,
-                            sobreTasa: tasaInteresSobreTasa,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            sx={queries.medium_text}
-                          />
-                        )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.Descripcion === value.Descripcion ||
-                          value.Descripcion === ""
-                        }
-                      />
-                    </Grid>
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
                   </Grid>
-                )}
-              </Grid>
-            </Grid>
 
-            <Grid item ml={window.innerWidth / 50 + 6}>
-              <TableContainer sx={{ maxHeight: "400px" }}>
-                <Table>
-                  <TableHead sx={{ maxHeight: "200px" }}>
-                    <TableRow>
-                      {heads.map((head, index) => (
-                        <StyledTableCell key={index}>
-                          <TableSortLabel>{head.label}</TableSortLabel>
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tablaTasaInteres.map((row: any, index: number) => {
-                      return (
-                        <StyledTableRow key={index}>
-                          <StyledTableCell align="center">
-                            <Tooltip title="Eliminar">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  removeTasaInteres(index);
-                                }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </StyledTableCell>
-                          <StyledTableCell component="th" scope="row">
-                            {lightFormat(
-                              new Date(row.fechaPrimerPago),
-                              "dd-MM-yyyy"
-                            )}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.tasa}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.periocidadPago}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.tasaReferencia}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.sobreTasa}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.diasEjercicio}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Grid>
-                <ConfirmButton
-                  disabled={
-                    tasaInteresDiasEjercicio.Descripcion === "" ||
-                    tasaInteresPeriocidadPago.Descripcion === ""
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    addRows();
-                    reset();
+                  <Grid item>
+                    <InputLabel sx={queries.medium_text}>
+                      Periocidad de Pago
+                    </InputLabel>
+                    <Autocomplete
+                      fullWidth
+                      options={catalogoPeriocidadDePago}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresPeriocidadPago}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: tasaInteresTasa,
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          tasaReferencia: { Id: "", Descripcion: "" },
+                          sobreTasa: "",
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+                </Grid>
+
+              ) : (
+
+                <Grid
+                  item
+                  container
+                  sx={{
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
-                  AGREGAR
-                </ConfirmButton>
-              </Grid>
+                  <Grid item>
+                    <InputLabel sx={queries.medium_text}>
+                      Fecha de Primer Pago
+                    </InputLabel>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      adapterLocale={enGB}
+                    >
+                      <DatePicker
+                        value={new Date(tasaInteresFechaPrimerPago)}
+                        onChange={(date) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: date?.toString(),
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: tasaInteresTasaReferencia,
+                            sobreTasa: tasaInteresSobreTasa,
+                          })
+                        }
+                        slots={{
+                          textField: DateInput,
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid>
+                    <InputLabel sx={queries.medium_text}>
+                      Periocidad de Pago
+                    </InputLabel>
+                    <Autocomplete
+                      fullWidth
+                      options={catalogoPeriocidadDePago}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresPeriocidadPago}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item>
+                    <InputLabel sx={queries.medium_text}>
+                      Tasa de Referencia
+                    </InputLabel>
+                    <Autocomplete
+                      fullWidth
+                      options={catalogoTasaReferencia}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresTasaReferencia}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item>
+                    <InputLabel sx={queries.medium_text}>
+                      Sobre Tasa
+                    </InputLabel>
+                    <TextField
+                      value={tasaInteresSobreTasa}
+                      onChange={(text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: text.target.value || "",
+                        })
+                      }
+                      fullWidth
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      variant="standard"
+                    />
+                  </Grid>
+
+                  <Grid item>
+                    <InputLabel sx={queries.medium_text}>
+                      Días del Ejercicio
+                    </InputLabel>
+                    <Autocomplete
+                      fullWidth
+                      options={catalogoDiasEjercicio}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresDiasEjercicio}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+
+
+      <Grid width={"100%"} display={"grid"} justifyContent={"center"} alignItems={"center"}>
+        <TableContainer>
+          <Table>
+            <TableHead >
+              <TableRow>
+                {heads.map((head, index) => (
+                  <StyledTableCell key={index}>
+                    <TableSortLabel>{head.label}</TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tablaTasaInteres.map((row: any, index: number) => {
+                return (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            removeTasaInteres(index);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {lightFormat(
+                        new Date(row.fechaPrimerPago),
+                        "dd-MM-yyyy"
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.tasa}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.periocidadPago}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.tasaReferencia}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.sobreTasa}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.diasEjercicio}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+
+      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <ConfirmButton
+          disabled={
+            tasaInteresFechaPrimerPago === "" ||
+            tasaInteresDiasEjercicio.Descripcion === "" ||
+            tasaInteresPeriocidadPago.Descripcion === "" ||
+            (radioValue === "Tasa Fija" && tasaInteresTasa.toString() === "" ) ||
+            (radioValue === "Tasa Variable" && tasaInteresTasaReferencia.toString() === "" ) ||
+            (radioValue === "Tasa Variable" && tasaInteresSobreTasa  === "")
+              }      
+        variant="outlined"
+        onClick={() => {
+          addRows();
+          reset();
+        }}
+          >
+        AGREGAR
+      </ConfirmButton>
     </Grid>
+    </Grid >
   );
 }

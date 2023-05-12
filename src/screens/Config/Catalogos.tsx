@@ -20,7 +20,7 @@ import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { DialogCatalogos, IDialog } from "../../components/Config/dialogCatalogos/DialogCatalogos";
 import InfoIcon from "@mui/icons-material/Info";
-import { getCatalogo } from "../../components/APIS/config/APISCatalogos";
+import { getCatalogo } from "../../components/APIS/Config/APISCatalogos";
 
 export function Catalogos() {
   const params = new URLSearchParams(window.location.search);

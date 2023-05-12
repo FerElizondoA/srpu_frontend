@@ -370,9 +370,10 @@ export function CondicionesFinancieras() {
         </TableContainer>
       </Grid>
 
-      <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+      <Grid  container position="fixed" sx={{  bottom: 0 }}>
         <Grid item md={12} lg={12}>
           <ConfirmButton
+          sx={{width:"100%"}}
             variant="outlined"
             onClick={() => {
               changeOpenAgregarState(!openAgregarCondicion);
