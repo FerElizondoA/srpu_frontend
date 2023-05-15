@@ -21,8 +21,13 @@ import {
   TableRow,
   Divider,
   Box,
+  Button,
+  ThemeProvider,
+  createTheme,
+  Paper,
 } from "@mui/material";
 
+import CheckIcon from '@mui/icons-material/Check';
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -70,6 +75,21 @@ const heads: readonly Head[] = [
     label: "IVA",
   },
 ];
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada"
+          }
+        }
+      }
+    }
+  }
+});
 
 export function ComisionesTasaEfectiva() {
   // GET CATALOGOS
@@ -199,7 +219,7 @@ export function ComisionesTasaEfectiva() {
 
   return (
 
-    <Grid container height={"150%"} flexDirection="column" justifyContent={"space-evenly"} >
+    <Grid container width={"100%"} height={"115%"} flexDirection="column" justifyContent={"space-evenly"} >
 
       <Grid item>
         <Divider>
@@ -307,7 +327,7 @@ export function ComisionesTasaEfectiva() {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item>
+        <Grid item lg={2}>
           <InputLabel sx={queries.medium_text}>Tipo de Comisión</InputLabel>
           <Autocomplete
             fullWidth
@@ -510,82 +530,86 @@ export function ComisionesTasaEfectiva() {
             }
           ></FormControlLabel>
         </Grid>
+
+        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <ThemeProvider theme={theme}>
+            <Button
+              sx={queries.buttonContinuar}
+              disabled={
+                comisionFechaContratacion === "" ||
+                comisionTipoComision.Descripcion === "" ||
+                comisionPeriodicidadPago.Descripcion === "" ||
+                (radioValue === "Porcentaje Fijo" && comisionPorcentaje === "") || (radioValue === 'Monto Fijo' && comisionMonto === "")
+              }
+              variant="outlined"
+              onClick={() => {
+                addRows();
+                reset();
+              }}
+            >
+              <CheckIcon fontSize="medium" />AGREGAR
+            </Button>
+          </ThemeProvider>
+        </Grid>
       </Grid>
 
-      <Grid width={"100%"} display={"grid"} justifyContent={"center"} alignItems={"center"}>
-        <TableContainer >
-          <Table>
-            <TableHead>
-              <TableRow>
-                {heads.map((head, index) => (
-                  <StyledTableCell key={index}>
-                    <TableSortLabel>{head.label}</TableSortLabel>
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tablaComisiones.map((row: any, index: number) => {
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">
-                      <Tooltip title="Eliminar">
-                        <IconButton
-                          type="button"
-                          onClick={() =>
-                            removeComision(index)
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
+      <Grid container sx={queries.tablaCondicionFinanciera} >
+        <Paper sx={{height: "100%", width: "88%", overflow: "auto" }}>
+          <TableContainer sx={{ maxHeight: "100%" }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.tipoDeComision}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {format(new Date(row.fechaContratacion), "dd/MM/yyyy")}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.periodicidadDePago}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.porcentaje > 0
-                        ? row.porcentaje.toString() + "%"
-                        : "N/A"}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.monto > 0 ? "$" + row.monto.toString() : "N/A"}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.iva}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tablaComisiones.map((row: any, index: number) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() =>
+                              removeComision(index)
+                            }
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.tipoDeComision}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {format(new Date(row.fechaContratacion), "dd/MM/yyyy")}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.periodicidadDePago}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.porcentaje > 0
+                          ? row.porcentaje.toString() + "%"
+                          : "N/A"}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.monto > 0 ? "$" + row.monto.toString() : "N/A"}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.iva}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       </Grid>
-
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
-        <ConfirmButton
-        disabled={
-        comisionFechaContratacion === "" ||
-        comisionTipoComision.Descripcion ===""  ||
-        comisionPeriodicidadPago.Descripcion === "" ||
-        (radioValue ===  "Porcentaje Fijo" && comisionPorcentaje === "" ) || (radioValue ===  'Monto Fijo' && comisionMonto ==="") 
-        }
-          variant="outlined"
-          onClick={() => {
-            addRows();
-            reset();
-          }}
-        >
-          AGREGAR
-        </ConfirmButton>
-      </Grid>
-
     </Grid>
 
   );

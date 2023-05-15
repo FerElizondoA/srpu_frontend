@@ -20,7 +20,6 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
@@ -30,11 +29,10 @@ import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/main";
-import CheckIcon from "@mui/icons-material/Check";
-import RateReviewSharpIcon from "@mui/icons-material/RateReviewSharp";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerBorradorDocumento";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/VerComentariosSolicitud";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+
 export interface IData {
   Id: string;
   Institucion: string;
@@ -48,6 +46,7 @@ export interface IData {
   tipoDocumento: string;
   TipoSolicitud: string;
   IdEditor: string;
+  CreadoPor: string;
 }
 
 interface Head {
@@ -160,9 +159,14 @@ export function ConsultaDeSolicitudPage() {
   }, [busqueda]);
 
   const navigate = useNavigate();
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
+  );
+  const changeEditCreadoPor: Function = useCortoPlazoStore(
+    (state) => state.changeEditCreadoPor
   );
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
@@ -175,6 +179,25 @@ export function ConsultaDeSolicitudPage() {
   );
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
+  );
+  const setTablaDocumentos: Function = useCortoPlazoStore(
+    (state) => state.setTablaDocumentos
+  );
+
+  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+
+  const addDocumento: Function = useCortoPlazoStore(
+    (state) => state.addDocumento
+  );
+
+  const borrarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.borrarSolicitud
   );
 
   const reglasAplicables:  string[] = useCortoPlazoStore(
@@ -200,25 +223,56 @@ export function ConsultaDeSolicitudPage() {
     //changeInformacionGeneral(aux?.informacionGeneral.fechaContratacion);
     //changeInformacionGeneral(aux?.informacionGeneral.fechaVencimiento);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
-      addObligadoSolidarioAval(v);
+      return addObligadoSolidarioAval(v);
     });
     aux?.condicionesFinancieras.map((v: any, index: number) => {
-      addCondicionFinanciera(v);
+      return addCondicionFinanciera(v);
     });
+    aux?.documentacion.map((v: any, index: number) => {
+      return addDocumento(v);
+    });
+  };
+
+  const limpiaSolicitud = () => {
+    changeEncabezado({
+      tipoDocumento: "",
+      solicitanteAutorizado: {
+        Solicitante: "",
+        Cargo: "",
+        Nombre: "",
+      },
+      tipoEntePublico: { Id: "", TipoEntePublico: "" },
+      organismo: { Id: "", Organismo: "" },
+      fechaContratacion: new Date(),
+    });
+    changeInformacionGeneral({
+      fechaContratacion: new Date(),
+      fechaVencimiento: new Date(),
+      plazo: 0,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+    cleanObligadoSolidarioAval([]);
+    updatecondicionFinancieraTable([]);
+    setTablaDocumentos([]);
   };
 
   const editarSolicitud = () => {
     navigate("../ObligacionesCortoPlazo");
   };
 
-  /////////////////////////////////////////////
-  const [selected] = useState<number[]>([]); //, setSelected
-
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
-  const [selectedItems, setSelectedItems] = useState<string[]>([""]);
+  useEffect(() => {
+    if (openDialogVer === false) {
+      limpiaSolicitud();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDialogVer]);
 
   return (
     <Grid container direction="column">
@@ -273,169 +327,216 @@ export function ConsultaDeSolicitudPage() {
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {datosFiltrados.map((row, index) => {
-                let chip = <></>;
+              {datosFiltrados.length === 0 ? (
+                <StyledTableRow>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell>Sin registros</StyledTableCell>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                </StyledTableRow>
+              ) : (
+                datosFiltrados.map((row, index) => {
+                  let chip = <></>;
 
-                if (row.Estatus === "En_actualizacion ") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      icon={<WarningAmberIcon />}
-                      color="warning"
-                      variant="outlined"
-                    />
+                  if (row.Estatus === "Captura") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<WarningAmberIcon />}
+                        color="warning"
+                        variant="outlined"
+                      />
+                    );
+                  }
+
+                  if (row.Estatus === "Verificacion") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<RateReviewSharpIcon />}
+                        color="info"
+                        variant="outlined"
+                      />
+                    );
+                  }
+
+                  if (row.Estatus === "Por Firmar") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<CheckIcon />}
+                        color="secondary"
+                        variant="outlined"
+                      />
+                    );
+                  }
+                  if (row.Estatus === "Firmado") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<CheckIcon />}
+                        color="success"
+                        variant="outlined"
+                      />
+                    );
+                  }
+
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.Institucion.toString()}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.TipoEntePublico.toString()}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {chip}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.ClaveDeInscripcion.toString()}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {"$" + row.MontoOriginalContratado.toString()}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.TipoSolicitud}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        sx={{
+                          flexDirection: "row",
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2,1fr)",
+                        }}
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        <Tooltip title="Ver">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              llenaSolicitud(row);
+                              changeOpenDialogVer(!openDialogVer);
+                            }}
+                          >
+                            <VisibilityIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
+
+                        {localStorage.getItem("IdUsuario") === row.IdEditor &&
+                          localStorage.getItem("Rol") !== "Administrador" && (
+                            <Tooltip title="Edit">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  console.log(row);
+                                  changeIdSolicitud(row?.Id);
+                                  changeEditCreadoPor(row?.CreadoPor);
+                                  llenaSolicitud(row);
+                                  editarSolicitud();
+                                }}
+                              >
+                                <EditIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
+                        {row.Estatus === "Por Firmar" && (
+                          <Tooltip title="Descargar">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                DescargarConsultaSolicitud(row.Solicitud);
+                              }}
+                            >
+                              <DownloadIcon />
+                              {row.Acciones}
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
+                        {localStorage.getItem("Rol") !== "Administrador" && (
+                          <Tooltip title="Comentarios">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                changeIdSolicitud(row?.Id || "");
+                                changeEditCreadoPor(row?.CreadoPor);
+                                changeOpenVerComentarios(!openVerComentarios);
+                              }}
+                            >
+                              <CommentIcon />
+                              {row.Acciones}
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
+                        {localStorage.getItem("IdUsuario") === row.CreadoPor &&
+                          localStorage.getItem("Rol") !== "Administrador" && (
+                            <Tooltip title="Borrar">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  changeIdSolicitud(row?.Id || "");
+                                  changeEditCreadoPor(row?.CreadoPor);
+                                  borrarSolicitud(row.Id);
+                                  getSolicitudes(setDatos);
+                                }}
+                              >
+                                <DeleteIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                      </StyledTableCell>
+                    </StyledTableRow>
                   );
-                }
-                if (row.Estatus === "Captura") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      icon={<WarningAmberIcon />}
-                      color="warning"
-                      variant="outlined"
-                    />
-                  );
-                }
-
-                if (row.Estatus === "Verificacion") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      icon={<RateReviewSharpIcon />}
-                      color="info"
-                      variant="outlined"
-                    />
-                  );
-                }
-
-                if (row.Estatus === "Por Firmar") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      icon={<CheckIcon />}
-                      color="info"
-                      variant="outlined"
-                    />
-                  );
-                }
-
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.Institucion.toString()}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.TipoEntePublico.toString()}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {chip}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.ClaveDeInscripcion.toString()}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {"$" + row.MontoOriginalContratado.toString()}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.TipoSolicitud}
-                    </StyledTableCell>
-
-                    <StyledTableCell
-                      sx={{ flexDirection: "row" }}
-                      align="center"
-                      component="th"
-                      scope="row"
-                    >
-                      <Tooltip title="Ver">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-                            llenaSolicitud(row);
-                            changeOpenDialogVer(!openDialogVer);
-                          }}
-                        >
-                          <VisibilityIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Edit">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-                            console.log("row: ",row);
-                            
-                            changeIdSolicitud(row?.Id || "");
-                            llenaSolicitud(row);
-                            editarSolicitud();
-                          }}
-                        >
-                          <EditIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Descargar">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-
-                            DescargarConsultaSolicitud(row.Solicitud);
-                          }}
-                        >
-                          <DownloadIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Comentarios">
-                        <IconButton
-                          type="button"
-                          aria-label="search"
-                          onClick={() => {
-                            changeIdSolicitud(row?.Id || "");
-                            changeOpenVerComentarios(!openVerComentarios);
-                          }}
-                        >
-                          <CommentIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Borrar">
-                        <IconButton
-                          type="button"
-                          disabled={
-                            localStorage.getItem("Rol") === "Capturador"
-                              ? true
-                              : false
-                          }
-                          aria-label="search"
-                          onClick={() => {
-                            changeIdSolicitud(row?.Id || "");
-                            getSolicitudes(setDatos);
-                          }}
-                        >
-                          <DeleteIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
+                })
+              )}
             </TableBody>
           </Table>
         </TableContainer>

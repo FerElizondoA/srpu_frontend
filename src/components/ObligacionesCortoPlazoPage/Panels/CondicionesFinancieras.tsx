@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-
 import {
   StyledTableCell,
   StyledTableRow,
@@ -40,7 +39,7 @@ interface Head {
   label: string;
 }
 
-const headsTasa: readonly Head[] = [
+export const headsTasa: readonly Head[] = [
   {
     label: "Fecha de Primer Pago",
   },
@@ -61,7 +60,7 @@ const headsTasa: readonly Head[] = [
   },
 ];
 
-const headsComision: readonly Head[] = [
+export const headsComision: readonly Head[] = [
   {
     label: "Tipo de comisión",
   },
@@ -370,9 +369,10 @@ export function CondicionesFinancieras() {
         </TableContainer>
       </Grid>
 
-      <Grid item container position="fixed" sx={{ top: "auto", bottom: 0 }}>
+      <Grid  container position="fixed" sx={{  bottom: 0 }}>
         <Grid item md={12} lg={12}>
           <ConfirmButton
+          sx={{width:"100%"}}
             variant="outlined"
             onClick={() => {
               changeOpenAgregarState(!openAgregarCondicion);

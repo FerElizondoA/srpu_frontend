@@ -29,8 +29,8 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
-
+import { DialogUsuarios } from "../../components/Config/dialogUsuarios/DialogUsuarios";
+import { queries } from "../../queries";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export const Usuarios = () => {
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios, 0);
+    getListadoUsuarios(setUsuarios);
   }, []);
 
   useEffect(() => {
@@ -171,7 +171,7 @@ export const Usuarios = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length !== 0 ? setUsuariosFiltrados(datos) : null;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
   /*  FIN BUSCADOR */
 
@@ -232,7 +232,7 @@ export const Usuarios = () => {
       </Grid>
 
       {/* GRID BODY */}
-      {usuarios.length <= 0 ? 
+      {usuarios.length <= 0 ?
         <Box sx={{ width: '100vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
           <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
           <Typography color={'RED'}>ERROR</Typography>
@@ -241,14 +241,14 @@ export const Usuarios = () => {
           >VOLVER AL INICIO</Button>
 
 
-        </Box> : 
+        </Box> :
 
         <Grid item
           xs={12}
           lg={12}
           sm={12}
         >
-          <Grid item xs={12} lg={12} sm={12}>
+          <Grid item xs={12} lg={12} sm={12} >
             {/* GRRID Filtro Y BOTONES */}
             <Grid
               item
@@ -263,14 +263,14 @@ export const Usuarios = () => {
                 xs={8}
                 lg={8}
                 sm={8}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
+                sx={{ display: "flex", justifyContent: "center" }}
               >
                 <Paper
                   component="form"
                   sx={{
                     display: "flex",
                     //alignItems: "center",
-                    width: 800,
+                   width:"80%"
                   }}
                 >
                   <InputBase
@@ -303,45 +303,49 @@ export const Usuarios = () => {
                 </Paper>
               </Grid>
 
-              <Grid
-                item
-                xs={2}
-                lg={2}
-                sm={2}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              >
-                <Button
-                  color="info"
-                  variant="contained"
-                  sx={{ width: "80%" }}
-                  endIcon={<FolderSharedRoundedIcon fontSize="large" />}
-                  onClick={() => {
-                    navigate("../solicitudes-usuarios");
-                  }}
+              <Grid display={"flex"} justifyContent={"space-evenly"} width={"20%"}>
+                <Grid
+                  item
+                  xs={2}
+                  lg={6}
+                  sm={2}
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
                 >
-                  Ver Solicitudes
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={2}
-                lg={2}
-                sm={2}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              >
-                <Button
-                  variant="contained"
-                  size="medium"
-                  endIcon={<PersonAddAlt1Icon />}
-                  sx={{ width: "80%" }}
-                  onClick={() => {
-                    openNewUsuario();
-                  }}
+                  <Button
+                    color="info"
+                    variant="contained"
+                    sx={queries.buttonContinuar}
+                    endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+                    onClick={() => {
+                      navigate("../solicitudes-usuarios");
+                    }}
+                  >
+                    Ver Solicitudes
+                  </Button>
+                </Grid>
+                <Grid
+                  item
+                  xs={2}
+                  lg={6}
+                  sm={2}
+                  sx={{ display: "flex", justifyContent: "center" }}
                 >
-                  Añadir Usuario
-                </Button>
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    endIcon={<PersonAddAlt1Icon />}
+                    sx={queries.buttonContinuar}
+                    onClick={() => {
+                      openNewUsuario();
+                    }}
+                  >
+                    Añadir Usuario
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
+
+
 
             <Grid item sx={{ height: "80vh" }}>
               <TableContainer>
@@ -486,15 +490,15 @@ export const Usuarios = () => {
               </TableContainer>
             </Grid>
           </Grid>
-          </Grid>
-}
-          <DialogUsuarios
-            ActionButton={butonLabel}
-            open={openDialog}
-            title={title}
-            handleClose={openDialogUser}
-            UserObject={usuarioEdit}
-          />
         </Grid>
+      }
+      <DialogUsuarios
+        ActionButton={butonLabel}
+        open={openDialog}
+        title={title}
+        handleClose={openDialogUser}
+        UserObject={usuarioEdit}
+      />
+    </Grid>
   );
 };

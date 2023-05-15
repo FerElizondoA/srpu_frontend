@@ -29,7 +29,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 //import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
-import { AgregarComentario } from "./AgregarComentario";
+import { AgregarComentario } from "./DialogAgregarComentario";
 
 interface IDataComents {
   Id: string;
@@ -183,6 +183,7 @@ export function VerComentariosSolicitud({
 
       <DialogActions>
         <Button
+          sx={queries.buttonCancelar}
           onClick={() => {
             handler(false);
           }}
@@ -190,6 +191,7 @@ export function VerComentariosSolicitud({
           Cerrar
         </Button>
         <Button
+          sx={queries.buttonContinuar}
           onClick={() => {
             changeOpenDialogState(!openDialogCrear);
           }}

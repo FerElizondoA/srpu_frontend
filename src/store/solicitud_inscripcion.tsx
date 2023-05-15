@@ -5,9 +5,11 @@ import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { createNotification } from "../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
+  editCreadoPor: string;
 
   inscripcion: {
     servidorPublicoDirigido: string;
@@ -20,14 +22,17 @@ export interface SolicitudInscripcionSlice {
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
   changeReglasAplicables: (newReglas: string) => void;
+
   changeIdSolicitud: (id: string) => void;
+  changeEditCreadoPor: (id: string) => void;
 
   getReglas: () => void;
 
   crearSolicitud: (
     idCreador: string,
     idEditor: string,
-    estatus: string
+    estatus: string,
+    comentario: string
   ) => void;
 
   modificaSolicitud: (
@@ -36,6 +41,8 @@ export interface SolicitudInscripcionSlice {
     estatus: string
   ) => void;
 
+  borrarSolicitud: (Id: string) => void;
+
   addComentario: (idSolicitud: string, comentario: string) => void;
 }
 
@@ -43,7 +50,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
   idSolicitud: "",
-
+  editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública",
@@ -57,6 +64,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     set(() => ({ inscripcion: inscripcion })),
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+
+  changeEditCreadoPor: (id: any) => set(() => ({ editCreadoPor: id })),
 
   changeReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
@@ -82,7 +91,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   crearSolicitud: async (
     idCreador: string,
     idEditor: string,
-    estatus: string
+    estatus: string,
+    comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
 
@@ -94,7 +104,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
-        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+        return {
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
       }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
@@ -103,32 +116,46 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
     };
 
-    await axios.post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
-      {
-        IdTipoEntePublico:
-          state.encabezado.tipoEntePublico.Id ||
-          "00b0470d-acb9-11ed-b719-2c4138b7dab1",
-        IdEntePublico:
-          state.encabezado.organismo.Id ||
-          "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
-        TipoSolicitud: state.encabezado.tipoDocumento,
-        IdInstitucionFinanciera:
-          state.informacionGeneral.institucionFinanciera.Id,
-        Estatus: estatus,
-        IdClaveInscripcion: "1",
-        MontoOriginalContratado: state.informacionGeneral.monto,
-        FechaContratacion: state.encabezado.fechaContratacion,
-        Solicitud: JSON.stringify(solicitud),
-        IdEditor: idEditor,
-        CreadoPor: idCreador,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
+        {
+          IdTipoEntePublico:
+            state.encabezado.tipoEntePublico.Id ||
+            "00b0470d-acb9-11ed-b719-2c4138b7dab1",
+          IdEntePublico:
+            state.encabezado.organismo.Id ||
+            "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
+          TipoSolicitud: state.encabezado.tipoDocumento,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
+          Estatus: estatus,
+          IdClaveInscripcion: "1",
+          MontoOriginalContratado: state.informacionGeneral.monto,
+          FechaContratacion: state.encabezado.fechaContratacion,
+          Solicitud: JSON.stringify(solicitud),
+          IdEditor: idEditor,
+          CreadoPor: idCreador,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        state.addComentario(data.data.Id, comentario);
+        Swal.fire({
+          icon: "success",
+          title: "Mensaje",
+          text: "La solicitud se envió con éxito",
+        });
+        createNotification(
+          "Crédito simple corto plazo",
+          "Se te ha asignado una solicitud para modificación.",
+          [data.data.Id]
+        );
+      });
   },
   modificaSolicitud: async (
     idCreador: string,
@@ -145,7 +172,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
-        return { Id: v.tipoArchivo, Descripcion: v.descripcionTipo };
+        return {
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
       }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
@@ -182,7 +212,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       }
     );
   },
-  fetchBorrarSolicitud: (Id: string) => {
+  borrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -191,7 +221,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       timerProgressBar: true,
     });
 
-    const response = axios
+    axios
       .delete(
         process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
         {

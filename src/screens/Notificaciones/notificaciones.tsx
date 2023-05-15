@@ -2,34 +2,25 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Grid,
-  Paper,
-  InputBase,
   TableContainer,
   Table,
   TableHead,
   TableBody,
-  Box,
   Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-
 import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
 import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
 import { format } from "date-fns";
-
 import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
-import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
 import { Destinatarios } from "./Dialog/InfoAdicional";
-
-
-
+import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones
@@ -37,17 +28,6 @@ export function Notificaciones() {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
-
-  const [busqueda, setBusqueda] = useState("");
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  // const handleSearch = () => {
-  //   filtrarDatos();
-  // };
-
-  const filtrarDatos = () => { };
 
   const heads = [
     {
@@ -57,25 +37,28 @@ export function Notificaciones() {
     {
       id: "Mensaje",
       label: "Mensaje",
-    }, {
+    },
+    {
       id: "FechaCreacion",
       label: "Fecha Envio",
-    }, {
+    },
+    {
       id: "hora",
       label: "Hora de envio",
-    }, {
+    },
+    {
       id: "CreadoPor",
       label: "Informacion Adicional",
     },
   ];
-  const [notificaciones, setNotificaciones] = useState<Array<INotificaciones>>([]);
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
+  const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
   const [cantNoti, setCantNoti] = useState<number>();
   const [idNoti, setIdNoti] = useState<string>('');
 
-  
 
-  
+
+
 
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -83,19 +66,15 @@ export function Notificaciones() {
     setOpenDialog(!openDialog);
   };
 
-  const [openDestinatarios, setOpenDestinatarios] = useState(false)
+  const [openDestinatarios, setOpenDestinatarios] = useState(false);
   const openDialogDestinatarios = () => {
     setOpenDestinatarios(!openDestinatarios);
   };
 
   useEffect(() => {
-    getNotificaciones(
-      setNotificaciones,
-      setCantNoti);
+    // getNotificaciones(setNotificaciones, setCantNoti);
 
-    getHistorialNotificaciones(setHistorial)
-
-
+    getHistorialNotificaciones(setHistorial);
   }, [openDialog]);
 
   return (
@@ -108,10 +87,7 @@ export function Notificaciones() {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
 
-
-
-      <Grid item xl={10} xs={12} lg={12} sm={12} >
-
+      <Grid item xl={10} xs={12} lg={12} sm={12}>
         <Grid item xl={12} display="flex" justifyContent="Center">
           <Typography
             sx={{
@@ -127,7 +103,6 @@ export function Notificaciones() {
 
         <Grid
           item
-          //ml={window.innerWidth / 22}
           xl={12}
           lg={12}
           display="flex"
@@ -141,37 +116,7 @@ export function Notificaciones() {
             lg={8}
             sm={7}
             sx={{ display: "flex", justifyContent: "flex-end" }}
-          >
-            {/* <Paper
-              component="form"
-              sx={QueriesNotificaciones.buscador}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Buscar"
-                value={busqueda}
-                onChange={(e) => {
-                  handleChange(e.target.value);
-                }}
-                onKeyPress={(ev) => {
-                  //cuando se presiona Enter
-                  if (ev.key === "Enter") {
-                    handleSearch();
-                    ev.preventDefault();
-                    return false;
-                  }
-                }}
-              />
-              <IconButton type="button"  sx={{ p: "10px" }} aria-label="search">
-                <SearchIcon
-                  onClick={() => {
-                    handleSearch();
-                  }}
-                />
-              </IconButton>
-            </Paper> */}
-
-          </Grid>
+          ></Grid>
           <Grid
             item
             xl={4}
@@ -188,7 +133,7 @@ export function Notificaciones() {
               endIcon={<AddCommentIcon />}
               sx={QueriesNotificaciones.boton}
               onClick={() => {
-                openDialogNotificaciones()
+                openDialogNotificaciones();
               }}
             >
               Añadir Notificacion
@@ -197,7 +142,7 @@ export function Notificaciones() {
         </Grid>
 
         <Grid item sx={{ alignItems: "center" }}>
-          <TableContainer >
+          <TableContainer>
             <Table>
               <TableHead>
                 {heads.map((head) => (
@@ -213,11 +158,7 @@ export function Notificaciones() {
               <TableBody>
                 {historial?.map((noti, index) => (
                   <StyledTableRow>
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      align="center"
-                    >
+                    <StyledTableCell component="th" scope="row" align="center">
                       {noti.Titulo}
                     </StyledTableCell>
 
@@ -225,35 +166,22 @@ export function Notificaciones() {
                       component="th"
                       scope="row"
                       align="center"
-                      
-                      sx={{ textAlign:"justify" ,width: "30%" }}
+                      sx={{ textAlign: "justify", width: "30%" }}
                     >
                       {noti.Mensaje}
                     </StyledTableCell>
 
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      align="center"
-                    >
+                    <StyledTableCell component="th" scope="row" align="center">
                       {noti.Fecha}
                     </StyledTableCell>
 
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      align="center"
-                    >
+                    <StyledTableCell component="th" scope="row" align="center">
                       {noti.Hora}
                     </StyledTableCell>
 
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      align="center"
-                    >
+                    <StyledTableCell component="th" scope="row" align="center">
                       <IconButton
-                        onClick={() => {setIdNoti(noti.Id); openDialogDestinatarios() }}
+                        onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
                       >
                         <InfoIcon />
                       </IconButton>
@@ -269,13 +197,13 @@ export function Notificaciones() {
             </Table>
           </TableContainer>
         </Grid>
-        {openDialog ? <AñadirNotificaciones
-          open={openDialog}
-          handleClose={openDialogNotificaciones}
-        /> : null}
-
+        {openDialog ? (
+          <AñadirNotificaciones
+            open={openDialog}
+            handleClose={openDialogNotificaciones}
+          />
+        ) : null}
       </Grid>
-
     </Grid>
   );
 }

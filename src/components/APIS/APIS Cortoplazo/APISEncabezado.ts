@@ -1,5 +1,4 @@
 import axios from "axios";
-import { env } from "process";
 import Swal from "sweetalert2";
 
 export function getMunicipiosUOrganismos(setState: Function) {

@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
+import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
 
 export interface TasaInteres {
   tasaFija: boolean;
@@ -31,6 +32,7 @@ export type CondicionFinanciera = {
     periodicidadDePago: string;
     numeroDePago: number;
   };
+
   tasaInteres: TasaInteres[];
   comisiones: IComisiones[];
   tasaEfectiva: string;
@@ -72,27 +74,26 @@ export const createCondicionFinancieraSlice: StateCreator<
         fechaPrimerPago: condicionFinanciera.pagosDeCapital.fechaPrimerPago,
         periodicidadDePago:{ Id: '0', Descripcion: condicionFinanciera.pagosDeCapital.periodicidadDePago } ,
         numeroDePago: condicionFinanciera.pagosDeCapital.numeroDePago,
+
       } 
     });
     useCortoPlazoStore.setState({
       tablaTasaInteres:
         condicionFinanciera.tasaInteres,
+        
+        
     });
     useCortoPlazoStore.setState({
       tablaComisiones:
         condicionFinanciera.comisiones,
     });
+
     useCortoPlazoStore.setState({
-      tasaEfectiva: {
-        diasEjercicio: {
-          Id: "",
-          Descripcion: condicionFinanciera.diasEjercicio
-        },
-        tasaEfectiva: condicionFinanciera.tasaEfectiva
-      }
+      tasaEfectiva:{diasEjercicio:{Id:'', Descripcion:condicionFinanciera.diasEjercicio},
+                    tasaEfectiva:condicionFinanciera.tasaEfectiva}
     });
 
-
+   
   },
   upDataCondicionFinanciera: (
     condicionFinanciera: CondicionFinanciera,
@@ -114,6 +115,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         (_, i) => i !== index
       ),
     })),
+    
   updatecondicionFinancieraTable: (
     tablaCondicionesFinancieras: CondicionFinanciera[]
   ) => set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),

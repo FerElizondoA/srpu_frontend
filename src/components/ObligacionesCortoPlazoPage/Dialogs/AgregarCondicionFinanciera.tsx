@@ -1,16 +1,17 @@
-import { useState, forwardRef, useEffect } from "react";
+import { useState, forwardRef } from "react";
 import {
   Grid,
   Tabs,
   Tab,
   Typography,
-  Divider,
   Dialog,
   AppBar,
   Toolbar,
   IconButton,
   Slide,
   Button,
+  createTheme,
+  ThemeProvider,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
@@ -45,6 +46,24 @@ type Props = {
   accion: string;
   indexA: number;
 };
+
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada"
+          }
+        }
+      }
+    }
+  }
+});
+
+
 
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -84,6 +103,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
+  const changeTasaEfectiva:Function = useCortoPlazoStore(
+   (state) => state.changeTasaEfectiva
+  )
 
   // COMISIONES
   const tablaComisiones: IComisiones[] = useCortoPlazoStore(
@@ -114,6 +136,8 @@ export function AgregarCondicionFinanciera(props: Props) {
   const changeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.changeTasaInteres
   );
+
+
 
   const addRow = () => {
     const CF: CondicionFinanciera = {
@@ -149,8 +173,8 @@ export function AgregarCondicionFinanciera(props: Props) {
       },
       tasaInteres: tablaTasaInteres,
       comisiones: tablaComisiones,
-      tasaEfectiva: "",
-      diasEjercicio: "",
+      tasaEfectiva: tasaEfectivaTasaEfectiva,
+      diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
     };
 
     upDataCondicionFinanciera(CF, indexA);
@@ -164,10 +188,15 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaVariable: false,
       tasa: "",
       fechaPrimerPago: new Date().toString(),
-      diasEjercicio: { Id: "", Descripcion: "" },
+       diasEjercicio: { Id: "", Descripcion: "" },
       periocidadPago: { Id: "", Descripcion: "" },
       tasaReferencia: { Id: "", Descripcion: "" },
       sobreTasa: "",
+      tasaEfectiva:"",
+    });
+    changeTasaEfectiva({
+      diasEjercicio: { Id: "", Descripcion: "" },
+      tasaEfectiva:"",
     });
     cleanTasaInteres();
     cleanComision();
@@ -196,10 +225,14 @@ export function AgregarCondicionFinanciera(props: Props) {
           </Grid>
           <Grid
             item
-            position="fixed"
-            sx={{ top: 12, bottom: "auto", left: window.innerWidth - 300 }}
+            sx={{ top: 12, bottom: "auto"}}
           >
+             <ThemeProvider theme={theme}>
             <Button
+              disabled={ 
+                tablaComisiones.length === 0 ||
+                tablaTasaInteres.length ===0 
+              }
               sx={{
                 backgroundColor: "white",
                 ":hover": {
@@ -219,8 +252,11 @@ export function AgregarCondicionFinanciera(props: Props) {
               }}
             >
               <CheckIcon sx={{ mr: 1 }} />
+              
               <Typography sx={queries.medium_text}>{props.accion}</Typography>
+
             </Button>
+            </ThemeProvider>
           </Grid>
         </Toolbar>
       </AppBar>

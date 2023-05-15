@@ -2,6 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { IFile } from "../components/ObligacionesCortoPlazoPage/panels/Documentacion";
 import { ITiposDocumento } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { useCortoPlazoStore } from "./main";
 
 export interface DocumentosSlice {
   documentosObligatorios: [];
@@ -42,6 +43,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
 
   getTiposDocumentos: async () => {
+    const state = useCortoPlazoStore.getState();
     await axios({
       method: "get",
       url:
@@ -53,29 +55,38 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      set((state) => ({
-        catalogoTiposDocumentos: data.data,
-        catalogoTiposDocumentosObligatorios: data.data.filter(
-          (td: any) => td.Obligatorio === 1
-        ),
-        tablaDocumentos: data.data
-          .filter((td: any) => td.Obligatorio === 1)
-          .map((num: any, index: number) => {
-            return {
-              archivo: new File(
-                [],
-                "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO",
-                { type: "text/plain" }
-              ),
-              tipoArchivo: data.data.filter((td: any) => td.Obligatorio === 1)[
-                index
-              ].Id,
-              descripcionTipo: data.data.filter(
-                (td: any) => td.Obligatorio === 1
-              )[index].Descripcion,
-            };
-          }),
-      }));
+      if (state.idSolicitud !== "") {
+        set((state) => ({
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
+            (td: any) => td.Obligatorio === 1
+          ),
+        }));
+      } else {
+        set((state) => ({
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
+            (td: any) => td.Obligatorio === 1
+          ),
+          tablaDocumentos: data.data
+            .filter((td: any) => td.Obligatorio === 1)
+            .map((num: any, index: number) => {
+              return {
+                archivo: new File(
+                  [],
+                  "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO",
+                  { type: "text/plain" }
+                ),
+                tipoArchivo: data.data.filter(
+                  (td: any) => td.Obligatorio === 1
+                )[index].Id,
+                descripcionTipo: data.data.filter(
+                  (td: any) => td.Obligatorio === 1
+                )[index].Descripcion,
+              };
+            }),
+        }));
+      }
     });
   },
 });

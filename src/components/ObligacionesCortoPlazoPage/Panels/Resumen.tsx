@@ -14,12 +14,16 @@ import {
   Tooltip,
   IconButton,
   TableSortLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useCortoPlazoStore } from "../../../store/main";
 import { queries } from "../../../queries";
 import InputLabel from "@mui/material/InputLabel/InputLabel";
-import { format } from "date-fns";
+import { format, lightFormat } from "date-fns";
 import {
   CondicionFinanciera,
   IComisiones,
@@ -28,6 +32,9 @@ import {
 import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IFile } from "./Documentacion";
+import CloseIcon from "@mui/icons-material/Close";
+import { headsComision, headsTasa } from "./CondicionesFinancieras";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 interface Head {
   label: string;
@@ -117,33 +124,9 @@ export function Resumen() {
   );
 
   // Condiciones Financieras
-  const dFechaDisposicion: string = useCortoPlazoStore(
-    (state) => state.disposicion.fechaDisposicion
-  );
-  const dImporte: number = useCortoPlazoStore(
-    (state) => state.disposicion.importe
-  );
-
-  const pFechaPrimerPago: string = useCortoPlazoStore(
-    (state) => state.pagosDeCapital.fechaPrimerPago
-  );
-  const pPeriodicidadPago: string = useCortoPlazoStore(
-    (state) => state.pagosDeCapital.periodicidadDePago.Descripcion
-  );
-  const pNumeroPagos: number = useCortoPlazoStore(
-    (state) => state.pagosDeCapital.numeroDePago
-  );
 
   const tablaTasasInteres: TasaInteres[] = useCortoPlazoStore(
     (state) => state.tablaTasaInteres
-  );
-
-  const tDiasEjercicio: string = useCortoPlazoStore(
-    (state) => state.tasaEfectiva.diasEjercicio.Descripcion
-  );
-
-  const tTasaEfectiva: string = useCortoPlazoStore(
-    (state) => state.tasaEfectiva.tasaEfectiva
   );
 
   const tablaComisiones: IComisiones[] = useCortoPlazoStore(
@@ -158,6 +141,12 @@ export function Resumen() {
   const documentos: IFile[] = useCortoPlazoStore(
     (state) => state.tablaDocumentos
   );
+
+  const [openTasa, setOpenTasa] = useState(false);
+  const [openComision, setOpenComision] = useState(false);
+
+  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
 
   return (
     <Grid
@@ -389,15 +378,165 @@ export function Resumen() {
                           )}
                         </StyledTableCell>
                         <StyledTableCell align="center">
-                          Más info en pestaña
+                          <Button
+                            onClick={() => {
+                              setRowTasa(row.tasaInteres);
+                              setOpenTasa(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
                         </StyledTableCell>
                         <StyledTableCell align="center">
-                          Más info en pestaña
+                          <Button
+                            onClick={() => {
+                              setRowComision(row.comisiones);
+                              setOpenComision(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
                         </StyledTableCell>
                       </StyledTableRow>
                     );
                   })}
                 </TableBody>
+
+                <Dialog
+                  open={openTasa}
+                  onClose={() => {
+                    setOpenTasa(false);
+                  }}
+                  maxWidth={"lg"}
+                >
+                  <DialogTitle sx={{ m: 0, p: 2 }}>
+                    <IconButton
+                      onClick={() => {
+                        setOpenTasa(false);
+                      }}
+                      sx={{
+                        position: "absolute",
+                        right: 8,
+                        top: 8,
+                        color: "black",
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <TableContainer sx={{ maxHeight: "400px" }}>
+                      <Table>
+                        <TableHead sx={{ maxHeight: "200px" }}>
+                          <TableRow>
+                            {headsTasa.map((head, index) => (
+                              <StyledTableCell key={index}>
+                                <TableSortLabel>{head.label}</TableSortLabel>
+                              </StyledTableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rowTasa.map((row, index) => {
+                            return (
+                              <StyledTableRow key={index}>
+                                <StyledTableCell component="th" scope="row">
+                                  {lightFormat(
+                                    new Date(row.fechaPrimerPago),
+                                    "dd-MM-yyyy"
+                                  )}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.tasa}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.periocidadPago}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.tasaReferencia}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.sobreTasa}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.diasEjercicio}
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog
+                  open={openComision}
+                  onClose={() => {
+                    setOpenComision(false);
+                  }}
+                  maxWidth={"lg"}
+                >
+                  <DialogTitle sx={{ m: 0, p: 2 }}>
+                    <IconButton
+                      onClick={() => {
+                        setOpenComision(false);
+                      }}
+                      sx={{
+                        position: "absolute",
+                        right: 8,
+                        top: 8,
+                        color: "black",
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <TableContainer sx={{ maxHeight: "400px" }}>
+                      <Table>
+                        <TableHead sx={{ maxHeight: "200px" }}>
+                          <TableRow>
+                            {headsComision.map((head, index) => (
+                              <StyledTableCell key={index}>
+                                <TableSortLabel>{head.label}</TableSortLabel>
+                              </StyledTableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rowComision.map((row, index) => {
+                            return (
+                              <StyledTableRow key={index}>
+                                <StyledTableCell component="th" scope="row">
+                                  {row.tipoDeComision}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {lightFormat(
+                                    new Date(row.fechaContratacion),
+                                    "dd-MM-yyyy"
+                                  )}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.periodicidadDePago}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.porcentaje}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.monto}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.iva}
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </DialogContent>
+                </Dialog>
               </Table>
             </TableContainer>
           </Grid>
