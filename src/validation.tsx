@@ -8,7 +8,8 @@ export const sessionValid = () => {
   const rft = params.get("rf") || "";
 
   return axios
-    .post("http://10.200.4.105:5000/api/verify",
+    .post(
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},
       {
         headers: {
@@ -49,17 +50,22 @@ export const getUserDetails = (idCentral: string) => {
     })
     .then((r) => {
       if (r.status === 200) {
-        
-        
         localStorage.setItem("IdUsuario", r.data.data.Id);
         localStorage.setItem(
           "NombreUsuario",
-          r.data.data.Nombre + " " + r.data.data.ApellidoPaterno + " " + r.data.data.ApellidoMaterno
+          r.data.data.Nombre +
+            " " +
+            r.data.data.ApellidoPaterno +
+            " " +
+            r.data.data.ApellidoMaterno
         );
 
         localStorage.setItem("Rol", r.data.data.Rol);
         localStorage.setItem("Puesto", r.data.data.Cargo);
-        localStorage.setItem("EntePublicoObligado", r.data.data.EntePublicoObligado);
+        localStorage.setItem(
+          "EntePublicoObligado",
+          r.data.data.EntePublicoObligado
+        );
         localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
         return true;
@@ -75,16 +81,20 @@ export const getUserDetails = (idCentral: string) => {
 
 const getDataSolicitud = (idSolicitud: string) => {
   axios
-    .get("http://10.200.4.105:5000/api/datosAdicionalesSolicitud", {
-      params: {
-        IdUsuario: idSolicitud,
-        IdApp: IdApp,
-      },
-      headers: {
-        "Content-Type": "application/json",
-        authorization: localStorage.getItem("jwtToken") || "",
-      },
-    })
+    .get(
+      process.env.REACT_APP_APPLICATION_LOGIN +
+        "/api/datosAdicionalesSolicitud",
+      {
+        params: {
+          IdUsuario: idSolicitud,
+          IdApp: IdApp,
+        },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("jwtToken") || "",
+        },
+      }
+    )
     .then((r) => {
       if (r.status === 200) {
         // window.location.reload();
@@ -96,11 +106,10 @@ const getDataSolicitud = (idSolicitud: string) => {
     });
 };
 
-
 export const continueSession = () => {
   return axios
     .post(
-      "http://10.200.4.105:5000/api/verify",
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},
       {
         headers: {
@@ -132,5 +141,5 @@ export const continueSession = () => {
 
 export const logout = () => {
   localStorage.clear();
-  window.location.assign("http://10.200.4.106/");
+  window.location.assign(`${process.env.REACT_APP_APPLICATION_LOGIN}`);
 };
