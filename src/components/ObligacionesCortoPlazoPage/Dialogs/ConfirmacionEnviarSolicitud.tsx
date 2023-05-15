@@ -78,9 +78,11 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.crearSolicitud
   );
 
-  const modificaSolicitud: Function = useCortoPlazoStore(
-    (state) => state.modificaSolicitud
-  );
+  
+
+ 
+
+  
 
   return (
     <Dialog

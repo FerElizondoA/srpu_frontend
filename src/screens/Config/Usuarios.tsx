@@ -205,7 +205,7 @@ export const Usuarios = () => {
   };
   const openEditarUsuario = (name: string, usuario: IUsuarios) => {
     setButonLabel("Editar");
-    setTitle("EDITAR USUARIO " + name.toUpperCase + ".");
+    setTitle("EDITAR USUARIO " + name.toUpperCase() + ".");
 
     setUsuarioEdit(usuario);
     openDialogUser();
@@ -247,7 +247,6 @@ export const Usuarios = () => {
           xs={12}
           lg={12}
           sm={12}
-
         >
           <Grid item xs={12} lg={12} sm={12}>
             {/* GRRID Filtro Y BOTONES */}
@@ -399,7 +398,7 @@ export const Usuarios = () => {
                           scope="row"
                           align="center"
                         >
-                          {row.Nombre.toString()}
+                          {row.Nombre}
                         </StyledTableCell>
 
                         <StyledTableCell

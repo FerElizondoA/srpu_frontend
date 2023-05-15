@@ -36,7 +36,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export const ConfirmButton = styled(Button)(({ theme }) => ({
-  width: "100%",
+  width: "68%",
   height: "60px",
   fontFamily: "MontserratMedium",
   fontSize: "1.8ch",

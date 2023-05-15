@@ -64,10 +64,6 @@ export const AñadirNotificaciones = ({
     getListadoUsuarios(setUsuarios, 0);
   }, []);
 
-  // useEffect(() => {
-  //   setUsuariosFiltrados(usuarios);
-  // }, [usuarios]);
-
   const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
 
   const [idDestinatarios, setIdDestinatarios] = useState([]);
