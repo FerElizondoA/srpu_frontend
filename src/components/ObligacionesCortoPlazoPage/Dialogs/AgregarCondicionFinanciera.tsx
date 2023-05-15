@@ -11,6 +11,8 @@ import {
   IconButton,
   Slide,
   Button,
+  createTheme,
+  ThemeProvider,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
@@ -45,6 +47,24 @@ type Props = {
   accion: string;
   indexA: number;
 };
+
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada"
+          }
+        }
+      }
+    }
+  }
+});
+
+
 
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -183,15 +203,6 @@ export function AgregarCondicionFinanciera(props: Props) {
     cleanComision();
   };
 
-
-
-
-
-
-
-
-
-
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
       <AppBar sx={{ position: "relative" }}>
@@ -215,9 +226,9 @@ export function AgregarCondicionFinanciera(props: Props) {
           </Grid>
           <Grid
             item
-            position="fixed"
-            sx={{ top: 12, bottom: "auto", left: window.innerWidth - 300 }}
+            sx={{ top: 12, bottom: "auto"}}
           >
+             <ThemeProvider theme={theme}>
             <Button
               disabled={ 
                 tablaComisiones.length === 0 ||
@@ -242,9 +253,11 @@ export function AgregarCondicionFinanciera(props: Props) {
               }}
             >
               <CheckIcon sx={{ mr: 1 }} />
+              
               <Typography sx={queries.medium_text}>{props.accion}</Typography>
 
             </Button>
+            </ThemeProvider>
           </Grid>
         </Toolbar>
       </AppBar>

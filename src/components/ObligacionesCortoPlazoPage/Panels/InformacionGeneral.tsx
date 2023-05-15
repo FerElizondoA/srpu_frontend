@@ -56,6 +56,21 @@ interface Head {
   label: string;
 }
 
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada"
+          }
+        }
+      }
+    }
+  }
+});
+
 const heads: Head[] = [
   {
     label: "Selección",
@@ -240,6 +255,7 @@ export function InformacionGeneral() {
       sx={{
         display: "flex", height: "85vh", flexDirection: "column",
         justifyContent: "space-evenly",
+        
         // backgroundColor:"red"
       }}
 
@@ -629,8 +645,8 @@ export function InformacionGeneral() {
           
         </Grid> */}
       </Grid>
-      <Grid display={"flex"} justifyContent={"center"}>
-        
+      <Grid  width={"94%"} display={"flex"} justifyContent={"flex-end"}>
+        <ThemeProvider theme={theme}>
           <Button
             
             sx={queries.buttonContinuar}
@@ -645,6 +661,8 @@ export function InformacionGeneral() {
           >
             <CheckIcon fontSize="small" />AGREGAR
           </Button>
+        
+        </ThemeProvider>
         
 
       </Grid>

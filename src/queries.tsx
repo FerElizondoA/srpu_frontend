@@ -90,4 +90,20 @@ export const queries = {
     borderRadius: "0.8vh",
     textTransform: "capitalize",
   },
+
+  tablaCondicionFinanciera:{
+    height:280,
+    width:"100%",
+    display:"flex",
+    justifyContent:"center",
+
+  
+    
+    "@media (min-width: 1870px)": {
+      height:470,
+     
+    },
+  }
+
 };
+

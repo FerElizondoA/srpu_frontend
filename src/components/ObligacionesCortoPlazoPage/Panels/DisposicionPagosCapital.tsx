@@ -19,7 +19,13 @@ import {
   Tooltip,
   IconButton,
   TableRow,
+  Button,
+  ThemeProvider,
+  createTheme,
+  Paper,
 } from "@mui/material";
+
+import CheckIcon from '@mui/icons-material/Check';
 
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -66,6 +72,22 @@ const heads: readonly Head[] = [
     label: "Dias del Ejercicio",
   },
 ];
+
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada"
+          }
+        }
+      }
+    }
+  }
+});
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -138,7 +160,7 @@ export function DisposicionPagosCapital() {
   );
 
   // TABLA TASA DE INTERES
-   let tablaTasaInteres: any = useCortoPlazoStore(
+  let tablaTasaInteres: any = useCortoPlazoStore(
     (state) => state.tablaTasaInteres
   );
   const addTasaInteres: Function = useCortoPlazoStore(
@@ -219,9 +241,9 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container flexDirection="column" justifyContent={"space-evenly"} height={"150%"} >
+    <Grid container display="flex" justifyContent={"space-evenly"} height={"120%"} >
       <Grid item container>
-        <Grid item lg={6} flexDirection="column" justifyContent={"space-between"} >
+        <Grid item lg={6} flexDirection="column" height={"100%"} justifyContent={"space-evenly"} >
           <Grid item>
             <Divider>
               <Typography color={"#af8c55 "} fontWeight={"bold"}>DISPOSICIÓN</Typography>
@@ -379,7 +401,7 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item >
+      <Grid item width={"100%"} >
         <Grid item  >
           <Grid item>
 
@@ -424,17 +446,14 @@ export function DisposicionPagosCapital() {
               </FormControl>
             </Grid>
 
-            <Grid item container >
-
+            <Grid item container display={"flex"} justifyContent={"space-between"}>
               {radioValue === "Tasa Fija" ? (
                 <Grid
                   item
                   container
-                  sx={{
-                    justifyContent: "space-evenly",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
+                  display="flex"
+                  justifyContent="space-evenly"
+
 
                 >
                   <Grid item lg={2} display={"block"}>
@@ -599,7 +618,7 @@ export function DisposicionPagosCapital() {
                   sx={{
                     justifyContent: "space-evenly",
                     display: "flex",
-                    alignItems: "center",
+
                   }}
                 >
                   <Grid item>
@@ -797,90 +816,100 @@ export function DisposicionPagosCapital() {
                       }
                     />
                   </Grid>
+
                 </Grid>
               )}
+
+
             </Grid>
+
           </Grid>
+
         </Grid>
+
       </Grid>
 
-
-      <Grid width={"100%"} display={"grid"} justifyContent={"center"} alignItems={"center"}>
-        <TableContainer>
-          <Table>
-            <TableHead >
-              <TableRow>
-                {heads.map((head, index) => (
-                  <StyledTableCell key={index}>
-                    <TableSortLabel>{head.label}</TableSortLabel>
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tablaTasaInteres.map((row: any, index: number) => {
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">
-                      <Tooltip title="Eliminar">
-                        <IconButton
-                          type="button"
-                          onClick={() => {
-                            removeTasaInteres(index);
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row">
-                      {lightFormat(
-                        new Date(row.fechaPrimerPago),
-                        "dd-MM-yyyy"
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.tasa}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.periocidadPago}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.tasaReferencia}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.sobreTasa}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.diasEjercicio}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
-
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
-        <ConfirmButton
-          disabled={
-            tasaInteresFechaPrimerPago === "" ||
-            tasaInteresDiasEjercicio.Descripcion === "" ||
-            tasaInteresPeriocidadPago.Descripcion === "" ||
-            (radioValue === "Tasa Fija" && tasaInteresTasa.toString() === "" ) ||
-            (radioValue === "Tasa Variable" && tasaInteresTasaReferencia.toString() === "" ) ||
-            (radioValue === "Tasa Variable" && tasaInteresSobreTasa  === "")
-              }      
-        variant="outlined"
-        onClick={() => {
-          addRows();
-          reset();
-        }}
+      <Grid >
+        <ThemeProvider theme={theme}>
+          <Button
+            sx={queries.buttonContinuar}
+            disabled={
+              tasaInteresFechaPrimerPago === "" ||
+              tasaInteresDiasEjercicio.Descripcion === "" ||
+              tasaInteresPeriocidadPago.Descripcion === "" ||
+              (radioValue === "Tasa Fija" && tasaInteresTasa.toString() === "") ||
+              (radioValue === "Tasa Variable" && tasaInteresTasaReferencia.toString() === "") ||
+              (radioValue === "Tasa Variable" && tasaInteresSobreTasa === "")
+            }
+            variant="outlined"
+            onClick={() => {
+              addRows();
+              reset();
+            }}
           >
-        AGREGAR
-      </ConfirmButton>
-    </Grid>
+            <CheckIcon fontSize="small" /> AGREGAR
+          </Button>
+        </ThemeProvider>
+      </Grid>
+
+      <Grid container sx={queries.tablaCondicionFinanciera}>
+        <Paper sx={{height: "100%", width: "88%", overflow: "auto"}}>
+          <TableContainer sx={{ maxHeight: "100%" }} >
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead  >
+                <TableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tablaTasaInteres.map((row: any, index: number) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              removeTasaInteres(index);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th" >
+                        {lightFormat(
+                          new Date(row.fechaPrimerPago),
+                          "dd-MM-yyyy"
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th">
+                        {row.tasa}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.periocidadPago}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.tasaReferencia}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.sobreTasa}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.diasEjercicio}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
     </Grid >
   );
 }
