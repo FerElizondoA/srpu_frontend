@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import {
   Grid,
   InputLabel,
@@ -25,6 +26,7 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/ConfirmacionDescargaSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/ConfirmacionBorradorSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/ConfirmacionCancelarSolicitud";
+import { styled } from "@mui/material/styles";
 
 interface Head {
   label: string;
@@ -38,12 +40,9 @@ const heads: readonly Head[] = [
     label: "Regla",
   },
 ];
-
+export let errores: string[] = [];
 export function SolicitudInscripcion() {
   const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
-  let [a] = React.useState(new Array());
-
-  
 
   const [openDialog, changeOpenDialog] = useState(false);
   const changeOpenDialogState = (open: boolean) => {
@@ -98,7 +97,7 @@ export function SolicitudInscripcion() {
       return <Typography sx={queries.medium_text}> FINALIZAR</Typography>;
     }
   };
-  
+
   const [numero, setNumero] = useState(0);
   const opciones = (numero: number) => {
     if (localStorage.getItem("Rol") === "Capturador") {
@@ -176,8 +175,8 @@ export function SolicitudInscripcion() {
             color="success"
             onClick={() => {
               numero = 2;
-              
-              setNumero(numero)
+
+              setNumero(numero);
               changeOpenDialogState(!openDialog);
             }}
             sx={{
@@ -209,8 +208,8 @@ export function SolicitudInscripcion() {
             color="success"
             onClick={() => {
               numero = 1;
-              
-              setNumero(numero)
+
+              setNumero(numero);
               changeOpenDialogState(!openDialog);
             }}
           >
@@ -283,11 +282,218 @@ export function SolicitudInscripcion() {
     }
   };
 
+  const reglasAplicables:  string[] = useCortoPlazoStore(
+    (state) => state.reglasAplicables
+  ) 
+   
   React.useEffect(() => {
     getReglas();
   }, []);
+  let err = 0;
 
- 
+  const Toast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    // confirmButtonColor: "red",
+    // confirmButtonText: "De acuerdo",
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+  const InfoFaltante = () => {
+    errores = [];
+
+    const state = useCortoPlazoStore.getState();
+    const solicitud: any = {
+      encabezado: state.encabezado,
+      MontoOriginalContratado: state.informacionGeneral.monto,
+      PlazoDias: state.informacionGeneral.plazo,
+      Destino: state.informacionGeneral.destino.Descripcion,
+      Denominacion: state.informacionGeneral.denominacion,
+      InstitucionFinanciera:
+        state.informacionGeneral.institucionFinanciera.Descripcion,
+    };
+    /////////////////// Por definir /////////////////////
+    let entePublicoObligado = "";
+    let obligadoSolidario = "";
+    let tipoEntePublicoObligado = "";
+
+    for (let i = 0; i < state.tablaObligadoSolidarioAval.length; i++) {
+      const item = state.tablaObligadoSolidarioAval[0];
+      entePublicoObligado = item.entePublicoObligado;
+      obligadoSolidario = item.obligadoSolidario;
+      tipoEntePublicoObligado = item.tipoEntePublicoObligado;
+    }
+    ///////////////////   Condiciones Financieras /////////////////////
+    let importe = 0;
+    let numeroDePago = 0;
+    let PeriocidadDePago = "";
+    let diasEjercicio = "";
+    let tasaEfectiva = "";
+    let comisiones: any = [];
+    let TasaDeInteres: any = [];
+
+    for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
+      const item = state.tablaCondicionesFinancieras[0];
+      importe = item.disposicion.importe;
+      numeroDePago = item.pagosDeCapital.numeroDePago;
+      PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
+      TasaDeInteres = item.tasaInteres;
+      diasEjercicio = item.diasEjercicio;
+      tasaEfectiva = item.tasaEfectiva;
+      comisiones = item.comisiones;
+    }
+    ////////////////////////// Documentos //////////////////////////
+    console.log("reglasAplicables: EN solicitud de inscripcion",state.reglasAplicables);
+    
+    //////////////////
+    if (
+      solicitud.PlazoDias === undefined ||
+      solicitud.PlazoDias === 0 ||
+      /^[\s]*$/.test(solicitud.PlazoDias)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:El Plazo a Días no puede ser  0."
+      );
+    }
+
+    if (
+      solicitud.MontoOriginalContratado === undefined ||
+      solicitud.MontoOriginalContratado === 0 ||
+      /^[\s]*$/.test(solicitud.MontoOriginalContratado)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Ingrese un Monto original contratado valido."
+      );
+    }
+    if (
+      solicitud.Destino === undefined ||
+      solicitud.Destino === "" ||
+      /^[\s]*$/.test(solicitud.Destino)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Seleccione  el Destino."
+      );
+    }
+    if (
+      solicitud.InstitucionFinanciera === undefined ||
+      solicitud.InstitucionFinanciera === "" ||
+      /^[\s]*$/.test(solicitud.InstitucionFinanciera)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Seleccione la Institución Financiera."
+      );
+    }
+
+    if (
+      state.tablaCondicionesFinancieras[0] === undefined ||
+      state.tablaCondicionesFinancieras[0] === null
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Agruege al menos una Condicion Financiera."
+      );
+    }
+
+    if (TasaDeInteres[0] === undefined || TasaDeInteres[0].tasa === "") {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Agruege al menos una Tasa De Interés."
+      );
+    }
+    if (importe === undefined || importe === 0) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Ingrese el Importe."
+      );
+    }
+    if (numeroDePago === undefined || numeroDePago === 0) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Ingrese el Numero de pagos."
+      );
+    }
+    if (
+      PeriocidadDePago === undefined ||
+      PeriocidadDePago === "" ||
+      /^[\s]*$/.test(PeriocidadDePago)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Seleccione la periocidad de pago."
+      );
+    }
+    if (
+      diasEjercicio === undefined ||
+      diasEjercicio === "" ||
+      /^[\s]*$/.test(diasEjercicio)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Seleccione los Díaz del Ejercicio."
+      );
+    }
+    if (
+      tasaEfectiva === undefined ||
+      tasaEfectiva === "" ||
+      /^[\s]*$/.test(tasaEfectiva)
+    ) {
+      err = 1;
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Ingrese la tasa Efectiva."
+      );
+    }
+
+    if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
+      errores.push(
+        "Sección <strong>Condiciones Financieras</strong>:Agregue al menos una comision."
+      );
+    }
+
+    if (
+      state.reglasAplicables[0] === undefined ||
+      state.reglasAplicables[0] === ""
+    ) {
+      errores.push(
+        "Sección <strong>Solicitud de Inscripción</strong>:Agregue al menos una regla."
+      );
+    }
+  };
+  
+  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  let arrReglas:Array<string>=[]
+  arrReglas=reglasAplicables;
+  useEffect(() => {
+    //  setSelectedItems(reglasAplicables)
+     console.log("reglasAplicables:",reglasAplicables);
+     
+    //  console.log("selectedItems:",selectedItems);
+   }, [])
+
+  const removeRegla=(descripcion: string)=>{
+    let aux:Array<string>=[]
+    arrReglas.map((regla,index)=>{if(regla!==descripcion){aux.push(regla)}})
+    arrReglas=aux;
+    changeReglasAplicables(arrReglas);
+  }
   return (
     <Grid item container>
       <Grid
@@ -378,50 +584,6 @@ export function SolicitudInscripcion() {
             }}
           />
         </Grid>
-
-        {/* <Grid item md={3} lg={3} xl={3}>
-          <InputLabel sx={queries.medium_text}>
-            Documento de autorización
-          </InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            value={documentoAutorizado}
-            onChange={(text) => changeDocumentoAutorizado(text.target.value)}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
-        </Grid> */}
-
-        {/* <Grid item md={3} lg={3} xl={3}>
-          <InputLabel sx={queries.medium_text}>Identificación</InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            value={identificacion}
-            onChange={(text) => changeIdentificacion(text.target.value)}
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
-        </Grid> */}
       </Grid>
 
       <Grid
@@ -467,10 +629,13 @@ export function SolicitudInscripcion() {
                   </TableHead>
                   <TableBody>
                     {catalogoReglas.map((row, index) => {
+                      // const stringIndex = index.toString()
                       return (
                         <StyledTableRow key={index}>
                           <StyledTableCell padding="checkbox">
                             <Checkbox
+                            checked ={reglasAplicables.includes(row.Descripcion)}
+                            
                               disabled={
                                 (checkObj[1] === true && index === 2) ||
                                 (checkObj[2] === true && index === 1) ||
@@ -478,6 +643,7 @@ export function SolicitudInscripcion() {
                                 (checkObj[4] === true && index === 3)
                               }
                               onChange={(v) => {
+                                
                                 v.target.checked
                                   ? setCheckObj({ ...checkObj, [index]: true })
                                   : setCheckObj({
@@ -485,11 +651,16 @@ export function SolicitudInscripcion() {
                                       [index]: false,
                                     });
 
-                                v.target.checked
-                                  ? (a[index] = row.Descripcion)
-                                  : delete a[index];
-
-                                changeReglasAplicables(a);
+                                    v.target.checked
+                                  ? (arrReglas.push(row.Descripcion))
+                                  : removeRegla(row.Descripcion);
+                                  ;
+                                  //
+                                  
+                                // changeReglasAplicables(reglasAplicables)
+                                // setSelectedItems(reglasAplicables)
+                                //console.log("selectedItems: ",selectedItems);
+                                changeReglasAplicables(arrReglas);
                               }}
                             />
                           </StyledTableCell>
@@ -555,11 +726,28 @@ export function SolicitudInscripcion() {
             variant="extended"
             color="success"
             onClick={() => {
-              changeOpenDialogState(!openDialog);
+              InfoFaltante();
+              if (err === 0) {
+                changeOpenDialogState(!openDialog);
+              } else {
+                Toast.fire({
+                  icon: "error",
+                  html: `
+                  <div style="height:100%;">
+                  <h3>Se han encontrado los siguientes errores:</h3>
+                  <div style="text-align: left; margin-left: 10px; color: red; height: 400px; overflow: auto;">
+                <small>
+                <strong>
+                *</strong>${errores.join("<br><strong>*</strong>")}
+                </small>
+                </div>
+                </div>`,
+                });
+              }
             }}
           >
             <CheckIcon sx={{ mr: 1 }} />
-            <Typography sx={queries.medium_text}>FINALIZAR</Typography>
+            <Typography sx={queries.medium_text}>-FINALIZAR-</Typography>
           </Fab>
 
           <ConfirmacionDescargaSolicitud
