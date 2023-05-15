@@ -183,6 +183,7 @@ export function ConsultaDeSolicitudPage() {
   const changeReglasAplicables:  Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   ) 
+  
 
   const llenaSolicitud = (solicitud: IData) => {
     const state = useCortoPlazoStore.getState()
@@ -190,10 +191,14 @@ export function ConsultaDeSolicitudPage() {
     
     
     changeReglasAplicables(aux?.inscripcion.declaratorias);
-    console.log("reglasAplicables: ",reglasAplicables);
-    console.log("aux?.inscripcion.declaratorias: ",aux?.inscripcion.declaratorias);
+    console.log("aux?.informacionGeneral.fechaContratacion: ",aux?.informacionGeneral.fechaContratacion);
+    console.log("aux?.informacionGeneral.fechaVencimiento: ",aux?.informacionGeneral.fechaVencimiento);
+    
     changeEncabezado(aux?.encabezado);
+
     changeInformacionGeneral(aux?.informacionGeneral);
+    //changeInformacionGeneral(aux?.informacionGeneral.fechaContratacion);
+    //changeInformacionGeneral(aux?.informacionGeneral.fechaVencimiento);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       addObligadoSolidarioAval(v);
     });
