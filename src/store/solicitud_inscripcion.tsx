@@ -284,72 +284,70 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     "septiembre",
     "octubre",
     "noviembre",
-    "diciembre"
+    "diciembre",
   ];
   const state = useCortoPlazoStore.getState();
 
   let solicitud: any = JSON.parse(Solicitud);
-console.log("solicitud: ", solicitud
-//.condicionesFinancieras[0].comisiones[0].tipoDeComision|| 'no existe'
-);
-interface DocumentacionItem {
-  Descripcion: string;
-  // Otros campos si existen en la estructura de solicitud.documentacion
-}
+  interface DocumentacionItem {
+    Descripcion: string;
+    // Otros campos si existen en la estructura de solicitud.documentacion
+  }
 
-const descripciones: string[] = solicitud.documentacion.map((item: DocumentacionItem) => item.Descripcion);
-console.log(descripciones);
+  const descripciones: string[] = solicitud.documentacion.map(
+    (item: DocumentacionItem) => item.Descripcion
+  );
 
+  const fechaVencimiento = new Date(
+    solicitud.informacionGeneral.fechaVencimiento
+  );
+  const dia = fechaVencimiento.getDate();
+  const mes = meses[fechaVencimiento.getMonth()];
+  const año = fechaVencimiento.getFullYear();
 
-const fechaVencimiento = new Date(solicitud.informacionGeneral.fechaVencimiento);
-const dia = fechaVencimiento.getDate();
-const mes = meses[fechaVencimiento.getMonth()];
-const año = fechaVencimiento.getFullYear();
+  const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
 
-const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
+  const fechaContratacion = new Date(
+    solicitud.informacionGeneral.fechaContratacion
+  );
+  const diaC = fechaContratacion.getDate();
+  const mesC = meses[fechaContratacion.getMonth()];
+  const añoC = fechaContratacion.getFullYear();
 
-
-const fechaContratacion = new Date(solicitud.informacionGeneral.fechaContratacion);
-const diaC = fechaContratacion.getDate();
-const mesC = meses[fechaContratacion.getMonth()];
-const añoC= fechaContratacion.getFullYear();
-
-const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
-
-console.log("fechaVencimientoEspañol: ",fechaVencimientoEspañol);
-console.log("fechaContratacionEspañol: ",fechaContratacionEspañol);
-
-
-
-const SolicitudDescarga: any ={
-  Nombre:solicitud.encabezado.solicitanteAutorizado.Nombre,
-  Cargo:solicitud.encabezado.solicitanteAutorizado.Cargo,
-  Organismo:solicitud.encabezado.organismo.Organismo,
-  InstitucionBancaria:solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-  Monto:solicitud.informacionGeneral.monto,
-  Destino:solicitud.informacionGeneral.destino.Descripcion,
-  PlazoDias:solicitud.informacionGeneral.plazo,
-  TipoEntePublico:solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-  Tipocomisiones:solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision || "No aplica",
-  TasaEfectiva:solicitud.condicionesFinancieras[0].tasaEfectiva,
-  Servidorpublico:solicitud.inscripcion.servidorPublicoDirigido,
-  TipoDocumento:solicitud.encabezado.tipoDocumento,
-  PeriodoPago:solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
-  //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
-  Reglas:solicitud.inscripcion.declaratorias,
-  TasaInteres:solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
-  
-}
+  const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
+  const SolicitudDescarga: any = {
+    Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    Organismo: solicitud.encabezado.organismo.Organismo,
+    InstitucionBancaria:
+      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    Monto: solicitud.informacionGeneral.monto,
+    Destino: solicitud.informacionGeneral.destino.Descripcion,
+    PlazoDias: solicitud.informacionGeneral.plazo,
+    TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+    Tipocomisiones:
+      solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
+      "No aplica",
+    TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
+    Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
+    TipoDocumento: solicitud.encabezado.tipoDocumento,
+    PeriodoPago:
+      solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
+    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+    Reglas: solicitud.inscripcion.declaratorias,
+    TasaInteres:
+      solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
+  };
 
   axios
     .post(
       "http://192.168.137.152:7000/documento_srpu",
       {
-        nombre:SolicitudDescarga.Nombre,
-        cargoServidorPublicoSolicitante:SolicitudDescarga.Cargo,
+        nombre: SolicitudDescarga.Nombre,
+        cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
         oficionum: "10",
         cargoServidorPublico: solicitud.cargoSolicitante,
-        organismo:SolicitudDescarga.Organismo,
+        organismo: SolicitudDescarga.Organismo,
         InstitucionBancaria: SolicitudDescarga.InstitucionBancaria,
         monto: SolicitudDescarga.Monto,
         destino: SolicitudDescarga.Destino,
@@ -362,7 +360,9 @@ const SolicitudDescarga: any ={
         servidorpublico: SolicitudDescarga.Servidorpublico,
         contrato: SolicitudDescarga.TipoDocumento,
         periodoPago: SolicitudDescarga.PeriodoPago,
-        obligadoSolidarioAval:solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+        obligadoSolidarioAval:
+          solicitud.informacionGeneral.obligadosSolidarios[0]
+            ?.obligadoSolidario || "No aplica",
         fechaContrato: fechaContratacionEspañol,
         fechaVencimiento: fechaVencimientoEspañol,
         Documentos: descripciones,
@@ -388,10 +388,7 @@ const SolicitudDescarga: any ={
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => {
-      console.log(err);
-      
-    });
+    .catch((err) => {});
 }
 
 export const getUsuariosAsignables = (setState: Function, numero: number) => {
