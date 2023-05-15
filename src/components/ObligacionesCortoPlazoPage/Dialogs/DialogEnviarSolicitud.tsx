@@ -59,8 +59,13 @@ export function ConfirmacionDescargaSolicitud({
     []
   );
 
+  const editCreadoPor: string = useCortoPlazoStore(
+    (state) => state.editCreadoPor
+  );
+
   React.useEffect(() => {
     getListadoUsuarios(setUsuarios, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState === true]);
 
   const navigate = useNavigate();
@@ -146,7 +151,7 @@ export function ConfirmacionDescargaSolicitud({
             if (idSolicitud !== "") {
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
-                  localStorage.getItem("IdUsuario"),
+                  editCreadoPor,
                   localStorage.getItem("IdUsuario"),
                   "Por Firmar"
                 )
@@ -173,7 +178,7 @@ export function ConfirmacionDescargaSolicitud({
                 navigate("../ConsultaDeSolicitudes");
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(
-                  localStorage.getItem("IdUsuario"),
+                  editCreadoPor,
                   idUsuarioAsignado,
                   "Verificacion"
                 )

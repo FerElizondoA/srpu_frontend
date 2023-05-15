@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Grid,
   Typography,
   Dialog,
   Button,
@@ -57,6 +56,10 @@ export function DialogSolicitarModificacion({
   useEffect(() => {
     getListadoUsuarios(setUsuarios, 1);
   }, [openState]);
+
+  const editCreadoPor: string = useCortoPlazoStore(
+    (state) => state.editCreadoPor
+  );
 
   return (
     <Dialog
@@ -118,11 +121,7 @@ export function DialogSolicitarModificacion({
           sx={queries.buttonContinuar}
           onClick={() => {
             if (idSolicitud !== "") {
-              modificaSolicitud(
-                localStorage.getItem("IdUsuario"),
-                idUsuarioAsignado,
-                "Captura"
-              )
+              modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
                 .then(() => {
                   addComentario(idSolicitud, comentario);
                   Swal.fire({

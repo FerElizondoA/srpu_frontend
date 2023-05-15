@@ -165,6 +165,9 @@ export function ConsultaDeSolicitudPage() {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
+  const changeEditCreadoPor: Function = useCortoPlazoStore(
+    (state) => state.changeEditCreadoPor
+  );
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -193,6 +196,10 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.addDocumento
   );
 
+  const borrarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.borrarSolicitud
+  );
+
   const llenaSolicitud = (solicitud: IData) => {
     let aux: any = JSON.parse(solicitud.Solicitud);
     changeEncabezado(aux?.encabezado);
@@ -204,12 +211,8 @@ export function ConsultaDeSolicitudPage() {
       return addCondicionFinanciera(v);
     });
     aux?.documentacion.map((v: any, index: number) => {
-      console.log(v);
-
       return addDocumento(v);
     });
-
-    console.log(aux);
   };
 
   const limpiaSolicitud = () => {
@@ -250,6 +253,7 @@ export function ConsultaDeSolicitudPage() {
     if (openDialogVer === false) {
       limpiaSolicitud();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDialogVer]);
 
   return (
@@ -305,170 +309,216 @@ export function ConsultaDeSolicitudPage() {
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {datosFiltrados.map((row, index) => {
-                let chip = <></>;
+              {datosFiltrados.length === 0 ? (
+                <StyledTableRow>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell>Sin registros</StyledTableCell>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                </StyledTableRow>
+              ) : (
+                datosFiltrados.map((row, index) => {
+                  let chip = <></>;
 
-                if (row.Estatus === "Captura") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      // icon={<WarningAmberIcon />}
-                      color="warning"
-                      variant="outlined"
-                    />
-                  );
-                }
+                  if (row.Estatus === "Captura") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<WarningAmberIcon />}
+                        color="warning"
+                        variant="outlined"
+                      />
+                    );
+                  }
 
-                if (row.Estatus === "Verificacion") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      // icon={<RateReviewSharpIcon />}
-                      color="info"
-                      variant="outlined"
-                    />
-                  );
-                }
+                  if (row.Estatus === "Verificacion") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<RateReviewSharpIcon />}
+                        color="info"
+                        variant="outlined"
+                      />
+                    );
+                  }
 
-                if (row.Estatus === "Por Firmar") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      // icon={<CheckIcon />}
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  );
-                }
-                if (row.Estatus === "Firmado") {
-                  chip = (
-                    <Chip
-                      label={row.Estatus}
-                      // icon={<CheckIcon />}
-                      color="success"
-                      variant="outlined"
-                    />
-                  );
-                }
+                  if (row.Estatus === "Por Firmar") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<CheckIcon />}
+                        color="secondary"
+                        variant="outlined"
+                      />
+                    );
+                  }
+                  if (row.Estatus === "Firmado") {
+                    chip = (
+                      <Chip
+                        label={row.Estatus}
+                        // icon={<CheckIcon />}
+                        color="success"
+                        variant="outlined"
+                      />
+                    );
+                  }
 
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.Institucion.toString()}
-                    </StyledTableCell>
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.Institucion.toString()}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.TipoEntePublico.toString()}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.TipoEntePublico.toString()}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {chip}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {chip}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.ClaveDeInscripcion.toString()}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.ClaveDeInscripcion.toString()}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {"$" + row.MontoOriginalContratado.toString()}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {"$" + row.MontoOriginalContratado.toString()}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.TipoSolicitud}
-                    </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.TipoSolicitud}
+                      </StyledTableCell>
 
-                    <StyledTableCell
-                      sx={{
-                        flexDirection: "row",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(2,1fr)",
-                      }}
-                      align="center"
-                      component="th"
-                      scope="row"
-                    >
-                      <Tooltip title="Ver">
-                        <IconButton
-                          type="button"
-                          onClick={() => {
-                            llenaSolicitud(row);
-                            changeOpenDialogVer(!openDialogVer);
-                          }}
-                        >
-                          <VisibilityIcon />
-                          {row.Acciones}
-                        </IconButton>
-                      </Tooltip>
+                      <StyledTableCell
+                        sx={{
+                          flexDirection: "row",
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2,1fr)",
+                        }}
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        <Tooltip title="Ver">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              llenaSolicitud(row);
+                              changeOpenDialogVer(!openDialogVer);
+                            }}
+                          >
+                            <VisibilityIcon />
+                            {row.Acciones}
+                          </IconButton>
+                        </Tooltip>
 
-                      {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                        localStorage.getItem("Rol") !== "Administrador" && (
-                          <Tooltip title="Edit">
+                        {localStorage.getItem("IdUsuario") === row.IdEditor &&
+                          localStorage.getItem("Rol") !== "Administrador" && (
+                            <Tooltip title="Edit">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  console.log(row);
+                                  changeIdSolicitud(row?.Id);
+                                  changeEditCreadoPor(row?.CreadoPor);
+                                  llenaSolicitud(row);
+                                  editarSolicitud();
+                                }}
+                              >
+                                <EditIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
+                        {row.Estatus === "Por Firmar" && (
+                          <Tooltip title="Descargar">
                             <IconButton
                               type="button"
                               onClick={() => {
-                                changeIdSolicitud(row?.Id || "");
-                                llenaSolicitud(row);
-                                editarSolicitud();
+                                DescargarConsultaSolicitud(row.Solicitud);
                               }}
                             >
-                              <EditIcon />
+                              <DownloadIcon />
                               {row.Acciones}
                             </IconButton>
                           </Tooltip>
                         )}
 
-                      {row.Estatus === "Por Firmar" && (
-                        <Tooltip title="Descargar">
-                          <IconButton
-                            type="button"
-                            onClick={() => {
-                              DescargarConsultaSolicitud(row.Solicitud);
-                            }}
-                          >
-                            <DownloadIcon />
-                            {row.Acciones}
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                      
-                      {localStorage.getItem("Rol") !== "Administrador" && (
-                        <Tooltip title="Comentarios">
-                          <IconButton
-                            type="button"
-                            onClick={() => {
-                              changeIdSolicitud(row?.Id || "");
-                              changeOpenVerComentarios(!openVerComentarios);
-                            }}
-                          >
-                            <CommentIcon />
-                            {row.Acciones}
-                          </IconButton>
-                        </Tooltip>
-                      )}
-
-                      {localStorage.getItem("IdUsuario") === row.CreadoPor &&
-                        localStorage.getItem("Rol") !== "Administrador" && (
-                          <Tooltip title="Borrar">
+                        {localStorage.getItem("Rol") !== "Administrador" && (
+                          <Tooltip title="Comentarios">
                             <IconButton
                               type="button"
                               onClick={() => {
                                 changeIdSolicitud(row?.Id || "");
-                                getSolicitudes(setDatos);
+                                changeEditCreadoPor(row?.CreadoPor);
+                                changeOpenVerComentarios(!openVerComentarios);
                               }}
                             >
-                              <DeleteIcon />
+                              <CommentIcon />
                               {row.Acciones}
                             </IconButton>
                           </Tooltip>
                         )}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
+
+                        {localStorage.getItem("IdUsuario") === row.CreadoPor &&
+                          localStorage.getItem("Rol") !== "Administrador" && (
+                            <Tooltip title="Borrar">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  changeIdSolicitud(row?.Id || "");
+                                  changeEditCreadoPor(row?.CreadoPor);
+                                  borrarSolicitud(row.Id);
+                                  getSolicitudes(setDatos);
+                                }}
+                              >
+                                <DeleteIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </TableContainer>

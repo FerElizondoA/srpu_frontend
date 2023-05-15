@@ -9,6 +9,7 @@ import { createNotification } from "../components/LateralMenu/APINotificaciones"
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
+  editCreadoPor: string;
 
   inscripcion: {
     servidorPublicoDirigido: string;
@@ -21,7 +22,9 @@ export interface SolicitudInscripcionSlice {
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
   changeReglasAplicables: (newReglas: string) => void;
+
   changeIdSolicitud: (id: string) => void;
+  changeEditCreadoPor: (id: string) => void;
 
   getReglas: () => void;
 
@@ -38,6 +41,8 @@ export interface SolicitudInscripcionSlice {
     estatus: string
   ) => void;
 
+  borrarSolicitud: (Id: string) => void;
+
   addComentario: (idSolicitud: string, comentario: string) => void;
 }
 
@@ -45,7 +50,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
   idSolicitud: "",
-
+  editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública",
@@ -59,6 +64,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     set(() => ({ inscripcion: inscripcion })),
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+
+  changeEditCreadoPor: (id: any) => set(() => ({ editCreadoPor: id })),
 
   changeReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
@@ -205,7 +212,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       }
     );
   },
-  fetchBorrarSolicitud: (Id: string) => {
+  borrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -214,7 +221,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       timerProgressBar: true,
     });
 
-    const response = axios
+    axios
       .delete(
         process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
         {

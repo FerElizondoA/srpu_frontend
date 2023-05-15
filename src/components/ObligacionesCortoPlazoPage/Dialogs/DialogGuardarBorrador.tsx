@@ -74,7 +74,12 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   useEffect(() => {
     notnull();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const editCreadoPor: string = useCortoPlazoStore(
+    (state) => state.editCreadoPor
+  );
 
   return (
     <Dialog
@@ -108,7 +113,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             props.handler(false);
             if (idSolicitud !== "") {
               modificaSolicitud(
-                localStorage.getItem("IdUsuario"),
+                editCreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Captura"

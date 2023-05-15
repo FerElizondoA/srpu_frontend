@@ -3,12 +3,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
-  Grid,
   Typography,
   Dialog,
   Button,
   Autocomplete,
-  Stack,
   TextField,
   Box,
 } from "@mui/material";
@@ -41,14 +39,14 @@ export function DialogCatalogoUsuarios({
 
   //Validaciones
   const validaMensaje = (dato: string) => {
-    const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
     if (dato.length < 201 && !format.test(dato)) {
       setRegistroNotificaciones({ ...registroNotificaciones, Mensaje: dato });
     }
   };
 
   const validaTitulo = (dato: string) => {
-    const format = /[¬°`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
     if (dato.length < 31 && !format.test(dato)) {
       setRegistroNotificaciones({ ...registroNotificaciones, Titulo: dato });
     }
@@ -75,7 +73,15 @@ export function DialogCatalogoUsuarios({
         </Typography>
       </DialogTitle>
 
-      <DialogContent sx={{ display: "flex", flexDirection: "column", m:4, height:'40vh', justifyContent:'space-around' }}>
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          m: 4,
+          height: "40vh",
+          justifyContent: "space-around",
+        }}
+      >
         <Autocomplete
           multiple
           getOptionLabel={(usuarios) =>

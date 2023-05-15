@@ -7,7 +7,10 @@ import { queries } from "../../queries";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { useCortoPlazoStore } from "../../store/main";
-import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import {
+  Documentacion,
+  IFile,
+} from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
 import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
@@ -15,11 +18,10 @@ import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resu
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
 
 export function ObligacionesCortoPlazoPage() {
-
   // useEffect(() => {
-    
+
   // }, [third])
-  
+
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
@@ -34,8 +36,9 @@ export function ObligacionesCortoPlazoPage() {
   const getTiposDocumentos: Function = useCortoPlazoStore(
     (state) => state.getTiposDocumentos
   );
+
   useEffect(() => {
-    getTiposDocumentos();
+      getTiposDocumentos();
   }, []);
 
   return (
