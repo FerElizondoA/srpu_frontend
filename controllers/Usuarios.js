@@ -73,22 +73,30 @@ module.exports = {
   //LISTADO COMPLETO
   getUsuarios: (req, res) => {
     const IdApp = req.query.IdApp;
-    const  EntePublico=req.query.EntePublico;
+    const  IdUsuario=req.query.IdUsuario;
+    const  PermisosEspeciales=req.query.PermisosEspeciales;
 
     if (IdApp == null ||/^[\s]*$/.test(IdApp)) {
       return res.status(409).send({
         error: "Ingrese IdApp",
       });
     } 
-    if (EntePublico == null ||/^[\s]*$/.test(EntePublico)) {
+    if (PermisosEspeciales == null ||/^[\s]*$/.test(PermisosEspeciales)) {
       return res.status(409).send({
-        error: "Ingrese EntePublico",
+        error: "Ingrese PermisosEspeciales",
       });
     } 
-    db.query(`CALL sp_ListadoUsuarios('${IdApp}','${EntePublico}')`, (err, result) => {
+    if (IdUsuario == null ||/^[\s]*$/.test(IdUsuario)) {
+      return res.status(409).send({
+        
+        error: "Ingrese IdUsuario",
+      });
+    } 
+    db.query(`CALL sp_ListadoUsuarios('${IdApp}','${IdUsuario}','${PermisosEspeciales}')`, (err, result) => {
+
       if (err) {
         return res.status(500).send({
-          error: "Error",
+          error: err.sqlMessage,
         });
       }
 
@@ -118,6 +126,43 @@ module.exports = {
         }
         if (result.length) {
           const data = result[0][0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
+
+  getUsuariosAsignables: (req, res) => {
+    const IdUsuario = req.query.IdUsuario;
+    const Rol =req.query.Rol;
+
+    if (IdUsuario == null ||/^[\s]*$/.test(IdUsuario)) {
+      return res.status(409).send({
+        error: "Ingrese IdUsuario",
+      });
+    }
+
+    if (Rol == null ||/^[\s]*$/.test(Rol)) {
+      return res.status(409).send({
+        error: "Ingrese Rol",
+      });
+    }
+    db.query(
+      `CALL sp_UsuariosAsignables('${IdUsuario}','${Rol}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
+        if (result.length) {
+          const data = result[0];
           return res.status(200).send({
             data,
           });

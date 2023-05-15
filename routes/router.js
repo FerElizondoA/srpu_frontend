@@ -19,7 +19,8 @@ const { createTipoEntePublico, modifyTipoEntePublico, deleteTipoEntePublico, get
 const { createSolicitud, getSolicitudes, modifySolicitud, deleteSolicitud, createComentario, getComentarios } = require("../controllers/Solicitudes.js");
 const { createTipoDeDocumento, getListadoTipoDeDocumentoCortoPlazo, getListadoTipoDeDocumentoLargoPlazo, getListadoTipoDeDocumento, deleteTipoDeDocumento, modifyTipoDocumento } = require("../controllers/TipoDeDocumentos.js");
 
-const { getDetailUsuario, getUsuarios, createUsuario } = require("../controllers/Usuarios.js");
+const { getDetailUsuario, getUsuarios, createUsuario, getUsuariosAsignables } = require("../controllers/Usuarios.js");
+const {createNotificacion, getNotificaciones, leerNotificacion, getInfoNotificacion, getNotificacionesCreadas } = require("../controllers/Notificaciones.js");
 
 
 //#region Instituciones Financieras
@@ -231,6 +232,7 @@ router.get("/get-roles", verifyToken.verifyJWT, (req, res) => {
 
 router.get("/detail-roles", verifyToken.verifyJWT, (req, res) => {
   getDetailRol(req, res);
+   
 });
 
 router.put("/modify-roles", verifyToken.verifyJWT, (req, res) => {
@@ -248,7 +250,7 @@ router.post("/create-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
 });
 
 
-router.get("/get-tiposDocumentos",  verifyToken.verifyJWT, (req, res) => {
+router.get("/get-tiposDocumento",  verifyToken.verifyJWT, (req, res) => {
   getListadoTipoDeDocumento(req, res);
 });
 
@@ -449,5 +451,33 @@ router.get("/get-comentarios",  verifyToken.verifyJWT, (req, res) => {
 router.post("/create-usuario", verifyToken.verifyJWT, (req, res) => {
   createUsuario(req, res);
 });
+
+router.post("/create-notificacion", verifyToken.verifyJWT,(req, res) => {
+  createNotificacion(req, res);
+});
+
+router.post("/leer-notificacion", (req, res) => {
+  leerNotificacion(req, res);
+});
+
+router.get("/get-notificaciones",verifyToken.verifyJWT,(req, res) => {
+  getNotificaciones(req, res);
+});
+
+router.get("/get-notificaciones-creadas",verifyToken.verifyJWT,(req, res) => {
+  getNotificacionesCreadas(req, res);
+});
+
+router.get("/get-info-notificacion",verifyToken.verifyJWT,(req, res) => {
+  getInfoNotificacion(req, res);
+});
+
+router.get("/get-usuarios-asignables",(req, res) => {
+  getUsuariosAsignables(req, res);
+});
+
+
+
+
 
 module.exports = router;
