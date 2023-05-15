@@ -82,6 +82,17 @@ export const createCondicionFinancieraSlice: StateCreator<
       tablaComisiones:
         condicionFinanciera.comisiones,
     });
+    useCortoPlazoStore.setState({
+      tasaEfectiva: {
+        diasEjercicio: {
+          Id: "",
+          Descripcion: condicionFinanciera.diasEjercicio
+        },
+        tasaEfectiva: condicionFinanciera.tasaEfectiva
+      }
+    });
+
+
   },
   upDataCondicionFinanciera: (
     condicionFinanciera: CondicionFinanciera,

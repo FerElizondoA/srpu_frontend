@@ -669,7 +669,10 @@ export function InformacionGeneral() {
 
               </Table>
             </TableContainer>
-            <Grid item>
+           
+          </Grid>
+          </Grid>
+          <Grid item width={"100%"}>
               <ConfirmButton
                 disabled={
                   generalObligadoSolidario.Descripcion === "No aplica" ||
@@ -683,9 +686,6 @@ export function InformacionGeneral() {
                 AGREGAR
               </ConfirmButton>
             </Grid>
-          </Grid>
-          </Grid>
-        
           
         </Grid>
       </Grid>

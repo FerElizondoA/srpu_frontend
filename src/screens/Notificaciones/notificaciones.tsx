@@ -70,7 +70,6 @@ export function Notificaciones() {
   ];
   const [notificaciones, setNotificaciones] = useState<Array<INotificaciones>>([]);
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
-  const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
   const [cantNoti, setCantNoti] = useState<number>();
   const [idNoti, setIdNoti] = useState<string>('');
 

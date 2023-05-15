@@ -177,8 +177,21 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.addCondicionFinanciera
   );
 
+  const reglasAplicables:  string[] = useCortoPlazoStore(
+    (state) => state.reglasAplicables
+  ) 
+  const changeReglasAplicables:  Function = useCortoPlazoStore(
+    (state) => state.changeReglasAplicables
+  ) 
+
   const llenaSolicitud = (solicitud: IData) => {
+    const state = useCortoPlazoStore.getState()
     let aux: any = JSON.parse(solicitud.Solicitud);
+    
+    
+    changeReglasAplicables(aux?.inscripcion.declaratorias);
+    console.log("reglasAplicables: ",reglasAplicables);
+    console.log("aux?.inscripcion.declaratorias: ",aux?.inscripcion.declaratorias);
     changeEncabezado(aux?.encabezado);
     changeInformacionGeneral(aux?.informacionGeneral);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
@@ -199,6 +212,8 @@ export function ConsultaDeSolicitudPage() {
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
+
+  const [selectedItems, setSelectedItems] = useState<string[]>([""]);
 
   return (
     <Grid container direction="column">
@@ -354,6 +369,8 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
+                            console.log("row: ",row);
+                            
                             changeIdSolicitud(row?.Id || "");
                             llenaSolicitud(row);
                             editarSolicitud();
@@ -369,6 +386,7 @@ export function ConsultaDeSolicitudPage() {
                           type="button"
                           aria-label="search"
                           onClick={() => {
+
                             DescargarConsultaSolicitud(row.Solicitud);
                           }}
                         >
