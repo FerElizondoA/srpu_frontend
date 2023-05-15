@@ -22,7 +22,6 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
-import { DialogCatalogoUsuarios } from "../Dialogs/DialogCrearNotificacion";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
