@@ -13,16 +13,14 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../../components/CustomComponents";
-import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
-import { getHistorialNotificaciones } from "../../components/LateralMenu/APINotificaciones";
-import { IHistorial } from "../../components/Interfaces/Notificaciones/INotificaciones";
-import { Destinatarios } from "./Dialog/InfoAdicional";
-import InfoIcon from "@mui/icons-material/Info";
+import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
+import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
+import { format } from "date-fns";
+import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
+import { Destinatarios } from "./Dialog/InfoAdicional";
+import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
 
 export function Notificaciones() {
   //Declaraciones
@@ -54,7 +52,14 @@ export function Notificaciones() {
     },
   ];
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
-  const [idNoti, setIdNoti] = useState<string>("");
+  const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
+  const [cantNoti, setCantNoti] = useState<number>();
+  const [idNoti, setIdNoti] = useState<string>('');
+
+
+
+
+
 
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogNotificaciones = () => {
@@ -176,10 +181,7 @@ export function Notificaciones() {
 
                     <StyledTableCell component="th" scope="row" align="center">
                       <IconButton
-                        onClick={() => {
-                          setIdNoti(noti.Id);
-                          openDialogDestinatarios();
-                        }}
+                        onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
                       >
                         <InfoIcon />
                       </IconButton>

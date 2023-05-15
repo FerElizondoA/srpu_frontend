@@ -38,7 +38,7 @@ export const Usuarios = () => {
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios, 0);
+    getListadoUsuarios(setUsuarios);
   }, []);
 
   useEffect(() => {
