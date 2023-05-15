@@ -73,6 +73,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   };
 
   useEffect(() => {
+    // console.log("hola", tipoEntePublico);
     notnull();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

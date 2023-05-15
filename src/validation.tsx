@@ -49,6 +49,8 @@ export const getUserDetails = (idCentral: string) => {
     })
     .then((r) => {
       if (r.status === 200) {
+        
+        
         localStorage.setItem("IdUsuario", r.data.data.Id);
         localStorage.setItem(
           "NombreUsuario",
