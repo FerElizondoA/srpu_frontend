@@ -46,7 +46,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 import { IInformacionGeneral } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IEncabezado";
 import CheckIcon from '@mui/icons-material/Check';
 import { styled } from "@mui/system";

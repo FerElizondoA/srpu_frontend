@@ -18,9 +18,9 @@ import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { continueSession, sessionValid } from "./components/APIS/Config/validation";
 import { HomePage } from "./components/HomePage/HomePage";
 import { Configuracion } from "./components/Config/Configuracion";
-import { Catalogos } from "./screens/config/Catalogos";
-import { Usuarios } from "./screens/config/Usuarios";
-import { Notificaciones } from "./screens/notificaciones/notificaciones";
+import { Catalogos } from "./screens/Config/Catalogos";
+import { Usuarios } from "./screens/Config/Usuarios";
+import { Notificaciones } from "./screens/Notificaciones/notificaciones";
 
 
 export const appTheme = createTheme({

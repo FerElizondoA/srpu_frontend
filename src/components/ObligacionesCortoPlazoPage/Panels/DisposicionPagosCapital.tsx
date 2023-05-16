@@ -43,7 +43,7 @@ import {
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 interface Head {
   label: string;
