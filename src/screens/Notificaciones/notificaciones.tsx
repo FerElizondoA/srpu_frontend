@@ -14,9 +14,8 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { getEstatus, getHistorialNotificaciones, getNotificaciones } from "../../components/LateralMenu/APINotificaciones";
-import { IEstatus, IHistorial, INotificaciones } from "../../components/Interfaces/Notificaciones/INotificaciones";
-import { format } from "date-fns";
+import { getHistorialNotificaciones } from "../../components/LateralMenu/APINotificaciones";
+import { IHistorial, } from "../../components/Interfaces/Notificaciones/INotificaciones";
 import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
 import { Destinatarios } from "./Dialog/InfoAdicional";

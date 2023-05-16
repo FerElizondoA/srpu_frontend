@@ -92,16 +92,12 @@ export const queries = {
   },
 
   tablaCondicionFinanciera:{
-    height:280,
+    height:250,
     width:"100%",
     display:"flex",
     justifyContent:"center",
-
-  
-    
     "@media (min-width: 1870px)": {
-      height:470,
-     
+      height:430,
     },
   }
 

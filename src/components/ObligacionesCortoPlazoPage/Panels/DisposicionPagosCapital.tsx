@@ -241,7 +241,7 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container display="flex" justifyContent={"space-evenly"} height={"120%"} >
+    <Grid container display="flex" justifyContent={"space-evenly"} height={"110%"} >
       <Grid item container>
         <Grid item lg={6} flexDirection="column" height={"100%"} justifyContent={"space-evenly"} >
           <Grid item>

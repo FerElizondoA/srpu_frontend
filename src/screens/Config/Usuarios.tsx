@@ -303,7 +303,7 @@ export const Usuarios = () => {
                 </Paper>
               </Grid>
 
-              <Grid display={"flex"} justifyContent={"space-evenly"} width={"20%"}>
+              <Grid display={"flex"} justifyContent={"space-evenly"} width={"25%"}>
                 <Grid
                   item
                   xs={2}
