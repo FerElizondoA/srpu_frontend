@@ -22,6 +22,7 @@ import { Catalogos } from "./screens/config/Catalogos";
 import { Usuarios } from "./screens/config/Usuarios";
 import { Notificaciones } from "./screens/Notificaciones/notificaciones";
 
+
 export const appTheme = createTheme({
   palette: {
     primary: {
