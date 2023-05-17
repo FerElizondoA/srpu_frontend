@@ -14,7 +14,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { IModulos } from "../../../screens/Config/Catalogos"
+import { IModulos } from "../../../screens/config/Catalogos"
 import { creaDesc, delDesc, modDesc } from "../../APIS/Config/APISCatalogos";
 
 

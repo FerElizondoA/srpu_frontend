@@ -15,7 +15,7 @@ import SendIcon from "@mui/icons-material/Send";
 import DialogContentText from "@mui/material/DialogContentText";
 import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
-import { ICatalogo } from "../../../screens/Config/Catalogos";
+import { ICatalogo } from "../../../screens/config/Catalogos";
 import { getCatalogo } from "../../APIS/Config/APISCatalogos";
 import { createSolicitud } from "../../APIS/Config/Solicitudes-Usuarios";
 
