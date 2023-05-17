@@ -200,23 +200,19 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.borrarSolicitud
   );
 
-  const reglasAplicables:  string[] = useCortoPlazoStore(
+  const reglasAplicables: string[] = useCortoPlazoStore(
     (state) => state.reglasAplicables
-  ) 
-  const changeReglasAplicables:  Function = useCortoPlazoStore(
+  );
+  const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
-  ) 
-  
+  );
 
   const llenaSolicitud = (solicitud: IData) => {
-    const state = useCortoPlazoStore.getState()
+    const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud);
-    
-    
+
     changeReglasAplicables(aux?.inscripcion.declaratorias);
-    console.log("aux?.informacionGeneral.fechaContratacion: ",aux?.informacionGeneral.fechaContratacion);
-    console.log("aux?.informacionGeneral.fechaVencimiento: ",aux?.informacionGeneral.fechaVencimiento);
-    
+
     changeEncabezado(aux?.encabezado);
 
     changeInformacionGeneral(aux?.informacionGeneral);
@@ -472,7 +468,6 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  console.log(row);
                                   changeIdSolicitud(row?.Id);
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
