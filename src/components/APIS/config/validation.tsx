@@ -68,6 +68,8 @@ export const getUserDetails = (idCentral: string) => {
           r.data.data.EntePublicoObligado
         );
         localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
+        localStorage.setItem("IdEntePublicoObligado",r.data.data.IdEntePublico);
+        localStorage.setItem("IdTipoEntePublicoObligado",r.data.data.IdTipoEntePublico);
 
         return true;
       } else {
