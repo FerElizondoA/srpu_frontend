@@ -169,7 +169,7 @@ export function Solicitudes() {
       {/* grid  columna del cuerpo */}
       <Grid display={"flex"} flexDirection={"row"}>
         {/* grid  columna del previsualizacion y filtro*/}
-        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={2} ml={2}>
+        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={2} ml={2} >
           <Grid mb={2.5} sm={11} xs={11} md={11} lg={11} xl={12}>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>

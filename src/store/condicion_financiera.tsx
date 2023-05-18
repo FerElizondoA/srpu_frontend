@@ -1,7 +1,6 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
 
-
 export interface TasaInteres {
   tasaFija: boolean;
   tasaVariable: boolean;

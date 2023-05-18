@@ -467,7 +467,6 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  console.log(row);
                                   changeIdSolicitud(row?.Id);
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);

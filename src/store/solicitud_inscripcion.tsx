@@ -288,7 +288,7 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     "septiembre",
     "octubre",
     "noviembre",
-    "diciembre"
+    "diciembre",
   ];
   const state = useCortoPlazoStore.getState();
 
@@ -303,13 +303,15 @@ interface DocumentacionItem {
 
 const descripciones: string[] = solicitud.documentacion.map((item: DocumentacionItem) => item. descripcionTipo);
 
+  const fechaVencimiento = new Date(
+    solicitud.informacionGeneral.fechaVencimiento
+  );
+  const dia = fechaVencimiento.getDate();
+  const mes = meses[fechaVencimiento.getMonth()];
+  const año = fechaVencimiento.getFullYear();
 
-const fechaVencimiento = new Date(solicitud.informacionGeneral.fechaVencimiento);
-const dia = fechaVencimiento.getDate();
-const mes = meses[fechaVencimiento.getMonth()];
-const año = fechaVencimiento.getFullYear();
+  const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
 
-const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
 
 
 const fechaContratacion = new Date(solicitud.informacionGeneral.fechaContratacion);
@@ -344,11 +346,11 @@ const SolicitudDescarga: any ={
     .post(
       "http://192.168.137.152:7000/documento_srpu",
       {
-        nombre:SolicitudDescarga.Nombre,
-        cargoServidorPublicoSolicitante:SolicitudDescarga.Cargo,
+        nombre: SolicitudDescarga.Nombre,
+        cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
         oficionum: "10",
         cargoServidorPublico: solicitud.cargoSolicitante,
-        organismo:SolicitudDescarga.Organismo,
+        organismo: SolicitudDescarga.Organismo,
         InstitucionBancaria: SolicitudDescarga.InstitucionBancaria,
         monto: SolicitudDescarga.Monto,
         destino: SolicitudDescarga.Destino,
@@ -361,7 +363,9 @@ const SolicitudDescarga: any ={
         servidorpublico: SolicitudDescarga.Servidorpublico,
         contrato: SolicitudDescarga.TipoDocumento,
         periodoPago: SolicitudDescarga.PeriodoPago,
-        obligadoSolidarioAval:solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+        obligadoSolidarioAval:
+          solicitud.informacionGeneral.obligadosSolidarios[0]
+            ?.obligadoSolidario || "No aplica",
         fechaContrato: fechaContratacionEspañol,
         fechaVencimiento: fechaVencimientoEspañol,
         Documentos: descripciones,
@@ -387,10 +391,7 @@ const SolicitudDescarga: any ={
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => {
-      console.log(err);
-      
-    });
+    .catch((err) => {});
 }
 
 export const getUsuariosAsignables = (setState: Function, numero: number) => {
