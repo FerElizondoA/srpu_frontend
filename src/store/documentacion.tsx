@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { IFile } from "../components/ObligacionesCortoPlazoPage/panels/Documentacion";
+import { IFile } from "../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { ITiposDocumento } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
 import { useCortoPlazoStore } from "./main";
 
