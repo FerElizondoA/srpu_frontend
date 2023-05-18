@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   TableRow,
+  Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -24,6 +25,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { queries } from "../../../queries";
 
 interface Data {
   Documento: String;
@@ -273,6 +275,7 @@ export function Documentacion() {
           md={4}
           lg={4}
           sx={{
+            height:50,
             display: "flex",
             justifyContent: "flex-end",
             top: "auto",
@@ -309,21 +312,22 @@ export function Documentacion() {
             }}
           ></input>
         </Grid>
-        <Grid item md={4} lg={4}>
-          <ConfirmButton
+        
+        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4} >
+          <Button sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
               agregarArchivo();
             }}
           >
             AGREGAR
-          </ConfirmButton>
+          </Button>
         </Grid>
 
-        <Grid item md={4} lg={4}>
-          <DeleteButton variant="outlined" onClick={cancelar}>
+        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}  item md={4} lg={4}>
+          <Button sx={queries.buttonCancelar} variant="outlined" onClick={cancelar}>
             CANCELAR
-          </DeleteButton>
+          </Button>
         </Grid>
       </Grid>
     </Grid>
