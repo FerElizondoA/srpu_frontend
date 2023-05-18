@@ -401,7 +401,7 @@ export function SolicitudInscripcion() {
             <Grid item>
               <TableContainer
                 sx={{
-                  height: "40vh",
+                  height: "50vh",
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".2vw",
