@@ -20,11 +20,11 @@ export const queriesSolicitud = {
     },
     "@media (min-width: 1485px)": {
       
-      height: 575,
+      height: 570,
     },
     "@media (min-width: 1870px)": {
       
-      height: 782,
+      height: 790,
     },
   },
 

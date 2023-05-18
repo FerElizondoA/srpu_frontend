@@ -369,7 +369,7 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
-        <Grid item>
+        <Grid item >
           <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
           <Autocomplete
             fullWidth
