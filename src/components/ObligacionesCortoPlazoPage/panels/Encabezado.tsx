@@ -15,6 +15,7 @@ import {
   getListadoUsuarios,
   // getRoles,
 } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 export interface IUsuariosCorto {
   id: string;
@@ -56,6 +57,12 @@ export function Encabezado() {
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
+
+
+  const catalogoTipoEntePublicoObligado: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoTipoEntePublicoObligado
+  );
+
 
   useEffect(() => {
     getTiposEntesPublicos();
@@ -115,6 +122,10 @@ export function Encabezado() {
                 organismo: organismo,
                 fechaContratacion: fechaContratacion,
               });
+              console.log("organismo: ",organismo);
+              console.log("organismo: ",tipoEntePublico);
+              console.log("catalogoTipoEntePublicoObligado: ",catalogoTipoEntePublicoObligado);
+              
             }}
             variant="standard"
           >
