@@ -16,8 +16,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
 import { ICatalogo } from "../../../screens/config/Catalogos";
-import { getCatalogo } from "../../APIS/Config/APISCatalogos";
-import { createSolicitud } from "../../APIS/Config/Solicitudes-Usuarios";
+import { createSolicitud } from "../../APIS/config/Solicitudes-Usuarios";
+import { getCatalogo } from "../../APIS/config/APISCatalogos";
 
 export const DialogUsuarios = ({
   open,

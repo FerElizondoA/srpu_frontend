@@ -8,31 +8,22 @@ import {
   Table,
   TableHead,
   TableBody,
-  TableSortLabel,
-  Checkbox,
   Grid,
   IconButton,
   Tooltip,
   Typography,
   TableRow,
   Button,
-  Box,
   Paper,
-  TableCell,
   createTheme,
   ThemeProvider,
-  makeStyles,
-  createStyles,
-  Theme,
+  Select, MenuItem,
 } from "@mui/material";
 
 
 import {
   StyledTableCell,
   StyledTableRow,
-  ConfirmButton,
-  DeleteButton,
-  hashFunctionCYRB53,
 } from "../../CustomComponents";
 
 import enGB from "date-fns/locale/en-GB";
@@ -44,13 +35,11 @@ import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
-import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { IInformacionGeneral } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IEncabezado";
 import CheckIcon from '@mui/icons-material/Check';
-import { styled } from "@mui/system";
-
+import validator from 'validator';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 interface Head {
   label: string;
@@ -184,6 +173,9 @@ export function InformacionGeneral() {
     addObligadoSolidarioAval(tab);
   };
 
+  const Denominaciones = ["Pesos", "UDIS"]
+
+
   useEffect(() => {
     getInstituciones();
     getDestinos();
@@ -249,13 +241,13 @@ export function InformacionGeneral() {
   //   }
 
   // }
-  
+
   return (
     <Grid
       sx={{
         display: "flex", height: "85vh", flexDirection: "column",
         justifyContent: "space-evenly",
-        
+
         // backgroundColor:"red"
       }}
 
@@ -315,17 +307,33 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             fullWidth
-            value={monto}
-            onChange={(v) =>
-              changeInformacionGeneral({
-                fechaContratacion: contratacion,
-                fechaVencimiento: vencimiento,
-                plazo: plazo,
-                destino: destino,
-                monto: v.target.value,
-                denominacion: denominacion,
-                institucionFinanciera: institucionFinanciera,
-              })
+            placeholder="0"
+            value={monto <= 0 ? '' : monto.toString()}
+            onChange={(v) => {
+
+              if (validator.isNumeric(v.target.value)) {
+                changeInformacionGeneral({
+                  fechaContratacion: contratacion,
+                  fechaVencimiento: vencimiento,
+                  plazo: plazo,
+                  destino: destino,
+                  monto: v.target.value,
+                  denominacion: denominacion,
+                  institucionFinanciera: institucionFinanciera,
+                })
+              } else if (v.target.value === '') {
+                changeInformacionGeneral({
+                  fechaContratacion: contratacion,
+                  fechaVencimiento: vencimiento,
+                  plazo: plazo,
+                  destino: destino,
+                  monto: 0,
+                  denominacion: denominacion,
+                  institucionFinanciera: institucionFinanciera,
+                })
+              }
+            }
+
             }
             InputLabelProps={{
               style: {
@@ -337,7 +345,7 @@ export function InformacionGeneral() {
                 fontFamily: "MontserratMedium",
               },
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <AttachMoneyIcon/>
               ),
             }}
             variant="standard"
@@ -409,8 +417,9 @@ export function InformacionGeneral() {
 
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
-          <TextField
-            fullWidth
+          <Select
+          fullWidth
+          variant="standard"
             value={denominacion || ""}
             onChange={(v) =>
               changeInformacionGeneral({
@@ -423,18 +432,14 @@ export function InformacionGeneral() {
                 institucionFinanciera: institucionFinanciera,
               })
             }
-            variant="standard"
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
+          >
+            {Denominaciones.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+
         </Grid>
       </Grid>
 
@@ -645,10 +650,10 @@ export function InformacionGeneral() {
           
         </Grid> */}
       </Grid>
-      <Grid  width={"94%"} display={"flex"} justifyContent={"flex-end"}>
+      <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
         <ThemeProvider theme={theme}>
           <Button
-            
+
             sx={queries.buttonContinuar}
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
@@ -661,9 +666,9 @@ export function InformacionGeneral() {
           >
             <CheckIcon fontSize="small" />AGREGAR
           </Button>
-        
+
         </ThemeProvider>
-        
+
 
       </Grid>
 
