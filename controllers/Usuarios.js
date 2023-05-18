@@ -3,6 +3,8 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createUsuario: (req, res) => {
+
+    console.log(req.body);
     
     const IdUsuarioCreador = req.body.CreadoPor;
     const IdUsuarioCentral = req.body.IdUsuarioCentral;
@@ -44,6 +46,8 @@ module.exports = {
       db.query(
         `CALL sp_NuevoUsuario('${IdUsuarioCreador}', '${IdUsuarioCentral}','${Cargo}','${IdEntePublico}','${CorreoDeRecuperacion}','${IdRol}' )`,
         (err, result) => {
+          console.log(err);
+          console.log(result);
           
           if (err) {
             return res.status(500).send({
