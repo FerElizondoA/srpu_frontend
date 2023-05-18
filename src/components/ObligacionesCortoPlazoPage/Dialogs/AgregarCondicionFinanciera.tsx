@@ -28,8 +28,8 @@ import {
   IComisiones,
   TasaInteres,
 } from "../../../store/condicion_financiera";
-import { DisposicionPagosCapital } from "../panels/DisposicionPagosCapital";
-import { ComisionesTasaEfectiva } from "../panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
+import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   ICatalogo,
   IEntePublico,
-} from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+} from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 export interface EncabezadoSlice {
   encabezado: {
@@ -52,11 +52,11 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
       Nombre: localStorage.getItem("NombreUsuario") || "",
     },
     tipoEntePublico: {
-      Id: "",
+      Id: localStorage.getItem("IdTipoEntePublicoObligado") || "",
       TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
     },
     organismo: {
-      Id: "",
+      Id: localStorage.getItem("IdEntePublicoObligado") || "",
       Organismo: localStorage.getItem("EntePublicoObligado") || "",
     },
     fechaContratacion: new Date().toString(),
@@ -98,8 +98,9 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
         }
       )
       .then(({ data }) => {
+        let r = data.data;
         set((state) => ({
-          catalogoOrganismos: data.data,
+          catalogoOrganismos: r,
         }));
       });
   },

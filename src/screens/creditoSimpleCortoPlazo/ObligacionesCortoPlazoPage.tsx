@@ -10,12 +10,12 @@ import { useCortoPlazoStore } from "../../store/main";
 import {
   Documentacion,
   IFile,
-} from "../../components/ObligacionesCortoPlazoPage/panels/Documentacion";
-import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/panels/Encabezado";
-import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/panels/InformacionGeneral";
-import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
-import { Resumen } from "../../components/ObligacionesCortoPlazoPage/panels/Resumen";
-import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/panels/SolicitudInscripcion";
+} from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
+import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
+import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
+import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
+import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 
 export function ObligacionesCortoPlazoPage() {
   // useEffect(() => {

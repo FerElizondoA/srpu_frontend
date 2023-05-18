@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
-import { CondicionesFinancieras } from "../components/ObligacionesCortoPlazoPage/panels/CondicionesFinancieras";
 
 export interface TasaInteres {
   tasaFija: boolean;
