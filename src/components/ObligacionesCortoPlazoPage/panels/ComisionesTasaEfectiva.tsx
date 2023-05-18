@@ -46,7 +46,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { useCortoPlazoStore } from "../../../store/main";
 
 import { format } from "date-fns";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 interface Head {
   label: string;

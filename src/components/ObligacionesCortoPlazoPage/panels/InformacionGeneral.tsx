@@ -36,7 +36,7 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 import CheckIcon from '@mui/icons-material/Check';
 import validator from 'validator';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';

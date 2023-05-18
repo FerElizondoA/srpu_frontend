@@ -4,7 +4,7 @@ import { useCortoPlazoStore } from "./main";
 import { format } from "date-fns";
 import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 import { createNotification } from "../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {

@@ -18,7 +18,7 @@ import {
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";

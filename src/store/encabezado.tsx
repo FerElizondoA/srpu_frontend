@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   ICatalogo,
   IEntePublico,
-} from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+} from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 export interface EncabezadoSlice {
   encabezado: {
