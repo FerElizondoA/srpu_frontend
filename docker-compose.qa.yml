@@ -18,5 +18,5 @@ services:
       - /usr/src/app/node_modules
     ports:
       - 3500:3000
-      - 9229:9229
+      - 9230:9229
     restart: always
