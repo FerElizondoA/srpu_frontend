@@ -92,17 +92,46 @@ export const queries = {
   },
 
   tablaCondicionFinanciera:{
-    height:280,
+    height:250,
     width:"100%",
     display:"flex",
     justifyContent:"center",
-
-  
-    
     "@media (min-width: 1870px)": {
-      height:470,
-     
+      height:430,
     },
+  },
+
+  tablaUsuarios:{
+    height:580,
+    width:"100%",
+    maxHeight:"50%",
+    overflow: "auto",
+    "@media (min-width: 1870px)": {
+      height:795,
+    },
+  },
+
+  tablaNotificaciones:{
+    height:"37rem",
+    width:"100%",
+   
+    overflow: "auto",
+    "@media (min-width: 1870px)": {
+      height:780,
+    },
+  },
+
+  botonAgregarCondicionFinanciera:{
+    backgroundColor: "#15212f",
+    height: "8vh",
+    width:"100%",
+    color: "white",
+    fontWeight:"bold",
+    "&&:hover": {
+      backgroundColor: "rgba(47, 47, 47, 0.4)",
+      color: "#000",
+    },
+    textTransform: "capitalize",
   }
 
 };

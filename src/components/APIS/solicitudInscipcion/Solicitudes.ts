@@ -15,49 +15,49 @@ const Toast = Swal.mixin({
     },
   });
 
-export const createSolicitud = (data: ICreateSolicitud, comentario:string) => {
-    axios
-      .post(
-        process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",data,
-        // {
-        //   Nombre: names,
-        //   APaterno: firstName,
-        //   AMaterno: secondName,
-        //   NombreUsuario: username,
-        //   Email: email,
-        //   Puesto:datosAdicionales.rol,
-        //   Curp: curp,
-        //   RFC: rfc,
-        //   Celular: cellphone,
-        //   Telefono: telephone,
-        //   Extencion: ext,
-        //   DatosAdicionales: JSON.stringify(datosAdicionales),
-        //   TipoSolicitud: "ALTA",
-        //   CreadoPor: localStorage.getItem("IdCentral"),
-        //   IdApp: localStorage.getItem("IdApp"),
-        // },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken") || "",
-          },
-        }
-      )
-      .then((r) => {
-        if (r.status === 200) {
-          if (comentario !== "")
-            createComentarios(r.data.data[0][0].IdSolicitud,comentario);
+// export const createSolicitud = (data: ICreateSolicitud, comentario:string) => {
+//     axios
+//       .post(
+//         process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",data,
+//         // {
+//         //   Nombre: names,
+//         //   APaterno: firstName,
+//         //   AMaterno: secondName,
+//         //   NombreUsuario: username,
+//         //   Email: email,
+//         //   Puesto:datosAdicionales.rol,
+//         //   Curp: curp,
+//         //   RFC: rfc,
+//         //   Celular: cellphone,
+//         //   Telefono: telephone,
+//         //   Extencion: ext,
+//         //   DatosAdicionales: JSON.stringify(datosAdicionales),
+//         //   TipoSolicitud: "ALTA",
+//         //   CreadoPor: localStorage.getItem("IdCentral"),
+//         //   IdApp: localStorage.getItem("IdApp"),
+//         // },
+//         {
+//           headers: {
+//             Authorization: localStorage.getItem("jwtToken") || "",
+//           },
+//         }
+//       )
+//       .then((r) => {
+//         if (r.status === 200) {
+//           if (comentario !== "")
+//             createComentarios(r.data.data[0][0].IdSolicitud,comentario);
 
-          Toast.fire({
-            icon: "success",
-            title: "¡Registro exitoso!",
-          });
-        }
-      })
-      .catch((r) => {
-        if (r.response.status === 409) {
-        }
-      });
-  };
+//           Toast.fire({
+//             icon: "success",
+//             title: "¡Registro exitoso!",
+//           });
+//         }
+//       })
+//       .catch((r) => {
+//         if (r.response.status === 409) {
+//         }
+//       });
+//   };
 
   const createComentarios = (idSolicitud: string,comentario:string) => {
    

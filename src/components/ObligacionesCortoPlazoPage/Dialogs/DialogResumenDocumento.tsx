@@ -4,7 +4,7 @@ import {
   Slide,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { Resumen } from "../panels/Resumen";
+import { Resumen } from "../Panels/Resumen";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {

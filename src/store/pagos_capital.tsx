@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { IComisiones, TasaInteres } from "./condicion_financiera";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 
 

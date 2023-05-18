@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 import { IComisiones } from "./condicion_financiera";
 
 export interface TasaEfectivaSlice {

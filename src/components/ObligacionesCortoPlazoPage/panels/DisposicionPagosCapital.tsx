@@ -24,6 +24,7 @@ import {
   createTheme,
   Paper,
 } from "@mui/material";
+import validator from 'validator';
 
 import CheckIcon from '@mui/icons-material/Check';
 
@@ -35,6 +36,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
 import {
   ConfirmButton,
   StyledTableCell,
@@ -43,7 +46,7 @@ import {
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
 
 interface Head {
   label: string;
@@ -241,7 +244,7 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container display="flex" justifyContent={"space-evenly"} height={"120%"} >
+    <Grid container display="flex" justifyContent={"space-evenly"} height={"110%"} >
       <Grid item container>
         <Grid item lg={6} flexDirection="column" height={"100%"} justifyContent={"space-evenly"} >
           <Grid item>
@@ -272,15 +275,18 @@ export function DisposicionPagosCapital() {
             </Grid>
             <Grid item lg={4}>
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
+
               <TextField
-                value={disposicionImporte}
-                onChange={(text) =>
-                  /^[0-9,.]*$/.test(text.target.value)
-                    ? changeDisposicion(
-                      disposicionFechaContratacion,
-                      text.target.value
-                    )
-                    : null
+                placeholder="0"
+                value={disposicionImporte<=0?'':disposicionImporte.toString()}
+                onChange={(v) =>{
+                  if (validator.isNumeric(v.target.value)) {
+                  changeDisposicion(disposicionFechaContratacion, v.target.value)
+                  }else if(v.target.value===''){
+                    changeDisposicion(disposicionFechaContratacion, 0)
+                  }
+                }
+                  
                 }
                 fullWidth
                 InputLabelProps={{
@@ -293,7 +299,7 @@ export function DisposicionPagosCapital() {
                     fontFamily: "MontserratMedium",
                   },
                   startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
+                    <AttachMoneyIcon/>
                   ),
                 }}
                 variant="standard"
@@ -376,13 +382,23 @@ export function DisposicionPagosCapital() {
             <Grid item lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
-                value={capitalNumeroPago}
-                onChange={(c) =>
-                  changeCapital(
-                    capitalFechaPrimerPago,
-                    capitalPeriocidadPago,
-                    c.target.value
-                  )
+                placeholder="1"
+                value={capitalNumeroPago<=1?'':capitalNumeroPago.toString()}
+                onChange={(v) =>{
+                  if (validator.isNumeric(v.target.value)) {
+                    changeCapital(
+                      capitalFechaPrimerPago,
+                      capitalPeriocidadPago,
+                      v.target.value
+                    )
+                  } else if (v.target.value === '') {
+                    changeCapital(
+                      capitalFechaPrimerPago,
+                      capitalPeriocidadPago,
+                      1
+                    )
+                  }
+                }
                 }
                 fullWidth
                 InputLabelProps={{
