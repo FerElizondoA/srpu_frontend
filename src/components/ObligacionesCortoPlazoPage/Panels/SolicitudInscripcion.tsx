@@ -22,8 +22,8 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
-import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import Swal from "sweetalert2";
+import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
   label: string;
