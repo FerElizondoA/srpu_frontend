@@ -7,6 +7,7 @@ import {
   TableHead,
   TableBody,
   Typography,
+  Paper,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
@@ -20,9 +21,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import { QueriesNotificaciones } from "./queriesNotificaciones";
 import { Destinatarios } from "./Dialog/InfoAdicional";
 import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
+import { queries } from "../../queries";
 
 export function Notificaciones() {
   //Declaraciones
+  
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
@@ -50,15 +53,11 @@ export function Notificaciones() {
       label: "Informacion Adicional",
     },
   ];
+
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
   const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
   const [cantNoti, setCantNoti] = useState<number>();
   const [idNoti, setIdNoti] = useState<string>('');
-
-
-
-
-
 
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogNotificaciones = () => {
@@ -100,101 +99,86 @@ export function Notificaciones() {
           </Typography>
         </Grid>
 
-        <Grid
+           {/* <Grid
           item
-          xl={12}
-          lg={12}
-          display="flex"
-          justifyContent="Center"
-          alignItems={"center"}
+          xl={4}
+          lg={3}
+          md={3}
+          xs={3}
+          sm={4}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
-          <Grid
-            item
-            xl={9}
-            xs={8}
-            lg={8}
-            sm={7}
-            sx={{ display: "flex", justifyContent: "flex-end" }}
-          ></Grid>
-          <Grid
-            item
-            xl={4}
-            lg={3}
-            md={3}
-            xs={3}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "center" }}
+          <Button
+            color="info"
+            variant="contained"
+            size="large"
+            endIcon={<AddCommentIcon />}
+            sx={QueriesNotificaciones.boton}
+            onClick={() => {
+              openDialogNotificaciones();
+            }}
           >
-            <Button
-              color="info"
-              variant="contained"
-              size="large"
-              endIcon={<AddCommentIcon />}
-              sx={QueriesNotificaciones.boton}
-              onClick={() => {
-                openDialogNotificaciones();
-              }}
-            >
-              Añadir Notificacion
-            </Button>
-          </Grid>
-        </Grid>
+            Añadir Notificacion
+          </Button>
+        </Grid> */}
 
-        <Grid item sx={{ alignItems: "center" }}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                {heads.map((head) => (
-                  <StyledTableCell
-                    key={head.id}
-                    align="center"
-                    sx={{ height: "10vh" }}
-                  >
-                    {head.label}
-                  </StyledTableCell>
-                ))}
-              </TableHead>
-              <TableBody>
-                {historial?.map((noti, index) => (
-                  <StyledTableRow>
-                    <StyledTableCell component="th" scope="row" align="center">
-                      {noti.Titulo}
-                    </StyledTableCell>
-
+        <Grid item sx={queries.tablaNotificaciones}>
+          <Paper sx={{ height: "100%" }}>
+            <TableContainer sx={{ maxHeight: "100%" }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  {heads.map((head) => (
                     <StyledTableCell
-                      component="th"
-                      scope="row"
+                      key={head.id}
                       align="center"
-                      sx={{ textAlign: "justify", width: "30%" }}
+                      sx={{ height: "10vh" }}
                     >
-                      {noti.Mensaje}
+                      {head.label}
                     </StyledTableCell>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {historial?.map((noti, index) => (
+                    <StyledTableRow>
+                      <StyledTableCell component="th" scope="row" align="center">
+                        {noti.Titulo}
+                      </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" align="center">
-                      {noti.Fecha}
-                    </StyledTableCell>
-
-                    <StyledTableCell component="th" scope="row" align="center">
-                      {noti.Hora}
-                    </StyledTableCell>
-
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <IconButton
-                        onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                        sx={{ textAlign: "justify", width: "30%" }}
                       >
-                        <InfoIcon />
-                      </IconButton>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-              <Destinatarios
-                open={openDestinatarios}
-                handleClose={openDialogDestinatarios}
-                IdNotificacion={idNoti}
-              />
-            </Table>
-          </TableContainer>
+                        {noti.Mensaje}
+                      </StyledTableCell>
+
+                      <StyledTableCell component="th" scope="row" align="center">
+                        {noti.Fecha}
+                      </StyledTableCell>
+
+                      <StyledTableCell component="th" scope="row" align="center">
+                        {noti.Hora}
+                      </StyledTableCell>
+
+                      <StyledTableCell component="th" scope="row" align="center">
+                        <IconButton
+                          onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
+                        >
+                          <InfoIcon />
+                        </IconButton>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+                <Destinatarios
+                  open={openDestinatarios}
+                  handleClose={openDialogDestinatarios}
+                  IdNotificacion={idNoti}
+                />
+              </Table>
+            </TableContainer>
+          </Paper>
         </Grid>
         {openDialog ? (
           <AñadirNotificaciones
@@ -203,6 +187,6 @@ export function Notificaciones() {
           />
         ) : null}
       </Grid>
-    </Grid>
+    </Grid >
   );
 }

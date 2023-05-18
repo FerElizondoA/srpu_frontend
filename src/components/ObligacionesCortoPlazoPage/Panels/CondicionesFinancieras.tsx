@@ -34,6 +34,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { queries } from "../../../queries";
 
 interface Head {
   label: string;
@@ -371,8 +372,8 @@ export function CondicionesFinancieras() {
 
       <Grid  container position="fixed" sx={{  bottom: 0 }}>
         <Grid item md={12} lg={12}>
-          <ConfirmButton
-          sx={{width:"100%"}}
+          <Button
+            sx={queries.botonAgregarCondicionFinanciera}
             variant="outlined"
             onClick={() => {
               changeOpenAgregarState(!openAgregarCondicion);
@@ -380,7 +381,7 @@ export function CondicionesFinancieras() {
             }}
           >
             AGREGAR
-          </ConfirmButton>
+          </Button>
           {/* {changeOpenAgregarState ? ( */}
             <AgregarCondicionFinanciera
               handler={changeOpenAgregarState}

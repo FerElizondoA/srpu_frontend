@@ -222,6 +222,7 @@ export const Usuarios = () => {
 
   return (
     <Grid
+      
       container
       direction="column"
       rowSpacing={{ xs: 6, sm: 2, md: 4, xl: 4 }}
@@ -244,6 +245,8 @@ export const Usuarios = () => {
         </Box> :
 
         <Grid item
+        
+        width={"100%"}
           xs={12}
           lg={12}
           sm={12}
@@ -256,7 +259,7 @@ export const Usuarios = () => {
               lg={12}
               display="flex"
               justifyContent="flex-end"
-              alignItems={""}
+              
             >
               <Grid
                 item
@@ -270,7 +273,7 @@ export const Usuarios = () => {
                   sx={{
                     display: "flex",
                     //alignItems: "center",
-                   width:"80%"
+                    width: "80%"
                   }}
                 >
                   <InputBase
@@ -344,152 +347,154 @@ export const Usuarios = () => {
                 </Grid>
               </Grid>
             </Grid>
+          </Grid>
 
 
-
-            <Grid item sx={{ height: "80vh" }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    {heads.map((head) => (
-                      <StyledTableCell
-                        key={head.id}
-                        align="center"
-                        sx={{ height: "10vh" }}
-                      >
-                        {head.label}
-                      </StyledTableCell>
-                    ))}
-                  </TableHead>
-                  <TableBody>
-                    {usuariosFiltrados?.map((row) => (
-                      <StyledTableRow>
+          <Grid container  mt={2}>
+              <Paper sx={queries.tablaUsuarios}>
+                <TableContainer sx={{maxHeight:"100%"}}  >
+                  <Table stickyHeader aria-label="sticky table" >
+                    <TableHead>
+                      {heads.map((head) => (
                         <StyledTableCell
-                          sx={{ display: "flex", height: "10vh" }}
-                          component="th"
-                          scope="row"
+                          key={head.id}
                           align="center"
+                          sx={{ height: "10vh" }}
                         >
-                          <>
-                            <Tooltip title="Editar Usuario">
-                              <IconButton
-                                size="large"
-                                onClick={() => {
-                                  openEditarUsuario(
-                                    row.Nombre + " " + row.ApellidoPaterno,
-                                    row
-                                  );
-                                }}
-                              >
-                                <Edit fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
+                          {head.label}
+                        </StyledTableCell>
+                      ))}
+                    </TableHead>
+                    <TableBody>
+                      {usuariosFiltrados?.map((row) => (
+                        <StyledTableRow>
+                          <StyledTableCell
+                            sx={{ display: "flex", height: "10vh" }}
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            <>
+                              <Tooltip title="Editar Usuario">
+                                <IconButton
+                                  size="large"
+                                  onClick={() => {
+                                    openEditarUsuario(
+                                      row.Nombre + " " + row.ApellidoPaterno,
+                                      row
+                                    );
+                                  }}
+                                >
+                                  <Edit fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
 
-                            <Tooltip title="Eliminar Usuario">
-                              <IconButton
-                                aria-label="delete"
-                                size="large"
-                                onClick={() => {
-                                }}
-                              >
-                                <DeleteIcon fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Nombre}
-                        </StyledTableCell>
+                              <Tooltip title="Eliminar Usuario">
+                                <IconButton
+                                  aria-label="delete"
+                                  size="large"
+                                  onClick={() => {
+                                  }}
+                                >
+                                  <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Nombre}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.ApellidoPaterno.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.ApellidoPaterno.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.ApellidoMaterno.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.ApellidoMaterno.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.MunicipioUOrganizacion.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                            
+                          >
+                            {row.MunicipioUOrganizacion.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Cargo.toString()}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Rol.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Cargo.toString()}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Rol.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.CorreoElectronico.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.CorreoElectronico.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Telefono.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Telefono.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Ext.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Ext.toString()}
+                          </StyledTableCell>
 
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          align="center"
-                        >
-                          {row.Celular.toString()}
-                        </StyledTableCell>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          >
+                            {row.Celular.toString()}
+                          </StyledTableCell>
 
-                        {/* <StyledTableCell component="th" scope="row" align="center">
+                          {/* <StyledTableCell component="th" scope="row" align="center">
                     {row.Curp.toString()}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row" align="center">
                     {row.Rfc.toString()}
                   </StyledTableCell> */}
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
             </Grid>
-          </Grid>
         </Grid>
       }
       <DialogUsuarios

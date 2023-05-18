@@ -249,13 +249,13 @@ export function InformacionGeneral() {
   //   }
 
   // }
-  
+
   return (
     <Grid
       sx={{
         display: "flex", height: "85vh", flexDirection: "column",
         justifyContent: "space-evenly",
-        
+
         // backgroundColor:"red"
       }}
 
@@ -645,10 +645,10 @@ export function InformacionGeneral() {
           
         </Grid> */}
       </Grid>
-      <Grid  width={"94%"} display={"flex"} justifyContent={"flex-end"}>
+      <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
         <ThemeProvider theme={theme}>
           <Button
-            
+
             sx={queries.buttonContinuar}
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
@@ -661,9 +661,9 @@ export function InformacionGeneral() {
           >
             <CheckIcon fontSize="small" />AGREGAR
           </Button>
-        
+
         </ThemeProvider>
-        
+
 
       </Grid>
 
@@ -687,10 +687,10 @@ export function InformacionGeneral() {
               <TableBody>
                 {generalObligadoSolidario.Descripcion === "No aplica" ? (
                   <StyledTableRow>
-                    {/* <StyledTableCell />
-                  <StyledTableCell /> */}
-                    <StyledTableCell>No aplica</StyledTableCell>
-                    {/* <StyledTableCell /> */}
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell align="center">No aplica</StyledTableCell>
+                    <StyledTableCell />
                   </StyledTableRow>
                 ) : (
                   tablaObligados.map((row: any, index: number) => {
@@ -711,10 +711,10 @@ export function InformacionGeneral() {
                         <StyledTableCell align="center" component="th" scope="row">
                           {row.obligadoSolidario}
                         </StyledTableCell>
-                        <StyledTableCell component="th">
+                        <StyledTableCell align="center" component="th">
                           {row.tipoEntePublicoObligado}
                         </StyledTableCell>
-                        <StyledTableCell component="th">
+                        <StyledTableCell align="center" component="th">
                           {row.entePublicoObligado}
                         </StyledTableCell>
                       </StyledTableRow>
