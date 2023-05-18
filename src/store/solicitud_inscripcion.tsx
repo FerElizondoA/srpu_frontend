@@ -272,45 +272,100 @@ export const createSolicitudInscripcionSlice: StateCreator<
 });
 
 export function DescargarConsultaSolicitud(Solicitud: string) {
-  let solicitud: ISolicitud = JSON.parse(Solicitud);
+  const meses = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+  const state = useCortoPlazoStore.getState();
 
-  const solicitudfechas: any = {
-    fechaContratacion: format(
-      new Date(solicitud.fechaContratacion),
-      "yyyy-MM-dd"
-    ),
-    fechaVencimiento: format(
-      new Date(solicitud.fechaVencimiento),
-      "yyyy-MM-dd"
-    ),
+  let solicitud: any = JSON.parse(Solicitud);
+  interface DocumentacionItem {
+    Descripcion: string;
+    // Otros campos si existen en la estructura de solicitud.documentacion
+  }
+
+  const descripciones: string[] = solicitud.documentacion.map(
+    (item: DocumentacionItem) => item.Descripcion
+  );
+
+  const fechaVencimiento = new Date(
+    solicitud.informacionGeneral.fechaVencimiento
+  );
+  const dia = fechaVencimiento.getDate();
+  const mes = meses[fechaVencimiento.getMonth()];
+  const año = fechaVencimiento.getFullYear();
+
+  const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
+
+  const fechaContratacion = new Date(
+    solicitud.informacionGeneral.fechaContratacion
+  );
+  const diaC = fechaContratacion.getDate();
+  const mesC = meses[fechaContratacion.getMonth()];
+  const añoC = fechaContratacion.getFullYear();
+
+  const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
+  const SolicitudDescarga: any = {
+    Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    Organismo: solicitud.encabezado.organismo.Organismo,
+    InstitucionBancaria:
+      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    Monto: solicitud.informacionGeneral.monto,
+    Destino: solicitud.informacionGeneral.destino.Descripcion,
+    PlazoDias: solicitud.informacionGeneral.plazo,
+    TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+    Tipocomisiones:
+      solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
+      "No aplica",
+    TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
+    Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
+    TipoDocumento: solicitud.encabezado.tipoDocumento,
+    PeriodoPago:
+      solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
+    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+    Reglas: solicitud.inscripcion.declaratorias,
+    TasaInteres:
+      solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
   };
+
   axios
     .post(
-      " http://10.200.4.94:9091/documento_srpu",
-
+      "http://192.168.137.152:7000/documento_srpu",
       {
-        nombre: solicitud.solicitanteAutorizado,
-        cargoServidorPublicoSolicitante: solicitud.cargoSolicitante,
+        nombre: SolicitudDescarga.Nombre,
+        cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
         oficionum: "10",
         cargoServidorPublico: solicitud.cargoSolicitante,
-        organismo: solicitud.organismo,
-        InstitucionBancaria: solicitud.institucion,
-        monto: solicitud.montoOriginal,
-        destino: solicitud.destino,
-        dias: solicitud.plazoDias,
-        tipoEntePublicoObligado: solicitud.tipoEntePublico,
-        entePublicoObligado: solicitud.tipoEntePublicoObligado,
-        tasaefectiva: solicitud.tasaEfectiva,
-        tasaInteres: solicitud.tasaReferencia,
-        reglas: solicitud.reglas,
-        tipocomisiones: solicitud.tipoComision,
-        servidorpublico: solicitud.nombreServidorPublico,
-        contrato: solicitud.tipoDocumento,
-        periodoPago: solicitud.capitalPeriocidadPago,
-        obligadoSolidarioAval: solicitud.obligadoSolidarioAval,
-
-        fechaContrato: solicitudfechas.fechaContratacion,
-        fechaVencimiento: solicitudfechas.fechaVencimiento,
+        organismo: SolicitudDescarga.Organismo,
+        InstitucionBancaria: SolicitudDescarga.InstitucionBancaria,
+        monto: SolicitudDescarga.Monto,
+        destino: SolicitudDescarga.Destino,
+        dias: SolicitudDescarga.PlazoDias,
+        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico,
+        tasaefectiva: SolicitudDescarga.TasaEfectiva,
+        tasaInteres: SolicitudDescarga.TasaInteres,
+        reglas: SolicitudDescarga.Reglas,
+        tipocomisiones: SolicitudDescarga.Tipocomisiones,
+        servidorpublico: SolicitudDescarga.Servidorpublico,
+        contrato: SolicitudDescarga.TipoDocumento,
+        periodoPago: SolicitudDescarga.PeriodoPago,
+        obligadoSolidarioAval:
+          solicitud.informacionGeneral.obligadosSolidarios[0]
+            ?.obligadoSolidario || "No aplica",
+        fechaContrato: fechaContratacionEspañol,
+        fechaVencimiento: fechaVencimientoEspañol,
+        Documentos: descripciones,
       },
       {
         headers: {
