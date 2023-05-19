@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { continueSession, logout } from "../APIS/config/validation";
+import { continueSession, logout } from "../APIS/Config/validation";
 
 export const TimerCounter = () => {
   const [actualDate, setActualDate] = useState(new Date());
