@@ -212,7 +212,6 @@ export function ConsultaDeSolicitudPage() {
     let aux: any = JSON.parse(solicitud.Solicitud);
 
     changeReglasAplicables(aux?.inscripcion.declaratorias);
-
     changeEncabezado(aux?.encabezado);
 
     changeInformacionGeneral(aux?.informacionGeneral);
