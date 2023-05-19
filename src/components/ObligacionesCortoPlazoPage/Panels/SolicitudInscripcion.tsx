@@ -18,12 +18,12 @@ import {
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
-import Swal from "sweetalert2";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
+import Swal from "sweetalert2";
 
 interface Head {
   label: string;

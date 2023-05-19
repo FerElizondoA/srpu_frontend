@@ -24,7 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
 import { useCortoPlazoStore } from "../../../store/main";
-import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/Documentacion/IListTipoDocumento";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { queries } from "../../../queries";
 
 interface Data {

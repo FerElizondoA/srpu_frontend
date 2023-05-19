@@ -18,8 +18,8 @@ import { StyledTableCell, StyledTableRow } from "../../components/CustomComponen
 import { getHistorialNotificaciones } from "../../components/LateralMenu/APINotificaciones";
 import { IHistorial, } from "../../components/Interfaces/Notificaciones/INotificaciones";
 import InfoIcon from '@mui/icons-material/Info';
-import { Destinatarios } from "./Dialog/InfoAdicional";
-import { AñadirNotificaciones } from "./Dialog/AñadirNotificaciones";
+import { Destinatarios } from "../Notificaciones/Dialog/InfoAdicional";
+import { AñadirNotificaciones } from "../Notificaciones/Dialog/AñadirNotificaciones";
 import { queries } from "../../queries";
 
 export function Notificaciones() {
