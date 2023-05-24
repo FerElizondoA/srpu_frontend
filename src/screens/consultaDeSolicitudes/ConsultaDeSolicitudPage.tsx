@@ -32,7 +32,7 @@ import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-
+import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -133,14 +133,15 @@ export function ConsultaDeSolicitudPage() {
         elemento.TipoEntePublico.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.tipoDocumento
-          .toString()
+        elemento.TipoSolicitud.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
         return elemento;
       }
+
     });
+
     setDatosFiltrados(ResultadoBusqueda);
   };
 
@@ -203,6 +204,8 @@ export function ConsultaDeSolicitudPage() {
   const reglasAplicables: string[] = useCortoPlazoStore(
     (state) => state.reglasAplicables
   );
+
+  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   );
@@ -262,12 +265,20 @@ export function ConsultaDeSolicitudPage() {
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
+  const [openEliminar, changeOpenEliminar] = useState(false);
+
   useEffect(() => {
     if (openDialogVer === false) {
       limpiaSolicitud();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDialogVer]);
+
+  useEffect(() => {
+    if (!openEliminar) {
+      getSolicitudes(setDatos);
+    }
+  }, [openEliminar]);
 
   return (
     <Grid container direction="column">
@@ -441,8 +452,8 @@ export function ConsultaDeSolicitudPage() {
                       <StyledTableCell
                         sx={{
                           flexDirection: "row",
-                          display: "grid",
-                          gridTemplateColumns: "repeat(2,1fr)",
+                          display: "flex",
+                          //gridTemplateColumns: "repeat(2,1fr)",
                         }}
                         align="center"
                         component="th"
@@ -463,7 +474,7 @@ export function ConsultaDeSolicitudPage() {
 
                         {localStorage.getItem("IdUsuario") === row.IdEditor &&
                           localStorage.getItem("Rol") !== "Administrador" && (
-                            <Tooltip title="Edit">
+                            <Tooltip title="Editar">
                               <IconButton
                                 type="button"
                                 onClick={() => {
@@ -471,6 +482,7 @@ export function ConsultaDeSolicitudPage() {
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
                                   editarSolicitud();
+                                  console.log(row.Solicitud);
                                 }}
                               >
                                 <EditIcon />
@@ -517,7 +529,10 @@ export function ConsultaDeSolicitudPage() {
                                 onClick={() => {
                                   changeIdSolicitud(row?.Id || "");
                                   changeEditCreadoPor(row?.CreadoPor);
-                                  borrarSolicitud(row.Id);
+                                  changeOpenEliminar(!openEliminar);
+
+                                  //borrarSolicitud(row.Id);
+
                                   getSolicitudes(setDatos);
                                 }}
                               >
@@ -541,6 +556,12 @@ export function ConsultaDeSolicitudPage() {
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
+        />
+        <DialogEliminar
+          handler={changeOpenEliminar}
+          openState={openEliminar}
+          texto={"Solicitud"}
+          id={datosFiltrados.map((row) => row.Id).join(",")}
         />
       </Grid>
     </Grid>

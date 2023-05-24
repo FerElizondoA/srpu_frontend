@@ -1,5 +1,6 @@
 import * as React from "react";
 import logo from "../../assets/images/logo.svg";
+import logo2 from "../../assets/images/logo2.svg";
 import {
   Dialog,
   Grid,
@@ -435,6 +436,12 @@ export function LateralMenu() {
             sx={{ width: query.isXs ? "40vw" : "30vw", height: "inherit" }}
           >
             <Grid item container direction="column" mt={2}>
+
+              <Grid item sx={{ alignSelf: "center" }}>
+              <img src={logo2} alt="Logo2" style={{ width: "100%", height: "70%"}} />
+              
+              </Grid>
+              
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
@@ -450,7 +457,7 @@ export function LateralMenu() {
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.text}>
+                <Typography sx={queries.bold_text}>
                   {localStorage.getItem("NombreUsuario")}
                 </Typography>
               </Grid>
@@ -462,7 +469,7 @@ export function LateralMenu() {
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.text}>
+                <Typography sx={queries.bold_text}>
                   {tipoEnte}: {ente}
                 </Typography>
               </Grid>
@@ -478,14 +485,14 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <HomeOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Inicio</Typography>
+                  <Typography sx={queries.bold_text}>Inicio</Typography>
                 </ListItemButton>
 
                 <ListItemButton onClick={handleInscripcionClick}>
                   <ListItemIcon>
                     <PostAddOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Inscripción</Typography>
+                  <Typography sx={queries.bold_text}>Inscripción</Typography>
                   {openInscripcion ? <ExpandMore /> : <ExpandLess />}
                 </ListItemButton>
 
@@ -498,7 +505,7 @@ export function LateralMenu() {
                       <ListItemIcon>
                         <KeyboardDoubleArrowRightIcon sx={queries.icon} />
                       </ListItemIcon>
-                      <Typography sx={queries.text}>
+                      <Typography sx={queries.bold_text}>
                         Financiamiento y obligaciones
                       </Typography>
                       {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
@@ -520,7 +527,7 @@ export function LateralMenu() {
                           <ListItemIcon>
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
-                          <Typography sx={queries.text}>
+                          <Typography sx={queries.bold_text}>
                             Crédito simple corto plazo
                           </Typography>
                         </ListItemButton>
@@ -551,7 +558,7 @@ export function LateralMenu() {
                       <ListItemIcon>
                         <KeyboardDoubleArrowRightIcon sx={queries.icon} />
                       </ListItemIcon>
-                      <Typography sx={queries.text}>
+                      <Typography sx={queries.bold_text}>
                         Consulta de solicitudes
                       </Typography>
                     </ListItemButton>
@@ -566,14 +573,16 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <EditIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Firmar con e.firma</Typography>
+                  <Typography sx={queries.bold_text}>
+                    Firmar con e.firma
+                  </Typography>
                 </ListItemButton>
 
                 <ListItemButton onClick={handleClickBandejas}>
                   <ListItemIcon>
                     <FolderOpenIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Documentos</Typography>
+                  <Typography sx={queries.bold_text}>Documentos</Typography>
                   {openBandejas ? <ExpandMore /> : <ExpandLess />}
                 </ListItemButton>
 
@@ -591,7 +600,9 @@ export function LateralMenu() {
                           <ListItemIcon>
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
-                          <Typography sx={queries.text}>{b.Nombre}</Typography>
+                          <Typography sx={queries.bold_text}>
+                            {b.Nombre}
+                          </Typography>
                         </ListItemButton>
                       ))}
                   </List>
@@ -605,7 +616,7 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <NotificationsActiveIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Notificaciones</Typography>
+                  <Typography sx={queries.bold_text}>Notificaciones</Typography>
                 </ListItemButton>
 
                 {/* <ListItemButton>
@@ -655,14 +666,16 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <SettingsOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Configuración</Typography>
+                  <Typography sx={queries.bold_text}>Configuración</Typography>
                 </ListItemButton>
 
                 <ListItemButton onClick={() => setOpenPasswordChange(true)}>
                   <ListItemIcon>
                     <LockOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Cambiar Contraseña</Typography>
+                  <Typography sx={queries.bold_text}>
+                    Cambiar Contraseña
+                  </Typography>
                 </ListItemButton>
 
                 <ListItemButton
@@ -673,7 +686,7 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <LogoutIcon sx={queries.icon} />
                   </ListItemIcon>
-                  <Typography sx={queries.text}>Cerrar Sesión</Typography>
+                  <Typography sx={queries.bold_text}>Cerrar Sesión</Typography>
                 </ListItemButton>
               </List>
             </Grid>

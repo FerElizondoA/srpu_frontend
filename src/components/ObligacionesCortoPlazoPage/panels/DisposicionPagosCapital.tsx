@@ -383,7 +383,7 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 placeholder="1"
-                value={capitalNumeroPago<=1?'':capitalNumeroPago.toString()}
+                value={capitalNumeroPago<=0?'':capitalNumeroPago.toString()}
                 onChange={(v) =>{
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
@@ -395,7 +395,7 @@ export function DisposicionPagosCapital() {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
-                      1
+                      0
                     )
                   }
                 }

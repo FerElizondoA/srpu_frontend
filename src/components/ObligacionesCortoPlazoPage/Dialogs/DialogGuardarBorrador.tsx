@@ -158,15 +158,26 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             }
             navigate("../ConsultaDeSolicitudes");
           }}
-          disabled={
-            institucion === "" ||
-            institucion === null ||
-            tipoEntePublico === "" ||
-            tipoEntePublico === null ||
-            montoOriginal === null ||
-            montoOriginal === 0
-          }
-          sx={queries.buttonContinuar}
+          // disabled={
+          //   institucion === "" ||
+          //   institucion === null ||
+          //   tipoEntePublico === "" ||
+          //   tipoEntePublico === null ||
+          //   montoOriginal === null ||
+          //   montoOriginal === 0
+          // }
+          sx={{
+            ...queries.buttonContinuar,
+            pointerEvents:
+              institucion === "" ||
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
+                ? "none"
+                : "auto",
+          }}
         >
           Confirmar
         </Button>
