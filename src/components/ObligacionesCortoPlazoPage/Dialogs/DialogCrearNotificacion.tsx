@@ -82,7 +82,7 @@ export function DialogCatalogoUsuarios({
           justifyContent: "space-around",
         }}
       >
-        <Autocomplete
+        <Autocomplete   clearText="Limpiar"
           multiple
           getOptionLabel={(usuarios) =>
             usuarios.Nombre +

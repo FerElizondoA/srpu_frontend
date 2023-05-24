@@ -495,7 +495,7 @@ export function SolicitudInscripcion() {
                   setOpenDialogModificacion(!openDialogModificacion);
                 }}
               >
-                Solicitar Modificacion
+                Solicitar Modificación
               </Button>
             ) : null}
 

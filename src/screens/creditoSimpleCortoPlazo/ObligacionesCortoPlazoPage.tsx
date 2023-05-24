@@ -55,12 +55,12 @@ export function ObligacionesCortoPlazoPage() {
           scrollButtons
           allowScrollButtonsMobile
         >
-          <Tab label="Encabezado" sx={queries.text} />
-          <Tab label="Información General" sx={queries.text} />
-          <Tab label="Condiciones Financieras" sx={queries.text} />
-          <Tab label="Documentación" sx={queries.text} />
-          <Tab label="Resumen" sx={queries.text} />
-          <Tab label="Solicitud de Inscripción" sx={queries.text} />
+          <Tab label="Encabezado" sx={queries.bold_text} />
+          <Tab label="Información General" sx={queries.bold_text} />
+          <Tab label="Condiciones Financieras" sx={queries.bold_text} />
+          <Tab label="Documentación" sx={queries.bold_text} />
+          <Tab label="Resumen" sx={queries.bold_text} />
+          <Tab label="Solicitud de Inscripción" sx={queries.bold_text} />
         </Tabs>
       </Grid>
 

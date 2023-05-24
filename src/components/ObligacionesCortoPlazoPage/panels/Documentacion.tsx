@@ -54,7 +54,7 @@ const heads: readonly Head[] = [
   {
     id: "Documento",
     isNumeric: false,
-    label: "Documento/File",
+    label: "Documento/Archivo",
   },
   {
     id: "TipoDocumento",

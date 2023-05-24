@@ -10,12 +10,12 @@ import {
   DialogTitle,
   Stack,
   Box,
+  Autocomplete
 } from "@mui/material";
 import {
   IDestinatarios,
   INotificaciones,
 } from "../../../components/Interfaces/Notificaciones/INotificaciones";
-import Autocomplete from "@mui/material/Autocomplete";
 import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
 import { getListadoUsuarios } from "../../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { createNotification } from "../../../components/LateralMenu/APINotificaciones";
@@ -85,7 +85,7 @@ export const AñadirNotificaciones = ({
           alignItems={"center"}
         >
           <Stack sx={{ width: 600, spacing: 3 }}>
-            <Autocomplete
+            <Autocomplete   clearText="Limpiar"
               multiple
               getOptionLabel={(usuarios) =>
                 usuarios.Nombre +
