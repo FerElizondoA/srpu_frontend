@@ -69,7 +69,10 @@ export const getUserDetails = (idCentral: string) => {
         localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
         return true;
-      }
+        
+      }else {
+        getDataSolicitud(idCentral);
+      } 
     })
     .catch((error) => {
       if (error.response.status === 401) {
