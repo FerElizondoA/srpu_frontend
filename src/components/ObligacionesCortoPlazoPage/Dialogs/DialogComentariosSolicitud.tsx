@@ -12,31 +12,16 @@ import {
   TableContainer,
   TableHead,
   Paper,
-  AppBar,
-  Toolbar,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useNavigate } from "react-router-dom";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-////////////////////////////////////////////////////////////////////////
-//import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { AgregarComentario } from "./DialogAgregarComentario";
-
-interface IDataComents {
-  Id: string;
-  Comentario: string;
-  Fecha: Date;
-  Usuario: string;
-}
 
 interface IComentarios {
   Comentarios: string;

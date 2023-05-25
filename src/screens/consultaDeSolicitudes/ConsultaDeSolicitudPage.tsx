@@ -211,7 +211,7 @@ export function ConsultaDeSolicitudPage() {
   );
 
   const llenaSolicitud = (solicitud: IData) => {
-    const state = useCortoPlazoStore.getState();
+    // const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud);
 
     changeReglasAplicables(aux?.inscripcion.declaratorias);

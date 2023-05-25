@@ -67,9 +67,10 @@ export function LateralMenu() {
   };
 
   const nombre = localStorage.getItem("NombreUsuario") || "";
-  const iniciales = `${nombre?.split(" ")[0].split("")[0] || ""} ${
-    nombre?.split(" ")[2].split("")[0] || ""
-  }`;
+
+  function stringAvatar(name: string) {
+    return `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`;
+  }
 
   const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
   const ente = localStorage.getItem("EntePublicoObligado");
@@ -344,9 +345,9 @@ export function LateralMenu() {
   const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
     (state) => state.updatecondicionFinancieraTable
   );
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
+  // const addCondicionFinanciera: Function = useCortoPlazoStore(
+  //   (state) => state.addCondicionFinanciera
+  // );
 
   const reset = () => {
     changeEncabezado({
@@ -452,7 +453,9 @@ export function LateralMenu() {
                 <Avatar
                   sx={{ height: "100px", width: "100px", bgcolor: color }}
                 >
-                  {iniciales.toUpperCase()}
+                  {stringAvatar(
+                    localStorage.getItem("NombreUsuario") as string
+                  )}
                 </Avatar>
               </Grid>
 
