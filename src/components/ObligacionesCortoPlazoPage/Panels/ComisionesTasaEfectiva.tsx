@@ -39,7 +39,6 @@ import { queries } from "../../../queries";
 import {
   StyledTableCell,
   StyledTableRow,
-  ConfirmButton,
 } from "../../CustomComponents";
 
 import FormControlLabel from "@mui/material/FormControlLabel";

@@ -200,15 +200,15 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.borrarSolicitud
   );
 
-  const reglasAplicables: string[] = useCortoPlazoStore(
-    (state) => state.reglasAplicables
-  );
+  // const reglasAplicables: string[] = useCortoPlazoStore(
+  //   (state) => state.reglasAplicables
+  // );
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   );
 
   const llenaSolicitud = (solicitud: IData) => {
-    const state = useCortoPlazoStore.getState();
+    // const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud);
 
     changeReglasAplicables(aux?.inscripcion.declaratorias);
