@@ -74,7 +74,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   useEffect(() => {
     notnull();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const editCreadoPor: string = useCortoPlazoStore(
@@ -158,14 +157,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             }
             navigate("../ConsultaDeSolicitudes");
           }}
-          // disabled={
-          //   institucion === "" ||
-          //   institucion === null ||
-          //   tipoEntePublico === "" ||
-          //   tipoEntePublico === null ||
-          //   montoOriginal === null ||
-          //   montoOriginal === 0
-          // }
           sx={{
             ...queries.buttonContinuar,
             pointerEvents:

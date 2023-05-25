@@ -14,7 +14,6 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
-
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/main";
@@ -83,10 +82,7 @@ export function SolicitudInscripcion() {
   const Toast = Swal.mixin({
     toast: true,
     showConfirmButton: true,
-    // confirmButtonColor: "red",
     confirmButtonText: "De acuerdo",
-    // timer: 2000,
-    // timerProgressBar: true,
     didOpen: (toast) => {
       toast.addEventListener("mouseenter", Swal.stopTimer);
       toast.addEventListener("mouseleave", Swal.resumeTimer);

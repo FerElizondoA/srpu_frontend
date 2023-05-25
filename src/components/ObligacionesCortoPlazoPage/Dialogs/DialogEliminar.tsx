@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+
 import { Typography, Dialog, Slide, Button } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
@@ -8,10 +8,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { getSolicitudes } from "../../APIS/cortoplazo/APISInformacionGeneral";
-// import { IData } from "../../LateralMenu/LateralMenu";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -28,19 +24,18 @@ export function DialogEliminar({
     handler,
     openState,
     texto,
-    id,
-    
   }: {
     handler: Function;
     openState: boolean;
     texto: string;
-    id: string
-    
     
   }) {
   
     const borrarSolicitud: Function = useCortoPlazoStore(
         (state) => state.borrarSolicitud
+      );
+      const idSolicitud: String = useCortoPlazoStore(
+        (state) => state.idSolicitud
       );
 
     
@@ -66,7 +61,7 @@ export function DialogEliminar({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <Button 
           variant="text"
           onClick={() => handler(false)}
           sx={queries.buttonCancelar}
@@ -74,10 +69,12 @@ export function DialogEliminar({
           Cancelar
         </Button>
         <Button
+        sx={queries.buttonContinuar}
           onClick={() => {
-            console.log(id);
+            
+            
             handler(false);
-           borrarSolicitud(id)
+           borrarSolicitud(idSolicitud)
           
           }} 
         >

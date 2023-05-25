@@ -231,6 +231,8 @@ export function ComisionesTasaEfectiva() {
           <Grid item>
             <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
             <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
               fullWidth
               options={catalogoDiasEjercicio}
               getOptionLabel={(option) => option.Descripcion}
@@ -329,6 +331,8 @@ export function ComisionesTasaEfectiva() {
         <Grid item lg={2}>
           <InputLabel sx={queries.medium_text}>Tipo de Comisión</InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             fullWidth
             options={catalogoTiposComision}
             getOptionLabel={(option) => option.Descripcion}
@@ -371,6 +375,8 @@ export function ComisionesTasaEfectiva() {
         <Grid item >
           <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             fullWidth
             options={catalogoPeriocidadDePago}
             getOptionLabel={(option) => option.Descripcion}

@@ -2,8 +2,6 @@ import * as React from "react";
 import { Grid, Typography, Dialog, Slide, Button } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -25,8 +23,8 @@ type Props = {
 
 export function ConfirmacionCancelarSolicitud({
   handler,
-  openState
-}:{
+  openState,
+}: {
   handler: Function;
   openState: boolean;
 }) {

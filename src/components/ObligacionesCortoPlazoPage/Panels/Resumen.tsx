@@ -42,14 +42,6 @@ interface HeadLabels {
   label: string;
   value: string;
 }
-// const encabezado = [
-//     "Tipo de Documento",
-//     "Tipo de Ente Público",
-//     "Solicitante Autorizado",
-//     "Municipio u Organismo",
-//     "Fecha de Contratación",
-//     "Cargo del Solicitante",
-// ];
 
 const heads: Head[] = [
   {

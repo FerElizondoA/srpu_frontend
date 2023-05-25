@@ -47,7 +47,6 @@ type Props = {
   indexA: number;
 };
 
-
 const theme = createTheme({
   components: {
     MuiButton: {
@@ -55,15 +54,13 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
-
-
 
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -103,9 +100,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
-  const changeTasaEfectiva:Function = useCortoPlazoStore(
-   (state) => state.changeTasaEfectiva
-  )
+  const changeTasaEfectiva: Function = useCortoPlazoStore(
+    (state) => state.changeTasaEfectiva
+  );
 
   // COMISIONES
   const tablaComisiones: IComisiones[] = useCortoPlazoStore(
@@ -136,8 +133,6 @@ export function AgregarCondicionFinanciera(props: Props) {
   const changeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.changeTasaInteres
   );
-
-
 
   const addRow = () => {
     const CF: CondicionFinanciera = {
@@ -188,15 +183,15 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaVariable: false,
       tasa: "",
       fechaPrimerPago: new Date().toString(),
-       diasEjercicio: { Id: "", Descripcion: "" },
+      diasEjercicio: { Id: "", Descripcion: "" },
       periocidadPago: { Id: "", Descripcion: "" },
       tasaReferencia: { Id: "", Descripcion: "" },
       sobreTasa: "",
-      tasaEfectiva:"",
+      tasaEfectiva: "",
     });
     changeTasaEfectiva({
       diasEjercicio: { Id: "", Descripcion: "" },
-      tasaEfectiva:"",
+      tasaEfectiva: "",
     });
     cleanTasaInteres();
     cleanComision();
@@ -223,39 +218,34 @@ export function AgregarCondicionFinanciera(props: Props) {
               </Typography>
             </Grid>
           </Grid>
-          <Grid
-            item
-            sx={{ top: 12, bottom: "auto"}}
-          >
-             <ThemeProvider theme={theme}>
-            <Button
-              disabled={ 
-                tablaComisiones.length === 0 ||
-                tablaTasaInteres.length ===0 
-              }
-              sx={{
-                backgroundColor: "white",
-                ":hover": {
-                  backgroundColor: "white",
-                },
-              }}
-              onClick={() => {
-                if (props.accion === "Agregar") {
-                  addRow();
-                  props.handler(false);
-                  reset();
-                } else if (props.accion === "Editar") {
-                  updateRow(props.indexA);
-                  props.handler(false);
-                  reset();
+          <Grid item sx={{ top: 12, bottom: "auto" }}>
+            <ThemeProvider theme={theme}>
+              <Button
+                disabled={
+                  tablaComisiones.length === 0 || tablaTasaInteres.length === 0
                 }
-              }}
-            >
-              <CheckIcon sx={{ mr: 1 }} />
-              
-              <Typography sx={queries.medium_text}>{props.accion}</Typography>
+                sx={{
+                  backgroundColor: "white",
+                  ":hover": {
+                    backgroundColor: "white",
+                  },
+                }}
+                onClick={() => {
+                  if (props.accion === "Agregar") {
+                    addRow();
+                    props.handler(false);
+                    reset();
+                  } else if (props.accion === "Editar") {
+                    updateRow(props.indexA);
+                    props.handler(false);
+                    reset();
+                  }
+                }}
+              >
+                <CheckIcon sx={{ mr: 1 }} />
 
-            </Button>
+                <Typography sx={queries.medium_text}>{props.accion}</Typography>
+              </Button>
             </ThemeProvider>
           </Grid>
         </Toolbar>
@@ -270,11 +260,14 @@ export function AgregarCondicionFinanciera(props: Props) {
             scrollButtons
             allowScrollButtonsMobile
           >
-            <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
-            <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
+            <Tab
+              label="Disposición/Pagos de Capital"
+              sx={queries.bold_text}
+            ></Tab>
+            <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
           </Tabs>
 
-          {tabIndex === 0 && <DisposicionPagosCapital/>}
+          {tabIndex === 0 && <DisposicionPagosCapital />}
 
           {tabIndex === 1 && <ComisionesTasaEfectiva />}
         </Grid>

@@ -58,7 +58,7 @@ const heads: readonly Head[] = [
   {
     id: "Institucion",
     isNumeric: true,
-    label: "Institucion financiera",
+    label: "Institución financiera",
   },
   {
     id: "TipoEntePublico",
@@ -73,7 +73,7 @@ const heads: readonly Head[] = [
   {
     id: "ClaveDeInscripcion",
     isNumeric: true,
-    label: "Clave de inscripcion",
+    label: "Clave de inscripción",
   },
   {
     id: "MontoOriginalContratado",
@@ -83,12 +83,12 @@ const heads: readonly Head[] = [
   {
     id: "FechaContratacion",
     isNumeric: true,
-    label: "Fecha de contratacion",
+    label: "Fecha de contratación",
   },
   {
     id: "tipoDocumento",
     isNumeric: true,
-    label: "TipoDocumento",
+    label: "Tipo de Documento",
   },
   {
     id: "Acciones",
@@ -527,6 +527,8 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
+                                  console.log(idSolicitud);
+                                  console.log(row?.Id || "");
                                   changeIdSolicitud(row?.Id || "");
                                   changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenEliminar(!openEliminar);
@@ -561,7 +563,6 @@ export function ConsultaDeSolicitudPage() {
           handler={changeOpenEliminar}
           openState={openEliminar}
           texto={"Solicitud"}
-          id={datosFiltrados.map((row) => row.Id).join(",")}
         />
       </Grid>
     </Grid>

@@ -16,19 +16,16 @@ import {
   Paper,
   createTheme,
   ThemeProvider,
-  Select, MenuItem,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
-
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
@@ -36,9 +33,9 @@ import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import CheckIcon from '@mui/icons-material/Check';
-import validator from 'validator';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CheckIcon from "@mui/icons-material/Check";
+import validator from "validator";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 interface Head {
   label: string;
@@ -51,12 +48,12 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
 
 const heads: Head[] = [
@@ -172,8 +169,7 @@ export function InformacionGeneral() {
     addObligadoSolidarioAval(tab);
   };
 
-  const Denominaciones = ["Pesos", "UDIS"]
-
+  const Denominaciones = ["Pesos", "UDIS"];
 
   useEffect(() => {
     getInstituciones();
@@ -199,10 +195,11 @@ export function InformacionGeneral() {
   const [plazoD, setPlazo] = useState(0);
 
   useEffect(() => {
-    const res = differenceInDays(
-      startOfDay(new Date(vencimiento)),
-      startOfDay(new Date(contratacion))
-    );
+    const res =
+      differenceInDays(
+        startOfDay(new Date(vencimiento)),
+        startOfDay(new Date(contratacion))
+      ) + 1;
 
     setPlazo(res);
 
@@ -219,45 +216,19 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
-  //   React.useEffect(() => {
-  //     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
-  //     {
-  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
-  //     }else{
-  //       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
-  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
-  //     }
-
-
-  //   }, [fechaContratacion, fechaVencimiento])
-
-  // const disableOption = (value2: string) =>{
-
-  //   if(obligadoSolidarioAval === "No aplica"){
-  //     return value2 = "desactivar"
-  //   }else{
-  //     return value2 = "activar"
-  //   }
-
-  // }
-
   return (
     <Grid
       sx={{
-        display: "flex", height: "85vh", flexDirection: "column",
+        display: "flex",
+        height: "85vh",
+        flexDirection: "column",
         justifyContent: "space-evenly",
 
         // backgroundColor:"red"
       }}
-
-
     >
-      <Grid
-        item
-        display="flex"
-        justifyContent={"space-evenly"}
-      >
-        <Grid item lg={3} >
+      <Grid item display="flex" justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -307,9 +278,8 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             placeholder="0"
-            value={monto <= 0 ? '' : monto.toString()}
+            value={monto <= 0 ? "" : monto.toString()}
             onChange={(v) => {
-
               if (validator.isNumeric(v.target.value)) {
                 changeInformacionGeneral({
                   fechaContratacion: contratacion,
@@ -319,8 +289,8 @@ export function InformacionGeneral() {
                   monto: v.target.value,
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
-                })
-              } else if (v.target.value === '') {
+                });
+              } else if (v.target.value === "") {
                 changeInformacionGeneral({
                   fechaContratacion: contratacion,
                   fechaVencimiento: vencimiento,
@@ -329,11 +299,9 @@ export function InformacionGeneral() {
                   monto: 0,
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
-                })
+                });
               }
-            }
-
-            }
+            }}
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",
@@ -343,9 +311,7 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: (
-                <AttachMoneyIcon/>
-              ),
+              startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -353,7 +319,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid lg={3} >
+        <Grid lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -373,6 +339,8 @@ export function InformacionGeneral() {
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             fullWidth
             options={catalogoDestinos}
             getOptionLabel={(option) => option.Descripcion}
@@ -417,8 +385,8 @@ export function InformacionGeneral() {
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
-          fullWidth
-          variant="standard"
+            fullWidth
+            variant="standard"
             value={denominacion || ""}
             onChange={(v) =>
               changeInformacionGeneral({
@@ -438,10 +406,8 @@ export function InformacionGeneral() {
               </MenuItem>
             ))}
           </Select>
-
         </Grid>
       </Grid>
-
 
       <Grid item display={"flex"} justifyContent={"center"}>
         <Grid item lg={10.5}>
@@ -449,7 +415,8 @@ export function InformacionGeneral() {
             Institución Financiera
           </InputLabel>
           <Autocomplete
-
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             fullWidth
             options={catalogoInstituciones}
             getOptionLabel={(option) => option.Descripcion}
@@ -492,17 +459,14 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        display={"flex"}
-        justifyContent={"space-evenly"}
-
-      >
-        <Grid item lg={3} >
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             fullWidth
             options={catalogoObligadoSolidarioAval}
             getOptionLabel={(option) => option.Descripcion}
@@ -551,6 +515,8 @@ export function InformacionGeneral() {
             Tipo de ente público obligado
           </InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
@@ -596,11 +562,13 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3} >
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
           <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
@@ -652,7 +620,6 @@ export function InformacionGeneral() {
       <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
         <ThemeProvider theme={theme}>
           <Button
-
             sx={queries.buttonContinuar}
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
@@ -663,22 +630,19 @@ export function InformacionGeneral() {
             variant="outlined"
             onClick={() => addRows()}
           >
-            <CheckIcon fontSize="small" />AGREGAR
+            <CheckIcon fontSize="small" />
+            AGREGAR
           </Button>
-
         </ThemeProvider>
-
-
       </Grid>
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
       <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip", }}>
-
-          <TableContainer sx={{ maxHeight: "100%" }} >
+        <Paper sx={{ width: "88%", overflow: "clip" }}>
+          <TableContainer sx={{ maxHeight: "100%" }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
-                <TableRow >
+                <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
                       {head.label}
@@ -686,7 +650,6 @@ export function InformacionGeneral() {
                   ))}
                 </TableRow>
               </TableHead>
-
 
               <TableBody>
                 {generalObligadoSolidario.Descripcion === "No aplica" ? (
@@ -704,15 +667,17 @@ export function InformacionGeneral() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
-                                removeObligadoSolidarioAval(index)
-                              }
+                              onClick={() => removeObligadoSolidarioAval(index)}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </StyledTableCell>
-                        <StyledTableCell align="center" component="th" scope="row">
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
                           {row.obligadoSolidario}
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">
@@ -723,15 +688,14 @@ export function InformacionGeneral() {
                         </StyledTableCell>
                       </StyledTableRow>
                     );
-                  }))}
+                  })
+                )}
               </TableBody>
             </Table>
           </TableContainer>
         </Paper>
-
       </Grid>
       {/* </Box> */}
     </Grid>
-
   );
 }
