@@ -1,8 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { useCortoPlazoStore } from "./main";
-import { format } from "date-fns";
-import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
+import { useCortoPlazoStore } from "./main";  
 import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { createNotification } from "../components/LateralMenu/APINotificaciones";
@@ -290,18 +288,14 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     "noviembre",
     "diciembre",
   ];
-  const state = useCortoPlazoStore.getState();
 
   let solicitud: any = JSON.parse(Solicitud);
-console.log("solicitud: ", solicitud
-//.condicionesFinancieras[0].comisiones[0].tipoDeComision|| 'no existe'
-);
 interface DocumentacionItem {
   descripcionTipo: string;
   // Otros campos si existen en la estructura de solicitud.documentacion
 }
 
-const descripciones: string[] = solicitud.documentacion.map((item: DocumentacionItem) => item. descripcionTipo);
+const descripciones: string[] = solicitud.documentacion.map((item: DocumentacionItem) => item.descripcionTipo);
 
   const fechaVencimiento = new Date(
     solicitud.informacionGeneral.fechaVencimiento
