@@ -98,7 +98,7 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>Solicitante Autorizado</InputLabel>
+          <InputLabel>Solicitante Autorizado</InputLabel>
           <Select
             fullWidth
             value={solicitanteAutorizado.Solicitante}

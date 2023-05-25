@@ -203,7 +203,7 @@ export function InformacionGeneral() {
     const res = differenceInDays(
       startOfDay(new Date(vencimiento)),
       startOfDay(new Date(contratacion))
-    )+ 1;
+    );
 
     setPlazo(res);
 
@@ -216,8 +216,31 @@ export function InformacionGeneral() {
       denominacion: denominacion,
       institucionFinanciera: institucionFinanciera,
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
+  //   React.useEffect(() => {
+  //     if(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))) > 0)
+  //     {
+  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+  //     }else{
+  //       changeFechaVencimiento(addDays(new Date(fechaContratacion),1));
+  //       changePlazoDias(differenceInDays(startOfDay(new Date(fechaVencimiento)), startOfDay(new Date(fechaContratacion))));
+  //     }
+
+
+  //   }, [fechaContratacion, fechaVencimiento])
+
+  // const disableOption = (value2: string) =>{
+
+  //   if(obligadoSolidarioAval === "No aplica"){
+  //     return value2 = "desactivar"
+  //   }else{
+  //     return value2 = "activar"
+  //   }
+
+  // }
 
   return (
     <Grid
