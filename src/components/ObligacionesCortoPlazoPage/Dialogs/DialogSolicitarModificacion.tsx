@@ -53,13 +53,70 @@ export function DialogSolicitarModificacion({
     (state) => state.addComentario
   );
 
+  const [errorAsignacion, setErrorAsignacion] = useState(false)
+
   useEffect(() => {
     getListadoUsuarios(setUsuarios, 1);
   }, [openState]);
+  
+  useEffect(() =>{
+    setErrorAsignacion(false)
+  
+  },[idUsuarioAsignado]);
 
   const editCreadoPor: string = useCortoPlazoStore(
     (state) => state.editCreadoPor
   );
+
+  const checkform = () => {
+    if (idUsuarioAsignado === "") {
+      setErrorAsignacion(true)
+      }else {
+
+        if (idSolicitud !== "") {
+          modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
+            .then(() => {
+              addComentario(idSolicitud, comentario);
+              Swal.fire({
+                icon: "success",
+                title: "Mensaje",
+                text: "La solicitud se envió con éxito",
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                icon: "error",
+                title: "Mensaje",
+                text: "Ocurrió un error, inténtelo de nuevo",
+              });
+            });
+          createNotification(
+            "Crédito simple corto plazo",
+            "Se te ha asignado una solicitud para modificación.",
+            [idUsuarioAsignado]
+          );
+          navigate("../ConsultaDeSolicitudes");
+        } else {
+          crearSolicitud(
+            localStorage.getItem("IdUsuario"),
+            idUsuarioAsignado,
+            "Captura",
+            comentario
+          ).catch(() => {
+            Swal.fire({
+              icon: "error",
+              title: "Mensaje",
+              text: "Ocurrió un error, inténtelo de nuevo",
+            });
+          });
+          navigate("../ConsultaDeSolicitudes");
+        }
+
+        handler(false);
+
+      }
+    
+  }
 
   return (
     <Dialog
@@ -76,11 +133,14 @@ export function DialogSolicitarModificacion({
 
       <DialogContent>
         <FormControl fullWidth>
-          <Select
+          <TextField
+            select
             value={idUsuarioAsignado}
             onChange={(e) => {
               setidUsuarioAsignado(e.target.value);
             }}
+            helperText={errorAsignacion === true ? "Debe de asigarle a un usuario la solicitud" : null}
+            error={errorAsignacion}
           >
             {usuarios
               .filter((td: any) => td.Rol === "Capturador")
@@ -91,7 +151,7 @@ export function DialogSolicitarModificacion({
                   </MenuItem>
                 );
               })}
-          </Select>
+          </TextField>
         </FormControl>
         <TextField
           fullWidth
@@ -110,6 +170,7 @@ export function DialogSolicitarModificacion({
 
       <DialogActions>
         <Button
+
           sx={queries.buttonCancelar}
           variant="text"
           onClick={() => handler(false)}
@@ -118,50 +179,13 @@ export function DialogSolicitarModificacion({
         </Button>
 
         <Button
+          // disabled={idUsuarioAsignado===""}
+          variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            if (idSolicitud !== "") {
-              modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
-                .then(() => {
-                  addComentario(idSolicitud, comentario);
-                  Swal.fire({
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se envió con éxito",
-                  });
-                })
-                .catch(() => {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
-                });
-              createNotification(
-                "Crédito simple corto plazo",
-                "Se te ha asignado una solicitud para modificación.",
-                [idUsuarioAsignado]
-              );
-              navigate("../ConsultaDeSolicitudes");
-            } else {
-              crearSolicitud(
-                localStorage.getItem("IdUsuario"),
-                idUsuarioAsignado,
-                "Captura",
-                comentario
-              ).catch(() => {
-                Swal.fire({
-                  icon: "error",
-                  title: "Mensaje",
-                  text: "Ocurrió un error, inténtelo de nuevo",
-                });
-              });
-              navigate("../ConsultaDeSolicitudes");
-            }
-
-            handler(false);
+            checkform();
           }}
-          variant="text"
+          
         >
           {comentario == null || /^[\s]*$/.test(comentario)
             ? "Enviar sin comentarios"

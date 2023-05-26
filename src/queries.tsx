@@ -25,7 +25,7 @@ export const queries = {
     },
   },
   bold_text: {
-    fontSize: "1.9ch",
+    fontSize: "1.8ch",
     fontFamily: "MontserratBold",
     "@media (max-width: 600px)": {
       // XS (extra small) screen
@@ -91,7 +91,7 @@ export const queries = {
     textTransform: "capitalize",
   },
 
-  tablaCondicionFinanciera:{
+  tablaDisposicionPagosCapital:{
     height:250,
     width:"100%",
     display:"flex",
@@ -123,16 +123,25 @@ export const queries = {
 
   botonAgregarCondicionFinanciera:{
     backgroundColor: "#15212f",
-    height: "8vh",
-    width:"100%",
+    height: "6vh",
+    width:"8%",
     color: "white",
     fontWeight:"bold",
+    borderRadius: 5,
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
       color: "#000",
     },
     textTransform: "capitalize",
-  }
+  },
+
+  tablaCondicionFinanciera:{
+    height: 510,
+    width:"100%",
+    "@media (min-width: 1870px)": {
+      height:730,
+    },
+  },
 
 };
 

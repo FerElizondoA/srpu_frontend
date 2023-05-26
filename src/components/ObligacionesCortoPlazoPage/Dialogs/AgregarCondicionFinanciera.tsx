@@ -12,6 +12,10 @@ import {
   Button,
   createTheme,
   ThemeProvider,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
@@ -103,8 +107,8 @@ export function AgregarCondicionFinanciera(props: Props) {
   const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
-  const changeTasaEfectiva:Function = useCortoPlazoStore(
-   (state) => state.changeTasaEfectiva
+  const changeTasaEfectiva: Function = useCortoPlazoStore(
+    (state) => state.changeTasaEfectiva
   )
 
   // COMISIONES
@@ -188,97 +192,137 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaVariable: false,
       tasa: "",
       fechaPrimerPago: new Date().toString(),
-       diasEjercicio: { Id: "", Descripcion: "" },
+      diasEjercicio: { Id: "", Descripcion: "" },
       periocidadPago: { Id: "", Descripcion: "" },
       tasaReferencia: { Id: "", Descripcion: "" },
       sobreTasa: "",
-      tasaEfectiva:"",
+      tasaEfectiva: "",
     });
     changeTasaEfectiva({
       diasEjercicio: { Id: "", Descripcion: "" },
-      tasaEfectiva:"",
+      tasaEfectiva: "",
     });
     cleanTasaInteres();
     cleanComision();
   };
 
+  const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
+  const [dialogValidacion, setDialogValidacion] = useState('')
+
   return (
-    <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            onClick={() => {
-              props.handler(false);
-              reset();
-            }}
-            sx={{ color: "white" }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Grid container>
-            <Grid item>
-              <Typography sx={queries.bold_text}>
-                {props.accion} Condición Financiera
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid
-            item
-            sx={{ top: 12, bottom: "auto"}}
-          >
-             <ThemeProvider theme={theme}>
-            <Button
-              disabled={ 
-                tablaComisiones.length === 0 ||
-                tablaTasaInteres.length ===0 
-              }
-              sx={{
-                backgroundColor: "white",
-                ":hover": {
-                  backgroundColor: "white",
-                },
-              }}
+    <>
+      <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
+        <AppBar sx={{ position: "relative" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
               onClick={() => {
-                if (props.accion === "Agregar") {
-                  addRow();
-                  props.handler(false);
-                  reset();
-                } else if (props.accion === "Editar") {
-                  updateRow(props.indexA);
-                  props.handler(false);
-                  reset();
-                }
+                props.handler(false);
+                reset();
               }}
+              sx={{ color: "white" }}
             >
-              <CheckIcon sx={{ mr: 1 }} />
-              
-              <Typography sx={queries.medium_text}>{props.accion}</Typography>
+              <CloseIcon />
+            </IconButton>
+            <Grid container>
+              <Grid item>
+                <Typography sx={queries.bold_text}>
+                  {props.accion} Condición Financiera
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              sx={{ top: 12, bottom: "auto" }}
+            >
+              <ThemeProvider theme={theme}>
+                <Button
+                  // disabled={ 
+                  //   tablaComisiones.length === 0 ||
+                  //   tablaTasaInteres.length ===0 
+                  // }
+                  sx={
+                    queries.buttonContinuar
+                  }
+                  onClick={() => {
+                    if (tablaComisiones.length === 0) {
+                      setDialogValidacion("Comisiones/TasaEfectiva")
+                      setOpenDialogConfirm(!openDialogConfirm)
+                    }
 
-            </Button>
-            </ThemeProvider>
+                    else if (tablaTasaInteres.length === 0) {
+                      setDialogValidacion("Disposición/Pagos de Capital")
+                      setOpenDialogConfirm(!openDialogConfirm)
+                    }
+
+                    else {
+                      if (props.accion === "Agregar") {
+                        addRow();
+                        props.handler(false);
+                        reset();
+                      } else if (props.accion === "Editar") {
+                        updateRow(props.indexA);
+                        props.handler(false);
+                        reset();
+                      }
+                    }
+                  }}
+                >
+                  <CheckIcon sx={{ mr: 1 }} />
+
+                  <Typography sx={queries.medium_text}>{props.accion}</Typography>
+
+                </Button>
+              </ThemeProvider>
+            </Grid>
+          </Toolbar>
+        </AppBar>
+        <Grid item container direction="column">
+          <Grid item>
+            <Tabs
+              value={tabIndex}
+              onChange={handleChange}
+              centered={query.isScrollable ? false : true}
+              variant={query.isScrollable ? "scrollable" : "standard"}
+              scrollButtons
+              allowScrollButtonsMobile
+            >
+              <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
+              <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
+            </Tabs>
+
+            {tabIndex === 0 && <DisposicionPagosCapital />}
+
+            {tabIndex === 1 && <ComisionesTasaEfectiva />}
           </Grid>
-        </Toolbar>
-      </AppBar>
-      <Grid item container direction="column">
-        <Grid item>
-          <Tabs
-            value={tabIndex}
-            onChange={handleChange}
-            centered={query.isScrollable ? false : true}
-            variant={query.isScrollable ? "scrollable" : "standard"}
-            scrollButtons
-            allowScrollButtonsMobile
-          >
-            <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
-            <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
-          </Tabs>
-
-          {tabIndex === 0 && <DisposicionPagosCapital/>}
-
-          {tabIndex === 1 && <ComisionesTasaEfectiva />}
         </Grid>
-      </Grid>
-    </Dialog>
+      </Dialog>
+
+      <Dialog
+        open={openDialogConfirm}
+        onClose={() => { setOpenDialogConfirm(!openDialogConfirm) }}
+      >
+        <DialogTitle sx={queries.bold_text}>
+          ADVERTENCIA
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={queries.text}>
+            {
+              tablaComisiones.length === 0 && tablaTasaInteres.length === 0
+                ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
+                : 'No se puede realizar la accion de agregar condición financiera por falta datos en: ' + dialogValidacion
+            }
+          </DialogContentText>
+          <DialogActions>
+            <Button
+              sx={queries.buttonCancelar}
+              onClick={() => setOpenDialogConfirm(!openDialogConfirm)}
+            >
+              <Typography sx={queries.medium_text}>Cerrar</Typography>
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

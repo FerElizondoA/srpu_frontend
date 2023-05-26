@@ -154,14 +154,14 @@ export function Resumen() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        height: "85vh",
+        height: "81vh",
         overflow: "auto",
         "&::-webkit-scrollbar": {
           width: ".5vw",
           mt: 1,
         },
         "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "rgba(0,0,0,5)",
+          backgroundColor: "#AF8C55",
           outline: "1px solid slategrey",
           borderRadius: 1,
         },

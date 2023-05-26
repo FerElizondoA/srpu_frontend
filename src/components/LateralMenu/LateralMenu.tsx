@@ -432,7 +432,16 @@ export function LateralMenu() {
         >
           <Grid
             container
-            sx={{ width: query.isXs ? "40vw" : "30vw", height: "inherit" }}
+            sx={{ width: query.isXs ? "40vw" : "30vw", height: "inherit", overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".3vw",
+             
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0,0,0,5)",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },  }}
           >
             <Grid item container direction="column" mt={2}>
               <Grid item sx={{ alignSelf: "center" }}>

@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.custom-confirm-button{
+  display: "flex";
+  justify-content: "right";
+
+}

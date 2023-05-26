@@ -553,9 +553,20 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid container sx={queries.tablaCondicionFinanciera} >
-        <Paper sx={{height: "100%", width: "88%", overflow: "auto" }}>
-          <TableContainer sx={{ maxHeight: "100%" }}>
+      <Grid container sx={queries.tablaDisposicionPagosCapital} >
+        <Paper sx={{ height: "100%", width: "88%", overflow: "auto" }}>
+          <TableContainer sx={{
+            maxHeight: "100%", overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

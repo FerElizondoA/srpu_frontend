@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   TableRow,
+  Paper,
 } from "@mui/material";
 
 import {
@@ -136,269 +137,285 @@ export function CondicionesFinancieras() {
   const [openComision, setOpenComision] = useState(false);
 
   return (
-    <Grid container direction="column">
-      <Grid item>
-        <TableContainer sx={{ minHeight: "100%" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {heads.map((head, index) => (
-                  <StyledTableCell key={index}>
-                    <TableSortLabel>{head.label}</TableSortLabel>
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tablaCondicionesFinancieras.map((row, index) => {
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="left">
-                      <Tooltip title="Editar">
-                        <IconButton
-                          type="button"
+    <Grid container >
+      <Grid item sx={queries.tablaCondicionFinanciera} >
+        <Paper sx={{ height: "100%", width: "100%" }}>
+          <TableContainer sx={{
+            height: "100%", width: "100%",
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }}>
+            <Table stickyHeader >
+              <TableHead>
+                <TableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell key={index}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tablaCondicionesFinancieras.map((row, index) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="left">
+                        <Tooltip title="Editar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              changeOpenAgregarState(!openAgregarCondicion);
+                              setAccion("Editar");
+                              setIndexA(index);
+                              loadCondicionFinanciera(row);
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              updatecondicionFinancieraTable(
+                                tablaCondicionesFinancieras.filter(
+                                  (item) => item.id !== row.id
+                                )
+                              );
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+
+                      <StyledTableCell component="th" scope="row">
+                        {format(
+                          new Date(row.disposicion.fechaDisposicion),
+                          "dd/MM/yyyy"
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {"$" + row.disposicion.importe}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {format(
+                          new Date(row.pagosDeCapital.fechaPrimerPago),
+                          "dd/MM/yyyy"
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.pagosDeCapital.periodicidadDePago}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {format(
+                          new Date(row.pagosDeCapital.fechaPrimerPago),
+                          "dd/MM/yyyy"
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Button
                           onClick={() => {
-                            changeOpenAgregarState(!openAgregarCondicion);
-                            setAccion("Editar");
-                            setIndexA(index);
-                            loadCondicionFinanciera(row);
+                            setRowTasa(row.tasaInteres);
+                            setOpenTasa(true);
                           }}
                         >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Eliminar">
-                        <IconButton
-                          type="button"
+                          <InfoOutlinedIcon />
+                        </Button>
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Button
                           onClick={() => {
-                            updatecondicionFinancieraTable(
-                              tablaCondicionesFinancieras.filter(
-                                (item) => item.id !== row.id
-                              )
-                            );
+                            setRowComision(row.comisiones);
+                            setOpenComision(true);
                           }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
+                          <InfoOutlinedIcon />
+                        </Button>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+              <Dialog
+                open={openTasa}
+                onClose={() => {
+                  setOpenTasa(false);
+                }}
+                maxWidth={"lg"}
+              >
+                <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <IconButton
+                    onClick={() => {
+                      setOpenTasa(false);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      color: "black",
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                  <TableContainer sx={{ maxHeight: "400px" }}>
+                    <Table>
+                      <TableHead sx={{ maxHeight: "200px" }}>
+                        <TableRow>
+                          {headsTasa.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
+                            </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rowTasa.map((row, index) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell component="th" scope="row">
+                                {lightFormat(
+                                  new Date(row.fechaPrimerPago),
+                                  "dd-MM-yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.tasa}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.periocidadPago}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.tasaReferencia}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.sobreTasa}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.diasEjercicio}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </DialogContent>
+              </Dialog>
 
-                    <StyledTableCell component="th" scope="row">
-                      {format(
-                        new Date(row.disposicion.fechaDisposicion),
-                        "dd/MM/yyyy"
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {"$" + row.disposicion.importe}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {format(
-                        new Date(row.pagosDeCapital.fechaPrimerPago),
-                        "dd/MM/yyyy"
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row.pagosDeCapital.periodicidadDePago}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {format(
-                        new Date(row.pagosDeCapital.fechaPrimerPago),
-                        "dd/MM/yyyy"
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      <Button
-                        onClick={() => {
-                          setRowTasa(row.tasaInteres);
-                          setOpenTasa(true);
-                        }}
-                      >
-                        <InfoOutlinedIcon />
-                      </Button>
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      <Button
-                        onClick={() => {
-                          setRowComision(row.comisiones);
-                          setOpenComision(true);
-                        }}
-                      >
-                        <InfoOutlinedIcon />
-                      </Button>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-            <Dialog
-              open={openTasa}
-              onClose={() => {
-                setOpenTasa(false);
-              }}
-              maxWidth={"lg"}
-            >
-              <DialogTitle sx={{ m: 0, p: 2 }}>
-                <IconButton
-                  onClick={() => {
-                    setOpenTasa(false);
-                  }}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: "black",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </DialogTitle>
-              <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-                <TableContainer sx={{ maxHeight: "400px" }}>
-                  <Table>
-                    <TableHead sx={{ maxHeight: "200px" }}>
-                      <TableRow>
-                        {headsTasa.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            <TableSortLabel>{head.label}</TableSortLabel>
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rowTasa.map((row, index) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
-                              {lightFormat(
-                                new Date(row.fechaPrimerPago),
-                                "dd-MM-yyyy"
-                              )}
+              <Dialog
+                open={openComision}
+                onClose={() => {
+                  setOpenComision(false);
+                }}
+                maxWidth={"lg"}
+              >
+                <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <IconButton
+                    onClick={() => {
+                      setOpenComision(false);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      color: "black",
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                  <TableContainer >
+                    <Table>
+                      <TableHead >
+                        <TableRow>
+                          {headsComision.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
                             </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.tasa}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.periocidadPago}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.tasaReferencia}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.sobreTasa}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.diasEjercicio}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </DialogContent>
-            </Dialog>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rowComision.map((row, index) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell component="th" scope="row">
+                                {row.tipoDeComision}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {lightFormat(
+                                  new Date(row.fechaContratacion),
+                                  "dd-MM-yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.periodicidadDePago}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.porcentaje}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.monto}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.iva}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </DialogContent>
+              </Dialog>
+            </Table>
+          </TableContainer>
+        </Paper>
 
-            <Dialog
-              open={openComision}
-              onClose={() => {
-                setOpenComision(false);
-              }}
-              maxWidth={"lg"}
-            >
-              <DialogTitle sx={{ m: 0, p: 2 }}>
-                <IconButton
-                  onClick={() => {
-                    setOpenComision(false);
-                  }}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: "black",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </DialogTitle>
-              <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-                <TableContainer sx={{ maxHeight: "400px" }}>
-                  <Table>
-                    <TableHead sx={{ maxHeight: "200px" }}>
-                      <TableRow>
-                        {headsComision.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            <TableSortLabel>{head.label}</TableSortLabel>
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rowComision.map((row, index) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
-                              {row.tipoDeComision}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {lightFormat(
-                                new Date(row.fechaContratacion),
-                                "dd-MM-yyyy"
-                              )}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.periodicidadDePago}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.porcentaje}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.monto}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.iva}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </DialogContent>
-            </Dialog>
-          </Table>
-        </TableContainer>
       </Grid>
 
-      <Grid  container position="fixed" sx={{  bottom: 0 }}>
-        <Grid item md={12} lg={12}>
-          <Button
-            sx={queries.botonAgregarCondicionFinanciera}
-            variant="outlined"
-            onClick={() => {
-              changeOpenAgregarState(!openAgregarCondicion);
-              setAccion("Agregar");
-            }}
-          >
-            AGREGAR
-          </Button>
-          {/* {changeOpenAgregarState ? ( */}
-            <AgregarCondicionFinanciera
-              handler={changeOpenAgregarState}
-              openState={openAgregarCondicion}
-              accion={accion}
-              indexA={indexA}
-            />
-          {/* ) : null} */}
-        </Grid>
+      <Grid item md={12} lg={12} height={75} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <Button
+          sx={queries.botonAgregarCondicionFinanciera}
+          variant="outlined"
+          onClick={() => {
+            changeOpenAgregarState(!openAgregarCondicion);
+            setAccion("Agregar");
+          }}
+        >
+          AGREGAR
+        </Button>
+        {/* {changeOpenAgregarState ? ( */}
+        <AgregarCondicionFinanciera
+          handler={changeOpenAgregarState}
+          openState={openAgregarCondicion}
+          accion={accion}
+          indexA={indexA}
+        />
+        {/* ) : null} */}
+      </Grid>
 
-        {/* <Grid item md={6} lg={6}>
+
+
+      {/* <Grid item md={6} lg={6}>
           <DeleteButton variant="outlined" 
           //onClick={() =>
              //deleteRows()}
              >ELIMINAR</DeleteButton>
         </Grid> */}
-      </Grid>
+
     </Grid>
   );
 }

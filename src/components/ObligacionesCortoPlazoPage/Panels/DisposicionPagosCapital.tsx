@@ -278,15 +278,15 @@ export function DisposicionPagosCapital() {
 
               <TextField
                 placeholder="0"
-                value={disposicionImporte<=0?'':disposicionImporte.toString()}
-                onChange={(v) =>{
+                value={disposicionImporte <= 0 ? '' : disposicionImporte.toString()}
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
-                  changeDisposicion(disposicionFechaContratacion, v.target.value)
-                  }else if(v.target.value===''){
+                    changeDisposicion(disposicionFechaContratacion, v.target.value)
+                  } else if (v.target.value === '') {
                     changeDisposicion(disposicionFechaContratacion, 0)
                   }
                 }
-                  
+
                 }
                 fullWidth
                 InputLabelProps={{
@@ -299,7 +299,7 @@ export function DisposicionPagosCapital() {
                     fontFamily: "MontserratMedium",
                   },
                   startAdornment: (
-                    <AttachMoneyIcon/>
+                    <AttachMoneyIcon />
                   ),
                 }}
                 variant="standard"
@@ -383,8 +383,8 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 placeholder="1"
-                value={capitalNumeroPago<=1?'':capitalNumeroPago.toString()}
-                onChange={(v) =>{
+                value={capitalNumeroPago <= 1 ? '' : capitalNumeroPago.toString()}
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
                       capitalFechaPrimerPago,
@@ -868,9 +868,20 @@ export function DisposicionPagosCapital() {
         </ThemeProvider>
       </Grid>
 
-      <Grid container sx={queries.tablaCondicionFinanciera}>
-        <Paper sx={{height: "100%", width: "88%", overflow: "auto"}}>
-          <TableContainer sx={{ maxHeight: "100%" }} >
+      <Grid container sx={queries.tablaDisposicionPagosCapital}>
+        <Paper sx={{ height: "100%", width: "88%" }}>
+          <TableContainer sx={{
+            maxHeight: "100%", overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }} >
             <Table stickyHeader aria-label="sticky table">
               <TableHead  >
                 <TableRow>

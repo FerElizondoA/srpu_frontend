@@ -7,6 +7,7 @@ import {
   TableHead,
   Chip,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
@@ -270,17 +271,35 @@ export function ConsultaDeSolicitudPage() {
   }, [openDialogVer]);
 
   return (
-    <Grid container direction="column">
+    <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
+      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} height={60}>
+        <Typography
+        sx={{
+          fontSize: "2.3ch",
+          fontFamily: "MontserratBold",
+          color:"#AF8C55",
+          "@media (max-width: 600px)": {
+            // XS (extra small) screen
+            fontSize: "1rem",
+            
+          },
+          "@media (min-width: 601px) and (max-width: 900px)": {
+            // SM (small) screen
+            fontSize: "1.5ch",
+          },
+        }}
+        >Consulta de Solicitudes</Typography>
+      </Grid>
 
-      <Grid item mt={5} mb={5} lg={12} display="center" justifyContent="center">
+      <Grid item  mb={5} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
             display: "flex",
-            width: 800,
+            width: "50%",
           }}
         >
           <InputBase
@@ -310,8 +329,17 @@ export function ConsultaDeSolicitudPage() {
       </Grid>
 
       <Grid item>
-        <TableContainer sx={{ maxHeight: "900px" }}>
-          <Table>
+        <TableContainer sx={{ height:520, overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0,0,0,5)",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },  }}>
+          <Table stickyHeader>
             <TableHead>
               <StyledTableRow>
                 {heads.map((head, index) => (
