@@ -54,7 +54,7 @@ const heads: readonly Head[] = [
   {
     id: "Documento",
     isNumeric: false,
-    label: "Documento/File",
+    label: "Documento/Archivo",
   },
   {
     id: "TipoDocumento",
@@ -131,14 +131,6 @@ export function Documentacion() {
   const cancelar = () => {
     setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
   };
-
-  // const quitDocument = (index: number) => {
-  //   let auxArrayFile: IFile[] = [];
-  //   tablaDocumentos.map((archivo, x) => {
-  //     if (x !== index) auxArrayFile.push(archivo);
-  //   });
-  //   setTablaDocumentos(auxArrayFile);
-  // };
 
   const quitDocument: Function = useCortoPlazoStore(
     (state) => state.removeDocumento
@@ -284,7 +276,7 @@ export function Documentacion() {
           md={4}
           lg={4}
           sx={{
-            height:50,
+            height: 50,
             display: "flex",
             justifyContent: "flex-end",
             top: "auto",
@@ -321,9 +313,17 @@ export function Documentacion() {
             }}
           ></input>
         </Grid>
-        
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4} >
-          <Button sx={queries.buttonContinuar}
+
+        <Grid
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          item
+          md={4}
+          lg={4}
+        >
+          <Button
+            sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
               agregarArchivo();
@@ -333,8 +333,19 @@ export function Documentacion() {
           </Button>
         </Grid>
 
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}  item md={4} lg={4}>
-          <Button sx={queries.buttonCancelar} variant="outlined" onClick={cancelar}>
+        <Grid
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          item
+          md={4}
+          lg={4}
+        >
+          <Button
+            sx={queries.buttonCancelar}
+            variant="outlined"
+            onClick={cancelar}
+          >
             CANCELAR
           </Button>
         </Grid>

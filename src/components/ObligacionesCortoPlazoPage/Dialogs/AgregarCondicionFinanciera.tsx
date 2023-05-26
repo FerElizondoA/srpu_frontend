@@ -51,7 +51,6 @@ type Props = {
   indexA: number;
 };
 
-
 const theme = createTheme({
   components: {
     MuiButton: {
@@ -59,15 +58,13 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
-
-
 
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -109,7 +106,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
   const changeTasaEfectiva: Function = useCortoPlazoStore(
     (state) => state.changeTasaEfectiva
-  )
+  );
 
   // COMISIONES
   const tablaComisiones: IComisiones[] = useCortoPlazoStore(
@@ -140,8 +137,6 @@ export function AgregarCondicionFinanciera(props: Props) {
   const changeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.changeTasaInteres
   );
-
-
 
   const addRow = () => {
     const CF: CondicionFinanciera = {
@@ -237,10 +232,10 @@ export function AgregarCondicionFinanciera(props: Props) {
             >
               <ThemeProvider theme={theme}>
                 <Button
-                  // disabled={ 
-                  //   tablaComisiones.length === 0 ||
-                  //   tablaTasaInteres.length ===0 
-                  // }
+                  disabled={ 
+                    tablaComisiones.length === 0 ||
+                    tablaTasaInteres.length ===0 
+                  }
                   sx={
                     queries.buttonContinuar
                   }

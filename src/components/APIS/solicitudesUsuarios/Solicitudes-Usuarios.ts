@@ -1,6 +1,5 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -82,38 +81,38 @@ const Toast = Swal.mixin({
 //     });
 // };
 
-const createComentarios = (idSolicitud: string, comentario: string) => {
+// const createComentarios = (idSolicitud: string, comentario: string) => {
 
-  axios
-    .post(
-      process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
-      {
-        CreadoPor: localStorage.getItem("IdCentral"),
-        IdSolicitud: idSolicitud,
-        Comentario: comentario,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken") || "",
-        },
-      }
-    )
-    .then((r) => {
-      if (r.status === 201) {
-        Toast.fire({
-          icon: "success",
-          title: "¡Registro exitoso!",
-        });
-      }
-    })
-    .catch((r) => {
-      if (r.response.status === 409) {
+//   axios
+//     .post(
+//       process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
+//       {
+//         CreadoPor: localStorage.getItem("IdCentral"),
+//         IdSolicitud: idSolicitud,
+//         Comentario: comentario,
+//       },
+//       {
+//         headers: {
+//           Authorization: localStorage.getItem("jwtToken") || "",
+//         },
+//       }
+//     )
+//     .then((r) => {
+//       if (r.status === 201) {
+//         Toast.fire({
+//           icon: "success",
+//           title: "¡Registro exitoso!",
+//         });
+//       }
+//     })
+//     .catch((r) => {
+//       if (r.response.status === 409) {
 
-      }
-    });
+//       }
+//     });
 
 
-};
+// };
 
 export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
 
