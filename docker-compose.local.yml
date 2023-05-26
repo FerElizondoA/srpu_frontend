@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  backend-login-local:
+  backend-srpu-local:
     build: .
     environment:
       SRPU_B_APP_DB_HOST: "10.200.4.111"
