@@ -33,7 +33,7 @@ module.exports = {
     }
 
     getCorreo().then((r) => {
-      CorreoElectronico = r;
+      var CorreoElectronico = r;
       var mailOptions = {
         from: process.env.SRPU_B_APP_EMAIL_USER,
         to: CorreoElectronico,
