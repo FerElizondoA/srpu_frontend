@@ -254,7 +254,7 @@ export function Resumen() {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
-                <Tooltip title="Añadir comentario a este apartado">
+                {/* <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
                       comentarios.filter(
@@ -275,7 +275,7 @@ export function Resumen() {
                   >
                     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
                 <Typography sx={queries.medium_text}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
@@ -299,21 +299,10 @@ export function Resumen() {
               fontSize: "12px",
             }}
           >
-            <Grid
-              sx={{
-                flexDirection: "row",
-                mt: 1,
-                alignItems: "center",
-                borderBottom: 1,
-                borderColor: "#cfcfcf",
-                fontSize: "12px",
-                //border: "1px solid"
-              }}
-            >
-              <Divider color="lightGrey"></Divider>
-              {infoGeneral.map((head, index) => (
-                <Grid sx={{ display: "flex", alignItems: "center" }}>
-                  <Tooltip title="Añadir comentario a este apartado">
+            <Divider color="lightGrey"></Divider>
+            {infoGeneral.map((head, index) => (
+              <Grid sx={{ display: "flex", alignItems: "center" }}>
+                {/* <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
                         comentarios.filter(
@@ -335,50 +324,49 @@ export function Resumen() {
                     >
                       <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                     </IconButton>
-                  </Tooltip>
-                  <Typography sx={queries.medium_text}>
-                    <strong>{head.label}: </strong>
-                    {head.label.includes("Fecha")
-                      ? format(new Date(head.value), "dd/MM/yyyy")
-                      : head.value}
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid item>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {heads.map((head, index) => (
-                        <StyledTableCell key={index}>
-                          {head.label}
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
+                  </Tooltip> */}
+                <Typography sx={queries.medium_text}>
+                  <strong>{head.label}: </strong>
+                  {head.label.includes("Fecha")
+                    ? format(new Date(head.value), "dd/MM/yyyy")
+                    : head.value}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+          <Divider color="lightGrey"></Divider>
+          <Grid item>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-                  <TableBody>
-                    {tablaObligados.map((row: any, index: number) => {
-                      return (
-                        <StyledTableRow key={index}>
-                          <StyledTableCell component="th">
-                            {row.obligadoSolidario}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.tipoEntePublicoObligado}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.entePublicoObligado}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+                <TableBody>
+                  {tablaObligados.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell component="th">
+                          {row.obligadoSolidario}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.entePublicoObligado}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
 
@@ -605,7 +593,8 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Grid mt={5} mb={5}>
+        <Divider color="lightGrey"></Divider>
+        <Grid mt={5}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Grid
             sx={{
@@ -620,7 +609,6 @@ export function Resumen() {
           >
             {documentos.map((doc, index) => (
               <Grid key={index}>
-                <Divider color="lightGrey"></Divider>
                 <Typography sx={queries.medium_text}>
                   {doc.descripcionTipo}
                 </Typography>
