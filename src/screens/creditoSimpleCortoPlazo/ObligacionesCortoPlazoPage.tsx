@@ -1,4 +1,4 @@
-import { Grid, Tabs, Tab } from "@mui/material";
+import { Grid, Tabs, Tab, Typography } from "@mui/material";
 
 import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -38,7 +38,7 @@ export function ObligacionesCortoPlazoPage() {
   );
 
   useEffect(() => {
-      getTiposDocumentos();
+    getTiposDocumentos();
   }, []);
 
   return (
@@ -47,6 +47,23 @@ export function ObligacionesCortoPlazoPage() {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item>
+        <Grid display={"flex"} justifyContent={"center"}>
+          <Typography sx={{
+            fontSize: "2.5ch",
+            fontFamily: "MontserratBold",
+            color:"#AF8C55",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1rem",
+              
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
+            },
+          }}>Credito Simple a Corto Plazo</Typography>
+
+        </Grid>
         <Tabs
           value={tabIndex}
           onChange={handleChange}

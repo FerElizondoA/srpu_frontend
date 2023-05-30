@@ -286,19 +286,16 @@ export function DisposicionPagosCapital() {
 
               <TextField
                 placeholder="0"
-                value={
-                  disposicionImporte <= 0 ? "" : disposicionImporte.toString()
-                }
+                value={disposicionImporte <= 0 ? '' : disposicionImporte.toString()}
                 onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
-                    changeDisposicion(
-                      disposicionFechaContratacion,
-                      v.target.value
-                    );
-                  } else if (v.target.value === "") {
-                    changeDisposicion(disposicionFechaContratacion, 0);
+                    changeDisposicion(disposicionFechaContratacion, v.target.value)
+                  } else if (v.target.value === '') {
+                    changeDisposicion(disposicionFechaContratacion, 0)
                   }
-                }}
+                }
+
+                }
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -309,7 +306,9 @@ export function DisposicionPagosCapital() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  startAdornment: <AttachMoneyIcon />,
+                  startAdornment: (
+                    <AttachMoneyIcon />
+                  ),
                 }}
                 variant="standard"
               />
@@ -902,9 +901,20 @@ export function DisposicionPagosCapital() {
         </ThemeProvider>
       </Grid>
 
-      <Grid container sx={queries.tablaCondicionFinanciera}>
-        <Paper sx={{ height: "100%", width: "88%", overflow: "auto" }}>
-          <TableContainer sx={{ maxHeight: "100%" }}>
+      <Grid container sx={queries.tablaDisposicionPagosCapital}>
+        <Paper sx={{ height: "100%", width: "88%" }}>
+          <TableContainer sx={{
+            maxHeight: "100%", overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }} >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

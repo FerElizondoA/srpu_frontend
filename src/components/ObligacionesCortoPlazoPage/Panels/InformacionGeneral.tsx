@@ -222,9 +222,7 @@ export function InformacionGeneral() {
   return (
     <Grid
       sx={{
-        display: "flex",
-        height: "85vh",
-        flexDirection: "column",
+        display: "flex", height: "81vh", flexDirection: "column",
         justifyContent: "space-evenly",
 
         // backgroundColor:"red"
@@ -314,7 +312,9 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+              startAdornment: (
+                <AttachMoneyIcon />
+              ),
             }}
             variant="standard"
           />
@@ -650,8 +650,21 @@ export function InformacionGeneral() {
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
       <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip" }}>
-          <TableContainer sx={{ maxHeight: "100%" }}>
+        <Paper sx={{ width: "88%", overflow: "clip", }}>
+
+          <TableContainer sx={{
+            maxHeight: "100%",
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }} >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

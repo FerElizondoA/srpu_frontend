@@ -149,12 +149,21 @@ export function Documentacion() {
       item
       container
       direction="column"
-      sx={{ maxHeight: "80vh", overflow: "auto" }}
+      sx={{ maxHeight: "75vh", overflow: "auto",
+      "&::-webkit-scrollbar": {
+        width: ".5vw",
+        mt: 1,
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#AF8C55",
+        outline: "1px solid slategrey",
+        borderRadius: 1,
+      }, }}
     >
       <Grid item>
         <Grid item ml={window.innerWidth / 90} lg={10}>
           <TableContainer>
-            <Table>
+            <Table  stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {heads.map((head) => (

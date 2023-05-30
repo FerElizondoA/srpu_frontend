@@ -23,6 +23,7 @@ import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador"
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import Swal from "sweetalert2";
+import makeStyles from "@mui/material/styles/makeStyles";
 
 interface Head {
   label: string;
@@ -79,15 +80,101 @@ export function SolicitudInscripcion() {
 
   let err = 0;
 
+  
   const Toast = Swal.mixin({
+    width:"690px",
+    confirmButtonColor: "#15212f",
     toast: true,
     showConfirmButton: true,
     confirmButtonText: "De acuerdo",
     didOpen: (toast) => {
+  
       toast.addEventListener("mouseenter", Swal.stopTimer);
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
+
+
+  const InfoFaltanteModificacion = () => {
+    errores = [];
+
+    const state = useCortoPlazoStore.getState();
+    const solicitud: any = {
+      encabezado: state.encabezado,
+      MontoOriginalContratado: state.informacionGeneral.monto,
+      PlazoDias: state.informacionGeneral.plazo,
+      Destino: state.informacionGeneral.destino.Descripcion,
+      Denominacion: state.informacionGeneral.denominacion,
+      InstitucionFinanciera:
+        state.informacionGeneral.institucionFinanciera.Descripcion,
+    };
+    if (
+      solicitud.MontoOriginalContratado === undefined ||
+      solicitud.MontoOriginalContratado === 0 ||
+      /^[\s]*$/.test(solicitud.MontoOriginalContratado)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Ingrese un Monto original contratado valido."
+      );
+    }
+    if (
+      solicitud.Destino === undefined ||
+      solicitud.Destino === "" ||
+      /^[\s]*$/.test(solicitud.Destino)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Seleccione  el Destino."
+      );
+    }
+    if (
+      solicitud.InstitucionFinanciera === undefined ||
+      solicitud.InstitucionFinanciera === "" ||
+      /^[\s]*$/.test(solicitud.InstitucionFinanciera)
+    ) {
+      err = 1;
+
+      errores.push(
+        "Sección <strong>Información General</strong>:Seleccione la Institución Financiera."
+      );
+    }
+    if (err === 0) {
+      setOpenDialogModificacion(!openDialogModificacion);
+    } else {
+      Toast.fire({
+        showConfirmButton: false,
+        buttonsStyling:true,
+        html: `
+        <div>
+          <h2  >Se han encontrado los siguientes errores:</h2>
+          <div style="text-align: left;   color:red;  overflow:auto;">
+            *</strong>${errores.join("<br><br><strong>*</strong>")}
+          </div>
+          <div  style="text-align: right;">
+
+            <Button style="float:right;
+            cursor: pointer;
+            background-color:#15212f;
+            height:30px;
+            color:white;
+            border-radius: 0.8vh;
+            font-size:100%;
+            textTransform:capitalize";
+            "  >Cerrar</Button>
+
+          </div>
+        </div>`
+        
+      });
+    }
+
+  }
+
+
+
   const InfoFaltante = () => {
     errores = [];
 
@@ -260,17 +347,28 @@ export function SolicitudInscripcion() {
       setOpenDialogEnviar(!openDialogEnviar);
     } else {
       Toast.fire({
-        icon: "error",
+        showConfirmButton: false,
+        buttonsStyling:true,
         html: `
-      <div style="height:100%; width:100%">
-      <h3>Se han encontrado los siguientes errores:</h3>
-      <div style="text-align: left; margin-left: 10px; color: red; height: 300px; overflow: auto;">
-    <small>
-    <strong>
-    *</strong>${errores.join("<br><strong>*</strong>")}
-    </small>
-    </div>
-    </div>`,
+        <div>
+        <h2  >Se han encontrado los siguientes errores:</h2>
+        <div style="text-align: left;   color:red;  overflow:auto;">
+          *</strong>${errores.join("<br><br><strong>*</strong>")}
+        </div>
+        <div  style="text-align: right;">
+
+            <Button style="float:right;
+            cursor: pointer;
+            background-color:#15212f;
+            height:30px;
+            color:white;
+            border-radius: 0.8vh;
+            font-size:100%;
+            textTransform:capitalize";
+            "  >Cerrar</Button>
+            
+          </div>
+      </div>`,
       });
     }
   };
@@ -290,14 +388,14 @@ export function SolicitudInscripcion() {
   };
 
   return (
-    <Grid item container>
+    <Grid container>
       <Grid
         item
         container
         flexDirection="row"
         mt={{ sm: 0, md: 0, lg: 0 }}
         ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 10, lg: 10 }}
+        spacing={{ xs: 2, md: 10, lg: 9 }}
       >
         <Grid item md={4.5} lg={4.5}>
           <InputLabel sx={queries.medium_text}>
@@ -349,8 +447,8 @@ export function SolicitudInscripcion() {
         item
         container
         flexDirection="row"
-        mt={4}
-        mb={4}
+        mt={2}
+        mb={2}
         justifyContent={"center"}
       >
         <Grid item md={3} lg={3} xl={3}>
@@ -385,7 +483,7 @@ export function SolicitudInscripcion() {
         container
         justifyContent={"center"}
         alignItems={"flex-start"}
-        spacing={{ md: 10, lg: 10 }}
+        spacing={{ md: 10, lg: 2 }}
       >
         <Grid item md={9} lg={9} xl={9}>
           <Divider sx={queries.medium_text}>
@@ -440,9 +538,9 @@ export function SolicitudInscripcion() {
                                 v.target.checked
                                   ? setCheckObj({ ...checkObj, [index]: true })
                                   : setCheckObj({
-                                      ...checkObj,
-                                      [index]: false,
-                                    });
+                                    ...checkObj,
+                                    [index]: false,
+                                  });
 
                                 v.target.checked
                                   ? arrReglas.push(row.Descripcion)
@@ -488,7 +586,8 @@ export function SolicitudInscripcion() {
               <Button
                 sx={queries.buttonContinuar}
                 onClick={() => {
-                  setOpenDialogModificacion(!openDialogModificacion);
+                  InfoFaltanteModificacion();
+
                 }}
               >
                 Solicitar Modificacion

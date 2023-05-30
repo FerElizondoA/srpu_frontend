@@ -68,11 +68,11 @@ export function Encabezado() {
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 10, md: 10, lg: 10 }}
+        mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
         ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
         spacing={{ xs: 2, md: 5, lg: 10 }}
       >
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={4} md={3.5} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
