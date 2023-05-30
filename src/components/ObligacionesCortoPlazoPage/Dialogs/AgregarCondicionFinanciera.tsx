@@ -282,8 +282,8 @@ export function AgregarCondicionFinanciera(props: Props) {
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Disposición/Pagos de Capital" sx={queries.text}></Tab>
-              <Tab label="Comisiones/Tasa Efectiva" sx={queries.text}></Tab>
+              <Tab label="Disposición/Pagos de Capital" sx={queries.bold_text}></Tab>
+              <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DisposicionPagosCapital />}
