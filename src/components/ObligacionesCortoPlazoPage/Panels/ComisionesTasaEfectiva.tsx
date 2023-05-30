@@ -46,6 +46,7 @@ import { useCortoPlazoStore } from "../../../store/main";
 
 import { format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
@@ -233,6 +234,8 @@ export function ComisionesTasaEfectiva() {
             <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
               fullWidth
               options={catalogoDiasEjercicio}
               getOptionLabel={(option) => option.Descripcion}
@@ -333,6 +336,8 @@ export function ComisionesTasaEfectiva() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             fullWidth
             options={catalogoTiposComision}
             getOptionLabel={(option) => option.Descripcion}
@@ -377,6 +382,8 @@ export function ComisionesTasaEfectiva() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             fullWidth
             options={catalogoPeriocidadDePago}
             getOptionLabel={(option) => option.Descripcion}

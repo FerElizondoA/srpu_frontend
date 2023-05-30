@@ -41,6 +41,7 @@ import {
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
@@ -340,6 +341,8 @@ export function DisposicionPagosCapital() {
               <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                 fullWidth
                 options={catalogoPeriocidadDePago}
                 getOptionLabel={(option) => option.Descripcion}
@@ -378,8 +381,8 @@ export function DisposicionPagosCapital() {
             <Grid item lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
-                placeholder="1"
-                value={capitalNumeroPago<=1?'':capitalNumeroPago.toString()}
+                placeholder="0"
+                value={capitalNumeroPago<=0?'':capitalNumeroPago.toString()}
                 onChange={(v) =>{
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
@@ -391,7 +394,7 @@ export function DisposicionPagosCapital() {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
-                      1
+                      0
                     )
                   }
                 }
@@ -538,6 +541,8 @@ export function DisposicionPagosCapital() {
                     <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
@@ -585,6 +590,8 @@ export function DisposicionPagosCapital() {
                     <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -672,6 +679,8 @@ export function DisposicionPagosCapital() {
                     <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -719,6 +728,8 @@ export function DisposicionPagosCapital() {
                     <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                       fullWidth
                       options={catalogoTasaReferencia}
                       getOptionLabel={(option) => option.Descripcion}
@@ -799,6 +810,8 @@ export function DisposicionPagosCapital() {
                     <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
