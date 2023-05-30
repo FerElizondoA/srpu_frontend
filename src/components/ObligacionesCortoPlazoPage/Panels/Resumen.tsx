@@ -217,7 +217,7 @@ export function Resumen() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        height: "81vh",
+        height: "79vh",
         overflow: "auto",
         "&::-webkit-scrollbar": {
           width: ".5vw",

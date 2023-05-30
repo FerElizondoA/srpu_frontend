@@ -74,7 +74,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
               return {
                 archivo: new File(
                   [],
-                  "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO",
+                  "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO",
                   { type: "text/plain" }
                 ),
                 tipoArchivo: data.data.filter(

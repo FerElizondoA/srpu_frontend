@@ -288,24 +288,24 @@ export function ConsultaDeSolicitudPage() {
       </Grid>
       <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} height={60}>
         <Typography
-        sx={{
-          fontSize: "2.3ch",
-          fontFamily: "MontserratBold",
-          color:"#AF8C55",
-          "@media (max-width: 600px)": {
-            // XS (extra small) screen
-            fontSize: "1rem",
-            
-          },
-          "@media (min-width: 601px) and (max-width: 900px)": {
-            // SM (small) screen
-            fontSize: "1.5ch",
-          },
-        }}
+          sx={{
+            fontSize: "2.3ch",
+            fontFamily: "MontserratBold",
+            color: "#AF8C55",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1rem",
+
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
+            },
+          }}
         >Consulta de Solicitudes</Typography>
       </Grid>
 
-      <Grid item  mb={5} lg={12} display="center" justifyContent="center">
+      <Grid item mb={5} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
@@ -340,16 +340,18 @@ export function ConsultaDeSolicitudPage() {
       </Grid>
 
       <Grid item>
-        <TableContainer sx={{ height:520, overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: ".5vw",
-          mt: 1,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "rgba(0,0,0,5)",
-          outline: "1px solid slategrey",
-          borderRadius: 1,
-        },  }}>
+        <TableContainer sx={{
+          height: 520, overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: ".5vw",
+            mt: 1,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,0,5)",
+            outline: "1px solid slategrey",
+            borderRadius: 1,
+          },
+        }}>
           <Table stickyHeader>
             <TableHead>
               <StyledTableRow>
@@ -373,6 +375,7 @@ export function ConsultaDeSolicitudPage() {
                   <StyledTableCell />
                 </StyledTableRow>
               ) : (
+                
                 datosFiltrados.map((row, index) => {
                   let chip = <></>;
 
@@ -421,7 +424,7 @@ export function ConsultaDeSolicitudPage() {
 
                   return (
                     <StyledTableRow key={index}>
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 15px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -429,7 +432,7 @@ export function ConsultaDeSolicitudPage() {
                         {row.Institucion.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -437,7 +440,7 @@ export function ConsultaDeSolicitudPage() {
                         {row.TipoEntePublico.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 20px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -445,7 +448,7 @@ export function ConsultaDeSolicitudPage() {
                         {chip}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -453,7 +456,7 @@ export function ConsultaDeSolicitudPage() {
                         {row.ClaveDeInscripcion.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -461,7 +464,7 @@ export function ConsultaDeSolicitudPage() {
                         {"$" + row.MontoOriginalContratado.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -469,7 +472,7 @@ export function ConsultaDeSolicitudPage() {
                         {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                       </StyledTableCell>
 
-                      <StyledTableCell
+                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -480,8 +483,8 @@ export function ConsultaDeSolicitudPage() {
                       <StyledTableCell
                         sx={{
                           flexDirection: "row",
-                          display: "flex",
-                          //gridTemplateColumns: "repeat(2,1fr)",
+                          display: "grid",
+                          gridTemplateColumns: "repeat(4,1fr)",
                         }}
                         align="center"
                         component="th"

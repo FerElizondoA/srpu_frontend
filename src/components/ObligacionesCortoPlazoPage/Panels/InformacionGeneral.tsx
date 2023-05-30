@@ -32,10 +32,11 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import CheckIcon from "@mui/icons-material/Check";
 import validator from "validator";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
@@ -219,7 +220,7 @@ export function InformacionGeneral() {
   return (
     <Grid
       sx={{
-        display: "flex", height: "81vh", flexDirection: "column",
+        display: "flex", height: "79vh", flexDirection: "column",
         justifyContent: "space-evenly",
 
         // backgroundColor:"red"
@@ -341,6 +342,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             fullWidth
             options={catalogoDestinos}
             getOptionLabel={(option) => option.Descripcion}
@@ -417,6 +420,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             fullWidth
             options={catalogoInstituciones}
             getOptionLabel={(option) => option.Descripcion}
@@ -467,6 +472,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             fullWidth
             options={catalogoObligadoSolidarioAval}
             getOptionLabel={(option) => option.Descripcion}
@@ -517,6 +524,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
@@ -569,6 +578,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            closeText = "Cerrar"
+            openText = "Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
