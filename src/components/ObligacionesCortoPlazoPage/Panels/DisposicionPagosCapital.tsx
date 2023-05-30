@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   InputLabel,
-  InputAdornment,
   Autocomplete,
   FormControl,
   RadioGroup,
@@ -25,9 +24,7 @@ import {
   Paper,
 } from "@mui/material";
 import validator from 'validator';
-
 import CheckIcon from '@mui/icons-material/Check';
-
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import enGB from "date-fns/locale/en-GB";
@@ -35,15 +32,12 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
-
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-
 import {
   ConfirmButton,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-
 import { useCortoPlazoStore } from "../../../store/main";
 import { lightFormat } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
@@ -344,6 +338,8 @@ export function DisposicionPagosCapital() {
                 Periocidad de Pago
               </InputLabel>
               <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                 fullWidth
                 options={catalogoPeriocidadDePago}
                 getOptionLabel={(option) => option.Descripcion}
@@ -540,6 +536,8 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
@@ -585,6 +583,8 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -670,6 +670,8 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -715,6 +717,8 @@ export function DisposicionPagosCapital() {
                       Tasa de Referencia
                     </InputLabel>
                     <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                       fullWidth
                       options={catalogoTasaReferencia}
                       getOptionLabel={(option) => option.Descripcion}
@@ -793,6 +797,8 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}

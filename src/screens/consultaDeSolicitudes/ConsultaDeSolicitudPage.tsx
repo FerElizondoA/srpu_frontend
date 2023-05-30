@@ -33,7 +33,7 @@ import { useCortoPlazoStore } from "../../store/main";
 import { DescargarConsultaSolicitud } from "../../store/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-
+import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 export interface IData {
   Id: string;
   Institucion: string;
@@ -59,7 +59,7 @@ const heads: readonly Head[] = [
   {
     id: "Institucion",
     isNumeric: true,
-    label: "Institucion financiera",
+    label: "Institución financiera",
   },
   {
     id: "TipoEntePublico",
@@ -74,7 +74,7 @@ const heads: readonly Head[] = [
   {
     id: "ClaveDeInscripcion",
     isNumeric: true,
-    label: "Clave de inscripcion",
+    label: "Clave de inscripción",
   },
   {
     id: "MontoOriginalContratado",
@@ -84,12 +84,12 @@ const heads: readonly Head[] = [
   {
     id: "FechaContratacion",
     isNumeric: true,
-    label: "Fecha de contratacion",
+    label: "Fecha de contratación",
   },
   {
     id: "tipoDocumento",
     isNumeric: true,
-    label: "TipoDocumento",
+    label: "Tipo de Documento",
   },
   {
     id: "Acciones",
@@ -134,14 +134,15 @@ export function ConsultaDeSolicitudPage() {
         elemento.TipoEntePublico.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.tipoDocumento
-          .toString()
+        elemento.TipoSolicitud.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
         return elemento;
       }
+
     });
+
     setDatosFiltrados(ResultadoBusqueda);
   };
 
@@ -204,12 +205,14 @@ export function ConsultaDeSolicitudPage() {
   const reglasAplicables: string[] = useCortoPlazoStore(
     (state) => state.reglasAplicables
   );
+
+  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   );
 
   const llenaSolicitud = (solicitud: IData) => {
-    const state = useCortoPlazoStore.getState();
+    // const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud);
 
     changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -263,12 +266,20 @@ export function ConsultaDeSolicitudPage() {
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
+  const [openEliminar, changeOpenEliminar] = useState(false);
+
   useEffect(() => {
     if (openDialogVer === false) {
       limpiaSolicitud();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDialogVer]);
+
+  useEffect(() => {
+    if (!openEliminar) {
+      getSolicitudes(setDatos);
+    }
+  }, [openEliminar]);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -494,7 +505,7 @@ export function ConsultaDeSolicitudPage() {
 
                         {localStorage.getItem("IdUsuario") === row.IdEditor &&
                           localStorage.getItem("Rol") !== "Administrador" && (
-                            <Tooltip title="Edit">
+                            <Tooltip title="Editar">
                               <IconButton
                                 type="button"
                                 onClick={() => {
@@ -502,6 +513,7 @@ export function ConsultaDeSolicitudPage() {
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
                                   editarSolicitud();
+                                  console.log(row.Solicitud);
                                 }}
                               >
                                 <EditIcon />
@@ -546,9 +558,14 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
+                                  console.log(idSolicitud);
+                                  console.log(row?.Id || "");
                                   changeIdSolicitud(row?.Id || "");
                                   changeEditCreadoPor(row?.CreadoPor);
-                                  borrarSolicitud(row.Id);
+                                  changeOpenEliminar(!openEliminar);
+
+                                  //borrarSolicitud(row.Id);
+
                                   getSolicitudes(setDatos);
                                 }}
                               >
@@ -572,6 +589,11 @@ export function ConsultaDeSolicitudPage() {
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
+        />
+        <DialogEliminar
+          handler={changeOpenEliminar}
+          openState={openEliminar}
+          texto={"Solicitud"}
         />
       </Grid>
     </Grid>

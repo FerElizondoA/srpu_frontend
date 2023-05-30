@@ -16,14 +16,17 @@ import {
   CondicionFinancieraSlice,
 } from "./condicion_financiera";
 import { createDocumentoSlice, DocumentosSlice } from "./documentacion";
+import { ComentarioApartadoSlice, createComentarioSlice } from "./comentarios_apartado";
 
-export type SolicitudStore = EncabezadoSlice &
+export type SolicitudStore = 
+  EncabezadoSlice &
   InformacionGeneralSlice &
   SolicitudInscripcionSlice &
   PagosCapitalSlice &
   TasaEfectivaSlice &
   CondicionFinancieraSlice &
-  DocumentosSlice;
+  DocumentosSlice &
+  ComentarioApartadoSlice;
 
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
@@ -33,4 +36,5 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createTasaEfectivaSlice(...x),
   ...createCondicionFinancieraSlice(...x),
   ...createDocumentoSlice(...x),
+  ...createComentarioSlice(...x),
 }));

@@ -54,7 +54,7 @@ const heads: readonly Head[] = [
   {
     id: "Documento",
     isNumeric: false,
-    label: "Documento/File",
+    label: "Documento/Archivo",
   },
   {
     id: "TipoDocumento",
@@ -131,14 +131,6 @@ export function Documentacion() {
   const cancelar = () => {
     setNombreArchivo("ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO");
   };
-
-  // const quitDocument = (index: number) => {
-  //   let auxArrayFile: IFile[] = [];
-  //   tablaDocumentos.map((archivo, x) => {
-  //     if (x !== index) auxArrayFile.push(archivo);
-  //   });
-  //   setTablaDocumentos(auxArrayFile);
-  // };
 
   const quitDocument: Function = useCortoPlazoStore(
     (state) => state.removeDocumento
@@ -335,7 +327,7 @@ export function Documentacion() {
             }}
           ></input>
         </Grid>
-
+        
         <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4} >
           <Button sx={queries.buttonContinuar}
             variant="outlined"

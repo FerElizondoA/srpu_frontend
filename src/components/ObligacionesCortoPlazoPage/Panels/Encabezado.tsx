@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import { Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
-
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 import { subDays } from "date-fns/esm";
-
 import { queries } from "../../../queries";
-
 import { useCortoPlazoStore } from "../../../store/main";
-import {
-  getListadoUsuarios,
-  // getRoles,
-} from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {
   id: string;
@@ -40,8 +34,11 @@ export function Encabezado() {
   );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
-  const solicitanteAutorizado: { Solicitante: string; Cargo: string, Nombre: string } =
-    useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
+  const solicitanteAutorizado: {
+    Solicitante: string;
+    Cargo: string;
+    Nombre: string;
+  } = useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
 
   const organismo: { Id: string; Organismo: string } = useCortoPlazoStore(
     (state) => state.encabezado.organismo
@@ -67,7 +64,7 @@ export function Encabezado() {
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
 
   return (
-    <Grid container >
+    <Grid container>
       <Grid
         item
         container

@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  Dialog,
-  Slide,
-} from "@mui/material";
+import { Dialog, Slide } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { Resumen } from "../Panels/Resumen";
 
@@ -20,21 +17,18 @@ type Props = {
   openState: boolean;
 };
 
-export function VerBorradorDocumento(props: Props, Solicitud: string){
-
-    return(
-        <Dialog
-        open={props.openState}
-        fullWidth
-        maxWidth={'lg'}
-        TransitionComponent={Transition}
-        onClose={() => {
-          props.handler(false);
-        }}
-        >
-            
-        <Resumen></Resumen>
-
-        </Dialog>
-    )
+export function VerBorradorDocumento(props: Props, Solicitud: string) {
+  return (
+    <Dialog
+      open={props.openState}
+      fullWidth
+      maxWidth={"lg"}
+      TransitionComponent={Transition}
+      onClose={() => {
+        props.handler(false);
+      }}
+    >
+      <Resumen></Resumen>
+    </Dialog>
+  );
 }

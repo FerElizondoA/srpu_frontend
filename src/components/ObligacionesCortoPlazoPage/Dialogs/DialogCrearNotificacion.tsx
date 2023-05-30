@@ -83,6 +83,7 @@ export function DialogCatalogoUsuarios({
         }}
       >
         <Autocomplete
+          clearText="Limpiar"
           multiple
           getOptionLabel={(usuarios) =>
             usuarios.Nombre +

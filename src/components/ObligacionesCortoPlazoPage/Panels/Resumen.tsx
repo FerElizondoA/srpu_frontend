@@ -1,28 +1,23 @@
 import {
   Grid,
-  TextField,
   Divider,
-  Autocomplete,
   Typography,
-  Paper,
-  Box,
   TableContainer,
   Table,
   TableHead,
   TableRow,
   TableBody,
-  Tooltip,
   IconButton,
   TableSortLabel,
   Dialog,
   DialogTitle,
   DialogContent,
   Button,
+  Tooltip,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCortoPlazoStore } from "../../../store/main";
 import { queries } from "../../../queries";
-import InputLabel from "@mui/material/InputLabel/InputLabel";
 import { format, lightFormat } from "date-fns";
 import {
   CondicionFinanciera,
@@ -35,10 +30,19 @@ import { IFile } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
 import { headsComision, headsTasa } from "./CondicionesFinancieras";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CommentIcon from "@mui/icons-material/Comment";
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { IComentario } from "../../../store/comentarios_apartado";
 
 interface Head {
   label: string;
 }
+
+interface HeadLabels {
+  label: string;
+  value: string;
+}
+
 const heads: Head[] = [
   {
     label: "Obligado solidario / aval",
@@ -77,45 +81,45 @@ const headsCondiciones: Head[] = [
 
 export function Resumen() {
   // Encabezado
-  const TipoDoc: string = useCortoPlazoStore(
+  const TipodeDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
   const SolicitanteAutorizado: string = useCortoPlazoStore(
     (state) => state.encabezado.solicitanteAutorizado.Nombre
   );
-  const CargoSolicitante: string = useCortoPlazoStore(
+  const CargodelSolicitante: string = useCortoPlazoStore(
     (state) => state.encabezado.solicitanteAutorizado.Cargo
   );
-  const eTipoEntePublico: string = useCortoPlazoStore(
+  const TipodeEntePúblico: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoEntePublico.TipoEntePublico
   );
-  const EntePublico: string = useCortoPlazoStore(
+  const MunicipiouOrganismo: string = useCortoPlazoStore(
     (state) => state.encabezado.organismo.Organismo
   );
-  const FechaContratacion: string = useCortoPlazoStore(
+  const FechadeContratación: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
 
   // Informacion general
-  const gFechaContratacion: string = useCortoPlazoStore(
+  const gFechadeContratación: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
-  const gFechaVencimiento: string = useCortoPlazoStore(
+  const FechadeVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
-  const gPlazo: number = useCortoPlazoStore(
-    (state) => state.informacionGeneral.plazo
+  const Plazo: string = useCortoPlazoStore((state) =>
+    state.informacionGeneral.plazo.toString()
   );
-  const gMonto: number = useCortoPlazoStore(
-    (state) => state.informacionGeneral.monto
+  const MontoOriginalContratado: string = useCortoPlazoStore((state) =>
+    state.informacionGeneral.monto.toString()
   );
-  const gDestino: string = useCortoPlazoStore(
+  const Destino: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.destino.Descripcion
   );
-  const gDenominacion: string = useCortoPlazoStore(
+  const Denominación: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.denominacion
   );
-  const gInstitucion: string = useCortoPlazoStore(
+  const InstituciónFinanciera: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
 
@@ -124,17 +128,12 @@ export function Resumen() {
   );
 
   // Condiciones Financieras
-
-  const tablaTasasInteres: TasaInteres[] = useCortoPlazoStore(
-    (state) => state.tablaTasaInteres
-  );
-
-  const tablaComisiones: IComisiones[] = useCortoPlazoStore(
-    (state) => state.tablaComisiones
-  );
-
   const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
     (state) => state.tablaCondicionesFinancieras
+  );
+
+  const comentarios: IComentario[] = useCortoPlazoStore(
+    (state) => state.comentarios
   );
 
   // Documentación
@@ -147,6 +146,70 @@ export function Resumen() {
 
   const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
+
+  const [openComentarioApartado, setOpenComentarioApartado] = useState({
+    open: false,
+    apartado: "",
+    tab: "",
+  });
+
+  const encabezado: HeadLabels[] = [
+    {
+      label: "Tipo de Documento",
+      value: TipodeDocumento,
+    },
+    {
+      label: "Tipo de Ente Público",
+      value: TipodeEntePúblico,
+    },
+    {
+      label: "Solicitante Autorizado",
+      value: SolicitanteAutorizado,
+    },
+    {
+      label: "Municipio u Organismo",
+      value: MunicipiouOrganismo,
+    },
+    {
+      label: "Fecha de Contratación",
+      value: FechadeContratación,
+    },
+    {
+      label: "Cargo del Solicitante",
+      value: CargodelSolicitante,
+    },
+  ];
+
+  const infoGeneral: HeadLabels[] = [
+    {
+      label: "Fecha de Contratación",
+      value: gFechadeContratación,
+    },
+    {
+      label: "Fecha de Vencimiento",
+      value: FechadeVencimiento,
+    },
+    {
+      label: "Plazo",
+      value: Plazo,
+    },
+    {
+      label: "Monto Original Contratado",
+      value: MontoOriginalContratado,
+    },
+    {
+      label: "Destino",
+      value: Destino,
+    },
+    {
+      label: "Denominación",
+      value: Denominación,
+    },
+    {
+      label: "Institución Financiera",
+      value: InstituciónFinanciera,
+    },
+  ];
 
   return (
     <Grid
@@ -186,47 +249,41 @@ export function Resumen() {
               borderBottom: 1,
               borderColor: "#cfcfcf",
               fontSize: "12px",
-              //border: "1px solid"
             }}
           >
             <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Tipo de Documento: {TipoDoc}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Tipo de Ente Público: {eTipoEntePublico}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Solicitante Autorizado: {SolicitanteAutorizado}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Municipio u Organismo: {EntePublico}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                {"Fecha de Contratacion: " +
-                  format(new Date(FechaContratacion), "yyyy-MM-dd")}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Cargo del Solicitante: {CargoSolicitante}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
+            {encabezado.map((head, index) => (
+              <Grid sx={{ display: "flex", alignItems: "center" }}>
+                {/* <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios.filter(
+                        (_, i) =>
+                          _.Apartado === head.label && _.Tab === "Encabezado"
+                      ).length > 0
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: head.label,
+                        tab: "Encabezado",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip> */}
+                <Typography sx={queries.medium_text}>
+                  <strong>{head.label}: </strong>
+                  {head.label.includes("Fecha")
+                    ? format(new Date(head.value), "dd/MM/yyyy")
+                    : head.value}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
 
@@ -243,83 +300,73 @@ export function Resumen() {
             }}
           >
             <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                {"Fecha de Contratación: " +
-                  format(new Date(gFechaContratacion), "yyyy-MM-dd")}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                {"Fecha de Vencimiento: " +
-                  format(new Date(gFechaVencimiento), "yyyy-MM-dd")}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Plazo(Días): {gPlazo}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Destino: {gDestino}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Monto Original Contratado: {gMonto}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Denominación: {gDenominacion}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid>
-              <Typography sx={queries.medium_text}>
-                Institución Financiera: {gInstitucion}
-              </Typography>
-            </Grid>
-            <Divider color="lightGrey"></Divider>
-            <Grid item>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {heads.map((head, index) => (
-                        <StyledTableCell key={index}>
-                          {head.label}
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
+            {infoGeneral.map((head, index) => (
+              <Grid sx={{ display: "flex", alignItems: "center" }}>
+                {/* <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios.filter(
+                          (_, i) =>
+                            _.Apartado === head.label &&
+                            _.Tab === "Información General"
+                        ).length > 0
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "Información General",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    </IconButton>
+                  </Tooltip> */}
+                <Typography sx={queries.medium_text}>
+                  <strong>{head.label}: </strong>
+                  {head.label.includes("Fecha")
+                    ? format(new Date(head.value), "dd/MM/yyyy")
+                    : head.value}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+          <Divider color="lightGrey"></Divider>
+          <Grid item>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-                  <TableBody>
-                    {tablaObligados.map((row: any, index: number) => {
-                      return (
-                        <StyledTableRow key={index}>
-                          <StyledTableCell component="th">
-                            {row.obligadoSolidario}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.tipoEntePublicoObligado}
-                          </StyledTableCell>
-                          <StyledTableCell component="th">
-                            {row.entePublicoObligado}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+                <TableBody>
+                  {tablaObligados.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell component="th">
+                          {row.obligadoSolidario}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.tipoEntePublicoObligado}
+                        </StyledTableCell>
+                        <StyledTableCell component="th">
+                          {row.entePublicoObligado}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
 
@@ -537,12 +584,17 @@ export function Resumen() {
                     </TableContainer>
                   </DialogContent>
                 </Dialog>
+                <ComentarioApartado
+                  setOpen={setOpenComentarioApartado}
+                  openState={openComentarioApartado}
+                />
               </Table>
             </TableContainer>
           </Grid>
         </Grid>
 
-        <Grid mt={5} mb={5}>
+        <Divider color="lightGrey"></Divider>
+        <Grid mt={5}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Grid
             sx={{
@@ -557,7 +609,6 @@ export function Resumen() {
           >
             {documentos.map((doc, index) => (
               <Grid key={index}>
-                <Divider color="lightGrey"></Divider>
                 <Typography sx={queries.medium_text}>
                   {doc.descripcionTipo}
                 </Typography>
