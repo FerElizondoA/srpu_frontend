@@ -18,7 +18,6 @@ import {
   ThemeProvider,
   Select,
   MenuItem,
-  ToggleButton,
 } from "@mui/material";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -217,8 +216,6 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
-  
-
   return (
     <Grid
       sx={{
@@ -344,8 +341,6 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            openText= "Abrir"
-            closeText= "Cerrar"
             fullWidth
             options={catalogoDestinos}
             getOptionLabel={(option) => option.Descripcion}
@@ -386,6 +381,7 @@ export function InformacionGeneral() {
             }
           />
         </Grid>
+
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
@@ -421,8 +417,6 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            openText= "Abrir"
-            closeText= "Cerrar"
             fullWidth
             options={catalogoInstituciones}
             getOptionLabel={(option) => option.Descripcion}
@@ -473,8 +467,6 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            openText= "Abrir"
-            closeText= "Cerrar"
             fullWidth
             options={catalogoObligadoSolidarioAval}
             getOptionLabel={(option) => option.Descripcion}
@@ -525,8 +517,6 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            openText= "Abrir"
-            closeText= "Cerrar"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
@@ -579,8 +569,6 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            openText= "Abrir"
-            closeText= "Cerrar"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||

@@ -68,7 +68,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   pagosDeCapital: {
     fechaPrimerPago: new Date().toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
-    numeroDePago: 0,
+    numeroDePago: 1,
   },
   tablaTasaInteres: [],
   tasaInteres: {
