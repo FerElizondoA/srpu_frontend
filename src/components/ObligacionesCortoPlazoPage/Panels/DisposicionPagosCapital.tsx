@@ -23,8 +23,8 @@ import {
   createTheme,
   Paper,
 } from "@mui/material";
-import validator from 'validator';
-import CheckIcon from '@mui/icons-material/Check';
+import validator from "validator";
+import CheckIcon from "@mui/icons-material/Check";
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import enGB from "date-fns/locale/en-GB";
@@ -32,7 +32,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {
   ConfirmButton,
   StyledTableCell,
@@ -70,7 +70,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-
 const theme = createTheme({
   components: {
     MuiButton: {
@@ -78,12 +77,12 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
 
 export function DisposicionPagosCapital() {
@@ -126,6 +125,7 @@ export function DisposicionPagosCapital() {
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
     useCortoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
+
   const capitalNumeroPago: number = useCortoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
@@ -238,12 +238,25 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container display="flex" justifyContent={"space-evenly"} height={"110%"} >
+    <Grid
+      container
+      display="flex"
+      justifyContent={"space-evenly"}
+      height={"110%"}
+    >
       <Grid item container>
-        <Grid item lg={6} flexDirection="column" height={"100%"} justifyContent={"space-evenly"} >
+        <Grid
+          item
+          lg={6}
+          flexDirection="column"
+          height={"100%"}
+          justifyContent={"space-evenly"}
+        >
           <Grid item>
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}>DISPOSICIÓN</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                DISPOSICIÓN
+              </Typography>
             </Divider>
           </Grid>
 
@@ -267,21 +280,25 @@ export function DisposicionPagosCapital() {
                 />
               </LocalizationProvider>
             </Grid>
+
             <Grid item lg={4}>
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
               <TextField
                 placeholder="0"
-                value={disposicionImporte<=0?'':disposicionImporte.toString()}
-                onChange={(v) =>{
+                value={
+                  disposicionImporte <= 0 ? "" : disposicionImporte.toString()
+                }
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
-                  changeDisposicion(disposicionFechaContratacion, v.target.value)
-                  }else if(v.target.value===''){
-                    changeDisposicion(disposicionFechaContratacion, 0)
+                    changeDisposicion(
+                      disposicionFechaContratacion,
+                      v.target.value
+                    );
+                  } else if (v.target.value === "") {
+                    changeDisposicion(disposicionFechaContratacion, 0);
                   }
-                }
-                  
-                }
+                }}
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -292,9 +309,7 @@ export function DisposicionPagosCapital() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  startAdornment: (
-                    <AttachMoneyIcon/>
-                  ),
+                  startAdornment: <AttachMoneyIcon />,
                 }}
                 variant="standard"
               />
@@ -302,13 +317,15 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
 
-        <Grid item container direction="column" lg={6} >
+        <Grid item container direction="column" lg={6}>
           <Grid item>
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}>PAGOS DE CAPITAL</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                PAGOS DE CAPITAL
+              </Typography>
             </Divider>
           </Grid>
-          <Grid item display={"flex"} justifyContent={"space-evenly"} >
+          <Grid item display={"flex"} justifyContent={"space-evenly"}>
             <Grid lg={4}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de Primer Pago
@@ -338,8 +355,10 @@ export function DisposicionPagosCapital() {
                 Periocidad de Pago
               </InputLabel>
               <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                openText="Abrir"
+                closeText="Cerrar"
                 fullWidth
                 options={catalogoPeriocidadDePago}
                 getOptionLabel={(option) => option.Descripcion}
@@ -378,24 +397,25 @@ export function DisposicionPagosCapital() {
             <Grid item lg={3}>
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
-                placeholder="1"
-                value={capitalNumeroPago<=1?'':capitalNumeroPago.toString()}
-                onChange={(v) =>{
+                placeholder="0"
+                value={
+                  capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()
+                }
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
                       v.target.value
-                    )
-                  } else if (v.target.value === '') {
+                    );
+                  } else if (v.target.value === "") {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
-                      1
-                    )
+                      0
+                    );
                   }
-                }
-                }
+                }}
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -413,16 +433,23 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item width={"100%"} >
-        <Grid item  >
+      <Grid item width={"100%"}>
+        <Grid item>
           <Grid item>
-
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}> TASA DE INTERÉS</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                {" "}
+                TASA DE INTERÉS
+              </Typography>
             </Divider>
           </Grid>
 
-          <Grid item display={"block"} flexDirection={"column"} justifyContent={"space-evenly"}>
+          <Grid
+            item
+            display={"block"}
+            flexDirection={"column"}
+            justifyContent={"space-evenly"}
+          >
             <Grid
               item
               container
@@ -458,15 +485,18 @@ export function DisposicionPagosCapital() {
               </FormControl>
             </Grid>
 
-            <Grid item container display={"flex"} justifyContent={"space-between"}>
+            <Grid
+              item
+              container
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
               {radioValue === "Tasa Fija" ? (
                 <Grid
                   item
                   container
                   display="flex"
                   justifyContent="space-evenly"
-
-
                 >
                   <Grid item lg={2} display={"block"}>
                     <InputLabel sx={queries.medium_text}>
@@ -497,9 +527,7 @@ export function DisposicionPagosCapital() {
                     </LocalizationProvider>
                   </Grid>
                   <Grid lg={2} item>
-                    <InputLabel sx={queries.medium_text}>
-                      Tasa Fija
-                    </InputLabel>
+                    <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                     <TextField
                       value={tasaInteresTasa}
@@ -515,7 +543,6 @@ export function DisposicionPagosCapital() {
                           sobreTasa: "",
                         });
                       }}
-
                       fullWidth
                       InputLabelProps={{
                         style: {
@@ -536,8 +563,10 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      openText="Abrir"
+                      closeText="Cerrar"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
@@ -583,8 +612,10 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      openText="Abrir"
+                      closeText="Cerrar"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -625,16 +656,13 @@ export function DisposicionPagosCapital() {
                     />
                   </Grid>
                 </Grid>
-
               ) : (
-
                 <Grid
                   item
                   container
                   sx={{
                     justifyContent: "space-evenly",
                     display: "flex",
-
                   }}
                 >
                   <Grid item>
@@ -670,8 +698,10 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      openText="Abrir"
+                      closeText="Cerrar"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -717,8 +747,10 @@ export function DisposicionPagosCapital() {
                       Tasa de Referencia
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      openText="Abrir"
+                      closeText="Cerrar"
                       fullWidth
                       options={catalogoTasaReferencia}
                       getOptionLabel={(option) => option.Descripcion}
@@ -760,9 +792,7 @@ export function DisposicionPagosCapital() {
                   </Grid>
 
                   <Grid item>
-                    <InputLabel sx={queries.medium_text}>
-                      Sobre Tasa
-                    </InputLabel>
+                    <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
                     <TextField
                       value={tasaInteresSobreTasa}
                       onChange={(text) =>
@@ -797,8 +827,10 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      openText="Abrir"
+                      closeText="Cerrar"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
@@ -838,20 +870,14 @@ export function DisposicionPagosCapital() {
                       }
                     />
                   </Grid>
-
                 </Grid>
               )}
-
-
             </Grid>
-
           </Grid>
-
         </Grid>
-
       </Grid>
 
-      <Grid >
+      <Grid>
         <ThemeProvider theme={theme}>
           <Button
             sx={queries.buttonContinuar}
@@ -859,8 +885,10 @@ export function DisposicionPagosCapital() {
               tasaInteresFechaPrimerPago === "" ||
               tasaInteresDiasEjercicio.Descripcion === "" ||
               tasaInteresPeriocidadPago.Descripcion === "" ||
-              (radioValue === "Tasa Fija" && tasaInteresTasa.toString() === "") ||
-              (radioValue === "Tasa Variable" && tasaInteresTasaReferencia.toString() === "") ||
+              (radioValue === "Tasa Fija" &&
+                tasaInteresTasa.toString() === "") ||
+              (radioValue === "Tasa Variable" &&
+                tasaInteresTasaReferencia.toString() === "") ||
               (radioValue === "Tasa Variable" && tasaInteresSobreTasa === "")
             }
             variant="outlined"
@@ -875,10 +903,10 @@ export function DisposicionPagosCapital() {
       </Grid>
 
       <Grid container sx={queries.tablaCondicionFinanciera}>
-        <Paper sx={{height: "100%", width: "88%", overflow: "auto"}}>
-          <TableContainer sx={{ maxHeight: "100%" }} >
+        <Paper sx={{ height: "100%", width: "88%", overflow: "auto" }}>
+          <TableContainer sx={{ maxHeight: "100%" }}>
             <Table stickyHeader aria-label="sticky table">
-              <TableHead  >
+              <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
@@ -903,7 +931,7 @@ export function DisposicionPagosCapital() {
                           </IconButton>
                         </Tooltip>
                       </StyledTableCell>
-                      <StyledTableCell align="center" component="th" >
+                      <StyledTableCell align="center" component="th">
                         {lightFormat(
                           new Date(row.fechaPrimerPago),
                           "dd-MM-yyyy"
@@ -932,6 +960,6 @@ export function DisposicionPagosCapital() {
           </TableContainer>
         </Paper>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }

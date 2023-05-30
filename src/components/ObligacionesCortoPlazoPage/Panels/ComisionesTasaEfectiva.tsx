@@ -233,6 +233,8 @@ export function ComisionesTasaEfectiva() {
             <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            openText="Abrir"
+            closeText="Cerrar"
               fullWidth
               options={catalogoDiasEjercicio}
               getOptionLabel={(option) => option.Descripcion}
@@ -333,6 +335,8 @@ export function ComisionesTasaEfectiva() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            openText="Abrir"
+            closeText="Cerrar"
             fullWidth
             options={catalogoTiposComision}
             getOptionLabel={(option) => option.Descripcion}
@@ -377,6 +381,8 @@ export function ComisionesTasaEfectiva() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
+            openText="Abrir"
+            closeText="Cerrar"
             fullWidth
             options={catalogoPeriocidadDePago}
             getOptionLabel={(option) => option.Descripcion}
