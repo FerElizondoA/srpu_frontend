@@ -882,7 +882,7 @@ export function DisposicionPagosCapital() {
               reset();
             }}
           >
-            <CheckIcon fontSize="small" /> AGREGAR
+            Agregar
           </Button>
         </ThemeProvider>
       </Grid>

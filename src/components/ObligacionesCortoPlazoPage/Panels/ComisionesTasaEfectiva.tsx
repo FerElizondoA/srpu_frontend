@@ -559,7 +559,7 @@ export function ComisionesTasaEfectiva() {
                 reset();
               }}
             >
-              <CheckIcon fontSize="medium" />AGREGAR
+              Agregar
             </Button>
           </ThemeProvider>
         </Grid>

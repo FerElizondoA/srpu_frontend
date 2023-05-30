@@ -47,7 +47,7 @@ export function ObligacionesCortoPlazoPage() {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item>
-        <Grid display={"flex"} justifyContent={"center"}>
+        <Grid mt={2} display={"flex"} justifyContent={"center"}>
           <Typography sx={{
             fontSize: "2.5ch",
             fontFamily: "MontserratBold",
@@ -61,7 +61,7 @@ export function ObligacionesCortoPlazoPage() {
               // SM (small) screen
               fontSize: "1.5ch",
             },
-          }}>Credito Simple a Corto Plazo</Typography>
+          }}>Crédito Simple a Corto Plazo</Typography>
 
         </Grid>
         <Tabs

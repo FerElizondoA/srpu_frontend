@@ -157,7 +157,7 @@ export function CondicionesFinancieras() {
               <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
-                    <StyledTableCell key={index}>
+                    <StyledTableCell align="center" key={index}>
                       <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
                   ))}
@@ -197,31 +197,31 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                       </StyledTableCell>
 
-                      <StyledTableCell component="th" scope="row">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center" component="th" scope="row">
                         {format(
                           new Date(row.disposicion.fechaDisposicion),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         {"$" + row.disposicion.importe}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         {row.pagosDeCapital.periodicidadDePago}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);
@@ -231,7 +231,7 @@ export function CondicionesFinancieras() {
                           <InfoOutlinedIcon />
                         </Button>
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
                         <Button
                           onClick={() => {
                             setRowComision(row.comisiones);
@@ -388,14 +388,14 @@ export function CondicionesFinancieras() {
 
       <Grid item md={12} lg={12} height={75} display={"flex"} justifyContent={"center"} alignItems={"center"}>
         <Button
-          sx={queries.botonAgregarCondicionFinanciera}
+          sx={queries.buttonContinuar}
           variant="outlined"
           onClick={() => {
             changeOpenAgregarState(!openAgregarCondicion);
             setAccion("Agregar");
           }}
         >
-          AGREGAR
+         Agregar
         </Button>
         {/* {changeOpenAgregarState ? ( */}
         <AgregarCondicionFinanciera

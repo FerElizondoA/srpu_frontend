@@ -220,7 +220,7 @@ export function InformacionGeneral() {
   return (
     <Grid
       sx={{
-        display: "flex", height: "81vh", flexDirection: "column",
+        display: "flex", height: "79vh", flexDirection: "column",
         justifyContent: "space-evenly",
 
         // backgroundColor:"red"
