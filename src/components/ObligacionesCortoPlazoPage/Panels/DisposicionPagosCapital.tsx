@@ -273,15 +273,17 @@ export function DisposicionPagosCapital() {
 
               <TextField
                 placeholder="0"
-                value={disposicionImporte<=0?'':disposicionImporte.toString()}
-                onChange={(v) =>{
+                value={disposicionImporte <= 0 ? '' : disposicionImporte.toString()}
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
-                  changeDisposicion(disposicionFechaContratacion, v.target.value)
-                  }else if(v.target.value===''){
+                    changeDisposicion(
+                      disposicionFechaContratacion,
+                      v.target.value)
+                  } else if (v.target.value === '') {
                     changeDisposicion(disposicionFechaContratacion, 0)
                   }
                 }
-                  
+
                 }
                 fullWidth
                 InputLabelProps={{
@@ -294,7 +296,7 @@ export function DisposicionPagosCapital() {
                     fontFamily: "MontserratMedium",
                   },
                   startAdornment: (
-                    <AttachMoneyIcon/>
+                    <AttachMoneyIcon />
                   ),
                 }}
                 variant="standard"
@@ -339,10 +341,10 @@ export function DisposicionPagosCapital() {
                 Periocidad de Pago
               </InputLabel>
               <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
                 fullWidth
                 options={catalogoPeriocidadDePago}
                 getOptionLabel={(option) => option.Descripcion}
@@ -382,8 +384,8 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 placeholder="0"
-                value={capitalNumeroPago<=0?'':capitalNumeroPago.toString()}
-                onChange={(v) =>{
+                value={capitalNumeroPago <= 0 ? '' : capitalNumeroPago.toString()}
+                onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
                       capitalFechaPrimerPago,
@@ -437,6 +439,7 @@ export function DisposicionPagosCapital() {
             >
               <FormControl>
                 <RadioGroup
+
                   defaultValue="Tasa Fija"
                   value={radioValue}
                   onChange={handleChange}
@@ -505,20 +508,36 @@ export function DisposicionPagosCapital() {
                     </InputLabel>
 
                     <TextField
-                      value={tasaInteresTasa}
+                      placeholder="0"
+                      value={tasaInteresTasa <= 0 ? '' : tasaInteresTasa.toString()}
                       onChange={(v) => {
-                        changeTasaInteres({
-                          tasaFija: tasaInteresTasaFija,
-                          tasaVariable: tasaInteresTasaVariable,
-                          tasa: v.target.value,
-                          fechaPrimerPago: tasaInteresFechaPrimerPago,
-                          diasEjercicio: tasaInteresDiasEjercicio,
-                          periocidadPago: tasaInteresPeriocidadPago,
-                          tasaReferencia: { Id: "", Descripcion: "" },
-                          sobreTasa: "",
-                        });
-                      }}
-
+                        if (validator.isNumeric(v.target.value)) {
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: v.target.value,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                            
+                          })
+                        }else if (v.target.value === '') {
+                          changeTasaInteres({
+                            tasaFija: 0,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: v.target.value,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                            
+                          })
+                        }
+                      }
+                      }
                       fullWidth
                       InputLabelProps={{
                         style: {
@@ -539,10 +558,10 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
@@ -588,10 +607,10 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -677,10 +696,10 @@ export function DisposicionPagosCapital() {
                       Periocidad de Pago
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
                       fullWidth
                       options={catalogoPeriocidadDePago}
                       getOptionLabel={(option) => option.Descripcion}
@@ -726,10 +745,10 @@ export function DisposicionPagosCapital() {
                       Tasa de Referencia
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
                       fullWidth
                       options={catalogoTasaReferencia}
                       getOptionLabel={(option) => option.Descripcion}
@@ -808,10 +827,10 @@ export function DisposicionPagosCapital() {
                       Días del Ejercicio
                     </InputLabel>
                     <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
                       fullWidth
                       options={catalogoDiasEjercicio}
                       getOptionLabel={(option) => option.Descripcion}
