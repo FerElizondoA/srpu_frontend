@@ -24,7 +24,7 @@ import { queries } from "../../queries";
 
 export function Notificaciones() {
   //Declaraciones
-  
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
@@ -92,13 +92,23 @@ export function Notificaciones() {
               fontSize: "1.5rem",
               height: 50,
               color: "#AF8C55",
+
+              fontFamily: "MontserratBold",
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1rem",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
             }}
           >
             Historial de Notificaciones
           </Typography>
         </Grid>
 
-           {/* <Grid
+        {/* <Grid
           item
           xl={4}
           lg={3}
@@ -123,7 +133,18 @@ export function Notificaciones() {
 
         <Grid item sx={queries.tablaNotificaciones}>
           <Paper sx={{ height: "100%" }}>
-            <TableContainer sx={{ maxHeight: "100%" }}>
+            <TableContainer sx={{
+              maxHeight: "100%", overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   {heads.map((head) => (

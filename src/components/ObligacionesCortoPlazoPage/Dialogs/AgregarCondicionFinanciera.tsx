@@ -268,7 +268,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                     }
                   }}
                 >
-                  <CheckIcon sx={{ mr: 1 }} />
+              
 
                   <Typography sx={queries.medium_text}>{props.accion}</Typography>
 

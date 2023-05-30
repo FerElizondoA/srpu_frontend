@@ -98,8 +98,9 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel>Solicitante Autorizado</InputLabel>
+          <InputLabel  sx={queries.medium_text}>Solicitante Autorizado</InputLabel>
           <Select
+           sx={queries.medium_text}
             fullWidth
             value={solicitanteAutorizado.Solicitante}
             onChange={(e) => {

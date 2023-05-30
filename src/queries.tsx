@@ -102,12 +102,12 @@ export const queries = {
   },
 
   tablaUsuarios:{
-    height:580,
+    height:560,
     width:"100%",
     maxHeight:"50%",
     overflow: "auto",
     "@media (min-width: 1870px)": {
-      height:795,
+      height:775,
     },
   },
 
@@ -136,11 +136,38 @@ export const queries = {
   },
 
   tablaCondicionFinanciera:{
-    height: 510,
+    height: 500,
     width:"100%",
     "@media (min-width: 1870px)": {
-      height:730,
+      height:710,
     },
+  },
+
+  buttonCancelarSolicitudInscripcion: {
+    marginTop:"2rem",
+    backgroundColor: "rgb(175, 140, 85)",
+    height: "4vh",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(175, 140, 85, 0.6)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+  },
+  buttonContinuarSolicitudInscripcion: {
+    marginTop:"1rem",
+    backgroundColor: "#15212f",
+    height: "4vh",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(47, 47, 47, 0.4)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
   },
 
 };

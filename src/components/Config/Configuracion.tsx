@@ -18,7 +18,7 @@ export function Configuracion() {
     { id: 9, label: "Periodicidad del pago" },
     { id: 10, label: "Reglas de financiamiento" },
     { id: 11, label: "Tasas de referencia" },
-    { id: 12, label: "Tipos de comision" },
+    { id: 12, label: "Tipos de comisión" },
     { id: 13, label: "Tipos de Documento" },
     { id: 14, label: "Tipos de Ente Público" },
     { id: 15, label: "Usuarios" },

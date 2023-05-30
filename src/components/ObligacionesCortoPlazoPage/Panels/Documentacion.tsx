@@ -92,7 +92,7 @@ export function Documentacion() {
 
   // nombre del archivo antes de dar click en agregar
   const [nombreArchivo, setNombreArchivo] = useState(
-    "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"
+    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
   );
 
   function cargarArchivo(event: any, index = -1) {
@@ -125,11 +125,11 @@ export function Documentacion() {
       setLastFile(uploadFile);
     }
 
-    setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
+    setNombreArchivo("ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO");
   };
 
   const cancelar = () => {
-    setNombreArchivo("ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO");
+    setNombreArchivo("ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO");
   };
 
   // const quitDocument = (index: number) => {
@@ -157,21 +157,34 @@ export function Documentacion() {
       item
       container
       direction="column"
-      sx={{ maxHeight: "75vh", overflow: "auto",
-      "&::-webkit-scrollbar": {
-        width: ".5vw",
-        mt: 1,
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "#AF8C55",
-        outline: "1px solid slategrey",
-        borderRadius: 1,
-      }, }}
+      sx={{
+        maxHeight: "73vh", overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+      }}
     >
-      <Grid item>
-        <Grid item ml={window.innerWidth / 90} lg={10}>
-          <TableContainer>
-            <Table  stickyHeader aria-label="sticky table">
+      <Grid item >
+        <Grid item ml={window.innerWidth / 90}  lg={10} >
+          <TableContainer sx={{
+            height: "100%", overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }} >
+            <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {heads.map((head) => (
@@ -214,7 +227,7 @@ export function Documentacion() {
                         }}
                       >
                         {val.archivo?.name ||
-                          "ARRASTRE O DE CLICK AQUÍ PARA SELECCIONAR ARCHIVO"}
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                       </Typography>
 
                       <input
@@ -273,6 +286,7 @@ export function Documentacion() {
         container
         position="fixed"
         sx={{
+          height: "6%",
           display: "flex",
           justifyContent: "flex-end",
           top: "auto",
@@ -284,7 +298,7 @@ export function Documentacion() {
           md={4}
           lg={4}
           sx={{
-            height:50,
+            height: 50,
             display: "flex",
             justifyContent: "flex-end",
             top: "auto",
@@ -321,7 +335,7 @@ export function Documentacion() {
             }}
           ></input>
         </Grid>
-        
+
         <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4} >
           <Button sx={queries.buttonContinuar}
             variant="outlined"
@@ -329,13 +343,13 @@ export function Documentacion() {
               agregarArchivo();
             }}
           >
-            AGREGAR
+            Agregar
           </Button>
         </Grid>
 
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}  item md={4} lg={4}>
+        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4}>
           <Button sx={queries.buttonCancelar} variant="outlined" onClick={cancelar}>
-            CANCELAR
+            Cancelar
           </Button>
         </Grid>
       </Grid>

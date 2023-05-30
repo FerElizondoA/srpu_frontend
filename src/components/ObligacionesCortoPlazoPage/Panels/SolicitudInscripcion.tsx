@@ -81,7 +81,7 @@ export function SolicitudInscripcion() {
 
   let err = 0;
 
-  
+
   const Toast = Swal.mixin({
     width:"690px",
     confirmButtonColor: "#15212f",
@@ -90,7 +90,7 @@ export function SolicitudInscripcion() {
     // timer: 2000,
     // timerProgressBar: true,
     didOpen: (toast) => {
-  
+
       toast.addEventListener("mouseenter", Swal.stopTimer);
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
@@ -169,7 +169,7 @@ export function SolicitudInscripcion() {
 
           </div>
         </div>`
-        
+
       });
     }
 
@@ -392,14 +392,14 @@ export function SolicitudInscripcion() {
   return (
     <Grid container>
       <Grid
+      width={"100%"}
         item
         container
-        flexDirection="row"
-        mt={{ sm: 0, md: 0, lg: 0 }}
-        ml={{ sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 10, lg: 9 }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+
       >
-        <Grid item md={4.5} lg={4.5}>
+        <Grid item md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Servidor publico a quien va dirigido
           </InputLabel>
@@ -422,7 +422,7 @@ export function SolicitudInscripcion() {
           />
         </Grid>
 
-        <Grid item md={4.5} lg={4.5}>
+        <Grid item md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
             fullWidth
@@ -448,12 +448,11 @@ export function SolicitudInscripcion() {
       <Grid
         item
         container
-        flexDirection="row"
         mt={2}
         mb={2}
         justifyContent={"center"}
       >
-        <Grid item md={3} lg={3} xl={3}>
+        <Grid item md={3} lg={3} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -485,19 +484,19 @@ export function SolicitudInscripcion() {
         container
         justifyContent={"center"}
         alignItems={"flex-start"}
-        spacing={{ md: 10, lg: 2 }}
+
       >
-        <Grid item md={9} lg={9} xl={9}>
+        <Grid item md={9} lg={9} xl={10}>
           <Divider sx={queries.medium_text}>
             Declaratorias aplicables al financiamiento u obligación.
           </Divider>
         </Grid>
-        <Grid item md={9} lg={9} xl={9}>
-          <Grid container direction="column">
-            <Grid item>
+        <Grid item md={9} lg={9} xl={9} display="flex">
+          <Grid>
+            <Grid item display={"flex"} width={"112%"} >
               <TableContainer
                 sx={{
-                  height: "50vh",
+                  height: "55vh",
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".2vw",
@@ -510,7 +509,7 @@ export function SolicitudInscripcion() {
                   },
                 }}
               >
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
                       {heads.map((head, index) => (
@@ -558,82 +557,90 @@ export function SolicitudInscripcion() {
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              {localStorage.getItem("Rol") !== "Administrador" ? (
+                <Grid
+                  container
+                  ml={1}
+                  
+                  sx={{
+                    width: "15%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "end",
+                   
+                  }}
+                >
+                    <Button
+                      onClick={() => {
+                        setOpenDialogCancelar(!openDialogCancelar);
+                      }}
+                      sx={queries.buttonCancelar}
+                    >
+                      Cancelar
+                    </Button>
+                  
+
+                  {localStorage.getItem("Rol") === "Verificador" ? (
+                    
+                      <Button
+                        sx={queries.buttonContinuarSolicitudInscripcion}
+                        onClick={() => {
+                          InfoFaltanteModificacion();
+                        }}
+                      >
+                        Solicitar Modificación
+                      </Button>
+                  
+                  ) : null}
+              
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        setOpenDialogBorrador(!openDialogBorrador);
+                      }}
+                    >
+                      Guardar Borrador
+                    </Button>
+                  
+
+                  
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        InfoFaltante();
+                      }}
+                    >
+                      {localStorage.getItem("Rol") === "Verificador"
+                        ? "Finalizar"
+                        : "Enviar"}
+                    </Button>
+                  
+
+                  <ConfirmacionBorradorSolicitud
+                    handler={setOpenDialogBorrador}
+                    openState={openDialogBorrador}
+                  />
+                  <ConfirmacionDescargaSolicitud
+                    handler={setOpenDialogEnviar}
+                    openState={openDialogEnviar}
+                  />
+                  <ConfirmacionCancelarSolicitud
+                    handler={setOpenDialogCancelar}
+                    openState={openDialogCancelar}
+                  />
+                  <DialogSolicitarModificacion
+                    handler={setOpenDialogModificacion}
+                    openState={openDialogModificacion}
+                  />
+                </Grid>
+              ) : null}
             </Grid>
+
           </Grid>
         </Grid>
 
-        {localStorage.getItem("Rol") !== "Administrador" ? (
-          <Grid
-            item
-            position="fixed"
-            sx={{
-              bottom: 50,
-              left: window.innerWidth - 300,
-              display: "flex",
-              flexDirection: "column",
-              height: "27%",
-              justifyContent: "space-around",
-            }}
-          >
-            <Button
-              onClick={() => {
-                setOpenDialogCancelar(!openDialogCancelar);
-              }}
-              sx={queries.buttonCancelar}
-            >
-              Cancelar
-            </Button>
 
-            {localStorage.getItem("Rol") === "Verificador" ? (
-              <Button
-                sx={queries.buttonContinuar}
-                onClick={() => {
-                  InfoFaltanteModificacion();
-
-                }}
-              >
-                Solicitar Modificacion
-              </Button>
-            ) : null}
-
-            <Button
-              sx={queries.buttonContinuar}
-              onClick={() => {
-                setOpenDialogBorrador(!openDialogBorrador);
-              }}
-            >
-              Guardar Borrador
-            </Button>
-
-            <Button
-              sx={queries.buttonContinuar}
-              onClick={() => {
-                InfoFaltante();
-              }}
-            >
-              {localStorage.getItem("Rol") === "Verificador"
-                ? "Finalizar"
-                : "Enviar"}
-            </Button>
-
-            <ConfirmacionBorradorSolicitud
-              handler={setOpenDialogBorrador}
-              openState={openDialogBorrador}
-            />
-            <ConfirmacionDescargaSolicitud
-              handler={setOpenDialogEnviar}
-              openState={openDialogEnviar}
-            />
-            <ConfirmacionCancelarSolicitud
-              handler={setOpenDialogCancelar}
-              openState={openDialogCancelar}
-            />
-            <DialogSolicitarModificacion
-              handler={setOpenDialogModificacion}
-              openState={openDialogModificacion}
-            />
-          </Grid>
-        ) : null}
       </Grid>
     </Grid>
   );

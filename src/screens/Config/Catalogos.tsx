@@ -88,7 +88,7 @@ export function Catalogos() {
     },
     {
       id: 12,
-      label: "Tipos de comision",
+      label: "Tipos de comisión",
       fnc: "tipoDeComision",
     },
     {
