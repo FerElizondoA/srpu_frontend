@@ -582,8 +582,6 @@ export function LateralMenu() {
                   </List>
                 </Collapse>
 
-               
-
                 {localStorage.getItem("Rol") !== "Capturador" && (
                   <>
                     <ListItemButton onClick={() => navigate("../firmar")}>
@@ -677,17 +675,23 @@ export function LateralMenu() {
             <Grid item container direction="column" justifyContent={"flex-end"}>
               <List>
                 <Divider />
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../Config");
-                  }}
-                >
-                  <ListItemIcon>
-                    <SettingsOutlinedIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Configuración</Typography>
-                </ListItemButton>
 
+                {localStorage.getItem("Rol") !== "Capturador" && (
+                  <>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("../Config");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <SettingsOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Configuración
+                      </Typography>
+                    </ListItemButton>
+                  </>
+                )}
                 <ListItemButton onClick={() => setOpenPasswordChange(true)}>
                   <ListItemIcon>
                     <LockOutlinedIcon sx={queries.icon} />
