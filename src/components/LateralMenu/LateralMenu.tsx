@@ -434,24 +434,29 @@ export function LateralMenu() {
         >
           <Grid
             container
-            sx={{ width: query.isXs ? "40vw" : "30vw", height: "inherit", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".3vw",
-             
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0,5)",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },  }}
+            sx={{
+              width: query.isXs ? "40vw" : "30vw",
+              height: "inherit",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,5)",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
           >
             <Grid item container direction="column" mt={2}>
-
               <Grid item sx={{ alignSelf: "center" }}>
-              <img src={logo2} alt="Logo2" style={{ width: "100%", height: "70%"}} />
-              
+                <img
+                  src={logo2}
+                  alt="Logo2"
+                  style={{ width: "100%", height: "70%" }}
+                />
               </Grid>
-              
+
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
@@ -577,59 +582,61 @@ export function LateralMenu() {
                   </List>
                 </Collapse>
 
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../firmar");
-                  }}
-                >
-                  <ListItemIcon>
-                    <EditIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>
-                    Firmar con e.firma
-                  </Typography>
-                </ListItemButton>
+               
 
-                <ListItemButton onClick={handleClickBandejas}>
-                  <ListItemIcon>
-                    <FolderOpenIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Documentos</Typography>
-                  {openBandejas ? <ExpandMore /> : <ExpandLess />}
-                </ListItemButton>
+                {localStorage.getItem("Rol") !== "Capturador" && (
+                  <>
+                    <ListItemButton onClick={() => navigate("../firmar")}>
+                      <ListItemIcon>
+                        <EditIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Firmar con e.firma
+                      </Typography>
+                    </ListItemButton>
 
-                <Collapse in={openBandejas} timeout="auto" unmountOnExit>
-                  <List>
-                    {bandejaInfo.length > 0 &&
-                      bandejaInfo.map((b, index) => (
-                        <ListItemButton
-                          key={index}
-                          onClick={() => {
-                            navigate("../bandeja/" + b.Nombre + "/" + b.Id);
-                          }}
-                          sx={{ marginLeft: 4 }}
-                        >
-                          <ListItemIcon>
-                            <KeyboardArrowRightIcon sx={queries.icon} />
-                          </ListItemIcon>
-                          <Typography sx={queries.bold_text}>
-                            {b.Nombre}
-                          </Typography>
-                        </ListItemButton>
-                      ))}
-                  </List>
-                </Collapse>
+                    <ListItemButton onClick={handleClickBandejas}>
+                      <ListItemIcon>
+                        <FolderOpenIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>Documentos</Typography>
+                      {openBandejas ? <ExpandMore /> : <ExpandLess />}
+                    </ListItemButton>
 
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../notificaciones");
-                  }}
-                >
-                  <ListItemIcon>
-                    <NotificationsActiveIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Notificaciones</Typography>
-                </ListItemButton>
+                    <Collapse in={openBandejas} timeout="auto" unmountOnExit>
+                      <List>
+                        {bandejaInfo.length > 0 &&
+                          bandejaInfo.map((b, index) => (
+                            <ListItemButton
+                              key={index}
+                              onClick={() =>
+                                navigate("../bandeja/" + b.Nombre + "/" + b.Id)
+                              }
+                              sx={{ marginLeft: 4 }}
+                            >
+                              <ListItemIcon>
+                                <KeyboardArrowRightIcon sx={queries.icon} />
+                              </ListItemIcon>
+                              <Typography sx={queries.bold_text}>
+                                {b.Nombre}
+                              </Typography>
+                            </ListItemButton>
+                          ))}
+                      </List>
+                    </Collapse>
+
+                    <ListItemButton
+                      onClick={() => navigate("../notificaciones")}
+                    >
+                      <ListItemIcon>
+                        <NotificationsActiveIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Notificaciones
+                      </Typography>
+                    </ListItemButton>
+                  </>
+                )}
 
                 {/* <ListItemButton>
                       <ListItemIcon>
