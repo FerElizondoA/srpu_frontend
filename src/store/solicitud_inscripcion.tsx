@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { useCortoPlazoStore } from "./main";  
+import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { createNotification } from "../components/LateralMenu/APINotificaciones";
@@ -103,6 +103,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
+          nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,
           descripcionTipo: v.descripcionTipo,
         };
@@ -118,14 +119,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
-          IdTipoEntePublico:
-            state.encabezado.tipoEntePublico.Id 
-           // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
-            ,
-          IdEntePublico:
-            state.encabezado.organismo.Id 
-           // ||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
-            ,
+          IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
+          // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
+          IdEntePublico: state.encabezado.organismo.Id,
+          // ||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
@@ -173,6 +170,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
+          nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,
           descripcionTipo: v.descripcionTipo,
         };
@@ -188,14 +186,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
       {
         IdSolicitud: state.idSolicitud,
-        IdTipoEntePublico:
-          state.encabezado.tipoEntePublico.Id 
-         // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
-          ,
-        IdEntePublico:
-          state.encabezado.organismo.Id 
-          //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
-          ,
+        IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
+        // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
+        IdEntePublico: state.encabezado.organismo.Id,
+        //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
         TipoSolicitud: state.encabezado.tipoDocumento,
         IdInstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Id,
@@ -290,12 +284,14 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
   ];
 
   let solicitud: any = JSON.parse(Solicitud);
-interface DocumentacionItem {
-  descripcionTipo: string;
-  // Otros campos si existen en la estructura de solicitud.documentacion
-}
+  interface DocumentacionItem {
+    descripcionTipo: string;
+    // Otros campos si existen en la estructura de solicitud.documentacion
+  }
 
-const descripciones: string[] = solicitud.documentacion.map((item: DocumentacionItem) => item.descripcionTipo);
+  const descripciones: string[] = solicitud.documentacion.map(
+    (item: DocumentacionItem) => item.descripcionTipo
+  );
 
   const fechaVencimiento = new Date(
     solicitud.informacionGeneral.fechaVencimiento
@@ -306,35 +302,39 @@ const descripciones: string[] = solicitud.documentacion.map((item: Documentacion
 
   const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
 
+  const fechaContratacion = new Date(
+    solicitud.informacionGeneral.fechaContratacion
+  );
+  const diaC = fechaContratacion.getDate();
+  const mesC = meses[fechaContratacion.getMonth()];
+  const añoC = fechaContratacion.getFullYear();
 
+  const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
 
-const fechaContratacion = new Date(solicitud.informacionGeneral.fechaContratacion);
-const diaC = fechaContratacion.getDate();
-const mesC = meses[fechaContratacion.getMonth()];
-const añoC= fechaContratacion.getFullYear();
-
-const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
-
-const SolicitudDescarga: any ={
-  Nombre:solicitud.encabezado.solicitanteAutorizado.Nombre,
-  Cargo:solicitud.encabezado.solicitanteAutorizado.Cargo,
-  Organismo:solicitud.encabezado.organismo.Organismo,
-  InstitucionBancaria:solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-  Monto:solicitud.informacionGeneral.monto,
-  Destino:solicitud.informacionGeneral.destino.Descripcion,
-  PlazoDias:solicitud.informacionGeneral.plazo,
-  TipoEntePublico:solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-  Tipocomisiones:solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision || "No aplica",
-  TasaEfectiva:solicitud.condicionesFinancieras[0].tasaEfectiva,
-  Servidorpublico:solicitud.inscripcion.servidorPublicoDirigido,
-  TipoDocumento:solicitud.encabezado.tipoDocumento,
-  PeriodoPago:solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
-  //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
-  Reglas:solicitud.inscripcion.declaratorias,
-  TasaInteres:solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
-  Documentos:solicitud.documentacion.descripcionTipo,
-  
-}
+  const SolicitudDescarga: any = {
+    Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    Organismo: solicitud.encabezado.organismo.Organismo,
+    InstitucionBancaria:
+      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    Monto: solicitud.informacionGeneral.monto,
+    Destino: solicitud.informacionGeneral.destino.Descripcion,
+    PlazoDias: solicitud.informacionGeneral.plazo,
+    TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+    Tipocomisiones:
+      solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
+      "No aplica",
+    TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
+    Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
+    TipoDocumento: solicitud.encabezado.tipoDocumento,
+    PeriodoPago:
+      solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
+    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+    Reglas: solicitud.inscripcion.declaratorias,
+    TasaInteres:
+      solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
+    Documentos: solicitud.documentacion.descripcionTipo,
+  };
 
   axios
     .post(

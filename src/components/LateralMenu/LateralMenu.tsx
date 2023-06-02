@@ -81,7 +81,7 @@ export function LateralMenu() {
     isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
   };
 
-  const [openInscripcion, setOpenInscripcion] = React.useState(false);
+  const [openInscripcion, setOpenInscripcion] = React.useState(true);
   const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] =
@@ -434,24 +434,29 @@ export function LateralMenu() {
         >
           <Grid
             container
-            sx={{ width: query.isXs ? "40vw" : "30vw", height: "inherit", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".3vw",
-             
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0,5)",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },  }}
+            sx={{
+              width: query.isXs ? "40vw" : "30vw",
+              height: "inherit",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,5)",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
           >
             <Grid item container direction="column" mt={2}>
-
               <Grid item sx={{ alignSelf: "center" }}>
-              <img src={logo2} alt="Logo2" style={{ width: "100%", height: "70%"}} />
-              
+                <img
+                  src={logo2}
+                  alt="Logo2"
+                  style={{ width: "100%", height: "70%" }}
+                />
               </Grid>
-              
+
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
@@ -505,7 +510,7 @@ export function LateralMenu() {
                     <PostAddOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
                   <Typography sx={queries.bold_text}>Inscripción</Typography>
-                  {openInscripcion ? <ExpandMore /> : <ExpandLess />}
+                  {openInscripcion ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
 
                 <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
@@ -520,7 +525,7 @@ export function LateralMenu() {
                       <Typography sx={queries.bold_text}>
                         Financiamiento y obligaciones
                       </Typography>
-                      {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
+                      {openFinanciamiento ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     <Collapse
                       in={openFinanciamiento}
@@ -595,7 +600,7 @@ export function LateralMenu() {
                     <FolderOpenIcon sx={queries.icon} />
                   </ListItemIcon>
                   <Typography sx={queries.bold_text}>Documentos</Typography>
-                  {openBandejas ? <ExpandMore /> : <ExpandLess />}
+                  {openBandejas ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
 
                 <Collapse in={openBandejas} timeout="auto" unmountOnExit>

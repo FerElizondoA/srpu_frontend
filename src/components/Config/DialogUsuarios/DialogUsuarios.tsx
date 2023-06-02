@@ -172,7 +172,7 @@ export const DialogUsuarios = ({
     }
     if (registroDatos.Telefono.length < 9) {
       setErroresTelefono(true);
-      setLeyendaErrorTelefono("Numero de Telefono no valido");
+      setLeyendaErrorTelefono("Número de Telefono no valido");
     } else {
       setErroresTelefono(false);
       setLeyendaErrorTelefono("");
@@ -195,7 +195,7 @@ export const DialogUsuarios = ({
     }
     if (registroDatos.Celular.length < 9) {
       setErroresCelular(true);
-      setLeyendaErrorCelular("Numero de Celular no valido");
+      setLeyendaErrorCelular("Número de Celular no valido");
     } else {
       setErroresCelular(false);
       setLeyendaErrorCelular("");

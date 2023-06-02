@@ -270,7 +270,7 @@ export function SolicitudInscripcion() {
       err = 1;
 
       errores.push(
-        "Sección <strong>Condiciones Financieras</strong>:Agruege al menos una Condicion Financiera."
+        "Sección <strong>Condiciones Financieras</strong>:Agregar al menos una Condicion Financiera."
       );
     }
 
@@ -278,7 +278,7 @@ export function SolicitudInscripcion() {
       err = 1;
 
       errores.push(
-        "Sección <strong>Condiciones Financieras</strong>:Agruege al menos una Tasa De Interés."
+        "Sección <strong>Condiciones Financieras</strong>:Agregar al menos una Tasa De Interés."
       );
     }
     if (importe === undefined || importe === 0) {
@@ -292,7 +292,7 @@ export function SolicitudInscripcion() {
       err = 1;
 
       errores.push(
-        "Sección <strong>Condiciones Financieras</strong>:Ingrese el Numero de pagos."
+        "Sección <strong>Condiciones Financieras</strong>:Ingrese el Número de pagos."
       );
     }
     if (
@@ -330,7 +330,7 @@ export function SolicitudInscripcion() {
 
     if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
       errores.push(
-        "Sección <strong>Condiciones Financieras</strong>:Agregue al menos una comision."
+        "Sección <strong>Condiciones Financieras</strong>:Agregar al menos una comision."
       );
     }
 
@@ -339,7 +339,7 @@ export function SolicitudInscripcion() {
       state.reglasAplicables[0] === ""
     ) {
       errores.push(
-        "Sección <strong>Solicitud de Inscripción</strong>:Agregue al menos una regla."
+        "Sección <strong>Solicitud de Inscripción</strong>:Agregar al menos una regla."
       );
     }
 

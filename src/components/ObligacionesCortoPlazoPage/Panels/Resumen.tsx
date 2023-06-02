@@ -217,7 +217,6 @@ export function Resumen() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        height: "79vh",
         overflow: "auto",
         "&::-webkit-scrollbar": {
           width: ".5vw",
@@ -228,6 +227,7 @@ export function Resumen() {
           outline: "1px solid slategrey",
           borderRadius: 1,
         },
+        width: "auto",
       }}
     >
       <Grid
@@ -607,13 +607,48 @@ export function Resumen() {
               //border: "1px solid"
             }}
           >
-            {documentos.map((doc, index) => (
-              <Grid key={index}>
-                <Typography sx={queries.medium_text}>
-                  {doc.descripcionTipo}
-                </Typography>
-              </Grid>
-            ))}
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <StyledTableCell>Tipo de documento</StyledTableCell>
+                  <StyledTableCell>Documento cargado</StyledTableCell>
+                </TableHead>
+                <TableBody>
+                  {documentos.map((row, index) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        {row.descripcionTipo === undefined ? (
+                          <StyledTableCell
+                            sx={{
+                              bgcolor: "rgb(255 0 0 / 24%)",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {"Faltante "}
+                          </StyledTableCell>
+                        ) : (
+                          <StyledTableCell>
+                            {row.descripcionTipo}
+                          </StyledTableCell>
+                        )}
+                        {row.nombreArchivo === undefined ? (
+                          <StyledTableCell
+                            sx={{
+                              bgcolor: "rgb(255 0 0 / 24%)",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {"Faltante "}
+                          </StyledTableCell>
+                        ) : (
+                          <StyledTableCell>{row.nombreArchivo}</StyledTableCell>
+                        )}
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
       </Grid>

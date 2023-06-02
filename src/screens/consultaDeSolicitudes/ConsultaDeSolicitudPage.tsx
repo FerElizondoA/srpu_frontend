@@ -140,7 +140,6 @@ export function ConsultaDeSolicitudPage() {
       ) {
         return elemento;
       }
-
     });
 
     setDatosFiltrados(ResultadoBusqueda);
@@ -198,15 +197,6 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.addDocumento
   );
 
-  const borrarSolicitud: Function = useCortoPlazoStore(
-    (state) => state.borrarSolicitud
-  );
-
-  const reglasAplicables: string[] = useCortoPlazoStore(
-    (state) => state.reglasAplicables
-  );
-
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   );
@@ -219,8 +209,6 @@ export function ConsultaDeSolicitudPage() {
     changeEncabezado(aux?.encabezado);
 
     changeInformacionGeneral(aux?.informacionGeneral);
-    //changeInformacionGeneral(aux?.informacionGeneral.fechaContratacion);
-    //changeInformacionGeneral(aux?.informacionGeneral.fechaVencimiento);
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       return addObligadoSolidarioAval(v);
     });
@@ -286,7 +274,12 @@ export function ConsultaDeSolicitudPage() {
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} height={60}>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        height={60}
+      >
         <Typography
           sx={{
             fontSize: "2.3ch",
@@ -295,14 +288,15 @@ export function ConsultaDeSolicitudPage() {
             "@media (max-width: 600px)": {
               // XS (extra small) screen
               fontSize: "1rem",
-
             },
             "@media (min-width: 601px) and (max-width: 900px)": {
               // SM (small) screen
               fontSize: "1.5ch",
             },
           }}
-        >Consulta de Solicitudes</Typography>
+        >
+          Consulta de Solicitudes
+        </Typography>
       </Grid>
 
       <Grid item mb={5} lg={12} display="center" justifyContent="center">
@@ -340,18 +334,21 @@ export function ConsultaDeSolicitudPage() {
       </Grid>
 
       <Grid item>
-        <TableContainer sx={{
-          height: 520, overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: ".5vw",
-            mt: 1,
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(0,0,0,5)",
-            outline: "1px solid slategrey",
-            borderRadius: 1,
-          },
-        }}>
+        <TableContainer
+          sx={{
+            height: 520,
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0,0,0,5)",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
               <StyledTableRow>
@@ -375,7 +372,6 @@ export function ConsultaDeSolicitudPage() {
                   <StyledTableCell />
                 </StyledTableRow>
               ) : (
-                
                 datosFiltrados.map((row, index) => {
                   let chip = <></>;
 
@@ -424,7 +420,8 @@ export function ConsultaDeSolicitudPage() {
 
                   return (
                     <StyledTableRow key={index}>
-                      <StyledTableCell sx={{ padding: "1px 15px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 15px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -432,7 +429,8 @@ export function ConsultaDeSolicitudPage() {
                         {row.Institucion.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -440,7 +438,8 @@ export function ConsultaDeSolicitudPage() {
                         {row.TipoEntePublico.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 20px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 20px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -448,7 +447,8 @@ export function ConsultaDeSolicitudPage() {
                         {chip}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -456,7 +456,8 @@ export function ConsultaDeSolicitudPage() {
                         {row.ClaveDeInscripcion.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -464,7 +465,8 @@ export function ConsultaDeSolicitudPage() {
                         {"$" + row.MontoOriginalContratado.toString()}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -472,7 +474,8 @@ export function ConsultaDeSolicitudPage() {
                         {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 25px 1px 0" }}
+                      <StyledTableCell
+                        sx={{ padding: "1px 25px 1px 0" }}
                         align="center"
                         component="th"
                         scope="row"
@@ -513,7 +516,7 @@ export function ConsultaDeSolicitudPage() {
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
                                   editarSolicitud();
-                                  console.log(row.Solicitud);
+                                  console.log(JSON.parse(row.Solicitud));
                                 }}
                               >
                                 <EditIcon />
@@ -558,14 +561,9 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  console.log(idSolicitud);
-                                  console.log(row?.Id || "");
                                   changeIdSolicitud(row?.Id || "");
                                   changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenEliminar(!openEliminar);
-
-                                  //borrarSolicitud(row.Id);
-
                                   getSolicitudes(setDatos);
                                 }}
                               >

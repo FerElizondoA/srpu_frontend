@@ -48,21 +48,23 @@ export function ObligacionesCortoPlazoPage() {
       </Grid>
       <Grid item>
         <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Typography sx={{
-            fontSize: "2.5ch",
-            fontFamily: "MontserratBold",
-            color:"#AF8C55",
-            "@media (max-width: 600px)": {
-              // XS (extra small) screen
-              fontSize: "1rem",
-              
-            },
-            "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
-              fontSize: "1.5ch",
-            },
-          }}>Crédito Simple a Corto Plazo</Typography>
-
+          <Typography
+            sx={{
+              fontSize: "2.5ch",
+              fontFamily: "MontserratBold",
+              color: "#AF8C55",
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1rem",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
+            }}
+          >
+            Crédito Simple a Corto Plazo
+          </Typography>
         </Grid>
         <Tabs
           value={tabIndex}

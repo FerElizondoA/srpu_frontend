@@ -11,62 +11,41 @@ import {
   MenuItem,
   TableRow,
   Button,
+  Divider,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import {
-  StyledTableCell,
-  StyledTableRow,
-  ConfirmButton,
-  DeleteButton,
-} from "../../CustomComponents";
+import { useState } from "react";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
-import { queries } from "../../../queries";
-
-interface Data {
-  Documento: String;
-  TipoDocumento: String;
-  isSelected: boolean;
-}
 
 interface Head {
-  id: keyof Data;
-  isNumeric: boolean;
   label: string;
 }
 
 export interface IFile {
   archivo: File;
+  nombreArchivo: string;
   tipoArchivo: string;
   descripcionTipo: string;
 }
 
 const heads: readonly Head[] = [
   {
-    id: "isSelected",
-    isNumeric: false,
     label: "Borrar",
   },
   {
-    id: "Documento",
-    isNumeric: false,
     label: "Documento/Archivo",
   },
   {
-    id: "TipoDocumento",
-    isNumeric: false,
     label: "Tipo de Documento",
   },
 ];
 
 export function Documentacion() {
-  //guarda el ultimo archivo para comparar y no agregar 2 veces el mismo archivo
-  const [lastFile, setLastFile] = useState<File>();
-
   //archivo cargado en el input antes  de dar click al boton  guardar
   const [uploadFile, setUploadFile] = useState<File>();
 
@@ -90,46 +69,34 @@ export function Documentacion() {
     (state) => state.setTablaDocumentos
   );
 
-  // nombre del archivo antes de dar click en agregar
-  const [nombreArchivo, setNombreArchivo] = useState(
-    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-  );
-
-  function cargarArchivo(event: any, index = -1) {
-    let auxFile = event.target.files[0];
+  function cargarArchivo(event: any, index: number) {
+    let file = event.target.files[0];
 
     setUploadFile(event.target.files[0]);
 
-    if (index >= 0 && auxFile !== undefined) {
-      let auxArrayArchivos = tablaDocumentos;
-      auxArrayArchivos[index].archivo = auxFile;
-      // setArchivos(auxArrayArchivos);
-      setLastFile(event.target.files[0]);
-    } else {
-      if (event.target.value !== "") {
-        setNombreArchivo(event.target.value.split("\\")[2]);
+    if (file !== undefined) {
+      if (index < tablaDocumentos.length) {
+        let auxArrayArchivos = tablaDocumentos;
+        auxArrayArchivos[index].archivo = file;
+        auxArrayArchivos[index].nombreArchivo = file.name;
+        setTablaDocumentos(auxArrayArchivos);
+      } else {
+        addDocumento({
+          archivo: file,
+          nombreArchivo: file.name,
+        });
       }
     }
   }
 
   const agregarArchivo = () => {
-    if (lastFile !== uploadFile && uploadFile !== undefined) {
-      let prevState = [...tablaDocumentos];
-      prevState.push({
+    if (uploadFile !== undefined) {
+      addDocumento({
         archivo: uploadFile,
         tipoArchivo: "",
-        descripcionTipo: "",
+        nombreArchivo: uploadFile.name,
       });
-      // setArchivos(prevState);
-      addDocumento({ archivo: uploadFile, tipoArchivo: "" });
-      setLastFile(uploadFile);
     }
-
-    setNombreArchivo("ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO");
-  };
-
-  const cancelar = () => {
-    setNombreArchivo("ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO");
   };
 
   const quitDocument: Function = useCortoPlazoStore(
@@ -144,13 +111,21 @@ export function Documentacion() {
     setTablaDocumentos(aux);
   };
 
+  const scroll = () => {
+    const element = document.getElementById("divider");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Grid
       item
       container
       direction="column"
       sx={{
-        maxHeight: "73vh", overflow: "auto",
+        maxHeight: "73vh",
+        overflow: "auto",
         "&::-webkit-scrollbar": {
           width: ".5vw",
           mt: 1,
@@ -162,25 +137,28 @@ export function Documentacion() {
         },
       }}
     >
-      <Grid item >
-        <Grid item ml={window.innerWidth / 90}  lg={10} >
-          <TableContainer sx={{
-            height: "100%", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }} >
+      <Grid item>
+        <Grid item ml={window.innerWidth / 90} lg={10}>
+          <TableContainer
+            sx={{
+              height: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {heads.map((head) => (
-                    <StyledTableCell key={head.id}>
+                  {heads.map((head, index) => (
+                    <StyledTableCell key={index}>
                       <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
                   ))}
@@ -188,7 +166,7 @@ export function Documentacion() {
               </TableHead>
               <TableBody>
                 {tablaDocumentos.map((val, index) => (
-                  <StyledTableRow key={index}>
+                  <StyledTableRow key={index} id={`${index + 1}`}>
                     <StyledTableCell scope="row">
                       {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography>Obligatorio</Typography>
@@ -219,13 +197,15 @@ export function Documentacion() {
                         }}
                       >
                         {val.archivo?.name ||
+                          val.nombreArchivo ||
                           "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                       </Typography>
-
                       <input
                         type="file"
                         accept="application/pdf"
-                        onChange={(v) => cargarArchivo(v, index)}
+                        onChange={(v) => {
+                          cargarArchivo(v, index);
+                        }}
                         style={{
                           opacity: 0,
                           width: "100%",
@@ -269,6 +249,7 @@ export function Documentacion() {
                 ))}
               </TableBody>
             </Table>
+            <Divider id="divider" sx={{ height: "10vh" }} />
           </TableContainer>
         </Grid>
       </Grid>
@@ -280,70 +261,40 @@ export function Documentacion() {
         sx={{
           height: "6%",
           display: "flex",
-          justifyContent: "flex-end",
-          top: "auto",
-          bottom: 0,
+          justifyContent: "center",
+          bottom: 20,
         }}
       >
-        <Grid
-          item
-          md={4}
-          lg={4}
+        <Typography
+          position={"absolute"}
           sx={{
-            height: 50,
             display: "flex",
-            justifyContent: "flex-end",
-            top: "auto",
-            bottom: 0,
+            border: " 1px solid",
+            borderBlockColor: "#AF8C55",
+            fontFamily: "MontserratMedium",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "34%",
+            height: "100%",
           }}
         >
-          <Typography
-            position={"absolute"}
-            sx={{
-              display: "flex",
-              border: " 1px solid",
-              borderBlockColor: "#AF8C55",
-              fontFamily: "MontserratMedium",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: "auto 0",
-              width: "34%",
-              height: "100%",
-            }}
-          >
-            {nombreArchivo}
-          </Typography>
-
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(v) => cargarArchivo(v)}
-            style={{
-              opacity: 0,
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-            }}
-          ></input>
-        </Grid>
-        
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4} >
-          <Button sx={queries.buttonContinuar}
-            variant="outlined"
-            onClick={() => {
-              agregarArchivo();
-            }}
-          >
-            Agregar
-          </Button>
-        </Grid>
-
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item md={4} lg={4}>
-          <Button sx={queries.buttonCancelar} variant="outlined" onClick={cancelar}>
-            Cancelar
-          </Button>
-        </Grid>
+          ARRASTRE O DE CLIC AQUÍ PARA AGREGAR UN NUEVO ARCHIVO
+        </Typography>
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={(v) => {
+            cargarArchivo(v, tablaDocumentos.length);
+            scroll();
+          }}
+          style={{
+            opacity: 0,
+            width: "34%",
+            height: "100%",
+            cursor: "pointer",
+          }}
+        ></input>
       </Grid>
     </Grid>
   );
