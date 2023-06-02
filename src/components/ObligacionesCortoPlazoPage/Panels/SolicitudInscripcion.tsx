@@ -24,6 +24,7 @@ import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitu
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import Swal from "sweetalert2";
 import makeStyles from "@mui/material/styles/makeStyles";
+import { IComentario } from "../../../store/comentarios_apartado";
 
 interface Head {
   label: string;
@@ -38,7 +39,9 @@ const heads: readonly Head[] = [
   },
 ];
 export let errores: string[] = [];
-export function SolicitudInscripcion() {
+
+
+export function SolicitudInscripcion(){
   const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
 
   // eslint-disable-next-line @typescript-eslint/no-array-constructor
@@ -72,6 +75,49 @@ export function SolicitudInscripcion() {
     (state) => state.reglasAplicables
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
+
+  const crearSolicitud: Function = useCortoPlazoStore(
+    (state) => state.crearSolicitud
+  );
+
+  const modificaSolicitud: Function = useCortoPlazoStore(
+    (state) => state.modificaSolicitud
+  );
+
+  // const [comentario, setComentario] = useState("");
+
+  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+
+  const addComentario: Function = useCortoPlazoStore(
+    (state) => state.addComentario
+  );
+
+  const comentario: IComentario = useCortoPlazoStore(
+    (state) => state.comentario
+  );
+
+  const setComentario: Function = useCortoPlazoStore(
+    (state) => state.setComentario
+  );
+
+  const cleanComentario: Function = useCortoPlazoStore(
+    (state) => state.cleanComentario
+  );
+
+  const newComentario: Function = useCortoPlazoStore(
+    (state) => state.newComentario
+  );
+
+  const comentarios: IComentario[] = useCortoPlazoStore(
+    (state) => state.comentarios
+  );
+
+  const removeComentario: Function = useCortoPlazoStore(
+    (state) => state.removeComentario
+  );
+
+
+
 
   useEffect(() => {
     getReglas();
@@ -387,6 +433,22 @@ export function SolicitudInscripcion() {
     changeReglasAplicables(arrReglas);
   };
 
+  const [botonComentarios, setBotonComentarios] = useState("hola perrillo")
+
+
+
+  const labelBotonComentarios = () => {
+   
+    //POR HACER
+        // let cont =comentarios.length||0;
+        // comentarios?.map((elemento)=>{
+        //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
+        // })
+
+        // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
+      
+  }
+
   return (
     <Grid container>
       <Grid
@@ -395,7 +457,6 @@ export function SolicitudInscripcion() {
         container
         display={"flex"}
         justifyContent={"space-evenly"}
-
       >
         <Grid item md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
@@ -583,8 +644,9 @@ export function SolicitudInscripcion() {
                     
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {
+                        onClick={() => {labelBotonComentarios();
                           InfoFaltanteModificacion();
+                          
                         }}
                       >
                         Solicitar Modificación
@@ -627,10 +689,11 @@ export function SolicitudInscripcion() {
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}
                   />
-                  <DialogSolicitarModificacion
+                  {openDialogModificacion && <DialogSolicitarModificacion
                     handler={setOpenDialogModificacion}
                     openState={openDialogModificacion}
-                  />
+                    labelBoton={botonComentarios}
+                  />}
                 </Grid>
               ) : null}
             </Grid>

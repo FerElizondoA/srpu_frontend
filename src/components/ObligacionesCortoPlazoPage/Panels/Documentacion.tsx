@@ -164,18 +164,7 @@ export function Documentacion() {
     >
       <Grid item >
         <Grid item ml={window.innerWidth / 90}  lg={10} >
-          <TableContainer sx={{
-            height: "100%", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }} >
+          <TableContainer sx={{height: "100%"}} >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

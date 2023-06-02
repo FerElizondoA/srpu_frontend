@@ -15,7 +15,7 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCortoPlazoStore } from "../../../store/main";
 import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
@@ -211,6 +211,13 @@ export function Resumen() {
     },
   ];
 
+  
+  // useEffect(() => {
+    
+  //   console.log('Documentacion apartados: ',documentos)
+    
+  // }, [])
+
   return (
     <Grid
       container
@@ -254,11 +261,15 @@ export function Resumen() {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
-                {/* <Tooltip title="Añadir comentario a este apartado">
+
+
+                {/* Revisar */}
+                
+                <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
                       comentarios.filter(
-                        (_, i) =>
+                        (_,i) =>
                           _.Apartado === head.label && _.Tab === "Encabezado"
                       ).length > 0
                         ? "success"
@@ -275,7 +286,10 @@ export function Resumen() {
                   >
                     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip>
+                
+                 {/* Revisar */}
+                 
                 <Typography sx={queries.medium_text}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
@@ -302,7 +316,9 @@ export function Resumen() {
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
-                {/* <Tooltip title="Añadir comentario a este apartado">
+
+                 {/* Revisar */}
+                <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
                         comentarios.filter(
@@ -324,7 +340,9 @@ export function Resumen() {
                     >
                       <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                     </IconButton>
-                  </Tooltip> */}
+                  </Tooltip>
+                   {/* Revisar */}
+
                 <Typography sx={queries.medium_text}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
@@ -335,8 +353,35 @@ export function Resumen() {
             ))}
           </Grid>
           <Divider color="lightGrey"></Divider>
-          <Grid item>
+          <Grid item display="flex">
+
+            {/* Revisar */}
+                
+            <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios.filter(
+                        (_,i) => _.Tab === "Información General"
+                      ).length > 0
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                       setOpenComentarioApartado({
+                        open: true,
+                        apartado: 'Tabla Obligado Solidario Aval',
+                         tab: "Información General",
+                       });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip>
+                
+                 {/* Revisar */}
             <TableContainer>
+              
               <Table>
                 <TableHead>
                   <TableRow>
@@ -370,12 +415,13 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Grid mt={5}>
+        <Grid mt={5} display="block">
           <Typography sx={queries.bold_text}>
             Condiciones Financieras
           </Typography>
           <Grid
             sx={{
+              display:"flex",
               flexDirection: "row",
               mt: 1,
               alignItems: "center",
@@ -385,12 +431,40 @@ export function Resumen() {
               //border: "1px solid"
             }}
           >
+
+              {/* Revisar */}
+              <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios.filter(
+                        (_,i) => _.Tab === "Condiciones Financieras"
+                      ).length > 0
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                       setOpenComentarioApartado({
+                        open: true,
+                        apartado: ' Tabla Condiciones Financieras',
+                         tab: "Condiciones Financieras",
+                       });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip>
+                 {/* Revisar */}
+
+            
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
                     {headsCondiciones.map((head, index) => (
+                      
                       <StyledTableCell key={index}>
+                        
                         <TableSortLabel>{head.label}</TableSortLabel>
                       </StyledTableCell>
                     ))}
@@ -399,6 +473,7 @@ export function Resumen() {
                 <TableBody>
                   {tablaCondicionesFinancieras.map((row, index) => {
                     return (
+                      
                       <StyledTableRow key={index}>
                         <StyledTableCell component="th" scope="row">
                           {format(
@@ -608,7 +683,35 @@ export function Resumen() {
             }}
           >
             {documentos.map((doc, index) => (
-              <Grid key={index}>
+              <Grid key={index} display={"flex"}>
+                  {/* Revisar */}
+                
+              <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios.filter(
+                      /*documentos accesa al array de objetos; [index]: es para obtener solo 1 objeto de dicho array; .descripcionTipo: el valor del objeto en especifico que queremos accesar */
+                        (_,i) => _.Apartado === documentos[index].descripcionTipo && 
+                        _.Tab === "Documentacion"
+                      ).length > 0
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                       setOpenComentarioApartado({
+                        open: true,
+                        apartado:  documentos[index].descripcionTipo,
+                         tab: "Documentacion",
+                       });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip>
+                    
+
+                 {/* Revisar */}
                 <Typography sx={queries.medium_text}>
                   {doc.descripcionTipo}
                 </Typography>
