@@ -12,7 +12,7 @@ export interface DocumentosSlice {
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
-  addDocumento: (newDocumentosObligatoriosArreglo: IFile) => void;
+  addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;
   setTablaDocumentos: (docs: any) => any;
 

@@ -10,10 +10,8 @@ import {
   Select,
   MenuItem,
   TableRow,
-  Button,
   Divider,
 } from "@mui/material";
-import { useState } from "react";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -46,9 +44,6 @@ const heads: readonly Head[] = [
 ];
 
 export function Documentacion() {
-  //archivo cargado en el input antes  de dar click al boton  guardar
-  const [uploadFile, setUploadFile] = useState<File>();
-
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useCortoPlazoStore(
     (state) => state.catalogoTiposDocumentos
@@ -72,11 +67,9 @@ export function Documentacion() {
   function cargarArchivo(event: any, index: number) {
     let file = event.target.files[0];
 
-    setUploadFile(event.target.files[0]);
-
     if (file !== undefined) {
       if (index < tablaDocumentos.length) {
-        let auxArrayArchivos = tablaDocumentos;
+        let auxArrayArchivos = [...tablaDocumentos];
         auxArrayArchivos[index].archivo = file;
         auxArrayArchivos[index].nombreArchivo = file.name;
         setTablaDocumentos(auxArrayArchivos);
@@ -89,16 +82,6 @@ export function Documentacion() {
     }
   }
 
-  const agregarArchivo = () => {
-    if (uploadFile !== undefined) {
-      addDocumento({
-        archivo: uploadFile,
-        tipoArchivo: "",
-        nombreArchivo: uploadFile.name,
-      });
-    }
-  };
-
   const quitDocument: Function = useCortoPlazoStore(
     (state) => state.removeDocumento
   );
@@ -107,7 +90,6 @@ export function Documentacion() {
     let aux = [...tablaDocumentos];
     aux[index].tipoArchivo = valor;
     aux[index].descripcionTipo = descripcion;
-    // setArchivos(aux);
     setTablaDocumentos(aux);
   };
 

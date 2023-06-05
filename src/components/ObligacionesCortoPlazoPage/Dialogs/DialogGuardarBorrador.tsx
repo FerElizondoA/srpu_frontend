@@ -44,8 +44,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
-  const navigate = useNavigate();
-
   const [info, setInfo] = useState(
     "En este apartado se guardara un borrador de la informacion quepodras visualizar en un futuro"
   );
@@ -79,6 +77,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const editCreadoPor: string = useCortoPlazoStore(
     (state) => state.editCreadoPor
   );
+
+  const navigate = useNavigate();
 
   return (
     <Dialog
@@ -146,6 +146,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
+                  navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
                   Swal.fire({
@@ -155,7 +156,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                   });
                 });
             }
-            navigate("../ConsultaDeSolicitudes");
+            // navigate("../ConsultaDeSolicitudes");
           }}
           sx={{
             ...queries.buttonContinuar,

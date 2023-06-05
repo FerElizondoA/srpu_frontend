@@ -516,7 +516,6 @@ export function ConsultaDeSolicitudPage() {
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
                                   editarSolicitud();
-                                  console.log(JSON.parse(row.Solicitud));
                                 }}
                               >
                                 <EditIcon />

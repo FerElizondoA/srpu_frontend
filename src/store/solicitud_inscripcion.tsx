@@ -42,6 +42,13 @@ export interface SolicitudInscripcionSlice {
   borrarSolicitud: (Id: string) => void;
 
   addComentario: (idSolicitud: string, comentario: string) => void;
+  saveFiles: (idSolicitud: string, addRoute: boolean) => void;
+  savePathDoc: (
+    idSolicitud: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
@@ -120,9 +127,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-          // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
           IdEntePublico: state.encabezado.organismo.Id,
-          // ||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
@@ -142,16 +147,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         state.addComentario(data.data.Id, comentario);
-        Swal.fire({
-          icon: "success",
-          title: "Mensaje",
-          text: "La solicitud se envió con éxito",
-        });
-        createNotification(
-          "Crédito simple corto plazo",
-          "Se te ha asignado una solicitud para modificación.",
-          [data.data.Id]
-        );
+        state.saveFiles(data.data.Id, true);
       });
   },
   modificaSolicitud: async (
@@ -182,31 +178,35 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
     };
 
-    await axios.put(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
-      {
-        IdSolicitud: state.idSolicitud,
-        IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-        // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
-        IdEntePublico: state.encabezado.organismo.Id,
-        //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
-        TipoSolicitud: state.encabezado.tipoDocumento,
-        IdInstitucionFinanciera:
-          state.informacionGeneral.institucionFinanciera.Id,
-        Estatus: estatus,
-        IdClaveInscripcion: "1",
-        MontoOriginalContratado: state.informacionGeneral.monto,
-        FechaContratacion: state.encabezado.fechaContratacion,
-        Solicitud: JSON.stringify(solicitud),
-        IdEditor: idEditor,
-        IdUsuario: idCreador,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
+    await axios
+      .put(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
+        {
+          IdSolicitud: state.idSolicitud,
+          IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
+          // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
+          IdEntePublico: state.encabezado.organismo.Id,
+          //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
+          TipoSolicitud: state.encabezado.tipoDocumento,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
+          Estatus: estatus,
+          IdClaveInscripcion: "1",
+          MontoOriginalContratado: state.informacionGeneral.monto,
+          FechaContratacion: state.encabezado.fechaContratacion,
+          Solicitud: JSON.stringify(solicitud),
+          IdEditor: idEditor,
+          IdUsuario: idCreador,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        state.saveFiles(data.data.Id, true);
+      });
   },
   borrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
@@ -263,6 +263,69 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {})
+      .catch((e) => {});
+  },
+  saveFiles: (idSolicitud: string, addRoute: boolean) => {
+    const state = useCortoPlazoStore.getState();
+
+    state.tablaDocumentos.map((file, index) => {
+      const url = new File([file.archivo], file.nombreArchivo);
+
+      let dataArray = new FormData();
+      dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
+      dataArray.append("ADDROUTE", addRoute.toString());
+      dataArray.append("FILE", url);
+
+      if (file.archivo.size > 0) {
+        return axios
+          .post(
+            process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+            dataArray,
+            {
+              headers: {
+                Authorization: localStorage.getItem("jwtToken"),
+              },
+            }
+          )
+          .then(({ data }) => {
+            setTimeout(() => {
+              state.savePathDoc(
+                idSolicitud,
+                data.RESPONSE.RUTA,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREARCHIVO
+              );
+            }, 1000);
+          })
+          .catch((e) => {});
+      } else {
+        return null;
+      }
+    });
+  },
+  savePathDoc: (
+    idSolicitud: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => {
+    return axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-addPathDocSol",
+        {
+          IdSolicitud: idSolicitud,
+          Ruta: Ruta,
+          NombreIdentificador: NombreIdentificador,
+          NombreArchivo: NombreArchivo,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((r) => {
+      })
       .catch((e) => {});
   },
 });
