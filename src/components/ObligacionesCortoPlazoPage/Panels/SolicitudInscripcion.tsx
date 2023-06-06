@@ -76,45 +76,10 @@ export function SolicitudInscripcion(){
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
-  const crearSolicitud: Function = useCortoPlazoStore(
-    (state) => state.crearSolicitud
-  );
 
-  const modificaSolicitud: Function = useCortoPlazoStore(
-    (state) => state.modificaSolicitud
-  );
 
   // const [comentario, setComentario] = useState("");
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
-  const addComentario: Function = useCortoPlazoStore(
-    (state) => state.addComentario
-  );
-
-  const comentario: IComentario = useCortoPlazoStore(
-    (state) => state.comentario
-  );
-
-  const setComentario: Function = useCortoPlazoStore(
-    (state) => state.setComentario
-  );
-
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
-  );
-
-  const newComentario: Function = useCortoPlazoStore(
-    (state) => state.newComentario
-  );
-
-  const comentarios: IComentario[] = useCortoPlazoStore(
-    (state) => state.comentarios
-  );
-
-  const removeComentario: Function = useCortoPlazoStore(
-    (state) => state.removeComentario
-  );
 
 
 
@@ -433,21 +398,21 @@ export function SolicitudInscripcion(){
     changeReglasAplicables(arrReglas);
   };
 
-  const [botonComentarios, setBotonComentarios] = useState("hola perrillo")
+  // const [botonComentarios, setBotonComentarios] = useState("hola")
 
 
 
-  const labelBotonComentarios = () => {
+  // const labelBotonComentarios = () => {
    
-    //POR HACER
-        // let cont =comentarios.length||0;
-        // comentarios?.map((elemento)=>{
-        //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
-        // })
+  //   //POR HACER
+  //       // let cont =comentarios.length||0;
+  //       // comentarios?.map((elemento)=>{
+  //       //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
+  //       // })
 
-        // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
+  //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
       
-  }
+  // }
 
   return (
     <Grid container>
@@ -644,9 +609,9 @@ export function SolicitudInscripcion(){
                     
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {labelBotonComentarios();
-                          InfoFaltanteModificacion();
+                        onClick={() => {
                           
+                          InfoFaltanteModificacion();
                         }}
                       >
                         Solicitar Modificación
@@ -692,7 +657,7 @@ export function SolicitudInscripcion(){
                   {openDialogModificacion && <DialogSolicitarModificacion
                     handler={setOpenDialogModificacion}
                     openState={openDialogModificacion}
-                    labelBoton={botonComentarios}
+                    
                   />}
                 </Grid>
               ) : null}
