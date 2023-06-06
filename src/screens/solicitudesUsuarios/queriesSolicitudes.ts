@@ -94,7 +94,7 @@ leyendaBusqueda: {
 
 boxContenedorBuscador: {
   width:'100%',
-  height:'12vh',
+  height:'13vh',
   flexDirection:'column',
   justifyContent:'space-evenly',
   display:'flex'
@@ -122,10 +122,15 @@ typograhyResultadoBuscador:{
 ///// Estilos Formulario
 boxContenidoFormulario:{
   flexDirection:"column", 
-  height:"80%" ,
+  height:"35rem" ,
   display:"flex", 
   width:"100%", 
-  justifyContent:"space-evenly"
+  justifyContent:"space-evenly",
+
+
+  "@media (min-width: 1870px)": {
+    height:"42rem" ,
+  },
 },
 
 boxApartadosFormulario:{

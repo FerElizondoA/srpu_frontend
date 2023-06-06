@@ -38,6 +38,8 @@ import {
 } from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
 import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
 import { useNavigate } from "react-router-dom";
+import { queries } from "../../queries";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 export function Solicitudes() {
   //Declaraciones
@@ -194,27 +196,32 @@ export function Solicitudes() {
           flexDirection={"column"}
           display={"flex"}
           justifyContent={"space-evenly"}
-          
+
         >
           <Grid
             sx={{
+              height: 60,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
               direction: "row",
               //marginBottom: "20px"
             }}
           >
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                navigate("../users");
-              }}
-            >
-              Volver a la lista solicitudes de usuarios
-            </Button>
+            <Tooltip title="Volver a consulta de solicitudes">
+              <Button
+                color="primary"
+                variant="contained"
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  navigate("../users");
+                }}
+              >
+                <KeyboardArrowLeftIcon />
+                Volver
+              </Button>
+            </Tooltip>
           </Grid>
+
 
           <Grid>
             <FormControl fullWidth>
@@ -240,10 +247,10 @@ export function Solicitudes() {
           </Grid>
 
           <Grid
-            xs={11}
-            sm={11}
-            md={11}
-            lg={11}
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
             xl={12}
             sx={{
               //background: "red",
@@ -433,8 +440,8 @@ export function Solicitudes() {
 
         {/********grid Formulario*********/}
         {indexSelect < 0 ||
-        solicitudesFiltered.length === 0 ||
-        detailSolicitud.Id === "" ? (
+          solicitudesFiltered.length === 0 ||
+          detailSolicitud.Id === "" ? (
           <Grid
             xs={6}
             sm={7}
@@ -742,13 +749,15 @@ export function Solicitudes() {
       {/* Se manda como ternario para que los valores de los comentarios no se intenten mostrar
       luego luego al abrir la pagina por el userEffect
       */}
-      {openDialogComentarios ? (
-        <DialogSolicitudesUsuarios
-          open={openDialogComentarios}
-          handleClose={openDialogUser}
-          comentarios={comentarios}
-        />
-      ) : null}
-    </Grid>
+      {
+        openDialogComentarios ? (
+          <DialogSolicitudesUsuarios
+            open={openDialogComentarios}
+            handleClose={openDialogUser}
+            comentarios={comentarios}
+          />
+        ) : null
+      }
+    </Grid >
   );
 }
