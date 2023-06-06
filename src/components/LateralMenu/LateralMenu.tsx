@@ -391,13 +391,18 @@ export function LateralMenu() {
         >
           <ChangePasswordModal />
           <Grid item mt={0.5}>
+          <Tooltip title= "Menu Lateral">
             <IconButton
               size="large"
               color="inherit"
               onClick={() => setIsDrawerOpen(true)}
             >
+              
+
+              
               <MenuIcon />
             </IconButton>
+            </Tooltip>
           </Grid>
           <Grid item mt={0.5}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>

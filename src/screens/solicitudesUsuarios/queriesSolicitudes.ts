@@ -28,6 +28,31 @@ export const queriesSolicitud = {
     },
   },
 
+  buscador_solicitudes: {
+    overflow: "auto",
+
+    "@media (min-width: 513px)": {
+      
+      height: 450,
+    },
+    "@media (min-width: 600px)": {
+      
+      height: 450,
+    },
+    "@media (min-width: 900px)": {
+      
+      height: 480,
+    },
+    "@media (min-width: 1485px)": {
+      
+      height: 550,
+    },
+    "@media (min-width: 1870px)": {
+      
+      height: 770,
+    },
+  },
+
 //Leyenda de busqueda
 leyendaBusqueda: {
   backgroundColor:"#af8c55",

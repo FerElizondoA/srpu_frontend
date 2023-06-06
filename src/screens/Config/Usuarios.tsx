@@ -64,7 +64,7 @@ export const Usuarios = () => {
     },
     {
       id: "EntePublico",
-      label: "Ente Publico",
+      label: "Ente Público",
     },
     {
       id: "Cargo",
@@ -76,11 +76,11 @@ export const Usuarios = () => {
     },
     {
       id: "CorreoElectronico",
-      label: "Correo Electronico",
+      label: "Correo Electrónicoo",
     },
     {
       id: "Telefono",
-      label: "Telefono",
+      label: "Teléfono",
     },
     {
       id: "Ext",
@@ -88,7 +88,7 @@ export const Usuarios = () => {
     },
     {
       id: "Celular",
-      label: "Celular",
+      label: "Teléfono Móvil",
     },
     // {
     //   id: "Curp",
@@ -179,7 +179,7 @@ export const Usuarios = () => {
 
   const openNewUsuario = () => {
     setButonLabel("Agregar");
-    setTitle("AGREGAR USUARIO.");
+    setTitle("AGREGAR USUARIO");
 
     setUsuarioEdit({
       id: "",

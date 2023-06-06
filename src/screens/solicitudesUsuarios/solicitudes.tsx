@@ -37,6 +37,7 @@ import {
   ISolicitudes,
 } from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
 import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
+import { useNavigate } from "react-router-dom";
 
 export function Solicitudes() {
   //Declaraciones
@@ -47,11 +48,14 @@ export function Solicitudes() {
   // Llamada a la base de datos
   const [filtro, setFiltro] = useState<number>(4);
   const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
-  const [solicitudesFiltered, setSolicitudesFiltered] = useState<Array<ISolicitudes>>([]);
+  const [solicitudesFiltered, setSolicitudesFiltered] = useState<
+    Array<ISolicitudes>
+  >([]);
   const [cantidadComentarios, setCantidadComentarios] = useState(0);
   const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
-  const [detailSolicitud, setDetailSolicitud] = useState<IDetailSolicitudUsuario>({
+  const [detailSolicitud, setDetailSolicitud] =
+    useState<IDetailSolicitudUsuario>({
       ApellidoMaterno: "",
       ApellidoPaterno: "",
       Celular: "",
@@ -102,7 +106,7 @@ export function Solicitudes() {
     { id: 1, label: "ACEPTADAS" },
     { id: 2, label: "RECHAZADAS" },
     { id: 0, label: "PENDIENTES" },
-    { id: 3, label: "MODIFICACION" },
+    { id: 3, label: "MODIFICACIÓN" },
   ];
 
   const FiltraSolicitudes = (id: number) => {
@@ -126,7 +130,6 @@ export function Solicitudes() {
       setIndexSelect(indexSelect + 1);
   };
 
-
   useEffect(() => {
     if (detailSolicitud.DatosAdicionales !== "")
       setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales));
@@ -144,7 +147,7 @@ export function Solicitudes() {
         setComentarios
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexSelect]);
 
   useEffect(() => {
@@ -155,11 +158,12 @@ export function Solicitudes() {
     setSolicitudesFiltered(solicitudes);
   }, [solicitudes]);
 
-
   const [openDialogComentarios, setOpenDialogComentarios] = useState(false);
   const openDialogUser = () => {
     setOpenDialogComentarios(!openDialogComentarios);
   };
+
+  const navigate = useNavigate();
 
   return (
     <Grid container direction="column">
@@ -167,15 +171,55 @@ export function Solicitudes() {
       <Grid>{query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}</Grid>
 
       {/* grid  columna del cuerpo */}
-      <Grid display={"flex"} flexDirection={"row"}>
+
+      <Grid
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          direction: "row",
+          //marginBottom: "20px"
+        }}
+      >
         {/* grid  columna del previsualizacion y filtro*/}
-        <Grid sm={4} xl={3.5} xs={12} md={4} lg={4} mt={2} ml={2} >
-          <Grid mb={2.5} sm={11} xs={11} md={11} lg={11} xl={12}>
+
+        <Grid
+          sm={4}
+          xl={3.5}
+          xs={12}
+          md={4}
+          lg={4}
+          ml={2}
+          flexDirection={"column"}
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          
+        >
+          <Grid
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              direction: "row",
+              //marginBottom: "20px"
+            }}
+          >
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                navigate("../users");
+              }}
+            >
+              Volver a la lista solicitudes de usuarios
+            </Button>
+          </Grid>
+
+          <Grid>
             <FormControl fullWidth>
               <InputLabel>Filtrado</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={filtro}
                 label="Filtrado"
                 onChange={(v) => {
@@ -195,19 +239,31 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid xs={11} sm={11} md={11} lg={11} xl={12} 
-          sx={{ overflow: "auto",
-          "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
-            width: ".3vw",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(0,0,0,.5)",
-            outline: "1px solid slategrey",
-            borderRadius: 10,
-          }
-        }}
+          <Grid
+            xs={11}
+            sm={11}
+            md={11}
+            lg={11}
+            xl={12}
+            sx={{
+              //background: "red",
+              overflow: "auto",
+              //maxHeight: "calc(96vh - 200px)",
+              "&::-webkit-scrollbar": {
+                //PARA CAMBIAR EL SCROLL
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,.5)",
+                outline: "1px solid slategrey",
+                borderRadius: 10,
+              },
+              flexDirection: "column",
+              display: "flex",
+              justifyContent: "space-evenly",
+            }}
           >
-            <List sx={queriesSolicitud.buscador}>
+            <List sx={queriesSolicitud.buscador_solicitudes}>
               {solicitudesFiltered?.map((dato, index) => {
                 return (
                   <>
@@ -376,15 +432,38 @@ export function Solicitudes() {
         </Grid>
 
         {/********grid Formulario*********/}
-        {indexSelect < 0 || solicitudesFiltered.length === 0  || detailSolicitud.Id === ''  ? (
-          <Grid xs={6} sm={7} md={8} lg={9} xl={9}  display={"flex"} alignItems={"center"} justifyContent={"center"}>
-            
-            <Box sx={{ width: '40vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-              <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
-              <Typography color={"#AF8C55"} fontWeight={"bold"}>SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA</Typography>
+        {indexSelect < 0 ||
+        solicitudesFiltered.length === 0 ||
+        detailSolicitud.Id === "" ? (
+          <Grid
+            xs={6}
+            sm={7}
+            md={8}
+            lg={9}
+            xl={9}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <Box
+              sx={{
+                width: "40vw",
+                height: "90vh",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <InfoIcon
+                sx={{ width: "80%", height: "80%", opacity: "10%" }}
+                fontSize="large"
+              ></InfoIcon>
+              <Typography color={"#AF8C55"} fontWeight={"bold"}>
+                SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA
+              </Typography>
             </Box>
-
-            </Grid>
+          </Grid>
         ) : (
           <Grid xs={6} sm={7} md={7} lg={7} xl={9}>
             <Box sx={queriesSolicitud.botonComentario}>
@@ -429,7 +508,7 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Fecha de Creacion"
+                      label="Fecha de Creación"
                       variant="standard"
                       value={
                         detailSolicitud?.FechaDeCreacion.split("T")[0] || ""
@@ -521,7 +600,7 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Ente Publico"
+                      label="Ente Público"
                       variant="standard"
                       value={datosAdicionales?.entePublico || ""}
                     />
@@ -555,7 +634,7 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Correo Electronico"
+                      label="Correo Electrónico"
                       variant="standard"
                       value={detailSolicitud?.CorreoElectronico || ""}
                     />
@@ -566,12 +645,11 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Celular"
+                      label="Teléfono Movil"
                       variant="standard"
                       value={detailSolicitud?.Celular || ""}
                     />
                   </Grid>
-                 
                 </Grid>
               </Box>
 
@@ -615,7 +693,7 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Telefono"
+                      label="Teléfono"
                       variant="standard"
                       value={detailSolicitud?.Telefono || ""}
                     />
@@ -626,7 +704,7 @@ export function Solicitudes() {
                       fullWidth
                       InputProps={{ readOnly: true }}
                       id="outlined-basic"
-                      label="Extension"
+                      label="Extensión"
                       variant="standard"
                       value={detailSolicitud?.Ext || ""}
                     />
@@ -635,22 +713,26 @@ export function Solicitudes() {
               </Box>
 
               <Grid item display={"flex"} justifyContent={"space-evenly"}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => {
-                    prevSolicitud();
-                  }}
-                  endIcon={<ArrowBackIcon />}
-                ></Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => {
-                    nextSolicitud();
-                  }}
-                  endIcon={<ArrowForwardIcon />}
-                ></Button>
+                <Tooltip title="Mostrar solicitud anterior">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => {
+                      prevSolicitud();
+                    }}
+                    endIcon={<ArrowBackIcon />}
+                  ></Button>
+                </Tooltip>
+                <Tooltip title="Mostrar siguiente solicitud">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => {
+                      nextSolicitud();
+                    }}
+                    endIcon={<ArrowForwardIcon />}
+                  ></Button>
+                </Tooltip>
               </Grid>
             </Box>
           </Grid>
