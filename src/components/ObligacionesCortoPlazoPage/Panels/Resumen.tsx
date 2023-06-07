@@ -15,7 +15,7 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCortoPlazoStore } from "../../../store/main";
 import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
@@ -30,9 +30,14 @@ import { IFile } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
 import { headsComision, headsTasa } from "./CondicionesFinancieras";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CommentIcon from "@mui/icons-material/Comment";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 import { IComentario } from "../../../store/comentarios_apartado";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import {
+  getDocumento,
+  getPathDocumentos,
+  listFile,
+} from "../../APIS/pathDocSol/APISDocumentos";
 
 interface Head {
   label: string;
@@ -41,6 +46,14 @@ interface Head {
 interface HeadLabels {
   label: string;
   value: string;
+}
+
+interface IPathDocumentos {
+  Id: string;
+  IdSolicitud: string;
+  Ruta: string;
+  NombreIdentificador: string;
+  NombreArchivo: string;
 }
 
 const heads: Head[] = [
@@ -80,6 +93,11 @@ const headsCondiciones: Head[] = [
 ];
 
 export function Resumen() {
+  const [showModalPrevia, setShowModalPrevia] = useState(false);
+
+  // IdSolicitud
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+
   // Encabezado
   const TipodeDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
@@ -211,6 +229,45 @@ export function Resumen() {
     },
   ];
 
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+    []
+  );
+
+  const [fileSelected, setFileSelected] = useState("");
+
+  const tablaDocumentos: IFile[] = useCortoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
+
+  const setTablaDocumentos: Function = useCortoPlazoStore(
+    (state) => state.setTablaDocumentos
+  );
+
+  useEffect(() => {
+    if (IdSolicitud !== "") {
+      getPathDocumentos(IdSolicitud, setPathDocumentos);
+      listFile(`/DOCSOL/${IdSolicitud}`);
+    }
+  }, [IdSolicitud]);
+
+  const [arr, setArr] = useState<any>([]);
+
+  useEffect(() => {
+    if (pathDocumentos.length > 0) {
+      let loc: any = [...arr];
+      pathDocumentos?.map((val: any) => {
+        return getDocumento(
+          val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.NombreIdentificador,
+          (res: any, index: number) => {
+            loc.push({ file: res, nombre: val.NombreArchivo });
+          }
+        );
+      });
+      setArr(loc);
+    }
+  }, [pathDocumentos]);
+
   return (
     <Grid
       container
@@ -253,7 +310,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }}>
+              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
@@ -301,7 +358,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }}>
+              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
@@ -610,8 +667,10 @@ export function Resumen() {
             <TableContainer>
               <Table>
                 <TableHead>
-                  <StyledTableCell>Tipo de documento</StyledTableCell>
-                  <StyledTableCell>Documento cargado</StyledTableCell>
+                  <TableRow>
+                    <StyledTableCell>Tipo de documento</StyledTableCell>
+                    <StyledTableCell>Documento cargado</StyledTableCell>
+                  </TableRow>
                 </TableHead>
                 <TableBody>
                   {documentos.map((row, index) => {
@@ -624,7 +683,7 @@ export function Resumen() {
                               fontWeight: "bold",
                             }}
                           >
-                            {"Faltante "}
+                            Faltante
                           </StyledTableCell>
                         ) : (
                           <StyledTableCell>
@@ -638,10 +697,31 @@ export function Resumen() {
                               fontWeight: "bold",
                             }}
                           >
-                            {"Faltante "}
+                            Faltante
                           </StyledTableCell>
                         ) : (
                           <StyledTableCell>{row.nombreArchivo}</StyledTableCell>
+                        )}
+
+                        {row.nombreArchivo === undefined ? null : (
+                          <StyledTableCell>
+                            <Tooltip
+                              title={"Mostrar vista previa del documento"}
+                            >
+                              <IconButton
+                                onClick={() => {
+                                  setFileSelected(
+                                    arr.filter((td: any) =>
+                                      td.nombre.includes(row.nombreArchivo)
+                                    )[0].file
+                                  );
+                                  setShowModalPrevia(true);
+                                }}
+                              >
+                                <FileOpenIcon></FileOpenIcon>
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
                         )}
                       </StyledTableRow>
                     );
@@ -652,6 +732,41 @@ export function Resumen() {
           </Grid>
         </Grid>
       </Grid>
+      <Dialog
+        open={showModalPrevia}
+        onClose={() => {
+          setShowModalPrevia(false);
+          setArr([]);
+        }}
+        fullWidth
+        maxWidth={"lg"}
+      >
+        <DialogTitle sx={{ mb: 2 }}>
+          <IconButton
+            onClick={() => {
+              setShowModalPrevia(false);
+            }}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "black",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ height: "100vh" }}>
+          <iframe
+            style={{
+              width: "100%",
+              height: "85vh",
+            }}
+            src={`data:application/pdf;base64,${fileSelected}`}
+            title="description"
+          ></iframe>
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }

@@ -3,11 +3,11 @@ import axios from "axios";
 const params = new URLSearchParams(window.location.search);
 const IdApp = params.get("IdApp");
 
-export const sessionValid = () => {
+export const sessionValid = async () => {
   const jt = params.get("jwt") || "";
   const rft = params.get("rf") || "";
 
-  return axios
+  return await axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},
@@ -37,8 +37,8 @@ export const sessionValid = () => {
     });
 };
 
-export const getUserDetails = (idCentral: string) => {
-  return axios
+export const getUserDetails = async (idCentral: string) => {
+  return await axios
     .get(process.env.REACT_APP_APPLICATION_BACK + "/api/usuario", {
       params: {
         IdUsuario: idCentral,
@@ -69,10 +69,9 @@ export const getUserDetails = (idCentral: string) => {
         localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
         return true;
-        
-      }else {
+      } else {
         getDataSolicitud(idCentral);
-      } 
+      }
     })
     .catch((error) => {
       if (error.response.status === 401) {
@@ -82,8 +81,8 @@ export const getUserDetails = (idCentral: string) => {
     });
 };
 
-const getDataSolicitud = (idSolicitud: string) => {
-  axios
+const getDataSolicitud = async (idSolicitud: string) => {
+  await axios
     .get(
       process.env.REACT_APP_APPLICATION_LOGIN +
         "/api/datosAdicionalesSolicitud",
@@ -109,8 +108,8 @@ const getDataSolicitud = (idSolicitud: string) => {
     });
 };
 
-export const continueSession = () => {
-  return axios
+export const continueSession = async () => {
+  return await axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/verify",
       {},

@@ -124,6 +124,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
+                  navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
                   Swal.fire({
@@ -156,7 +157,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                   });
                 });
             }
-            // navigate("../ConsultaDeSolicitudes");
           }}
           sx={{
             ...queries.buttonContinuar,

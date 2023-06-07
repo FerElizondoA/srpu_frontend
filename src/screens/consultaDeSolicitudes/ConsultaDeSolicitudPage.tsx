@@ -221,6 +221,7 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const limpiaSolicitud = () => {
+    changeIdSolicitud('')
     changeEncabezado({
       tipoDocumento: "",
       solicitanteAutorizado: {
@@ -498,6 +499,7 @@ export function ConsultaDeSolicitudPage() {
                             type="button"
                             onClick={() => {
                               llenaSolicitud(row);
+                              changeIdSolicitud(row.Id);
                               changeOpenDialogVer(!openDialogVer);
                             }}
                           >

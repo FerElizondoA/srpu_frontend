@@ -1,8 +1,8 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function getCatalogo(setState: Function, getState: string) {
-  axios({
+export async function getCatalogo(setState: Function, getState: string) {
+  await axios({
     method: "get",
     url: process.env.REACT_APP_APPLICATION_BACK + `/api/get-${getState}`,
     headers: {
@@ -22,8 +22,14 @@ export function getCatalogo(setState: Function, getState: string) {
     });
 }
 
-export function modDesc(modDesc: string, idDesc: string, desc: string, ocp: number, olp: number) {
-  axios
+export async function modDesc(
+  modDesc: string,
+  idDesc: string,
+  desc: string,
+  ocp: number,
+  olp: number
+) {
+  await axios
     .put(
       process.env.REACT_APP_APPLICATION_BACK + `/api/modify-${modDesc}`,
       {
@@ -56,15 +62,20 @@ export function modDesc(modDesc: string, idDesc: string, desc: string, ocp: numb
     });
 }
 
-export function creaDesc(creaDesc: string, desc: string, ocp: number, olp: number) {
-  axios
+export async function creaDesc(
+  creaDesc: string,
+  desc: string,
+  ocp: number,
+  olp: number
+) {
+  await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + `/api/create-${creaDesc}`,
       {
         IdUsuario: localStorage.getItem("IdUsuario"),
         Descripcion: desc,
         OCP: ocp,
-        OLP: olp
+        OLP: olp,
       },
       {
         headers: {
@@ -97,8 +108,8 @@ export function creaDesc(creaDesc: string, desc: string, ocp: number, olp: numbe
     });
 }
 
-export function delDesc(delDesc: string, desc: string) {
-  axios
+export async function delDesc(delDesc: string, desc: string) {
+  await axios
     .delete(process.env.REACT_APP_APPLICATION_BACK + `/api/delete-${delDesc}`, {
       params: {
         IdDescripcion: desc,

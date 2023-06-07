@@ -208,7 +208,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         state.saveFiles(data.data.Id, true);
       });
   },
-  borrarSolicitud: (Id: string) => {
+  borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -217,7 +217,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       timerProgressBar: true,
     });
 
-    axios
+    await axios
       .delete(
         process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
         {
@@ -247,8 +247,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
-  addComentario: (Id: string, comentario: string) => {
-    axios
+  addComentario: async (Id: string, comentario: string) => {
+    await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
@@ -265,51 +265,51 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {})
       .catch((e) => {});
   },
-  saveFiles: (idSolicitud: string, addRoute: boolean) => {
+  saveFiles: async (idSolicitud: string, addRoute: boolean) => {
     const state = useCortoPlazoStore.getState();
 
-    state.tablaDocumentos.map((file, index) => {
-      const url = new File([file.archivo], file.nombreArchivo);
+    await state.tablaDocumentos.map((file, index) => {
+      setTimeout(() => {
+        const url = new File([file.archivo], file.nombreArchivo);
 
-      let dataArray = new FormData();
-      dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
-      dataArray.append("ADDROUTE", addRoute.toString());
-      dataArray.append("FILE", url);
+        let dataArray = new FormData();
+        dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
+        dataArray.append("ADDROUTE", addRoute.toString());
+        dataArray.append("FILE", url);
 
-      if (file.archivo.size > 0) {
-        return axios
-          .post(
-            process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-            dataArray,
-            {
-              headers: {
-                Authorization: localStorage.getItem("jwtToken"),
-              },
-            }
-          )
-          .then(({ data }) => {
-            setTimeout(() => {
+        if (file.archivo.size > 0) {
+          return axios
+            .post(
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+              dataArray,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("jwtToken"),
+                },
+              }
+            )
+            .then(({ data }) => {
               state.savePathDoc(
                 idSolicitud,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO
               );
-            }, 1000);
-          })
-          .catch((e) => {});
-      } else {
-        return null;
-      }
+            })
+            .catch((e) => {});
+        } else {
+          return null;
+        }
+      }, 1000);
     });
   },
-  savePathDoc: (
+  savePathDoc: async (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string
   ) => {
-    return axios
+    return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-addPathDocSol",
         {
@@ -324,13 +324,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {
-      })
+      .then((r) => {})
       .catch((e) => {});
   },
 });
 
-export function DescargarConsultaSolicitud(Solicitud: string) {
+export async function DescargarConsultaSolicitud(Solicitud: string) {
   const meses = [
     "enero",
     "febrero",
@@ -399,9 +398,9 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     Documentos: solicitud.documentacion.descripcionTipo,
   };
 
-  axios
+  await axios
     .post(
-      "http://192.168.137.152:7000/documento_srpu",
+      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
       {
         nombre: SolicitudDescarga.Nombre,
         cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
@@ -451,8 +450,11 @@ export function DescargarConsultaSolicitud(Solicitud: string) {
     .catch((err) => {});
 }
 
-export const getUsuariosAsignables = (setState: Function, numero: number) => {
-  axios
+export const getUsuariosAsignables = async (
+  setState: Function,
+  numero: number
+) => {
+  await axios
     .get(
       process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
       {

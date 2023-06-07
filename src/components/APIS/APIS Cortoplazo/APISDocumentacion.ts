@@ -1,8 +1,8 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function getTiposDocumentos(setState: Function) {
-  axios({
+export async function getTiposDocumentos(setState: Function) {
+  await axios({
     method: 'get',
     url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-tiposDocumentosCortoPlazo',
     data: {},
