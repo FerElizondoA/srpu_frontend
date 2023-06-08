@@ -429,8 +429,10 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
+          'Access-Control-Allow-Origin': '*',
         },
         responseType: "arraybuffer",
+        
       }
     )
     .then((response) => {
