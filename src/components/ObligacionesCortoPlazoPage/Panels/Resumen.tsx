@@ -34,8 +34,12 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 import { IComentario } from "../../../store/comentarios_apartado";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
-import CommentIcon from '@mui/icons-material/Comment';
-import { getDocumento, getPathDocumentos, listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import CommentIcon from "@mui/icons-material/Comment";
+import {
+  getDocumento,
+  getPathDocumentos,
+  listFile,
+} from "../../APIS/pathDocSol/APISDocumentos";
 
 interface Head {
   label: string;
@@ -313,8 +317,6 @@ export function Resumen() {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
-
-
                 {/* Revisar */}
 
                 <Tooltip title="Añadir comentario a este apartado">
@@ -368,7 +370,6 @@ export function Resumen() {
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
-
                 {/* Revisar */}
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
@@ -406,7 +407,7 @@ export function Resumen() {
           </Grid>
 
           <Grid item display="flex" height={350} mt={2} mb={2}>
-            <Grid mt={2} >
+            <Grid mt={2}>
               {/* Revisar */}
 
               <Tooltip title="Añadir comentario a este apartado">
@@ -422,7 +423,7 @@ export function Resumen() {
                   onClick={() => {
                     setOpenComentarioApartado({
                       open: true,
-                      apartado: 'Tabla Obligado Solidario Aval',
+                      apartado: "Tabla Obligado Solidario Aval",
                       tab: "Informacion General",
                     });
                   }}
@@ -435,20 +436,22 @@ export function Resumen() {
             </Grid>
 
             <Paper sx={{ width: "100%" }}>
-              <TableContainer sx={{
-                maxHeight: "100%",
-                overflow: "auto",
-                "&::-webkit-scrollbar": {
-                  width: ".5vw",
-                  mt: 1,
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "#AF8C55",
-                  outline: "1px solid slategrey",
-                  borderRadius: 1,
-                },
-              }}>
-                {tablaObligados.length > 0 ?
+              <TableContainer
+                sx={{
+                  maxHeight: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                {tablaObligados.length > 0 ? (
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
@@ -478,8 +481,7 @@ export function Resumen() {
                       })}
                     </TableBody>
                   </Table>
-
-                  :
+                ) : (
                   //Condicional
 
                   <Table stickyHeader>
@@ -494,53 +496,46 @@ export function Resumen() {
                     </TableHead>
 
                     <TableBody>
-
-                      <StyledTableRow >
-                        <StyledTableCell component="th">
-                        </StyledTableCell>
+                      <StyledTableRow>
+                        <StyledTableCell component="th"></StyledTableCell>
 
                         <StyledTableCell component="th" align="left">
-                          <Typography
-                            sx={{padding: "1px 4px 1px 45px"}}
-                          >Sin contenido
+                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
+                            Sin contenido
                           </Typography>
                         </StyledTableCell>
 
-                        <StyledTableCell component="th">
-                        </StyledTableCell>
+                        <StyledTableCell component="th"></StyledTableCell>
                       </StyledTableRow>
-
-
                     </TableBody>
                   </Table>
-
-                }
-
+                )}
               </TableContainer>
             </Paper>
           </Grid>
         </Grid>
         {/* <Divider color="lightGrey"></Divider> */}
 
-
-        <Grid mt={3} >
+        <Grid mt={3}>
           <Typography sx={queries.bold_text}>
             Condiciones Financieras
           </Typography>
-          <Grid item display={"flex"}
+          <Grid
+            item
+            display={"flex"}
             height={350}
-          // sx={{
-          //   display: "flex",
-          //   flexDirection: "row",
-          //   mt: 1,
-          //   alignItems: "center",
-          //   borderBottom: 1,
-          //   borderColor: "#cfcfcf",
-          //   fontSize: "12px",
-          //   border: "1px solid"
-          // }}
+            // sx={{
+            //   display: "flex",
+            //   flexDirection: "row",
+            //   mt: 1,
+            //   alignItems: "center",
+            //   borderBottom: 1,
+            //   borderColor: "#cfcfcf",
+            //   fontSize: "12px",
+            //   border: "1px solid"
+            // }}
           >
-            <Grid mt={4} >
+            <Grid mt={4}>
               {/* Revisar */}
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
@@ -555,7 +550,7 @@ export function Resumen() {
                   onClick={() => {
                     setOpenComentarioApartado({
                       open: true,
-                      apartado: ' Tabla Condiciones Financieras',
+                      apartado: " Tabla Condiciones Financieras",
                       tab: "Condiciones Financieras",
                     });
                   }}
@@ -566,290 +561,297 @@ export function Resumen() {
               {/* Revisar */}
             </Grid>
 
-
             <Paper>
-              {tablaCondicionesFinancieras.length > 0 ?
-                <TableContainer sx={{
-                  maxHeight: "100%",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".5vw",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        {headsCondiciones.map((head, index) => (
+              {
+                tablaCondicionesFinancieras.length > 0 ? (
+                  <TableContainer
+                    sx={{
+                      maxHeight: "100%",
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".5vw",
+                        mt: 1,
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#AF8C55",
+                        outline: "1px solid slategrey",
+                        borderRadius: 1,
+                      },
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          {headsCondiciones.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
+                            </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tablaCondicionesFinancieras.map((row, index) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell component="th" scope="row">
+                                {format(
+                                  new Date(row.disposicion.fechaDisposicion),
+                                  "dd/MM/yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {"$" + row.disposicion.importe}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {format(
+                                  new Date(row.pagosDeCapital.fechaPrimerPago),
+                                  "dd/MM/yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.pagosDeCapital.periodicidadDePago}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {format(
+                                  new Date(row.pagosDeCapital.fechaPrimerPago),
+                                  "dd/MM/yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setRowTasa(row.tasaInteres);
+                                    setOpenTasa(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setRowComision(row.comisiones);
+                                    setOpenComision(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
 
-                          <StyledTableCell key={index}>
-
-                            <TableSortLabel>{head.label}</TableSortLabel>
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tablaCondicionesFinancieras.map((row, index) => {
-                        return (
-
-                          <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
-                              {format(
-                                new Date(row.disposicion.fechaDisposicion),
-                                "dd/MM/yyyy"
-                              )}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {"$" + row.disposicion.importe}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {format(
-                                new Date(row.pagosDeCapital.fechaPrimerPago),
-                                "dd/MM/yyyy"
-                              )}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {row.pagosDeCapital.periodicidadDePago}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              {format(
-                                new Date(row.pagosDeCapital.fechaPrimerPago),
-                                "dd/MM/yyyy"
-                              )}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              <Button
-                                onClick={() => {
-                                  setRowTasa(row.tasaInteres);
-                                  setOpenTasa(true);
-                                }}
-                              >
-                                <InfoOutlinedIcon />
-                              </Button>
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              <Button
-                                onClick={() => {
-                                  setRowComision(row.comisiones);
-                                  setOpenComision(true);
-                                }}
-                              >
-                                <InfoOutlinedIcon />
-                              </Button>
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-
-                    <Dialog
-                      open={openTasa}
-                      onClose={() => {
-                        setOpenTasa(false);
-                      }}
-                      maxWidth={"lg"}
-                    >
-                      <DialogTitle sx={{ m: 0, p: 2 }}>
-                        <IconButton
-                          onClick={() => {
-                            setOpenTasa(false);
-                          }}
-                          sx={{
-                            position: "absolute",
-                            right: 8,
-                            top: 8,
-                            color: "black",
-                          }}
+                      <Dialog
+                        open={openTasa}
+                        onClose={() => {
+                          setOpenTasa(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenTasa(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
                         >
-                          <CloseIcon />
-                        </IconButton>
-                      </DialogTitle>
-                      <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-                        <TableContainer sx={{ maxHeight: "400px" }}>
-                          <Table>
-                            <TableHead sx={{ maxHeight: "200px" }}>
-                              <TableRow>
-                                {headsTasa.map((head, index) => (
-                                  <StyledTableCell key={index}>
-                                    <TableSortLabel>{head.label}</TableSortLabel>
-                                  </StyledTableCell>
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {rowTasa.map((row, index) => {
-                                return (
-                                  <StyledTableRow key={index}>
-                                    <StyledTableCell component="th" scope="row">
-                                      {lightFormat(
-                                        new Date(row.fechaPrimerPago),
-                                        "dd-MM-yyyy"
-                                      )}
+                          <TableContainer sx={{ maxHeight: "400px" }}>
+                            <Table>
+                              <TableHead sx={{ maxHeight: "200px" }}>
+                                <TableRow>
+                                  {headsTasa.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.tasa}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.periocidadPago}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.tasaReferencia}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.sobreTasa}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.diasEjercicio}
-                                    </StyledTableCell>
-                                  </StyledTableRow>
-                                );
-                              })}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </DialogContent>
-                    </Dialog>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowTasa.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                      >
+                                        {lightFormat(
+                                          new Date(row.fechaPrimerPago),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.tasa}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.periocidadPago}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.tasaReferencia}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.sobreTasa}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.diasEjercicio}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
 
-                    <Dialog
-                      open={openComision}
-                      onClose={() => {
-                        setOpenComision(false);
-                      }}
-                      maxWidth={"lg"}
-                    >
-                      <DialogTitle sx={{ m: 0, p: 2 }}>
-                        <IconButton
-                          onClick={() => {
-                            setOpenComision(false);
-                          }}
-                          sx={{
-                            position: "absolute",
-                            right: 8,
-                            top: 8,
-                            color: "black",
-                          }}
+                      <Dialog
+                        open={openComision}
+                        onClose={() => {
+                          setOpenComision(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenComision(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
                         >
-                          <CloseIcon />
-                        </IconButton>
-                      </DialogTitle>
-                      <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-                        <TableContainer sx={{ maxHeight: "400px" }}>
-                          <Table>
-                            <TableHead sx={{ maxHeight: "200px" }}>
-                              <TableRow>
-                                {headsComision.map((head, index) => (
-                                  <StyledTableCell key={index}>
-                                    <TableSortLabel>{head.label}</TableSortLabel>
-                                  </StyledTableCell>
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {rowComision.map((row, index) => {
-                                return (
-                                  <StyledTableRow key={index}>
-                                    <StyledTableCell component="th" scope="row">
-                                      {row.tipoDeComision}
+                          <TableContainer sx={{ maxHeight: "400px" }}>
+                            <Table>
+                              <TableHead sx={{ maxHeight: "200px" }}>
+                                <TableRow>
+                                  {headsComision.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {lightFormat(
-                                        new Date(row.fechaContratacion),
-                                        "dd-MM-yyyy"
-                                      )}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.periodicidadDePago}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.porcentaje}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.monto}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.iva}
-                                    </StyledTableCell>
-                                  </StyledTableRow>
-                                );
-                              })}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </DialogContent>
-                    </Dialog>
-                    <ComentarioApartado
-                      setOpen={setOpenComentarioApartado}
-                      openState={openComentarioApartado}
-                    />
-                  </Table>
-                </TableContainer>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowComision.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                      >
+                                        {row.tipoDeComision}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {lightFormat(
+                                          new Date(row.fechaContratacion),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.periodicidadDePago}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.porcentaje}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.monto}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.iva}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
+                      <ComentarioApartado
+                        setOpen={setOpenComentarioApartado}
+                        openState={openComentarioApartado}
+                      />
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  //**********CONDICIONAL************
 
-                : //**********CONDICIONAL************
+                  <TableContainer
+                    sx={{
+                      maxHeight: "100%",
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".5vw",
+                        mt: 1,
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#AF8C55",
+                        outline: "1px solid slategrey",
+                        borderRadius: 1,
+                      },
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          {headsCondiciones.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
+                            </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <StyledTableRow>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                          ></StyledTableCell>
 
-                <TableContainer sx={{
-                  maxHeight: "100%",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".5vw",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        {headsCondiciones.map((head, index) => (
+                          <StyledTableCell align="center"></StyledTableCell>
 
-                          <StyledTableCell key={index}>
+                          <StyledTableCell align="center"></StyledTableCell>
 
-                            <TableSortLabel>{head.label}</TableSortLabel>
+                          <StyledTableCell>
+                            <Typography>Sin contenido</Typography>
                           </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
 
-                      <StyledTableRow >
-                        <StyledTableCell component="th" scope="row">
-                        </StyledTableCell>
+                          <StyledTableCell align="center"></StyledTableCell>
 
-                        <StyledTableCell align="center">
-                        </StyledTableCell>
+                          <StyledTableCell align="center"></StyledTableCell>
 
-                        <StyledTableCell align="center">
-                        </StyledTableCell>
-
-                        <StyledTableCell >
-                          <Typography>Sin contenido</Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                        </StyledTableCell>
-                      </StyledTableRow>
-
-
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                          <StyledTableCell align="center"></StyledTableCell>
+                        </StyledTableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )
                 //*********FIN TERNARIO ************/
               }
-
             </Paper>
           </Grid>
         </Grid>
@@ -872,6 +874,7 @@ export function Resumen() {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <StyledTableCell>Comentarios</StyledTableCell>
                     <StyledTableCell>Tipo de documento</StyledTableCell>
                     <StyledTableCell>Documento cargado</StyledTableCell>
                   </TableRow>
@@ -881,28 +884,29 @@ export function Resumen() {
                     return (
                       <StyledTableRow key={index}>
                         <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentarios.filter(
-                        /*documentos accesa al array de objetos; [index]: es para obtener solo 1 objeto de dicho array; .descripcionTipo: el valor del objeto en especifico que queremos accesar */
-                        (_, i) => _.Apartado === documentos[index].descripcionTipo &&
-                          _.Tab === "Documentacion"
-                      ).length > 0
-                        ? "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: documentos[index].descripcionTipo,
-                        tab: "Documentacion",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                  </IconButton>
-                </Tooltip>
+                          <IconButton
+                            color={
+                              comentarios.filter(
+                                (_, i) =>
+                                  _.Apartado ===
+                                    documentos[index].descripcionTipo &&
+                                  _.Tab === "Documentacion"
+                              ).length > 0
+                                ? "success"
+                                : "primary"
+                            }
+                            size="small"
+                            onClick={() => {
+                              setOpenComentarioApartado({
+                                open: true,
+                                apartado: documentos[index].descripcionTipo,
+                                tab: "Documentacion",
+                              });
+                            }}
+                          >
+                            <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                          </IconButton>
+                        </Tooltip>
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
                             sx={{
