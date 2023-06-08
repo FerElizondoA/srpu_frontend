@@ -62,7 +62,11 @@ export function Encabezado() {
   }, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
-
+  const selectedValue = usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)?.id || "";
+  // Verificar si el valor seleccionado existe en la lista de opciones
+  const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
+  
+  
   return (
     <Grid container>
       <Grid
@@ -97,31 +101,31 @@ export function Encabezado() {
         <Grid item xs={3.5} md={3.5} lg={3}>
           <InputLabel  sx={queries.medium_text}>Solicitante Autorizado</InputLabel>
           <Select
-           sx={queries.medium_text}
-            fullWidth
-            value={solicitanteAutorizado.Solicitante}
-            onChange={(e) => {
-              let x = usuarios.find((usuario) => usuario.id === e.target.value);
-              changeEncabezado({
-                tipoDocumento: tipoDocumento,
-                solicitanteAutorizado: {
-                  Solicitante: x?.id,
-                  Cargo: x?.Cargo,
-                  Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
-                },
-                tipoEntePublico: tipoEntePublico,
-                organismo: organismo,
-                fechaContratacion: fechaContratacion,
-              });
-            }}
-            variant="standard"
-          >
-            {usuarios.map((usuario) => (
-              <MenuItem key={usuario.id} value={usuario.id}>
-                {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
-              </MenuItem>
-            ))}
-          </Select>
+  sx={queries.medium_text}
+  fullWidth
+  value={isValueValid ? selectedValue : ""}
+  onChange={(e) => {
+    let x = usuarios.find((usuario) => usuario.id === e.target.value);
+    changeEncabezado({
+      tipoDocumento: tipoDocumento,
+      solicitanteAutorizado: {
+        Solicitante: x?.id || "",
+        Cargo: x?.Cargo || "",
+        Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
+      },
+      tipoEntePublico: tipoEntePublico,
+      organismo: organismo,
+      fechaContratacion: fechaContratacion,
+    });
+  }}
+  variant="standard"
+>
+  {usuarios.map((usuario) => (
+    <MenuItem key={usuario.id} value={usuario.id}>
+      {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
+    </MenuItem>
+  ))}
+</Select>
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
