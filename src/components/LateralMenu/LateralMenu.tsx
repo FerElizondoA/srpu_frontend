@@ -391,13 +391,18 @@ export function LateralMenu() {
         >
           <ChangePasswordModal />
           <Grid item mt={0.5}>
+          <Tooltip title= "Menu Lateral">
             <IconButton
               size="large"
               color="inherit"
               onClick={() => setIsDrawerOpen(true)}
             >
+              
+
+              
               <MenuIcon />
             </IconButton>
+            </Tooltip>
           </Grid>
           <Grid item mt={0.5}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
@@ -582,59 +587,59 @@ export function LateralMenu() {
                   </List>
                 </Collapse>
 
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../firmar");
-                  }}
-                >
-                  <ListItemIcon>
-                    <EditIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>
-                    Firmar con e.firma
-                  </Typography>
-                </ListItemButton>
+                {localStorage.getItem("Rol") !== "Capturador" && (
+                  <>
+                    <ListItemButton onClick={() => navigate("../firmar")}>
+                      <ListItemIcon>
+                        <EditIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Firmar con e.firma
+                      </Typography>
+                    </ListItemButton>
 
-                <ListItemButton onClick={handleClickBandejas}>
-                  <ListItemIcon>
-                    <FolderOpenIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Documentos</Typography>
-                  {openBandejas ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
+                    <ListItemButton onClick={handleClickBandejas}>
+                      <ListItemIcon>
+                        <FolderOpenIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>Documentos</Typography>
+                      {openBandejas ? <ExpandMore /> : <ExpandLess />}
+                    </ListItemButton>
 
-                <Collapse in={openBandejas} timeout="auto" unmountOnExit>
-                  <List>
-                    {bandejaInfo.length > 0 &&
-                      bandejaInfo.map((b, index) => (
-                        <ListItemButton
-                          key={index}
-                          onClick={() => {
-                            navigate("../bandeja/" + b.Nombre + "/" + b.Id);
-                          }}
-                          sx={{ marginLeft: 4 }}
-                        >
-                          <ListItemIcon>
-                            <KeyboardArrowRightIcon sx={queries.icon} />
-                          </ListItemIcon>
-                          <Typography sx={queries.bold_text}>
-                            {b.Nombre}
-                          </Typography>
-                        </ListItemButton>
-                      ))}
-                  </List>
-                </Collapse>
+                    <Collapse in={openBandejas} timeout="auto" unmountOnExit>
+                      <List>
+                        {bandejaInfo.length > 0 &&
+                          bandejaInfo.map((b, index) => (
+                            <ListItemButton
+                              key={index}
+                              onClick={() =>
+                                navigate("../bandeja/" + b.Nombre + "/" + b.Id)
+                              }
+                              sx={{ marginLeft: 4 }}
+                            >
+                              <ListItemIcon>
+                                <KeyboardArrowRightIcon sx={queries.icon} />
+                              </ListItemIcon>
+                              <Typography sx={queries.bold_text}>
+                                {b.Nombre}
+                              </Typography>
+                            </ListItemButton>
+                          ))}
+                      </List>
+                    </Collapse>
 
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../notificaciones");
-                  }}
-                >
-                  <ListItemIcon>
-                    <NotificationsActiveIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Notificaciones</Typography>
-                </ListItemButton>
+                    <ListItemButton
+                      onClick={() => navigate("../notificaciones")}
+                    >
+                      <ListItemIcon>
+                        <NotificationsActiveIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Notificaciones
+                      </Typography>
+                    </ListItemButton>
+                  </>
+                )}
 
                 {/* <ListItemButton>
                       <ListItemIcon>
@@ -675,17 +680,23 @@ export function LateralMenu() {
             <Grid item container direction="column" justifyContent={"flex-end"}>
               <List>
                 <Divider />
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../Config");
-                  }}
-                >
-                  <ListItemIcon>
-                    <SettingsOutlinedIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Configuración</Typography>
-                </ListItemButton>
 
+                {localStorage.getItem("Rol") !== "Capturador" && (
+                  <>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("../Config");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <SettingsOutlinedIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Configuración
+                      </Typography>
+                    </ListItemButton>
+                  </>
+                )}
                 <ListItemButton onClick={() => setOpenPasswordChange(true)}>
                   <ListItemIcon>
                     <LockOutlinedIcon sx={queries.icon} />

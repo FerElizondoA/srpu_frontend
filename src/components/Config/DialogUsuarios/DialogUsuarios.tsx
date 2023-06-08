@@ -18,7 +18,7 @@ import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
 import { getCatalogo } from "../../APIS/Config/APISCatalogos";
 import { createSolicitud } from "../../APIS/Config/Solicitudes-Usuarios";
-
+import { queries } from "../../../queries";
 export const DialogUsuarios = ({
   open,
   title,
@@ -108,8 +108,8 @@ export const DialogUsuarios = ({
   };
 
   const validaEmail = (dato: string) => {
-    const format = /^ [A-Z0-9._%+-]+@ [A-Z0-9.-]+\\. [A-Z] {2,}$/i;
-    if (dato.length < 101 && !format.test(dato)) {
+    const format = /^[A-Z0-9._%+-]+@[^@]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (dato.length < 255 && !format.test(dato) && dato.indexOf("@") === dato.lastIndexOf("@") && dato.indexOf(".") === dato.lastIndexOf(".")) {
       setRegistroDatos({ ...registroDatos, CorreoElectronico: dato });
     }
   };
@@ -159,7 +159,7 @@ export const DialogUsuarios = ({
 
   const validaCargo = (dato: string) => {
     const format = /[¬°`!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?~]/;
-    if (dato.length < 255 && !format.test(dato)) {
+    if (dato.length < 255 && !format.test(dato) ) {
       setRegistroDatos({ ...registroDatos, Cargo: dato });
     }
   };
@@ -233,16 +233,15 @@ export const DialogUsuarios = ({
   const validaComentario = (dato: string) => {
     const format =
       /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-    if (dato.length < 2000 && !format.test(dato)) {
+    if (dato.length < 200 && !format.test(dato)) {
       setComentario(dato);
     }
   };
 
   const validaEmailRecuperacion = (dato: string) => {
-    const format =
-      /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-    if (dato.length < 101 && !format.test(dato)) {
-      setRegistroDatos({ ...registroDatos, CorreoDeRecuperacion: dato });
+    const format =/^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+      if (dato.length < 101 && !format.test(dato) && dato.indexOf("@") === dato.lastIndexOf("@") && dato.indexOf(".") === dato.lastIndexOf(".")) {
+        setRegistroDatos({ ...registroDatos, CorreoDeRecuperacion: dato });
     }
   };
 
@@ -465,7 +464,7 @@ export const DialogUsuarios = ({
                 margin="dense"
                 variant="outlined"
                 fullWidth
-                label="Correo Electronico"
+                label="Correo Electrónico"
                 required
                 value={registroDatos.CorreoElectronico}
                 onChange={(e) => {
@@ -615,7 +614,7 @@ export const DialogUsuarios = ({
                 variant="outlined"
                 fullWidth
                 select
-                label="Municipio o Delegacion"
+                label="Municipio o Delegación"
                 value={registroDatos.MunicipioUOrganizacion}
                 onChange={(e) => {
                   validaMunicipio(e.target.value);
@@ -694,13 +693,13 @@ export const DialogUsuarios = ({
                 required
                 margin="dense"
                 variant="outlined"
-                label="Telefono"
+                label="Teléfono"
                 value={
                   registroDatos.Telefono === "0" ? "" : registroDatos.Telefono
                 }
                 helperText={
                   LeyendaErrorTelefono || ErrorTelefono
-                    ? "Telefono inválido"
+                    ? "Teléfono inválido"
                     : ""
                 }
                 error={ErrorTelefono || ErroresTelefono}
@@ -722,14 +721,14 @@ export const DialogUsuarios = ({
                 inputProps={{ inputMode: "numeric", pattern: "/[0-9]{10}/" }}
                 margin="dense"
                 variant="outlined"
-                label="Extension"
+                label="Extensión"
                 fullWidth
                 required
                 value={registroDatos.Ext === "0" ? "" : registroDatos.Ext}
                 onChange={(e) => {
                   validaExtension(parseInt(e.target.value));
                 }}
-                helperText={ErrorExt ? "Extension inválido" : ""}
+                helperText={ErrorExt ? "Extensión inválido" : ""}
                 error={ErrorExt}
               />
             </Grid>
@@ -746,7 +745,7 @@ export const DialogUsuarios = ({
                 inputProps={{ inputMode: "numeric", pattern: "/[0-9]{10}/" }}
                 margin="dense"
                 variant="outlined"
-                label="Celular"
+                label="Teléfono Móvil"
                 fullWidth
                 required
                 value={
@@ -756,7 +755,7 @@ export const DialogUsuarios = ({
                   ErroresCelular
                     ? LeyendaErrorCelular
                     : ErrorCelular
-                    ? "Celular inválido"
+                    ? "Teléfono Móvil inválido"
                     : ""
                 }
                 error={ErrorCelular || ErroresCelular}
@@ -817,7 +816,7 @@ export const DialogUsuarios = ({
         <DialogActions sx={{ display: "flex", alignItems: "flex-end" }}>
           {ActionButton === "Agregar" ? (
             <Button
-              sx={{ mb: 1.5, mr: 1.5 }}
+              sx={queries.buttonContinuarSolicitudInscripcion}
               type="submit"
               variant="contained"
               onClick={() => {
@@ -829,7 +828,7 @@ export const DialogUsuarios = ({
             </Button>
           ) : ActionButton === "Editar" ? (
             <Button
-              sx={{ mb: 1.5, mr: 1.5 }}
+              sx={queries.buttonContinuarSolicitudInscripcion}
               type="submit"
               variant="contained"
               onClick={() => {
@@ -842,7 +841,7 @@ export const DialogUsuarios = ({
           ) : null}
 
           <Button
-            sx={{ mb: 1.5 }}
+            sx={queries.buttonCancelar}
             color="error"
             variant="contained"
             onClick={() => {
@@ -861,12 +860,12 @@ export const DialogUsuarios = ({
           setOpenDialogConfirm(!openDialogConfirm);
         }}
       >
-        <DialogTitle>{"Confirmacion"}</DialogTitle>
+        <DialogTitle>{"Confirmación"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {'¿Estas seguro de que quieres "' +
+            {'¿Estas seguro de que quieres agregar "' +
               ActionButton +
-              '" el usuario: ' +
+              '" al usuario ' +
               registroDatos?.Nombre +
               " " +
               registroDatos?.ApellidoPaterno +
@@ -874,7 +873,7 @@ export const DialogUsuarios = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
+          <Button sx ={queries.buttonCancelar}
             onClick={() => {
               setOpenDialogConfirm(!openDialogConfirm);
               setError("");
@@ -882,7 +881,7 @@ export const DialogUsuarios = ({
           >
             Cancelar
           </Button>
-          <Button
+          <Button sx={queries.buttonContinuarSolicitudInscripcion}
             onClick={() => {
               createSolicitud(
                 registroDatos,

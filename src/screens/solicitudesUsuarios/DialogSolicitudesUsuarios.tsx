@@ -20,7 +20,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-
+import { queries } from "../../queries";
 export const DialogSolicitudesUsuarios = ({
   open,
   handleClose,
@@ -49,7 +49,7 @@ export const DialogSolicitudesUsuarios = ({
                 <TableRow>
                   <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Usuario&nbsp;(s)</TableCell>
                   <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Comentario&nbsp;(s)</TableCell>
-                  <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Fecha de creacion</TableCell>
+                  <TableCell sx={{fontWeight:"bold", color:"white"}} align="center">Fecha de creación</TableCell>
                 </TableRow>
               </TableHead>
               
@@ -141,7 +141,7 @@ export const DialogSolicitudesUsuarios = ({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <Button sx={queries.buttonCancelar}
           onClick={() => {
             handleClose();
           }}
