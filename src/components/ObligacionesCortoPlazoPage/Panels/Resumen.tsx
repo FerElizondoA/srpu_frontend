@@ -358,7 +358,7 @@ export function Resumen() {
             ))}
           </Grid>
 
-          <Grid item display="flex" height={350}>
+          <Grid item display="flex" height={350} mt={2} mb={2}>
             <Grid mt={2} >
               {/* Revisar */}
 
@@ -454,8 +454,9 @@ export function Resumen() {
 
                         <StyledTableCell component="th" align="left">
                           <Typography
-                          sx={{padding: "1px 4px 1px 45px"}}
-                          >Sin contenido</Typography>
+                            sx={{padding: "1px 4px 1px 45px"}}
+                          >Sin contenido
+                          </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell component="th">
@@ -472,7 +473,7 @@ export function Resumen() {
             </Paper>
           </Grid>
         </Grid>
-        <Divider color="lightGrey"></Divider>
+        {/* <Divider color="lightGrey"></Divider> */}
 
 
         <Grid mt={3} >
@@ -806,7 +807,7 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Divider color="lightGrey"></Divider>
+        {/* <Divider color="lightGrey"></Divider> */}
         <Grid mt={5}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Grid

@@ -417,7 +417,7 @@ export function SolicitudInscripcion(){
   return (
     <Grid container>
       <Grid
-      width={"100%"}
+        width={"100%"}
         item
         container
         display={"flex"}
@@ -518,20 +518,8 @@ export function SolicitudInscripcion(){
         <Grid item md={9} lg={9} xl={9} display="flex">
           <Grid>
             <Grid item display={"flex"} width={"112%"} >
-              <TableContainer
-                sx={{
-                  height: "55vh",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".2vw",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}
+              <TableContainer 
+               sx={queries.tablaSolicitudInscripcion}
               >
                 <Table stickyHeader>
                   <TableHead>
@@ -582,7 +570,7 @@ export function SolicitudInscripcion(){
                 </Table>
               </TableContainer>
 
-              {localStorage.getItem("Rol") !== "Administrador" ? (
+              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
                 <Grid
                   container
                   ml={1}

@@ -195,22 +195,11 @@ export function Solicitudes() {
             </FormControl>
           </Grid>
 
-          <Grid xs={11} sm={11} md={11} lg={11} xl={12} 
-          sx={{ overflow: "auto",
-          "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
-            width: ".3vw",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(0,0,0,.5)",
-            outline: "1px solid slategrey",
-            borderRadius: 10,
-          }
-        }}
-          >
+          <Grid xs={11} sm={11} md={11} lg={11} xl={12} >
             <List sx={queriesSolicitud.buscador}>
               {solicitudesFiltered?.map((dato, index) => {
                 return (
-                  <>
+                  <Grid>
                     <ListItem disablePadding key={index}>
                       <ListItemButton
                         sx={{
@@ -368,7 +357,7 @@ export function Solicitudes() {
                       </ListItemButton>
                     </ListItem>
                     <Divider />
-                  </>
+                  </Grid>
                 );
               })}
             </List>
@@ -386,7 +375,15 @@ export function Solicitudes() {
 
             </Grid>
         ) : (
-          <Grid xs={6} sm={7} md={7} lg={7} xl={9}>
+          <Grid xs={6} sm={7} md={7} lg={7} xl={9} sx={{overflow: "auto",
+          "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
+            width: ".3vw",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,0,.5)",
+            outline: "1px solid slategrey",
+            borderRadius: 10,
+          }}}>
             <Box sx={queriesSolicitud.botonComentario}>
               <Badge badgeContent={cantidadComentarios} color="info">
                 <Tooltip title="Comentarios">

@@ -91,42 +91,42 @@ export const queries = {
     textTransform: "capitalize",
   },
 
-  tablaDisposicionPagosCapital:{
-    height:250,
-    width:"100%",
-    display:"flex",
-    justifyContent:"center",
+  tablaDisposicionPagosCapital: {
+    height: 250,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
     "@media (min-width: 1870px)": {
-      height:430,
+      height: 430,
     },
   },
 
-  tablaUsuarios:{
-    height:560,
-    width:"100%",
-    maxHeight:"50%",
+  tablaUsuarios: {
+    height: 560,
+    width: "100%",
+    maxHeight: "50%",
     overflow: "auto",
     "@media (min-width: 1870px)": {
-      height:775,
+      height: 775,
     },
   },
 
-  tablaNotificaciones:{
-    height:"37rem",
-    width:"100%",
-   
+  tablaNotificaciones: {
+    height: "37rem",
+    width: "100%",
+
     overflow: "auto",
     "@media (min-width: 1870px)": {
-      height:780,
+      height: 780,
     },
   },
 
-  botonAgregarCondicionFinanciera:{
+  botonAgregarCondicionFinanciera: {
     backgroundColor: "#15212f",
     height: "6vh",
-    width:"8%",
+    width: "8%",
     color: "white",
-    fontWeight:"bold",
+    fontWeight: "bold",
     borderRadius: 5,
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
@@ -135,16 +135,16 @@ export const queries = {
     textTransform: "capitalize",
   },
 
-  tablaCondicionFinanciera:{
+  tablaCondicionFinanciera: {
     height: 500,
-    width:"100%",
+    width: "100%",
     "@media (min-width: 1870px)": {
-      height:710,
+      height: 710,
     },
   },
 
   buttonCancelarSolicitudInscripcion: {
-    marginTop:"2rem",
+    marginTop: "2rem",
     backgroundColor: "rgb(175, 140, 85)",
     height: "4vh",
     color: "white",
@@ -158,7 +158,7 @@ export const queries = {
   },
 
   buttonContinuarSolicitudInscripcion: {
-    marginTop:"1rem",
+    marginTop: "1rem",
     backgroundColor: "#15212f",
     height: "4vh",
     color: "white",
@@ -171,7 +171,7 @@ export const queries = {
     textTransform: "capitalize",
   },
 
-  labelTextComentarios:{
+  labelTextComentarios: {
     fontSize: "2ch",
     fontFamily: "MontserratBold",
     marginBottom: "1rem",
@@ -186,6 +186,23 @@ export const queries = {
       fontSize: "1.5ch",
     },
   },
+
+  tablaSolicitudInscripcion: {
+    height: "54vh",
+    overflow: "auto",
+    "&::-webkit-scrollbar": {
+      width: ".2vw",
+      mt: 1,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "#AF8C55",
+      outline: "1px solid slategrey",
+      borderRadius: 1,
+    },
+    "@media (min-width: 1870px)": {
+      height: "64vh",
+    },
+  }
 
 };
 
