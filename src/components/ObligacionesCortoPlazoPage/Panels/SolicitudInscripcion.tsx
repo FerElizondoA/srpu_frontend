@@ -24,6 +24,7 @@ import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitu
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import Swal from "sweetalert2";
 import makeStyles from "@mui/material/styles/makeStyles";
+import { IComentario } from "../../../store/comentarios_apartado";
 
 interface Head {
   label: string;
@@ -38,7 +39,9 @@ const heads: readonly Head[] = [
   },
 ];
 export let errores: string[] = [];
-export function SolicitudInscripcion() {
+
+
+export function SolicitudInscripcion(){
   const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
 
   // eslint-disable-next-line @typescript-eslint/no-array-constructor
@@ -72,6 +75,14 @@ export function SolicitudInscripcion() {
     (state) => state.reglasAplicables
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
+
+
+
+  // const [comentario, setComentario] = useState("");
+
+
+
+
 
   useEffect(() => {
     getReglas();
@@ -387,15 +398,30 @@ export function SolicitudInscripcion() {
     changeReglasAplicables(arrReglas);
   };
 
+  // const [botonComentarios, setBotonComentarios] = useState("hola")
+
+
+
+  // const labelBotonComentarios = () => {
+   
+  //   //POR HACER
+  //       // let cont =comentarios.length||0;
+  //       // comentarios?.map((elemento)=>{
+  //       //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
+  //       // })
+
+  //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
+      
+  // }
+
   return (
     <Grid container>
       <Grid
-      width={"100%"}
+        width={"100%"}
         item
         container
         display={"flex"}
         justifyContent={"space-evenly"}
-
       >
         <Grid item md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
@@ -492,20 +518,8 @@ export function SolicitudInscripcion() {
         <Grid item md={9} lg={9} xl={9} display="flex">
           <Grid>
             <Grid item display={"flex"} width={"112%"} >
-              <TableContainer
-                sx={{
-                  height: "55vh",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".2vw",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}
+              <TableContainer 
+               sx={queries.tablaSolicitudInscripcion}
               >
                 <Table stickyHeader>
                   <TableHead>
@@ -556,7 +570,7 @@ export function SolicitudInscripcion() {
                 </Table>
               </TableContainer>
 
-              {localStorage.getItem("Rol") !== "Administrador" ? (
+              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
                 <Grid
                   container
                   ml={1}
@@ -584,6 +598,7 @@ export function SolicitudInscripcion() {
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
+                          
                           InfoFaltanteModificacion();
                         }}
                       >
@@ -627,10 +642,11 @@ export function SolicitudInscripcion() {
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}
                   />
-                  <DialogSolicitarModificacion
+                  {openDialogModificacion && <DialogSolicitarModificacion
                     handler={setOpenDialogModificacion}
                     openState={openDialogModificacion}
-                  />
+                    
+                  />}
                 </Grid>
               ) : null}
             </Grid>

@@ -55,11 +55,17 @@ export function Encabezado() {
   );
 
   useEffect(() => {
+    getListadoUsuarios(setUsuarios, 1);
     getTiposEntesPublicos();
     getOrganismos();
-    getListadoUsuarios(setUsuarios, 1);
+   
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    
+  }, [])
+  
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
 
@@ -78,7 +84,7 @@ export function Encabezado() {
           <TextField
             fullWidth
             value={tipoDocumento}
-            variant="standard"
+            variant='standard'
             sx={queries.medium_text}
             InputLabelProps={{
               style: {

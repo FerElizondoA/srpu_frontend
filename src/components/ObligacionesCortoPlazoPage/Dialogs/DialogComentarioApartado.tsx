@@ -38,8 +38,13 @@ export function ComentarioApartado({
     (state) => state.removeComentario
   );
 
+  // const tablaCondicionesFinancieras:  = useCortoPlazoStore(
+  //   (state) => state.tablaCondicionesFinancieras
+  // );
+
   useEffect(() => {
     cleanComentario();
+    //console.log(comentarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState]);
 

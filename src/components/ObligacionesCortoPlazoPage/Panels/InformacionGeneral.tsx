@@ -172,7 +172,9 @@ export function InformacionGeneral() {
 
   const Denominaciones = ["Pesos", "UDIS"];
 
+  // ES EL ERROR
   useEffect(() => {
+
     getInstituciones();
     getDestinos();
     getTipoEntePublicoObligado();
@@ -180,6 +182,35 @@ export function InformacionGeneral() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  // Para que el apartado obligado solidario / aval tenga un resultado por defecto
+  useEffect(() => {
+
+    if (generalObligadoSolidario.Id === '' && tablaObligados.length===0) {
+      let obligado = catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")
+      changeObligadoSolidarioAval({
+        obligadoSolidario: {
+          Id: obligado?.Id || "",
+          Descripcion: obligado?.Descripcion || "",
+        },
+        tipoEntePublicoObligado: {
+          Id: "",
+          Descripcion: "",
+        },
+        entePublicoObligado: {
+          Id: "",
+          Descripcion: "",
+        },
+      })
+    } else {
+      
+    }
+    //console.log(catalogoObligadoSolidarioAval[4].Descripcion)
+  }, [catalogoObligadoSolidarioAval])
+
+
+
 
   // useEffect(() => {
   //   if (/^[\s]*$/.test(obligadoSolidarioAval.ObligadoSolidarioAval)) {
@@ -342,8 +373,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             fullWidth
             options={catalogoDestinos}
             getOptionLabel={(option) => option.Descripcion}
@@ -420,8 +451,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             fullWidth
             options={catalogoInstituciones}
             getOptionLabel={(option) => option.Descripcion}
@@ -472,8 +503,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             fullWidth
             options={catalogoObligadoSolidarioAval}
             getOptionLabel={(option) => option.Descripcion}
@@ -485,14 +516,18 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalObligadoSolidario.Id || "",
-              Descripcion: generalObligadoSolidario.Descripcion || "",
+              ////////// REVISAAAAAR FERNANDOOOO/////////
+              // Id: generalObligadoSolidario.Id  || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Id || '' ,
+              // Descripcion: generalObligadoSolidario.Descripcion || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Descripcion || '',
+
+              Id: generalObligadoSolidario.Id, 
+              Descripcion: generalObligadoSolidario.Descripcion
             }}
             onChange={(event, text) =>
               changeObligadoSolidarioAval({
                 obligadoSolidario: {
                   Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "",
+                  Descripcion: text?.Descripcion || "No aplica",
                 },
                 tipoEntePublicoObligado: {
                   Id: "",
@@ -524,8 +559,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
@@ -578,8 +613,8 @@ export function InformacionGeneral() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
@@ -601,16 +636,7 @@ export function InformacionGeneral() {
               Id: generalEntePublico.Id || "",
               Descripcion: generalEntePublico.Descripcion || "",
             }}
-            onChange={(event, text) =>
-              changeObligadoSolidarioAval({
-                obligadoSolidario: generalObligadoSolidario,
-                tipoEntePublicoObligado: generalTipoEntePublico,
-                entePublicoObligado: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "",
-                },
-              })
-            }
+
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -620,6 +646,16 @@ export function InformacionGeneral() {
             )}
             isOptionEqualToValue={(option, value) =>
               option.Id === value.Id || value.Descripcion === ""
+            }
+            onChange={(event, text) =>
+              changeObligadoSolidarioAval({
+                obligadoSolidario: generalObligadoSolidario,
+                tipoEntePublicoObligado: generalTipoEntePublico,
+                entePublicoObligado: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+              })
             }
           />
         </Grid>
@@ -676,7 +712,7 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No aplica" ? (
+                {generalObligadoSolidario.Descripcion === "No aplica" && tablaObligados.length===0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />

@@ -538,7 +538,7 @@ export function LateralMenu() {
                           onClick={() => {
                             reset();
                             navigate("../ObligacionesCortoPlazo");
-                            window.location.reload();
+                            window.location.reload();                           // REFRESH
                           }}
                         >
                           <ListItemIcon>

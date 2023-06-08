@@ -75,9 +75,9 @@ export const createInformacionGeneralSlice: StateCreator<
 
   tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "No aplica" },
-    tipoEntePublicoObligado: { Id: "", Descripcion: "No aplica"  },
-    entePublicoObligado: { Id: "", Descripcion: "No aplica"  },
+    obligadoSolidario: { Id: "", Descripcion: "" },  // Descripcion: "No aplica"
+    tipoEntePublicoObligado: { Id: "", Descripcion: ""  }, // Descripcion: "No aplica"
+    entePublicoObligado: { Id: "", Descripcion: ""  },  // Descripcion: "No aplica"
   },
 
   catalogoInstituciones: [],
