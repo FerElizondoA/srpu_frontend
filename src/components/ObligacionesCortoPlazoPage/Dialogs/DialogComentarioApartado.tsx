@@ -44,7 +44,6 @@ export function ComentarioApartado({
 
   useEffect(() => {
     cleanComentario();
-    //console.log(comentarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState]);
 

@@ -32,13 +32,10 @@ export interface IUsuariosAsignables {
 export function DialogSolicitarModificacion({
   handler,
   openState,
-
 }: {
   handler: Function;
   openState: boolean;
- 
 }) {
-
   interface Head {
     label: string;
   }
@@ -157,27 +154,18 @@ export function DialogSolicitarModificacion({
 
   // const [labelBotonComentarios, setLabelBotonComentarios] = useState("")
 
-  const [errorAsignacion, setErrorAsignacion] = useState(false)
+  const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios, 1);
   }, [openState]);
 
   useEffect(() => {
-    setErrorAsignacion(false)
+    setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
 
   useEffect(() => {
-    console.log('Documentacion apartados: ', documentos)
-  }, [])
-
-  // useEffect(() => {
-  //   console.log('Comentario apartados apartados: ', comentarios)
-  // }, [])
-
-  useEffect(() => {
     cleanComentario();
-    console.log(comentarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState]);
 
@@ -187,9 +175,8 @@ export function DialogSolicitarModificacion({
 
   const checkform = () => {
     if (idUsuarioAsignado === "") {
-      setErrorAsignacion(true)
+      setErrorAsignacion(true);
     } else {
-
       if (idSolicitud !== "") {
         modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
           .then(() => {
@@ -230,10 +217,8 @@ export function DialogSolicitarModificacion({
       }
 
       handler(false);
-
     }
-
-  }
+  };
 
   return (
     <Dialog
@@ -270,62 +255,81 @@ export function DialogSolicitarModificacion({
               onChange={(e) => {
                 setidUsuarioAsignado(e.target.value);
               }}
-              helperText={errorAsignacion === true ? "Debe de asigarle a un usuario la solicitud" : null}
+              helperText={
+                errorAsignacion === true
+                  ? "Debe de asigarle a un usuario la solicitud"
+                  : null
+              }
               error={errorAsignacion}
             >
-              {usuarios.filter((td: any) => td.Rol === "Capturador").map((usuario, index) => {
-                return (
-                  <MenuItem value={usuario.id} key={index}>
-                    {usuario.Nombre + " " + usuario.Rol}
-                  </MenuItem>
-                );
-              })}
+              {usuarios
+                .filter((td: any) => td.Rol === "Capturador")
+                .map((usuario, index) => {
+                  return (
+                    <MenuItem value={usuario.id} key={index}>
+                      {usuario.Nombre + " " + usuario.Rol}
+                    </MenuItem>
+                  );
+                })}
             </TextField>
           </FormControl>
         </Grid>
 
-
-        <Grid maxHeight={250} sx={{
-        overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: ".2vw",
-          mt: 1,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#AF8C55",
-          outline: "1px solid slategrey",
-          borderRadius: 1,
-        },}}>
-
-          {comentarios.length > 0 ? //Si
-          <Grid>
-            <Typography sx={queries.labelTextComentarios}>Comentarios</Typography>
-            {comentarios.map((item, index) => {
-              return (
-                <Grid>
-                  
-                  <Grid>
-                    {item.Tab === "Informacion General" ?
-                      <Typography sx={queries.medium_text}>{"-"} {"Información General"}</Typography> :
-                      <Typography sx={queries.medium_text}>{"-"} {item.Tab}</Typography>
-                    }
-                  </Grid>
-                  <Grid >
-                    <Typography sx={queries.medium_text}>* {item.Apartado}: <strong>{item.Comentario}</strong> <br /><br /> </Typography>
-                  </Grid>
-                </Grid>
-              )
-            })}
-          </Grid>
-            : //CONDICIONAL
+        <Grid
+          maxHeight={250}
+          sx={{
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".2vw",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }}
+        >
+          {comentarios.length > 0 ? ( //Si
             <Grid>
-              <Typography sx={queries.labelTextComentarios}> Sin comentarios</Typography>
+              <Typography sx={queries.labelTextComentarios}>
+                Comentarios
+              </Typography>
+              {comentarios.map((item, index) => {
+                return (
+                  <Grid>
+                    <Grid>
+                      {item.Tab === "Informacion General" ? (
+                        <Typography sx={queries.medium_text}>
+                          {"-"} {"Información General"}
+                        </Typography>
+                      ) : (
+                        <Typography sx={queries.medium_text}>
+                          {"-"} {item.Tab}
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid>
+                      <Typography sx={queries.medium_text}>
+                        * {item.Apartado}: <strong>{item.Comentario}</strong>{" "}
+                        <br />
+                        <br />{" "}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                );
+              })}
             </Grid>
-
-          }
-
+          ) : (
+            //CONDICIONAL
+            <Grid>
+              <Typography sx={queries.labelTextComentarios}>
+                {" "}
+                Sin comentarios
+              </Typography>
+            </Grid>
+          )}
         </Grid>
-
       </DialogContent>
 
       <DialogActions>
@@ -344,10 +348,8 @@ export function DialogSolicitarModificacion({
           onClick={() => {
             checkform();
           }}
-
         >
           {comentarios.length > 0 ? "Enviar" : "Enviar sin comentarios"}
-
         </Button>
       </DialogActions>
     </Dialog>

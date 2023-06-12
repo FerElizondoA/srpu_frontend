@@ -174,7 +174,6 @@ export function InformacionGeneral() {
 
   // ES EL ERROR
   useEffect(() => {
-
     getInstituciones();
     getDestinos();
     getTipoEntePublicoObligado();
@@ -183,12 +182,12 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
   useEffect(() => {
-
-    if (generalObligadoSolidario.Id === '' && tablaObligados.length===0) {
-      let obligado = catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")
+    if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
+      let obligado = catalogoObligadoSolidarioAval.find(
+        (obligado) => obligado.Descripcion === "No aplica"
+      );
       changeObligadoSolidarioAval({
         obligadoSolidario: {
           Id: obligado?.Id || "",
@@ -202,15 +201,10 @@ export function InformacionGeneral() {
           Id: "",
           Descripcion: "",
         },
-      })
+      });
     } else {
-      
     }
-    //console.log(catalogoObligadoSolidarioAval[4].Descripcion)
-  }, [catalogoObligadoSolidarioAval])
-
-
-
+  }, [catalogoObligadoSolidarioAval]);
 
   // useEffect(() => {
   //   if (/^[\s]*$/.test(obligadoSolidarioAval.ObligadoSolidarioAval)) {
@@ -251,7 +245,9 @@ export function InformacionGeneral() {
   return (
     <Grid
       sx={{
-        display: "flex", height: "79vh", flexDirection: "column",
+        display: "flex",
+        height: "79vh",
+        flexDirection: "column",
         justifyContent: "space-evenly",
 
         // backgroundColor:"red"
@@ -341,9 +337,7 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: (
-                <AttachMoneyIcon />
-              ),
+              startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -520,8 +514,8 @@ export function InformacionGeneral() {
               // Id: generalObligadoSolidario.Id  || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Id || '' ,
               // Descripcion: generalObligadoSolidario.Descripcion || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Descripcion || '',
 
-              Id: generalObligadoSolidario.Id, 
-              Descripcion: generalObligadoSolidario.Descripcion
+              Id: generalObligadoSolidario.Id,
+              Descripcion: generalObligadoSolidario.Descripcion,
             }}
             onChange={(event, text) =>
               changeObligadoSolidarioAval({
@@ -636,7 +630,6 @@ export function InformacionGeneral() {
               Id: generalEntePublico.Id || "",
               Descripcion: generalEntePublico.Descripcion || "",
             }}
-
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -685,21 +678,22 @@ export function InformacionGeneral() {
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
       <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip", }}>
-
-          <TableContainer sx={{
-            maxHeight: "100%",
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }} >
+        <Paper sx={{ width: "88%", overflow: "clip" }}>
+          <TableContainer
+            sx={{
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -712,7 +706,8 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No aplica" && tablaObligados.length===0 ? (
+                {generalObligadoSolidario.Descripcion === "No aplica" &&
+                tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />
