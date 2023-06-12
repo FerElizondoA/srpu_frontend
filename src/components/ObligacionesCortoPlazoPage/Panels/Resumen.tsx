@@ -239,7 +239,7 @@ export function Resumen() {
     []
   );
 
-  const [fileSelected, setFileSelected] = useState("");
+  const [fileSelected, setFileSelected] = useState<any>("");
 
   const tablaDocumentos: IFile[] = useCortoPlazoStore(
     (state) => state.tablaDocumentos
@@ -259,7 +259,10 @@ export function Resumen() {
   const [arr, setArr] = useState<any>([]);
 
   useEffect(() => {
-    if (pathDocumentos.length > 0) {
+    if (
+      pathDocumentos.length > 0 &&
+      pathDocumentos[0]?.NombreArchivo !== undefined
+    ) {
       let loc: any = [...arr];
       pathDocumentos?.map((val: any) => {
         return getDocumento(
@@ -274,12 +277,21 @@ export function Resumen() {
     }
   }, [pathDocumentos]);
 
+  const toBase64 = (file: any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
   return (
     <Grid
       container
       sx={{
         display: "flex",
         justifyContent: "center",
+        height: "80vh",
         overflow: "auto",
         "&::-webkit-scrollbar": {
           width: ".5vw",
@@ -791,10 +803,6 @@ export function Resumen() {
                           </TableContainer>
                         </DialogContent>
                       </Dialog>
-                      <ComentarioApartado
-                        setOpen={setOpenComentarioApartado}
-                        openState={openComentarioApartado}
-                      />
                     </Table>
                   </TableContainer>
                 ) : (
@@ -941,11 +949,21 @@ export function Resumen() {
                             >
                               <IconButton
                                 onClick={() => {
-                                  setFileSelected(
-                                    arr.filter((td: any) =>
-                                      td.nombre.includes(row.nombreArchivo)
-                                    )[0].file
-                                  );
+                                  toBase64(tablaDocumentos[index].archivo)
+                                    .then((data) => {
+                                      setFileSelected(data);
+                                    })
+                                    .catch((err) => {
+                                      setFileSelected(
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.nombre.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].file
+                                        }`
+                                      );
+                                    });
                                   setShowModalPrevia(true);
                                 }}
                               >
@@ -993,11 +1011,15 @@ export function Resumen() {
               width: "100%",
               height: "85vh",
             }}
-            src={`data:application/pdf;base64,${fileSelected}`}
+            src={`${fileSelected}`}
             title="description"
           ></iframe>
         </DialogContent>
       </Dialog>
+      <ComentarioApartado
+        setOpen={setOpenComentarioApartado}
+        openState={openComentarioApartado}
+      />
     </Grid>
   );
 }
