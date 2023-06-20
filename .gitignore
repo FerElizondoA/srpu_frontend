@@ -17,7 +17,6 @@ lerna-debug.log*
 /coverage
 
 # dotenv environment variables file
-.env
 .env.test
 
 # production
