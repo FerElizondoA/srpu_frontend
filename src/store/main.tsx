@@ -28,6 +28,7 @@ export type SolicitudStore =
   DocumentosSlice &
   ComentarioApartadoSlice;
 
+  
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
   ...createInformacionGeneralSlice(...x),
@@ -38,3 +39,4 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createDocumentoSlice(...x),
   ...createComentarioSlice(...x),
 }));
+

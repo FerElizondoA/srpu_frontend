@@ -36,6 +36,45 @@ export const queries = {
       fontSize: "1.5ch",
     },
   },
+
+  bold_text_Largo_Plazo: {
+    fontSize: "1.8ch",
+    fontFamily: "MontserratBold",
+    "@media (max-width: 600px)": {
+      // XS (extra small) screen
+      fontSize: "1rem",
+    },
+    "@media (min-width: 601px) and (max-width: 900px)": {
+      // SM (small) screen
+      fontSize: "1.5ch",
+    },
+
+    "@media (min-width: 513px)": {
+      fontSize: "1.25ch",
+
+    },
+    "@media (min-width: 600px)": {
+      fontSize: "1.30ch",
+
+    },
+    "@media (min-width: 900px)": {
+      fontSize: "1.35ch",
+
+    },
+    "@media (min-width: 1300px)": {
+      fontSize: "1.40ch",
+
+    },
+    "@media (min-width: 1485px)": {
+      fontSize: "1.8ch",
+
+    },
+    "@media (min-width: 1870px)": {
+
+      fontSize: "1.8ch",
+    },
+  },
+  
   italic_text: {
     fontSize: "2ch",
     fontFamily: "MontserratRegular",

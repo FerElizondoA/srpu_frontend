@@ -152,8 +152,6 @@ export function DialogSolicitarModificacion({
     (state) => state.removeComentario
   );
 
-  // const [labelBotonComentarios, setLabelBotonComentarios] = useState("")
-
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   useEffect(() => {
@@ -164,8 +162,17 @@ export function DialogSolicitarModificacion({
     setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
 
+  // useEffect(() => {
+  //   //console.log('Documentacion apartados: ', documentos)
+  // }, [])
+
+  //  useEffect(() => {
+  //   console.log('Comentario apartados apartados: ', comentarios)
+  // }, [])
+
   useEffect(() => {
     cleanComentario();
+    //console.log(comentarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState]);
 
@@ -180,7 +187,7 @@ export function DialogSolicitarModificacion({
       if (idSolicitud !== "") {
         modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
           .then(() => {
-            addComentario(idSolicitud, comentario);
+            addComentario(idSolicitud, comentarios);
             Swal.fire({
               icon: "success",
               title: "Mensaje",
@@ -205,7 +212,7 @@ export function DialogSolicitarModificacion({
           localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "Captura",
-          comentario
+          comentarios
         ).catch(() => {
           Swal.fire({
             icon: "error",
@@ -299,19 +306,23 @@ export function DialogSolicitarModificacion({
                 return (
                   <Grid>
                     <Grid>
-                      {item.Tab === "Informacion General" ? (
+                      {item.TabCondicionesFinancieras.Apartado ===
+                      "Informacion General" ? (
                         <Typography sx={queries.medium_text}>
                           {"-"} {"Información General"}
                         </Typography>
                       ) : (
                         <Typography sx={queries.medium_text}>
-                          {"-"} {item.Tab}
+                          {"-"} {item.TabCondicionesFinancieras.Apartado}
                         </Typography>
                       )}
                     </Grid>
                     <Grid>
                       <Typography sx={queries.medium_text}>
-                        * {item.Apartado}: <strong>{item.Comentario}</strong>{" "}
+                        * {item.TabCondicionesFinancieras.Apartado}:{" "}
+                        <strong>
+                          {item.TabCondicionesFinancieras.Comentario}
+                        </strong>{" "}
                         <br />
                         <br />{" "}
                       </Typography>
@@ -324,11 +335,43 @@ export function DialogSolicitarModificacion({
             //CONDICIONAL
             <Grid>
               <Typography sx={queries.labelTextComentarios}>
-                {" "}
+                Comentarios
+              </Typography>
+              {comentarios.map((item, index) => {
+                return (
+                  <Grid>
+                    <Grid>
+                      {/* {item.Tab === "Informacion General" ? (
+                        <Typography sx={queries.medium_text}>
+                          {"-"} {"Información General"}
+                        </Typography>
+                      ) : (
+                        <Typography sx={queries.medium_text}>
+                          {"-"} {item.Tab}
+                        </Typography>
+                      )} */}
+                    </Grid>
+                    <Grid>
+                      <Typography sx={queries.medium_text}>
+                        {/* * {item.Apartado}: <strong>{item.Comentario}</strong>{" "}
+                        <br />
+                        <br />{" "} */}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          )}
+          :
+          {
+            //CONDICIONAL
+            <Grid>
+              <Typography sx={queries.labelTextComentarios}>
                 Sin comentarios
               </Typography>
             </Grid>
-          )}
+          }
         </Grid>
       </DialogContent>
 

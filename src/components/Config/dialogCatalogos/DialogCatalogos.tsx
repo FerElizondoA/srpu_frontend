@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import { IModulos } from "../../../screens/Config/Catalogos"
 import { creaDesc, delDesc, modDesc } from "../../APIS/Config/APISCatalogos";
+import { queries } from "../../../queries";
 
 
 export function DialogCatalogos({
@@ -167,12 +168,13 @@ export function DialogCatalogos({
 
         <DialogActions>
           <Button
+           
             color="error"
             onClick={() => {
               setOpen(false);
               setElement("");
             }}
-            sx={{ fontFamily: "Montserrat" }}
+            sx={queries.buttonCancelar}
           >
             Cancelar
           </Button>
@@ -181,7 +183,7 @@ export function DialogCatalogos({
               //   modifDesc();
               funcion();
             }}
-            sx={{ fontFamily: "Montserrat" }}
+            sx= {queries.buttonContinuar}
           >
             Aceptar
           </Button>
