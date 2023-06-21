@@ -7,23 +7,22 @@ import { Route, Routes, useNavigate } from "react-router-dom"; //, useNavigate
 
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
-import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
-import { Init } from "./screens/int/Init";
-import { Firma } from "./components/e.firma/Firma";
-import { Bandeja } from "./components/e.firma/Bandeja";
-import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import {
   continueSession,
   sessionValid,
 } from "./components/APIS/Config/validation";
-import { HomePage } from "./components/HomePage/HomePage";
 import { Configuracion } from "./components/Config/Configuracion";
+import { HomePage } from "./components/HomePage/HomePage";
+import { Bandeja } from "./components/e.firma/Bandeja";
+import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
+import { Firma } from "./components/e.firma/Firma";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
 import { Notificaciones } from "./screens/Notificaciones/notificaciones";
-import { Link } from "react-router-dom";
+import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
+import { Init } from "./screens/int/Init";
+import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
 export const appTheme = createTheme({
   palette: {

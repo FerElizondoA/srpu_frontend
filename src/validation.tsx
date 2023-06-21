@@ -25,7 +25,6 @@ export const sessionValid = async () => {
         localStorage.setItem("refreshToken", rft);
         localStorage.setItem("validation", "true");
         localStorage.setItem("IdCentral", r.data.data.IdUsuario);
-
         return getUserDetails(r.data.data.IdUsuario);
       }
     })
@@ -104,6 +103,7 @@ const getDataSolicitud = async (idSolicitud: string) => {
     })
     .catch((error) => {
       localStorage.clear();
+      logout();
       return false;
     });
 };
@@ -136,6 +136,7 @@ export const continueSession = async () => {
     .catch((error) => {
       if (error.response.status === 401) {
         localStorage.clear();
+        logout();
         return false;
       }
     });
