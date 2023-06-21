@@ -1,0 +1,99 @@
+
+import { Grid, Tabs, Tab, Typography } from "@mui/material";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { SyntheticEvent, useEffect, useState } from "react";
+import { queries } from "../../queries";
+import { Encabezado } from "../../components/ObligacionesLargoPlazoPage/Panels/Encabezado";
+import { InformacionGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
+import { CondicionesFinancieras } from "../../components/ObligacionesLargoPlazoPage/Panels/CondicionesFinancieras";
+import { Documentacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
+import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
+import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
+import { Autorizacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Autorizacion";
+import { FuenteDePago } from "../../components/ObligacionesLargoPlazoPage/Panels/FuenteDePago";
+import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
+import { useCortoPlazoStore } from "../../store/main";
+
+
+export function ObligacionesLargoPlazoPage() {
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  };
+  
+  const [tabIndex, setTabIndex] = useState(0);
+  const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
+    setTabIndex(newTabIndex);
+  };
+  const getTiposDocumentos: Function = useCortoPlazoStore(
+    (state) => state.getTiposDocumentos
+  );
+
+  useEffect(() => {
+    getTiposDocumentos();
+  }, []);
+
+  return (
+    <Grid>
+      <Grid item>
+        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+      </Grid>
+      <Grid item>
+        <Grid mt={2} display={"flex"} justifyContent={"center"}>
+          <Typography
+            sx={{
+              fontSize: "2.5ch",
+              fontFamily: "MontserratBold",
+              color: "#AF8C55",
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1rem",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
+            }}
+          >
+            Crédito Simple a Largo Plazo
+          </Typography>
+        </Grid>
+        <Grid sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          centered={query.isScrollable ? false : true}
+          variant={query.isScrollable ? "scrollable" : "standard"}
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{ width: "100%"}}
+          
+        >
+          <Tab label="Encabezado" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Información General" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Autorización" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Fuente De Pago" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Condiciones Financieras" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
+          <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
+        </Tabs>
+        </Grid>
+      </Grid>
+
+      {tabIndex === 0 && <Encabezado />}
+      {tabIndex === 1 && <InformacionGeneral />}
+      {tabIndex === 2 && <Autorizacion />}
+      {tabIndex === 3 && <FuenteDePago />}
+      {tabIndex === 4 && <CondicionesFinancieras />}
+      {tabIndex === 5 && <Documentacion />}
+      {tabIndex === 6 && <TablaDePagos />}
+      {tabIndex === 7 && <Resumen />}
+      {tabIndex === 8 && <SolicituDeInscripcion />}
+
+    </Grid>
+  )
+}

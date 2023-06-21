@@ -58,22 +58,22 @@ export function ComentarioApartado({
       }}
     >
       <DialogTitle sx={{ color: "#AF8C55" }}>
-        {comentarios.filter((_, i) => _.Apartado === openState.apartado)
+        {/* {comentarios.filter((_, i) => _.TabCondicionesFinancieras.Apartado === openState.apartado)
           .length > 0
           ? "Editar "
-          : "Agregar "}
+          : "Agregar "} */}
         comentario: <strong>{openState.apartado}</strong>
       </DialogTitle>
 
       <DialogContent>
         <Typography sx={{ display: "flex", justifyContent: "center" }}>
-          {comentarios?.filter((_, i) => _.Apartado === openState.apartado)[0]
-            ?.Comentario || ""}
+          {comentarios?.filter((_, i) => _.TabCondicionesFinancieras.Apartado === openState.apartado)[0]
+            ?.TabCondicionesFinancieras.Comentario || ""}
         </Typography>
         <TextField
           label="Nuevo comentario"
           sx={{ width: "100%", mt: 2 }}
-          value={comentario.Comentario}
+          value={comentario}
           onChange={(v) => {
             setComentario({
               Comentario: v.target.value.replaceAll("\n", ""),
@@ -87,7 +87,7 @@ export function ComentarioApartado({
       </DialogContent>
 
       <DialogActions>
-        {comentarios.filter((_, i) => _.Apartado === openState.apartado)
+        {comentarios.filter((_, i) => _.TabCondicionesFinancieras.Apartado === openState.apartado)
           .length > 0 ? (
           <Button
             sx={queries.buttonCancelar}

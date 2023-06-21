@@ -554,6 +554,22 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
+                        <ListItemButton
+                          sx={{ marginLeft: 4 }}
+                          onClick={() => {
+                            reset();
+                            navigate("../ObligacionesLargoPlazo");
+                            window.location.reload();                           // REFRESH
+                          }}
+                        >
+                          <ListItemIcon>
+                            <KeyboardArrowRightIcon sx={queries.icon} />
+                          </ListItemIcon>
+                          <Typography sx={queries.bold_text}>
+                            Crédito simple largo plazo
+                          </Typography>
+                        </ListItemButton>
+
                         {/* <ListItemButton sx={{ marginLeft: 4 }}>
                               <ListItemIcon>
                                 <KeyboardArrowRightIcon sx={queries.icon} />

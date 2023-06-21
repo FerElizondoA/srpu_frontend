@@ -280,16 +280,6 @@ export function Resumen() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: ".5vw",
-          mt: 1,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#AF8C55",
-          outline: "1px solid slategrey",
-          borderRadius: 1,
-        },
         width: "auto",
       }}
     >
@@ -324,8 +314,7 @@ export function Resumen() {
                     color={
                       comentarios.filter(
                         (_, i) =>
-                          _.Apartado === head.label && _.Tab === "Encabezado"
-                      ).length > 0
+                          _.TabEncabezado.Apartado === head.label /*&& _. === "Encabezado"*/).length > 0
                         ? "success"
                         : "primary"
                     }
@@ -376,9 +365,7 @@ export function Resumen() {
                     color={
                       comentarios.filter(
                         (_, i) =>
-                          _.Apartado === head.label &&
-                          _.Tab === "Información General"
-                      ).length > 0
+                          _.TabInformaciónGeneral.Apartado === head.label /*&& _.Tab === "Información General"*/).length > 0
                         ? "success"
                         : "primary"
                     }
@@ -412,13 +399,10 @@ export function Resumen() {
 
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
-                  color={
-                    comentarios.filter(
-                      (_, i) => _.Tab === "Informacion General"
-                    ).length > 0
-                      ? "success"
-                      : "primary"
-                  }
+                  // color={comentarios.filter((_, i) => _.Tab === "Informacion General").length > 0
+                  //     ? "success"
+                  //     : "primary"
+                  // }
                   size="small"
                   onClick={() => {
                     setOpenComentarioApartado({
@@ -524,28 +508,28 @@ export function Resumen() {
             item
             display={"flex"}
             height={350}
-            // sx={{
-            //   display: "flex",
-            //   flexDirection: "row",
-            //   mt: 1,
-            //   alignItems: "center",
-            //   borderBottom: 1,
-            //   borderColor: "#cfcfcf",
-            //   fontSize: "12px",
-            //   border: "1px solid"
-            // }}
+          // sx={{
+          //   display: "flex",
+          //   flexDirection: "row",
+          //   mt: 1,
+          //   alignItems: "center",
+          //   borderBottom: 1,
+          //   borderColor: "#cfcfcf",
+          //   fontSize: "12px",
+          //   border: "1px solid"
+          // }}
           >
             <Grid mt={4}>
               {/* Revisar */}
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
-                  color={
-                    comentarios.filter(
-                      (_, i) => _.Tab === "Condiciones Financieras"
-                    ).length > 0
-                      ? "success"
-                      : "primary"
-                  }
+                  // color={
+                  //   comentarios.filter(
+                  //     (_, i) => _.Tab === "Condiciones Financieras"
+                  //   ).length > 0
+                  //     ? "success"
+                  //     : "primary"
+                  // }
                   size="small"
                   onClick={() => {
                     setOpenComentarioApartado({
@@ -791,10 +775,7 @@ export function Resumen() {
                           </TableContainer>
                         </DialogContent>
                       </Dialog>
-                      <ComentarioApartado
-                        setOpen={setOpenComentarioApartado}
-                        openState={openComentarioApartado}
-                      />
+
                     </Table>
                   </TableContainer>
                 ) : (
@@ -886,12 +867,7 @@ export function Resumen() {
                         <Tooltip title="Añadir comentario a este apartado">
                           <IconButton
                             color={
-                              comentarios.filter(
-                                (_, i) =>
-                                  _.Apartado ===
-                                    documentos[index].descripcionTipo &&
-                                  _.Tab === "Documentacion"
-                              ).length > 0
+                              comentarios.filter((_, i) => _.TabDocumentacion.Apartado === documentos[index].descripcionTipo /*&& _.Tab === "Documentacion"*/).length > 0
                                 ? "success"
                                 : "primary"
                             }
@@ -998,6 +974,10 @@ export function Resumen() {
           ></iframe>
         </DialogContent>
       </Dialog>
+      <ComentarioApartado
+        setOpen={setOpenComentarioApartado}
+        openState={openComentarioApartado}
+      />
     </Grid>
   );
 }

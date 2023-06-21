@@ -37,6 +37,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import validator from "validator";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 interface Head {
   label: string;
@@ -74,61 +75,61 @@ const heads: Head[] = [
 
 export function InformacionGeneral() {
   // GET CATALOGOS
-  const getDestinos: Function = useCortoPlazoStore(
+  const getDestinos: Function = useLargoPlazoStore(
     (state) => state.getDestinos
   );
-  const getInstituciones: Function = useCortoPlazoStore(
+  const getInstituciones: Function = useLargoPlazoStore(
     (state) => state.getInstituciones
   );
-  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+  const getTipoEntePublicoObligado: Function = useLargoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
-  const getObligadoSolidarioAval: Function = useCortoPlazoStore(
+  const getObligadoSolidarioAval: Function = useLargoPlazoStore(
     (state) => state.getObligadoSolidarioAval
   );
 
   // CATALOGOS
-  const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoObligadoSolidarioAval
   );
-  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoInstituciones: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoInstituciones
   );
-  const catalogoDestinos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoDestinos: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoDestinos
   );
-  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoTipoEntePublicoObligado
   );
 
   // INFORMACION GENERAL
-  const fechaContratacion: string = useCortoPlazoStore(
+  const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
-  const fechaVencimiento: string = useCortoPlazoStore(
+  const fechaVencimiento: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
-  const plazo: number = useCortoPlazoStore(
+  const plazo: number = useLargoPlazoStore(
     (state) => state.informacionGeneral.plazo
   );
-  const destino: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const destino: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.informacionGeneral.destino
   );
-  const monto: number = useCortoPlazoStore(
+  const monto: number = useLargoPlazoStore(
     (state) => state.informacionGeneral.monto
   );
-  const denominacion: string = useCortoPlazoStore(
+  const denominacion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.denominacion
   );
   const institucionFinanciera: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useLargoPlazoStore(
       (state) => state.informacionGeneral.institucionFinanciera
     );
 
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
+  const changeInformacionGeneral: Function = useLargoPlazoStore(
     (state) => state.changeInformacionGeneral
   );
 
@@ -172,20 +173,21 @@ export function InformacionGeneral() {
 
   const Denominaciones = ["Pesos", "UDIS"];
 
-  useEffect(() => {
+  const PeriodoAdministracion = ["1", "2", "3"];
 
+  useEffect(() => {
     getInstituciones();
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
   }, []);
 
-
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
   useEffect(() => {
-
-    if (generalObligadoSolidario.Id === '' && tablaObligados.length === 0) {
-      let obligado = catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")
+    if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
+      let obligado = catalogoObligadoSolidarioAval.find(
+        (obligado) => obligado.Descripcion === "No aplica"
+      );
       changeObligadoSolidarioAval({
         obligadoSolidario: {
           Id: obligado?.Id || "",
@@ -199,23 +201,11 @@ export function InformacionGeneral() {
           Id: "",
           Descripcion: "",
         },
-      })
+      });
     } else {
-
     }
     //console.log(catalogoObligadoSolidarioAval[4].Descripcion)
-  }, [catalogoObligadoSolidarioAval])
-
-
-
-
-  // useEffect(() => {
-  //   if (/^[\s]*$/.test(obligadoSolidarioAval.ObligadoSolidarioAval)) {
-  //     changeTipoEntePublicoObligado("", "");
-  //     changeEntePublicoObligado("", "");
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [obligadoSolidarioAval]);
+  }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
 
@@ -246,15 +236,29 @@ export function InformacionGeneral() {
   }, [contratacion, vencimiento]);
 
   return (
+    
     <Grid
+      item
+      container
       sx={{
-        display: "flex", height: "79vh", flexDirection: "column",
+        display: "flex", 
+        height: "90vh", 
+        flexDirection: "column",
         justifyContent: "space-evenly",
-
-        // backgroundColor:"red"
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+        
       }}
     >
-      <Grid item display="flex" justifyContent={"space-evenly"}>
+      <Grid item display="flex" justifyContent={"space-evenly"} sx={{}} >
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
@@ -338,15 +342,12 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: (
-                <AttachMoneyIcon />
-              ),
+              startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
         </Grid>
       </Grid>
-
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
         <Grid lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
@@ -439,7 +440,63 @@ export function InformacionGeneral() {
           </Select>
         </Grid>
       </Grid>
-      
+
+      <Grid item display={"flex"} justifyContent={"space-around"}>
+        <Grid item lg={4.5}>
+          <InputLabel sx={queries.medium_text}>Periodo de Administración</InputLabel>
+          <Select
+            fullWidth
+            variant="standard"
+            value={denominacion || ""}
+            disabled
+          // onChange={(v) =>
+          //   // changeInformacionGeneral({
+          //   //   fechaContratacion: contratacion,
+          //   //   fechaVencimiento: vencimiento,
+          //   //   plazo: plazo,
+          //   //   destino: destino,
+          //   //   monto: monto,
+          //   //   denominacion: v.target.value,
+          //   //   institucionFinanciera: institucionFinanciera,
+          //   // })
+          // }
+          >
+            {PeriodoAdministracion.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+
+        <Grid item lg={4.5}>
+          <InputLabel sx={queries.medium_text}>Periodo de Financiamiento</InputLabel>
+          <Select
+            fullWidth
+            variant="standard"
+            value={denominacion || ""}
+            disabled
+          // onChange={(v) =>
+          //   // changeInformacionGeneral({
+          //   //   fechaContratacion: contratacion,
+          //   //   fechaVencimiento: vencimiento,
+          //   //   plazo: plazo,
+          //   //   destino: destino,
+          //   //   monto: monto,
+          //   //   denominacion: v.target.value,
+          //   //   institucionFinanciera: institucionFinanciera,
+          //   // })
+          // }
+          >
+            {PeriodoAdministracion.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+      </Grid>
+
       <Grid item display={"flex"} justifyContent={"center"}>
         <Grid item lg={10.5}>
           <InputLabel sx={queries.medium_text}>
@@ -518,7 +575,7 @@ export function InformacionGeneral() {
               // Descripcion: generalObligadoSolidario.Descripcion || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Descripcion || '',
 
               Id: generalObligadoSolidario.Id,
-              Descripcion: generalObligadoSolidario.Descripcion
+              Descripcion: generalObligadoSolidario.Descripcion,
             }}
             onChange={(event, text) =>
               changeObligadoSolidarioAval({
@@ -633,7 +690,6 @@ export function InformacionGeneral() {
               Id: generalEntePublico.Id || "",
               Descripcion: generalEntePublico.Descripcion || "",
             }}
-
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -681,22 +737,23 @@ export function InformacionGeneral() {
       </Grid>
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
-      <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip", }}>
-
-          <TableContainer sx={{
-            maxHeight: "100%",
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }} >
+      <Grid height={"40%"} display={"flex"} justifyContent={"space-evenly"}>
+        <Paper sx={{ width: "88%", overflow: "clip" }}>
+          <TableContainer
+            sx={{
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -709,7 +766,8 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No aplica" && tablaObligados.length === 0 ? (
+                {generalObligadoSolidario.Descripcion === "No aplica" &&
+                  tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />
@@ -752,7 +810,6 @@ export function InformacionGeneral() {
           </TableContainer>
         </Paper>
       </Grid>
-      {/* </Box> */}
     </Grid>
   );
 }

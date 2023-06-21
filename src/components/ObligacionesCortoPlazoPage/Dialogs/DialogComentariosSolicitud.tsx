@@ -22,6 +22,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { AgregarComentario } from "./DialogAgregarComentario";
+import { IComentario } from "../../../store/comentarios_apartado";
+import { TextFields } from "@mui/icons-material";
 
 interface IComentarios {
   Comentarios: string;
@@ -38,6 +40,7 @@ interface Head {
   label: string;
 }
 
+
 const heads: readonly Head[] = [
   {
     id: "Nombre",
@@ -45,16 +48,23 @@ const heads: readonly Head[] = [
     label: "Usuario",
   },
   {
-    id: "Comentarios",
-    isNumeric: true,
-    label: "Comentarios",
-  },
-  {
     id: "FechaCreacion",
     isNumeric: true,
     label: "Fecha",
   },
+  {
+    id: "Comentarios",
+    isNumeric: true,
+    label: "Comentarios",
+  },
+  
 ];
+
+
+
+// const comentarios: IComentario[] = useCortoPlazoStore(
+//   (state) => state.comentarios
+// );
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +84,9 @@ export function VerComentariosSolicitud({
   handler: Function;
   openState: boolean;
 }) {
-  const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>([]);
+
+  //const[comentarionuevo, setComentarioNuevo] =useState<>
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -86,9 +98,14 @@ export function VerComentariosSolicitud({
 
   useEffect(() => {
     if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
+      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud, openDialogCrear]);
+
+
+  useEffect(() => {
+    console.log("Esto son los comentarios", datosComentario)
+  }, [])
 
   return (
     <Dialog
@@ -122,25 +139,28 @@ export function VerComentariosSolicitud({
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {comentarios.length !== 0 ? (
-                  comentarios?.map((row, index) => {
+                {datosComentario.length !== 0 ? (
+                  datosComentario?.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell component="th" scope="row">
                           {row.Nombre}
                         </StyledTableCell>
+
                         <StyledTableCell component="th" scope="row">
-                          {row.Comentarios}
+                        {row.FechaCreacion.split("T")[0]}
                         </StyledTableCell>
+
                         <StyledTableCell component="th" scope="row">
-                          {row.FechaCreacion.split("T")[0]}
+                       
                         </StyledTableCell>
                       </StyledTableRow>
                     );
                   })
+                  
                 ) : (
                   <StyledTableRow
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 }}}
                   >
                     <StyledTableCell align="center"></StyledTableCell>
 

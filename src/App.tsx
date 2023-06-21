@@ -21,6 +21,7 @@ import { Configuracion } from "./components/Config/Configuracion";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Usuarios } from "./screens/Config/Usuarios";
 import { Notificaciones } from "./screens/Notificaciones/notificaciones";
+import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 
 
 export const appTheme = createTheme({
@@ -73,14 +74,15 @@ function App() {
         <Route path="firmar" element={<Firma />} />
         <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
         <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
-          <Route path="home" element={<HomePage />}></Route>
-          <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
-          <Route path="config" element={<Configuracion />}></Route>
-          <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
-          <Route path="catalogos" element={<Catalogos />}></Route>
-          <Route path="users" element={<Usuarios />}></Route>
-          <Route path="solicitudes-usuarios" element={<Solicitudes/>}></Route>
-          <Route path="notificaciones" element={<Notificaciones/>}></Route>
+        <Route path="home" element={<HomePage />}></Route>
+        <Route path="obligacionesCortoPlazo" element={<ObligacionesCortoPlazoPage />}></Route>
+        <Route path="config" element={<Configuracion />}></Route>
+        <Route path="ConsultaDeSolicitudes" element={<ConsultaDeSolicitudPage />}></Route>
+        <Route path="catalogos" element={<Catalogos />}></Route>
+        <Route path="users" element={<Usuarios />}></Route>
+        <Route path="solicitudes-usuarios" element={<Solicitudes/>}></Route>
+        <Route path="notificaciones" element={<Notificaciones/>}></Route>
+        <Route path="obligacionesLargoPlazo" element={<ObligacionesLargoPlazoPage/>}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
