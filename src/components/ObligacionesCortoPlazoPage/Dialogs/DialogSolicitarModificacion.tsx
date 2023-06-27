@@ -162,18 +162,9 @@ export function DialogSolicitarModificacion({
     setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
 
-  // useEffect(() => {
-  //   //console.log('Documentacion apartados: ', documentos)
-  // }, [])
-
-  //  useEffect(() => {
-  //   console.log('Comentario apartados apartados: ', comentarios)
-  // }, [])
-
   useEffect(() => {
     cleanComentario();
-    //console.log(comentarios);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [openState]);
 
   const editCreadoPor: string = useCortoPlazoStore(

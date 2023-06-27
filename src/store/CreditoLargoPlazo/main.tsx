@@ -1,25 +1,25 @@
-// export const useLargoPlazoStore = create<SolicitudStore>()((...x) => ({
-//     // ...createEncabezadoSlice(...x),
-//     // ...createInformacionGeneralSlice(...x),
-//     // ...createSolicitudInscripcionSlice(...x),
-//     // ...createPagosCapitalSlice(...x),
-//     // ...createTasaEfectivaSlice(...x),
-//     // ...createCondicionFinancieraSlice(...x),
-//     // ...createDocumentoSlice(...x),
-//     // ...createComentarioSlice(...x),
-//   }));
+
 import { create } from "zustand";
 
 import { EncabezadoLargoPlazoSlice, createEncabezadoLargoPlazoSlice } from "./encabezado";
 import {createInformacionGeneralLargoPlazoSlice, InformacionGeneralLargoPlazoSlice} from "./informacion_general"
-
+import {CondicionFinancieraLargoPlazoSlice, createCondicionFinancieraLargoPlazoSlice } from "./condicion_financiera";
+import {PagosCapitalLargoPlazoSlice,createPagosCapitalLargoPlazoSlice} from "./pagos_capital"
+import {createTasaEfectivaLargoPlazoSlice, TasaEfectivaLargoPlazoSlice} from "./tasa_efectiva"
 
 export type SolicitudStoreCSLP =
 
 EncabezadoLargoPlazoSlice &
-InformacionGeneralLargoPlazoSlice
+InformacionGeneralLargoPlazoSlice &
+CondicionFinancieraLargoPlazoSlice &
+PagosCapitalLargoPlazoSlice &
+TasaEfectivaLargoPlazoSlice
+
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
     ...createEncabezadoLargoPlazoSlice(...x),
-    ...createInformacionGeneralLargoPlazoSlice(...x)
+    ...createInformacionGeneralLargoPlazoSlice(...x),
+    ...createCondicionFinancieraLargoPlazoSlice(...x),
+    ...createPagosCapitalLargoPlazoSlice(...x),
+    ...createTasaEfectivaLargoPlazoSlice(...x)
 }))

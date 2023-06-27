@@ -1,9 +1,9 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { IComisiones, TasaInteres } from "./condicion_financiera";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { IComisiones, TasaInteres } from "../condicion_financiera"
+import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado"
 
-export interface PagosCapitalSlice {
+export interface PagosCapitalLargoPlazoSlice {
   disposicion: { fechaDisposicion: string; importe: number };
 
   pagosDeCapital: {
@@ -58,7 +58,7 @@ export interface PagosCapitalSlice {
   getDiasEjercicio: () => void;
 }
 
-export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
+export const createPagosCapitalLargoPlazoSlice: StateCreator<PagosCapitalLargoPlazoSlice> = (
   set,
   get
 ) => ({

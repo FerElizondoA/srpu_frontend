@@ -103,9 +103,7 @@ export function VerComentariosSolicitud({
   }, [IdSolicitud, openDialogCrear]);
 
 
-  useEffect(() => {
-    console.log("Esto son los comentarios", datosComentario)
-  }, [])
+
 
   return (
     <Dialog

@@ -161,6 +161,7 @@ export function InformacionGeneral() {
     (state) => state.removeObligadoSolidarioAval
   );
 
+
   const addRows = () => {
     let tab = {
       obligadoSolidario: generalObligadoSolidario.Descripcion,

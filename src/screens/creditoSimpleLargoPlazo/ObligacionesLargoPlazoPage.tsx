@@ -1,5 +1,5 @@
 
-import { Grid, Tabs, Tab, Typography } from "@mui/material";
+import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -15,25 +15,21 @@ import { Autorizacion } from "../../components/ObligacionesLargoPlazoPage/Panels
 import { FuenteDePago } from "../../components/ObligacionesLargoPlazoPage/Panels/FuenteDePago";
 import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
 import { useCortoPlazoStore } from "../../store/main";
-
+import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
-  
+
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-  const getTiposDocumentos: Function = useCortoPlazoStore(
-    (state) => state.getTiposDocumentos
-  );
 
-  useEffect(() => {
-    getTiposDocumentos();
-  }, []);
+  const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
   return (
     <Grid>
@@ -47,6 +43,7 @@ export function ObligacionesLargoPlazoPage() {
               fontSize: "2.5ch",
               fontFamily: "MontserratBold",
               color: "#AF8C55",
+              padding: "1px 1px 1px 70px",
               "@media (max-width: 600px)": {
                 // XS (extra small) screen
                 fontSize: "1rem",
@@ -59,28 +56,50 @@ export function ObligacionesLargoPlazoPage() {
           >
             Crédito Simple a Largo Plazo
           </Typography>
+          <Button
+            onClick={() => {
+             setOpenDialogBorrador(!openDialogBorrador);
+            }}
+            sx={{
+              backgroundColor: "#15212f",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(47, 47, 47, 0.4)",
+                color: "#000",
+              },
+              fontSize: "90%",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              position: "relative",
+              left: "500px",
+            }}>
+            Guardar
+          </Button>
         </Grid>
-        <Grid sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
-        <Tabs
-          value={tabIndex}
-          onChange={handleChange}
-          centered={query.isScrollable ? false : true}
-          variant={query.isScrollable ? "scrollable" : "standard"}
-          scrollButtons="auto"
-          allowScrollButtonsMobile
-          sx={{ width: "100%"}}
-          
-        >
-          <Tab label="Encabezado" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Información General" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Autorización" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Fuente De Pago" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Condiciones Financieras" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
-          <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
-        </Tabs>
+
+
+
+        <Grid sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleChange}
+            centered={query.isScrollable ? false : true}
+            variant={query.isScrollable ? "scrollable" : "standard"}
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{ width: "100%" }}
+
+          >
+            <Tab label="Encabezado" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Información General" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Autorización" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Fuente De Pago" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Condiciones Financieras" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
+          </Tabs>
         </Grid>
       </Grid>
 
@@ -93,6 +112,11 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 6 && <TablaDePagos />}
       {tabIndex === 7 && <Resumen />}
       {tabIndex === 8 && <SolicituDeInscripcion />}
+
+       <ConfirmacionBorradorSolicitud
+        handler={setOpenDialogBorrador}
+        openState={openDialogBorrador}
+      /> 
 
     </Grid>
   )
