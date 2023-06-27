@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Grid,
   Divider,
@@ -32,7 +33,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { headsComision, headsTasa } from "./CondicionesFinancieras";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { IComentario } from "../../../store/comentarios_apartado";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import CommentIcon from "@mui/icons-material/Comment";
 import {
@@ -152,10 +152,6 @@ export function Resumen() {
     (state) => state.tablaCondicionesFinancieras
   );
 
-  const comentarios: IComentario[] = useCortoPlazoStore(
-    (state) => state.comentarios
-  );
-
   // Documentación
   const documentos: IFile[] = useCortoPlazoStore(
     (state) => state.tablaDocumentos
@@ -170,7 +166,7 @@ export function Resumen() {
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
     open: false,
     apartado: "",
-    tab: "",
+    tab: "Tab",
   });
 
   const encabezado: HeadLabels[] = [
@@ -245,9 +241,7 @@ export function Resumen() {
     (state) => state.tablaDocumentos
   );
 
-  const setTablaDocumentos: Function = useCortoPlazoStore(
-    (state) => state.setTablaDocumentos
-  );
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
   useEffect(() => {
     if (IdSolicitud !== "") {
@@ -323,11 +317,7 @@ export function Resumen() {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentarios.filter(
-                        (_, i) =>
-                          _.TabEncabezado.Apartado ===
-                          head.label /*&& _. === "Encabezado"*/
-                      ).length > 0
+                      comentario[head.label] && comentario[head.label] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -336,15 +326,13 @@ export function Resumen() {
                       setOpenComentarioApartado({
                         open: true,
                         apartado: head.label,
-                        tab: "Encabezado",
+                        tab: "TabEncabezado",
                       });
                     }}
                   >
                     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                   </IconButton>
                 </Tooltip>
-
-                {/* Revisar */}
 
                 <Typography sx={queries.medium_text}>
                   <strong>{head.label}: </strong>
@@ -376,11 +364,7 @@ export function Resumen() {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentarios.filter(
-                        (_, i) =>
-                          _.TabInformaciónGeneral.Apartado ===
-                          head.label /*&& _.Tab === "Información General"*/
-                      ).length > 0
+                      comentario[head.label] && comentario[head.label] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -389,7 +373,7 @@ export function Resumen() {
                       setOpenComentarioApartado({
                         open: true,
                         apartado: head.label,
-                        tab: "Información General",
+                        tab: "TabInformaciónGeneral",
                       });
                     }}
                   >
@@ -414,16 +398,18 @@ export function Resumen() {
 
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
-                  // color={comentarios.filter((_, i) => _.Tab === "Informacion General").length > 0
-                  //     ? "success"
-                  //     : "primary"
-                  // }
+                  color={
+                    comentario["Tabla Obligado Solidario Aval"] &&
+                    comentario["Tabla Obligado Solidario Aval"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
                   size="small"
                   onClick={() => {
                     setOpenComentarioApartado({
                       open: true,
                       apartado: "Tabla Obligado Solidario Aval",
-                      tab: "Informacion General",
+                      tab: "TabInformaciónGeneral",
                     });
                   }}
                 >
@@ -519,38 +505,23 @@ export function Resumen() {
           <Typography sx={queries.bold_text}>
             Condiciones Financieras
           </Typography>
-          <Grid
-            item
-            display={"flex"}
-            height={350}
-            // sx={{
-            //   display: "flex",
-            //   flexDirection: "row",
-            //   mt: 1,
-            //   alignItems: "center",
-            //   borderBottom: 1,
-            //   borderColor: "#cfcfcf",
-            //   fontSize: "12px",
-            //   border: "1px solid"
-            // }}
-          >
+          <Grid item display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
-                  // color={
-                  //   comentarios.filter(
-                  //     (_, i) => _.Tab === "Condiciones Financieras"
-                  //   ).length > 0
-                  //     ? "success"
-                  //     : "primary"
-                  // }
+                  color={
+                    comentario["Tabla Condiciones Financieras"] &&
+                    comentario["Tabla Condiciones Financieras"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
                   size="small"
                   onClick={() => {
                     setOpenComentarioApartado({
                       open: true,
-                      apartado: " Tabla Condiciones Financieras",
-                      tab: "Condiciones Financieras",
+                      apartado: "Tabla Condiciones Financieras",
+                      tab: "TabCondiciones Financieras",
                     });
                   }}
                 >
@@ -881,12 +852,8 @@ export function Resumen() {
                         <Tooltip title="Añadir comentario a este apartado">
                           <IconButton
                             color={
-                              comentarios.filter(
-                                (_, i) =>
-                                  _.TabDocumentacion.Apartado ===
-                                  documentos[index]
-                                    .descripcionTipo /*&& _.Tab === "Documentacion"*/
-                              ).length > 0
+                              comentario[row.descripcionTipo] &&
+                              comentario[row.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -894,8 +861,8 @@ export function Resumen() {
                             onClick={() => {
                               setOpenComentarioApartado({
                                 open: true,
-                                apartado: documentos[index].descripcionTipo,
-                                tab: "Documentacion",
+                                apartado: row.descripcionTipo,
+                                tab: "TabDocumentacion",
                               });
                             }}
                           >

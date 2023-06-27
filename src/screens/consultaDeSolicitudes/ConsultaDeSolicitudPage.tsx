@@ -221,7 +221,7 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const limpiaSolicitud = () => {
-    changeIdSolicitud('')
+    changeIdSolicitud("");
     changeEncabezado({
       tipoDocumento: "",
       solicitanteAutorizado: {
@@ -463,7 +463,7 @@ export function ConsultaDeSolicitudPage() {
                         component="th"
                         scope="row"
                       >
-                        {"$" + row.MontoOriginalContratado.toString()}
+                        {row.MontoOriginalContratado.toString()}
                       </StyledTableCell>
 
                       <StyledTableCell

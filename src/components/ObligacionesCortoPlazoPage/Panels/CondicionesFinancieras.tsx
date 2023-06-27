@@ -137,23 +137,26 @@ export function CondicionesFinancieras() {
   const [openComision, setOpenComision] = useState(false);
 
   return (
-    <Grid container >
-      <Grid item sx={queries.tablaCondicionFinanciera} >
+    <Grid container>
+      <Grid item sx={queries.tablaCondicionFinanciera}>
         <Paper sx={{ height: "100%", width: "100%" }}>
-          <TableContainer sx={{
-            height: "100%", width: "100%",
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }}>
-            <Table stickyHeader >
+          <TableContainer
+            sx={{
+              height: "100%",
+              width: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
@@ -197,31 +200,51 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center" component="th" scope="row">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
                         {format(
                           new Date(row.disposicion.fechaDisposicion),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
-                        {"$" + row.disposicion.importe}
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
+                        {row.disposicion.importe}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
                         {row.pagosDeCapital.periodicidadDePago}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);
@@ -231,7 +254,10 @@ export function CondicionesFinancieras() {
                           <InfoOutlinedIcon />
                         </Button>
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
                         <Button
                           onClick={() => {
                             setRowComision(row.comisiones);
@@ -336,9 +362,9 @@ export function CondicionesFinancieras() {
                   </IconButton>
                 </DialogTitle>
                 <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-                  <TableContainer >
+                  <TableContainer>
                     <Table>
-                      <TableHead >
+                      <TableHead>
                         <TableRow>
                           {headsComision.map((head, index) => (
                             <StyledTableCell key={index}>
@@ -383,10 +409,17 @@ export function CondicionesFinancieras() {
             </Table>
           </TableContainer>
         </Paper>
-
       </Grid>
 
-      <Grid item md={12} lg={12} height={75} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        item
+        md={12}
+        lg={12}
+        height={75}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Button
           sx={queries.buttonContinuar}
           variant="outlined"
@@ -395,7 +428,7 @@ export function CondicionesFinancieras() {
             setAccion("Agregar");
           }}
         >
-         Agregar
+          Agregar
         </Button>
         {/* {changeOpenAgregarState ? ( */}
         <AgregarCondicionFinanciera
@@ -407,15 +440,12 @@ export function CondicionesFinancieras() {
         {/* ) : null} */}
       </Grid>
 
-
-
       {/* <Grid item md={6} lg={6}>
           <DeleteButton variant="outlined" 
           //onClick={() =>
              //deleteRows()}
              >ELIMINAR</DeleteButton>
         </Grid> */}
-
     </Grid>
   );
 }

@@ -93,7 +93,9 @@ export function LateralMenuMobile() {
             <Grid container>
               <Grid item container direction="column" mt={2}>
                 <Grid item sx={{ alignSelf: "center" }}>
-                  <Avatar sx={{ height: "100px", width: "100px", bgcolor: color  }}>
+                  <Avatar
+                    sx={{ height: "100px", width: "100px", bgcolor: color }}
+                  >
                     {iniciales}
                   </Avatar>
                 </Grid>
@@ -164,7 +166,7 @@ export function LateralMenuMobile() {
                                 <KeyboardArrowRightIcon sx={queries.icon} />
                               </ListItemIcon>
                               <Typography sx={queries.text}>
-                                Crédito simple corto plazo
+                                Crédito simple a corto plazo.
                               </Typography>
                             </ListItemButton>
 

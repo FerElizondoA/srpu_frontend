@@ -51,30 +51,24 @@ export const queries = {
 
     "@media (min-width: 513px)": {
       fontSize: "1.25ch",
-
     },
     "@media (min-width: 600px)": {
       fontSize: "1.30ch",
-
     },
     "@media (min-width: 900px)": {
       fontSize: "1.35ch",
-
     },
     "@media (min-width: 1300px)": {
       fontSize: "1.40ch",
-
     },
     "@media (min-width: 1485px)": {
       fontSize: "1.8ch",
-
     },
     "@media (min-width: 1870px)": {
-
       fontSize: "1.8ch",
     },
   },
-  
+
   italic_text: {
     fontSize: "2ch",
     fontFamily: "MontserratRegular",
@@ -210,6 +204,20 @@ export const queries = {
     textTransform: "capitalize",
   },
 
+  buttonContinuarAbsolute: {
+    position: "absolute",
+    right: 30,
+    backgroundColor: "#15212f",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(47, 47, 47, 0.4)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+  },
+
   labelTextComentarios: {
     fontSize: "2ch",
     fontFamily: "MontserratBold",
@@ -241,7 +249,5 @@ export const queries = {
     "@media (min-width: 1870px)": {
       height: "64vh",
     },
-  }
-
+  },
 };
-

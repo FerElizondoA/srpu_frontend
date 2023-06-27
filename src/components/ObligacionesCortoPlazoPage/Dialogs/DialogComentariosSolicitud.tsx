@@ -1,29 +1,27 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
 import {
-  Grid,
-  Typography,
-  Dialog,
-  Slide,
   Button,
+  Dialog,
+  Grid,
+  Paper,
+  Slide,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  Paper,
+  TableSortLabel,
+  Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { TransitionProps } from "@mui/material/transitions";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
-import { IComentario } from "../../../store/comentarios_apartado";
-import { TextFields } from "@mui/icons-material";
 
 interface IComentarios {
   Comentarios: string;
@@ -39,7 +37,6 @@ interface Head {
   isNumeric: boolean;
   label: string;
 }
-
 
 const heads: readonly Head[] = [
   {
@@ -57,10 +54,7 @@ const heads: readonly Head[] = [
     isNumeric: true,
     label: "Comentarios",
   },
-  
 ];
-
-
 
 // const comentarios: IComentario[] = useCortoPlazoStore(
 //   (state) => state.comentarios
@@ -84,9 +78,9 @@ export function VerComentariosSolicitud({
   handler: Function;
   openState: boolean;
 }) {
-  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>([]);
-
-  //const[comentarionuevo, setComentarioNuevo] =useState<>
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
+    []
+  );
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -101,11 +95,6 @@ export function VerComentariosSolicitud({
       getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud, openDialogCrear]);
-
-
-  useEffect(() => {
-    console.log("Esto son los comentarios", datosComentario)
-  }, [])
 
   return (
     <Dialog
@@ -148,19 +137,30 @@ export function VerComentariosSolicitud({
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
-                        {row.FechaCreacion.split("T")[0]}
+                          {row.FechaCreacion.split("T")[0]}
                         </StyledTableCell>
 
-                        <StyledTableCell component="th" scope="row">
-                       
+                        <StyledTableCell
+                          sx={{
+                            fontSize: "1.5ch",
+                          }}
+                        >
+                          {Object.entries(JSON.parse(row.Comentarios)).map(
+                            ([key, val], index) =>
+                              (val as string) === "" ? null : (
+                                <Typography>
+                                  <strong>{key}:</strong>
+                                  {val as string}
+                                </Typography>
+                              )
+                          ) || row.Comentarios}
                         </StyledTableCell>
                       </StyledTableRow>
                     );
                   })
-                  
                 ) : (
                   <StyledTableRow
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 }}}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <StyledTableCell align="center"></StyledTableCell>
 

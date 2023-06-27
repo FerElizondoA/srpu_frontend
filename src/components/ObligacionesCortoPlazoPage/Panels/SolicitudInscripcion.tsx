@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  Typography,
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -23,8 +24,6 @@ import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador"
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import Swal from "sweetalert2";
-import makeStyles from "@mui/material/styles/makeStyles";
-import { IComentario } from "../../../store/comentarios_apartado";
 
 interface Head {
   label: string;
@@ -40,8 +39,7 @@ const heads: readonly Head[] = [
 ];
 export let errores: string[] = [];
 
-
-export function SolicitudInscripcion(){
+export function SolicitudInscripcion() {
   const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
 
   // eslint-disable-next-line @typescript-eslint/no-array-constructor
@@ -76,13 +74,7 @@ export function SolicitudInscripcion(){
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
-
-
   // const [comentario, setComentario] = useState("");
-
-
-
-
 
   useEffect(() => {
     getReglas();
@@ -91,20 +83,17 @@ export function SolicitudInscripcion(){
 
   let err = 0;
 
-
   const Toast = Swal.mixin({
-    width:"690px",
+    width: "690px",
     confirmButtonColor: "#15212f",
     toast: true,
     showConfirmButton: true,
     confirmButtonText: "De acuerdo",
     didOpen: (toast) => {
-
       toast.addEventListener("mouseenter", Swal.stopTimer);
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
-
 
   const InfoFaltanteModificacion = () => {
     errores = [];
@@ -157,7 +146,7 @@ export function SolicitudInscripcion(){
     } else {
       Toast.fire({
         showConfirmButton: false,
-        buttonsStyling:true,
+        buttonsStyling: true,
         html: `
         <div>
           <h2  >Se han encontrado los siguientes errores:</h2>
@@ -177,14 +166,10 @@ export function SolicitudInscripcion(){
             "  >Cerrar</Button>
 
           </div>
-        </div>`
-
+        </div>`,
       });
     }
-
-  }
-
-
+  };
 
   const InfoFaltante = () => {
     errores = [];
@@ -359,7 +344,7 @@ export function SolicitudInscripcion(){
     } else {
       Toast.fire({
         showConfirmButton: false,
-        buttonsStyling:true,
+        buttonsStyling: true,
         html: `
         <div>
         <h2  >Se han encontrado los siguientes errores:</h2>
@@ -400,10 +385,8 @@ export function SolicitudInscripcion(){
 
   // const [botonComentarios, setBotonComentarios] = useState("hola")
 
-
-
   // const labelBotonComentarios = () => {
-   
+
   //   //POR HACER
   //       // let cont =comentarios.length||0;
   //       // comentarios?.map((elemento)=>{
@@ -411,7 +394,7 @@ export function SolicitudInscripcion(){
   //       // })
 
   //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
-      
+
   // }
 
   return (
@@ -425,7 +408,7 @@ export function SolicitudInscripcion(){
       >
         <Grid item md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
-            Servidor publico a quien va dirigido
+            Servidor público a quien va dirigido:
           </InputLabel>
           <TextField
             fullWidth
@@ -469,13 +452,7 @@ export function SolicitudInscripcion(){
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        container
-        mt={2}
-        mb={2}
-        justifyContent={"center"}
-      >
+      <Grid item container mt={2} mb={2} justifyContent={"center"}>
         <Grid item md={3} lg={3} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
@@ -503,24 +480,21 @@ export function SolicitudInscripcion(){
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        container
-        justifyContent={"center"}
-        alignItems={"flex-start"}
-
-      >
+      <Grid item container justifyContent={"center"} alignItems={"flex-start"}>
         <Grid item md={9} lg={9} xl={10}>
           <Divider sx={queries.medium_text}>
-            Declaratorias aplicables al financiamiento u obligación.
+            Declaratorias aplicables al financiamiento u obligación:
           </Divider>
         </Grid>
         <Grid item md={9} lg={9} xl={9} display="flex">
           <Grid>
-            <Grid item display={"flex"} width={"112%"} >
-              <TableContainer 
-               sx={queries.tablaSolicitudInscripcion}
-              >
+            <Typography sx={{ display: "grid", justifyContent: "center" }}>
+              Al seleccionar alguna de las siguientes secciones, estará
+              manifestando bajo protesta de decir verdad que cumple con lo
+              señalado en cada apartado
+            </Typography>
+            <Grid item display={"flex"} width={"112%"}>
+              <TableContainer sx={queries.tablaSolicitudInscripcion}>
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
@@ -551,9 +525,9 @@ export function SolicitudInscripcion(){
                                 v.target.checked
                                   ? setCheckObj({ ...checkObj, [index]: true })
                                   : setCheckObj({
-                                    ...checkObj,
-                                    [index]: false,
-                                  });
+                                      ...checkObj,
+                                      [index]: false,
+                                    });
 
                                 v.target.checked
                                   ? arrReglas.push(row.Descripcion)
@@ -574,61 +548,52 @@ export function SolicitudInscripcion(){
                 <Grid
                   container
                   ml={1}
-                  
                   sx={{
                     width: "15%",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "end",
-                   
                   }}
                 >
-                    <Button
-                      onClick={() => {
-                        setOpenDialogCancelar(!openDialogCancelar);
-                      }}
-                      sx={queries.buttonCancelar}
-                    >
-                      Cancelar
-                    </Button>
-                  
+                  <Button
+                    onClick={() => {
+                      setOpenDialogCancelar(!openDialogCancelar);
+                    }}
+                    sx={queries.buttonCancelar}
+                  >
+                    Cancelar
+                  </Button>
 
                   {localStorage.getItem("Rol") === "Verificador" ? (
-                    
-                      <Button
-                        sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {
-                          
-                          InfoFaltanteModificacion();
-                        }}
-                      >
-                        Solicitar Modificación
-                      </Button>
-                  
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        InfoFaltanteModificacion();
+                      }}
+                    >
+                      Solicitar Modificación
+                    </Button>
                   ) : null}
-              
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        setOpenDialogBorrador(!openDialogBorrador);
-                      }}
-                    >
-                      Guardar Borrador
-                    </Button>
-                  
 
-                  
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        InfoFaltante();
-                      }}
-                    >
-                      {localStorage.getItem("Rol") === "Verificador"
-                        ? "Finalizar"
-                        : "Enviar"}
-                    </Button>
-                  
+                  <Button
+                    sx={queries.buttonContinuarSolicitudInscripcion}
+                    onClick={() => {
+                      setOpenDialogBorrador(!openDialogBorrador);
+                    }}
+                  >
+                    Guardar Borrador
+                  </Button>
+
+                  <Button
+                    sx={queries.buttonContinuarSolicitudInscripcion}
+                    onClick={() => {
+                      InfoFaltante();
+                    }}
+                  >
+                    {localStorage.getItem("Rol") === "Verificador"
+                      ? "Finalizar"
+                      : "Enviar"}
+                  </Button>
 
                   <ConfirmacionBorradorSolicitud
                     handler={setOpenDialogBorrador}
@@ -642,19 +607,17 @@ export function SolicitudInscripcion(){
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}
                   />
-                  {openDialogModificacion && <DialogSolicitarModificacion
-                    handler={setOpenDialogModificacion}
-                    openState={openDialogModificacion}
-                    
-                  />}
+                  {openDialogModificacion && (
+                    <DialogSolicitarModificacion
+                      handler={setOpenDialogModificacion}
+                      openState={openDialogModificacion}
+                    />
+                  )}
                 </Grid>
               ) : null}
             </Grid>
-
           </Grid>
         </Grid>
-
-
       </Grid>
     </Grid>
   );

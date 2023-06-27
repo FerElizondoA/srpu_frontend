@@ -42,10 +42,12 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     (state) => state.informacionGeneral.monto
   );
 
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const [info, setInfo] = useState(
-    "En este apartado se guardara un borrador de la informacion quepodras visualizar en un futuro"
+    "La solicitud se guardará como borrador y estará disponible para modificar"
   );
 
   const notnull = () => {
@@ -116,7 +118,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Captura"
-                  : "Verificacion"
+                  : "Verificacion",
+                JSON.stringify(comentario)
               )
                 .then(() => {
                   Swal.fire({
@@ -139,7 +142,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Captura"
-                  : "Verificacion"
+                  : "Verificacion",
+                JSON.stringify(comentario)
               )
                 .then(() => {
                   Swal.fire({
@@ -171,7 +175,73 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 : "auto",
           }}
         >
-          Confirmar
+          Guardar y cerrar
+        </Button>
+        <Button
+          onClick={() => {
+            props.handler(false);
+            if (idSolicitud !== "") {
+              modificaSolicitud(
+                editCreadoPor,
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("Rol") === "Capturador"
+                  ? "Captura"
+                  : "Verificacion",
+                JSON.stringify(comentario)
+              )
+                .then(() => {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se guardó con éxito",
+                  });
+                })
+                .catch(() => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Mensaje",
+                    text: "Ocurrió un error, inténtelo de nuevo",
+                  });
+                });
+            } else {
+              crearSolicitud(
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("IdUsuario"),
+                localStorage.getItem("Rol") === "Capturador"
+                  ? "Captura"
+                  : "Verificacion",
+                JSON.stringify(comentario)
+              )
+                .then(() => {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se guardó con éxito",
+                  });
+                })
+                .catch(() => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Mensaje",
+                    text: "Ocurrió un error, inténtelo de nuevo",
+                  });
+                });
+            }
+          }}
+          sx={{
+            ...queries.buttonContinuar,
+            pointerEvents:
+              institucion === "" ||
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
+                ? "none"
+                : "auto",
+          }}
+        >
+          Guardar y continuar
         </Button>
       </DialogActions>
     </Dialog>

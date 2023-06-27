@@ -11,14 +11,24 @@ import {
   MenuItem,
   TableRow,
   Divider,
+  Tooltip,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import CommentIcon from "@mui/icons-material/Comment";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { useState } from "react";
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { queries } from "../../../queries";
 
 interface Head {
   label: string;
@@ -36,10 +46,16 @@ const heads: readonly Head[] = [
     label: "Borrar",
   },
   {
+    label: "Nombre del archivo",
+  },
+  {
     label: "Documento/Archivo",
   },
   {
     label: "Tipo de Documento",
+  },
+  {
+    label: "Comentarios",
   },
 ];
 
@@ -100,6 +116,15 @@ export function Documentacion() {
     }
   };
 
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+  const [openComentarioApartado, setOpenComentarioApartado] = useState({
+    open: false,
+    apartado: "",
+    tab: "Tab",
+  });
+
+  const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
+
   return (
     <Grid
       item
@@ -155,7 +180,7 @@ export function Documentacion() {
                       ) : (
                         <IconButton
                           onClick={() => {
-                            quitDocument(index);
+                            setOpenEliminar({ open: true, index: index });
                           }}
                         >
                           <DeleteIcon />
@@ -163,19 +188,45 @@ export function Documentacion() {
                       )}
                     </StyledTableCell>
 
+                    <StyledTableCell scope="row">
+                      <TextField
+                        size="small"
+                        multiline
+                        value={val.nombreArchivo}
+                        onChange={(v) => {
+                          let auxArrayArchivos = [...tablaDocumentos];
+                          auxArrayArchivos[index].nombreArchivo =
+                            v.target.value
+                              .replaceAll(".pdf", "")
+                              .replaceAll("'", "")
+                              .replaceAll('"', "")
+                              .replaceAll("\n", "") + ".pdf";
+                          setTablaDocumentos(auxArrayArchivos);
+                        }}
+                      ></TextField>
+                    </StyledTableCell>
+
                     <StyledTableCell sx={{ position: "relative" }}>
                       <Typography
                         position={"absolute"}
                         sx={{
                           display: "flex",
-                          fontFamily: "MontserratBold",
+                          fontFamily:
+                            val.archivo?.name !==
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              ? "MontserratBold"
+                              : "MontserratMedium",
                           textAlign: "center",
                           justifyContent: "center",
                           alignItems: "center",
                           width: "90%",
                           height: "60%",
                           fontSize: "80%",
-                          border: "2px dotted black",
+                          border:
+                            val.archivo?.name !==
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              ? "2px dotted #af8c55"
+                              : "2px dotted black",
                         }}
                       >
                         {val.archivo?.name ||
@@ -197,35 +248,63 @@ export function Documentacion() {
                       />
                     </StyledTableCell>
                     <StyledTableCell>
-                      <FormControl required variant="standard" fullWidth>
-                        <Select
-                          value={tablaDocumentos[index]?.tipoArchivo}
-                          onChange={(v) => {
-                            asignarTpoDoc(
-                              index,
-                              v.target.value,
-                              tiposDocumentos.filter(
-                                (td: any) => td.Id === v.target.value
-                              )[0].Descripcion
-                            );
-                          }}
-                          sx={{ display: "flex", pt: 1 }}
-                          inputProps={{
-                            readOnly:
-                              index <
-                              catalogoTiposDocumentosObligatorios.length,
-                          }}
-                          disabled={
-                            index < catalogoTiposDocumentosObligatorios.length
+                      {index < catalogoTiposDocumentosObligatorios.length ? (
+                        <Typography>
+                          {tablaDocumentos[index]?.descripcionTipo}
+                        </Typography>
+                      ) : (
+                        <FormControl required variant="standard" fullWidth>
+                          <Select
+                            value={tablaDocumentos[index]?.tipoArchivo}
+                            onChange={(v) => {
+                              asignarTpoDoc(
+                                index,
+                                v.target.value,
+                                tiposDocumentos.filter(
+                                  (td: any) => td.Id === v.target.value
+                                )[0].Descripcion
+                              );
+                            }}
+                            sx={{ display: "flex", pt: 1 }}
+                            inputProps={{
+                              readOnly:
+                                index <
+                                catalogoTiposDocumentosObligatorios.length,
+                            }}
+                            disabled={
+                              index < catalogoTiposDocumentosObligatorios.length
+                            }
+                          >
+                            {tiposDocumentos.map((tipo) => (
+                              <MenuItem key={tipo.Id} value={tipo.Id}>
+                                {tipo.Descripcion}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Tooltip title="Añadir comentario a este apartado">
+                        <IconButton
+                          color={
+                            comentario[val.descripcionTipo] &&
+                            comentario[val.descripcionTipo] !== ""
+                              ? "success"
+                              : "primary"
                           }
+                          size="small"
+                          onClick={() => {
+                            setOpenComentarioApartado({
+                              open: true,
+                              apartado: val.descripcionTipo,
+                              tab: "TabDocumentacion",
+                            });
+                          }}
                         >
-                          {tiposDocumentos.map((tipo) => (
-                            <MenuItem key={tipo.Id} value={tipo.Id}>
-                              {tipo.Descripcion}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                          <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                        </IconButton>
+                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -278,6 +357,37 @@ export function Documentacion() {
           }}
         ></input>
       </Grid>
+      <ComentarioApartado
+        setOpen={setOpenComentarioApartado}
+        openState={openComentarioApartado}
+      />
+      <Dialog
+        open={openEliminar.open}
+        onClose={() => setOpenEliminar({ ...openEliminar, open: false })}
+      >
+        <DialogContent>
+          ¿Eliminar este archivo de la documentación?
+        </DialogContent>
+        <DialogActions>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenEliminar({ ...openEliminar, open: false });
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              quitDocument(openEliminar.index);
+              setOpenEliminar({ ...openEliminar, open: false });
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

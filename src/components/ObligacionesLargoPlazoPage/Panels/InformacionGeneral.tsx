@@ -204,7 +204,6 @@ export function InformacionGeneral() {
       });
     } else {
     }
-    //console.log(catalogoObligadoSolidarioAval[4].Descripcion)
   }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
@@ -236,13 +235,12 @@ export function InformacionGeneral() {
   }, [contratacion, vencimiento]);
 
   return (
-    
     <Grid
       item
       container
       sx={{
-        display: "flex", 
-        height: "90vh", 
+        display: "flex",
+        height: "90vh",
         flexDirection: "column",
         justifyContent: "space-evenly",
         overflow: "auto",
@@ -255,10 +253,9 @@ export function InformacionGeneral() {
           outline: "1px solid slategrey",
           borderRadius: 1,
         },
-        
       }}
     >
-      <Grid item display="flex" justifyContent={"space-evenly"} sx={{}} >
+      <Grid item display="flex" justifyContent={"space-evenly"} sx={{}}>
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
@@ -443,23 +440,25 @@ export function InformacionGeneral() {
 
       <Grid item display={"flex"} justifyContent={"space-around"}>
         <Grid item lg={4.5}>
-          <InputLabel sx={queries.medium_text}>Periodo de Administración</InputLabel>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de Administración
+          </InputLabel>
           <Select
             fullWidth
             variant="standard"
             value={denominacion || ""}
             disabled
-          // onChange={(v) =>
-          //   // changeInformacionGeneral({
-          //   //   fechaContratacion: contratacion,
-          //   //   fechaVencimiento: vencimiento,
-          //   //   plazo: plazo,
-          //   //   destino: destino,
-          //   //   monto: monto,
-          //   //   denominacion: v.target.value,
-          //   //   institucionFinanciera: institucionFinanciera,
-          //   // })
-          // }
+            // onChange={(v) =>
+            //   // changeInformacionGeneral({
+            //   //   fechaContratacion: contratacion,
+            //   //   fechaVencimiento: vencimiento,
+            //   //   plazo: plazo,
+            //   //   destino: destino,
+            //   //   monto: monto,
+            //   //   denominacion: v.target.value,
+            //   //   institucionFinanciera: institucionFinanciera,
+            //   // })
+            // }
           >
             {PeriodoAdministracion.map((item, index) => (
               <MenuItem key={index} value={item}>
@@ -470,23 +469,25 @@ export function InformacionGeneral() {
         </Grid>
 
         <Grid item lg={4.5}>
-          <InputLabel sx={queries.medium_text}>Periodo de Financiamiento</InputLabel>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de Financiamiento
+          </InputLabel>
           <Select
             fullWidth
             variant="standard"
             value={denominacion || ""}
             disabled
-          // onChange={(v) =>
-          //   // changeInformacionGeneral({
-          //   //   fechaContratacion: contratacion,
-          //   //   fechaVencimiento: vencimiento,
-          //   //   plazo: plazo,
-          //   //   destino: destino,
-          //   //   monto: monto,
-          //   //   denominacion: v.target.value,
-          //   //   institucionFinanciera: institucionFinanciera,
-          //   // })
-          // }
+            // onChange={(v) =>
+            //   // changeInformacionGeneral({
+            //   //   fechaContratacion: contratacion,
+            //   //   fechaVencimiento: vencimiento,
+            //   //   plazo: plazo,
+            //   //   destino: destino,
+            //   //   monto: monto,
+            //   //   denominacion: v.target.value,
+            //   //   institucionFinanciera: institucionFinanciera,
+            //   // })
+            // }
           >
             {PeriodoAdministracion.map((item, index) => (
               <MenuItem key={index} value={item}>
@@ -767,7 +768,7 @@ export function InformacionGeneral() {
 
               <TableBody>
                 {generalObligadoSolidario.Descripcion === "No aplica" &&
-                  tablaObligados.length === 0 ? (
+                tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />

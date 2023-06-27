@@ -391,17 +391,14 @@ export function LateralMenu() {
         >
           <ChangePasswordModal />
           <Grid item mt={0.5}>
-          <Tooltip title= "Menu Lateral">
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={() => setIsDrawerOpen(true)}
-            >
-              
-
-              
-              <MenuIcon />
-            </IconButton>
+            <Tooltip title="Menu Lateral">
+              <IconButton
+                size="large"
+                color="inherit"
+                onClick={() => setIsDrawerOpen(true)}
+              >
+                <MenuIcon />
+              </IconButton>
             </Tooltip>
           </Grid>
           <Grid item mt={0.5}>
@@ -543,14 +540,14 @@ export function LateralMenu() {
                           onClick={() => {
                             reset();
                             navigate("../ObligacionesCortoPlazo");
-                            window.location.reload();                           // REFRESH
+                            window.location.reload(); // REFRESH
                           }}
                         >
                           <ListItemIcon>
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
-                            Crédito simple corto plazo
+                            Crédito simple a corto plazo.
                           </Typography>
                         </ListItemButton>
 
@@ -559,7 +556,7 @@ export function LateralMenu() {
                           onClick={() => {
                             reset();
                             navigate("../ObligacionesLargoPlazo");
-                            window.location.reload();                           // REFRESH
+                            window.location.reload(); // REFRESH
                           }}
                         >
                           <ListItemIcon>

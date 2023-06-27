@@ -3,7 +3,6 @@ import axios from "axios";
 import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { createNotification } from "../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
@@ -36,7 +35,8 @@ export interface SolicitudInscripcionSlice {
   modificaSolicitud: (
     idCreador: string,
     idEditor: string,
-    estatus: string
+    estatus: string,
+    comentario: string
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -58,7 +58,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
-    cargo: "Directora de Deuda Pública",
+    cargo: "Directora de Deuda Pública y Planeación Financiera",
   },
 
   reglasAplicables: [],
@@ -148,12 +148,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {
         state.addComentario(data.data.Id, comentario);
         state.saveFiles(data.data.Id, true);
+        state.cleanComentario();
       });
   },
   modificaSolicitud: async (
     idCreador: string,
     idEditor: string,
-    estatus: string
+    estatus: string,
+    comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
 
@@ -205,7 +207,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        state.changeIdSolicitud(data.data.Id);
+        state.addComentario(data.data.Id, comentario);
         state.saveFiles(data.data.Id, true);
+        state.cleanComentario();
       });
   },
   borrarSolicitud: async (Id: string) => {
@@ -247,7 +252,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
-  addComentario: async (Id: string, comentario: string) => {
+  addComentario: async (Id: string, comentario: any) => {
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
@@ -429,10 +434,9 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
-          'Access-Control-Allow-Origin': '*',
+          "Access-Control-Allow-Origin": "*",
         },
         responseType: "arraybuffer",
-        
       }
     )
     .then((response) => {

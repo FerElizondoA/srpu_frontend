@@ -62,16 +62,14 @@ export function Encabezado() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-
-  }, [])
-
+  useEffect(() => {}, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
-  const selectedValue = usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)?.id || "";
+  const selectedValue =
+    usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)
+      ?.id || "";
   // Verificar si el valor seleccionado existe en la lista de opciones
   const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
-
 
   return (
     <Grid container>
@@ -88,7 +86,7 @@ export function Encabezado() {
           <TextField
             fullWidth
             value={tipoDocumento}
-            variant='standard'
+            variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -105,7 +103,9 @@ export function Encabezado() {
         </Grid>
 
         <Grid item xs={3.5} md={3.5} lg={3}>
-          <InputLabel sx={queries.medium_text}>Solicitante Autorizado</InputLabel>
+          <InputLabel sx={queries.medium_text}>
+            Solicitante Autorizado
+          </InputLabel>
           <Select
             sx={queries.medium_text}
             fullWidth
@@ -222,7 +222,19 @@ export function Encabezado() {
           >
             <DatePicker
               value={new Date(fechaContratacion)}
-              // onChange={(date) => changeFechaContratacion(date?.toString())}
+              onChange={(date) => {
+                changeEncabezado({
+                  tipoDocumento: tipoDocumento,
+                  solicitanteAutorizado: {
+                    Solicitante: solicitanteAutorizado.Solicitante || "",
+                    Cargo: solicitanteAutorizado?.Cargo || "",
+                    Nombre: solicitanteAutorizado.Nombre,
+                  },
+                  tipoEntePublico: tipoEntePublico,
+                  organismo: organismo,
+                  fechaContratacion: date,
+                });
+              }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{

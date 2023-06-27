@@ -124,7 +124,7 @@ export const TimerCounter = () => {
           (Math.floor((rest / 1000) % 60) < 10
             ? "0" + Math.floor((rest / 1000) % 60).toString()
             : Math.floor((rest / 1000) % 60))
-        : "00:00"}
+        : "44:59"}
     </Box>
   );
 };

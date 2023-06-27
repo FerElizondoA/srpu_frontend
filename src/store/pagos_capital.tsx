@@ -1,9 +1,7 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
-import { IComisiones, TasaInteres } from "./condicion_financiera";
+import { StateCreator } from "zustand";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-
-
+import { TasaInteres } from "./condicion_financiera";
 
 export interface PagosCapitalSlice {
   disposicion: { fechaDisposicion: string; importe: number };
@@ -37,7 +35,6 @@ export interface PagosCapitalSlice {
     periodicidadDePago: { Id: string; Descripcion: string },
     numeroDePago: number
   ) => void;
-  
 
   changeTasaInteres: (
     tasaFija: boolean,
@@ -111,7 +108,6 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         numeroDePago: numeroDePago,
       },
     })),
-    
 
   changeTasaInteres: (tasaInteres: any) =>
     set(() => ({
