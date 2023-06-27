@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Divider,
   TextField,
   InputLabel,
   Autocomplete,
@@ -58,6 +59,13 @@ const theme = createTheme({
   },
 });
 
+export interface IFileInfoGeneral {
+  archivo: File;
+  nombreArchivo: string;
+  tipoArchivo: string;
+  descripcionTipo: string;
+}
+
 const heads: Head[] = [
   {
     label: "Selección",
@@ -70,6 +78,42 @@ const heads: Head[] = [
   },
   {
     label: "Ente público obligado",
+  },
+];
+
+const headsGC: Head[] = [
+  {
+    label: "Destino",
+  },
+  {
+    label: "Detalle de la Inversión",
+  },
+  {
+    label: "Inversión Pública Productiva",
+  },
+  {
+    label: "Periodo de Administración",
+  },
+  {
+    label: "Gastos Adicionales",
+  },
+  {
+    label: "Clave de Inscripción del Financiamiento",
+  },
+  {
+    label: "Descripcion",
+  },
+  {
+    label: "Monto",
+  },
+  {
+    label: "Periodo de Financiamiento (Meses)",
+  },
+  {
+    label: "Saldo Vigente",
+  },
+  {
+    label: "Monto Gastos Adicionales",
   },
 ];
 
@@ -135,31 +179,92 @@ export function InformacionGeneral() {
 
   // OBLIGADO SOLIDARIO AVAL
   const generalObligadoSolidario: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useLargoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.obligadoSolidario
     );
   const generalTipoEntePublico: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useLargoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
     );
   const generalEntePublico: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useLargoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.entePublicoObligado
     );
 
   // TABLA OBLIGADO SOLIDARIO AVAL
-  const tablaObligados: any = useCortoPlazoStore(
+  const tablaObligados: any = useLargoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
   );
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
+  const addObligadoSolidarioAval: Function = useLargoPlazoStore(
     (state) => state.addObligadoSolidarioAval
   );
-  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(
+  const changeObligadoSolidarioAval: Function = useLargoPlazoStore(
     (state) => state.changeObligadoSolidarioAval
   );
 
-  const removeObligadoSolidarioAval: Function = useCortoPlazoStore(
+  const removeObligadoSolidarioAval: Function = useLargoPlazoStore(
     (state) => state.removeObligadoSolidarioAval
+  );
+
+  // GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACION
+
+  const generalGCDestino: { Id: string; Descripcion: string } =
+    useLargoPlazoStore((state) => state.generalGastosCostos.destino);
+
+  const generalGCDetalleInversion: { Id: string; Descripcion: string } =
+    useLargoPlazoStore((state) => state.generalGastosCostos.detalleInversion);
+
+  const generalGCperiodoAdministracion: string = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.periodoAdministracion
+  );
+
+  const generalGCGastosAdicionales: number = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.gastosAdicionales
+  );
+
+  const generalGCClaveInscripcionFinanciamiento: string = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.claveInscripcionFinanciamiento
+  );
+
+  const generalGCDescripcion: string = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.descripcion
+  );
+
+  const generalGCMonto: number = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.monto
+  );
+
+  const generalGCPeriodoFinanciamiento: string = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.periodoFinanciamiento
+  );
+
+  const generalGCSaldoVigente: number = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.saldoVigente
+  );
+
+  const generalGCMontoGastosAdicionales: number = useLargoPlazoStore(
+    (state) => state.generalGastosCostos.montoGastosAdicionales
+  );
+
+  //TABLA GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACION
+  const tablaGastosCostos: any = useLargoPlazoStore(
+    (state) => state.tablaGastosCostos
+  );
+
+  const addGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.addGeneralGastosCostos
+  );
+
+  const changeGeneralGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.changeGeneralGastosCostos
+  );
+
+  const removeGeneralGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.removeGeneralGastosCostos
+  );
+
+  const quitDocument: Function = useLargoPlazoStore(
+    (state) => state.removeDocumento
   );
 
   const addRows = () => {
@@ -173,14 +278,13 @@ export function InformacionGeneral() {
 
   const Denominaciones = ["Pesos", "UDIS"];
 
-  const PeriodoAdministracion = ["1", "2", "3"];
-
   useEffect(() => {
     getInstituciones();
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
   }, []);
+  const state = useLargoPlazoStore.getState();
 
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
   useEffect(() => {
@@ -212,6 +316,24 @@ export function InformacionGeneral() {
 
   const [plazoD, setPlazo] = useState(0);
 
+  const [periodoDeAdministracion, setPeriodoAdministracion] = useState(
+    generalGCperiodoAdministracion
+  );
+  const [gastosAdicionalesGC, setGastosAdicionalesGC] = useState(
+    generalGCGastosAdicionales
+  );
+  const [claveInscripcionFinanciamiento, setClaveInscripcionFinanciamiento] =
+    useState(generalGCClaveInscripcionFinanciamiento);
+  const [descripcionGC, setDescripcionGC] = useState(generalGCDescripcion);
+  const [montoGC, setMontoGC] = useState(generalGCMonto);
+  const [periodoFinanciamientoGC, setPeriodoFinanciamiento] = useState(
+    generalGCPeriodoFinanciamiento
+  );
+  const [saldoVIgenteGC] = useState(generalGCSaldoVigente);
+  const [montoGastosAdicionalesGC, setMontoGastosAdicionalesGC] = useState(
+    generalGCMontoGastosAdicionales
+  );
+
   useEffect(() => {
     const res =
       differenceInDays(
@@ -231,6 +353,19 @@ export function InformacionGeneral() {
       institucionFinanciera: institucionFinanciera,
     });
 
+    changeGeneralGastosCostos({
+      destino: generalGCDestino,
+      detalleInversion: generalGCDetalleInversion,
+      periodoAdministracion: generalGCperiodoAdministracion, // NO SABEMOS AUN
+      gastosAdicionales: generalGCGastosAdicionales,
+      claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento, // NO SABEMOS AUN
+      descripcion: generalGCDescripcion,
+      monto: generalGCMonto,
+      periodoFinanciamiento: generalGCPeriodoFinanciamiento, //AUN NO SABEMOS
+      saldoVigente: generalGCSaldoVigente, //AUN NO SABEMOS
+      montoGastosAdicionales: generalGCMontoGastosAdicionales,
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
@@ -240,7 +375,7 @@ export function InformacionGeneral() {
       container
       sx={{
         display: "flex",
-        height: "90vh",
+        height: "200vh",
         flexDirection: "column",
         justifyContent: "space-evenly",
         overflow: "auto",
@@ -438,63 +573,24 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"space-around"}>
-        <Grid item lg={4.5}>
-          <InputLabel sx={queries.medium_text}>
-            Periodo de Administración
-          </InputLabel>
-          <Select
-            fullWidth
-            variant="standard"
-            value={denominacion || ""}
-            disabled
-            // onChange={(v) =>
-            //   // changeInformacionGeneral({
-            //   //   fechaContratacion: contratacion,
-            //   //   fechaVencimiento: vencimiento,
-            //   //   plazo: plazo,
-            //   //   destino: destino,
-            //   //   monto: monto,
-            //   //   denominacion: v.target.value,
-            //   //   institucionFinanciera: institucionFinanciera,
-            //   // })
-            // }
-          >
-            {PeriodoAdministracion.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-
-        <Grid item lg={4.5}>
-          <InputLabel sx={queries.medium_text}>
-            Periodo de Financiamiento
-          </InputLabel>
-          <Select
-            fullWidth
-            variant="standard"
-            value={denominacion || ""}
-            disabled
-            // onChange={(v) =>
-            //   // changeInformacionGeneral({
-            //   //   fechaContratacion: contratacion,
-            //   //   fechaVencimiento: vencimiento,
-            //   //   plazo: plazo,
-            //   //   destino: destino,
-            //   //   monto: monto,
-            //   //   denominacion: v.target.value,
-            //   //   institucionFinanciera: institucionFinanciera,
-            //   // })
-            // }
-          >
-            {PeriodoAdministracion.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
+      <Grid item display={"flex"} width={"100%"} justifyContent={"center"}>
+        <Grid width="87.5%" display={"flex"} justifyContent={"space-between"}>
+          <Grid item lg={4.2}>
+            <TextField
+              disabled
+              sx={{ width: "80%" }}
+              label="Periodo de administración"
+              variant="standard"
+            />
+          </Grid>
+          <Grid item lg={3.4}>
+            <TextField
+              disabled
+              sx={{ width: "100%" }}
+              label="Periodo de financiamiento"
+              variant="standard"
+            />
+          </Grid>
         </Grid>
       </Grid>
 
@@ -738,7 +834,7 @@ export function InformacionGeneral() {
       </Grid>
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
-      <Grid height={"40%"} display={"flex"} justifyContent={"space-evenly"}>
+      <Grid height={"15%"} display={"flex"} justifyContent={"space-evenly"}>
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer
             sx={{
@@ -807,6 +903,403 @@ export function InformacionGeneral() {
                   })
                 )}
               </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>Destino</InputLabel>
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogoDestinos}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: generalGCDestino.Id || "",
+              Descripcion: generalGCDestino.Descripcion || "",
+            }}
+            onChange={(event, text) => {
+              changeGeneralGastosCostos({
+                destino: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                detalleInversion: generalGCDetalleInversion,
+                periodoAdministracion: periodoDeAdministracion,
+                gastosAdicionales: gastosAdicionalesGC,
+                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
+                descripcion: descripcionGC,
+                monto: montoGC,
+                periodoFinanciamiento: periodoFinanciamientoGC,
+                saldoVigente: saldoVIgenteGC,
+                montoGastosAdicionales: montoGastosAdicionalesGC,
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
+          />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Detalle de la Inversión
+          </InputLabel>
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogoDestinos}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={{
+              Id: generalGCDetalleInversion.Id || "",
+              Descripcion: generalGCDetalleInversion.Descripcion || "",
+            }}
+            onChange={(event, text) => {
+              changeGeneralGastosCostos({
+                destino: generalGCDestino,
+                detalleInversion: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                periodoAdministracion: periodoDeAdministracion,
+                gastosAdicionales: gastosAdicionalesGC,
+                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
+                descripcion: descripcionGC,
+                monto: montoGC,
+                periodoFinanciamiento: periodoFinanciamientoGC,
+                saldoVigente: saldoVIgenteGC,
+                montoGastosAdicionales: montoGastosAdicionalesGC,
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
+          />
+        </Grid>
+        {/* Falta documento */}
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Inversión Pública Productiva
+          </InputLabel>
+          <TextField
+            variant="standard"
+            fullWidth
+            placeholder="Agregar un archivo"
+            onChange={(v) => {}}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de Administración
+          </InputLabel>
+          <TextField fullWidth variant="standard" />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
+          <TextField
+            fullWidth
+            placeholder="0"
+            value={
+              generalGCGastosAdicionales <= 0
+                ? ""
+                : generalGCGastosAdicionales.toString()
+            }
+            onChange={(v) => {
+              if (validator.isNumeric(v.target.value)) {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: generalGCperiodoAdministracion,
+                  gastosAdicionales: v.target.value,
+                  claveInscripcionFinanciamiento:
+                    generalGCClaveInscripcionFinanciamiento,
+                  descripcion: generalGCDescripcion,
+                  monto: generalGCMonto,
+                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  saldoVigente: generalGCSaldoVigente,
+                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
+                });
+              } else if (v.target.value === "") {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: periodoDeAdministracion,
+                  gastosAdicionales: 0,
+                  claveInscripcionFinanciamiento:
+                    claveInscripcionFinanciamiento,
+                  descripcion: descripcionGC,
+                  monto: generalGCMonto,
+                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  saldoVigente: saldoVIgenteGC,
+                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
+                });
+              }
+            }}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+              startAdornment: <AttachMoneyIcon />,
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Clave de Inscripción del Financiamiento
+          </InputLabel>
+          <TextField disabled fullWidth variant="standard" />
+        </Grid>
+      </Grid>
+
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>Descripcion</InputLabel>
+          <TextField
+            value={generalGCDescripcion}
+            onChange={(v) =>
+              changeGeneralGastosCostos({
+                destino: generalGCDestino,
+                detalleInversion: generalGCDetalleInversion,
+                periodoAdministracion: periodoDeAdministracion,
+                gastosAdicionales: generalGCGastosAdicionales,
+                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
+                descripcion: v.target.value,
+                monto: generalGCMonto,
+                periodoFinanciamiento: periodoFinanciamientoGC,
+                saldoVigente: saldoVIgenteGC,
+                montoGastosAdicionales: generalGCMontoGastosAdicionales,
+              })
+            }
+            fullWidth
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>Monto</InputLabel>
+          <TextField
+            fullWidth
+            placeholder="0"
+            value={generalGCMonto <= 0 ? "" : generalGCMonto.toString()}
+            onChange={(v) => {
+              if (validator.isNumeric(v.target.value)) {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: generalGCperiodoAdministracion,
+                  gastosAdicionales: generalGCGastosAdicionales,
+                  claveInscripcionFinanciamiento:
+                    generalGCClaveInscripcionFinanciamiento,
+                  descripcion: generalGCDescripcion,
+                  monto: v.target.value,
+                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  saldoVigente: generalGCSaldoVigente,
+                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
+                });
+              } else if (v.target.value === "") {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: periodoDeAdministracion,
+                  gastosAdicionales: gastosAdicionalesGC,
+                  claveInscripcionFinanciamiento:
+                    claveInscripcionFinanciamiento,
+                  descripcion: descripcionGC,
+                  monto: 0,
+                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  saldoVigente: saldoVIgenteGC,
+                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
+                });
+              }
+            }}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+              startAdornment: <AttachMoneyIcon />,
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de Financiamiento (Meses)
+          </InputLabel>
+          <TextField disabled fullWidth variant="standard" />
+        </Grid>
+      </Grid>
+
+      <Grid item display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item lg={3}>
+          <InputLabel disabled sx={queries.medium_text}>
+            Saldo Vigente
+          </InputLabel>
+          <TextField fullWidth disabled variant="standard" />
+        </Grid>
+
+        <Grid item lg={3}>
+          <InputLabel sx={queries.medium_text}>
+            Monto Gastos Adicionales
+          </InputLabel>
+          <TextField
+            fullWidth
+            placeholder="0"
+            value={
+              generalGCMontoGastosAdicionales <= 0
+                ? ""
+                : generalGCMontoGastosAdicionales.toString()
+            }
+            onChange={(v) => {
+              if (validator.isNumeric(v.target.value)) {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: generalGCperiodoAdministracion,
+                  gastosAdicionales: generalGCGastosAdicionales,
+                  claveInscripcionFinanciamiento:
+                    generalGCClaveInscripcionFinanciamiento,
+                  descripcion: generalGCDescripcion,
+                  monto: generalGCMonto,
+                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  saldoVigente: generalGCSaldoVigente,
+                  montoGastosAdicionales: v.target.value,
+                });
+              } else if (v.target.value === "") {
+                changeGeneralGastosCostos({
+                  destino: generalGCDestino,
+                  detalleInversion: generalGCDetalleInversion,
+                  periodoAdministracion: periodoDeAdministracion,
+                  gastosAdicionales: gastosAdicionalesGC,
+                  claveInscripcionFinanciamiento:
+                    claveInscripcionFinanciamiento,
+                  descripcion: descripcionGC,
+                  monto: generalGCMonto,
+                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  saldoVigente: saldoVIgenteGC,
+                  montoGastosAdicionales: 0,
+                });
+              }
+            }}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+              startAdornment: <AttachMoneyIcon />,
+            }}
+            variant="standard"
+          />
+        </Grid>
+      </Grid>
+
+      <Grid height={"20%"} display={"flex"} justifyContent={"space-evenly"}>
+        <Paper sx={{ width: "88%", overflow: "clip" }}>
+          <TableContainer
+            sx={{
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {headsGC.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      {head.label}
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                  </StyledTableRow>
+                </TableBody>
+              </TableHead>
             </Table>
           </TableContainer>
         </Paper>

@@ -24,14 +24,15 @@ import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useCortoPlazoStore } from "../../../store/main";
-
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
-  CondicionFinanciera,
+  CondicionFinancieraLP,
   IComisiones,
   TasaInteres,
-} from "../../../store/condicion_financiera";
+} from "../../../store/CreditoLargoPlazo/condicion_financiera"
+//"../../../store/condicion_financiera";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
 
@@ -76,71 +77,71 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   // DISPOSICION
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
+  const disposicionFechaContratacion: string = useLargoPlazoStore(
     (state) => state.disposicion.fechaDisposicion
   );
-  const disposicionImporte: number = useCortoPlazoStore(
+  const disposicionImporte: number = useLargoPlazoStore(
     (state) => state.disposicion.importe
   );
 
   // PAGOS DE CAPITAL
-  const capitalFechaPrimerPago: string = useCortoPlazoStore(
+  const capitalFechaPrimerPago: string = useLargoPlazoStore(
     (state) => state.pagosDeCapital.fechaPrimerPago
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
-    useCortoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
-  const capitalNumeroPago: number = useCortoPlazoStore(
+  useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
+  const capitalNumeroPago: number = useLargoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
 
   // TASA DE INTERES
-  const tablaTasaInteres: TasaInteres[] = useCortoPlazoStore(
+  const tablaTasaInteres: TasaInteres[] = useLargoPlazoStore(
     (state) => state.tablaTasaInteres
   );
 
   // TASA EFECTIVA
   const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
-    useCortoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
+  useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
     
-  const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
+  const tasaEfectivaTasaEfectiva: string = useLargoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
-  const changeTasaEfectiva: Function = useCortoPlazoStore(
+  const changeTasaEfectiva: Function = useLargoPlazoStore(
     (state) => state.changeTasaEfectiva
   );
 
   // COMISIONES
-  const tablaComisiones: IComisiones[] = useCortoPlazoStore(
+  const tablaComisiones: IComisiones[] = useLargoPlazoStore(
     (state) => state.tablaComisiones
   );
 
   // CLEAN
-  const changeCapital: Function = useCortoPlazoStore(
+  const changeCapital: Function = useLargoPlazoStore(
     (state) => state.changeCapital
   );
-  const changeDisposicion: Function = useCortoPlazoStore(
+  const changeDisposicion: Function = useLargoPlazoStore(
     (state) => state.changeDisposicion
   );
-  const cleanTasaInteres: Function = useCortoPlazoStore(
+  const cleanTasaInteres: Function = useLargoPlazoStore(
     (state) => state.cleanTasaInteres
   );
-  const cleanComision: Function = useCortoPlazoStore(
+  const cleanComision: Function = useLargoPlazoStore(
     (state) => state.cleanComision
   );
 
   // CONDICION FINANCIERA
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
+  const addCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const upDataCondicionFinanciera: Function = useCortoPlazoStore(
+  const upDataCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.upDataCondicionFinanciera
   );
-  const changeTasaInteres: Function = useCortoPlazoStore(
+  const changeTasaInteres: Function = useLargoPlazoStore(
     (state) => state.changeTasaInteres
   );
 
   const addRow = () => {
-    const CF: CondicionFinanciera = {
+    const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: {
         fechaDisposicion: disposicionFechaContratacion,
@@ -160,7 +161,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   const updateRow = (indexA: number) => {
-    const CF: CondicionFinanciera = {
+    const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: {
         fechaDisposicion: disposicionFechaContratacion,

@@ -79,7 +79,7 @@ export const createInformacionGeneralSlice: StateCreator<
     tipoEntePublicoObligado: { Id: "", Descripcion: ""  }, // Descripcion: "No aplica"
     entePublicoObligado: { Id: "", Descripcion: ""  },  // Descripcion: "No aplica"
   },
-
+  
   catalogoInstituciones: [],
   catalogoDestinos: [],
   catalogoObligadoSolidarioAval: [],

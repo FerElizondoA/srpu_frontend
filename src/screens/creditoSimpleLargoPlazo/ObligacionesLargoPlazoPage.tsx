@@ -1,4 +1,4 @@
-import { Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
@@ -14,6 +14,8 @@ import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPa
 import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/main";
+import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -25,13 +27,8 @@ export function ObligacionesLargoPlazoPage() {
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-  const getTiposDocumentos: Function = useCortoPlazoStore(
-    (state) => state.getTiposDocumentos
-  );
 
-  useEffect(() => {
-    getTiposDocumentos();
-  }, []);
+  const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
   return (
     <Grid>
@@ -45,6 +42,7 @@ export function ObligacionesLargoPlazoPage() {
               fontSize: "2.5ch",
               fontFamily: "MontserratBold",
               color: "#AF8C55",
+              padding: "1px 1px 1px 70px",
               "@media (max-width: 600px)": {
                 // XS (extra small) screen
                 fontSize: "1rem",
@@ -56,8 +54,29 @@ export function ObligacionesLargoPlazoPage() {
             }}
           >
             Crédito Simple a Largo Plazo
-          </Typography>{" "}
+          </Typography>
+          <Button
+            onClick={() => {
+              setOpenDialogBorrador(!openDialogBorrador);
+            }}
+            sx={{
+              backgroundColor: "#15212f",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(47, 47, 47, 0.4)",
+                color: "#000",
+              },
+              fontSize: "90%",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              position: "relative",
+              left: "500px",
+            }}
+          >
+            Guardar
+          </Button>
         </Grid>
+
         <Grid
           sx={{
             width: "100%",
@@ -106,6 +125,11 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 6 && <TablaDePagos />}
       {tabIndex === 7 && <Resumen />}
       {tabIndex === 8 && <SolicituDeInscripcion />}
+
+      <ConfirmacionBorradorSolicitud
+        handler={setOpenDialogBorrador}
+        openState={openDialogBorrador}
+      />
     </Grid>
   );
 }

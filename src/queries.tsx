@@ -101,7 +101,6 @@ export const queries = {
   },
   buttonCancelar: {
     backgroundColor: "rgb(175, 140, 85)",
-    height: "4vh",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(175, 140, 85, 0.6)",
@@ -113,7 +112,6 @@ export const queries = {
   },
   buttonContinuar: {
     backgroundColor: "#15212f",
-    height: "4vh",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
@@ -248,6 +246,27 @@ export const queries = {
     },
     "@media (min-width: 1870px)": {
       height: "64vh",
+    },
+  },
+
+  contenedorAutorizacion: {
+    "@media (min-width: 513px)": {
+      height: "34rem",
+    },
+    "@media (min-width: 600px)": {
+      height: "35rem",
+    },
+    "@media (min-width: 900px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1300px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1485px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "49rem",
     },
   },
 };

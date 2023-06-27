@@ -92,9 +92,7 @@ function App() {
           <Route path="users" element={<Usuarios />}></Route>
           <Route path="solicitudes-usuarios" element={<Solicitudes />}></Route>
           <Route path="notificaciones" element={<Notificaciones />}></Route>
-          <Route
-            path="obligacionesLargoPlazo"
-            element={<ObligacionesLargoPlazoPage />}
+          <Route path="obligacionesLargoPlazo" element={<ObligacionesLargoPlazoPage />}
           ></Route>
         </Routes>
       </CssBaseline>
