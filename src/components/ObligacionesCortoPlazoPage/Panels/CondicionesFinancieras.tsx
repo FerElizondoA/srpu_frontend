@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   CondicionFinanciera,
+  Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/condicion_financiera";
@@ -83,15 +84,21 @@ export const headsComision: readonly Head[] = [
   },
 ];
 
+export const headsDisposicion: readonly Head[] = [
+  {
+    label: "Fecha de disposición",
+  },
+  {
+    label: "Importe",
+  },
+];
+
 const heads: readonly Head[] = [
   {
     label: "Acciones",
   },
   {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: "Importe de Disposición",
+    label: "Disposición(es)",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -132,9 +139,11 @@ export function CondicionesFinancieras() {
 
   const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
+  const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (
     <Grid container>
@@ -206,16 +215,14 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {format(
-                          new Date(row.disposicion.fechaDisposicion),
-                          "dd/MM/yyyy"
-                        )}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        sx={{ padding: "1px 30px 1px 0" }}
-                        align="center"
-                      >
-                        {row.disposicion.importe}
+                        <Button
+                          onClick={() => {
+                            setRowDisposicion(row.disposicion);
+                            setOpenDisposicion(true);
+                          }}
+                        >
+                          <InfoOutlinedIcon />
+                        </Button>
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -397,6 +404,62 @@ export function CondicionesFinancieras() {
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.iva}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog
+                open={openDisposicion}
+                onClose={() => {
+                  setOpenDisposicion(false);
+                }}
+                maxWidth={"lg"}
+              >
+                <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <IconButton
+                    onClick={() => {
+                      setOpenDisposicion(false);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      color: "black",
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          {headsDisposicion.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
+                            </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rowDisposicion.map((row, index) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell align="center">
+                                {lightFormat(
+                                  new Date(row.fechaDisposicion),
+                                  "dd-MM-yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.importe}
                               </StyledTableCell>
                             </StyledTableRow>
                           );

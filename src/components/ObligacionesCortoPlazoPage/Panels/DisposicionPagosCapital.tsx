@@ -70,6 +70,18 @@ const heads: readonly Head[] = [
   },
 ];
 
+const headsDisposicion: readonly Head[] = [
+  {
+    label: "Borrar",
+  },
+  {
+    label: "Fecha de disposición",
+  },
+  {
+    label: `Importe`,
+  },
+];
+
 const theme = createTheme({
   components: {
     MuiButton: {
@@ -109,17 +121,31 @@ export function DisposicionPagosCapital() {
   );
 
   // DISPOSICION
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
+  const disposicionFechaDisposicion: string = useCortoPlazoStore(
     (state) => state.disposicion.fechaDisposicion
   );
   const disposicionImporte: number = useCortoPlazoStore(
     (state) => state.disposicion.importe
   );
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
+  // TABLA TASA DE INTERES
+  let tablaDisposicion: any = useCortoPlazoStore(
+    (state) => state.tablaDisposicion
+  );
+  const addDisposicion: Function = useCortoPlazoStore(
+    (state) => state.addDisposicion
+  );
   const changeDisposicion: Function = useCortoPlazoStore(
     (state) => state.changeDisposicion
   );
-  const monto: number = useCortoPlazoStore(
-    (state) => state.informacionGeneral.monto
+  const removeDisposicion: Function = useCortoPlazoStore(
+    (state) => state.removeDisposicion
+  );
+  const cleanDisposicion: Function = useCortoPlazoStore(
+    (state) => state.cleanDisposicion
   );
 
   // PAGOS DE CAPITAL
@@ -171,11 +197,9 @@ export function DisposicionPagosCapital() {
   const removeTasaInteres: Function = useCortoPlazoStore(
     (state) => state.removeTasaInteres
   );
-
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
-
   const cleanTasaInteres: Function = useCortoPlazoStore(
     (state) => state.cleanTasaInteres
   );
@@ -199,6 +223,14 @@ export function DisposicionPagosCapital() {
       sobreTasa: tasaInteresSobreTasa || "N/A",
     };
     addTasaInteres(tab);
+  };
+
+  const addRowsDisposicion = () => {
+    let tab = {
+      fechaDisposicion: disposicionFechaDisposicion,
+      importe: disposicionImporte,
+    };
+    addDisposicion(tab);
   };
 
   const [radioValue, setRadioValue] = useState("Tasa Fija");
@@ -253,7 +285,7 @@ export function DisposicionPagosCapital() {
   useEffect(() => {
     if (disposicionesParciales === false) {
       changeDisposicion(
-        disposicionFechaContratacion,
+        disposicionFechaDisposicion,
         moneyMask(monto.toString())
       );
     }
@@ -300,6 +332,23 @@ export function DisposicionPagosCapital() {
     tasaInteresSobreTasa,
   ]);
 
+  const [sumaDisposicion, setSumaDisposicion] = useState(disposicionImporte);
+  const [restante, setRestante] = useState(0);
+
+  useEffect(() => {
+    let loc = 0.0;
+    tablaDisposicion.map((value: any, index: number) => {
+      loc += parseFloat(value.importe.replaceAll("$", "").replaceAll(",", ""));
+    });
+    setSumaDisposicion(parseFloat(loc.toFixed(2)));
+
+    let res = 0.0;
+    res =
+      parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
+      parseFloat(loc.toFixed(2));
+    setRestante(res);
+  }, [tablaDisposicion]);
+
   return (
     <Grid container display="flex" justifyContent={"space-evenly"}>
       <Grid item container mt={2} direction="column">
@@ -328,7 +377,7 @@ export function DisposicionPagosCapital() {
                     capitalNumeroPago
                   )
                 }
-                minDate={new Date(disposicionFechaContratacion)}
+                minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                 slots={{
                   textField: DateInput,
@@ -437,8 +486,12 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
-                      // cleanComision();
+                      cleanDisposicion();
                       setDisposicionesParciales(!disposicionesParciales);
+                      changeDisposicion(
+                        disposicionFechaDisposicion,
+                        moneyMask("0")
+                      );
                       // if (!noAplica) {
                       //   let tab = {
                       //     fechaContratacion: new Date().toString(),
@@ -467,13 +520,14 @@ export function DisposicionPagosCapital() {
               >
                 <DatePicker
                   disabled={!disposicionesParciales}
-                  value={new Date(disposicionFechaContratacion)}
-                  onChange={(date) =>
+                  value={new Date(disposicionFechaDisposicion)}
+                  onChange={(date) => {
                     changeDisposicion(
                       date?.toString(),
                       moneyMask(disposicionImporte.toString())
-                    )
-                  }
+                    );
+                  }}
+                  minDate={new Date()}
                   maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                   slots={{
                     textField: DateInput,
@@ -486,7 +540,14 @@ export function DisposicionPagosCapital() {
 
               <TextField
                 disabled={!disposicionesParciales}
-                placeholder="0"
+                helperText={
+                  disposicionesParciales
+                    ? "Monto original contratado: " +
+                      monto +
+                      "; Monto restante: " +
+                      restante.toFixed(2)
+                    : ""
+                }
                 value={
                   disposicionImporte <= 0
                     ? ""
@@ -494,22 +555,28 @@ export function DisposicionPagosCapital() {
                 }
                 onChange={(v) => {
                   if (
-                    validator.isNumeric(
-                      v.target.value
-                        .replace(".", "")
-                        .replace(",", "")
-                        .replace(/\D/g, "")
-                    ) &&
-                    disposicionesParciales
+                    validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                    disposicionesParciales &&
+                    parseInt(v.target.value.replace(/\D/g, "")) <
+                      9999999999999999 &&
+                    parseInt(v.target.value.replace(/\D/g, "")) <=
+                      restante * 100
                   ) {
                     changeDisposicion(
-                      disposicionFechaContratacion,
+                      disposicionFechaDisposicion,
                       moneyMask(v.target.value)
                     );
                   } else if (v.target.value === "") {
-                    changeDisposicion(disposicionFechaContratacion, 0);
+                    changeDisposicion(
+                      disposicionFechaDisposicion,
+                      moneyMask("0")
+                    );
                   }
                 }}
+                error={
+                  parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
+                  parseInt(monto.toString().replace(/\D/g, ""))
+                }
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -526,6 +593,96 @@ export function DisposicionPagosCapital() {
               />
             </Grid>
           </Grid>
+          {disposicionesParciales && (
+            <Grid
+              container
+              sx={queries.tablaDisposicionPagosCapital}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <ThemeProvider theme={theme}>
+                <Button
+                  sx={queries.buttonContinuar}
+                  disabled={
+                    disposicionFechaDisposicion === "" ||
+                    parseInt(
+                      disposicionImporte.toString().replace(/\D/g, "")
+                    ) === 0 ||
+                    parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
+                      restante * 100
+                  }
+                  variant="outlined"
+                  onClick={() => {
+                    addRowsDisposicion();
+                    changeDisposicion(
+                      disposicionFechaDisposicion,
+                      moneyMask("0")
+                    );
+                  }}
+                >
+                  Agregar
+                </Button>
+              </ThemeProvider>
+              <Paper sx={{ height: "90%", width: "88%" }}>
+                <TableContainer
+                  sx={{
+                    maxHeight: "100%",
+                    overflow: "auto",
+                    "&::-webkit-scrollbar": {
+                      width: ".5vw",
+                      mt: 1,
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                      backgroundColor: "#AF8C55",
+                      outline: "1px solid slategrey",
+                      borderRadius: 1,
+                    },
+                  }}
+                >
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {headsDisposicion.map((head, index) => (
+                          <StyledTableCell align="center" key={index}>
+                            <TableSortLabel>{head.label}</TableSortLabel>
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tablaDisposicion.map((row: any, index: number) => {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell align="center">
+                              <Tooltip title="Eliminar">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    removeDisposicion(index);
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </StyledTableCell>
+                            <StyledTableCell align="center" component="th">
+                              {lightFormat(
+                                new Date(row.fechaDisposicion),
+                                "dd-MM-yyyy"
+                              )}
+                            </StyledTableCell>
+                            <StyledTableCell align="center" component="th">
+                              {row.importe}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+          )}
         </Grid>
       </Grid>
 
@@ -1096,10 +1253,6 @@ export function DisposicionPagosCapital() {
                 </Paper>
               </Grid>
             )}
-
-            {/* {tasasParciales && (
-              <Grid container sx={queries.tablaDisposicionPagosCapital}></Grid>
-            )} */}
           </Grid>
         </Grid>
       </Grid>
