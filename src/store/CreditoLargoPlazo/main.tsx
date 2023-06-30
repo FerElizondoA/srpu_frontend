@@ -6,6 +6,10 @@ import {createInformacionGeneralLargoPlazoSlice, InformacionGeneralLargoPlazoSli
 import {CondicionFinancieraLargoPlazoSlice, createCondicionFinancieraLargoPlazoSlice } from "./condicion_financiera";
 import {PagosCapitalLargoPlazoSlice,createPagosCapitalLargoPlazoSlice} from "./pagos_capital"
 import {createTasaEfectivaLargoPlazoSlice, TasaEfectivaLargoPlazoSlice} from "./tasa_efectiva"
+import {SolicitudInscripcionLargoPlazoSlice, createSolicitudInscripcionLargoPlazoSlice} from "./solicitud_inscripcion";
+import {ComentarioApartadoLargoPlazoSlice, createComentarioLargoPlazoSlice} from "./comentarios_apartado";
+import {DocumentosLargoPlazoSlice, createDocumentoLargoPlazoSlice} from "./documentacion";
+
 
 export type SolicitudStoreCSLP =
 
@@ -13,7 +17,10 @@ EncabezadoLargoPlazoSlice &
 InformacionGeneralLargoPlazoSlice &
 CondicionFinancieraLargoPlazoSlice &
 PagosCapitalLargoPlazoSlice &
-TasaEfectivaLargoPlazoSlice
+TasaEfectivaLargoPlazoSlice &
+SolicitudInscripcionLargoPlazoSlice &
+ComentarioApartadoLargoPlazoSlice &
+DocumentosLargoPlazoSlice
 
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
@@ -21,5 +28,8 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
     ...createInformacionGeneralLargoPlazoSlice(...x),
     ...createCondicionFinancieraLargoPlazoSlice(...x),
     ...createPagosCapitalLargoPlazoSlice(...x),
-    ...createTasaEfectivaLargoPlazoSlice(...x)
+    ...createTasaEfectivaLargoPlazoSlice(...x),
+    ...createSolicitudInscripcionLargoPlazoSlice(...x),
+    ...createComentarioLargoPlazoSlice(...x),
+    ...createDocumentoLargoPlazoSlice(...x)
 }))

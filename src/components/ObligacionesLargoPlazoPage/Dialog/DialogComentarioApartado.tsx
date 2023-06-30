@@ -1,0 +1,94 @@
+import { useEffect, useState } from "react";
+import { Dialog, Button, TextField, Typography } from "@mui/material";
+import { queries } from "../../../queries";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+
+export function ComentarioApartado({
+  setOpen,
+  openState,
+}: {
+  setOpen: Function;
+  openState: { open: boolean; apartado: string; tab: string };
+}) {
+  const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
+
+  const comentario: any = useLargoPlazoStore((state) => state.comentarios);
+
+  const newComentario: Function = useLargoPlazoStore(
+    (state) => state.newComentario
+  );
+
+  const removeComentario: Function = useLargoPlazoStore(
+    (state) => state.removeComentario
+  );
+
+  return (
+    <Dialog
+      fullWidth
+      open={openState.open || false}
+      keepMounted
+      onClose={() => {
+        setOpen(false);
+      }}
+    >
+      <DialogTitle sx={{ color: "#AF8C55" }}>
+        Comentario: <strong>{openState.apartado}</strong>
+      </DialogTitle>
+
+      <DialogContent>
+        <Typography sx={{ display: "flex", justifyContent: "center" }}>
+          {comentario[openState.apartado] || ""}
+        </Typography>
+        <TextField
+          label="Nuevo comentario"
+          sx={{ width: "100%", mt: 2 }}
+          value={coment.Comentario}
+          onChange={(v) => {
+            setComent({
+              Comentario: v.target.value,
+              Apartado: openState.apartado,
+            });
+          }}
+          multiline
+          rows={2}
+        />
+      </DialogContent>
+
+      <DialogActions>
+        {comentario[openState.apartado] !== "" ? (
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              removeComentario(openState.apartado);
+              setOpen(false);
+            }}
+          >
+            Eliminar comentario
+          </Button>
+        ) : null}
+        <Button
+          sx={queries.buttonCancelar}
+          onClick={() => {
+            setComent({ Comentario: "", Apartado: "" });
+            setOpen(false);
+          }}
+        >
+          Cancelar
+        </Button>
+        <Button
+          sx={queries.buttonContinuar}
+          onClick={() => {
+            newComentario(coment, openState.tab);
+            setComent({ Comentario: "", Apartado: "" });
+            setOpen(false);
+          }}
+        >
+          Aceptar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}

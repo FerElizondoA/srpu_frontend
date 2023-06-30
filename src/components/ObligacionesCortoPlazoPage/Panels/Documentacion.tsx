@@ -26,7 +26,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { useCortoPlazoStore } from "../../../store/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 import { queries } from "../../../queries";
 
@@ -123,6 +123,11 @@ export function Documentacion() {
     tab: "Tab",
   });
 
+  useEffect(() => {
+    console.log("Esto son los tipos de documentos: ",catalogoTiposDocumentosObligatorios );
+    
+  }, [])
+  
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
 
   return (

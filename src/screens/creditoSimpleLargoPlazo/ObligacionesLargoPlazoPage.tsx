@@ -30,6 +30,13 @@ export function ObligacionesLargoPlazoPage() {
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
+  const getTiposDocumentos: Function = useLargoPlazoStore(
+    (state) => state.getTiposDocumentosD
+  );
+  useEffect(() => {
+    getTiposDocumentos();
+  }, []);
+
   return (
     <Grid>
       <Grid item>
