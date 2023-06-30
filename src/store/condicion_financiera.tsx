@@ -12,6 +12,11 @@ export interface TasaInteres {
   sobreTasa: string;
 }
 
+export interface Disposicion {
+  fechaDisposicion: string;
+  importe: number;
+}
+
 export interface IComisiones {
   fechaContratacion: string;
   tipoDeComision: string;
@@ -25,7 +30,7 @@ export interface IComisiones {
 
 export type CondicionFinanciera = {
   id: number;
-  disposicion: { fechaDisposicion: string; importe: number };
+  disposicion: Disposicion[];
   pagosDeCapital: {
     fechaPrimerPago: string;
     periodicidadDePago: string;
@@ -66,7 +71,7 @@ export const createCondicionFinancieraSlice: StateCreator<
 
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
     useCortoPlazoStore.setState({
-      disposicion: condicionFinanciera.disposicion,
+      tablaDisposicion: condicionFinanciera.disposicion,
     });
     useCortoPlazoStore.setState({
       pagosDeCapital: {

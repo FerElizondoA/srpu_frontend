@@ -206,7 +206,7 @@ export function SolicitudInscripcion() {
 
     for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
       const item = state.tablaCondicionesFinancieras[0];
-      importe = item.disposicion.importe;
+      // importe = item.disposicion.importe;
       numeroDePago = item.pagosDeCapital.numeroDePago;
       PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
       TasaDeInteres = item.tasaInteres;

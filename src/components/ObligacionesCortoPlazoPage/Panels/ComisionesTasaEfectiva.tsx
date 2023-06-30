@@ -518,7 +518,13 @@ export function ComisionesTasaEfectiva() {
                     .replace(".", "")
                     .replace(",", "")
                     .replace(/\D/g, "")
-                )
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
               ) {
                 radioValue === "Porcentaje Fijo"
                   ? changeComision({
