@@ -6,7 +6,7 @@ export function TablaDePagos() {
 
     return (
         <Grid>
-            <Typography>Hola perrillo</Typography>
+            <Typography>Hola</Typography>
         </Grid>
     )
 }

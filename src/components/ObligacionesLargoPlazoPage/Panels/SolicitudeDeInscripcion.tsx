@@ -239,7 +239,7 @@ export function SolicituDeInscripcion() {
       /^[\s]*$/.test(CostosGastos.destinoCG)) {
       err = 1;
       erroresValidacion.push(
-        "Sección Información General: Seleccione el Destino en costos y gastos HOLA!?"
+        "Sección Información General: Seleccione el Destino en costos y gastos"
       );
     }
 

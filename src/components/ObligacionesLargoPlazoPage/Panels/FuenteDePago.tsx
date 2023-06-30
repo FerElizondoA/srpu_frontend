@@ -6,7 +6,7 @@ export function FuenteDePago() {
 
     return (
         <Grid>
-            <Typography>Hola perrillo</Typography>
+            <Typography>Hola</Typography>
         </Grid>
     )
 }
