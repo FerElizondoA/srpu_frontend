@@ -166,7 +166,7 @@ export function LateralMenuMobile() {
                                 <KeyboardArrowRightIcon sx={queries.icon} />
                               </ListItemIcon>
                               <Typography sx={queries.text}>
-                                Crédito simple a corto plazo.
+                                Crédito simple a corto plazo
                               </Typography>
                             </ListItemButton>
 

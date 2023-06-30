@@ -171,7 +171,7 @@ export function ConfirmacionDescargaSolicitud({
                     });
                   });
                 createNotification(
-                  "Crédito simple a corto plazo.",
+                  "Crédito simple a corto plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""]
                 );
@@ -199,7 +199,7 @@ export function ConfirmacionDescargaSolicitud({
                   });
                 navigate("../ConsultaDeSolicitudes");
                 createNotification(
-                  "Crédito simple a corto plazo.",
+                  "Crédito simple a corto plazo",
                   "Se te ha asignado una solicitud de inscripción",
                   [idUsuarioAsignado]
                 );
