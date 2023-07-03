@@ -49,7 +49,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
     periodicidadDePago: { Id: "", Descripcion: "" },
     porcentajeFijo: false,
     montoFijo: false,
-    monto: "",
+    monto: "0",
     porcentaje: "",
     iva: "NO",
   },

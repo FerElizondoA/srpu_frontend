@@ -23,6 +23,8 @@ import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/Consult
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
 import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
+import { Link } from "react-router-dom";
+import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 
 export const appTheme = createTheme({
   palette: {
@@ -90,6 +92,10 @@ function App() {
           <Route path="users" element={<Usuarios />}></Route>
           <Route path="solicitudes-usuarios" element={<Solicitudes />}></Route>
           <Route path="notificaciones" element={<Notificaciones />}></Route>
+          <Route
+            path="obligacionesLargoPlazo"
+            element={<ObligacionesLargoPlazoPage />}
+          ></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>

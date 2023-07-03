@@ -881,7 +881,7 @@ export const DialogUsuarios = ({
           >
             Cancelar
           </Button>
-          <Button sx={queries.buttonContinuarSolicitudInscripcion}
+          <Button sx={queries.buttonContinuar}
             onClick={() => {
               createSolicitud(
                 registroDatos,

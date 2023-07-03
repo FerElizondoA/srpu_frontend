@@ -36,6 +36,39 @@ export const queries = {
       fontSize: "1.5ch",
     },
   },
+
+  bold_text_Largo_Plazo: {
+    fontSize: "1.8ch",
+    fontFamily: "MontserratBold",
+    "@media (max-width: 600px)": {
+      // XS (extra small) screen
+      fontSize: "1rem",
+    },
+    "@media (min-width: 601px) and (max-width: 900px)": {
+      // SM (small) screen
+      fontSize: "1.5ch",
+    },
+
+    "@media (min-width: 513px)": {
+      fontSize: "1.25ch",
+    },
+    "@media (min-width: 600px)": {
+      fontSize: "1.30ch",
+    },
+    "@media (min-width: 900px)": {
+      fontSize: "1.35ch",
+    },
+    "@media (min-width: 1300px)": {
+      fontSize: "1.40ch",
+    },
+    "@media (min-width: 1485px)": {
+      fontSize: "1.8ch",
+    },
+    "@media (min-width: 1870px)": {
+      fontSize: "1.8ch",
+    },
+  },
+
   italic_text: {
     fontSize: "2ch",
     fontFamily: "MontserratRegular",
@@ -68,7 +101,6 @@ export const queries = {
   },
   buttonCancelar: {
     backgroundColor: "rgb(175, 140, 85)",
-    height: "4vh",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(175, 140, 85, 0.6)",
@@ -80,7 +112,6 @@ export const queries = {
   },
   buttonContinuar: {
     backgroundColor: "#15212f",
-    height: "4vh",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
@@ -171,6 +202,20 @@ export const queries = {
     textTransform: "capitalize",
   },
 
+  buttonContinuarAbsolute: {
+    position: "absolute",
+    right: 30,
+    backgroundColor: "#15212f",
+    color: "white",
+    "&&:hover": {
+      backgroundColor: "rgba(47, 47, 47, 0.4)",
+      color: "#000",
+    },
+    fontSize: "90%",
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+  },
+
   labelTextComentarios: {
     fontSize: "2ch",
     fontFamily: "MontserratBold",
@@ -202,7 +247,26 @@ export const queries = {
     "@media (min-width: 1870px)": {
       height: "64vh",
     },
-  }
+  },
 
+  contenedorAutorizacion: {
+    "@media (min-width: 513px)": {
+      height: "34rem",
+    },
+    "@media (min-width: 600px)": {
+      height: "35rem",
+    },
+    "@media (min-width: 900px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1300px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1485px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "49rem",
+    },
+  },
 };
-

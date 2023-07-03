@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, Button, TextField, Typography } from "@mui/material";
 import { queries } from "../../../queries";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useCortoPlazoStore } from "../../../store/main";
-import { IComentario } from "../../../store/comentarios_apartado";
 
 export function ComentarioApartado({
   setOpen,
@@ -14,38 +13,17 @@ export function ComentarioApartado({
   setOpen: Function;
   openState: { open: boolean; apartado: string; tab: string };
 }) {
-  const comentario: IComentario = useCortoPlazoStore(
-    (state) => state.comentario
-  );
+  const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
 
-  const setComentario: Function = useCortoPlazoStore(
-    (state) => state.setComentario
-  );
-
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
-  );
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
   const newComentario: Function = useCortoPlazoStore(
     (state) => state.newComentario
   );
 
-  const comentarios: IComentario[] = useCortoPlazoStore(
-    (state) => state.comentarios
-  );
-
   const removeComentario: Function = useCortoPlazoStore(
     (state) => state.removeComentario
   );
-
-  // const tablaCondicionesFinancieras:  = useCortoPlazoStore(
-  //   (state) => state.tablaCondicionesFinancieras
-  // );
-
-  useEffect(() => {
-    cleanComentario();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openState]);
 
   return (
     <Dialog
@@ -57,27 +35,21 @@ export function ComentarioApartado({
       }}
     >
       <DialogTitle sx={{ color: "#AF8C55" }}>
-        {comentarios.filter((_, i) => _.Apartado === openState.apartado)
-          .length > 0
-          ? "Editar "
-          : "Agregar "}
-        comentario: <strong>{openState.apartado}</strong>
+        Comentario: <strong>{openState.apartado}</strong>
       </DialogTitle>
 
       <DialogContent>
         <Typography sx={{ display: "flex", justifyContent: "center" }}>
-          {comentarios?.filter((_, i) => _.Apartado === openState.apartado)[0]
-            ?.Comentario || ""}
+          {comentario[openState.apartado] || ""}
         </Typography>
         <TextField
           label="Nuevo comentario"
           sx={{ width: "100%", mt: 2 }}
-          value={comentario.Comentario}
+          value={coment.Comentario}
           onChange={(v) => {
-            setComentario({
-              Comentario: v.target.value.replaceAll("\n", ""),
+            setComent({
+              Comentario: v.target.value,
               Apartado: openState.apartado,
-              Tab: openState.tab,
             });
           }}
           multiline
@@ -86,8 +58,7 @@ export function ComentarioApartado({
       </DialogContent>
 
       <DialogActions>
-        {comentarios.filter((_, i) => _.Apartado === openState.apartado)
-          .length > 0 ? (
+        {comentario[openState.apartado] !== "" ? (
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
@@ -101,6 +72,7 @@ export function ComentarioApartado({
         <Button
           sx={queries.buttonCancelar}
           onClick={() => {
+            setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
           }}
         >
@@ -109,7 +81,8 @@ export function ComentarioApartado({
         <Button
           sx={queries.buttonContinuar}
           onClick={() => {
-            newComentario(comentario);
+            newComentario(coment, openState.tab);
+            setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
           }}
         >

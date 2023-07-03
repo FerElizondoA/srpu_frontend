@@ -1,41 +1,36 @@
-import { useEffect, useState } from "react";
 import {
-  TextField,
-  InputLabel,
   Autocomplete,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
+  Button,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  ThemeProvider,
   Tooltip,
   Typography,
-  TableRow,
-  Button,
-  Paper,
   createTheme,
-  ThemeProvider,
-  Select,
-  MenuItem,
 } from "@mui/material";
-
+import { useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
-import enGB from "date-fns/locale/en-GB";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateInput } from "../../CustomComponents";
-import { subDays, addDays } from "date-fns/esm";
+import { differenceInDays, startOfDay } from "date-fns";
+import { addDays, subDays } from "date-fns/esm";
+import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
-import { differenceInDays, startOfDay } from "date-fns";
-import DeleteIcon from "@mui/icons-material/Delete";
-//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { DateInput } from "../../CustomComponents";
 import CheckIcon from "@mui/icons-material/Check";
 import validator from "validator";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
@@ -71,6 +66,17 @@ const heads: Head[] = [
     label: "Ente público obligado",
   },
 ];
+
+export const moneyMask = (value: string) => {
+  value = value.replace(/\D/g, "");
+
+  const options = { minimumFractionDigits: 2 };
+
+  const result = new Intl.NumberFormat("en-US", options).format(
+    parseInt(value) / 100
+  );
+  return "$ " + result;
+};
 
 export function InformacionGeneral() {
   // GET CATALOGOS
@@ -161,6 +167,10 @@ export function InformacionGeneral() {
     (state) => state.removeObligadoSolidarioAval
   );
 
+  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+
   const addRows = () => {
     let tab = {
       obligadoSolidario: generalObligadoSolidario.Descripcion,
@@ -172,14 +182,11 @@ export function InformacionGeneral() {
 
   const Denominaciones = ["Pesos", "UDIS"];
 
-  // ES EL ERROR
   useEffect(() => {
     getInstituciones();
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
@@ -206,14 +213,6 @@ export function InformacionGeneral() {
     }
   }, [catalogoObligadoSolidarioAval]);
 
-  // useEffect(() => {
-  //   if (/^[\s]*$/.test(obligadoSolidarioAval.ObligadoSolidarioAval)) {
-  //     changeTipoEntePublicoObligado("", "");
-  //     changeEntePublicoObligado("", "");
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [obligadoSolidarioAval]);
-
   const [contratacion, setContratacion] = useState(fechaContratacion);
 
   const [vencimiento, setVencimiento] = useState(fechaVencimiento);
@@ -234,7 +233,7 @@ export function InformacionGeneral() {
       fechaVencimiento: vencimiento,
       plazo: res,
       destino: destino,
-      monto: monto,
+      monto: moneyMask(monto.toString()),
       denominacion: denominacion,
       institucionFinanciera: institucionFinanciera,
     });
@@ -304,25 +303,28 @@ export function InformacionGeneral() {
           <TextField
             fullWidth
             placeholder="0"
-            value={monto <= 0 ? "" : monto.toString()}
+            value={monto <= 0 ? "" : monto}
             onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
+              if (
+                validator.isNumeric(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
+              ) {
                 changeInformacionGeneral({
                   fechaContratacion: contratacion,
                   fechaVencimiento: vencimiento,
                   plazo: plazo,
                   destino: destino,
-                  monto: v.target.value,
-                  denominacion: denominacion,
-                  institucionFinanciera: institucionFinanciera,
-                });
-              } else if (v.target.value === "") {
-                changeInformacionGeneral({
-                  fechaContratacion: contratacion,
-                  fechaVencimiento: vencimiento,
-                  plazo: plazo,
-                  destino: destino,
-                  monto: 0,
+                  monto: moneyMask(v.target.value),
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
                 });
@@ -337,7 +339,7 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+              // startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -392,7 +394,7 @@ export function InformacionGeneral() {
                   Id: text?.Id || "",
                   Descripcion: text?.Descripcion || "",
                 },
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: denominacion,
                 institucionFinanciera: institucionFinanciera,
               });
@@ -422,7 +424,7 @@ export function InformacionGeneral() {
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
                 destino: destino,
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: v.target.value,
                 institucionFinanciera: institucionFinanciera,
               })
@@ -467,7 +469,7 @@ export function InformacionGeneral() {
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
                 destino: destino,
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: denominacion,
                 institucionFinanciera: {
                   Id: text?.Id || "",
@@ -500,7 +502,7 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
-            options={catalogoObligadoSolidarioAval}
+            options={catalogoObligadoSolidarioAval} //.filter((td: any) => td.Descripcion !== "Capturador")
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -510,14 +512,17 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              ////////// REVISAAAAAR FERNANDOOOO/////////
-              // Id: generalObligadoSolidario.Id  || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Id || '' ,
-              // Descripcion: generalObligadoSolidario.Descripcion || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Descripcion || '',
-
               Id: generalObligadoSolidario.Id,
               Descripcion: generalObligadoSolidario.Descripcion,
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              if (
+                text?.Descripcion === "No aplica" ||
+                text?.Id === "" ||
+                text === null
+              ) {
+                cleanObligadoSolidarioAval();
+              }
               changeObligadoSolidarioAval({
                 obligadoSolidario: {
                   Id: text?.Id || "",
@@ -531,8 +536,8 @@ export function InformacionGeneral() {
                   Id: "",
                   Descripcion: "",
                 },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -541,7 +546,9 @@ export function InformacionGeneral() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id || value.Descripcion === ""
+              option.Id === value.Id ||
+              value.Descripcion === "" ||
+              value.Id === ""
             }
           />
         </Grid>

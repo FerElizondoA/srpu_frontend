@@ -1,26 +1,26 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
 import {
-  Grid,
-  Typography,
-  Dialog,
-  Slide,
   Button,
+  Dialog,
+  Grid,
+  Paper,
+  Slide,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  Paper,
+  TableSortLabel,
+  Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { TransitionProps } from "@mui/material/transitions";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
 
 interface IComentarios {
@@ -45,16 +45,20 @@ const heads: readonly Head[] = [
     label: "Usuario",
   },
   {
-    id: "Comentarios",
-    isNumeric: true,
-    label: "Comentarios",
-  },
-  {
     id: "FechaCreacion",
     isNumeric: true,
     label: "Fecha",
   },
+  {
+    id: "Comentarios",
+    isNumeric: true,
+    label: "Comentarios",
+  },
 ];
+
+// const comentarios: IComentario[] = useCortoPlazoStore(
+//   (state) => state.comentarios
+// );
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +78,9 @@ export function VerComentariosSolicitud({
   handler: Function;
   openState: boolean;
 }) {
-  const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
+    []
+  );
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -86,7 +92,7 @@ export function VerComentariosSolicitud({
 
   useEffect(() => {
     if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setComentarios);
+      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud, openDialogCrear]);
 
@@ -122,18 +128,32 @@ export function VerComentariosSolicitud({
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {comentarios.length !== 0 ? (
-                  comentarios?.map((row, index) => {
+                {datosComentario.length !== 0 ? (
+                  datosComentario?.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell component="th" scope="row">
                           {row.Nombre}
                         </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                          {row.Comentarios}
-                        </StyledTableCell>
+
                         <StyledTableCell component="th" scope="row">
                           {row.FechaCreacion.split("T")[0]}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{
+                            fontSize: "1.5ch",
+                          }}
+                        >
+                          {Object.entries(JSON.parse(row.Comentarios)).map(
+                            ([key, val], index) =>
+                              (val as string) === "" ? null : (
+                                <Typography>
+                                  <strong>{key}:</strong>
+                                  {val as string}
+                                </Typography>
+                              )
+                          ) || row.Comentarios}
                         </StyledTableCell>
                       </StyledTableRow>
                     );

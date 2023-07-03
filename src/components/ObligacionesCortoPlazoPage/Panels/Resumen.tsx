@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Grid,
   Divider,
@@ -22,6 +23,7 @@ import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
 import {
   CondicionFinanciera,
+  Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/condicion_financiera";
@@ -29,10 +31,13 @@ import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IFile } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
-import { headsComision, headsTasa } from "./CondicionesFinancieras";
+import {
+  headsComision,
+  headsDisposicion,
+  headsTasa,
+} from "./CondicionesFinancieras";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { IComentario } from "../../../store/comentarios_apartado";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import CommentIcon from "@mui/icons-material/Comment";
 import {
@@ -72,10 +77,7 @@ const heads: Head[] = [
 
 const headsCondiciones: Head[] = [
   {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: "Importe de Disposición",
+    label: "Disposición(es)",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -152,10 +154,6 @@ export function Resumen() {
     (state) => state.tablaCondicionesFinancieras
   );
 
-  const comentarios: IComentario[] = useCortoPlazoStore(
-    (state) => state.comentarios
-  );
-
   // Documentación
   const documentos: IFile[] = useCortoPlazoStore(
     (state) => state.tablaDocumentos
@@ -170,7 +168,7 @@ export function Resumen() {
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
     open: false,
     apartado: "",
-    tab: "",
+    tab: "Tab",
   });
 
   const encabezado: HeadLabels[] = [
@@ -245,9 +243,7 @@ export function Resumen() {
     (state) => state.tablaDocumentos
   );
 
-  const setTablaDocumentos: Function = useCortoPlazoStore(
-    (state) => state.setTablaDocumentos
-  );
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
   useEffect(() => {
     if (IdSolicitud !== "") {
@@ -285,23 +281,15 @@ export function Resumen() {
       reader.onerror = reject;
     });
 
+  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
+  const [openDisposicion, setOpenDisposicion] = useState(false);
+
   return (
     <Grid
       container
       sx={{
         display: "flex",
         justifyContent: "center",
-        height: "80vh",
-        overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: ".5vw",
-          mt: 1,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#AF8C55",
-          outline: "1px solid slategrey",
-          borderRadius: 1,
-        },
         width: "auto",
       }}
     >
@@ -334,10 +322,7 @@ export function Resumen() {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentarios.filter(
-                        (_, i) =>
-                          _.Apartado === head.label && _.Tab === "Encabezado"
-                      ).length > 0
+                      comentario[head.label] && comentario[head.label] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -346,15 +331,13 @@ export function Resumen() {
                       setOpenComentarioApartado({
                         open: true,
                         apartado: head.label,
-                        tab: "Encabezado",
+                        tab: "TabEncabezado",
                       });
                     }}
                   >
                     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                   </IconButton>
                 </Tooltip>
-
-                {/* Revisar */}
 
                 <Typography sx={queries.medium_text}>
                   <strong>{head.label}: </strong>
@@ -386,11 +369,7 @@ export function Resumen() {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentarios.filter(
-                        (_, i) =>
-                          _.Apartado === head.label &&
-                          _.Tab === "Información General"
-                      ).length > 0
+                      comentario[head.label] && comentario[head.label] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -399,7 +378,7 @@ export function Resumen() {
                       setOpenComentarioApartado({
                         open: true,
                         apartado: head.label,
-                        tab: "Información General",
+                        tab: "TabInformaciónGeneral",
                       });
                     }}
                   >
@@ -425,9 +404,8 @@ export function Resumen() {
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
                   color={
-                    comentarios.filter(
-                      (_, i) => _.Tab === "Informacion General"
-                    ).length > 0
+                    comentario["Tabla Obligado Solidario Aval"] &&
+                    comentario["Tabla Obligado Solidario Aval"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -436,7 +414,7 @@ export function Resumen() {
                     setOpenComentarioApartado({
                       open: true,
                       apartado: "Tabla Obligado Solidario Aval",
-                      tab: "Informacion General",
+                      tab: "TabInformaciónGeneral",
                     });
                   }}
                 >
@@ -532,29 +510,14 @@ export function Resumen() {
           <Typography sx={queries.bold_text}>
             Condiciones Financieras
           </Typography>
-          <Grid
-            item
-            display={"flex"}
-            height={350}
-            // sx={{
-            //   display: "flex",
-            //   flexDirection: "row",
-            //   mt: 1,
-            //   alignItems: "center",
-            //   borderBottom: 1,
-            //   borderColor: "#cfcfcf",
-            //   fontSize: "12px",
-            //   border: "1px solid"
-            // }}
-          >
+          <Grid item display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
                   color={
-                    comentarios.filter(
-                      (_, i) => _.Tab === "Condiciones Financieras"
-                    ).length > 0
+                    comentario["Tabla Condiciones Financieras"] &&
+                    comentario["Tabla Condiciones Financieras"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -562,8 +525,8 @@ export function Resumen() {
                   onClick={() => {
                     setOpenComentarioApartado({
                       open: true,
-                      apartado: " Tabla Condiciones Financieras",
-                      tab: "Condiciones Financieras",
+                      apartado: "Tabla Condiciones Financieras",
+                      tab: "TabCondiciones Financieras",
                     });
                   }}
                 >
@@ -605,14 +568,15 @@ export function Resumen() {
                         {tablaCondicionesFinancieras.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
-                              <StyledTableCell component="th" scope="row">
-                                {format(
-                                  new Date(row.disposicion.fechaDisposicion),
-                                  "dd/MM/yyyy"
-                                )}
-                              </StyledTableCell>
                               <StyledTableCell align="center">
-                                {"$" + row.disposicion.importe}
+                                <Button
+                                  onClick={() => {
+                                    setRowDisposicion(row.disposicion);
+                                    setOpenDisposicion(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {format(
@@ -803,6 +767,66 @@ export function Resumen() {
                           </TableContainer>
                         </DialogContent>
                       </Dialog>
+
+                      <Dialog
+                        open={openDisposicion}
+                        onClose={() => {
+                          setOpenDisposicion(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenDisposicion(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
+                        >
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  {headsDisposicion.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
+                                    </StyledTableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowDisposicion.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell align="center">
+                                        {lightFormat(
+                                          new Date(row.fechaDisposicion),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.importe}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
                     </Table>
                   </TableContainer>
                 ) : (
@@ -894,12 +918,8 @@ export function Resumen() {
                         <Tooltip title="Añadir comentario a este apartado">
                           <IconButton
                             color={
-                              comentarios.filter(
-                                (_, i) =>
-                                  _.Apartado ===
-                                    documentos[index].descripcionTipo &&
-                                  _.Tab === "Documentacion"
-                              ).length > 0
+                              comentario[row.descripcionTipo] &&
+                              comentario[row.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -907,8 +927,8 @@ export function Resumen() {
                             onClick={() => {
                               setOpenComentarioApartado({
                                 open: true,
-                                apartado: documentos[index].descripcionTipo,
-                                tab: "Documentacion",
+                                apartado: row.descripcionTipo,
+                                tab: "TabDocumentacion",
                               });
                             }}
                           >

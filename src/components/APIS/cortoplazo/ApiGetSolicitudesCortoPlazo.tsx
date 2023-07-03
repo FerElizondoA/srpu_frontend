@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useCortoPlazoStore } from "../../../store/main";
 
 export function getComentariosSolicitudPlazo(
   idSolicitud: string,

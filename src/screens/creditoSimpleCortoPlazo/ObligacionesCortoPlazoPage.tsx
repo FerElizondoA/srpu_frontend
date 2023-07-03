@@ -1,4 +1,4 @@
-import { Grid, Tabs, Tab, Typography } from "@mui/material";
+import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
 
 import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,11 +16,10 @@ import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
+import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
 
 export function ObligacionesCortoPlazoPage() {
-  // useEffect(() => {
-
-  // }, [third])
+  const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -65,6 +64,14 @@ export function ObligacionesCortoPlazoPage() {
           >
             Crédito Simple a Corto Plazo
           </Typography>
+          <Button
+            sx={queries.buttonContinuarAbsolute}
+            onClick={() => {
+              setOpenDialogBorrador(!openDialogBorrador);
+            }}
+          >
+            Guardar
+          </Button>
         </Grid>
         <Tabs
           value={tabIndex}
@@ -89,6 +96,10 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 3 && <Documentacion />}
       {tabIndex === 4 && <Resumen />}
       {tabIndex === 5 && <SolicitudInscripcion />}
+      <ConfirmacionBorradorSolicitud
+        handler={setOpenDialogBorrador}
+        openState={openDialogBorrador}
+      />
     </Grid>
   );
 }

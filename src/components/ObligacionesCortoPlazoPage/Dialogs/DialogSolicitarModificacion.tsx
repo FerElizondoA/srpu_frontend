@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogContent,
   FormControl,
-  Select,
   MenuItem,
   DialogActions,
   Grid,
@@ -18,10 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { IComentario } from "../../../store/comentarios_apartado";
-import { IFile } from "../Panels/Documentacion";
-import { CondicionFinanciera } from "../../../store/condicion_financiera";
-import { ObligadoSolidarioAval } from "../../../store/informacion_general";
 
 export interface IUsuariosAsignables {
   id: string;
@@ -36,76 +31,6 @@ export function DialogSolicitarModificacion({
   handler: Function;
   openState: boolean;
 }) {
-  interface Head {
-    label: string;
-  }
-
-  interface HeadLabels {
-    label: string;
-    value: string;
-  }
-
-  // Encabezado
-  const TipodeDocumento: string = useCortoPlazoStore(
-    (state) => state.encabezado.tipoDocumento
-  );
-  const SolicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Nombre
-  );
-  const CargodelSolicitante: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Cargo
-  );
-  const TipodeEntePúblico: string = useCortoPlazoStore(
-    (state) => state.encabezado.tipoEntePublico.TipoEntePublico
-  );
-  const MunicipiouOrganismo: string = useCortoPlazoStore(
-    (state) => state.encabezado.organismo.Organismo
-  );
-  const FechadeContratación: string = useCortoPlazoStore(
-    (state) => state.encabezado.fechaContratacion
-  );
-
-  // Informacion general
-  const gFechadeContratación: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.fechaContratacion
-  );
-  const FechadeVencimiento: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.fechaVencimiento
-  );
-  const Plazo: string = useCortoPlazoStore((state) =>
-    state.informacionGeneral.plazo.toString()
-  );
-  const MontoOriginalContratado: string = useCortoPlazoStore((state) =>
-    state.informacionGeneral.monto.toString()
-  );
-  const Destino: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.destino.Descripcion
-  );
-  const Denominación: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.denominacion
-  );
-  const InstituciónFinanciera: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.institucionFinanciera.Descripcion
-  );
-
-  const tablaObligados: ObligadoSolidarioAval[] = useCortoPlazoStore(
-    (state) => state.tablaObligadoSolidarioAval
-  );
-
-  // Condiciones Financieras
-  const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
-    (state) => state.tablaCondicionesFinancieras
-  );
-
-  // const comentarios: IComentario[] = useCortoPlazoStore(
-  //   (state) => state.comentarios
-  // );
-
-  // Documentación
-  const documentos: IFile[] = useCortoPlazoStore(
-    (state) => state.tablaDocumentos
-  );
-
   const navigate = useNavigate();
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
@@ -120,39 +45,13 @@ export function DialogSolicitarModificacion({
     (state) => state.modificaSolicitud
   );
 
-  // const [comentario, setComentario] = useState("");
-
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 
-  const comentario: IComentario = useCortoPlazoStore(
-    (state) => state.comentario
-  );
-
-  const setComentario: Function = useCortoPlazoStore(
-    (state) => state.setComentario
-  );
-
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
-  );
-
-  const newComentario: Function = useCortoPlazoStore(
-    (state) => state.newComentario
-  );
-
-  const comentarios: IComentario[] = useCortoPlazoStore(
-    (state) => state.comentarios
-  );
-
-  const removeComentario: Function = useCortoPlazoStore(
-    (state) => state.removeComentario
-  );
-
-  // const [labelBotonComentarios, setLabelBotonComentarios] = useState("")
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
@@ -163,11 +62,6 @@ export function DialogSolicitarModificacion({
   useEffect(() => {
     setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
-
-  useEffect(() => {
-    cleanComentario();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openState]);
 
   const editCreadoPor: string = useCortoPlazoStore(
     (state) => state.editCreadoPor
@@ -195,7 +89,7 @@ export function DialogSolicitarModificacion({
             });
           });
         createNotification(
-          "Crédito simple corto plazo",
+          "Crédito simple a corto plazo",
           "Se te ha asignado una solicitud para modificación.",
           [idUsuarioAsignado]
         );
@@ -205,7 +99,7 @@ export function DialogSolicitarModificacion({
           localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "Captura",
-          comentario
+          JSON.stringify(comentario)
         ).catch(() => {
           Swal.fire({
             icon: "error",
@@ -229,19 +123,6 @@ export function DialogSolicitarModificacion({
         handler(false);
       }}
     >
-      {/* <TextField
-          fullWidth
-          label="Comentario"
-          multiline
-          variant="standard"
-          rows={4}
-          value={comentario}
-          onChange={(texto) => {
-            if (texto.target.value.length <= 200) {
-              setComentario(texto.target.value);
-            }
-          }}
-        /> */}
       <DialogTitle>
         <Typography sx={queries.medium_text}>Asignar a: </Typography>
       </DialogTitle>
@@ -274,62 +155,19 @@ export function DialogSolicitarModificacion({
             </TextField>
           </FormControl>
         </Grid>
-
-        <Grid
-          maxHeight={250}
-          sx={{
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".2vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }}
-        >
-          {comentarios.length > 0 ? ( //Si
-            <Grid>
-              <Typography sx={queries.labelTextComentarios}>
-                Comentarios
-              </Typography>
-              {comentarios.map((item, index) => {
-                return (
-                  <Grid>
-                    <Grid>
-                      {item.Tab === "Informacion General" ? (
-                        <Typography sx={queries.medium_text}>
-                          {"-"} {"Información General"}
-                        </Typography>
-                      ) : (
-                        <Typography sx={queries.medium_text}>
-                          {"-"} {item.Tab}
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid>
-                      <Typography sx={queries.medium_text}>
-                        * {item.Apartado}: <strong>{item.Comentario}</strong>{" "}
-                        <br />
-                        <br />{" "}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          ) : (
-            //CONDICIONAL
-            <Grid>
-              <Typography sx={queries.labelTextComentarios}>
-                {" "}
-                Sin comentarios
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
+        <Typography sx={queries.bold_text}>Comentarios</Typography>
+        {Object.entries(comentario).map(([key, val], index) =>
+          (val as string) === "" ? null : (
+            <Typography
+              sx={{
+                fontSize: "1.5ch",
+              }}
+            >
+              <strong>{key}:</strong>
+              {val as string}
+            </Typography>
+          )
+        )}
       </DialogContent>
 
       <DialogActions>
@@ -349,7 +187,7 @@ export function DialogSolicitarModificacion({
             checkform();
           }}
         >
-          {comentarios.length > 0 ? "Enviar" : "Enviar sin comentarios"}
+          {"Enviar"}
         </Button>
       </DialogActions>
     </Dialog>
