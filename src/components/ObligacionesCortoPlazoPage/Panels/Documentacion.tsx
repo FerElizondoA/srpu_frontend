@@ -123,11 +123,6 @@ export function Documentacion() {
     tab: "Tab",
   });
 
-  useEffect(() => {
-    console.log("Esto son los tipos de documentos: ",catalogoTiposDocumentosObligatorios );
-    
-  }, [])
-  
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
 
   return (

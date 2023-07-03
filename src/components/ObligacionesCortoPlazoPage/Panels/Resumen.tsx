@@ -974,12 +974,6 @@ export function Resumen() {
                                       setFileSelected(data);
                                     })
                                     .catch((err) => {
-                                      console.log(
-                                        arr.filter((td: any) =>
-                                          td.nombre.includes(row.nombreArchivo)
-                                        )[0].file
-                                      );
-
                                       setFileSelected(
                                         `data:application/pdf;base64,${
                                           arr.filter((td: any) =>

@@ -55,18 +55,18 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     const isMissingOriginalAmount =
       montoOriginal === null ||
       montoOriginal === 0 ||
-      montoOriginal === undefined;
+      montoOriginal.toString() === "0" ||
+      montoOriginal === undefined ||
+      montoOriginal.toString() === "$ 0.00";
 
     if (isMissingInstitution && isMissingOriginalAmount) {
       setInfo(
-        "No se ha seleccionado la institución bancaria y no se ha proporcionado un monto válido en INFORMACIÓN GENERAL."
+        "Seleccionar Institución financiera y monto en INFORMACIÓN GENERAL."
       );
     } else if (isMissingInstitution) {
-      setInfo(
-        "No se ha seleccionado la institución bancaria en INFORMACIÓN GENERAL."
-      );
+      setInfo("Seleccionar información financiera en INFORMACIÓN GENERAL.");
     } else if (isMissingOriginalAmount) {
-      setInfo("No se ha proporcionado un monto en INFORMACIÓN GENERAL.");
+      setInfo("Seleccionar monto en INFORMACIÓN GENERAL.");
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
