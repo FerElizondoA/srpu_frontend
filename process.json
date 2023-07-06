@@ -17,6 +17,7 @@
         "SRPU_B_APP_EMAIL_PASSWORD": "hpffapcifkvkfuey"
       },
       "env_dev": {
+        "NODE_ENV": "dev",
         "SRPU_B_APP_DB_HOST": "10.200.4.161",
         "SRPU_B_APP_DB_USER": "root",
         "SRPU_B_APP_DB_DATABASE": "SRPU",
@@ -29,6 +30,7 @@
         "SRPU_B_APP_EMAIL_PASSWORD": "hpffapcifkvkfuey"
       },
       "env_qa": {
+        "NODE_ENV": "qa",
         "SRPU_B_APP_DB_HOST": "10.200.4.77",
         "SRPU_B_APP_DB_USER": "root",
         "SRPU_B_APP_DB_DATABASE": "SRPU",
