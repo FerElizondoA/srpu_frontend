@@ -4,10 +4,10 @@ services:
   backend-srpu-local:
     build: .
     environment:
-      SRPU_B_APP_DB_HOST: "10.200.4.111"
-      SRPU_B_APP_DB_USER: "SRPUAdmin"
+      SRPU_B_APP_DB_HOST: "10.200.4.161"
+      SRPU_B_APP_DB_USER: "root"
       SRPU_B_APP_DB_DATABASE: "SRPU"
-      SRPU_B_APP_DB_PASSWORD: "I8k2LaF8GHRW"
+      SRPU_B_APP_DB_PASSWORD: "xQRA0xBC87Gs"
       SRPU_B_APP_PORT: "3000"
       SRPU_B_APP_JWT_SECRET_KEY: "2A95F5CCD11DE255FEE9451BDE433"
       SRPU_B_APP_TOKEN_HEADER_KEY: "authorization"

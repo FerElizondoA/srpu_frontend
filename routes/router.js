@@ -140,6 +140,20 @@ const {
   addPathDocSol,
   getDetailPathDocSol,
 } = require("../controllers/PathDocSol.js");
+const {
+  getAutorizaciones,
+  getDetailAutorizacion,
+  modifyAutorizacion,
+  deleteAutorizacion,
+  createAutorizacion,
+} = require("../controllers/Autorizaciones.js");
+const {
+  deleteFideicomiso,
+  modifyFideicomiso,
+  getDetailFideicomiso,
+  getFideicomisos,
+  createFideicomiso,
+} = require("../controllers/Fideicomisos.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -706,6 +720,50 @@ router.post("/create-addPathDocSol", (req, res) => {
 router.get("/get-DetailPathDocSol", (req, res) => {
   getDetailPathDocSol(req, res);
 });
+
+//#region Autorizacion
+router.post("/create-autorizacion", (req, res, express) => {
+  createAutorizacion(req, res);
+});
+
+router.get("/get-autorizacion", (req, res) => {
+  getAutorizaciones(req, res);
+});
+
+router.get("/detail-autorizacion", (req, res) => {
+  getDetailAutorizacion(req, res);
+});
+
+router.put("/modify-autorizacion", (req, res) => {
+  modifyAutorizacion(req, res);
+});
+
+router.delete("/delete-autorizacion", (req, res) => {
+  deleteAutorizacion(req, res);
+});
+//#endregion
+
+//#region Fideicomiso
+router.post("/create-fideicomiso", (req, res, express) => {
+  createFideicomiso(req, res);
+});
+
+router.get("/get-fideicomiso", (req, res) => {
+  getFideicomisos(req, res);
+});
+
+router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+  getDetailFideicomiso(req, res);
+});
+
+router.put("/modify-fideicomiso", (req, res) => {
+  modifyFideicomiso(req, res);
+});
+
+router.delete("/delete-fideicomiso", (req, res) => {
+  deleteFideicomiso(req, res);
+});
+//#endregion
 
 router.get("/", (req, res) => {
   // listen for the 'close' event on the request
