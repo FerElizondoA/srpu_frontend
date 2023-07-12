@@ -166,7 +166,6 @@ module.exports = {
     db.query(
       `CALL sp_BajaLogicaFideicomiso('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error",
