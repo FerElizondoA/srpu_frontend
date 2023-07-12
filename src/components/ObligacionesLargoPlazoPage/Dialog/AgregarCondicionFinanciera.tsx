@@ -29,6 +29,7 @@ import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
   CondicionFinancieraLP,
+  Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoLargoPlazo/condicion_financiera"
@@ -82,6 +83,10 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
   const disposicionImporte: number = useLargoPlazoStore(
     (state) => state.disposicion.importe
+  );
+
+  const tablaDisposicion: Disposicion[] = useLargoPlazoStore(
+    (state) => state.tablaDisposicion
   );
 
   // PAGOS DE CAPITAL
@@ -143,10 +148,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const addRow = () => {
     const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposicion,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,
@@ -163,10 +165,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const updateRow = (indexA: number) => {
     const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposicion,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,

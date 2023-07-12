@@ -233,6 +233,9 @@ export function Resumen() {
     // }
   ];
 
+
+
+
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
     []
   );

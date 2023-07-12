@@ -1,9 +1,10 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { IComisiones, TasaInteres } from "../condicion_financiera"
+import { IComisiones, TasaInteres, Disposicion } from "../condicion_financiera"
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado"
 
 export interface PagosCapitalLargoPlazoSlice {
+  tablaDisposicion: Disposicion[];
   disposicion: { fechaDisposicion: string; importe: number };
 
   pagosDeCapital: {
@@ -28,7 +29,12 @@ export interface PagosCapitalLargoPlazoSlice {
   catalogoTasaReferencia: ICatalogo[];
   catalogoDiasEjercicio: ICatalogo[];
 
-  changeDisposicion: (newFechaContratacion: string, newImporte: number) => void;
+  changeDisposicion: (fechaDisposicion: string, importe: number) => void;
+
+  addDisposicion: (Disposicion: Disposicion) => void;
+  updateDisposicion: (Disposicion: Disposicion[]) => void;
+  cleanDisposicion: () => void;
+  removeDisposicion: (index: number) => void;
 
   changeCapital: (
     fechaPrimerPago: string,
@@ -62,7 +68,11 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<PagosCapitalLargoPl
   set,
   get
 ) => ({
-  disposicion: { fechaDisposicion: new Date().toString(), importe: 0 },
+  tablaDisposicion: [],
+  disposicion: {
+    fechaDisposicion: new Date().toString(),
+    importe: 0,
+  },
   pagosDeCapital: {
     fechaPrimerPago: new Date().toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
@@ -86,13 +96,28 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<PagosCapitalLargoPl
   catalogoTasaReferencia: [],
   catalogoDiasEjercicio: [],
 
-  changeDisposicion: (newFechaContratacion: string, newImporte: number) =>
+  changeDisposicion: (fechaDisposicion: string, importe: number) =>
     set(() => ({
       disposicion: {
-        fechaDisposicion: newFechaContratacion,
-        importe: newImporte,
+        fechaDisposicion: fechaDisposicion,
+        importe: importe,
       },
     })),
+
+  addDisposicion: (Disposicion: Disposicion) =>
+    set((state) => ({
+      tablaDisposicion: [...state.tablaDisposicion, Disposicion],
+    })),
+
+  updateDisposicion: (Disposicion: Disposicion[]) =>
+    set(() => ({ tablaDisposicion: Disposicion })),
+
+  removeDisposicion: (index: number) =>
+    set((state) => ({
+      tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
+    })),
+
+  cleanDisposicion: () => set((state) => ({ tablaDisposicion: [] })),
 
   changeCapital: (
     fechaPrimerPago: string,
@@ -109,7 +134,6 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<PagosCapitalLargoPl
         numeroDePago: numeroDePago,
       },
     })),
-    
 
   changeTasaInteres: (tasaInteres: any) =>
     set(() => ({

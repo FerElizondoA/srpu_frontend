@@ -11,6 +11,10 @@ export interface TasaInteres {
   tasaReferencia: string;
   sobreTasa: string;
 }
+export interface Disposicion {
+  fechaDisposicion: string;
+  importe: number;
+}
 
 export interface IComisiones {
   fechaContratacion: string;
@@ -25,7 +29,7 @@ export interface IComisiones {
 
 export type CondicionFinancieraLP = {
   id: number;
-  disposicion: { fechaDisposicion: string; importe: number };
+  disposicion: Disposicion[];
   pagosDeCapital: {
     fechaPrimerPago: string;
     periodicidadDePago: string;
@@ -66,7 +70,7 @@ CondicionFinancieraLargoPlazoSlice
     
   loadCondicionFinanciera: (condicionFinanciera: CondicionFinancieraLP) => {
     useLargoPlazoStore.setState({
-      disposicion: condicionFinanciera.disposicion
+      tablaDisposicion: condicionFinanciera.disposicion
     });
     useLargoPlazoStore.setState({
       pagosDeCapital:{

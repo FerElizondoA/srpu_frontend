@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
-  CondicionFinanciera,
+  CondicionFinancieraLP,
   IComisiones,
   TasaInteres,
-} from "../../../store/condicion_financiera";
+} from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import {
   Grid,
   Table,
@@ -26,7 +26,6 @@ import {
   StyledTableRow,
   ConfirmButton,
 } from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
@@ -34,10 +33,12 @@ import { format, lightFormat } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import CloseIcon from "@mui/icons-material/Close";
-import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+import CloseIcon from "@mui/icons-material/Close"; 
+import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera"
+
 import { queries } from "../../../queries";
-import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+// import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+import {Disposicion} from "../../../store/CreditoLargoPlazo/condicion_financiera"
 
 interface Head {
   label: string;
@@ -82,6 +83,15 @@ export const headsComision: readonly Head[] = [
   },
   {
     label: "IVA",
+  },
+];
+
+export const headsDisposicion: readonly Head[] = [
+  {
+    label: "Fecha de disposición",
+  },
+  {
+    label: "Importe",
   },
 ];
 
@@ -134,9 +144,11 @@ export function CondicionesFinancieras() {
 
   const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
+  const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (
     <Grid container >
@@ -199,31 +211,35 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center" component="th" scope="row">
-                        {format(
-                          new Date(row.disposicion.fechaDisposicion),
-                          "dd/MM/yyyy"
-                        )}
+                      <StyledTableCell 
+                      sx={{ padding: "1px 30px 1px 0"}} 
+                      align="center" 
+                      component="th" 
+                      scope="row">
+                       <Button
+                          onClick={() => {
+                            setRowDisposicion(row.disposicion);
+                            setOpenDisposicion(true);
+                          }}
+                        ><InfoOutlinedIcon />
+                        </Button>
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
-                        {"$" + row.disposicion.importe}
-                      </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell  align="center">
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell  align="center">
                         {row.pagosDeCapital.periodicidadDePago}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell  align="center">
                         {format(
                           new Date(row.pagosDeCapital.fechaPrimerPago),
                           "dd/MM/yyyy"
                         )}
                       </StyledTableCell>
-                      <StyledTableCell sx={{ padding: "1px 30px 1px 0"}} align="center">
+                      <StyledTableCell  align="center">
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);

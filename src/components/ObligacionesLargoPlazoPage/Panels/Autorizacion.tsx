@@ -20,12 +20,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell } from "../../CustomComponents";
+import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 
 interface Head {
   label: string;
 }
 
 const heads :Head[] = [
+  {
+    label: "Accion"
+  },
   {
     label: "Tipo de autorización"
   },
@@ -54,6 +58,32 @@ const heads :Head[] = [
 
 export function Autorizacion() {
   const [autorizacion, setAutorizacion] = useState("");
+  const [openDialogNuevaAutorizacion, setOpenNuevaAutorizacion] = useState(false);
+
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  };
+
+  const [busqueda, setBusqueda] = useState("");
+ 
+
+  const handleChange = (dato: string) => {
+    setBusqueda(dato);
+  };
+
+  const handleSearch = () => {
+    // filtrarDatos();
+  };
+
+  const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
+  const [accion, setAccion] = useState("Agregar");
+  const [indexA, setIndexA] = useState(0);
+
+  const changeOpenAgregarState = (open: boolean) => {
+    changeAgregarFideicomisos(open);
+  };
+
 
   return (
     <Grid container sx={queries.contenedorAutorizacion} direction={"column"} justifyContent={"space-evenly"}>
@@ -83,13 +113,15 @@ export function Autorizacion() {
         <Grid width={"20%"} display={"flex"} justifyContent={"space-evenly"} alignItems={"center"}>
           <Grid lg={3}>
             <Button sx={queries.buttonContinuar} variant="outlined">
-              Nuevo
+              Asignar
             </Button>
           </Grid>
 
           <Grid lg={3}>
-            <Button sx={queries.buttonCancelar} variant="outlined">
-              Asignar
+            <Button sx={queries.buttonCancelar} variant="outlined"
+              onClick={() => setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion)}
+            >
+              Nuevo
             </Button>
           </Grid>
         </Grid>
@@ -141,6 +173,13 @@ export function Autorizacion() {
 
         </Paper>
       </Grid>
+
+      {/* <DialogNuevaAutorizacion 
+        handler={changeAgregarFideicomisos}
+        openState={openAgregarFideicomisos}
+        accion={accion}
+        indexA={indexA}
+      /> */}
     </Grid>
   );
 }
