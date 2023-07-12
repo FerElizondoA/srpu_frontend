@@ -190,6 +190,12 @@ export function Documentacion() {
 
                     <StyledTableCell scope="row">
                       <TextField
+                        disabled={
+                          val.archivo?.name ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          val.nombreArchivo ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        }
                         size="small"
                         multiline
                         value={val.nombreArchivo}
