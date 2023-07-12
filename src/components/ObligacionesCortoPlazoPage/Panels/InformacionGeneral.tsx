@@ -248,8 +248,6 @@ export function InformacionGeneral() {
         height: "79vh",
         flexDirection: "column",
         justifyContent: "space-evenly",
-
-        // backgroundColor:"red"
       }}
     >
       <Grid item display="flex" justifyContent={"space-evenly"}>
@@ -675,7 +673,20 @@ export function InformacionGeneral() {
               /^[\s]*$/.test(generalEntePublico.Descripcion)
             }
             variant="outlined"
-            onClick={() => addRows()}
+            onClick={() => {
+              changeObligadoSolidarioAval({
+                obligadoSolidario: {
+                  Id: "",
+                  Descripcion: "",
+                },
+                tipoEntePublicoObligado: "",
+                entePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              });
+              addRows();
+            }}
           >
             <CheckIcon fontSize="small" />
             AGREGAR

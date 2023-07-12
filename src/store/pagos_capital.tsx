@@ -4,6 +4,11 @@ import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/
 import { Disposicion, TasaInteres } from "./condicion_financiera";
 
 export interface PagosCapitalSlice {
+  disposicionesParciales: boolean;
+  setDisposicionesParciales: (bol: boolean) => void;
+  tasasParciales: boolean;
+  setTasasParciales: (bol: boolean) => void;
+
   tablaDisposicion: Disposicion[];
   disposicion: {
     fechaDisposicion: string;
@@ -18,8 +23,8 @@ export interface PagosCapitalSlice {
 
   tablaTasaInteres: TasaInteres[];
   tasaInteres: {
-    tasaFija: false;
-    tasaVariable: false;
+    tasaFija: boolean;
+    tasaVariable: boolean;
     tasa: number;
     fechaPrimerPago: string;
     diasEjercicio: { Id: string; Descripcion: string };
@@ -70,6 +75,16 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   set,
   get
 ) => ({
+  disposicionesParciales: false,
+  setDisposicionesParciales: (bol: boolean) =>
+    set(() => ({
+      disposicionesParciales: bol,
+    })),
+  tasasParciales: false,
+  setTasasParciales: (bol: boolean) =>
+    set(() => ({
+      tasasParciales: bol,
+    })),
   tablaDisposicion: [],
   disposicion: {
     fechaDisposicion: new Date().toString(),

@@ -16,7 +16,7 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import Swal from "sweetalert2";
-import { ConfirmacionDescargaSolicitud } from "../Dialog/DialogEnviarSolicitud"
+import { ConfirmacionDescargaSolicitud } from "../Dialog/DialogEnviarSolicitud";
 
 export let erroresValidacion: string[] = [];
 
@@ -47,7 +47,8 @@ export function SolicituDeInscripcion() {
       PlazoDias: state.informacionGeneral.plazo,
       Destino: state.informacionGeneral.destino.Descripcion,
       Denominacion: state.informacionGeneral.denominacion,
-      InstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Descripcion,
+      InstitucionFinanciera:
+        state.informacionGeneral.institucionFinanciera.Descripcion,
     };
     /////////////////// Por definir /////////////////////
     let entePublicoObligado = "";
@@ -97,7 +98,7 @@ export function SolicituDeInscripcion() {
 
     for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
       const item = state.tablaCondicionesFinancieras[0];
-      importe = item.disposicion.importe;
+      importe = item.disposicion[0].importe;
       numeroDePago = item.pagosDeCapital.numeroDePago;
       PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
       TasaDeInteres = item.tasaInteres;
@@ -164,7 +165,6 @@ export function SolicituDeInscripcion() {
         "Sección Información General: Seleccione la Institución Financiera."
       );
     }
-
 
     if (
       state.tablaCondicionesFinancieras[0] === undefined ||
@@ -233,17 +233,16 @@ export function SolicituDeInscripcion() {
 
     ///////////////////NUEVOOOOOOOSSS
 
-
-
-    if (CostosGastos.destinoCG === undefined || CostosGastos.destinoCG === null ||
-      /^[\s]*$/.test(CostosGastos.destinoCG)) {
+    if (
+      CostosGastos.destinoCG === undefined ||
+      CostosGastos.destinoCG === null ||
+      /^[\s]*$/.test(CostosGastos.destinoCG)
+    ) {
       err = 1;
       erroresValidacion.push(
         "Sección Información General: Seleccione el Destino en costos y gastos"
       );
     }
-
-
 
     /////////////////// FIN NUEVOOOOOOOSSS
 
@@ -266,7 +265,7 @@ export function SolicituDeInscripcion() {
     if (err === 0) {
       setOpenDialogEnviar(!openDialogEnviar);
     } else {
-      setOpenDialogValidacion(!openDialogValidacion)
+      setOpenDialogValidacion(!openDialogValidacion);
     }
     //     Toast.fire({
     //         showConfirmButton: false,
@@ -309,14 +308,15 @@ export function SolicituDeInscripcion() {
             // setOpenDialogEnviar(!openDialogEnviar);
           }}
         >
-          {localStorage.getItem("Rol") === "Verificador" ? "Finalizar" : "Enviar"}
+          {localStorage.getItem("Rol") === "Verificador"
+            ? "Finalizar"
+            : "Enviar"}
         </Button>
 
         <ConfirmacionDescargaSolicitud
           handler={setOpenDialogEnviar}
           openState={openDialogEnviar}
         />
-
       </Grid>
 
       <Dialog open={openDialogValidacion}>
@@ -325,28 +325,34 @@ export function SolicituDeInscripcion() {
             Favor de revisar los siguientes apartados:
           </Typography>
         </DialogTitle>
-        <DialogContent sx={{
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: ".3vw",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#AF8C55",
-            outline: "1px solid slategrey",
-            borderRadius: 1,
-          },
-        }}>
+        <DialogContent
+          sx={{
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".3vw",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
+          }}
+        >
           {erroresValidacion?.map((item, index) => {
             const division = item.indexOf(":");
-            const markedText = division !== -1 ? item.substring(0, division + 1) : item;
-            const restText = division !== -1 ? item.substring(division + 1) : "";
+            const markedText =
+              division !== -1 ? item.substring(0, division + 1) : item;
+            const restText =
+              division !== -1 ? item.substring(division + 1) : "";
             return (
-              <Typography
-                key={index}
-                color={"red"}
-              >
-                <span style={{ color: "red", fontWeight: "bold" }}>*{markedText}</span>
-                <span style={{ color: "red" }}>{restText} <br /><br /> </span>
+              <Typography key={index} color={"red"}>
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  *{markedText}
+                </span>
+                <span style={{ color: "red" }}>
+                  {restText} <br />
+                  <br />{" "}
+                </span>
               </Typography>
             );
           })}
@@ -362,9 +368,6 @@ export function SolicituDeInscripcion() {
           </Button>
         </DialogActions>
       </Dialog>
-
-
     </Grid>
-
   );
 }

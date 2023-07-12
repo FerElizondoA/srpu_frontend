@@ -31,10 +31,11 @@ import {
   CondicionFinancieraLP,
   IComisiones,
   TasaInteres,
-} from "../../../store/CreditoLargoPlazo/condicion_financiera"
+} from "../../../store/CreditoLargoPlazo/condicion_financiera";
 //"../../../store/condicion_financiera";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { Disposicion } from "../../../store/condicion_financiera";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -84,12 +85,16 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.disposicion.importe
   );
 
+  const tablaDisposiciones: Disposicion[] = useCortoPlazoStore(
+    (state) => state.tablaDisposicion
+  );
+
   // PAGOS DE CAPITAL
   const capitalFechaPrimerPago: string = useLargoPlazoStore(
     (state) => state.pagosDeCapital.fechaPrimerPago
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
+    useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
   const capitalNumeroPago: number = useLargoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
@@ -101,8 +106,8 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   // TASA EFECTIVA
   const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
-    
+    useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
+
   const tasaEfectivaTasaEfectiva: string = useLargoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
@@ -143,10 +148,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const addRow = () => {
     const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposiciones,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,
@@ -163,10 +165,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const updateRow = (indexA: number) => {
     const CF: CondicionFinancieraLP = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposiciones,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,
@@ -204,11 +203,15 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
-  const [dialogValidacion, setDialogValidacion] = useState('')
+  const [dialogValidacion, setDialogValidacion] = useState("");
 
   return (
     <>
-      <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={props.openState}
+        TransitionComponent={Transition}
+      >
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
@@ -228,31 +231,22 @@ export function AgregarCondicionFinanciera(props: Props) {
                 </Typography>
               </Grid>
             </Grid>
-            <Grid
-              item
-              sx={{ top: 12, bottom: "auto" }}
-            >
+            <Grid item sx={{ top: 12, bottom: "auto" }}>
               <ThemeProvider theme={theme}>
                 <Button
-                  disabled={ 
+                  disabled={
                     tablaComisiones.length === 0 ||
-                    tablaTasaInteres.length ===0 
+                    tablaTasaInteres.length === 0
                   }
-                  sx={
-                    queries.buttonContinuar
-                  }
+                  sx={queries.buttonContinuar}
                   onClick={() => {
                     if (tablaComisiones.length === 0) {
-                      setDialogValidacion("Comisiones/TasaEfectiva")
-                      setOpenDialogConfirm(!openDialogConfirm)
-                    }
-
-                    else if (tablaTasaInteres.length === 0) {
-                      setDialogValidacion("Disposición/Pagos de Capital")
-                      setOpenDialogConfirm(!openDialogConfirm)
-                    }
-
-                    else {
+                      setDialogValidacion("Comisiones/TasaEfectiva");
+                      setOpenDialogConfirm(!openDialogConfirm);
+                    } else if (tablaTasaInteres.length === 0) {
+                      setDialogValidacion("Disposición/Pagos de Capital");
+                      setOpenDialogConfirm(!openDialogConfirm);
+                    } else {
                       if (props.accion === "Agregar") {
                         addRow();
                         props.handler(false);
@@ -265,10 +259,9 @@ export function AgregarCondicionFinanciera(props: Props) {
                     }
                   }}
                 >
-              
-
-                  <Typography sx={queries.medium_text}>{props.accion}</Typography>
-
+                  <Typography sx={queries.medium_text}>
+                    {props.accion}
+                  </Typography>
                 </Button>
               </ThemeProvider>
             </Grid>
@@ -284,8 +277,14 @@ export function AgregarCondicionFinanciera(props: Props) {
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Disposición/Pagos de Capital" sx={queries.bold_text}></Tab>
-              <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
+              <Tab
+                label="Disposición/Pagos de Capital"
+                sx={queries.bold_text}
+              ></Tab>
+              <Tab
+                label="Comisiones/Tasa Efectiva"
+                sx={queries.bold_text}
+              ></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DisposicionPagosCapital />}
@@ -297,18 +296,17 @@ export function AgregarCondicionFinanciera(props: Props) {
 
       <Dialog
         open={openDialogConfirm}
-        onClose={() => { setOpenDialogConfirm(!openDialogConfirm) }}
+        onClose={() => {
+          setOpenDialogConfirm(!openDialogConfirm);
+        }}
       >
-        <DialogTitle sx={queries.bold_text}>
-          ADVERTENCIA
-        </DialogTitle>
+        <DialogTitle sx={queries.bold_text}>ADVERTENCIA</DialogTitle>
         <DialogContent>
           <DialogContentText sx={queries.text}>
-            {
-              tablaComisiones.length === 0 && tablaTasaInteres.length === 0
-                ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
-                : 'No se puede realizar la accion de agregar condición financiera por falta datos en: ' + dialogValidacion
-            }
+            {tablaComisiones.length === 0 && tablaTasaInteres.length === 0
+              ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
+              : "No se puede realizar la accion de agregar condición financiera por falta datos en: " +
+                dialogValidacion}
           </DialogContentText>
           <DialogActions>
             <Button

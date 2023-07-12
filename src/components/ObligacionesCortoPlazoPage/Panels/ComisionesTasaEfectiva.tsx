@@ -159,6 +159,9 @@ export function ComisionesTasaEfectiva() {
 
   React.useEffect(() => {
     getTiposComision();
+    if (tablaComisiones[0]?.tipoDeComision === "N/A") {
+      setNoAplica(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -167,7 +170,7 @@ export function ComisionesTasaEfectiva() {
       fechaContratacion: comisionFechaContratacion,
       tipoDeComision: comisionTipoComision.Descripcion,
       periodicidadDePago: comisionPeriodicidadPago.Descripcion,
-      monto: moneyMask(comisionMonto.toString()) || "N/A",
+      monto: comisionMontoFijo ? moneyMask(comisionMonto) : moneyMask("0"),
       porcentaje: comisionPorcentaje || "N/A",
       iva: comisionIva,
     };
@@ -215,7 +218,7 @@ export function ComisionesTasaEfectiva() {
       porcentajeFijo: true,
       montoFijo: false,
       porcentaje: "",
-      monto: "",
+      monto: moneyMask("0"),
       iva: "NO",
     });
   };
@@ -326,13 +329,13 @@ export function ComisionesTasaEfectiva() {
                   if (!noAplica) {
                     let tab = {
                       fechaContratacion: new Date().toString(),
-                      tipoDeComision: "No aplica",
-                      periodicidadDePago: "No aplica",
-                      porcentajeFijo: "No aplica",
-                      montoFijo: "No aplica",
-                      porcentaje: "No aplica",
-                      monto: "No aplica",
-                      iva: "No aplica",
+                      tipoDeComision: "N/A",
+                      periodicidadDePago: "N/A",
+                      porcentajeFijo: "N/A",
+                      montoFijo: "N/A",
+                      porcentaje: "N/A",
+                      monto: "N/A",
+                      iva: "N/A",
                     };
                     addComision(tab);
                   }
@@ -513,18 +516,9 @@ export function ComisionesTasaEfectiva() {
             }
             onChange={(v) => {
               if (
-                validator.isNumeric(
-                  v.target.value
-                    .replace(".", "")
-                    .replace(",", "")
-                    .replace(/\D/g, "")
-                ) &&
-                parseInt(
-                  v.target.value
-                    .replace(".", "")
-                    .replace(",", "")
-                    .replace(/\D/g, "")
-                ) < 9999999999999999
+                validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                !noAplica &&
+                parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
               ) {
                 radioValue === "Porcentaje Fijo"
                   ? changeComision({
@@ -687,7 +681,7 @@ export function ComisionesTasaEfectiva() {
                           : "N/A"}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {row.monto > 0 ? row.monto.toString() : "N/A"}
+                        {row.monto.toString()}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         {row.iva}

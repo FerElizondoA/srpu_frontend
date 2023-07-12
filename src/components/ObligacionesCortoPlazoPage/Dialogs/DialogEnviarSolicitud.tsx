@@ -21,6 +21,7 @@ import Swal from "sweetalert2";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -45,7 +46,7 @@ export function ConfirmacionDescargaSolicitud({
     (state) => state.modificaSolicitud
   );
 
-  const [comentario, setComentario] = React.useState("");
+  // const [comentario, setComentario] = React.useState("");
 
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -69,6 +70,61 @@ export function ConfirmacionDescargaSolicitud({
   }, [openState === true]);
 
   const navigate = useNavigate();
+
+  const changeEncabezado: Function = useCortoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+  const changeInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+  // const addCondicionFinanciera: Function = useCortoPlazoStore(
+  //   (state) => state.addCondicionFinanciera
+  // );
+  const cleanComentario: Function = useCortoPlazoStore(
+    (state) => state.cleanComentario
+  );
+
+  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+
+  const reset = () => {
+    changeEncabezado({
+      tipoDocumento: "Crédito simple a corto plazo",
+      solicitanteAutorizado: {
+        Solicitante: localStorage.getItem("IdUsuario") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      tipoEntePublico: {
+        Id: "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      organismo: {
+        Id: "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      fechaContratacion: new Date().toString(),
+    });
+
+    changeInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+
+    cleanObligadoSolidarioAval();
+    updatecondicionFinancieraTable([]);
+    cleanComentario();
+  };
   return (
     <Dialog
       open={openState}
@@ -122,7 +178,7 @@ export function ConfirmacionDescargaSolicitud({
           </Grid>
         )}
 
-        <TextField
+        {/* <TextField
           fullWidth
           label="Comentario"
           multiline
@@ -134,7 +190,7 @@ export function ConfirmacionDescargaSolicitud({
               setComentario(texto.target.value);
             }
           }}
-        />
+        /> */}
       </DialogContent>
 
       <DialogActions>
@@ -156,12 +212,19 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(idSolicitud, JSON.stringify(comentarios));
                     Swal.fire({
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""]
+                    );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -170,12 +233,6 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                createNotification(
-                  "Crédito simple a corto plazo",
-                  "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""]
-                );
-                navigate("../ConsultaDeSolicitudes");
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(
                   editCreadoPor,
@@ -183,12 +240,19 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(idSolicitud, JSON.stringify(comentarios));
                     Swal.fire({
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "Se te ha asignado una solicitud de inscripción",
+                      [idUsuarioAsignado]
+                    );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -197,12 +261,6 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
-                createNotification(
-                  "Crédito simple a corto plazo",
-                  "Se te ha asignado una solicitud de inscripción",
-                  [idUsuarioAsignado]
-                );
               }
             } else {
               if (localStorage.getItem("Rol") === "Verificador") {
@@ -212,12 +270,14 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(idSolicitud, JSON.stringify(comentarios));
                     Swal.fire({
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -226,7 +286,6 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
                 createNotification(
                   "Crédito simple a corto plazo",
                   "La solicitud de inscripción está lista para firmar",
@@ -239,12 +298,14 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(idSolicitud, JSON.stringify(comentarios));
                     Swal.fire({
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -253,20 +314,14 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
-                createNotification(
-                  "Crédito simple a corto plazo",
-                  "Se te ha asignado una solicitud de inscripción",
-                  [idUsuarioAsignado]
-                );
               }
             }
-            navigate("../ConsultaDeSolicitudes");
           }}
           variant="text"
           sx={queries.buttonContinuar}
         >
-          {comentario == null || /^[\s]*$/.test(comentario)
+          {JSON.stringify(comentarios) == null ||
+          /^[\s]*$/.test(JSON.stringify(comentarios))
             ? `${
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Enviar"

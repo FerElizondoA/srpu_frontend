@@ -131,7 +131,7 @@ export function DisposicionPagosCapital() {
     (state) => state.informacionGeneral.monto
   );
 
-  // TABLA TASA DE INTERES
+  // TABLA Disposicion
   let tablaDisposicion: any = useCortoPlazoStore(
     (state) => state.tablaDisposicion
   );
@@ -204,6 +204,22 @@ export function DisposicionPagosCapital() {
     (state) => state.cleanTasaInteres
   );
 
+  const setDisposicionesParciales: Function = useCortoPlazoStore(
+    (state) => state.setDisposicionesParciales
+  );
+
+  const disposicionesParciales: boolean = useCortoPlazoStore(
+    (state) => state.disposicionesParciales
+  );
+
+  const setTasasParciales: Function = useCortoPlazoStore(
+    (state) => state.setTasasParciales
+  );
+
+  const tasasParciales: boolean = useCortoPlazoStore(
+    (state) => state.tasasParciales
+  );
+
   useEffect(() => {
     getPeriocidadPago();
     getTasaReferencia();
@@ -237,6 +253,9 @@ export function DisposicionPagosCapital() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
+    if (tasasParciales === false) {
+      cleanTasaInteres();
+    }
     changeTasa();
   };
 
@@ -279,22 +298,21 @@ export function DisposicionPagosCapital() {
     });
   };
 
-  const [disposicionesParciales, setDisposicionesParciales] = useState(false);
-  const [tasasParciales, setTasasParciales] = useState(false);
-
   useEffect(() => {
     if (disposicionesParciales === false) {
+      // cleanDisposicion();
       changeDisposicion(
-        disposicionFechaDisposicion,
+        disposicionFechaDisposicion || new Date().toString(),
         moneyMask(monto.toString())
       );
     }
   }, [monto, disposicionesParciales]);
 
   useEffect(() => {
-    cleanTasaInteres();
-    reset();
-  }, [tasasParciales]);
+    if (tasasParciales === false) {
+      cleanTasaInteres();
+    }
+  }, [monto, tasasParciales]);
 
   useEffect(() => {
     if (
@@ -332,15 +350,27 @@ export function DisposicionPagosCapital() {
     tasaInteresSobreTasa,
   ]);
 
-  const [sumaDisposicion, setSumaDisposicion] = useState(disposicionImporte);
+  useEffect(() => {
+    if (
+      disposicionFechaDisposicion !== "" &&
+      disposicionImporte.toString() !== "$ 0.00" &&
+      disposicionImporte !== 0 &&
+      disposicionesParciales === false &&
+      tablaDisposicion.length === 0
+    ) {
+      addRowsDisposicion();
+    }
+  }, [disposicionFechaDisposicion, disposicionImporte, disposicionesParciales]);
+
   const [restante, setRestante] = useState(0);
 
   useEffect(() => {
     let loc = 0.0;
     tablaDisposicion.map((value: any, index: number) => {
-      loc += parseFloat(value.importe.replaceAll("$", "").replaceAll(",", ""));
+      loc += parseFloat(
+        value.importe.toString().replaceAll("$", "").replaceAll(",", "")
+      );
     });
-    setSumaDisposicion(parseFloat(loc.toFixed(2)));
 
     let res = 0.0;
     res =
@@ -486,12 +516,12 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
-                      cleanDisposicion();
+                      // cleanDisposicion();
                       setDisposicionesParciales(!disposicionesParciales);
-                      changeDisposicion(
-                        disposicionFechaDisposicion,
-                        moneyMask("0")
-                      );
+                      // changeDisposicion(
+                      //   disposicionFechaDisposicion,
+                      //   moneyMask("0")
+                      // );
                       // if (!noAplica) {
                       //   let tab = {
                       //     fechaContratacion: new Date().toString(),
@@ -519,7 +549,7 @@ export function DisposicionPagosCapital() {
                 adapterLocale={enGB}
               >
                 <DatePicker
-                  disabled={!disposicionesParciales}
+                  // disabled={!disposicionesParciales}
                   value={new Date(disposicionFechaDisposicion)}
                   onChange={(date) => {
                     changeDisposicion(
@@ -736,21 +766,7 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={tasasParciales}
                     onChange={(v) => {
-                      // cleanComision();
                       setTasasParciales(!tasasParciales);
-                      // if (!noAplica) {
-                      //   let tab = {
-                      //     fechaContratacion: new Date().toString(),
-                      //     tipoDeComision: "No aplica",
-                      //     periodicidadDePago: "No aplica",
-                      //     porcentajeFijo: "No aplica",
-                      //     montoFijo: "No aplica",
-                      //     porcentaje: "No aplica",
-                      //     monto: "No aplica",
-                      //     iva: "No aplica",
-                      //   };
-                      //   addComision(tab);
-                      // }
                     }}
                   />
                 }

@@ -126,6 +126,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const cleanComision: Function = useCortoPlazoStore(
     (state) => state.cleanComision
   );
+  const cleanDisposicion: Function = useCortoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
 
   // CONDICION FINANCIERA
   const addCondicionFinanciera: Function = useCortoPlazoStore(
@@ -192,6 +195,7 @@ export function AgregarCondicionFinanciera(props: Props) {
     });
     cleanTasaInteres();
     cleanComision();
+    cleanDisposicion();
   };
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
@@ -210,6 +214,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               edge="start"
               onClick={() => {
                 props.handler(false);
+                setTabIndex(0);
                 reset();
               }}
               sx={{ color: "white" }}
@@ -249,6 +254,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                         reset();
                       }
                     }
+                    setTabIndex(0);
                   }}
                 >
                   <Typography sx={queries.medium_text}>

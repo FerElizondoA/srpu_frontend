@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CondicionFinanciera,
   Disposicion,
@@ -98,7 +98,10 @@ const heads: readonly Head[] = [
     label: "Acciones",
   },
   {
-    label: "Disposición(es)",
+    label: "Fecha Disposición",
+  },
+  {
+    label: "Importe",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -145,6 +148,17 @@ export function CondicionesFinancieras() {
   const [openComision, setOpenComision] = useState(false);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
+  const setDisposicionesParciales: Function = useCortoPlazoStore(
+    (state) => state.setDisposicionesParciales
+  );
+  const setTasasParciales: Function = useCortoPlazoStore(
+    (state) => state.setTasasParciales
+  );
+
+  const changeTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.changeTasaInteres
+  );
+
   return (
     <Grid container>
       <Grid item sx={queries.tablaCondicionFinanciera}>
@@ -188,6 +202,38 @@ export function CondicionesFinancieras() {
                               setAccion("Editar");
                               setIndexA(index);
                               loadCondicionFinanciera(row);
+
+                              if (row.disposicion.length > 1) {
+                                setDisposicionesParciales(true);
+                              }
+                              if (row.tasaInteres.length > 1) {
+                                setTasasParciales(true);
+                              } else {
+                                changeTasaInteres({
+                                  tasaFija: row.tasaInteres[0].tasaFija,
+                                  tasaVariable: row.tasaInteres[0].tasaVariable,
+                                  tasa: row.tasaInteres[0].tasa,
+                                  fechaPrimerPago:
+                                    row.tasaInteres[0].fechaPrimerPago ||
+                                    new Date().toString(),
+                                  diasEjercicio: {
+                                    Id: "",
+                                    Descripcion:
+                                      row.tasaInteres[0].diasEjercicio,
+                                  },
+                                  periocidadPago: {
+                                    Id: "",
+                                    Descripcion:
+                                      row.tasaInteres[0].periocidadPago,
+                                  },
+                                  tasaReferencia: {
+                                    Id: "",
+                                    Descripcion:
+                                      row.tasaInteres[0].tasaReferencia,
+                                  },
+                                  sobreTasa: row.tasaInteres[0].sobreTasa,
+                                });
+                              }
                             }}
                           >
                             <EditIcon />
@@ -215,14 +261,31 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        <Button
-                          onClick={() => {
-                            setRowDisposicion(row.disposicion);
-                            setOpenDisposicion(true);
-                          }}
-                        >
-                          <InfoOutlinedIcon />
-                        </Button>
+                        {row.disposicion.length > 1
+                          ? null
+                          : format(
+                              new Date(row.disposicion[0].fechaDisposicion),
+                              "dd/MM/yyyy"
+                            )}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.disposicion.length > 1 ? (
+                          <Button
+                            onClick={() => {
+                              setRowDisposicion(row.disposicion);
+                              setOpenDisposicion(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
+                        ) : (
+                          row.disposicion[0].importe
+                        )}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -493,22 +556,13 @@ export function CondicionesFinancieras() {
         >
           Agregar
         </Button>
-        {/* {changeOpenAgregarState ? ( */}
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}
           accion={accion}
           indexA={indexA}
         />
-        {/* ) : null} */}
       </Grid>
-
-      {/* <Grid item md={6} lg={6}>
-          <DeleteButton variant="outlined" 
-          //onClick={() =>
-             //deleteRows()}
-             >ELIMINAR</DeleteButton>
-        </Grid> */}
     </Grid>
   );
 }

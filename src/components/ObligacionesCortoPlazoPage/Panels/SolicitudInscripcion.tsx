@@ -206,7 +206,7 @@ export function SolicitudInscripcion() {
 
     for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
       const item = state.tablaCondicionesFinancieras[0];
-      // importe = item.disposicion.importe;
+      importe = item.disposicion[0].importe;
       numeroDePago = item.pagosDeCapital.numeroDePago;
       PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
       TasaDeInteres = item.tasaInteres;
@@ -277,7 +277,7 @@ export function SolicitudInscripcion() {
         "Sección <strong>Condiciones Financieras</strong>:Agregar al menos una Tasa De Interés."
       );
     }
-    if (importe === undefined || importe === 0) {
+    if (importe === undefined || importe === 0 || importe === 0) {
       err = 1;
 
       errores.push(
