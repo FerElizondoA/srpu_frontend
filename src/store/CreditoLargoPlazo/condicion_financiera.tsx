@@ -12,6 +12,10 @@ export interface TasaInteres {
   tasaReferencia: string;
   sobreTasa: string;
 }
+export interface Disposicion {
+  fechaDisposicion: string;
+  importe: number;
+}
 
 export interface IComisiones {
   fechaContratacion: string;

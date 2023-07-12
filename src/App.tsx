@@ -25,6 +25,7 @@ import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
+import { Fideicomisos } from "./screens/Fideicomisos/Fideicomisos";
 
 export const appTheme = createTheme({
   palette: {
@@ -74,7 +75,6 @@ function App() {
         <Routes>
           <Route index element={<Init />} />
           <Route path="/" element={<HomePage />}></Route>
-
           <Route path="firmar" element={<Firma />} />
           <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
           <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
@@ -96,6 +96,7 @@ function App() {
             path="obligacionesLargoPlazo"
             element={<ObligacionesLargoPlazoPage />}
           ></Route>
+          <Route path="fideicomisos" element={<Fideicomisos />}></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>

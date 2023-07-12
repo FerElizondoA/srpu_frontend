@@ -14,12 +14,12 @@ export type ObligadoSolidarioAval = {
 export type GeneralGastosCostos = {
   destino: string,
   detalleInversion: string,
-  periodoAdministracion: string, // NO SABEMOS AUN 
+  //periodoAdministracion: string, // NO SABEMOS AUN 
   gastosAdicionales: number,
   claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
   descripcion: string,
   monto: number,
-  periodoFinanciamiento: string, //AUN NO SABEMOS
+  //periodoFinanciamiento: string, //AUN NO SABEMOS
   saldoVigente: number,  //AUN NO SABEMOS
   montoGastosAdicionales: number,
 };
@@ -54,12 +54,12 @@ export interface InformacionGeneralLargoPlazoSlice {
   generalGastosCostos: {
     destino: { Id: string, Descripcion: string },
     detalleInversion: { Id: string, Descripcion: string },
-    periodoAdministracion: string, // NO SABEMOS AUN 
+    //periodoAdministracion: string, // NO SABEMOS AUN 
     gastosAdicionales: number,
     claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
     descripcion: string,
     monto: number,
-    periodoFinanciamiento: string, //AUN NO SABEMOS
+    //periodoFinanciamiento: string, //AUN NO SABEMOS
     saldoVigente: number,  //AUN NO SABEMOS
     montoGastosAdicionales: number,
 
@@ -104,12 +104,12 @@ export interface InformacionGeneralLargoPlazoSlice {
     destino: { Id: string, Descripcion: string },
     detalleInversion: { Id: string, Descripcion: string },
     //inversiónPúblicaProductiva : {},
-    periodoAdministracion: string, // NO SABEMOS AUN 
+    //periodoAdministracion: string, // NO SABEMOS AUN 
     gastosAdicionales: number,
     claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
     descripcion: string,
     monto: number,
-    periodoFinanciamiento: string, //AUN NO SABEMOS
+    //periodoFinanciamiento: string, //AUN NO SABEMOS
     saldoVigente: number,  //AUN NO SABEMOS
     montoGastosAdicionales: number,
   ) => void;
@@ -159,12 +159,12 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   generalGastosCostos: {
     destino: { Id: "", Descripcion: "" },
     detalleInversion: { Id: "", Descripcion: "" },
-    periodoAdministracion: "", // NO SABEMOS AUN 
+    //periodoAdministracion: "", // NO SABEMOS AUN 
     gastosAdicionales: 0,
     claveInscripcionFinanciamiento: "", // NO SABEMOS AUN 
     descripcion: "",
     monto: 0,
-    periodoFinanciamiento: "", //AUN NO SABEMOS
+    //periodoFinanciamiento: "", //AUN NO SABEMOS
     saldoVigente: 0,  //AUN NO SABEMOS
     montoGastosAdicionales: 0,
   },

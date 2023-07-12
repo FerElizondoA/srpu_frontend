@@ -11,7 +11,7 @@ import { FuenteDePago } from "../../components/ObligacionesLargoPlazoPage/Panels
 import { InformacionGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
 import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
 import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
-import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
+//import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/main";
 import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
@@ -38,50 +38,43 @@ export function ObligacionesLargoPlazoPage() {
   }, []);
 
   return (
-    <Grid>
+    <>
       <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item>
         <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Typography
-            sx={{
-              fontSize: "2.5ch",
-              fontFamily: "MontserratBold",
-              color: "#AF8C55",
-              padding: "1px 1px 1px 70px",
-              "@media (max-width: 600px)": {
-                // XS (extra small) screen
-                fontSize: "1rem",
-              },
-              "@media (min-width: 601px) and (max-width: 900px)": {
-                // SM (small) screen
-                fontSize: "1.5ch",
-              },
-            }}
-          >
-            Crédito Simple a Largo Plazo
-          </Typography>
-          <Button
-            onClick={() => {
-              setOpenDialogBorrador(!openDialogBorrador);
-            }}
-            sx={{
-              backgroundColor: "#15212f",
-              color: "white",
-              "&&:hover": {
-                backgroundColor: "rgba(47, 47, 47, 0.4)",
-                color: "#000",
-              },
-              fontSize: "90%",
-              borderRadius: "0.8vh",
-              textTransform: "capitalize",
-              position: "relative",
-              left: "500px",
-            }}
-          >
-            Guardar
-          </Button>
+          <Grid width={"91%"} display={"flex"} justifyContent={"center"}>
+            <Typography
+              sx={{
+                fontSize: "2.5ch",
+                fontFamily: "MontserratBold",
+                color: "#AF8C55",
+                //padding: "1px 1px 1px 70px",
+                "@media (max-width: 600px)": {
+                  // XS (extra small) screen
+                  fontSize: "1rem",
+                },
+                "@media (min-width: 601px) and (max-width: 900px)": {
+                  // SM (small) screen
+                  fontSize: "1.5ch",
+                },
+              }}
+            >
+              Crédito Simple a Largo Plazo
+            </Typography>
+          </Grid>
+
+          <Grid width={"2%"}  display={"flex"} justifyContent={"end"} sx={{}}>
+            <Button
+              onClick={() => {
+                setOpenDialogBorrador(!openDialogBorrador);
+              }}
+              sx={{ ...queries.buttonContinuar }}
+            >
+              Guardar
+            </Button>
+          </Grid>
         </Grid>
 
         <Grid
@@ -113,7 +106,7 @@ export function ObligacionesLargoPlazoPage() {
               sx={queries.bold_text_Largo_Plazo}
             />
             <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
-            <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} />
+            {/* <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} /> */}
             <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
             <Tab
               label="Solicitud de Inscripción"
@@ -129,14 +122,14 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 3 && <FuenteDePago />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
-      {tabIndex === 6 && <TablaDePagos />}
-      {tabIndex === 7 && <Resumen />}
-      {tabIndex === 8 && <SolicituDeInscripcion />}
+      {/*tabIndex === 6 && <TablaDePagos />*/}
+      {tabIndex === 6 && <Resumen />}
+      {tabIndex === 7 && <SolicituDeInscripcion />}
 
       <ConfirmacionBorradorSolicitud
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
       />
-    </Grid>
+    </>
   );
 }

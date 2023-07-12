@@ -47,6 +47,9 @@ import Swal from "sweetalert2";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { useCortoPlazoStore } from "../../store/main";
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import GavelIcon from '@mui/icons-material/Gavel';
+
 export interface IData {
   Id: string;
   Institucion: string;
@@ -83,6 +86,10 @@ export function LateralMenu() {
 
   const [openInscripcion, setOpenInscripcion] = React.useState(true);
   const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
+
+  const [openFuentePago, setOpenFuentePago] = useState(false);
+  const [handleOpenFuentePago, setHandleOpenFuentePago] = useState(false);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] =
     useState(false);
@@ -99,6 +106,10 @@ export function LateralMenu() {
 
   const handleFinanciamientoClick = () => {
     setOpenFinanciamiento(!openFinanciamiento);
+  };
+
+  const handleFuentePagoClick = () => {
+    setOpenFuentePago(!openFuentePago)
   };
 
   let hash = 0;
@@ -614,6 +625,38 @@ export function LateralMenu() {
                         Firmar con e.firma
                       </Typography>
                     </ListItemButton>
+
+                    <ListItemButton
+                      onClick={handleFuentePagoClick}
+                    >
+                      <ListItemIcon>
+                        <CurrencyExchangeIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Fuente de pago
+                      </Typography>
+                      {openFuentePago ? <ExpandMore /> : <ExpandLess />}
+                    </ListItemButton>
+
+                    <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
+                      <List>
+                        <ListItemButton
+                         sx={{ marginLeft: 2 }}
+                          onClick={() =>
+                            /*setOpenFuentePago(!openFuentePago)*/
+                            navigate("../fideicomisos")
+                          }
+                        >
+                          
+                          <ListItemIcon>
+                            <GavelIcon  />
+                          </ListItemIcon>
+                          <Typography sx={queries.bold_text}>
+                            Fideicomiso
+                          </Typography>
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
 
                     <ListItemButton onClick={handleClickBandejas}>
                       <ListItemIcon>

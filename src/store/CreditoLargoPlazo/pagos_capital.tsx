@@ -1,14 +1,11 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { Disposicion, IComisiones, TasaInteres } from "../condicion_financiera";
+import { IComisiones, TasaInteres, Disposicion } from "../condicion_financiera";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export interface PagosCapitalLargoPlazoSlice {
   tablaDisposicion: Disposicion[];
-  disposicion: {
-    fechaDisposicion: string;
-    importe: number;
-  };
+  disposicion: { fechaDisposicion: string; importe: number };
 
   pagosDeCapital: {
     fechaPrimerPago: string;
