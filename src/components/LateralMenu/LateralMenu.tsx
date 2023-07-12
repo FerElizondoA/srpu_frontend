@@ -555,7 +555,7 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
-                        {/* <ListItemButton
+                        <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             reset();
@@ -569,7 +569,7 @@ export function LateralMenu() {
                           <Typography sx={queries.bold_text}>
                             Crédito simple largo plazo
                           </Typography>
-                        </ListItemButton> */}
+                        </ListItemButton>
 
                         {/* <ListItemButton sx={{ marginLeft: 4 }}>
                               <ListItemIcon>
