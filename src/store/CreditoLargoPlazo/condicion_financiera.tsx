@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { useLargoPlazoStore } from "./main";
-import { Disposicion } from "../condicion_financiera";
 
 export interface TasaInteres {
   tasaFija: boolean;
