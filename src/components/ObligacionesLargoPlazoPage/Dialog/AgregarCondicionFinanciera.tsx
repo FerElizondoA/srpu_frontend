@@ -29,7 +29,6 @@ import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
   CondicionFinancieraLP,
-  Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoLargoPlazo/condicion_financiera";
