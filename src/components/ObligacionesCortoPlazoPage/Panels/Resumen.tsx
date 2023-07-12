@@ -316,7 +316,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }}>
+              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* Revisar */}
 
                 <Tooltip title="Añadir comentario a este apartado">
@@ -364,7 +364,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }}>
+              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* Revisar */}
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
@@ -915,26 +915,29 @@ export function Resumen() {
                   {documentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        <Tooltip title="Añadir comentario a este apartado">
-                          <IconButton
-                            color={
-                              comentario[row.descripcionTipo] &&
-                              comentario[row.descripcionTipo] !== ""
-                                ? "success"
-                                : "primary"
-                            }
-                            size="small"
-                            onClick={() => {
-                              setOpenComentarioApartado({
-                                open: true,
-                                apartado: row.descripcionTipo,
-                                tab: "TabDocumentacion",
-                              });
-                            }}
-                          >
-                            <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                          </IconButton>
-                        </Tooltip>
+                        <StyledTableCell sx={{ width: "5%" }}>
+                          <Tooltip title="Añadir comentario a este apartado">
+                            <IconButton
+                              color={
+                                comentario[row.descripcionTipo] &&
+                                comentario[row.descripcionTipo] !== ""
+                                  ? "success"
+                                  : "primary"
+                              }
+                              size="small"
+                              onClick={() => {
+                                setOpenComentarioApartado({
+                                  open: true,
+                                  apartado: row.descripcionTipo,
+                                  tab: "TabDocumentacion",
+                                });
+                              }}
+                            >
+                              <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
                             sx={{
