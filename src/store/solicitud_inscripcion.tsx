@@ -405,7 +405,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+     "http://192.168.137.152:7000/documento_srpu",
       {
         nombre: SolicitudDescarga.Nombre,
         cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
@@ -416,7 +416,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
         monto: SolicitudDescarga.Monto,
         destino: SolicitudDescarga.Destino,
         dias: SolicitudDescarga.PlazoDias,
-        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico,
+        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico || "No aplica",
         tasaefectiva: SolicitudDescarga.TasaEfectiva,
         tasaInteres: SolicitudDescarga.TasaInteres,
         reglas: SolicitudDescarga.Reglas,
@@ -433,8 +433,8 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       },
       {
         headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-          "Access-Control-Allow-Origin": "*",
+          //Authorization: localStorage.getItem("jwtToken"),
+          //"Access-Control-Allow-Origin": "*",
         },
         responseType: "arraybuffer",
       }
