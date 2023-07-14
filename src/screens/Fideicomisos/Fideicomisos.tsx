@@ -22,7 +22,7 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { queries } from "../../queries";
-import { AgregarFideicomisos } from "../../components/ObligacionesLargoPlazoPage/Dialog/AgregarFideicomisos";
+import { AgregarFideicomisos } from "./AgregarFideicomisos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 // import DownloadIcon from "@mui/icons-material/Download";
@@ -64,7 +64,6 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
- 
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -75,12 +74,8 @@ export function Fideicomisos() {
   };
 
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
-  const [accion, setAccion] = useState("Agregar");
-  const [indexA, setIndexA] = useState(0);
 
-  const changeOpenAgregarState = (open: boolean) => {
-    changeAgregarFideicomisos(open);
-  };
+  const [accion, setAccion] = useState("Agregar");
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -144,7 +139,10 @@ export function Fideicomisos() {
         <Grid width={"10%"} display={"flex"} justifyContent={"start"}>
           <Button
             sx={{ ...queries.buttonContinuar }}
-            onClick={() => changeAgregarFideicomisos(!openAgregarFideicomisos)}
+            onClick={() => {
+              setAccion("Agregar");
+              changeAgregarFideicomisos(!openAgregarFideicomisos);
+            }}
           >
             Agregar
           </Button>
@@ -157,7 +155,9 @@ export function Fideicomisos() {
             <TableHead>
               <TableRow>
                 {heads.map((head, index) => (
-                  <StyledTableCell key={index} align="center">{head.label}</StyledTableCell>
+                  <StyledTableCell key={index} align="center">
+                    {head.label}
+                  </StyledTableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -195,7 +195,13 @@ export function Fideicomisos() {
                   </Tooltip>
 
                   <Tooltip title="Editar">
-                    <IconButton type="button">
+                    <IconButton
+                      type="button"
+                      onClick={() => {
+                        setAccion("Editar");
+                        changeAgregarFideicomisos(!openAgregarFideicomisos);
+                      }}
+                    >
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
@@ -221,7 +227,6 @@ export function Fideicomisos() {
         handler={changeAgregarFideicomisos}
         openState={openAgregarFideicomisos}
         accion={accion}
-        indexA={indexA}
       />
     </Grid>
   );

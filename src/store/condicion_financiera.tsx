@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
-import { ICatalogo } from "../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export interface TasaInteres {
   tasaFija: boolean;

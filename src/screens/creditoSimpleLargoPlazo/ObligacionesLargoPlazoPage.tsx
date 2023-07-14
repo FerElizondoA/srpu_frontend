@@ -65,7 +65,7 @@ export function ObligacionesLargoPlazoPage() {
             </Typography>
           </Grid>
 
-          <Grid width={"2%"}  display={"flex"} justifyContent={"end"} sx={{}}>
+          <Grid width={"2%"} display={"flex"} justifyContent={"end"} sx={{}}>
             <Button
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);

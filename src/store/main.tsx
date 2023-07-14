@@ -16,19 +16,25 @@ import {
   CondicionFinancieraSlice,
 } from "./condicion_financiera";
 import { createDocumentoSlice, DocumentosSlice } from "./documentacion";
-import { ComentarioApartadoSlice, createComentarioSlice } from "./comentarios_apartado";
+import {
+  ComentarioApartadoSlice,
+  createComentarioSlice,
+} from "./comentarios_apartado";
+import {
+  createFideicomisoSlice,
+  FideicomisoSlice,
+} from "./Fideicomiso/fideicomiso";
 
-export type SolicitudStore = 
-  EncabezadoSlice &
+export type SolicitudStore = EncabezadoSlice &
   InformacionGeneralSlice &
   SolicitudInscripcionSlice &
   PagosCapitalSlice &
   TasaEfectivaSlice &
   CondicionFinancieraSlice &
   DocumentosSlice &
-  ComentarioApartadoSlice;
+  ComentarioApartadoSlice &
+  FideicomisoSlice;
 
-  
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
   ...createInformacionGeneralSlice(...x),
@@ -38,5 +44,5 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createCondicionFinancieraSlice(...x),
   ...createDocumentoSlice(...x),
   ...createComentarioSlice(...x),
+  ...createFideicomisoSlice(...x),
 }));
-

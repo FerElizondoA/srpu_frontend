@@ -131,6 +131,12 @@ export const queries = {
       height: 430,
     },
   },
+  tablaFideicomisario: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   tablaUsuarios: {
     height: 560,
@@ -311,7 +317,4 @@ export const queries = {
       height: "32rem",
     },
   },
-
-
-
 };

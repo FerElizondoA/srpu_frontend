@@ -17,9 +17,10 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
-import { queries } from "../../../queries";
-import { DatoGeneralesFideicomiso } from "./DatosGeneralesFideicomiso";
-import { TipoDeMovimiento } from "./TipoDeMovimiento";
+import { queries } from "../../queries";
+import { DatoGeneralesFideicomiso } from "../../components/ObligacionesLargoPlazoPage/Dialog/DatosGeneralesFideicomiso";
+import { TipoDeMovimiento } from "../../components/ObligacionesLargoPlazoPage/Dialog/TipoDeMovimiento";
+import { useCortoPlazoStore } from "../../store/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -29,13 +30,6 @@ const Transition = forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-type Props = {
-  handler: Function;
-  openState: boolean;
-  accion: string;
-  indexA: number;
-};
 
 const theme = createTheme({
   components: {
@@ -52,7 +46,15 @@ const theme = createTheme({
   },
 });
 
-export function AgregarFideicomisos(props: Props) {
+export function AgregarFideicomisos({
+  handler,
+  openState,
+  accion,
+}: {
+  handler: Function;
+  openState: boolean;
+  accion: string;
+}) {
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
@@ -64,18 +66,14 @@ export function AgregarFideicomisos(props: Props) {
 
   return (
     <>
-      <Dialog
-        fullScreen
-        open={props.openState}
-        TransitionComponent={Transition}
-      >
+      <Dialog fullScreen open={openState} TransitionComponent={Transition}>
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <Tooltip title="Volver">
               <IconButton
                 edge="start"
                 onClick={() => {
-                  props.handler(false);
+                  handler(false);
                   //reset();
                 }}
                 sx={{ color: "white" }}
@@ -87,7 +85,7 @@ export function AgregarFideicomisos(props: Props) {
             <Grid container>
               <Grid item>
                 <Typography sx={queries.bold_text}>
-                  {props.accion} Fideicomiso
+                  {accion} Fideicomiso
                 </Typography>
               </Grid>
             </Grid>
@@ -95,9 +93,7 @@ export function AgregarFideicomisos(props: Props) {
             <Grid item sx={{ top: 12, bottom: "auto" }}>
               <ThemeProvider theme={theme}>
                 <Button sx={queries.buttonContinuar} onClick={() => {}}>
-                  <Typography sx={queries.medium_text}>
-                    {props.accion}
-                  </Typography>
+                  <Typography sx={queries.medium_text}>{accion}</Typography>
                 </Button>
               </ThemeProvider>
             </Grid>
