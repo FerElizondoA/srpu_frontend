@@ -131,6 +131,12 @@ export const queries = {
       height: 430,
     },
   },
+  tablaFideicomisario: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   tablaUsuarios: {
     height: 560,
@@ -233,7 +239,7 @@ export const queries = {
   },
 
   tablaSolicitudInscripcion: {
-    height: "54vh",
+    height: "50vh",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: ".2vw",
@@ -245,7 +251,7 @@ export const queries = {
       borderRadius: 1,
     },
     "@media (min-width: 1870px)": {
-      height: "64vh",
+      height: "62vh",
     },
   },
 
@@ -267,6 +273,48 @@ export const queries = {
     },
     "@media (min-width: 1870px)": {
       height: "49rem",
+    },
+  },
+
+  contenedorTipoMovimiento: {
+    "@media (min-width: 513px)": {
+      height: "35rem",
+    },
+    "@media (min-width: 600px)": {
+      height: "36rem",
+    },
+    "@media (min-width: 900px)": {
+      height: "37rem",
+    },
+    "@media (min-width: 1300px)": {
+      height: "38rem",
+    },
+    "@media (min-width: 1485px)": {
+      height: "38rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "49rem",
+    },
+  },
+
+  contenedorDatoGenerales: {
+    "@media (min-width: 513px)": {
+      height: "25rem",
+    },
+    "@media (min-width: 600px)": {
+      height: "26rem",
+    },
+    "@media (min-width: 900px)": {
+      height: "27rem",
+    },
+    "@media (min-width: 1300px)": {
+      height: "28rem",
+    },
+    "@media (min-width: 1485px)": {
+      height: "29rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "32rem",
     },
   },
 };

@@ -27,7 +27,7 @@ import {
   Paper,
 } from "@mui/material";
 
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import enGB from "date-fns/locale/en-GB";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -36,10 +36,7 @@ import { DateInput } from "../../CustomComponents";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { queries } from "../../../queries";
 
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useCortoPlazoStore } from "../../../store/main";
@@ -84,12 +81,12 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
 
 export function ComisionesTasaEfectiva() {
@@ -111,7 +108,7 @@ export function ComisionesTasaEfectiva() {
 
   // TASA EFECTIVA
   const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
+    useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
   const tasaEfectivaTasaEfectiva: string = useLargoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
@@ -124,9 +121,9 @@ export function ComisionesTasaEfectiva() {
     (state) => state.comision.fechaContratacion
   );
   const comisionTipoComision: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.comision.tipoDeComision);
+    useLargoPlazoStore((state) => state.comision.tipoDeComision);
   const comisionPeriodicidadPago: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.comision.periodicidadDePago);
+    useLargoPlazoStore((state) => state.comision.periodicidadDePago);
   const comisionPorcentajeFijo: boolean = useLargoPlazoStore(
     (state) => state.comision.porcentajeFijo
   );
@@ -169,6 +166,7 @@ export function ComisionesTasaEfectiva() {
       porcentaje: comisionPorcentaje || "N/A",
       iva: comisionIva,
     };
+
     addComision(tab);
   };
 
@@ -219,12 +217,18 @@ export function ComisionesTasaEfectiva() {
   };
 
   return (
-
-    <Grid container width={"100%"} height={"115%"} flexDirection="column" justifyContent={"space-evenly"} >
-
+    <Grid
+      container
+      width={"100%"}
+      height={"115%"}
+      flexDirection="column"
+      justifyContent={"space-evenly"}
+    >
       <Grid item>
         <Divider>
-          <Typography color={"#af8c55 "} fontWeight={"bold"}>TASA EFECTIVA</Typography>
+          <Typography color={"#af8c55 "} fontWeight={"bold"}>
+            TASA EFECTIVA
+          </Typography>
         </Divider>
       </Grid>
 
@@ -233,10 +237,10 @@ export function ComisionesTasaEfectiva() {
           <Grid item>
             <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
             <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
               fullWidth
               options={catalogoDiasEjercicio}
               getOptionLabel={(option) => option.Descripcion}
@@ -299,12 +303,14 @@ export function ComisionesTasaEfectiva() {
 
       <Grid item>
         <Divider>
-          <Typography color={"#af8c55 "} fontWeight={"bold"}>COMISIONES</Typography>
+          <Typography color={"#af8c55 "} fontWeight={"bold"}>
+            COMISIONES
+          </Typography>
         </Divider>
       </Grid>
 
       <Grid item container justifyContent={"space-evenly"}>
-        <Grid item >
+        <Grid item>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -337,8 +343,8 @@ export function ComisionesTasaEfectiva() {
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             fullWidth
             options={catalogoTiposComision}
             getOptionLabel={(option) => option.Descripcion}
@@ -378,13 +384,13 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
-        <Grid item >
+        <Grid item>
           <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
           <Autocomplete
             clearText="Borrar"
             noOptionsText="Sin opciones"
-            closeText = "Cerrar"
-            openText = "Abrir"
+            closeText="Cerrar"
+            openText="Abrir"
             fullWidth
             options={catalogoPeriocidadDePago}
             getOptionLabel={(option) => option.Descripcion}
@@ -452,7 +458,7 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid item container justifyContent={"space-evenly"} >
+      <Grid item container justifyContent={"space-evenly"}>
         <Grid item>
           {radioValue === "Porcentaje Fijo" ? (
             <InputLabel sx={queries.medium_text}>Porcentaje</InputLabel>
@@ -469,25 +475,25 @@ export function ComisionesTasaEfectiva() {
             onChange={(v) => {
               radioValue === "Porcentaje Fijo"
                 ? changeComision({
-                  fechaContratacion: comisionFechaContratacion,
-                  tipoDeComision: comisionTipoComision,
-                  periodicidadDePago: comisionPeriodicidadPago,
-                  porcentajeFijo: comisionPorcentajeFijo,
-                  montoFijo: comisionMontoFijo,
-                  porcentaje: v.target.value,
-                  monto: "",
-                  iva: comisionIva,
-                })
+                    fechaContratacion: comisionFechaContratacion,
+                    tipoDeComision: comisionTipoComision,
+                    periodicidadDePago: comisionPeriodicidadPago,
+                    porcentajeFijo: comisionPorcentajeFijo,
+                    montoFijo: comisionMontoFijo,
+                    porcentaje: v.target.value,
+                    monto: "",
+                    iva: comisionIva,
+                  })
                 : changeComision({
-                  fechaContratacion: comisionFechaContratacion,
-                  tipoDeComision: comisionTipoComision,
-                  periodicidadDePago: comisionPeriodicidadPago,
-                  porcentajeFijo: comisionPorcentajeFijo,
-                  montoFijo: comisionMontoFijo,
-                  porcentaje: "",
-                  monto: v.target.value,
-                  iva: comisionIva,
-                });
+                    fechaContratacion: comisionFechaContratacion,
+                    tipoDeComision: comisionTipoComision,
+                    periodicidadDePago: comisionPeriodicidadPago,
+                    porcentajeFijo: comisionPorcentajeFijo,
+                    montoFijo: comisionMontoFijo,
+                    porcentaje: "",
+                    monto: v.target.value,
+                    iva: comisionIva,
+                  });
             }}
             InputLabelProps={{
               style: {
@@ -526,7 +532,7 @@ export function ComisionesTasaEfectiva() {
             label="Causa IVA"
             control={
               <Checkbox
-                checked={comisionIva === 'SI'}
+                checked={comisionIva === "SI"}
                 onChange={(v) => {
                   changeComision({
                     fechaContratacion: comisionFechaContratacion,
@@ -552,7 +558,9 @@ export function ComisionesTasaEfectiva() {
                 comisionFechaContratacion === "" ||
                 comisionTipoComision.Descripcion === "" ||
                 comisionPeriodicidadPago.Descripcion === "" ||
-                (radioValue === "Porcentaje Fijo" && comisionPorcentaje === "") || (radioValue === 'Monto Fijo' && comisionMonto === "")
+                (radioValue === "Porcentaje Fijo" &&
+                  comisionPorcentaje === "") ||
+                (radioValue === "Monto Fijo" && comisionMonto === "")
               }
               variant="outlined"
               onClick={() => {
@@ -566,20 +574,23 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid container sx={queries.tablaDisposicionPagosCapital} >
+      <Grid container sx={queries.tablaDisposicionPagosCapital}>
         <Paper sx={{ height: "100%", width: "88%", overflow: "auto" }}>
-          <TableContainer sx={{
-            maxHeight: "100%", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }}>
+          <TableContainer
+            sx={{
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -598,9 +609,7 @@ export function ComisionesTasaEfectiva() {
                         <Tooltip title="Eliminar">
                           <IconButton
                             type="button"
-                            onClick={() =>
-                              removeComision(index)
-                            }
+                            onClick={() => removeComision(index)}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -635,6 +644,5 @@ export function ComisionesTasaEfectiva() {
         </Paper>
       </Grid>
     </Grid>
-
   );
 }

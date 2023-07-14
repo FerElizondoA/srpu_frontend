@@ -123,11 +123,6 @@ export function Documentacion() {
     tab: "Tab",
   });
 
-  useEffect(() => {
-    console.log("Esto son los tipos de documentos: ",catalogoTiposDocumentosObligatorios );
-    
-  }, [])
-  
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
 
   return (
@@ -195,6 +190,12 @@ export function Documentacion() {
 
                     <StyledTableCell scope="row">
                       <TextField
+                        disabled={
+                          val.archivo?.name ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          val.nombreArchivo ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        }
                         size="small"
                         multiline
                         value={val.nombreArchivo}

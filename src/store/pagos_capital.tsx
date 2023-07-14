@@ -1,10 +1,19 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { TasaInteres } from "./condicion_financiera";
+import { Disposicion, TasaInteres } from "./condicion_financiera";
 
 export interface PagosCapitalSlice {
-  disposicion: { fechaDisposicion: string; importe: number };
+  disposicionesParciales: boolean;
+  setDisposicionesParciales: (bol: boolean) => void;
+  tasasParciales: boolean;
+  setTasasParciales: (bol: boolean) => void;
+
+  tablaDisposicion: Disposicion[];
+  disposicion: {
+    fechaDisposicion: string;
+    importe: number;
+  };
 
   pagosDeCapital: {
     fechaPrimerPago: string;
@@ -14,8 +23,8 @@ export interface PagosCapitalSlice {
 
   tablaTasaInteres: TasaInteres[];
   tasaInteres: {
-    tasaFija: false;
-    tasaVariable: false;
+    tasaFija: boolean;
+    tasaVariable: boolean;
     tasa: number;
     fechaPrimerPago: string;
     diasEjercicio: { Id: string; Descripcion: string };
@@ -28,7 +37,12 @@ export interface PagosCapitalSlice {
   catalogoTasaReferencia: ICatalogo[];
   catalogoDiasEjercicio: ICatalogo[];
 
-  changeDisposicion: (newFechaContratacion: string, newImporte: number) => void;
+  changeDisposicion: (fechaDisposicion: string, importe: number) => void;
+
+  addDisposicion: (Disposicion: Disposicion) => void;
+  updateDisposicion: (Disposicion: Disposicion[]) => void;
+  cleanDisposicion: () => void;
+  removeDisposicion: (index: number) => void;
 
   changeCapital: (
     fechaPrimerPago: string,
@@ -61,7 +75,21 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   set,
   get
 ) => ({
-  disposicion: { fechaDisposicion: new Date().toString(), importe: 0 },
+  disposicionesParciales: false,
+  setDisposicionesParciales: (bol: boolean) =>
+    set(() => ({
+      disposicionesParciales: bol,
+    })),
+  tasasParciales: false,
+  setTasasParciales: (bol: boolean) =>
+    set(() => ({
+      tasasParciales: bol,
+    })),
+  tablaDisposicion: [],
+  disposicion: {
+    fechaDisposicion: new Date().toString(),
+    importe: 0,
+  },
   pagosDeCapital: {
     fechaPrimerPago: new Date().toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
@@ -85,13 +113,28 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   catalogoTasaReferencia: [],
   catalogoDiasEjercicio: [],
 
-  changeDisposicion: (newFechaContratacion: string, newImporte: number) =>
+  changeDisposicion: (fechaDisposicion: string, importe: number) =>
     set(() => ({
       disposicion: {
-        fechaDisposicion: newFechaContratacion,
-        importe: newImporte,
+        fechaDisposicion: fechaDisposicion,
+        importe: importe,
       },
     })),
+
+  addDisposicion: (Disposicion: Disposicion) =>
+    set((state) => ({
+      tablaDisposicion: [...state.tablaDisposicion, Disposicion],
+    })),
+
+  updateDisposicion: (Disposicion: Disposicion[]) =>
+    set(() => ({ tablaDisposicion: Disposicion })),
+
+  removeDisposicion: (index: number) =>
+    set((state) => ({
+      tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
+    })),
+
+  cleanDisposicion: () => set((state) => ({ tablaDisposicion: [] })),
 
   changeCapital: (
     fechaPrimerPago: string,

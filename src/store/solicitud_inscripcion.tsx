@@ -146,9 +146,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        state.changeIdSolicitud(data.data.Id);
+        state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
         state.saveFiles(data.data.Id, true);
-        state.cleanComentario();
       });
   },
   modificaSolicitud: async (
@@ -186,9 +187,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         {
           IdSolicitud: state.idSolicitud,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-          // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
           IdEntePublico: state.encabezado.organismo.Id,
-          //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
@@ -253,22 +252,24 @@ export const createSolicitudInscripcionSlice: StateCreator<
     return false;
   },
   addComentario: async (Id: string, comentario: any) => {
-    await axios
-      .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
-        {
-          IdSolicitud: Id,
-          Comentario: comentario,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
+    if (comentario.length !== 2) {
+      await axios
+        .post(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+          {
+            IdSolicitud: Id,
+            Comentario: comentario,
+            IdUsuario: localStorage.getItem("IdUsuario"),
           },
-        }
-      )
-      .then(({ data }) => {})
-      .catch((e) => {});
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then(({ data }) => {})
+        .catch((e) => {});
+    }
   },
   saveFiles: async (idSolicitud: string, addRoute: boolean) => {
     const state = useCortoPlazoStore.getState();

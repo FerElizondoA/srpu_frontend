@@ -55,18 +55,18 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     const isMissingOriginalAmount =
       montoOriginal === null ||
       montoOriginal === 0 ||
-      montoOriginal === undefined;
+      montoOriginal.toString() === "0" ||
+      montoOriginal === undefined ||
+      montoOriginal.toString() === "$ 0.00";
 
     if (isMissingInstitution && isMissingOriginalAmount) {
       setInfo(
-        "No se ha seleccionado la institución bancaria y no se ha proporcionado un monto válido en INFORMACIÓN GENERAL."
+        "Seleccionar Institución financiera y monto en INFORMACIÓN GENERAL."
       );
     } else if (isMissingInstitution) {
-      setInfo(
-        "No se ha seleccionado la institución bancaria en INFORMACIÓN GENERAL."
-      );
+      setInfo("Seleccionar información financiera en INFORMACIÓN GENERAL.");
     } else if (isMissingOriginalAmount) {
-      setInfo("No se ha proporcionado un monto en INFORMACIÓN GENERAL.");
+      setInfo("Seleccionar monto en INFORMACIÓN GENERAL.");
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
@@ -81,6 +81,59 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   );
 
   const navigate = useNavigate();
+
+  const changeEncabezado: Function = useCortoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+  const changeInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+  // const addCondicionFinanciera: Function = useCortoPlazoStore(
+  //   (state) => state.addCondicionFinanciera
+  // );
+  const cleanComentario: Function = useCortoPlazoStore(
+    (state) => state.cleanComentario
+  );
+
+  const reset = () => {
+    changeEncabezado({
+      tipoDocumento: "Crédito simple a corto plazo",
+      solicitanteAutorizado: {
+        Solicitante: localStorage.getItem("IdUsuario") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      tipoEntePublico: {
+        Id: "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      organismo: {
+        Id: "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      fechaContratacion: new Date().toString(),
+    });
+
+    changeInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+
+    cleanObligadoSolidarioAval();
+    updatecondicionFinancieraTable([]);
+    cleanComentario();
+  };
 
   return (
     <Dialog
@@ -127,6 +180,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
+                  reset();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
@@ -212,7 +266,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                   : "Verificacion",
                 JSON.stringify(comentario)
               )
-                .then(() => {
+                .then((r: any) => {
                   Swal.fire({
                     icon: "success",
                     title: "Mensaje",

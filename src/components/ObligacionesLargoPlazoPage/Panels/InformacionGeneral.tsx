@@ -30,7 +30,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
 import { differenceInDays, startOfDay } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
@@ -83,39 +82,35 @@ const heads: Head[] = [
 
 const headsGC: Head[] = [
   {
-    label: "Destino",
+    label: "Accion",
   },
   {
-    label: "Detalle de la Inversión",
+    label: "Destino / gastos y costos relacionados con la contratación",
   },
   {
-    label: "Inversión Pública Productiva",
-  },
-  {
-    label: "Periodo de Administración",
-  },
-  {
-    label: "Gastos Adicionales",
-  },
-  {
-    label: "Clave de Inscripción del Financiamiento",
+    label: "Detalle de la inversion",
   },
   {
     label: "Descripcion",
   },
   {
+    label: "Clave de Inscripción del Financiamiento",
+  },
+  {
     label: "Monto",
   },
-  {
-    label: "Periodo de Financiamiento (Meses)",
-  },
-  {
-    label: "Saldo Vigente",
-  },
-  {
-    label: "Monto Gastos Adicionales",
-  },
 ];
+
+export const moneyMask = (value: string) => {
+  value = value.replace(/\D/g, "");
+
+  const options = { minimumFractionDigits: 2 };
+
+  const result = new Intl.NumberFormat("en-US", options).format(
+    parseInt(value) / 100
+  );
+  return "$ " + result;
+};
 
 export function InformacionGeneral() {
   // GET CATALOGOS
@@ -214,9 +209,9 @@ export function InformacionGeneral() {
   const generalGCDetalleInversion: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.generalGastosCostos.detalleInversion);
 
-  const generalGCperiodoAdministracion: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.periodoAdministracion
-  );
+  // const generalGCperiodoAdministracion: string = useLargoPlazoStore(
+  //   (state) => state.generalGastosCostos.periodoAdministracion
+  // );
 
   const generalGCGastosAdicionales: number = useLargoPlazoStore(
     (state) => state.generalGastosCostos.gastosAdicionales
@@ -234,9 +229,9 @@ export function InformacionGeneral() {
     (state) => state.generalGastosCostos.monto
   );
 
-  const generalGCPeriodoFinanciamiento: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.periodoFinanciamiento
-  );
+  // const generalGCPeriodoFinanciamiento: string = useLargoPlazoStore(
+  //   (state) => state.generalGastosCostos.periodoFinanciamiento
+  // );
 
   const generalGCSaldoVigente: number = useLargoPlazoStore(
     (state) => state.generalGastosCostos.saldoVigente
@@ -316,9 +311,9 @@ export function InformacionGeneral() {
 
   const [plazoD, setPlazo] = useState(0);
 
-  const [periodoDeAdministracion, setPeriodoAdministracion] = useState(
-    generalGCperiodoAdministracion
-  );
+  // const [periodoDeAdministracion, setPeriodoAdministracion] = useState(
+  //   generalGCperiodoAdministracion
+  // );
   const [gastosAdicionalesGC, setGastosAdicionalesGC] = useState(
     generalGCGastosAdicionales
   );
@@ -326,9 +321,9 @@ export function InformacionGeneral() {
     useState(generalGCClaveInscripcionFinanciamiento);
   const [descripcionGC, setDescripcionGC] = useState(generalGCDescripcion);
   const [montoGC, setMontoGC] = useState(generalGCMonto);
-  const [periodoFinanciamientoGC, setPeriodoFinanciamiento] = useState(
-    generalGCPeriodoFinanciamiento
-  );
+  // const [periodoFinanciamientoGC, setPeriodoFinanciamiento] = useState(
+  //   generalGCPeriodoFinanciamiento
+  // );
   const [saldoVIgenteGC] = useState(generalGCSaldoVigente);
   const [montoGastosAdicionalesGC, setMontoGastosAdicionalesGC] = useState(
     generalGCMontoGastosAdicionales
@@ -356,12 +351,12 @@ export function InformacionGeneral() {
     changeGeneralGastosCostos({
       destino: generalGCDestino,
       detalleInversion: generalGCDetalleInversion,
-      periodoAdministracion: generalGCperiodoAdministracion, // NO SABEMOS AUN
+      //periodoAdministracion: generalGCperiodoAdministracion, // NO SABEMOS AUN
       gastosAdicionales: generalGCGastosAdicionales,
       claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento, // NO SABEMOS AUN
       descripcion: generalGCDescripcion,
       monto: generalGCMonto,
-      periodoFinanciamiento: generalGCPeriodoFinanciamiento, //AUN NO SABEMOS
+      //periodoFinanciamiento: generalGCPeriodoFinanciamiento, //AUN NO SABEMOS
       saldoVigente: generalGCSaldoVigente, //AUN NO SABEMOS
       montoGastosAdicionales: generalGCMontoGastosAdicionales,
     });
@@ -573,7 +568,7 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} width={"100%"} justifyContent={"center"}>
+      {/* <Grid item display={"flex"} width={"100%"} justifyContent={"center"}>
         <Grid width="87.5%" display={"flex"} justifyContent={"space-between"}>
           <Grid item lg={4.2}>
             <TextField
@@ -592,7 +587,7 @@ export function InformacionGeneral() {
             />
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid item display={"flex"} justifyContent={"center"}>
         <Grid item lg={10.5}>
@@ -908,6 +903,7 @@ export function InformacionGeneral() {
         </Paper>
       </Grid>
 
+<Divider sx={queries.bold_text}>Destino / gastos y costos relacionados con la contratación</Divider>
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
         <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
@@ -937,12 +933,12 @@ export function InformacionGeneral() {
                   Descripcion: text?.Descripcion || "",
                 },
                 detalleInversion: generalGCDetalleInversion,
-                periodoAdministracion: periodoDeAdministracion,
+                //periodoAdministracion: periodoDeAdministracion,
                 gastosAdicionales: gastosAdicionalesGC,
                 claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
                 descripcion: descripcionGC,
                 monto: montoGC,
-                periodoFinanciamiento: periodoFinanciamientoGC,
+                //periodoFinanciamiento: periodoFinanciamientoGC,
                 saldoVigente: saldoVIgenteGC,
                 montoGastosAdicionales: montoGastosAdicionalesGC,
               });
@@ -990,12 +986,12 @@ export function InformacionGeneral() {
                   Id: text?.Id || "",
                   Descripcion: text?.Descripcion || "",
                 },
-                periodoAdministracion: periodoDeAdministracion,
+                //periodoAdministracion: periodoDeAdministracion,
                 gastosAdicionales: gastosAdicionalesGC,
                 claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
                 descripcion: descripcionGC,
                 monto: montoGC,
-                periodoFinanciamiento: periodoFinanciamientoGC,
+                //periodoFinanciamiento: periodoFinanciamientoGC,
                 saldoVigente: saldoVIgenteGC,
                 montoGastosAdicionales: montoGastosAdicionalesGC,
               });
@@ -1054,13 +1050,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: generalGCperiodoAdministracion,
+                  //periodoAdministracion: generalGCperiodoAdministracion,
                   gastosAdicionales: v.target.value,
                   claveInscripcionFinanciamiento:
                     generalGCClaveInscripcionFinanciamiento,
                   descripcion: generalGCDescripcion,
                   monto: generalGCMonto,
-                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
                   saldoVigente: generalGCSaldoVigente,
                   montoGastosAdicionales: generalGCMontoGastosAdicionales,
                 });
@@ -1068,13 +1064,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: periodoDeAdministracion,
+                  //periodoAdministracion: periodoDeAdministracion,
                   gastosAdicionales: 0,
                   claveInscripcionFinanciamiento:
                     claveInscripcionFinanciamiento,
                   descripcion: descripcionGC,
                   monto: generalGCMonto,
-                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  //periodoFinanciamiento: periodoFinanciamientoGC,
                   saldoVigente: saldoVIgenteGC,
                   montoGastosAdicionales: generalGCMontoGastosAdicionales,
                 });
@@ -1112,12 +1108,12 @@ export function InformacionGeneral() {
               changeGeneralGastosCostos({
                 destino: generalGCDestino,
                 detalleInversion: generalGCDetalleInversion,
-                periodoAdministracion: periodoDeAdministracion,
+                //periodoAdministracion: periodoDeAdministracion,
                 gastosAdicionales: generalGCGastosAdicionales,
                 claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
                 descripcion: v.target.value,
                 monto: generalGCMonto,
-                periodoFinanciamiento: periodoFinanciamientoGC,
+                //periodoFinanciamiento: periodoFinanciamientoGC,
                 saldoVigente: saldoVIgenteGC,
                 montoGastosAdicionales: generalGCMontoGastosAdicionales,
               })
@@ -1148,13 +1144,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: generalGCperiodoAdministracion,
+                  //periodoAdministracion: generalGCperiodoAdministracion,
                   gastosAdicionales: generalGCGastosAdicionales,
                   claveInscripcionFinanciamiento:
                     generalGCClaveInscripcionFinanciamiento,
                   descripcion: generalGCDescripcion,
                   monto: v.target.value,
-                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
                   saldoVigente: generalGCSaldoVigente,
                   montoGastosAdicionales: generalGCMontoGastosAdicionales,
                 });
@@ -1162,13 +1158,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: periodoDeAdministracion,
+                  //periodoAdministracion: periodoDeAdministracion,
                   gastosAdicionales: gastosAdicionalesGC,
                   claveInscripcionFinanciamiento:
                     claveInscripcionFinanciamiento,
                   descripcion: descripcionGC,
                   monto: 0,
-                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  //periodoFinanciamiento: periodoFinanciamientoGC,
                   saldoVigente: saldoVIgenteGC,
                   montoGastosAdicionales: generalGCMontoGastosAdicionales,
                 });
@@ -1222,13 +1218,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: generalGCperiodoAdministracion,
+                  //periodoAdministracion: generalGCperiodoAdministracion,
                   gastosAdicionales: generalGCGastosAdicionales,
                   claveInscripcionFinanciamiento:
                     generalGCClaveInscripcionFinanciamiento,
                   descripcion: generalGCDescripcion,
                   monto: generalGCMonto,
-                  periodoFinanciamiento: generalGCPeriodoFinanciamiento,
+                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
                   saldoVigente: generalGCSaldoVigente,
                   montoGastosAdicionales: v.target.value,
                 });
@@ -1236,13 +1232,13 @@ export function InformacionGeneral() {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
-                  periodoAdministracion: periodoDeAdministracion,
+                  //periodoAdministracion: periodoDeAdministracion,
                   gastosAdicionales: gastosAdicionalesGC,
                   claveInscripcionFinanciamiento:
                     claveInscripcionFinanciamiento,
                   descripcion: descripcionGC,
                   monto: generalGCMonto,
-                  periodoFinanciamiento: periodoFinanciamientoGC,
+                  //periodoFinanciamiento: periodoFinanciamientoGC,
                   saldoVigente: saldoVIgenteGC,
                   montoGastosAdicionales: 0,
                 });

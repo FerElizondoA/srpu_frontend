@@ -68,7 +68,7 @@ const heads: Head[] = [
 ];
 
 export const moneyMask = (value: string) => {
-  value = value.replace(".", "").replace(",", "").replace(/\D/g, "");
+  value = value.replace(/\D/g, "");
 
   const options = { minimumFractionDigits: 2 };
 
@@ -248,8 +248,6 @@ export function InformacionGeneral() {
         height: "79vh",
         flexDirection: "column",
         justifyContent: "space-evenly",
-
-        // backgroundColor:"red"
       }}
     >
       <Grid item display="flex" justifyContent={"space-evenly"}>
@@ -311,7 +309,13 @@ export function InformacionGeneral() {
                     .replace(".", "")
                     .replace(",", "")
                     .replace(/\D/g, "")
-                )
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
               ) {
                 changeInformacionGeneral({
                   fechaContratacion: contratacion,
@@ -669,7 +673,20 @@ export function InformacionGeneral() {
               /^[\s]*$/.test(generalEntePublico.Descripcion)
             }
             variant="outlined"
-            onClick={() => addRows()}
+            onClick={() => {
+              changeObligadoSolidarioAval({
+                obligadoSolidario: {
+                  Id: "",
+                  Descripcion: "",
+                },
+                tipoEntePublicoObligado: "",
+                entePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              });
+              addRows();
+            }}
           >
             <CheckIcon fontSize="small" />
             AGREGAR

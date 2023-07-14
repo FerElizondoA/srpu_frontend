@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Typography, Dialog, Slide, Button } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";

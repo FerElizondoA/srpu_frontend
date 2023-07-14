@@ -29,6 +29,7 @@ import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
   CondicionFinanciera,
+  Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/condicion_financiera";
@@ -76,11 +77,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   // DISPOSICION
-  const disposicionFechaContratacion: string = useCortoPlazoStore(
-    (state) => state.disposicion.fechaDisposicion
-  );
-  const disposicionImporte: number = useCortoPlazoStore(
-    (state) => state.disposicion.importe
+
+  const tablaDisposicion: Disposicion[] = useCortoPlazoStore(
+    (state) => state.tablaDisposicion
   );
 
   // PAGOS DE CAPITAL
@@ -101,7 +100,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   // TASA EFECTIVA
   const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
     useCortoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
-    
+
   const tasaEfectivaTasaEfectiva: string = useCortoPlazoStore(
     (state) => state.tasaEfectiva.tasaEfectiva
   );
@@ -127,6 +126,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const cleanComision: Function = useCortoPlazoStore(
     (state) => state.cleanComision
   );
+  const cleanDisposicion: Function = useCortoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
 
   // CONDICION FINANCIERA
   const addCondicionFinanciera: Function = useCortoPlazoStore(
@@ -142,10 +144,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const addRow = () => {
     const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposicion,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,
@@ -162,10 +161,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const updateRow = (indexA: number) => {
     const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: {
-        fechaDisposicion: disposicionFechaContratacion,
-        importe: disposicionImporte,
-      },
+      disposicion: tablaDisposicion,
       pagosDeCapital: {
         fechaPrimerPago: capitalFechaPrimerPago,
         periodicidadDePago: capitalPeriocidadPago.Descripcion,
@@ -176,12 +172,11 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaEfectiva: tasaEfectivaTasaEfectiva,
       diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
     };
-
     upDataCondicionFinanciera(CF, indexA);
   };
 
   const reset = () => {
-    changeDisposicion(new Date().toString(), "");
+    changeDisposicion(new Date().toString(), 0);
     changeCapital(new Date().toString(), { Id: "", Descripcion: "" }, "");
     changeTasaInteres({
       tasaFija: false,
@@ -200,20 +195,26 @@ export function AgregarCondicionFinanciera(props: Props) {
     });
     cleanTasaInteres();
     cleanComision();
+    cleanDisposicion();
   };
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
-  const [dialogValidacion, setDialogValidacion] = useState('')
+  const [dialogValidacion, setDialogValidacion] = useState("");
 
   return (
     <>
-      <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={props.openState}
+        TransitionComponent={Transition}
+      >
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
               edge="start"
               onClick={() => {
                 props.handler(false);
+                setTabIndex(0);
                 reset();
               }}
               sx={{ color: "white" }}
@@ -227,31 +228,22 @@ export function AgregarCondicionFinanciera(props: Props) {
                 </Typography>
               </Grid>
             </Grid>
-            <Grid
-              item
-              sx={{ top: 12, bottom: "auto" }}
-            >
+            <Grid item sx={{ top: 12, bottom: "auto" }}>
               <ThemeProvider theme={theme}>
                 <Button
-                  disabled={ 
+                  disabled={
                     tablaComisiones.length === 0 ||
-                    tablaTasaInteres.length ===0 
+                    tablaTasaInteres.length === 0
                   }
-                  sx={
-                    queries.buttonContinuar
-                  }
+                  sx={queries.buttonContinuar}
                   onClick={() => {
                     if (tablaComisiones.length === 0) {
-                      setDialogValidacion("Comisiones/TasaEfectiva")
-                      setOpenDialogConfirm(!openDialogConfirm)
-                    }
-
-                    else if (tablaTasaInteres.length === 0) {
-                      setDialogValidacion("Disposición/Pagos de Capital")
-                      setOpenDialogConfirm(!openDialogConfirm)
-                    }
-
-                    else {
+                      setDialogValidacion("Comisiones/TasaEfectiva");
+                      setOpenDialogConfirm(!openDialogConfirm);
+                    } else if (tablaTasaInteres.length === 0) {
+                      setDialogValidacion("Disposición/Pagos de Capital");
+                      setOpenDialogConfirm(!openDialogConfirm);
+                    } else {
                       if (props.accion === "Agregar") {
                         addRow();
                         props.handler(false);
@@ -262,12 +254,12 @@ export function AgregarCondicionFinanciera(props: Props) {
                         reset();
                       }
                     }
+                    setTabIndex(0);
                   }}
                 >
-              
-
-                  <Typography sx={queries.medium_text}>{props.accion}</Typography>
-
+                  <Typography sx={queries.medium_text}>
+                    {props.accion}
+                  </Typography>
                 </Button>
               </ThemeProvider>
             </Grid>
@@ -283,8 +275,14 @@ export function AgregarCondicionFinanciera(props: Props) {
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Disposición/Pagos de Capital" sx={queries.bold_text}></Tab>
-              <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
+              <Tab
+                label="Disposición/Pagos de Capital"
+                sx={queries.bold_text}
+              ></Tab>
+              <Tab
+                label="Comisiones/Tasa Efectiva"
+                sx={queries.bold_text}
+              ></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DisposicionPagosCapital />}
@@ -296,18 +294,17 @@ export function AgregarCondicionFinanciera(props: Props) {
 
       <Dialog
         open={openDialogConfirm}
-        onClose={() => { setOpenDialogConfirm(!openDialogConfirm) }}
+        onClose={() => {
+          setOpenDialogConfirm(!openDialogConfirm);
+        }}
       >
-        <DialogTitle sx={queries.bold_text}>
-          ADVERTENCIA
-        </DialogTitle>
+        <DialogTitle sx={queries.bold_text}>ADVERTENCIA</DialogTitle>
         <DialogContent>
           <DialogContentText sx={queries.text}>
-            {
-              tablaComisiones.length === 0 && tablaTasaInteres.length === 0
-                ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
-                : 'No se puede realizar la accion de agregar condición financiera por falta datos en: ' + dialogValidacion
-            }
+            {tablaComisiones.length === 0 && tablaTasaInteres.length === 0
+              ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
+              : "No se puede realizar la accion de agregar condición financiera por falta datos en: " +
+                dialogValidacion}
           </DialogContentText>
           <DialogActions>
             <Button

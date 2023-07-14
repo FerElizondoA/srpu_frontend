@@ -47,6 +47,9 @@ import Swal from "sweetalert2";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { useCortoPlazoStore } from "../../store/main";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+
 export interface IData {
   Id: string;
   Institucion: string;
@@ -82,7 +85,10 @@ export function LateralMenu() {
   };
 
   const [openInscripcion, setOpenInscripcion] = React.useState(true);
-  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(false);
+  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(true);
+
+  const [openFuentePago, setOpenFuentePago] = useState(false);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] =
     useState(false);
@@ -99,6 +105,10 @@ export function LateralMenu() {
 
   const handleFinanciamientoClick = () => {
     setOpenFinanciamiento(!openFinanciamiento);
+  };
+
+  const handleFuentePagoClick = () => {
+    setOpenFuentePago(!openFuentePago);
   };
 
   let hash = 0;
@@ -348,6 +358,9 @@ export function LateralMenu() {
   // const addCondicionFinanciera: Function = useCortoPlazoStore(
   //   (state) => state.addCondicionFinanciera
   // );
+  const cleanComentario: Function = useCortoPlazoStore(
+    (state) => state.cleanComentario
+  );
 
   const reset = () => {
     changeEncabezado({
@@ -380,6 +393,7 @@ export function LateralMenu() {
 
     cleanObligadoSolidarioAval();
     updatecondicionFinancieraTable([]);
+    cleanComentario();
   };
 
   return (
@@ -512,7 +526,7 @@ export function LateralMenu() {
                     <PostAddOutlinedIcon sx={queries.icon} />
                   </ListItemIcon>
                   <Typography sx={queries.bold_text}>Inscripción</Typography>
-                  {openInscripcion ? <ExpandLess /> : <ExpandMore />}
+                  {openInscripcion ? <ExpandMore /> : <ExpandLess />}
                 </ListItemButton>
 
                 <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
@@ -527,7 +541,7 @@ export function LateralMenu() {
                       <Typography sx={queries.bold_text}>
                         Financiamiento y obligaciones
                       </Typography>
-                      {openFinanciamiento ? <ExpandLess /> : <ExpandMore />}
+                      {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
                     </ListItemButton>
                     <Collapse
                       in={openFinanciamiento}
@@ -547,7 +561,7 @@ export function LateralMenu() {
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
-                            Crédito simple a corto plazo.
+                            Crédito simple a corto plazo
                           </Typography>
                         </ListItemButton>
 
@@ -610,6 +624,35 @@ export function LateralMenu() {
                         Firmar con e.firma
                       </Typography>
                     </ListItemButton>
+
+                    <ListItemButton onClick={handleFuentePagoClick}>
+                      <ListItemIcon>
+                        <CurrencyExchangeIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Fuente de pago
+                      </Typography>
+                      {openFuentePago ? <ExpandMore /> : <ExpandLess />}
+                    </ListItemButton>
+
+                    <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
+                      <List>
+                        <ListItemButton
+                          sx={{ marginLeft: 2 }}
+                          onClick={() =>
+                            /*setOpenFuentePago(!openFuentePago)*/
+                            navigate("../fideicomisos")
+                          }
+                        >
+                          <ListItemIcon>
+                            <HandshakeIcon />
+                          </ListItemIcon>
+                          <Typography sx={queries.bold_text}>
+                            Fideicomiso
+                          </Typography>
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
 
                     <ListItemButton onClick={handleClickBandejas}>
                       <ListItemIcon>

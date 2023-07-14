@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
@@ -38,19 +38,19 @@ export function ConfirmacionDescargaSolicitud({
   handler: Function;
   openState: boolean;
 }) {
-  const crearSolicitud: Function = useCortoPlazoStore(
+  const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
   );
 
-  const modificaSolicitud: Function = useCortoPlazoStore(
+  const modificaSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaSolicitud
   );
 
   const [comentario, setComentario] = React.useState("");
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
-  const addComentario: Function = useCortoPlazoStore(
+  const addComentario: Function = useLargoPlazoStore(
     (state) => state.addComentario
   );
 
@@ -60,7 +60,7 @@ export function ConfirmacionDescargaSolicitud({
     []
   );
 
-  const editCreadoPor: string = useCortoPlazoStore(
+  const editCreadoPor: string = useLargoPlazoStore(
     (state) => state.editCreadoPor
   );
 
@@ -172,7 +172,7 @@ export function ConfirmacionDescargaSolicitud({
                     });
                   });
                 createNotification(
-                  "Crédito simple corto plazo",
+                  "Crédito simple largo plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""]
                 );
@@ -200,7 +200,7 @@ export function ConfirmacionDescargaSolicitud({
                   });
                 navigate("../ConsultaDeSolicitudes");
                 createNotification(
-                  "Crédito simple corto plazo",
+                  "Crédito simple largo plazo",
                   "Se te ha asignado una solicitud de inscripción",
                   [idUsuarioAsignado]
                 );
@@ -229,7 +229,7 @@ export function ConfirmacionDescargaSolicitud({
                   });
                 navigate("../ConsultaDeSolicitudes");
                 createNotification(
-                  "Crédito simple corto plazo",
+                  "Crédito simple largo plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""]
                 );
@@ -256,7 +256,7 @@ export function ConfirmacionDescargaSolicitud({
                   });
                 navigate("../ConsultaDeSolicitudes");
                 createNotification(
-                  "Crédito simple corto plazo",
+                  "Crédito simple largo plazo",
                   "Se te ha asignado una solicitud de inscripción",
                   [idUsuarioAsignado]
                 );
