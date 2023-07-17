@@ -1,8 +1,11 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
+import { format } from "date-fns";
+import { ISolicitud } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/ISolicitud";
 import Swal from "sweetalert2";
 import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { createNotification } from "../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
@@ -35,20 +38,12 @@ export interface SolicitudInscripcionSlice {
   modificaSolicitud: (
     idCreador: string,
     idEditor: string,
-    estatus: string,
-    comentario: string
+    estatus: string
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
 
   addComentario: (idSolicitud: string, comentario: string) => void;
-  saveFiles: (idSolicitud: string, addRoute: boolean) => void;
-  savePathDoc: (
-    idSolicitud: string,
-    Ruta: string,
-    NombreIdentificador: string,
-    NombreArchivo: string
-  ) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
@@ -58,7 +53,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
-    cargo: "Directora de Deuda Pública y Planeación Financiera",
+    cargo: "Directora de Deuda Pública",
   },
 
   reglasAplicables: [],
@@ -110,7 +105,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
-          nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,
           descripcionTipo: v.descripcionTipo,
         };
@@ -126,8 +120,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
-          IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-          IdEntePublico: state.encabezado.organismo.Id,
+          IdTipoEntePublico:
+            state.encabezado.tipoEntePublico.Id ||
+            "00b0470d-acb9-11ed-b719-2c4138b7dab1",
+          IdEntePublico:
+            state.encabezado.organismo.Id ||
+            "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
@@ -146,17 +144,23 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.changeIdSolicitud(data.data.Id);
-        state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
+        Swal.fire({
+          icon: "success",
+          title: "Mensaje",
+          text: "La solicitud se envió con éxito",
+        });
+        createNotification(
+          "Crédito simple corto plazo",
+          "Se te ha asignado una solicitud para modificación.",
+          [data.data.Id]
+        );
       });
   },
   modificaSolicitud: async (
     idCreador: string,
     idEditor: string,
-    estatus: string,
-    comentario: string
+    estatus: string
   ) => {
     const state = useCortoPlazoStore.getState();
 
@@ -169,7 +173,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
-          nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,
           descripcionTipo: v.descripcionTipo,
         };
@@ -181,38 +184,35 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
     };
 
-    await axios
-      .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
-        {
-          IdSolicitud: state.idSolicitud,
-          IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-          IdEntePublico: state.encabezado.organismo.Id,
-          TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
-          Estatus: estatus,
-          IdClaveInscripcion: "1",
-          MontoOriginalContratado: state.informacionGeneral.monto,
-          FechaContratacion: state.encabezado.fechaContratacion,
-          Solicitud: JSON.stringify(solicitud),
-          IdEditor: idEditor,
-          IdUsuario: idCreador,
+    await axios.put(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
+      {
+        IdSolicitud: state.idSolicitud,
+        IdTipoEntePublico:
+          state.encabezado.tipoEntePublico.Id ||
+          "00b0470d-acb9-11ed-b719-2c4138b7dab1",
+        IdEntePublico:
+          state.encabezado.organismo.Id ||
+          "f45b91b9-bc38-11ed-b789-2c4138b7dab1",
+        TipoSolicitud: state.encabezado.tipoDocumento,
+        IdInstitucionFinanciera:
+          state.informacionGeneral.institucionFinanciera.Id,
+        Estatus: estatus,
+        IdClaveInscripcion: "1",
+        MontoOriginalContratado: state.informacionGeneral.monto,
+        FechaContratacion: state.encabezado.fechaContratacion,
+        Solicitud: JSON.stringify(solicitud),
+        IdEditor: idEditor,
+        IdUsuario: idCreador,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
         },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        state.changeIdSolicitud(data.data.Id);
-        state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
-        state.cleanComentario();
-      });
+      }
+    );
   },
-  borrarSolicitud: async (Id: string) => {
+  borrarSolicitud: (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -221,7 +221,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       timerProgressBar: true,
     });
 
-    await axios
+    axios
       .delete(
         process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
         {
@@ -251,78 +251,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
-  addComentario: async (Id: string, comentario: any) => {
-    if (comentario.length !== 2) {
-      await axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
-          {
-            IdSolicitud: Id,
-            Comentario: comentario,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {})
-        .catch((e) => {});
-    }
-  },
-  saveFiles: async (idSolicitud: string, addRoute: boolean) => {
-    const state = useCortoPlazoStore.getState();
-
-    await state.tablaDocumentos.map((file, index) => {
-      setTimeout(() => {
-        const url = new File([file.archivo], file.nombreArchivo);
-
-        let dataArray = new FormData();
-        dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
-        dataArray.append("ADDROUTE", addRoute.toString());
-        dataArray.append("FILE", url);
-
-        if (file.archivo.size > 0) {
-          return axios
-            .post(
-              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-              dataArray,
-              {
-                headers: {
-                  Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
-            )
-            .then(({ data }) => {
-              state.savePathDoc(
-                idSolicitud,
-                data.RESPONSE.RUTA,
-                data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
-              );
-            })
-            .catch((e) => {});
-        } else {
-          return null;
-        }
-      }, 1000);
-    });
-  },
-  savePathDoc: async (
-    idSolicitud: string,
-    Ruta: string,
-    NombreIdentificador: string,
-    NombreArchivo: string
-  ) => {
-    return await axios
+  addComentario: (Id: string, comentario: string) => {
+    axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-addPathDocSol",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
-          IdSolicitud: idSolicitud,
-          Ruta: Ruta,
-          NombreIdentificador: NombreIdentificador,
-          NombreArchivo: NombreArchivo,
+          IdSolicitud: Id,
+          Comentario: comentario,
+          IdUsuario: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -330,12 +266,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
+      .then(({ data }) => {})
       .catch((e) => {});
   },
 });
 
-export async function DescargarConsultaSolicitud(Solicitud: string) {
+export function DescargarConsultaSolicitud(Solicitud: string) {
   const meses = [
     "enero",
     "febrero",
@@ -350,15 +286,16 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
     "noviembre",
     "diciembre",
   ];
+  const state = useCortoPlazoStore.getState();
 
   let solicitud: any = JSON.parse(Solicitud);
   interface DocumentacionItem {
-    descripcionTipo: string;
+    Descripcion: string;
     // Otros campos si existen en la estructura de solicitud.documentacion
   }
 
   const descripciones: string[] = solicitud.documentacion.map(
-    (item: DocumentacionItem) => item.descripcionTipo
+    (item: DocumentacionItem) => item.Descripcion
   );
 
   const fechaVencimiento = new Date(
@@ -378,7 +315,6 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
   const añoC = fechaContratacion.getFullYear();
 
   const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
-
   const SolicitudDescarga: any = {
     Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
     Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
@@ -401,12 +337,11 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
     Reglas: solicitud.inscripcion.declaratorias,
     TasaInteres:
       solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
-    Documentos: solicitud.documentacion.descripcionTipo,
   };
 
-  await axios
+  axios
     .post(
-     "http://192.168.137.152:7000/documento_srpu",
+      "http://192.168.137.152:7000/documento_srpu_largo",
       {
         nombre: SolicitudDescarga.Nombre,
         cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
@@ -417,7 +352,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
         monto: SolicitudDescarga.Monto,
         destino: SolicitudDescarga.Destino,
         dias: SolicitudDescarga.PlazoDias,
-        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico || "No aplica",
+        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico,
         tasaefectiva: SolicitudDescarga.TasaEfectiva,
         tasaInteres: SolicitudDescarga.TasaInteres,
         reglas: SolicitudDescarga.Reglas,
@@ -434,8 +369,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       },
       {
         headers: {
-          //Authorization: localStorage.getItem("jwtToken"),
-          //"Access-Control-Allow-Origin": "*",
+          Authorization: localStorage.getItem("jwtToken"),
         },
         responseType: "arraybuffer",
       }
@@ -457,11 +391,8 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
     .catch((err) => {});
 }
 
-export const getUsuariosAsignables = async (
-  setState: Function,
-  numero: number
-) => {
-  await axios
+export const getUsuariosAsignables = (setState: Function, numero: number) => {
+  axios
     .get(
       process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
       {

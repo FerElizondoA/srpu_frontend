@@ -124,7 +124,7 @@ SolicitudInscripcionLargoPlazoSlice
 
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/documento_srpu_largo",
         {
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
