@@ -154,6 +154,10 @@ const {
   getFideicomisos,
   createFideicomiso,
 } = require("../controllers/Fideicomisos.js");
+const {
+  createTipoDeFideicomiso,
+  getTiposDeFideicomiso,
+} = require("../controllers/TiposDeFideicomiso.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -765,13 +769,26 @@ router.delete("/delete-fideicomiso", (req, res) => {
 });
 //#endregion
 
-router.get("/", (req, res) => {
-  // listen for the 'close' event on the request
-  req.on("close", () => {
-    console.log("closed connection");
-  });
-
-  console.log(res.socket.destroyed); // true if socket is closed
+//#region TiposDeFideicomiso
+router.post("/create-tipoDeFideicomiso", (req, res, express) => {
+  createTipoDeFideicomiso(req, res);
 });
+
+router.get("/get-tiposDeFideicomiso", (req, res) => {
+  getTiposDeFideicomiso(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
 
 module.exports = router;
