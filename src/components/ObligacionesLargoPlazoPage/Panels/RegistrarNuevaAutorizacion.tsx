@@ -1,20 +1,29 @@
-import { useState, forwardRef } from "react";
-import { Grid, Slide, createTheme, TextField, InputLabel } from "@mui/material";
+import { useState, forwardRef, useEffect } from "react";
+import {
+  Grid,
+  Slide,
+  createTheme,
+  TextField,
+  InputLabel,
+  Autocomplete,
+  Typography,
+} from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { queries } from "../../../queries";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { addDays } from "date-fns";
+import { addDays, subDays } from "date-fns";
 import {
   DateInput,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { enGB, id } from "date-fns/locale";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import validator from "validator";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -39,17 +48,15 @@ export function RegistrarNuevaAutorizacion() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const entidadFederativa: string = useLargoPlazoStore(
-    (state) => state.Autorizacion.entidadFederativa
-  );
+  const entidadFederativa: { Id: string; Organismo: string } =
+    useLargoPlazoStore((state) => state.Autorizacion.entidadFederativa);
 
   const numeroAutorizacion: number = useLargoPlazoStore(
     (state) => state.Autorizacion.numeroAutorizacion
   );
 
-  const medioPublicacion: string = useLargoPlazoStore(
-    (state) => state.Autorizacion.medioPublicacion
-  );
+  const medioPublicacion: { Id: string; Descripcion: string } =
+    useLargoPlazoStore((state) => state.Autorizacion.medioPublicacion);
 
   const fechaPublicacion: string = useLargoPlazoStore(
     (state) => state.Autorizacion.fechaPublicacion
@@ -71,19 +78,16 @@ export function RegistrarNuevaAutorizacion() {
     (state) => state.changeAutorizacion
   );
 
-  const [busqueda, setBusqueda] = useState("");
+  const getOrganismosA: Function = useLargoPlazoStore(
+    (state) => state.getOrganismosA
+  );
 
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
+  const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
 
-  const handleSearch = () => {
-    // filtrarDatos();
-  };
-
-  const [pruebaFechaMin, setPruebaFechaMin] = useState("");
-  const [fechaContratacion, setFechaContratacion] = useState("");
-  const [pruebaFecha, setPruebaFecha] = useState("");
+  const [fechaDePublicacion, setFechaDePublicacion] =
+    useState(fechaPublicacion);
 
   const [pruebaSelect, setPruebaSelect] = useState("");
 
@@ -114,6 +118,10 @@ export function RegistrarNuevaAutorizacion() {
     },
   ];
 
+  useEffect(() => {
+    getOrganismosA();
+  }, []);
+
   return (
     <>
       <Grid
@@ -126,24 +134,38 @@ export function RegistrarNuevaAutorizacion() {
         <Grid width={"100%"} display={"flex"} justifyContent={"center"}>
           <Grid width={"88%"} display={"flex"} justifyContent={"space-between"}>
             <Grid lg={2.4}>
-              <InputLabel>Entidad federativa</InputLabel>
+              <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
               <TextField
                 fullWidth
                 placeholder="Nuevo León"
                 variant="standard"
-                onChange={(v) => changeAutorizacion({})}
+                value={entidadFederativa.Organismo}
+                sx={queries.medium_text}
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  readOnly: true,
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
               />
             </Grid>
 
             <Grid lg={2.4}>
-              <InputLabel>
+              <InputLabel sx={queries.medium_text}>
                 Numero de autorización de la legislatura local
               </InputLabel>
               <TextField
                 fullWidth
                 placeholder="Nuevo León"
                 variant="standard"
-                value={numeroAutorizacion <= 0 ? "" : numeroAutorizacion.toString()}
+                value={
+                  numeroAutorizacion <= 0 ? "" : numeroAutorizacion.toString()
+                }
                 onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeAutorizacion({
@@ -167,31 +189,68 @@ export function RegistrarNuevaAutorizacion() {
             </Grid>
 
             <Grid lg={2.1}>
-              <InputLabel>Medio de publicación</InputLabel>
-              <TextField
+              <InputLabel sx={queries.medium_text}>
+                Medio de publicación
+              </InputLabel>
+              <Autocomplete
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
                 fullWidth
-                placeholder="Nuevo León"
-                variant="standard"
+                options={catalagoOrganismos}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                value={{
+                  Id: medioPublicacion.Id || "",
+                  Descripcion: medioPublicacion.Descripcion || "",
+                }}
+                onChange={(event, text) =>
+                  changeAutorizacion({
+                    entidadFederativa: entidadFederativa,
+                    numeroAutorizacion: numeroAutorizacion,
+                    fechaPublicacion: fechaPublicacion,
+                    medioPublicacion: {
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    },
+                    montoAutorizado: montoAutorizado,
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Id === value.Id || value.Descripcion === ""
+                }
               />
             </Grid>
 
             <Grid lg={2.4}>
-              <InputLabel>Fecha de publicacion</InputLabel>
+              <InputLabel sx={queries.medium_text}>
+                Fecha de publicacion
+              </InputLabel>
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={enGB}
               >
                 <DatePicker
-                  value={new Date(pruebaFecha)}
-                  // onChange={(date) =>
-                  //   changeCapital(
-                  //     date?.toString(),
-                  //     capitalPeriocidadPago,
-                  //     capitalNumeroPago
-                  //   )
-                  // }
-                  minDate={new Date(pruebaFechaMin)}
-                  maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                  value={new Date(fechaDePublicacion)}
+                  onChange={(date) =>
+                    setFechaDePublicacion(date?.toString() || "")
+                  }
+                  minDate={new Date(subDays(new Date(), 365))}
+                  maxDate={new Date(addDays(new Date(fechaDePublicacion), 365))}
                   slots={{
                     textField: DateInput,
                   }}
@@ -203,20 +262,55 @@ export function RegistrarNuevaAutorizacion() {
 
         <Grid display={"flex"} justifyContent={"space-evenly"}>
           <Grid lg={2.1}>
-            <InputLabel>Monto autorizado</InputLabel>
-            <TextField fullWidth placeholder="Nuevo León" variant="standard" />
+            <InputLabel sx={queries.medium_text}>Monto autorizado</InputLabel>
+            <TextField
+              sx={queries.medium_text}
+              fullWidth
+              placeholder="Nuevo León"
+              variant="standard"
+              value={montoAutorizado <= 0 ? "" : montoAutorizado.toString()}
+              onChange={(v) => {
+                if (validator.isNumeric(v.target.value)) {
+                  changeAutorizacion({
+                    entidadFederativa: entidadFederativa,
+                    numeroAutorizacion: numeroAutorizacion,
+                    fechaPublicacion: fechaPublicacion,
+                    medioPublicacion: medioPublicacion,
+                    montoAutorizado: v.target.value,
+                  });
+                } else {
+                  changeAutorizacion({
+                    entidadFederativa: entidadFederativa,
+                    numeroAutorizacion: numeroAutorizacion,
+                    fechaPublicacion: fechaPublicacion,
+                    medioPublicacion: medioPublicacion,
+                    montoAutorizado: 0,
+                  });
+                }
+              }}
+            />
           </Grid>
 
           <Grid lg={2.1}>
-            <InputLabel>Documento soporte</InputLabel>
-            <TextField fullWidth placeholder="Nuevo León" variant="standard" />
+            <InputLabel sx={queries.medium_text}>Documento soporte</InputLabel>
+            <TextField
+              sx={queries.medium_text}
+              fullWidth
+              placeholder="Nuevo León"
+              variant="standard"
+            />
           </Grid>
 
           <Grid lg={2.1}>
-            <InputLabel>
+            <InputLabel sx={queries.medium_text}>
               Acreditación del quórum y el sentido de la votación
             </InputLabel>
-            <TextField fullWidth placeholder="Nuevo León" variant="standard" />
+            <TextField
+              sx={queries.medium_text}
+              fullWidth
+              placeholder="Nuevo León"
+              variant="standard"
+            />
           </Grid>
         </Grid>
       </Grid>

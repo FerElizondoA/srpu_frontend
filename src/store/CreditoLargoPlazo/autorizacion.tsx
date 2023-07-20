@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ICatalogo, IEntePublico } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import axios from "axios";
 
 export type GeneralMontoAutorizado = {
   DestinoAutorizado: string;
@@ -13,24 +14,23 @@ export type GeneralDetalleDestino = {
 
 export interface AutorizacionLargoPlazoSlice {
   Autorizacion: {
-    entidadFederativa: string;
+    entidadFederativa: { Id: string; Organismo: string };
     numeroAutorizacion: number;
     fechaPublicacion: string;
-    medioPublicacion: string;
+    medioPublicacion: { Id: string, Descripcion: string};
     montoAutorizado: number;
-   
   };
+
   documentoSoporte: {
     archivo: File,
     nombreArchivo: string,
   }
+
   acreditacionQuorum: {
     archivo: File,
     nombreArchivo: string,
   }
   
-  
-
   tablaMontoAutorizado: GeneralMontoAutorizado[];
   generalMontoAutorizado: {
     DestinoAutorizado: string;
@@ -43,19 +43,19 @@ export interface AutorizacionLargoPlazoSlice {
     MontoAutorizado: number;
   }
 
-  catalogoDestinosGastosCostos: ICatalogo[];
-  catalogoInstituciones: ICatalogo[];
-  catalogoDestinos: ICatalogo[];
-  catalogoObligadoSolidarioAval: ICatalogo[];
-  catalogoTipoEntePublicoObligado: ICatalogo[];
+  catalogoOrganismos: IEntePublico[];
+
 
   changeAutorizacion : (
-    entidadFederativa: string,
+    entidadFederativa: { Id: string; Organismo: string },
     numeroAutorizacion: number,
     fechaPublicacion: string,
-    medioPublicacion: string,
+    medioPublicacion: { Id: string, Descripcion: string},
     montoAutorizado: number,
   ) => void;
+
+  
+  getOrganismosA: () => void;
 
   addDocumentoSoporte:  (newDocumento: File, nombreArchivo: string) => void;
   addDocumentoQuorum:  (newDocumento: File, nombreArchivo: string) => void;
@@ -100,10 +100,13 @@ export const createAutorizacionLargoPlazoSlice : StateCreator<
 AutorizacionLargoPlazoSlice
 > = (set, get) => ({
   Autorizacion: {
-    entidadFederativa: "",
+    entidadFederativa: {
+      Id: localStorage.getItem("IdEntePublicoObligado") || "",
+      Organismo: localStorage.getItem("EntePublicoObligado") || ""
+    },
     numeroAutorizacion: 0,
     fechaPublicacion: "",
-    medioPublicacion: "",
+    medioPublicacion: { Id: "", Descripcion: ""},
     montoAutorizado: 0,
   },
 
@@ -129,11 +132,7 @@ AutorizacionLargoPlazoSlice
     MontoAutorizado: 0,
   },
 
-  catalogoDestinosGastosCostos: [],
-  catalogoInstituciones: [],
-  catalogoDestinos: [],
-  catalogoObligadoSolidarioAval: [],
-  catalogoTipoEntePublicoObligado: [],
+  catalogoOrganismos: [],
 
 
   changeAutorizacion: (Autorizacion: any) => 
@@ -219,6 +218,25 @@ AutorizacionLargoPlazoSlice
   set((state) => ({
     tablaDetalleDestino: state.tablaDetalleDestino.filter((_, i) => i !== index)
   })),
+
+
+  getOrganismosA: async () => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoOrganismos: r,
+        }));
+      });
+  },
 
 
 })
