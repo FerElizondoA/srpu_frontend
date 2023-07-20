@@ -2,7 +2,7 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createDestino: (req, res) => {
+  createFiudiciario: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
 
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarDestino('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarFiudiciario('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -51,8 +51,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getDestinos: (req, res) => {
-    db.query(`CALL sp_ListadoDestinos()`, (err, result) => {
+  getFiudiciarios: (req, res) => {
+    db.query(`CALL sp_ListadoFiudiciarios()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -73,7 +73,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailDestino: (req, res) => {
+  getDetailFiudiciario: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -81,32 +81,35 @@ module.exports = {
       });
     }
 
-    db.query(`CALL sp_DetalleDestino('${IdDescripcion}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
-      if (result.length) {
-        const data = result[0][0];
-        if (data.error) {
-          return res.status(409).send({
-            result: data,
+    db.query(
+      `CALL sp_DetalleFiudiciario('${IdDescripcion}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
           });
         }
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0][0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
   },
 
   //MODIFICA POR ID
-  modifyDestino: (req, res) => {
+  modifyFiudiciario: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
@@ -119,7 +122,7 @@ module.exports = {
 
     if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
-        error: "Ingrese Nuevo Destino",
+        error: "Ingrese Nuevo Clave de inscripcion",
       });
     }
 
@@ -129,7 +132,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaDestino('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaFiudiciario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -157,11 +160,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteDestino: (req, res) => {
+  deleteFiudiciario: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaDestino('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaFiudiciario('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

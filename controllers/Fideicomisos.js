@@ -4,11 +4,17 @@ module.exports = {
   //CREAR
   createFideicomiso: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const Descripcion = req.body.Descripcion;
+    const NumeroFideicomiso = req.body.NumeroFideicomiso;
+    const TipoFideicomiso = req.body.TipoFideicomiso;
+    const FechaFideicomiso = req.body.FechaFideicomiso;
+    const Fiudiciario = req.body.Fiudiciario;
+    const Fideicomisario = req.body.Fideicomisario;
+    const TipoMovimiento = req.body.TipoMovimiento;
+    const SoporteDocumental = req.body.SoporteDocumental;
 
     if (
-      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
-      Descripcion.length() <= 255
+      (NumeroFideicomiso == null || /^[\s]*$/.test(NumeroFideicomiso)) &&
+      NumeroFideicomiso.length() <= 255
     ) {
       return res.status(409).send({
         error: "Ingrese Descripcion válido.",
@@ -23,7 +29,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarFideicomiso('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarFideicomiso('${IdUsuario}', '${NumeroFideicomiso}' , '${TipoFideicomiso}', '${FechaFideicomiso}', '${Fiudiciario}', '${Fideicomisario}', '${TipoMovimiento}', '${SoporteDocumental}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

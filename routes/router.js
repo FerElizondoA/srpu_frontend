@@ -158,6 +158,32 @@ const {
   createTipoDeFideicomiso,
   getTiposDeFideicomiso,
 } = require("../controllers/TiposDeFideicomiso.js");
+const {
+  createFiudiciario,
+  getFiudiciarios,
+} = require("../controllers/Fiudiciarios.js");
+const {
+  createFideicomisario,
+  getFideicomisarios,
+} = require("../controllers/Fideicomisarios.js");
+const {
+  createOrdenFideicomisario,
+  getOrdenesFideicomisario,
+} = require("../controllers/OrdenesFideicomisario.js");
+const {
+  createTipoDeFideicomitente,
+  getTiposDeFideicomitente,
+} = require("../controllers/TiposDeFideicomitente.js");
+const {
+  createtipoDeFuente,
+  gettiposDeFuente,
+  createTipoDeFuente,
+  getTiposDeFuente,
+} = require("../controllers/TiposDeFuente.js");
+const {
+  createFondoOIngreso,
+  getFondosOIngresos,
+} = require("../controllers/FondosOIngresos.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -776,6 +802,138 @@ router.post("/create-tipoDeFideicomiso", (req, res, express) => {
 
 router.get("/get-tiposDeFideicomiso", (req, res) => {
   getTiposDeFideicomiso(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Fiudiciarios
+router.post("/create-fiudiciario", (req, res, express) => {
+  createFiudiciario(req, res);
+});
+
+router.get("/get-fiudiciarios", (req, res) => {
+  getFiudiciarios(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Fideicomisario
+router.post("/create-fideicomisario", (req, res, express) => {
+  createFideicomisario(req, res);
+});
+
+router.get("/get-fideicomisarios", (req, res) => {
+  getFideicomisarios(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Ordenes Fideicomisario
+router.post("/create-ordenFideicomisario", (req, res, express) => {
+  createOrdenFideicomisario(req, res);
+});
+
+router.get("/get-ordenesFideicomisario", (req, res) => {
+  getOrdenesFideicomisario(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Tipos De Fideicomitente
+router.post("/create-tipoDeFideicomitente", (req, res, express) => {
+  createTipoDeFideicomitente(req, res);
+});
+
+router.get("/get-tiposDeFideicomitente", (req, res) => {
+  getTiposDeFideicomitente(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Tipos De Fuente
+router.post("/create-tipoDeFuente", (req, res, express) => {
+  createTipoDeFuente(req, res);
+});
+
+router.get("/get-tiposDeFuente", (req, res) => {
+  getTiposDeFuente(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Fondos O Ingresos
+router.post("/create-fondoOIngreso", (req, res, express) => {
+  createFondoOIngreso(req, res);
+});
+
+router.get("/get-fondosOIngresos", (req, res) => {
+  getFondosOIngresos(req, res);
 });
 
 // router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
