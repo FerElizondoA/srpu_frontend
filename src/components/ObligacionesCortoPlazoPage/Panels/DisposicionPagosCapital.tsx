@@ -82,7 +82,7 @@ const headsDisposicion: readonly Head[] = [
   },
 ];
 
-const theme = createTheme({
+export const ButtonTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
@@ -630,7 +630,7 @@ export function DisposicionPagosCapital() {
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
                   disabled={
@@ -852,7 +852,6 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-
                 <Grid item lg={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
@@ -901,7 +900,6 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-
                 <Grid item>
                   <InputLabel sx={queries.medium_text}>
                     Periocidad de Pago
@@ -1174,9 +1172,12 @@ export function DisposicionPagosCapital() {
                 flexDirection={"column"}
                 alignItems={"center"}
               >
-                <ThemeProvider theme={theme}>
+                <ThemeProvider theme={ButtonTheme}>
                   <Button
-                    sx={queries.buttonContinuar}
+                    sx={{
+                      ...queries.buttonContinuarSolicitudInscripcion,
+                      width: "15vh",
+                    }}
                     disabled={
                       tasaInteresFechaPrimerPago === "" ||
                       tasaInteresDiasEjercicio.Descripcion === "" ||
@@ -1197,6 +1198,7 @@ export function DisposicionPagosCapital() {
                     Agregar
                   </Button>
                 </ThemeProvider>
+
                 <Paper sx={{ height: "90%", width: "88%" }}>
                   <TableContainer
                     sx={{

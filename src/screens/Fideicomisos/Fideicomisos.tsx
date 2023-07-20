@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   Grid,
@@ -13,30 +15,27 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
+import { useEffect, useState } from "react";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
-import { AgregarFideicomisos } from "./AgregarFideicomisos";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
 // import DownloadIcon from "@mui/icons-material/Download";
 // import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
+import { useCortoPlazoStore } from "../../store/main";
 
 interface Head {
   label: string;
 }
 
 const heads: Head[] = [
-  {
-    label: "Tipo de mecanismo de pago",
-  },
   {
     label: "Numero del fideicomiso",
   },
@@ -47,10 +46,7 @@ const heads: Head[] = [
     label: "Tipo de fideicomiso",
   },
   {
-    label: "Fiduciario",
-  },
-  {
-    label: "fideicomisario",
+    label: "Fiudiciario",
   },
   {
     label: "Accion",
@@ -76,6 +72,17 @@ export function Fideicomisos() {
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
   const [accion, setAccion] = useState("Agregar");
+
+  const tablaFideicomisos: Fideicomiso[] = useCortoPlazoStore(
+    (state) => state.tablaFideicomisos
+  );
+  const getFideicomisos: Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+
+  useEffect(() => {
+    getFideicomisos();
+  }, []);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -162,63 +169,42 @@ export function Fideicomisos() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <Typography></Typography>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <Typography></Typography>
-                </StyledTableCell>
-
-                <StyledTableCell align="center">
-                  <Typography>Vacío</Typography>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <Typography></Typography>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <Typography></Typography>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <Typography></Typography>
-                </StyledTableCell>
-
-                <StyledTableCell align="right">
-                  <Tooltip title="Ver">
-                    <IconButton type="button">
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Editar">
-                    <IconButton
-                      type="button"
-                      onClick={() => {
-                        setAccion("Editar");
-                        changeAgregarFideicomisos(!openAgregarFideicomisos);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-
-                  {/* <Tooltip title="Comentarios">
-                    <IconButton type="button">
-                      <CommentIcon />
-                    </IconButton>
-                  </Tooltip> */}
-
-                  <Tooltip title="Borrar">
-                    <IconButton type="button">
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </StyledTableCell>
-              </StyledTableRow>
+              {tablaFideicomisos.map((row: any, index: number) => {
+                return (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">
+                      {row.NumeroDeFideicomiso}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.TipoDeFideicomiso}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.FechaDeFideicomiso}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.Fiudiciario}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Tooltip title="Editar">
+                        <IconButton
+                          type="button"
+                          // onClick={() => removeSoporteDocumental(index)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          type="button"
+                          // onClick={() => removeSoporteDocumental(index)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

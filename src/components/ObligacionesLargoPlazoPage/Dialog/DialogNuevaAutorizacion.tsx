@@ -18,8 +18,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
-import { DatoGeneralesFideicomiso } from "./DatosGeneralesFideicomiso";
-import { TipoDeMovimiento } from "./TipoDeMovimiento";
+import { DatoGeneralesFideicomiso } from "../../fideicomisos/panels/DatosGeneralesFideicomiso";
+import { TipoDeMovimiento } from "../../fideicomisos/panels/TipoDeMovimiento";
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -52,14 +52,12 @@ const theme = createTheme({
 });
 
 export function DialogNuevaAutorizacion() {
-
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   const [busqueda, setBusqueda] = useState("");
- 
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -68,8 +66,6 @@ export function DialogNuevaAutorizacion() {
   const handleSearch = () => {
     // filtrarDatos();
   };
-
-
 
   return (
     <>

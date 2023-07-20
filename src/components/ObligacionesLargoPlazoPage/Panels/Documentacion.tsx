@@ -195,12 +195,10 @@ export function Documentacion() {
                         value={val.nombreArchivo}
                         onChange={(v) => {
                           let auxArrayArchivos = [...tablaDocumentosLP];
-                          auxArrayArchivos[index].nombreArchivo =
-                            v.target.value
-                              .replaceAll(".pdf", "")
-                              .replaceAll("'", "")
-                              .replaceAll('"', "")
-                              .replaceAll("\n", "") + ".pdf";
+                          auxArrayArchivos[index].nombreArchivo = v.target.value
+                            .replaceAll("'", "")
+                            .replaceAll('"', "")
+                            .replaceAll("\n", "");
                           setTablaDocumentosLP(auxArrayArchivos);
                         }}
                       ></TextField>

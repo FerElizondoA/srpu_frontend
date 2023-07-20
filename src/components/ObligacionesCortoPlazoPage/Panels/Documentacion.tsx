@@ -1,34 +1,34 @@
+import CommentIcon from "@mui/icons-material/Comment";
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Divider,
+  FormControl,
   Grid,
-  Typography,
+  MenuItem,
+  Select,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  FormControl,
-  Select,
-  MenuItem,
   TableRow,
-  Divider,
-  Tooltip,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
+  TableSortLabel,
   TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import CommentIcon from "@mui/icons-material/Comment";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
+import { useState } from "react";
+import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
-import { useEffect, useState } from "react";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { queries } from "../../../queries";
 
 interface Head {
   label: string;
@@ -201,12 +201,10 @@ export function Documentacion() {
                         value={val.nombreArchivo}
                         onChange={(v) => {
                           let auxArrayArchivos = [...tablaDocumentos];
-                          auxArrayArchivos[index].nombreArchivo =
-                            v.target.value
-                              .replaceAll(".pdf", "")
-                              .replaceAll("'", "")
-                              .replaceAll('"', "")
-                              .replaceAll("\n", "") + ".pdf";
+                          auxArrayArchivos[index].nombreArchivo = v.target.value
+                            .replaceAll("'", "")
+                            .replaceAll('"', "")
+                            .replaceAll("\n", "");
                           setTablaDocumentos(auxArrayArchivos);
                         }}
                       ></TextField>

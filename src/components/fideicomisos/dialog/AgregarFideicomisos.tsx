@@ -1,26 +1,27 @@
-import { useState, forwardRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Dialog,
   AppBar,
-  Toolbar,
+  Button,
+  Dialog,
+  Grid,
   IconButton,
   Slide,
-  Button,
-  createTheme,
+  Tab,
+  Tabs,
   ThemeProvider,
+  Toolbar,
   Tooltip,
+  Typography,
+  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import CloseIcon from "@mui/icons-material/Close";
-import { queries } from "../../queries";
-import { DatoGeneralesFideicomiso } from "../../components/ObligacionesLargoPlazoPage/Dialog/DatosGeneralesFideicomiso";
-import { TipoDeMovimiento } from "../../components/ObligacionesLargoPlazoPage/Dialog/TipoDeMovimiento";
-import { useCortoPlazoStore } from "../../store/main";
+import { forwardRef, useState } from "react";
+import { queries } from "../../../queries";
+import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
+import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
+import { SDocumental } from "../panels/SoporteDocumental";
+import { useCortoPlazoStore } from "../../../store/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -64,6 +65,28 @@ export function AgregarFideicomisos({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
   };
 
+  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.setGeneralFideicomiso
+  );
+
+  const cleanFideicomisario: Function = useCortoPlazoStore(
+    (state) => state.cleanFideicomisario
+  );
+
+  const createFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.createFideicomiso
+  );
+
+  const reset = () => {
+    setGeneralFideicomiso({
+      numeroFideicomiso: "",
+      tipoFideicomiso: "",
+      fechaFideicomiso: { Id: "", Descripcion: "" },
+      fiudiciario: { Id: "", Descripcion: "" },
+    });
+    cleanFideicomisario();
+  };
+
   return (
     <>
       <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -90,10 +113,27 @@ export function AgregarFideicomisos({
               </Grid>
             </Grid>
 
-            <Grid item sx={{ top: 12, bottom: "auto" }}>
+            <Grid item>
               <ThemeProvider theme={theme}>
-                <Button sx={queries.buttonContinuar} onClick={() => {}}>
-                  <Typography sx={queries.medium_text}>{accion}</Typography>
+                <Button
+                  sx={queries.buttonContinuar}
+                  onClick={() => {
+                    if (accion === "Agregar") {
+                      createFideicomiso();
+                      handler(false);
+                      // reset();
+                    } else if (accion === "Editar") {
+                      // updateRow(indexA);
+                      handler(false);
+                      // reset();
+                    }
+
+                    setTabIndex(0);
+                  }}
+                >
+                  <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
+                    {accion} fideicomiso
+                  </Typography>
                 </Button>
               </ThemeProvider>
             </Grid>
@@ -111,11 +151,14 @@ export function AgregarFideicomisos({
             >
               <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
               <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
+              <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DatoGeneralesFideicomiso />}
 
             {tabIndex === 1 && <TipoDeMovimiento />}
+
+            {tabIndex === 2 && <SDocumental />}
           </Grid>
         </Grid>
       </Dialog>

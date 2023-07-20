@@ -285,6 +285,7 @@ export function ComisionesTasaEfectiva() {
             <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
             <TextField
               value={tasaEfectivaTasaEfectiva}
+              type="number"
               onChange={(v) =>
                 changeTasaEfectiva({
                   diasEjercicio: tasaEfectivaDiasEjercicio,

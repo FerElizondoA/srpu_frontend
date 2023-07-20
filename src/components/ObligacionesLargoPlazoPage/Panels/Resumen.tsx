@@ -807,11 +807,12 @@ export function Resumen() {
           </Grid>
         </Grid>
 
+        {/*PRUEBA!/************ */}
 
-         {/*PRUEBA!/************ */}
-
-         <Grid width={"100%"}>
-          <Typography sx={queries.bold_text}>Destino / Gastos y Costos Relacionados con la Contratación</Typography>
+        <Grid width={"100%"}>
+          <Typography sx={queries.bold_text}>
+            Destino / Gastos y Costos Relacionados con la Contratación
+          </Typography>
           <Grid
             sx={{
               flexDirection: "row",
@@ -1613,12 +1614,6 @@ export function Resumen() {
                                       setFileSelected(data);
                                     })
                                     .catch((err) => {
-                                      console.log(
-                                        arr.filter((td: any) =>
-                                          td.nombre.includes(row.nombreArchivo)
-                                        )[0].file
-                                      );
-
                                       setFileSelected(
                                         `data:application/pdf;base64,${
                                           arr.filter((td: any) =>
