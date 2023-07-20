@@ -1087,6 +1087,7 @@ export function DisposicionPagosCapital() {
                 <Grid item>
                   <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
                   <TextField
+                    type="number"
                     value={tasaInteresSobreTasa}
                     onChange={(text) =>
                       changeTasaInteres({

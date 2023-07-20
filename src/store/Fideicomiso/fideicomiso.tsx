@@ -369,7 +369,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         }
       )
       .then(({ data }) => {
-        let r = data.data;
         Swal.fire({
           icon: "success",
           title: "Éxito",
@@ -387,9 +386,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       })
       .then(({ data }) => {
         let r = data.data;
-        console.log(r);
-        console.log(JSON.parse(r[0].SoporteDocumental));
-
         set((state) => ({
           tablaFideicomisos: r,
         }));
