@@ -69,6 +69,37 @@ export const queries = {
     },
   },
 
+  bold_text_InfoGeneralGastoCosto: {
+    fontFamily: "MontserratBold",
+    "@media (max-width: 600px)": {
+      // XS (extra small) screen
+      fontSize: "1rem",
+    },
+    "@media (min-width: 601px) and (max-width: 900px)": {
+      // SM (small) screen
+      fontSize: "1.5ch",
+    },
+
+    "@media (min-width: 513px)": {
+      fontSize: "1.25ch",
+    },
+    "@media (min-width: 600px)": {
+      fontSize: "1.30ch",
+    },
+    "@media (min-width: 900px)": {
+      fontSize: "0.5ch",
+    },
+    "@media (min-width: 1300px)": {
+      fontSize: "0.5ch",
+    },
+    "@media (min-width: 1485px)": {
+      fontSize: "1.35ch",
+    },
+    "@media (min-width: 1870px)": {
+      fontSize: "1.5ch",
+    },
+  },
+
   italic_text: {
     fontSize: "2ch",
     fontFamily: "MontserratRegular",
@@ -123,12 +154,22 @@ export const queries = {
   },
 
   tablaDisposicionPagosCapital: {
-    height: 250,
+    height: 450,
     width: "100%",
     display: "flex",
     justifyContent: "center",
     "@media (min-width: 1870px)": {
       height: 430,
+    },
+  },
+
+  tablaAutorizacion: {
+    height: "80%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    "@media (min-width: 1870px)": {
+      height: "80%",
     },
   },
 
@@ -263,7 +304,7 @@ export const queries = {
       height: "36rem",
     },
     "@media (min-width: 1485px)": {
-      height: "36rem",
+      height: "35rem",
     },
     "@media (min-width: 1870px)": {
       height: "49rem",
@@ -312,6 +353,107 @@ export const queries = {
     },
   },
 
+  contenedorInformacionGeneral: {
+    "@media (min-width: 1485px)": {
+      height: "32rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "44rem",
+    },
+  },
 
+  contenedorAgregarAutorizacion: {
 
+    RegistrarAutorizacion:{
+      "@media (min-width: 513px)": {
+        height: "26rem",
+      },
+      "@media (min-width: 600px)": {
+        height: "27rem",
+      },
+      "@media (min-width: 900px)": {
+        height: "28rem",
+      },
+      "@media (min-width: 1300px)": {
+        height: "29rem",
+      },
+  
+      "@media (min-width: 1485px)": {
+        height: "28rem",
+      },
+      "@media (min-width: 1870px)": {
+        height: "35rem",
+      },
+
+    },
+
+    MontoAutorizado:{
+      "@media (min-width: 513px)": {
+        height: "26rem",
+      },
+      "@media (min-width: 600px)": {
+        height: "27rem",
+      },
+      "@media (min-width: 900px)": {
+        height: "28rem",
+      },
+      "@media (min-width: 1300px)": {
+        height: "29rem",
+      },
+  
+      "@media (min-width: 1485px)": {
+        height: "37rem",
+      },
+      "@media (min-width: 1870px)": {
+        height: "50rem",
+      },
+
+    },
+
+    DetalleDestino:{
+      "@media (min-width: 513px)": {
+        height: "26rem",
+      },
+      "@media (min-width: 600px)": {
+        height: "27rem",
+      },
+      "@media (min-width: 900px)": {
+        height: "28rem",
+      },
+      "@media (min-width: 1300px)": {
+        height: "29rem",
+      },
+  
+      "@media (min-width: 1485px)": {
+        height: "37rem",
+      },
+      "@media (min-width: 1870px)": {
+        height: "50rem",
+      },
+
+    },
+
+    Tablas:{
+      height: "13rem", 
+
+      "@media (min-width: 513px)": {
+        height: "9rem" 
+      },
+      "@media (min-width: 600px)": {
+        height: "10rem" 
+      },
+      "@media (min-width: 900px)": {
+        height: "12rem" 
+      },
+      "@media (min-width: 1300px)": {
+        height: "13rem" 
+      },
+      "@media (min-width: 1485px)": {
+        height: "28rem" 
+      },
+      "@media (min-width: 1870px)": {
+        height: "40rem",
+      },
+    }
+  },
 };

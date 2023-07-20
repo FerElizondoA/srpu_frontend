@@ -16,7 +16,7 @@ import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/main";
 import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-
+import {InfoGeneralGastoCosto} from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto"
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
@@ -117,7 +117,7 @@ export function ObligacionesLargoPlazoPage() {
       </Grid>
 
       {tabIndex === 0 && <Encabezado />}
-      {tabIndex === 1 && <InformacionGeneral />}
+      {tabIndex === 1 && <InfoGeneralGastoCosto />}
       {tabIndex === 2 && <Autorizacion />}
       {tabIndex === 3 && <FuenteDePago />}
       {tabIndex === 4 && <CondicionesFinancieras />}

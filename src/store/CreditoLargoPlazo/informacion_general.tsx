@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IFileInfoGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
-import { useLargoPlazoStore } from "./main";
+
 
 export type ObligadoSolidarioAval = {
   obligadoSolidario: string;
@@ -12,24 +12,12 @@ export type ObligadoSolidarioAval = {
 
 //NUEVOOOOOO
 export type GeneralGastosCostos = {
-  destino: string,
-  detalleInversion: string,
-  //periodoAdministracion: string, // NO SABEMOS AUN 
-  gastosAdicionales: number,
-  claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
-  descripcion: string,
-  monto: number,
-  //periodoFinanciamiento: string, //AUN NO SABEMOS
-  saldoVigente: number,  //AUN NO SABEMOS
-  montoGastosAdicionales: number,
+  destino: string;
+  detalleInversion: string;
+  descripcion: string;
+  claveInscripcionFinanciamiento: string;
+  monto: number;
 };
-
-export interface ITiposDocumentoGC {
-  Id: string;
-  Descripcion: string;
-  Obligatorio:number;
-}
-
 
 export interface InformacionGeneralLargoPlazoSlice {
   informacionGeneral: {
@@ -50,21 +38,27 @@ export interface InformacionGeneralLargoPlazoSlice {
   };
 
   //NUEVA TABLA CREDITO LARGO PLAZO
-  tablaGastosCostos: GeneralGastosCostos[],
-  generalGastosCostos: {
-    destino: { Id: string, Descripcion: string },
-    detalleInversion: { Id: string, Descripcion: string },
-    //periodoAdministracion: string, // NO SABEMOS AUN 
-    gastosAdicionales: number,
-    claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
-    descripcion: string,
-    monto: number,
-    //periodoFinanciamiento: string, //AUN NO SABEMOS
-    saldoVigente: number,  //AUN NO SABEMOS
-    montoGastosAdicionales: number,
 
-  },
-  
+  detalleInversion: {
+    archivo: File;
+    nombreArchivo: string;
+  };
+
+  GastosCostos: {
+    gastosAdicionales: string;
+    saldoVigente: number;
+    montoGastosAdicionales: number;
+  };
+
+  tablaGastosCostos: GeneralGastosCostos[];
+  generalGastosCostos: {
+    destino: { Id: string; Descripcion: string };
+    detalleInversion: { Id: string; Descripcion: string };
+    descripcion: string;
+    claveInscripcionFinanciamiento: string;
+    monto: number;
+  };
+
   //************ */
   catalogoDestinosGastosCostos: ICatalogo[];
   catalogoInstituciones: ICatalogo[];
@@ -94,43 +88,37 @@ export interface InformacionGeneralLargoPlazoSlice {
   cleanObligadoSolidarioAval: () => void;
   removeObligadoSolidarioAval: (index: number) => void;
 
-  
+  //campo gastos costos
 
-  
+  changeGastosCostos: (
+    gastosAdicionales: string,
+    saldoVigente: number,
+    montoGastosAdicionales: number
+  ) => void;
+
   //NUEVA TABLA CREDITO LARGO PLAZO
-
   addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) => void;
   changeGeneralGastosCostos: (
-    destino: { Id: string, Descripcion: string },
-    detalleInversion: { Id: string, Descripcion: string },
-    //inversiónPúblicaProductiva : {},
-    //periodoAdministracion: string, // NO SABEMOS AUN 
-    gastosAdicionales: number,
-    claveInscripcionFinanciamiento: string, // NO SABEMOS AUN 
+    destino: { Id: string; Descripcion: string },
+    detalleInversion: { Id: string; Descripcion: string },
+    claveInscripcionFinanciamiento: string,
     descripcion: string,
-    monto: number,
-    //periodoFinanciamiento: string, //AUN NO SABEMOS
-    saldoVigente: number,  //AUN NO SABEMOS
-    montoGastosAdicionales: number,
+    monto: number
   ) => void;
   cleanGeneralGastosCostos: () => void;
   removeGeneralGastosCostos: (index: number) => void;
 
-  addDocumento:(newDocumento: IFileInfoGeneral) =>void;
+  addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
-  setTablaDocumentos: (docs: any) => any;
   //getTiposDocumentos: () => void;
   tablaDocumentos: IFileInfoGeneral[];
 
-
-/************************ */
-
+  /************************ */
 
   getDestinos: () => void;
   getInstituciones: () => void;
   getTipoEntePublicoObligado: () => void;
   getObligadoSolidarioAval: () => void;
-  
 }
 
 export const createInformacionGeneralLargoPlazoSlice: StateCreator<
@@ -148,25 +136,31 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "" },  // Descripcion: "No aplica"
+    obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
-    entePublicoObligado: { Id: "", Descripcion: "" },  // Descripcion: "No aplica"
+    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
   },
 
   //NUEVA TABLA CREDITO LARGO PLAZO
+
+  GastosCostos: {
+    gastosAdicionales: "",
+    saldoVigente: 0,
+    montoGastosAdicionales: 0,
+  },
+  
+  detalleInversion: {
+    archivo: new File([], ""),
+    nombreArchivo: "",
+  },
 
   tablaGastosCostos: [],
   generalGastosCostos: {
     destino: { Id: "", Descripcion: "" },
     detalleInversion: { Id: "", Descripcion: "" },
-    //periodoAdministracion: "", // NO SABEMOS AUN 
-    gastosAdicionales: 0,
-    claveInscripcionFinanciamiento: "", // NO SABEMOS AUN 
     descripcion: "",
+    claveInscripcionFinanciamiento: "",
     monto: 0,
-    //periodoFinanciamiento: "", //AUN NO SABEMOS
-    saldoVigente: 0,  //AUN NO SABEMOS
-    montoGastosAdicionales: 0,
   },
 
   tablaDocumentos: [],
@@ -190,7 +184,10 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
     set((state) => ({
-      tablaObligadoSolidarioAval: [...state.tablaObligadoSolidarioAval, newObligadoSolidarioAval],
+      tablaObligadoSolidarioAval: [
+        ...state.tablaObligadoSolidarioAval,
+        newObligadoSolidarioAval,
+      ],
     })),
 
   removeObligadoSolidarioAval: (index: number) =>
@@ -203,21 +200,20 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-// NUEVA TABLA LARGO PLAZO
-
-  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) =>
-    set((state) => ({
-      tablaGastosCostos: [...state.tablaGastosCostos, newGeneralGastosCostos],
+  changeGastosCostos: (GastoCostos: any) =>
+    set(() => ({
+      GastosCostos: GastoCostos,
     })),
 
+  // NUEVA TABLA LARGO PLAZO
   changeGeneralGastosCostos: (GastosCostos: any) =>
     set(() => ({
       generalGastosCostos: GastosCostos,
     })),
 
-  cleanGeneralGastosCostos: () =>
-    set(() => ({
-      tablaGastosCostos: []
+  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) =>
+    set((state) => ({
+      tablaGastosCostos: [...state.tablaGastosCostos, newGeneralGastosCostos],
     })),
 
   removeGeneralGastosCostos: (index: number) =>
@@ -225,21 +221,28 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       tablaGastosCostos: state.tablaGastosCostos.filter((_, i) => i !== index),
     })),
 
-    addDocumento:(newDocument: IFileInfoGeneral) =>
-    set(() =>({
-      
+  cleanGeneralGastosCostos: () =>
+    set(() => ({
+      tablaGastosCostos: [],
     })),
 
-    removeDocumento: (index: number) =>
-    set((state) => ({
-      tablaDocumentos: state.tablaDocumentos.filter((_, i) => i !== index),
+  addDocumento: (newDocument: File, nombreArchivo: string) =>
+    set(() => ({
+      detalleInversion: {
+        archivo: newDocument,
+        nombreArchivo: nombreArchivo,
+      },
     })),
 
-    setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
+  removeDocumento: () =>
+    set(() => ({
+      detalleInversion: {
+        archivo: new File([], ""),
+        nombreArchivo: "",
+      },
+    })),
 
-
-    
-// /**/*/ */
+  // /**/*/ */
 
   getDestinos: async () => {
     await axios
@@ -259,7 +262,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-institucionesFinancieras",
+          "/api/get-institucionesFinancieras",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -294,7 +297,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-obligadoSolidarioAval",
+          "/api/get-obligadoSolidarioAval",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),

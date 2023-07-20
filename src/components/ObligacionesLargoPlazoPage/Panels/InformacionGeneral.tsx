@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Divider,
   TextField,
   InputLabel,
   Autocomplete,
@@ -32,7 +31,6 @@ import { subDays, addDays } from "date-fns/esm";
 import { queries } from "../../../queries";
 import { differenceInDays, startOfDay } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
-//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import CheckIcon from "@mui/icons-material/Check";
 import validator from "validator";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -77,27 +75,6 @@ const heads: Head[] = [
   },
   {
     label: "Ente público obligado",
-  },
-];
-
-const headsGC: Head[] = [
-  {
-    label: "Accion",
-  },
-  {
-    label: "Destino / gastos y costos relacionados con la contratación",
-  },
-  {
-    label: "Detalle de la inversion",
-  },
-  {
-    label: "Descripcion",
-  },
-  {
-    label: "Clave de Inscripción del Financiamiento",
-  },
-  {
-    label: "Monto",
   },
 ];
 
@@ -201,21 +178,13 @@ export function InformacionGeneral() {
     (state) => state.removeObligadoSolidarioAval
   );
 
-  // GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACION
+  // Datos tabla Gastos costos
 
   const generalGCDestino: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.generalGastosCostos.destino);
 
   const generalGCDetalleInversion: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.generalGastosCostos.detalleInversion);
-
-  // const generalGCperiodoAdministracion: string = useLargoPlazoStore(
-  //   (state) => state.generalGastosCostos.periodoAdministracion
-  // );
-
-  const generalGCGastosAdicionales: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.gastosAdicionales
-  );
 
   const generalGCClaveInscripcionFinanciamiento: string = useLargoPlazoStore(
     (state) => state.generalGastosCostos.claveInscripcionFinanciamiento
@@ -229,37 +198,27 @@ export function InformacionGeneral() {
     (state) => state.generalGastosCostos.monto
   );
 
-  // const generalGCPeriodoFinanciamiento: string = useLargoPlazoStore(
-  //   (state) => state.generalGastosCostos.periodoFinanciamiento
-  // );
-
-  const generalGCSaldoVigente: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.saldoVigente
-  );
-
-  const generalGCMontoGastosAdicionales: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.montoGastosAdicionales
-  );
-
-  //TABLA GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACION
-  const tablaGastosCostos: any = useLargoPlazoStore(
-    (state) => state.tablaGastosCostos
-  );
-
-  const addGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.addGeneralGastosCostos
-  );
+  //TABLA GASTOS Y COSTOS
 
   const changeGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.changeGeneralGastosCostos
   );
 
-  const removeGeneralGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.removeGeneralGastosCostos
+  // Gastos y costos
+  const changeGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.changeGastosCostos
   );
 
-  const quitDocument: Function = useLargoPlazoStore(
-    (state) => state.removeDocumento
+  const GCGastosAdicionales: string = useLargoPlazoStore(
+    (state) => state.GastosCostos.gastosAdicionales
+  );
+
+  const GCSaldoVigente: number = useLargoPlazoStore(
+    (state) => state.GastosCostos.saldoVigente
+  );
+
+  const GCMontoGastosAdicionales: number = useLargoPlazoStore(
+    (state) => state.GastosCostos.montoGastosAdicionales
   );
 
   const addRows = () => {
@@ -279,6 +238,7 @@ export function InformacionGeneral() {
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
   }, []);
+
   const state = useLargoPlazoStore.getState();
 
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
@@ -301,7 +261,6 @@ export function InformacionGeneral() {
           Descripcion: "",
         },
       });
-    } else {
     }
   }, [catalogoObligadoSolidarioAval]);
 
@@ -310,24 +269,6 @@ export function InformacionGeneral() {
   const [vencimiento, setVencimiento] = useState(fechaVencimiento);
 
   const [plazoD, setPlazo] = useState(0);
-
-  // const [periodoDeAdministracion, setPeriodoAdministracion] = useState(
-  //   generalGCperiodoAdministracion
-  // );
-  const [gastosAdicionalesGC, setGastosAdicionalesGC] = useState(
-    generalGCGastosAdicionales
-  );
-  const [claveInscripcionFinanciamiento, setClaveInscripcionFinanciamiento] =
-    useState(generalGCClaveInscripcionFinanciamiento);
-  const [descripcionGC, setDescripcionGC] = useState(generalGCDescripcion);
-  const [montoGC, setMontoGC] = useState(generalGCMonto);
-  // const [periodoFinanciamientoGC, setPeriodoFinanciamiento] = useState(
-  //   generalGCPeriodoFinanciamiento
-  // );
-  const [saldoVIgenteGC] = useState(generalGCSaldoVigente);
-  const [montoGastosAdicionalesGC, setMontoGastosAdicionalesGC] = useState(
-    generalGCMontoGastosAdicionales
-  );
 
   useEffect(() => {
     const res =
@@ -351,17 +292,17 @@ export function InformacionGeneral() {
     changeGeneralGastosCostos({
       destino: generalGCDestino,
       detalleInversion: generalGCDetalleInversion,
-      //periodoAdministracion: generalGCperiodoAdministracion, // NO SABEMOS AUN
-      gastosAdicionales: generalGCGastosAdicionales,
-      claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento, // NO SABEMOS AUN
+      claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
       descripcion: generalGCDescripcion,
       monto: generalGCMonto,
-      //periodoFinanciamiento: generalGCPeriodoFinanciamiento, //AUN NO SABEMOS
-      saldoVigente: generalGCSaldoVigente, //AUN NO SABEMOS
-      montoGastosAdicionales: generalGCMontoGastosAdicionales,
     });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    changeGastosCostos({
+      gastosAdicionales: GCGastosAdicionales,
+      saldoVigente: GCSaldoVigente,
+      montoGastosAdicionales: GCMontoGastosAdicionales,
+    });
+
   }, [contratacion, vencimiento]);
 
   return (
@@ -369,8 +310,8 @@ export function InformacionGeneral() {
       item
       container
       sx={{
+        ...queries.contenedorInformacionGeneral,
         display: "flex",
-        height: "200vh",
         flexDirection: "column",
         justifyContent: "space-evenly",
         overflow: "auto",
@@ -568,27 +509,6 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      {/* <Grid item display={"flex"} width={"100%"} justifyContent={"center"}>
-        <Grid width="87.5%" display={"flex"} justifyContent={"space-between"}>
-          <Grid item lg={4.2}>
-            <TextField
-              disabled
-              sx={{ width: "80%" }}
-              label="Periodo de administración"
-              variant="standard"
-            />
-          </Grid>
-          <Grid item lg={3.4}>
-            <TextField
-              disabled
-              sx={{ width: "100%" }}
-              label="Periodo de financiamiento"
-              variant="standard"
-            />
-          </Grid>
-        </Grid>
-      </Grid> */}
-
       <Grid item display={"flex"} justifyContent={"center"}>
         <Grid item lg={10.5}>
           <InputLabel sx={queries.medium_text}>
@@ -662,10 +582,6 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              ////////// REVISAAAAAR FERNANDOOOO/////////
-              // Id: generalObligadoSolidario.Id  || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Id || '' ,
-              // Descripcion: generalObligadoSolidario.Descripcion || catalogoObligadoSolidarioAval.find((obligado) => obligado.Descripcion === "No aplica")?.Descripcion || '',
-
               Id: generalObligadoSolidario.Id,
               Descripcion: generalObligadoSolidario.Descripcion,
             }}
@@ -829,7 +745,7 @@ export function InformacionGeneral() {
       </Grid>
 
       {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
-      <Grid height={"15%"} display={"flex"} justifyContent={"space-evenly"}>
+      <Grid height={"40%"} display={"flex"} justifyContent={"space-evenly"}>
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer
             sx={{
@@ -880,6 +796,7 @@ export function InformacionGeneral() {
                             </IconButton>
                           </Tooltip>
                         </StyledTableCell>
+                        
                         <StyledTableCell
                           align="center"
                           component="th"
@@ -898,404 +815,6 @@ export function InformacionGeneral() {
                   })
                 )}
               </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Grid>
-
-<Divider sx={queries.bold_text}>Destino / gastos y costos relacionados con la contratación</Divider>
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>Destino</InputLabel>
-          <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText="Cerrar"
-            openText="Abrir"
-            fullWidth
-            options={catalogoDestinos}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Descripcion}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            value={{
-              Id: generalGCDestino.Id || "",
-              Descripcion: generalGCDestino.Descripcion || "",
-            }}
-            onChange={(event, text) => {
-              changeGeneralGastosCostos({
-                destino: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "",
-                },
-                detalleInversion: generalGCDetalleInversion,
-                //periodoAdministracion: periodoDeAdministracion,
-                gastosAdicionales: gastosAdicionalesGC,
-                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
-                descripcion: descripcionGC,
-                monto: montoGC,
-                //periodoFinanciamiento: periodoFinanciamientoGC,
-                saldoVigente: saldoVIgenteGC,
-                montoGastosAdicionales: montoGastosAdicionalesGC,
-              });
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
-              />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id || value.Descripcion === ""
-            }
-          />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Detalle de la Inversión
-          </InputLabel>
-          <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText="Cerrar"
-            openText="Abrir"
-            fullWidth
-            options={catalogoDestinos}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Descripcion}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            value={{
-              Id: generalGCDetalleInversion.Id || "",
-              Descripcion: generalGCDetalleInversion.Descripcion || "",
-            }}
-            onChange={(event, text) => {
-              changeGeneralGastosCostos({
-                destino: generalGCDestino,
-                detalleInversion: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "",
-                },
-                //periodoAdministracion: periodoDeAdministracion,
-                gastosAdicionales: gastosAdicionalesGC,
-                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
-                descripcion: descripcionGC,
-                monto: montoGC,
-                //periodoFinanciamiento: periodoFinanciamientoGC,
-                saldoVigente: saldoVIgenteGC,
-                montoGastosAdicionales: montoGastosAdicionalesGC,
-              });
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
-              />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id || value.Descripcion === ""
-            }
-          />
-        </Grid>
-        {/* Falta documento */}
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Inversión Pública Productiva
-          </InputLabel>
-          <TextField
-            variant="standard"
-            fullWidth
-            placeholder="Agregar un archivo"
-            onChange={(v) => {}}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Periodo de Administración
-          </InputLabel>
-          <TextField fullWidth variant="standard" />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
-          <TextField
-            fullWidth
-            placeholder="0"
-            value={
-              generalGCGastosAdicionales <= 0
-                ? ""
-                : generalGCGastosAdicionales.toString()
-            }
-            onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: generalGCperiodoAdministracion,
-                  gastosAdicionales: v.target.value,
-                  claveInscripcionFinanciamiento:
-                    generalGCClaveInscripcionFinanciamiento,
-                  descripcion: generalGCDescripcion,
-                  monto: generalGCMonto,
-                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
-                  saldoVigente: generalGCSaldoVigente,
-                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
-                });
-              } else if (v.target.value === "") {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: periodoDeAdministracion,
-                  gastosAdicionales: 0,
-                  claveInscripcionFinanciamiento:
-                    claveInscripcionFinanciamiento,
-                  descripcion: descripcionGC,
-                  monto: generalGCMonto,
-                  //periodoFinanciamiento: periodoFinanciamientoGC,
-                  saldoVigente: saldoVIgenteGC,
-                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
-                });
-              }
-            }}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-              startAdornment: <AttachMoneyIcon />,
-            }}
-            variant="standard"
-          />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Clave de Inscripción del Financiamiento
-          </InputLabel>
-          <TextField disabled fullWidth variant="standard" />
-        </Grid>
-      </Grid>
-
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>Descripcion</InputLabel>
-          <TextField
-            value={generalGCDescripcion}
-            onChange={(v) =>
-              changeGeneralGastosCostos({
-                destino: generalGCDestino,
-                detalleInversion: generalGCDetalleInversion,
-                //periodoAdministracion: periodoDeAdministracion,
-                gastosAdicionales: generalGCGastosAdicionales,
-                claveInscripcionFinanciamiento: claveInscripcionFinanciamiento,
-                descripcion: v.target.value,
-                monto: generalGCMonto,
-                //periodoFinanciamiento: periodoFinanciamientoGC,
-                saldoVigente: saldoVIgenteGC,
-                montoGastosAdicionales: generalGCMontoGastosAdicionales,
-              })
-            }
-            fullWidth
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            variant="standard"
-          />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>Monto</InputLabel>
-          <TextField
-            fullWidth
-            placeholder="0"
-            value={generalGCMonto <= 0 ? "" : generalGCMonto.toString()}
-            onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: generalGCperiodoAdministracion,
-                  gastosAdicionales: generalGCGastosAdicionales,
-                  claveInscripcionFinanciamiento:
-                    generalGCClaveInscripcionFinanciamiento,
-                  descripcion: generalGCDescripcion,
-                  monto: v.target.value,
-                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
-                  saldoVigente: generalGCSaldoVigente,
-                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
-                });
-              } else if (v.target.value === "") {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: periodoDeAdministracion,
-                  gastosAdicionales: gastosAdicionalesGC,
-                  claveInscripcionFinanciamiento:
-                    claveInscripcionFinanciamiento,
-                  descripcion: descripcionGC,
-                  monto: 0,
-                  //periodoFinanciamiento: periodoFinanciamientoGC,
-                  saldoVigente: saldoVIgenteGC,
-                  montoGastosAdicionales: generalGCMontoGastosAdicionales,
-                });
-              }
-            }}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-              startAdornment: <AttachMoneyIcon />,
-            }}
-            variant="standard"
-          />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Periodo de Financiamiento (Meses)
-          </InputLabel>
-          <TextField disabled fullWidth variant="standard" />
-        </Grid>
-      </Grid>
-
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
-          <InputLabel disabled sx={queries.medium_text}>
-            Saldo Vigente
-          </InputLabel>
-          <TextField fullWidth disabled variant="standard" />
-        </Grid>
-
-        <Grid item lg={3}>
-          <InputLabel sx={queries.medium_text}>
-            Monto Gastos Adicionales
-          </InputLabel>
-          <TextField
-            fullWidth
-            placeholder="0"
-            value={
-              generalGCMontoGastosAdicionales <= 0
-                ? ""
-                : generalGCMontoGastosAdicionales.toString()
-            }
-            onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: generalGCperiodoAdministracion,
-                  gastosAdicionales: generalGCGastosAdicionales,
-                  claveInscripcionFinanciamiento:
-                    generalGCClaveInscripcionFinanciamiento,
-                  descripcion: generalGCDescripcion,
-                  monto: generalGCMonto,
-                  //periodoFinanciamiento: generalGCPeriodoFinanciamiento,
-                  saldoVigente: generalGCSaldoVigente,
-                  montoGastosAdicionales: v.target.value,
-                });
-              } else if (v.target.value === "") {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  //periodoAdministracion: periodoDeAdministracion,
-                  gastosAdicionales: gastosAdicionalesGC,
-                  claveInscripcionFinanciamiento:
-                    claveInscripcionFinanciamiento,
-                  descripcion: descripcionGC,
-                  monto: generalGCMonto,
-                  //periodoFinanciamiento: periodoFinanciamientoGC,
-                  saldoVigente: saldoVIgenteGC,
-                  montoGastosAdicionales: 0,
-                });
-              }
-            }}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-              startAdornment: <AttachMoneyIcon />,
-            }}
-            variant="standard"
-          />
-        </Grid>
-      </Grid>
-
-      <Grid height={"20%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip" }}>
-          <TableContainer
-            sx={{
-              maxHeight: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}
-          >
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {headsGC.map((head, index) => (
-                    <StyledTableCell align="center" key={index}>
-                      {head.label}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-                <TableBody>
-                  <StyledTableRow>
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                  </StyledTableRow>
-                </TableBody>
-              </TableHead>
             </Table>
           </TableContainer>
         </Paper>

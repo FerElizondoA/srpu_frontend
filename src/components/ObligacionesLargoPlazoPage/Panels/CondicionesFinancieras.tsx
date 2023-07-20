@@ -20,7 +20,6 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-
 import {
   StyledTableCell,
   StyledTableRow,
@@ -39,6 +38,7 @@ import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera
 import { queries } from "../../../queries";
 // import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import { Disposicion } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+
 
 interface Head {
   label: string;

@@ -1,5 +1,9 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputBase,
@@ -25,8 +29,6 @@ import { queries } from "../../queries";
 import { AgregarFideicomisos } from "../../components/ObligacionesLargoPlazoPage/Dialog/AgregarFideicomisos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
-// import DownloadIcon from "@mui/icons-material/Download";
-// import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Head {
@@ -64,7 +66,6 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
- 
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -77,6 +78,7 @@ export function Fideicomisos() {
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
   const [accion, setAccion] = useState("Agregar");
   const [indexA, setIndexA] = useState(0);
+  const [openDialogEliminar, setOpendDialogEliminar] = useState(false);
 
   const changeOpenAgregarState = (open: boolean) => {
     changeAgregarFideicomisos(open);
@@ -157,7 +159,9 @@ export function Fideicomisos() {
             <TableHead>
               <TableRow>
                 {heads.map((head, index) => (
-                  <StyledTableCell key={index} align="center">{head.label}</StyledTableCell>
+                  <StyledTableCell key={index} align="center">
+                    {head.label}
+                  </StyledTableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -207,7 +211,12 @@ export function Fideicomisos() {
                   </Tooltip> */}
 
                   <Tooltip title="Borrar">
-                    <IconButton type="button">
+                    <IconButton
+                      type="button"
+                      onClick={() =>
+                        setOpendDialogEliminar(!openDialogEliminar)
+                      }
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
@@ -223,6 +232,30 @@ export function Fideicomisos() {
         accion={accion}
         indexA={indexA}
       />
+
+      <Dialog open={openDialogEliminar}>
+        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogContent>
+          <Typography sx={queries.medium_text}>
+            ¿Seguro que desea eliminar a este usuario?
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+          >
+            Aceptar
+          </Button>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

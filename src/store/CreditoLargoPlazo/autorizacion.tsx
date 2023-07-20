@@ -1,32 +1,224 @@
 import { StateCreator } from "zustand";
-import { IFileLP } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
+import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
-export type Autorizacion = {
-  AutorizacionLegislatura: string;
-  tipoAutorizacion: string;
-  numeroAutorizacion: string;
-  FechaPublicacion: string;
-  montoAutorizado: number;
-  medioPublicacion: string;
-  documentoSoporte: IFileLP;
-  detalleDestino: string;
+export type GeneralMontoAutorizado = {
+  DestinoAutorizado: string;
+  MontoAutorizado: number;
 };
 
-export interface AurotizacionLargoPlazoSlice {
+export type GeneralDetalleDestino = {
+  DetalleDestino: string;
+  MontoAutorizado: number;
+};
+
+export interface AutorizacionLargoPlazoSlice {
   Autorizacion: {
-    AutorizacionLegislatura: string;
-    tipoAutorizacion: string;
-    numeroAutorizacion: string;
-    FechaPublicacion: string;
-    montoAutorizado: number;
+    entidadFederativa: string;
+    numeroAutorizacion: number;
+    fechaPublicacion: string;
     medioPublicacion: string;
-    documentoSoporte: IFileLP;
-    detalleDestino: string;
+    montoAutorizado: number;
+   
+  };
+  documentoSoporte: {
+    archivo: File,
+    nombreArchivo: string,
+  }
+  acreditacionQuorum: {
+    archivo: File,
+    nombreArchivo: string,
+  }
+  
+  
+
+  tablaMontoAutorizado: GeneralMontoAutorizado[];
+  generalMontoAutorizado: {
+    DestinoAutorizado: string;
+    MontoAutorizado: number;
   };
 
-  tablaAutorizacion: Autorizacion[];
+  tablaDetalleDestino : GeneralDetalleDestino[]
+  generalDetalleDestino: {
+    DetalleDestino: string;
+    MontoAutorizado: number;
+  }
+
+  catalogoDestinosGastosCostos: ICatalogo[];
+  catalogoInstituciones: ICatalogo[];
+  catalogoDestinos: ICatalogo[];
+  catalogoObligadoSolidarioAval: ICatalogo[];
+  catalogoTipoEntePublicoObligado: ICatalogo[];
+
+  changeAutorizacion : (
+    entidadFederativa: string,
+    numeroAutorizacion: number,
+    fechaPublicacion: string,
+    medioPublicacion: string,
+    montoAutorizado: number,
+  ) => void;
+
+  addDocumentoSoporte:  (newDocumento: File, nombreArchivo: string) => void;
+  addDocumentoQuorum:  (newDocumento: File, nombreArchivo: string) => void;
+
+  removeDocumentoSoporte : ( newDocumento: File, nombreArchivo: string ) => void;
+  removeDocumentoQuorum : ( newDocumento: File, nombreArchivo: string ) => void;
 
 
+  ///MONTO AUTORIZADO ***********
+  addGeneralMontoAutorizado : (
+    newMontoAutorizado: GeneralMontoAutorizado
+  ) => void;
 
+  changeGeneralMontoAutorizado: (
+    DestinoAutorizado: string,
+    MontoAutorizado: number,
+  ) => void;
+
+  cleanGeneralMontoAutorizado :() => void;
+
+  removeGeneralMontoAutorizado: (index: number) => void;
+
+///******************** */
+
+
+  ////DETALLE DEL DESTINO *************
+  addGeneralDetalleDestino : (
+    newDetalleDestino : GeneralDetalleDestino
+  ) => void; 
+  changeGeneralDetalleDestino: (
+    DetalleDestino: string,
+    MontoAutorizado: number,
+  ) => void;
+  cleanDetalleDestino: () => void;
+  removeDetalleDestino: (index: number) => void; 
+
+//*************** */
 
 }
+
+export const createAutorizacionLargoPlazoSlice : StateCreator<
+AutorizacionLargoPlazoSlice
+> = (set, get) => ({
+  Autorizacion: {
+    entidadFederativa: "",
+    numeroAutorizacion: 0,
+    fechaPublicacion: "",
+    medioPublicacion: "",
+    montoAutorizado: 0,
+  },
+
+  documentoSoporte: {
+    archivo: new File([], ""),
+    nombreArchivo: "",
+  },
+
+  acreditacionQuorum: {
+    archivo: new File([], ""),
+    nombreArchivo: "",
+  },
+
+  tablaMontoAutorizado: [],
+  generalMontoAutorizado: {
+    DestinoAutorizado: "",
+    MontoAutorizado: 0,
+  },
+
+  tablaDetalleDestino : [],
+  generalDetalleDestino: {
+    DetalleDestino: "",
+    MontoAutorizado: 0,
+  },
+
+  catalogoDestinosGastosCostos: [],
+  catalogoInstituciones: [],
+  catalogoDestinos: [],
+  catalogoObligadoSolidarioAval: [],
+  catalogoTipoEntePublicoObligado: [],
+
+
+  changeAutorizacion: (Autorizacion: any) => 
+  set(() =>({
+    Autorizacion: Autorizacion,
+  })),
+
+  addDocumentoSoporte: (newDocumento: File, nombreArchivo: string) =>
+  set(() => ({
+    documentoSoporte: {
+      archivo: newDocumento,
+      nombreArchivo: nombreArchivo,
+    },
+
+  })),
+
+  removeDocumentoSoporte: () =>
+  set(() => ({
+    documentoSoporte: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+    },
+  })),
+
+  addDocumentoQuorum:(newDocumento: File, nombreArchivo: string) =>
+  set(() => ({
+    acreditacionQuorum: {
+      archivo: newDocumento,
+      nombreArchivo: nombreArchivo,
+    },
+    
+  })),
+
+  removeDocumentoQuorum : ()  =>
+  set(() => ({
+    acreditacionQuorum: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+    },
+  })),
+
+  ///MONTO AUTORIZADO
+
+  changeGeneralMontoAutorizado : ( MontoAutorizado : any) =>
+  set(() => ({
+    generalMontoAutorizado: MontoAutorizado
+  })),
+
+  addGeneralMontoAutorizado : (newGeneralMontoAutorizado : GeneralMontoAutorizado) =>
+  set((state) => ({
+    tablaMontoAutorizado : [...state.tablaMontoAutorizado, newGeneralMontoAutorizado],
+  })),
+
+
+  cleanGeneralMontoAutorizado : () =>
+  set(() => ({
+    tablaMontoAutorizado: [],
+  })),
+
+  removeGeneralMontoAutorizado : (index:number) =>
+  set((state) => ({
+    tablaMontoAutorizado: state.tablaMontoAutorizado.filter((_, i) => i !== index)
+  })),
+
+  ///DETALLE DESTINO
+
+  changeGeneralDetalleDestino : (DetalleDestino: any) =>
+  set(() => ({
+    generalDetalleDestino: DetalleDestino
+  })),
+
+  addGeneralDetalleDestino : ( newGeneralDetalleDestino : GeneralDetalleDestino) =>
+  set((state) => ({
+    tablaDetalleDestino: [...state.tablaDetalleDestino, newGeneralDetalleDestino],
+  })),
+
+  cleanDetalleDestino : () =>
+  set(() => ({
+    tablaDetalleDestino: [],
+  })),
+
+  removeDetalleDestino : (index: number) =>
+  set((state) => ({
+    tablaDetalleDestino: state.tablaDetalleDestino.filter((_, i) => i !== index)
+  })),
+
+
+})
