@@ -1,50 +1,26 @@
-import { useState, forwardRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Dialog,
   AppBar,
-  Toolbar,
+  Button,
+  Dialog,
+  Grid,
   IconButton,
   Slide,
-  Button,
-  createTheme,
+  Tab,
+  Tabs,
   ThemeProvider,
+  Toolbar,
   Tooltip,
-  Divider,
-  TextField,
-  InputLabel,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  Paper,
-  FormControl,
-  Select,
-  MenuItem,
+  Typography,
+  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import CloseIcon from "@mui/icons-material/Close";
+import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
-import { DatoGeneralesFideicomiso } from "./DatosGeneralesFideicomiso";
-import { TipoDeMovimiento } from "./TipoDeMovimiento";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { addDays } from "date-fns";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
-import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
-import { MontoAutorizado } from "../Panels/MontoAutorizado";
 import { DestalleDestino } from "../Panels/DetalleDestino";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { MontoAutorizado } from "../Panels/MontoAutorizado";
+import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
