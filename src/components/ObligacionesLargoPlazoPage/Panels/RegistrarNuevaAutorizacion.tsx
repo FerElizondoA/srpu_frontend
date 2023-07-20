@@ -7,13 +7,15 @@ import {
   InputLabel,
   Autocomplete,
   Typography,
+  Tooltip,
+  Button,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { queries } from "../../../queries";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { addDays, subDays } from "date-fns";
+import { addDays, startOfDay, subDays } from "date-fns";
 import {
   DateInput,
   StyledTableCell,
@@ -24,6 +26,7 @@ import { enGB, id } from "date-fns/locale";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import validator from "validator";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { GridCloseIcon } from "@mui/x-data-grid";
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -66,12 +69,26 @@ export function RegistrarNuevaAutorizacion() {
     (state) => state.Autorizacion.montoAutorizado
   );
 
-  const documentoSoporte: File = useLargoPlazoStore(
-    (state) => state.documentoSoporte.archivo
+  const documentoSoporte: { archivo: File; nombreArchivo: string } =
+    useLargoPlazoStore((state) => state.documentoSoporte);
+
+  const removeDocumentoSoporte: Function = useLargoPlazoStore(
+    (state) => state.removeDocumentoSoporte
   );
 
-  const acreditacionQuorum: File = useLargoPlazoStore(
-    (state) => state.acreditacionQuorum.archivo
+  const addDocumentoSoporte: Function = useLargoPlazoStore(
+    (state) => state.addDocumentoSoporte
+  );
+
+  const acreditacionQuorum: { archivo: File; nombreArchivo: string } =
+    useLargoPlazoStore((state) => state.acreditacionQuorum);
+
+  const removeDocumentoQuorum: Function = useLargoPlazoStore(
+    (state) => state.removeDocumentoQuorum
+  );
+
+  const addDocumentoQuorum: Function = useLargoPlazoStore(
+    (state) => state.addDocumentoQuorum
   );
 
   const changeAutorizacion: Function = useLargoPlazoStore(
@@ -85,9 +102,6 @@ export function RegistrarNuevaAutorizacion() {
   const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-
-  const [fechaDePublicacion, setFechaDePublicacion] =
-    useState(fechaPublicacion);
 
   const [pruebaSelect, setPruebaSelect] = useState("");
 
@@ -118,8 +132,31 @@ export function RegistrarNuevaAutorizacion() {
     },
   ];
 
+  function cargarArchivo(event: any, tipoDocumento: string) {
+    let file = event.target.files[0];
+    if (tipoDocumento === "Soporte") {
+      if (file !== undefined) {
+        addDocumentoSoporte(file, file.name);
+      }
+    } else if (tipoDocumento === "Quorum") {
+      if (file !== undefined) {
+        addDocumentoQuorum(file, file.name);
+      }
+    }
+  }
+
   useEffect(() => {
+    changeAutorizacion({
+      entidadFederativa: entidadFederativa,
+      numeroAutorizacion: numeroAutorizacion,
+      fechaPublicacion: fechaPublicacion,
+      medioPublicacion: medioPublicacion,
+      montoAutorizado: montoAutorizado,
+    });
+
     getOrganismosA();
+
+    console.log(fechaPublicacion);
   }, []);
 
   return (
@@ -161,7 +198,6 @@ export function RegistrarNuevaAutorizacion() {
               </InputLabel>
               <TextField
                 fullWidth
-                placeholder="Nuevo León"
                 variant="standard"
                 value={
                   numeroAutorizacion <= 0 ? "" : numeroAutorizacion.toString()
@@ -187,6 +223,8 @@ export function RegistrarNuevaAutorizacion() {
                 }}
               />
             </Grid>
+
+            {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
 
             <Grid lg={2.1}>
               <InputLabel sx={queries.medium_text}>
@@ -245,12 +283,16 @@ export function RegistrarNuevaAutorizacion() {
                 adapterLocale={enGB}
               >
                 <DatePicker
-                  value={new Date(fechaDePublicacion)}
+                  value={new Date(fechaPublicacion)}
                   onChange={(date) =>
-                    setFechaDePublicacion(date?.toString() || "")
+                    changeAutorizacion({
+                      entidadFederativa: entidadFederativa,
+                      numeroAutorizacion: numeroAutorizacion,
+                      fechaPublicacion: date?.toString(),
+                      medioPublicacion: medioPublicacion,
+                      montoAutorizado: montoAutorizado,
+                    })
                   }
-                  minDate={new Date(subDays(new Date(), 365))}
-                  maxDate={new Date(addDays(new Date(fechaDePublicacion), 365))}
                   slots={{
                     textField: DateInput,
                   }}
@@ -291,26 +333,127 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid lg={2.1}>
-            <InputLabel sx={queries.medium_text}>Documento soporte</InputLabel>
-            <TextField
-              sx={queries.medium_text}
-              fullWidth
-              placeholder="Nuevo León"
-              variant="standard"
-            />
+          <Grid item lg={3} width={"100%"}>
+            <InputLabel
+              sx={{
+                ...queries.medium_text,
+                width: "82%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              Documento Soporte
+            </InputLabel>
+
+            <Grid mt={1} display={"flex"} justifyContent={"center"}>
+              <Grid sx={{ position: "relative" }}>
+                <Typography
+                  position={"absolute"}
+                  sx={{
+                    display: "flex",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    fontSize: "80%",
+                    color: "#15212f",
+                    border:
+                      documentoSoporte.nombreArchivo !==
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        ? "2px dotted #af8c55"
+                        : "2x dotted black",
+                  }}
+                >
+                  {documentoSoporte.nombreArchivo ||
+                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                </Typography>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(v) => {
+                    cargarArchivo(v, "Soporte");
+                  }}
+                  style={{
+                    opacity: 0,
+                    width: "100%",
+                    height: "3vh",
+                    cursor: "pointer",
+                  }}
+                />
+              </Grid>
+
+              <Grid display={"flex"} justifyContent={"end"}>
+                <Tooltip title={"Remover Archivo"}>
+                  <Button onClick={() => removeDocumentoSoporte()}>
+                    <GridCloseIcon />
+                  </Button>
+                </Tooltip>
+              </Grid>
+            </Grid>
           </Grid>
 
-          <Grid lg={2.1}>
-            <InputLabel sx={queries.medium_text}>
+          <Grid item lg={3} width={"100%"}>
+            <InputLabel
+              sx={{
+                ...queries.medium_text,
+
+                "@media (min-width: 1485px)": {
+                  fontSize: "1.62ch",
+                },
+                "@media (min-width: 1870px)": {
+                  fontSize: "2ch",
+                },
+              }}
+            >
               Acreditación del quórum y el sentido de la votación
             </InputLabel>
-            <TextField
-              sx={queries.medium_text}
-              fullWidth
-              placeholder="Nuevo León"
-              variant="standard"
-            />
+            <Grid mt={1} display={"flex"} justifyContent={"center"}>
+              <Grid sx={{ position: "relative" }}>
+                <Typography
+                  position={"absolute"}
+                  sx={{
+                    display: "flex",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    fontSize: "80%",
+                    color: "#15212f",
+                    border:
+                      acreditacionQuorum.nombreArchivo !==
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        ? "2px dotted #af8c55"
+                        : "2x dotted black",
+                  }}
+                >
+                  {acreditacionQuorum.nombreArchivo ||
+                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                </Typography>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(v) => {
+                    cargarArchivo(v, "Quorum");
+                  }}
+                  style={{
+                    opacity: 0,
+                    width: "100%",
+                    height: "3vh",
+                    cursor: "pointer",
+                  }}
+                />
+              </Grid>
+
+              <Grid display={"flex"} justifyContent={"end"}>
+                <Tooltip title={"Remover Archivo"}>
+                  <Button onClick={() => removeDocumentoQuorum()}>
+                    <GridCloseIcon />
+                  </Button>
+                </Tooltip>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

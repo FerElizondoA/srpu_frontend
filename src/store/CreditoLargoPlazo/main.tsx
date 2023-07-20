@@ -10,7 +10,7 @@ import {SolicitudInscripcionLargoPlazoSlice, createSolicitudInscripcionLargoPlaz
 import {ComentarioApartadoLargoPlazoSlice, createComentarioLargoPlazoSlice} from "./comentarios_apartado";
 import {DocumentosLargoPlazoSlice, createDocumentoLargoPlazoSlice} from "./documentacion";
 import {FuenteDePagoLargoPlazoSlice, createFuentePagoLargoPLazoSlice} from "./FuenteDePago"
-import { AutorizacionLargoPlazoSlice, createAutorizacionLargoPlazoSlice } from "./autorizacion";
+import { AutorizacionLargoPlazoSlice, createAutorizacionLargoPlazoSlice } from "./agregarAutorizacion";
 
 export type SolicitudStoreCSLP =
 

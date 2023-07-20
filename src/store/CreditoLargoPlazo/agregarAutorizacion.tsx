@@ -33,13 +33,13 @@ export interface AutorizacionLargoPlazoSlice {
   
   tablaMontoAutorizado: GeneralMontoAutorizado[];
   generalMontoAutorizado: {
-    DestinoAutorizado: string;
+    DestinoAutorizado:  { Id: string, Descripcion: string};
     MontoAutorizado: number;
   };
 
   tablaDetalleDestino : GeneralDetalleDestino[]
   generalDetalleDestino: {
-    DetalleDestino: string;
+    DetalleDestino:  { Id: string, Descripcion: string};
     MontoAutorizado: number;
   }
 
@@ -105,7 +105,7 @@ AutorizacionLargoPlazoSlice
       Organismo: localStorage.getItem("EntePublicoObligado") || ""
     },
     numeroAutorizacion: 0,
-    fechaPublicacion: "",
+    fechaPublicacion: new Date().toString(),
     medioPublicacion: { Id: "", Descripcion: ""},
     montoAutorizado: 0,
   },
@@ -122,13 +122,13 @@ AutorizacionLargoPlazoSlice
 
   tablaMontoAutorizado: [],
   generalMontoAutorizado: {
-    DestinoAutorizado: "",
+    DestinoAutorizado:  { Id: "", Descripcion: ""},
     MontoAutorizado: 0,
   },
 
   tablaDetalleDestino : [],
   generalDetalleDestino: {
-    DetalleDestino: "",
+    DetalleDestino: { Id: "", Descripcion: ""},
     MontoAutorizado: 0,
   },
 
