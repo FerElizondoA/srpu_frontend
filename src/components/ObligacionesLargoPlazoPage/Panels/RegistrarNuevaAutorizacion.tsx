@@ -155,8 +155,6 @@ export function RegistrarNuevaAutorizacion() {
     });
 
     getOrganismosA();
-
-    console.log(fechaPublicacion);
   }, []);
 
   return (
