@@ -2,6 +2,10 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputBase,
@@ -24,8 +28,6 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
-// import DownloadIcon from "@mui/icons-material/Download";
-// import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
@@ -214,6 +216,30 @@ export function Fideicomisos() {
         openState={openAgregarFideicomisos}
         accion={accion}
       />
+
+      {/* <Dialog open={openDialogEliminar}>
+        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogContent>
+          <Typography sx={queries.medium_text}>
+            ¿Seguro que desea eliminar a este usuario?
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+          >
+            Aceptar
+          </Button>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog> */}
     </Grid>
   );
 }

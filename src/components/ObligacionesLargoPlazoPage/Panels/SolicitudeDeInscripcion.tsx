@@ -1,15 +1,11 @@
 import {
   Grid,
-  Tabs,
-  Tab,
   Typography,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
-  makeStyles,
   InputLabel,
   TextField,
   Divider,
@@ -130,21 +126,21 @@ export function SolicituDeInscripcion() {
         destinoCG: state.generalGastosCostos.destino.Descripcion,
         detalleInversion: state.generalGastosCostos.detalleInversion,
         //periodoAdministracion: state.generalGastosCostos.periodoAdministracion, // NO SABEMOS AUN
-        gastosAdicionales: state.generalGastosCostos.gastosAdicionales,
+        gastosAdicionales: state.GastosCostos.gastosAdicionales,
         claveInscripcionFinanciamiento:
           state.generalGastosCostos.claveInscripcionFinanciamiento, // NO SABEMOS AUN
         descripcion: state.generalGastosCostos.descripcion,
         monto: state.generalGastosCostos.monto,
         //periodoFinanciamiento: state.generalGastosCostos.periodoFinanciamiento, //AUN NO SABEMOS
-        saldoVigente: state.generalGastosCostos.saldoVigente, //AUN NO SABEMOS
+        saldoVigente: state.GastosCostos.saldoVigente, //AUN NO SABEMOS
         montoGastosAdicionales:
-          state.generalGastosCostos.montoGastosAdicionales,
+          state.GastosCostos.montoGastosAdicionales,
       };
 
       let destinoCG = "";
       let detalleInversion = "";
       //let periodoAdministracion = "";
-      let gastosAdicionales = 0;
+      let gastosAdicionales = "";
       let claveInscripcionFinanciamiento = "";
       let descripcion = "";
       let monto = 0;
@@ -168,13 +164,13 @@ export function SolicituDeInscripcion() {
         destinoCG = item.destino;
         detalleInversion = item.detalleInversion;
         //periodoAdministracion = item.periodoAdministracion;
-        gastosAdicionales = item.gastosAdicionales;
+       // gastosAdicionales = item.gastosAdicionales;
         claveInscripcionFinanciamiento = item.claveInscripcionFinanciamiento;
         descripcion = item.descripcion;
         monto = item.monto;
         //periodoFinanciamiento = item.periodoFinanciamiento;
-        saldoVigente = item.saldoVigente;
-        montoGastosAdicionales = item.montoGastosAdicionales;
+        //saldoVigente = item.saldoVigente;
+        //montoGastosAdicionales = item.montoGastosAdicionales;
       }
 
       if (

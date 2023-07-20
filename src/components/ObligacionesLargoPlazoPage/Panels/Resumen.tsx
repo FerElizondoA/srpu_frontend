@@ -105,41 +105,21 @@ const headsGC: Head[] = [
     label: "Destino",
   },
   {
-    label: "Detalle de la Inversión",
-  },
-  {
-    label: "Inversión Pública Productiva",
-  },
-  {
-    label: "Periodo de Administración",
-  },
-  {
-    label: "Gastos Adicionales",
-  },
-  {
-    label: "Clave de Inscripción del Financiamiento",
+    label: "Detalle de la inversión",
   },
   {
     label: "Descripcion",
   },
   {
+    label: "Clave de Inscripción del Financiamiento",
+  },
+  {
     label: "Monto",
-  },
-  {
-    label: "Periodo de Financiamiento (Meses)",
-  },
-  {
-    label: "Saldo Vigente",
-  },
-  {
-    label: "Monto Gastos Adicionales",
   },
 ];
 
 const headsAutorizacion: Head[] = [
-  {
-    label: "Accion",
-  },
+
   {
     label: "Tipo de autorización",
   },
@@ -241,9 +221,6 @@ const headFP: Head[] = [
   {
     label: "% acumulado de la asignacion a las obligaciones",
   },
-  {
-    label: "Accion",
-  },
 ];
 
 export function Resumen() {
@@ -309,8 +286,8 @@ export function Resumen() {
     (state) => state.generalGastosCostos.detalleInversion.Descripcion
   );
 
-  const gastosAdicionales: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.gastosAdicionales
+  const gastosAdicionales: string = useLargoPlazoStore(
+    (state) => state.GastosCostos.gastosAdicionales
   );
 
   const claveInscripcionFinanciamiento: string = useLargoPlazoStore(
@@ -325,11 +302,17 @@ export function Resumen() {
   );
 
   const saldoVigente: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.saldoVigente
+    (state) => state.GastosCostos.saldoVigente
   );
 
   const montoGastosAdicionales: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.montoGastosAdicionales
+    (state) => state.GastosCostos.montoGastosAdicionales
+  );
+
+  const detalleInversionArchivo: {archivo: File, nombreArchivo: string} = useLargoPlazoStore((state) => state.detalleInversion);
+
+  const tablaGastosCostos: any = useLargoPlazoStore(
+    (state) => state.tablaGastosCostos
   );
 
   // Condiciones Financieras
@@ -452,48 +435,20 @@ export function Resumen() {
 
   const GastoCostos: HeadLabels[] = [
     {
-      label: "Destino",
-      value: clasificacion,
-    },
-    {
-      label: "Detalle de la inversión",
-      value: tipoFuente,
-    },
-    {
-      label: "Inversión Pública Productiva",
-      value: fuentePago,
-    },
-    {
-      label: "Periodo de Administración",
-      value: Respecto,
+      label: "Inversión Pública Productiva (Archivo)",
+      value: detalleInversionArchivo.nombreArchivo,
     },
     {
       label: "Gastos Adicionales",
-      value: clasificacion,
-    },
-    {
-      label: "Clave de Inscripcion del Financiamiento",
-      value: tipoFuente,
-    },
-    {
-      label: "Descripcion",
-      value: fuentePago,
-    },
-    {
-      label: "Monto",
-      value: Respecto,
-    },
-    {
-      label: "Periodo de Financiamiento (Meses)",
-      value: tipoFuente,
+      value: gastosAdicionales,
     },
     {
       label: "Saldo Vigente",
-      value: fuentePago,
+      value: saldoVigente.toString(),
     },
     {
       label: "Monto Gastos Adicionales",
-      value: Respecto,
+      value: montoGastosAdicionales.toString(),
     },
   ];
 
@@ -585,6 +540,7 @@ export function Resumen() {
 
   const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
+
 
   return (
     <Grid
@@ -853,14 +809,14 @@ export function Resumen() {
                   </IconButton>
                 </Tooltip>
                 <Typography sx={queries.medium_text}>
-                  <strong>{head.label}: </strong>
+                  <strong>{head.label}: </strong> {head.value}
                 </Typography>
               </Grid>
             ))}
           </Grid>
         </Grid>
 
-        <Grid mb={3} display={"flex"}>
+        <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
           <Grid>
             {/* Revisar */}
             <Tooltip title="Añadir comentario a este apartado">
@@ -885,28 +841,72 @@ export function Resumen() {
             </Tooltip>
             {/* Revisar */}
           </Grid>
-
-          <Paper sx={{ width: "100%" }}>
-            <TableContainer sx={{ height: "20rem", width: "100%" }}>
-              <Table>
+          <Paper sx={{ width: "96%", overflow: "clip" }}>
+            <TableContainer
+              sx={{
+                height: "18rem",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".3vw",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
+              <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   <TableRow>
-                    {headFideicomiso.map((head, index) => (
+                    {headsGC.map((head, index) => (
                       <StyledTableCell align="center" key={index}>
-                        <TableSortLabel>{head.label}</TableSortLabel>
+                        {head.label}
                       </StyledTableCell>
                     ))}
                   </TableRow>
                 </TableHead>
+                <TableBody>
+                  {tablaGastosCostos.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.destino}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          {row.detalleInversion}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          {row.descripcion}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          {row.claveInscripcionFinanciamiento}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          {row.monto}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
               </Table>
             </TableContainer>
           </Paper>
         </Grid>
 
-        {/* FIN BRUEBA*************** */}
-
-        <Typography sx={queries.bold_text}>Autorizacion</Typography>
-        <Divider color="lightGrey"></Divider>
+        <Grid mt={3}>
+          <Typography sx={queries.bold_text}>Autorizacion</Typography>
+          <Divider color="lightGrey"></Divider>
+        </Grid>
 
         <Grid
           height={"30%"}

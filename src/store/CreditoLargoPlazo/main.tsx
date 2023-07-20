@@ -10,6 +10,7 @@ import {SolicitudInscripcionLargoPlazoSlice, createSolicitudInscripcionLargoPlaz
 import {ComentarioApartadoLargoPlazoSlice, createComentarioLargoPlazoSlice} from "./comentarios_apartado";
 import {DocumentosLargoPlazoSlice, createDocumentoLargoPlazoSlice} from "./documentacion";
 import {FuenteDePagoLargoPlazoSlice, createFuentePagoLargoPLazoSlice} from "./FuenteDePago"
+import { AutorizacionLargoPlazoSlice, createAutorizacionLargoPlazoSlice } from "./autorizacion";
 
 export type SolicitudStoreCSLP =
 
@@ -21,7 +22,8 @@ TasaEfectivaLargoPlazoSlice &
 SolicitudInscripcionLargoPlazoSlice &
 ComentarioApartadoLargoPlazoSlice &
 DocumentosLargoPlazoSlice &
-FuenteDePagoLargoPlazoSlice
+FuenteDePagoLargoPlazoSlice &
+AutorizacionLargoPlazoSlice 
 
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
@@ -33,5 +35,6 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
     ...createSolicitudInscripcionLargoPlazoSlice(...x),
     ...createComentarioLargoPlazoSlice(...x),
     ...createDocumentoLargoPlazoSlice(...x),
-    ...createFuentePagoLargoPLazoSlice(...x)
+    ...createFuentePagoLargoPLazoSlice(...x),
+    ...createAutorizacionLargoPlazoSlice(...x),
 }))

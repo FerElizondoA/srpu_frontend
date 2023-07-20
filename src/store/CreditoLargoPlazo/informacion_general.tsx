@@ -2,7 +2,6 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IFileInfoGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
-import { useLargoPlazoStore } from "./main";
 
 export type ObligadoSolidarioAval = {
   obligadoSolidario: string;
@@ -14,21 +13,10 @@ export type ObligadoSolidarioAval = {
 export type GeneralGastosCostos = {
   destino: string;
   detalleInversion: string;
-  //periodoAdministracion: string, // NO SABEMOS AUN
-  gastosAdicionales: number;
-  claveInscripcionFinanciamiento: string; // NO SABEMOS AUN
   descripcion: string;
+  claveInscripcionFinanciamiento: string;
   monto: number;
-  //periodoFinanciamiento: string, //AUN NO SABEMOS
-  saldoVigente: number; //AUN NO SABEMOS
-  montoGastosAdicionales: number;
 };
-
-export interface ITiposDocumentoGC {
-  Id: string;
-  Descripcion: string;
-  Obligatorio: number;
-}
 
 export interface InformacionGeneralLargoPlazoSlice {
   informacionGeneral: {
@@ -49,18 +37,25 @@ export interface InformacionGeneralLargoPlazoSlice {
   };
 
   //NUEVA TABLA CREDITO LARGO PLAZO
+
+  detalleInversion: {
+    archivo: File;
+    nombreArchivo: string;
+  };
+
+  GastosCostos: {
+    gastosAdicionales: string;
+    saldoVigente: number;
+    montoGastosAdicionales: number;
+  };
+
   tablaGastosCostos: GeneralGastosCostos[];
   generalGastosCostos: {
     destino: { Id: string; Descripcion: string };
     detalleInversion: { Id: string; Descripcion: string };
-    //periodoAdministracion: string, // NO SABEMOS AUN
-    gastosAdicionales: number;
-    claveInscripcionFinanciamiento: string; // NO SABEMOS AUN
     descripcion: string;
+    claveInscripcionFinanciamiento: string;
     monto: number;
-    //periodoFinanciamiento: string, //AUN NO SABEMOS
-    saldoVigente: number; //AUN NO SABEMOS
-    montoGastosAdicionales: number;
   };
 
   //************ */
@@ -92,28 +87,28 @@ export interface InformacionGeneralLargoPlazoSlice {
   cleanObligadoSolidarioAval: () => void;
   removeObligadoSolidarioAval: (index: number) => void;
 
-  //NUEVA TABLA CREDITO LARGO PLAZO
+  //campo gastos costos
 
+  changeGastosCostos: (
+    gastosAdicionales: string,
+    saldoVigente: number,
+    montoGastosAdicionales: number
+  ) => void;
+
+  //NUEVA TABLA CREDITO LARGO PLAZO
   addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) => void;
   changeGeneralGastosCostos: (
     destino: { Id: string; Descripcion: string },
     detalleInversion: { Id: string; Descripcion: string },
-    //inversiónPúblicaProductiva : {},
-    //periodoAdministracion: string, // NO SABEMOS AUN
-    gastosAdicionales: number,
-    claveInscripcionFinanciamiento: string, // NO SABEMOS AUN
+    claveInscripcionFinanciamiento: string,
     descripcion: string,
-    monto: number,
-    //periodoFinanciamiento: string, //AUN NO SABEMOS
-    saldoVigente: number, //AUN NO SABEMOS
-    montoGastosAdicionales: number
+    monto: number
   ) => void;
   cleanGeneralGastosCostos: () => void;
   removeGeneralGastosCostos: (index: number) => void;
 
-  addDocumento: (newDocumento: IFileInfoGeneral) => void;
+  addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
-  setTablaDocumentos: (docs: any) => any;
   //getTiposDocumentos: () => void;
   tablaDocumentos: IFileInfoGeneral[];
 
@@ -147,18 +142,24 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   //NUEVA TABLA CREDITO LARGO PLAZO
 
+  GastosCostos: {
+    gastosAdicionales: "",
+    saldoVigente: 0,
+    montoGastosAdicionales: 0,
+  },
+
+  detalleInversion: {
+    archivo: new File([], ""),
+    nombreArchivo: "",
+  },
+
   tablaGastosCostos: [],
   generalGastosCostos: {
     destino: { Id: "", Descripcion: "" },
     detalleInversion: { Id: "", Descripcion: "" },
-    //periodoAdministracion: "", // NO SABEMOS AUN
-    gastosAdicionales: 0,
-    claveInscripcionFinanciamiento: "", // NO SABEMOS AUN
     descripcion: "",
+    claveInscripcionFinanciamiento: "",
     monto: 0,
-    //periodoFinanciamiento: "", //AUN NO SABEMOS
-    saldoVigente: 0, //AUN NO SABEMOS
-    montoGastosAdicionales: 0,
   },
 
   tablaDocumentos: [],
@@ -198,21 +199,20 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-  // NUEVA TABLA LARGO PLAZO
-
-  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) =>
-    set((state) => ({
-      tablaGastosCostos: [...state.tablaGastosCostos, newGeneralGastosCostos],
+  changeGastosCostos: (GastoCostos: any) =>
+    set(() => ({
+      GastosCostos: GastoCostos,
     })),
 
+  // NUEVA TABLA LARGO PLAZO
   changeGeneralGastosCostos: (GastosCostos: any) =>
     set(() => ({
       generalGastosCostos: GastosCostos,
     })),
 
-  cleanGeneralGastosCostos: () =>
-    set(() => ({
-      tablaGastosCostos: [],
+  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) =>
+    set((state) => ({
+      tablaGastosCostos: [...state.tablaGastosCostos, newGeneralGastosCostos],
     })),
 
   removeGeneralGastosCostos: (index: number) =>
@@ -220,14 +220,26 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       tablaGastosCostos: state.tablaGastosCostos.filter((_, i) => i !== index),
     })),
 
-  addDocumento: (newDocument: IFileInfoGeneral) => set(() => ({})),
-
-  removeDocumento: (index: number) =>
-    set((state) => ({
-      tablaDocumentos: state.tablaDocumentos.filter((_, i) => i !== index),
+  cleanGeneralGastosCostos: () =>
+    set(() => ({
+      tablaGastosCostos: [],
     })),
 
-  setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
+  addDocumento: (newDocument: File, nombreArchivo: string) =>
+    set(() => ({
+      detalleInversion: {
+        archivo: newDocument,
+        nombreArchivo: nombreArchivo,
+      },
+    })),
+
+  removeDocumento: () =>
+    set(() => ({
+      detalleInversion: {
+        archivo: new File([], ""),
+        nombreArchivo: "",
+      },
+    })),
 
   // /**/*/ */
 

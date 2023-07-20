@@ -28,9 +28,6 @@ interface Head {
 
 const heads :Head[] = [
   {
-    label: "Accion"
-  },
-  {
     label: "Tipo de autorización"
   },
   {
@@ -46,13 +43,13 @@ const heads :Head[] = [
     label: "Medio de publicación"
   },
   {
-    label: "Tipo de autorización"
-  },
-  {
     label: "Documento soporte"
   },
   {
     label: "Detalle del destino"
+  },
+  {
+    label: "Accion"
   },
 ]
 
@@ -76,12 +73,12 @@ export function Autorizacion() {
     // filtrarDatos();
   };
 
-  const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
+  //const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
   const [accion, setAccion] = useState("Agregar");
   const [indexA, setIndexA] = useState(0);
 
   const changeOpenAgregarState = (open: boolean) => {
-    changeAgregarFideicomisos(open);
+    setOpenNuevaAutorizacion(open);
   };
 
 
@@ -128,7 +125,7 @@ export function Autorizacion() {
 
       </Grid>
 
-      <Grid display={"flex"} justifyContent={"space-evenly"}>
+      {/* <Grid display={"flex"} justifyContent={"space-evenly"}>
         <Grid lg={3}>
           <TextField fullWidth label="Tipo de autorización" variant="standard" />
         </Grid>
@@ -153,9 +150,9 @@ export function Autorizacion() {
         <Grid lg={2}>
           <TextField fullWidth label="Detalle del destino" variant="standard" />
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      <Grid container sx={queries.tablaDisposicionPagosCapital}>
+      <Grid container sx={queries.tablaAutorizacion}>
         <Paper sx={{width: "88%"}}> 
           <TableContainer>
             <Table>
@@ -174,12 +171,10 @@ export function Autorizacion() {
         </Paper>
       </Grid>
 
-      {/* <DialogNuevaAutorizacion 
-        handler={changeAgregarFideicomisos}
-        openState={openAgregarFideicomisos}
-        accion={accion}
-        indexA={indexA}
-      /> */}
+      <DialogNuevaAutorizacion 
+        handler={setOpenNuevaAutorizacion}
+        openState={openDialogNuevaAutorizacion}
+      />
     </Grid>
   );
 }
