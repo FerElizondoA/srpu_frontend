@@ -565,21 +565,21 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
-                        <ListItemButton
+                        {/* <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             reset();
                             navigate("../ObligacionesLargoPlazo");
                             window.location.reload(); // REFRESH
                           }}
-                        >
-                          <ListItemIcon>
+                        > */}
+                        {/* <ListItemIcon>
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
                             Crédito simple largo plazo
                           </Typography>
-                        </ListItemButton>
+                        </ListItemButton> */}
 
                         {/* <ListItemButton sx={{ marginLeft: 4 }}>
                               <ListItemIcon>
@@ -625,7 +625,7 @@ export function LateralMenu() {
                       </Typography>
                     </ListItemButton>
 
-                    <ListItemButton onClick={handleFuentePagoClick}>
+                    {/* <ListItemButton onClick={handleFuentePagoClick}>
                       <ListItemIcon>
                         <CurrencyExchangeIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -633,16 +633,13 @@ export function LateralMenu() {
                         Fuente de pago
                       </Typography>
                       {openFuentePago ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
+                    </ListItemButton> */}
 
                     <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
                       <List>
                         <ListItemButton
                           sx={{ marginLeft: 2 }}
-                          onClick={() =>
-                            /*setOpenFuentePago(!openFuentePago)*/
-                            navigate("../fideicomisos")
-                          }
+                          onClick={() => navigate("../fideicomisos")}
                         >
                           <ListItemIcon>
                             <HandshakeIcon />
@@ -654,13 +651,13 @@ export function LateralMenu() {
                       </List>
                     </Collapse>
 
-                    <ListItemButton onClick={handleClickBandejas}>
+                    {/* <ListItemButton onClick={handleClickBandejas}>
                       <ListItemIcon>
                         <FolderOpenIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.bold_text}>Documentos</Typography>
                       {openBandejas ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
+                    </ListItemButton> */}
 
                     <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                       <List>
