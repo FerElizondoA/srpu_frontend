@@ -244,7 +244,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   // /**/*/ */
 
   getDestinos: async () => {
-    await axios
+    return await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
@@ -258,7 +258,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       });
   },
   getInstituciones: async () => {
-    await axios
+    return await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
           "/api/get-institucionesFinancieras",
@@ -276,7 +276,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       });
   },
   getTipoEntePublicoObligado: async () => {
-    await axios
+    return await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
         {
@@ -293,7 +293,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       });
   },
   getObligadoSolidarioAval: async () => {
-    await axios
+    return await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
           "/api/get-obligadoSolidarioAval",

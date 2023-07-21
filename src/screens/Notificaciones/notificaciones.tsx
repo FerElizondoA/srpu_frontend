@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
+import InfoIcon from "@mui/icons-material/Info";
 import {
-  Button,
   Grid,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  Typography,
   Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useEffect, useState } from "react";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+import { IHistorial } from "../../components/Interfaces/Notificaciones/INotificaciones";
+import { getHistorialNotificaciones } from "../../components/LateralMenu/APINotificaciones";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import AddCommentIcon from "@mui/icons-material/AddComment";
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { getHistorialNotificaciones } from "../../components/LateralMenu/APINotificaciones";
-import { IHistorial, } from "../../components/Interfaces/Notificaciones/INotificaciones";
-import InfoIcon from '@mui/icons-material/Info';
-import { Destinatarios } from "../Notificaciones/Dialog/InfoAdicional";
-import { AñadirNotificaciones } from "../Notificaciones/Dialog/AñadirNotificaciones";
 import { queries } from "../../queries";
+import { AñadirNotificaciones } from "../Notificaciones/Dialog/AñadirNotificaciones";
+import { Destinatarios } from "../Notificaciones/Dialog/InfoAdicional";
 
 export function Notificaciones() {
   //Declaraciones
@@ -54,9 +55,7 @@ export function Notificaciones() {
   ];
 
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
-  const [estatus, setEstatus] = useState<Array<IHistorial>>([]);
-  const [cantNoti, setCantNoti] = useState<number>();
-  const [idNoti, setIdNoti] = useState<string>('');
+  const [idNoti, setIdNoti] = useState<string>("");
 
   const [openDialog, setOpenDialog] = useState(false);
   const openDialogNotificaciones = () => {
@@ -133,18 +132,21 @@ export function Notificaciones() {
 
         <Grid item sx={queries.tablaNotificaciones}>
           <Paper sx={{ height: "100%" }}>
-            <TableContainer sx={{
-              maxHeight: "100%", overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}>
+            <TableContainer
+              sx={{
+                maxHeight: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   {heads.map((head) => (
@@ -160,7 +162,11 @@ export function Notificaciones() {
                 <TableBody>
                   {historial?.map((noti, index) => (
                     <StyledTableRow>
-                      <StyledTableCell component="th" scope="row" align="center">
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
                         {noti.Titulo}
                       </StyledTableCell>
 
@@ -173,17 +179,32 @@ export function Notificaciones() {
                         {noti.Mensaje}
                       </StyledTableCell>
 
-                      <StyledTableCell component="th" scope="row" align="center">
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
                         {noti.Fecha}
                       </StyledTableCell>
 
-                      <StyledTableCell component="th" scope="row" align="center">
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
                         {noti.Hora}
                       </StyledTableCell>
 
-                      <StyledTableCell component="th" scope="row" align="center">
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
                         <IconButton
-                          onClick={() => { setIdNoti(noti.Id); openDialogDestinatarios() }}
+                          onClick={() => {
+                            setIdNoti(noti.Id);
+                            openDialogDestinatarios();
+                          }}
                         >
                           <InfoIcon />
                         </IconButton>
@@ -207,6 +228,6 @@ export function Notificaciones() {
           />
         ) : null}
       </Grid>
-    </Grid >
+    </Grid>
   );
 }

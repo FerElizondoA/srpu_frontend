@@ -52,7 +52,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
 }
 
 export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
-SolicitudInscripcionLargoPlazoSlice
+  SolicitudInscripcionLargoPlazoSlice
 > = (set, get) => ({
   idSolicitud: "",
   editCreadoPor: "",
@@ -253,7 +253,7 @@ SolicitudInscripcionLargoPlazoSlice
     return false;
   },
   addComentario: async (Id: string, comentario: any) => {
-    await axios
+    return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
         {
@@ -273,8 +273,8 @@ SolicitudInscripcionLargoPlazoSlice
   saveFiles: async (idSolicitud: string, addRoute: boolean) => {
     const state = useLargoPlazoStore.getState();
 
-    await state.tablaDocumentos.map((file, index) => {
-      setTimeout(() => {
+    return await state.tablaDocumentos.map((file, index) => {
+      return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
         let dataArray = new FormData();

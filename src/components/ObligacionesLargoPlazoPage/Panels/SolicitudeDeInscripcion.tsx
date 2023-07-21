@@ -1,33 +1,31 @@
 import {
-  Grid,
-  Typography,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  InputLabel,
-  TextField,
-  Divider,
-  TableContainer,
-  Table,
-  TableHead,
-  TableSortLabel,
   Checkbox,
-  TableRow,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  InputLabel,
+  Table,
   TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TextField,
+  Typography,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import Swal from "sweetalert2";
-import { ConfirmacionDescargaSolicitud } from "../Dialog/DialogEnviarSolicitud";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
+import { ConfirmacionDescargaSolicitud } from "../Dialog/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialog/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
-import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
 
 export let erroresValidacion: string[] = [];
 
@@ -133,8 +131,7 @@ export function SolicituDeInscripcion() {
         monto: state.generalGastosCostos.monto,
         //periodoFinanciamiento: state.generalGastosCostos.periodoFinanciamiento, //AUN NO SABEMOS
         saldoVigente: state.GastosCostos.saldoVigente, //AUN NO SABEMOS
-        montoGastosAdicionales:
-          state.GastosCostos.montoGastosAdicionales,
+        montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
       };
 
       let destinoCG = "";
@@ -164,7 +161,7 @@ export function SolicituDeInscripcion() {
         destinoCG = item.destino;
         detalleInversion = item.detalleInversion;
         //periodoAdministracion = item.periodoAdministracion;
-       // gastosAdicionales = item.gastosAdicionales;
+        // gastosAdicionales = item.gastosAdicionales;
         claveInscripcionFinanciamiento = item.claveInscripcionFinanciamiento;
         descripcion = item.descripcion;
         monto = item.monto;

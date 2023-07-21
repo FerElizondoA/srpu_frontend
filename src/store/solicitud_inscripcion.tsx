@@ -122,7 +122,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       },
     };
 
-    await axios
+    return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
@@ -274,8 +274,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   saveFiles: async (idSolicitud: string, addRoute: boolean) => {
     const state = useCortoPlazoStore.getState();
 
-    await state.tablaDocumentos.map((file, index) => {
-      setTimeout(() => {
+    return await state.tablaDocumentos.map((file, index) => {
+      return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
         let dataArray = new FormData();

@@ -1,4 +1,5 @@
-import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
@@ -8,15 +9,13 @@ import { CondicionesFinancieras } from "../../components/ObligacionesLargoPlazoP
 import { Documentacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesLargoPlazoPage/Panels/Encabezado";
 import { FuenteDePago } from "../../components/ObligacionesLargoPlazoPage/Panels/FuenteDePago";
-import { InformacionGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
 import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
 import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
 //import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
-import { queries } from "../../queries";
-import { useCortoPlazoStore } from "../../store/main";
 import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
+import { InfoGeneralGastoCosto } from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto";
+import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-import {InfoGeneralGastoCosto} from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto"
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),

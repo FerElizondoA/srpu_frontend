@@ -14,10 +14,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { IModulos } from "../../../screens/Config/Catalogos"
+import { IModulos } from "../../../screens/Config/Catalogos";
 import { creaDesc, delDesc, modDesc } from "../../APIS/Config/APISCatalogos";
 import { queries } from "../../../queries";
-
 
 export function DialogCatalogos({
   modulos,
@@ -74,7 +73,7 @@ export function DialogCatalogos({
             : edit.Crud === "edita"
             ? `Modificar descripción`
             : `¿Desea eliminar el elemento de la tabla
-          '${edit.Modulo}'?`}
+          ${edit.Modulo}?`}
         </DialogTitle>
         {edit.Crud === "crea" ? (
           ``
@@ -168,7 +167,6 @@ export function DialogCatalogos({
 
         <DialogActions>
           <Button
-           
             color="error"
             onClick={() => {
               setOpen(false);
@@ -183,7 +181,7 @@ export function DialogCatalogos({
               //   modifDesc();
               funcion();
             }}
-            sx= {queries.buttonContinuar}
+            sx={queries.buttonContinuar}
           >
             Aceptar
           </Button>

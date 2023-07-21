@@ -1,7 +1,7 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
-import { IComisiones, TasaInteres, Disposicion } from "../condicion_financiera";
+import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { Disposicion, TasaInteres } from "../condicion_financiera";
 
 export interface PagosCapitalLargoPlazoSlice {
   tablaDisposicion: Disposicion[];

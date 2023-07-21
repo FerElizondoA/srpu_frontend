@@ -1,30 +1,25 @@
-import { useState, forwardRef } from "react";
 import {
-  Grid,
-  Typography,
-  Slide,
   Button,
-  TextField,
+  FormControl,
+  Grid,
   InputLabel,
-  TableContainer,
+  MenuItem,
+  Paper,
+  Select,
+  Slide,
   Table,
+  TableBody,
+  TableContainer,
   TableHead,
   TableRow,
-  TableBody,
-  Paper,
-  FormControl,
-  Select,
-  MenuItem,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
-
+import { StyledTableCell } from "../../CustomComponents";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -71,7 +66,6 @@ export function MontoAutorizado() {
   const handleSearch = () => {
     // filtrarDatos();
   };
-
 
   const [pruebaSelect, setPruebaSelect] = useState("");
 
@@ -154,7 +148,7 @@ export function MontoAutorizado() {
               width: "86%",
             }}
           >
-            <TableContainer sx={{ width: "100%"}}>
+            <TableContainer sx={{ width: "100%" }}>
               <Table>
                 <TableHead>
                   <TableRow>

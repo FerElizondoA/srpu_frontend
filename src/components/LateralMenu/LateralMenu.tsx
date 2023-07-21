@@ -122,7 +122,7 @@ export function LateralMenu() {
   let color = "#";
 
   for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
+    const value = (hash >> (i * 5)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
   /* eslint-enable no-bitwise */
@@ -572,29 +572,15 @@ export function LateralMenu() {
                             navigate("../ObligacionesLargoPlazo");
                             window.location.reload(); // REFRESH
                           }}
-                        > */}
-                        {/* <ListItemIcon>
+                        >
+                          <ListItemIcon>
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
                             Crédito simple largo plazo
                           </Typography>
                         </ListItemButton> */}
-
-                        {/* <ListItemButton sx={{ marginLeft: 4 }}>
-                              <ListItemIcon>
-                                <KeyboardArrowRightIcon sx={queries.icon} />
-                              </ListItemIcon>
-                              <Typography sx={queries.text}>
-                                Credito Simple
-                              </Typography>
-                            </ListItemButton> */}
                       </List>
-                      {/* <Encabezado
-                      handler={changeOpenEncabezado}
-                      accion={accion}
-                      /> */}
-                      {/* {tabIndex === 0 && <Encabezado/>} */}
                     </Collapse>
 
                     <ListItemButton
@@ -651,13 +637,13 @@ export function LateralMenu() {
                       </List>
                     </Collapse>
 
-                    {/* <ListItemButton onClick={handleClickBandejas}>
+                    <ListItemButton onClick={handleClickBandejas}>
                       <ListItemIcon>
                         <FolderOpenIcon sx={queries.icon} />
                       </ListItemIcon>
                       <Typography sx={queries.bold_text}>Documentos</Typography>
                       {openBandejas ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                     <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                       <List>
@@ -693,40 +679,6 @@ export function LateralMenu() {
                     </ListItemButton>
                   </>
                 )}
-
-                {/* <ListItemButton>
-                      <ListItemIcon>
-                        <NotificationsActiveIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.text}>
-                        Notificaciones
-                      </Typography>
-                    </ListItemButton>
-
-                {/* <ListItemButton>
-                      <ListItemIcon>
-                        <HighlightOffOutlinedIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.text}>Cancelación</Typography>
-                    </ListItemButton> */}
-
-                {/* <ListItemButton>
-                      <ListItemIcon>
-                        <AttachMoneyOutlinedIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.text}>
-                        Mecanismos de pago
-                      </Typography>
-                    </ListItemButton> */}
-
-                {/* <ListItemButton>
-                      <ListItemIcon>
-                        <CampaignOutlinedIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.text}>
-                        Tablero electrónico
-                      </Typography>
-                    </ListItemButton> */}
               </List>
             </Grid>
 

@@ -1,17 +1,12 @@
 import {
   Grid,
-  Tabs,
-  Tab,
-  Typography,
-  TableContainer,
+  Paper,
   Table,
+  TableBody,
+  TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  TableBody,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 interface Head {

@@ -1,22 +1,20 @@
-import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 
-import { SyntheticEvent, useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { SyntheticEvent, useEffect, useState } from "react";
 
-import { queries } from "../../queries";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { useCortoPlazoStore } from "../../store/main";
-import {
-  Documentacion,
-  IFile,
-} from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
+import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
+import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
 import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
-import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
-import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
+import { queries } from "../../queries";
+import { useCortoPlazoStore } from "../../store/main";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);

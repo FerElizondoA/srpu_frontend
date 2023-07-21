@@ -65,27 +65,27 @@ export function AgregarFideicomisos({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
   };
 
-  const setGeneralFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.setGeneralFideicomiso
-  );
+  // const setGeneralFideicomiso: Function = useCortoPlazoStore(
+  //   (state) => state.setGeneralFideicomiso
+  // );
 
-  const cleanFideicomisario: Function = useCortoPlazoStore(
-    (state) => state.cleanFideicomisario
-  );
+  // const cleanFideicomisario: Function = useCortoPlazoStore(
+  //   (state) => state.cleanFideicomisario
+  // );
 
   const createFideicomiso: Function = useCortoPlazoStore(
     (state) => state.createFideicomiso
   );
 
-  const reset = () => {
-    setGeneralFideicomiso({
-      numeroFideicomiso: "",
-      tipoFideicomiso: "",
-      fechaFideicomiso: { Id: "", Descripcion: "" },
-      fiudiciario: { Id: "", Descripcion: "" },
-    });
-    cleanFideicomisario();
-  };
+  // const reset = () => {
+  //   setGeneralFideicomiso({
+  //     numeroFideicomiso: "",
+  //     tipoFideicomiso: "",
+  //     fechaFideicomiso: { Id: "", Descripcion: "" },
+  //     fiudiciario: { Id: "", Descripcion: "" },
+  //   });
+  //   cleanFideicomisario();
+  // };
 
   return (
     <>
