@@ -115,7 +115,7 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
       tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
     })),
 
-  cleanDisposicion: () => set((state) => ({ tablaDisposicion: [] })),
+  cleanDisposicion: () => set(() => ({ tablaDisposicion: [] })),
 
   changeCapital: (
     fechaPrimerPago: string,

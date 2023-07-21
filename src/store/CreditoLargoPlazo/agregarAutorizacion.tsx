@@ -3,18 +3,18 @@ import { ICatalogo, IEntePublico } from "../../components/Interfaces/InterfacesL
 import axios from "axios";
 
 export type GeneralMontoAutorizado = {
-  DestinoAutorizado: string;
-  MontoAutorizado: number;
+  destinoAutorizado: string;
+  montoAutorizado: number;
 };
 
 export type GeneralDetalleDestino = {
   DetalleDestino: string;
-  MontoAutorizado: number;
+  montoAutorizado: number;
 };
 
 export interface AutorizacionLargoPlazoSlice {
   Autorizacion: {
-    entidadFederativa: { Id: string; Organismo: string };
+    entidadFederativa: { Id: string, Organismo: string };
     numeroAutorizacion: number;
     fechaPublicacion: string;
     medioPublicacion: { Id: string, Descripcion: string};
@@ -33,21 +33,21 @@ export interface AutorizacionLargoPlazoSlice {
   
   tablaMontoAutorizado: GeneralMontoAutorizado[];
   generalMontoAutorizado: {
-    DestinoAutorizado:  { Id: string, Descripcion: string};
-    MontoAutorizado: number;
+    destinoAutorizado:  { Id: string; Descripcion: string};
+    montoAutorizado: number;
   };
 
   tablaDetalleDestino : GeneralDetalleDestino[]
   generalDetalleDestino: {
-    DetalleDestino:  { Id: string, Descripcion: string};
-    MontoAutorizado: number;
+    detalleDestino:  { Id: string, Descripcion: string};
+    montoAutorizado: number;
   }
 
   catalogoOrganismos: IEntePublico[];
 
 
   changeAutorizacion : (
-    entidadFederativa: { Id: string; Organismo: string },
+    entidadFederativa: { Id: string, Organismo: string },
     numeroAutorizacion: number,
     fechaPublicacion: string,
     medioPublicacion: { Id: string, Descripcion: string},
@@ -70,8 +70,8 @@ export interface AutorizacionLargoPlazoSlice {
   ) => void;
 
   changeGeneralMontoAutorizado: (
-    DestinoAutorizado: string,
-    MontoAutorizado: number,
+    destinoAutorizado: { Id: string; Descripcion: string },
+    montoAutorizado: number,
   ) => void;
 
   cleanGeneralMontoAutorizado :() => void;
@@ -87,7 +87,7 @@ export interface AutorizacionLargoPlazoSlice {
   ) => void; 
   changeGeneralDetalleDestino: (
     DetalleDestino: string,
-    MontoAutorizado: number,
+    montoAutorizado: number,
   ) => void;
   cleanDetalleDestino: () => void;
   removeDetalleDestino: (index: number) => void; 
@@ -122,14 +122,14 @@ AutorizacionLargoPlazoSlice
 
   tablaMontoAutorizado: [],
   generalMontoAutorizado: {
-    DestinoAutorizado:  { Id: "", Descripcion: ""},
-    MontoAutorizado: 0,
+    destinoAutorizado:  { Id: "", Descripcion: ""},
+    montoAutorizado: 0,
   },
 
   tablaDetalleDestino : [],
   generalDetalleDestino: {
-    DetalleDestino: { Id: "", Descripcion: ""},
-    MontoAutorizado: 0,
+    detalleDestino: { Id: "", Descripcion: ""},
+    montoAutorizado: 0,
   },
 
   catalogoOrganismos: [],

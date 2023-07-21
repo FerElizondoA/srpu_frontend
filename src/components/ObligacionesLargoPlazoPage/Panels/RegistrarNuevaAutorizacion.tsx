@@ -1,8 +1,6 @@
-import { useState, forwardRef, useEffect } from "react";
+import {useEffect } from "react";
 import {
   Grid,
-  Slide,
-  createTheme,
   TextField,
   InputLabel,
   Autocomplete,
@@ -10,55 +8,29 @@ import {
   Tooltip,
   Button,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import useMediaQuery from "@mui/material/useMediaQuery";
-
 import { queries } from "../../../queries";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { addDays, startOfDay, subDays } from "date-fns";
 import {
   DateInput,
-  StyledTableCell,
-  StyledTableRow,
 } from "../../CustomComponents";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB, id } from "date-fns/locale";
+import { enGB } from "date-fns/locale";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import validator from "validator";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { GridCloseIcon } from "@mui/x-data-grid";
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
-interface Head {
-  label: string;
-}
-
-interface HeadLabels {
-  label: string;
-  value: string;
-}
 
 export function RegistrarNuevaAutorizacion() {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
 
-  const entidadFederativa: { Id: string; Organismo: string } =
+  const entidadFederativa: { Id: string, Organismo: string } =
     useLargoPlazoStore((state) => state.Autorizacion.entidadFederativa);
 
   const numeroAutorizacion: number = useLargoPlazoStore(
     (state) => state.Autorizacion.numeroAutorizacion
   );
 
-  const medioPublicacion: { Id: string; Descripcion: string } =
+  const medioPublicacion: { Id: string, Descripcion: string } =
     useLargoPlazoStore((state) => state.Autorizacion.medioPublicacion);
 
   const fechaPublicacion: string = useLargoPlazoStore(
@@ -69,7 +41,7 @@ export function RegistrarNuevaAutorizacion() {
     (state) => state.Autorizacion.montoAutorizado
   );
 
-  const documentoSoporte: { archivo: File; nombreArchivo: string } =
+  const documentoSoporte: { archivo: File, nombreArchivo: string } =
     useLargoPlazoStore((state) => state.documentoSoporte);
 
   const removeDocumentoSoporte: Function = useLargoPlazoStore(
@@ -80,7 +52,7 @@ export function RegistrarNuevaAutorizacion() {
     (state) => state.addDocumentoSoporte
   );
 
-  const acreditacionQuorum: { archivo: File; nombreArchivo: string } =
+  const acreditacionQuorum: { archivo: File, nombreArchivo: string } =
     useLargoPlazoStore((state) => state.acreditacionQuorum);
 
   const removeDocumentoQuorum: Function = useLargoPlazoStore(
@@ -102,35 +74,6 @@ export function RegistrarNuevaAutorizacion() {
   const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-
-  const [pruebaSelect, setPruebaSelect] = useState("");
-
-  const heads: HeadLabels[] = [
-    {
-      label: "Prueba 1 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 2",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 3",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 4 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 5",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 6",
-      value: pruebaSelect,
-    },
-  ];
 
   function cargarArchivo(event: any, tipoDocumento: string) {
     let file = event.target.files[0];
@@ -209,7 +152,7 @@ export function RegistrarNuevaAutorizacion() {
                       medioPublicacion: medioPublicacion,
                       montoAutorizado: montoAutorizado,
                     });
-                  } else {
+                  } else if (v.target.value === ""){
                     changeAutorizacion({
                       entidadFederativa: entidadFederativa,
                       numeroAutorizacion: 0,
@@ -318,7 +261,7 @@ export function RegistrarNuevaAutorizacion() {
                     medioPublicacion: medioPublicacion,
                     montoAutorizado: v.target.value,
                   });
-                } else {
+                } else if (v.target.value === ""){
                   changeAutorizacion({
                     entidadFederativa: entidadFederativa,
                     numeroAutorizacion: numeroAutorizacion,
