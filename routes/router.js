@@ -122,7 +122,6 @@ const {
   deleteTipoDeDocumento,
   modifyTipoDocumento,
 } = require("../controllers/TipoDeDocumentos.js");
-
 const {
   getDetailUsuario,
   getUsuarios,
@@ -175,8 +174,6 @@ const {
   getTiposDeFideicomitente,
 } = require("../controllers/TiposDeFideicomitente.js");
 const {
-  createtipoDeFuente,
-  gettiposDeFuente,
   createTipoDeFuente,
   getTiposDeFuente,
 } = require("../controllers/TiposDeFuente.js");
@@ -184,6 +181,18 @@ const {
   createFondoOIngreso,
   getFondosOIngresos,
 } = require("../controllers/FondosOIngresos.js");
+const {
+  createMedioDePublicacion,
+  getMediosDePublicacion,
+} = require("../controllers/MedioDePublicacion.js");
+const {
+  createDestinoAutorizado,
+  getDestinosAutorizados,
+} = require("../controllers/DestinosAutorizados.js");
+const {
+  getDetalleDestinosAutorizados,
+  createDetalleDestinoAutorizado,
+} = require("../controllers/DetalleDestinosAutorizados.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -751,6 +760,8 @@ router.get("/get-DetailPathDocSol", (req, res) => {
   getDetailPathDocSol(req, res);
 });
 
+//#endregion
+
 //#region Autorizacion
 router.post("/create-autorizacion", (req, res, express) => {
   createAutorizacion(req, res);
@@ -934,6 +945,72 @@ router.post("/create-fondoOIngreso", (req, res, express) => {
 
 router.get("/get-fondosOIngresos", (req, res) => {
   getFondosOIngresos(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Medios de Publicacion
+router.post("/create-medioDePublicacion", (req, res, express) => {
+  createMedioDePublicacion(req, res);
+});
+
+router.get("/get-mediosDePublicacion", (req, res) => {
+  getMediosDePublicacion(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Destinos Autorizados
+router.post("/create-destinoAutorizado", (req, res, express) => {
+  createDestinoAutorizado(req, res);
+});
+
+router.get("/get-destinosAutorizados", (req, res) => {
+  getDestinosAutorizados(req, res);
+});
+
+// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
+//   getDetailFideicomiso(req, res);
+// });
+
+// router.put("/modify-fideicomiso", (req, res) => {
+//   modifyFideicomiso(req, res);
+// });
+
+// router.delete("/delete-fideicomiso", (req, res) => {
+//   deleteFideicomiso(req, res);
+// });
+//#endregion
+
+//#region Detalle Destinos Autorizados
+router.post("/create-detalleDestinoAutorizado", (req, res, express) => {
+  createDetalleDestinoAutorizado(req, res);
+});
+
+router.get("/get-detalleDestinosAutorizados", (req, res) => {
+  getDetalleDestinosAutorizados(req, res);
 });
 
 // router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {

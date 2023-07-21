@@ -2,19 +2,13 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createFideicomiso: (req, res) => {
+  createDestinoAutorizado: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const NumeroFideicomiso = req.body.NumeroFideicomiso;
-    const TipoFideicomiso = req.body.TipoFideicomiso;
-    const FechaFideicomiso = req.body.FechaFideicomiso;
-    const Fiudiciario = req.body.Fiudiciario;
-    const Fideicomisario = req.body.Fideicomisario;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const SoporteDocumental = req.body.SoporteDocumental;
+    const Descripcion = req.body.Descripcion;
 
     if (
-      (NumeroFideicomiso == null || /^[\s]*$/.test(NumeroFideicomiso)) &&
-      NumeroFideicomiso.length() <= 255
+      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
+      Descripcion.length() <= 255
     ) {
       return res.status(409).send({
         error: "Ingrese Descripcion válido.",
@@ -29,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarFideicomiso('${IdUsuario}', '${NumeroFideicomiso}' , '${TipoFideicomiso}', '${FechaFideicomiso}', '${Fiudiciario}', '${Fideicomisario}', '${TipoMovimiento}', '${SoporteDocumental}')`,
+        `CALL sp_AgregarDestinoAutorizado('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -57,8 +51,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getFideicomisos: (req, res) => {
-    db.query(`CALL sp_ListadoFideicomisos()`, (err, result) => {
+  getDestinosAutorizados: (req, res) => {
+    db.query(`CALL sp_ListadoDestinosAutorizados()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -79,7 +73,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailFideicomiso: (req, res) => {
+  getDetailDestinoAutorizado: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -88,7 +82,7 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_DetalleFideicomiso('${IdDescripcion}')`,
+      `CALL sp_DetalleDestinoAutorizado('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -115,36 +109,30 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyFideicomiso: (req, res) => {
-    const IdFideicomiso = req.body.IdFideicomiso;
-    const IdUsuario = req.body.IdUsuario;
-    const NumeroFideicomiso = req.body.NumeroFideicomiso;
-    const TipoFideicomiso = req.body.TipoFideicomiso;
-    const FechaFideicomiso = req.body.FechaFideicomiso;
-    const Fiudiciario = req.body.Fiudiciario;
-    const Fideicomisario = req.body.Fideicomisario;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const SoporteDocumental = req.body.SoporteDocumental;
+  modifyDestinoAutorizado: (req, res) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
-    if (IdFideicomiso == null || /^[\s]*$/.test(IdFideicomiso)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
 
-    if (NumeroFideicomiso == null || /^[\s]*$/.test(NumeroFideicomiso)) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
+        error: "Ingrese Nuevo DestinoAutorizado",
       });
     }
 
-    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
+    if (IdUsuarioModificador == null || /^[\s]*$/.test(IdUsuarioModificador)) {
       return res.status(409).send({
         error: "Ingrese Id usuario modificador",
       });
     } else {
       db.query(
-        `CALL sp_ModificaFideicomiso('${IdFideicomiso}', '${IdUsuario}', '${NumeroFideicomiso}' , '${TipoFideicomiso}', '${FechaFideicomiso}', '${Fiudiciario}', '${Fideicomisario}', '${TipoMovimiento}', '${SoporteDocumental}')`,
+        `CALL sp_ModificaDestinoAutorizado('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -172,11 +160,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteFideicomiso: (req, res) => {
-    const IdFideicomiso = req.body.IdFideicomiso;
-    const IdUsuarioModificador = req.body.IdUsuario;
+  deleteDestinoAutorizado: (req, res) => {
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFideicomiso('${IdFideicomiso}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaDestinoAutorizado('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
