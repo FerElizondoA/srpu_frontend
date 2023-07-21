@@ -1,44 +1,32 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Autocomplete,
   Button,
-  FormControl,
   Grid,
+  IconButton,
   InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  Slide,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
   TextField,
+  ThemeProvider,
+  Tooltip,
   Typography,
+  createTheme,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { useEffect } from "react";
+import validator from "validator";
 import { queries } from "../../../queries";
-import { StyledTableCell } from "../../CustomComponents";
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 interface Head {
   label: string;
 }
-
-interface HeadLabels {
-  label: string;
-  value: string;
-}
-
 const headsMontoAutorizado: Head[] = [
   {
     label: "Destino autorizado",
@@ -51,50 +39,70 @@ const headsMontoAutorizado: Head[] = [
   },
 ];
 
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
+
 export function MontoAutorizado() {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  const destinoAutorizado: { Id: string; Descripcion: string } =
+    useLargoPlazoStore(
+      (state) => state.generalMontoAutorizado.destinoAutorizado
+    );
+
+  const montoAutorizado: number = useLargoPlazoStore(
+    (state) => state.generalMontoAutorizado.montoAutorizado
+  );
+
+  const tablaMontoAutorizado: any = useLargoPlazoStore(
+    (state) => state.tablaMontoAutorizado
+  );
+
+  const changeGeneralMontoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.changeGeneralMontoAutorizado
+  );
+
+  const addGeneralMontoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.addGeneralMontoAutorizado
+  );
+
+  const removeGeneralMontoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.removeGeneralMontoAutorizado
+  );
+
+  const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
+  const getOrganismosA: Function = useLargoPlazoStore(
+    (state) => state.getOrganismosA
+  );
+
+  const addRows = () => {
+    let tab = {
+      destinoAutorizado: destinoAutorizado.Descripcion,
+      montoAutorizado: montoAutorizado,
+    };
+    addGeneralMontoAutorizado(tab);
   };
 
-  const [busqueda, setBusqueda] = useState("");
-
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  const handleSearch = () => {
-    // filtrarDatos();
-  };
-
-  const [pruebaSelect, setPruebaSelect] = useState("");
-
-  const heads: HeadLabels[] = [
-    {
-      label: "Prueba 1 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 2",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 3",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 4 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 5",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 6",
-      value: pruebaSelect,
-    },
-  ];
+  useEffect(() => {
+    changeGeneralMontoAutorizado({
+      destinoAutorizado: destinoAutorizado,
+      montoAutorizado: montoAutorizado,
+    });
+    getOrganismosA();
+  }, []);
 
   return (
     <>
@@ -105,30 +113,72 @@ export function MontoAutorizado() {
         justifyContent="space-evenly"
         sx={queries.contenedorAgregarAutorizacion.MontoAutorizado}
       >
+        {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
+
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
           <Grid xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Destino Autorizado</InputLabel>
-            <FormControl fullWidth>
-              <Select
-                value={pruebaSelect}
-                onChange={(e) => {
-                  setPruebaSelect(e.target.value);
-                }}
-              >
-                {heads.map((item, index) => {
-                  return (
-                    <MenuItem value={item.label} key={index}>
-                      {item.label}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={catalagoOrganismos}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              value={{
+                Id: destinoAutorizado.Id || "",
+                Descripcion: destinoAutorizado.Descripcion || "",
+              }}
+              onChange={(event, text) =>
+                changeGeneralMontoAutorizado({
+                  destinoAutorizado: {
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                  },
+                  montoAutorizado: montoAutorizado,
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Id === value.Id || value.Descripcion === ""
+              }
+            />
           </Grid>
 
           <Grid xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
-            <TextField fullWidth variant="standard" />
+            <TextField
+              fullWidth
+              variant="standard"
+              value={montoAutorizado === null ? "" : montoAutorizado.toString()}
+              onChange={(v) => {
+                if (validator.isNumeric(v.target.value)) {
+                  changeGeneralMontoAutorizado({
+                    destinoAutorizado: destinoAutorizado,
+                    montoAutorizado: v.target.value,
+                  });
+                } else if (v.target.value === "") {
+                  changeGeneralMontoAutorizado({
+                    destinoAutorizado: destinoAutorizado,
+                    montoAutorizado: null,
+                  });
+                }
+              }}
+            />
           </Grid>
 
           <Grid
@@ -137,7 +187,26 @@ export function MontoAutorizado() {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Button sx={queries.buttonContinuar}>Agregar</Button>
+            <ThemeProvider theme={theme}>
+              <Button
+                sx={queries.buttonContinuar}
+                variant="outlined"
+                disabled={
+                  /^[\s]*$/.test(destinoAutorizado.Descripcion) ||
+                  montoAutorizado === null ||
+                  montoAutorizado === 0
+                }
+                onClick={() => {
+                  changeGeneralMontoAutorizado({
+                    destinoAutorizado: "",
+                    montoAutorizado: null,
+                  });
+                  addRows();
+                }}
+              >
+                Agregar
+              </Button>
+            </ThemeProvider>
           </Grid>
         </Grid>
 
@@ -161,15 +230,34 @@ export function MontoAutorizado() {
                 </TableHead>
 
                 <TableBody>
-                  <StyledTableCell>
-                    <Typography></Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography align="center">Vacio</Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography></Typography>
-                  </StyledTableCell>
+                  {tablaMontoAutorizado.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>{row.destinoAutorizado}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          <Typography align="center">
+                            {row.montoAutorizado}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() =>
+                                removeGeneralMontoAutorizado(index)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -49,11 +49,6 @@ const theme = createTheme({
     },
   },
 });
-
-export interface IMontoAutorizado {}
-
-export interface DetalleDestino {}
-
 export function DialogNuevaAutorizacion(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
@@ -63,10 +58,6 @@ export function DialogNuevaAutorizacion(props: Props) {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
   };
-
-  // const tablaComisiones: IMontoAutorizado[] = useLargoPlazoStore(
-  //   (state) => state.tabla
-  // );
 
   return (
     <>
@@ -130,41 +121,6 @@ export function DialogNuevaAutorizacion(props: Props) {
             {tabIndex === 1 && <MontoAutorizado />}
 
             {tabIndex === 2 && <DestalleDestino />}
-          </Grid>
-
-          <Grid item sx={{ top: 12, bottom: "auto" }}>
-            <ThemeProvider theme={theme}>
-              {/* <Button
-                  disabled={
-                    tablaComisiones.length === 0 ||
-                    tablaTasaInteres.length === 0
-                  }
-                  sx={queries.buttonContinuar}
-                  onClick={() => {
-                    if (tablaComisiones.length === 0) {
-                      setDialogValidacion("Comisiones/TasaEfectiva");
-                      setOpenDialogConfirm(!openDialogConfirm);
-                    } else if (tablaTasaInteres.length === 0) {
-                      setDialogValidacion("Disposición/Pagos de Capital");
-                      setOpenDialogConfirm(!openDialogConfirm);
-                    } else {
-                      if (props.accion === "Agregar") {
-                        addRow();
-                        props.handler(false);
-                        reset();
-                      } else if (props.accion === "Editar") {
-                        updateRow(props.indexA);
-                        props.handler(false);
-                        reset();
-                      }
-                    }
-                  }}
-                >
-                  <Typography sx={queries.medium_text}>
-                    {props.accion}
-                  </Typography>
-                </Button> */}
-            </ThemeProvider>
           </Grid>
         </Grid>
       </Dialog>

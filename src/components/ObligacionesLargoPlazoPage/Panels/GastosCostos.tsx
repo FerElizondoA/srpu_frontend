@@ -25,7 +25,6 @@ import validator from "validator";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { IFileInfoGeneral } from "./InformacionGeneral";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface Head {

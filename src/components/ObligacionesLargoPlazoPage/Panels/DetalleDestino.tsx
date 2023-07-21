@@ -1,19 +1,8 @@
-import { useState, forwardRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Grid,
-  Tabs,
-  Tab,
   Typography,
-  Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Slide,
   Button,
-  createTheme,
-  ThemeProvider,
-  Tooltip,
-  Divider,
   TextField,
   InputLabel,
   TableContainer,
@@ -22,39 +11,21 @@ import {
   TableRow,
   TableBody,
   Paper,
-  FormControl,
-  Select,
-  MenuItem,
+  Autocomplete,
+  ThemeProvider,
+  createTheme,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import CloseIcon from "@mui/icons-material/Close";
+import validator from "validator";
 import { queries } from "../../../queries";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { addDays } from "date-fns";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Head {
   label: string;
-}
-
-interface HeadLabels {
-  label: string;
-  value: string;
 }
 
 const headsDetalleMontoAutorizado: Head[] = [
@@ -68,54 +39,70 @@ const headsDetalleMontoAutorizado: Head[] = [
     label: "Acción",
   },
 ];
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
+
 export function DestalleDestino() {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  const detalleDestino: { Id: string; Descripcion: string } =
+    useLargoPlazoStore((state) => state.generalDetalleDestino.detalleDestino);
+
+  const montoAutorizado: number = useLargoPlazoStore(
+    (state) => state.generalDetalleDestino.montoAutorizado
+  );
+
+  const tablaDetalleDestino: any = useLargoPlazoStore(
+    (state) => state.tablaDetalleDestino
+  );
+
+  const changeGeneralDetalleDestino: Function = useLargoPlazoStore(
+    (state) => state.changeGeneralDetalleDestino
+  );
+
+  const addGeneralDetalleDestino: Function = useLargoPlazoStore(
+    (state) => state.addGeneralDetalleDestino
+  );
+
+  const removeDetalleDestino: Function = useLargoPlazoStore(
+    (state) => state.removeDetalleDestino
+  );
+
+  const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
+  const getOrganismosA: Function = useLargoPlazoStore(
+    (state) => state.getOrganismosA
+  );
+
+  const addRows = () => {
+    let tab = {
+      detalleDestino: detalleDestino.Descripcion,
+      montoAutorizado: montoAutorizado,
+    };
+    addGeneralDetalleDestino(tab);
   };
 
-  const [busqueda, setBusqueda] = useState("");
+  useEffect(() => {
+    changeGeneralDetalleDestino({
+      detalleDestino: detalleDestino,
+      montoAutorizado: montoAutorizado,
+    });
 
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  const handleSearch = () => {
-    // filtrarDatos();
-  };
-
-  const [pruebaFechaMin, setPruebaFechaMin] = useState("");
-  const [fechaContratacion, setFechaContratacion] = useState("");
-  const [pruebaFecha, setPruebaFecha] = useState("");
-
-  const [pruebaSelect, setPruebaSelect] = useState("");
-
-  const heads: HeadLabels[] = [
-    {
-      label: "Prueba 1 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 2",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 3",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 4 ",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 5",
-      value: pruebaSelect,
-    },
-    {
-      label: "Prueba 6",
-      value: pruebaSelect,
-    },
-  ];
+    getOrganismosA();
+  }, []);
 
   return (
     <>
@@ -126,33 +113,75 @@ export function DestalleDestino() {
         justifyContent="space-evenly"
         sx={queries.contenedorAgregarAutorizacion.DetalleDestino}
       >
+        {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
+        
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
           <Grid xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>
               Detalle del destino autorizado
             </InputLabel>
-            <FormControl fullWidth>
-              <Select
-                value={pruebaSelect}
-                onChange={(e) => {
-                  setPruebaSelect(e.target.value);
-                }}
-              >
-                {heads.map((item, index) => {
-                  return (
-                    <MenuItem value={item.label} key={index}>
-                      {item.label}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={catalagoOrganismos}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              value={{
+                Id: detalleDestino.Id || "",
+                Descripcion: detalleDestino.Descripcion || "",
+              }}
+              onChange={(event, text) =>
+                changeGeneralDetalleDestino({
+                  detalleDestino: {
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                  },
+                  montoAutorizado: montoAutorizado,
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Id === value.Id || value.Descripcion === ""
+              }
+            />
           </Grid>
 
           <Grid xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
 
-            <TextField fullWidth variant="standard" />
+            <TextField
+              fullWidth
+              variant="standard"
+              value={montoAutorizado === null ? "" : montoAutorizado.toString()}
+              onChange={(v) => {
+                if (validator.isNumeric(v.target.value)) {
+                  changeGeneralDetalleDestino({
+                    detalleDestino: detalleDestino,
+                    montoAutorizado: v.target.value,
+                  });
+                } else if (v.target.value === "") {
+                  changeGeneralDetalleDestino({
+                    detalleDestino: detalleDestino,
+                    montoAutorizado: null,
+                  });
+                }
+              }}
+            />
           </Grid>
 
           <Grid
@@ -161,7 +190,26 @@ export function DestalleDestino() {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Button sx={queries.buttonContinuar}>Agregar</Button>
+            <ThemeProvider theme={theme}>
+              <Button
+                sx={queries.buttonContinuar}
+                variant="outlined"
+                disabled={
+                  /^[\s]*$/.test(detalleDestino.Descripcion) ||
+                  montoAutorizado === null ||
+                  montoAutorizado === 0
+                }
+                onClick={() => {
+                  changeGeneralDetalleDestino({
+                    detalleDestino: "",
+                    montoAutorizado: null,
+                  });
+                  addRows();
+                }}
+              >
+                Agregar
+              </Button>
+            </ThemeProvider>
           </Grid>
         </Grid>
         <Grid width={"100%"} display={"flex"} justifyContent={"center"}>
@@ -184,15 +232,32 @@ export function DestalleDestino() {
                 </TableHead>
 
                 <TableBody>
-                  <StyledTableCell>
-                    <Typography></Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography align="center">Vacio</Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography></Typography>
-                  </StyledTableCell>
+                  {tablaDetalleDestino.map((row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>{row.detalleDestino}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          <Typography align="center">
+                            {row.montoAutorizado}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() => removeDetalleDestino(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
