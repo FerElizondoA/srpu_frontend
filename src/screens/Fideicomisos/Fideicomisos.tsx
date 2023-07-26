@@ -4,10 +4,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputBase,
   Paper,
+  Slide,
   Table,
   TableBody,
   TableContainer,
@@ -26,8 +31,40 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
-import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
+import {
+  Fideicomisario,
+  Fideicomiso,
+  GeneralFideicomiso,
+  SoporteDocumental,
+  TipoMovimiento,
+} from "../../store/Fideicomiso/fideicomiso";
+import * as React from "react";
+import { TransitionProps } from "@mui/material/transitions";
+import { ICatalogo } from "../Config/Catalogos";
+import { useNavigate } from "react-router-dom";
+import { IEntePublico } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+export interface IDatos {
+  Id: string;
+  DescripcionFiudiciario: string;
+  DescripcionTipoFideicomiso: string;
+
+  IdFiudiciario: string;
+  IdTipoFideicomiso: string;
+
+  NumeroDeFideicomiso: number;
+  TipoDeFideicomiso: string;
+  FechaDeFideicomiso: string;
+  Fiudiciario: string;
+  Fideicomisario: string;
+  TipoDeMovimiento: string;
+  SoporteDocumental: string;
+  FechaCreacion: string;
+  CreadoPor: string;
+  ModificadoPor: string;
+  UltimaModificacion: string;
+}
 
 interface Head {
   label: string;
@@ -51,6 +88,15 @@ const heads: Head[] = [
   },
 ];
 
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export function Fideicomisos() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -58,6 +104,7 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -67,6 +114,7 @@ export function Fideicomisos() {
     // filtrarDatos();
   };
 
+  //
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
   const [accion, setAccion] = useState("Agregar");
@@ -78,13 +126,54 @@ export function Fideicomisos() {
     (state) => state.getFideicomisos
   );
 
-  const editFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.editFideicomiso
+  const borrarFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.borrarFideicomiso
   );
 
+  const idFideicomiso: string = useCortoPlazoStore(
+    (state) => state.idFideicomiso
+  );
+
+  const changeIdFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.changeIdFideicomiso
+  );
+
+  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.setGeneralFideicomiso
+  );
+
+  const editarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.editarFideicomiso
+  );
+
+  const [datos, setDatos] = useState<Array<IDatos>>([]);
+
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+
+  const limpiaFideicomiso = () => {
+    changeIdFideicomiso("");
+
+    setGeneralFideicomiso({
+      numeroFideicomiso: "",
+      tipoFideicomiso: { Id: "", Descripcion: "" },
+      fechaFideicomiso: "",
+      fiudiciario: { Id: "", Descripcion: "" },
+    });
+
+    editarSolicitud([], [], []);
+  };
+
   useEffect(() => {
-    getFideicomisos();
-  }, []);
+    if (openAgregarFideicomisos === false) {
+      limpiaFideicomiso();
+    }
+  }, [openAgregarFideicomisos]);
+
+  useEffect(() => {
+    if (!openDialogEliminar) {
+      getFideicomisos(setDatos);
+    }
+  }, [openAgregarFideicomisos]);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -178,32 +267,53 @@ export function Fideicomisos() {
                       {row.NumeroDeFideicomiso}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.TipoDeFideicomiso}
+                      {format(new Date(row.FechaDeFideicomiso), "dd/MM/yyyy")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.FechaDeFideicomiso}
+                      {row.DescripcionTipoFideicomiso}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.Fiudiciario}
+                      {row.DescripcionFiudiciario}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <Tooltip title="Editar">
                         <IconButton
                           type="button"
                           onClick={() => {
-                            editFideicomiso(
+                            setAccion("Editar");
+                            changeIdFideicomiso(row?.Id);
+                            setGeneralFideicomiso({
+                              numeroFideicomiso: row.NumeroDeFideicomiso,
+                              tipoFideicomiso: {
+                                Id: row.IdTipoFideicomiso,
+                                Descripcion: row.DescripcionTipoFideicomiso,
+                              },
+                              fechaFideicomiso: row.FechaDeFideicomiso,
+                              fiudiciario: {
+                                Id: row.IdFiudiciario,
+                                Descripcion: row.DescripcionFiudiciario,
+                              },
+                            });
+                            editarSolicitud(
                               JSON.parse(row.Fideicomisario),
+                              JSON.parse(row.TipoDeMovimiento),
                               JSON.parse(row.SoporteDocumental)
                             );
+                            changeAgregarFideicomisos(!openAgregarFideicomisos);
                           }}
                         >
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
+
                       <Tooltip title="Eliminar">
                         <IconButton
                           type="button"
-                          // onClick={() => removeSoporteDocumental(index)}
+                          onClick={() => {
+                            changeIdFideicomiso(row?.Id || "");
+                            setOpenDialogEliminar(!openDialogEliminar);
+                            getFideicomisos(setDatos);
+                          }}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -222,29 +332,36 @@ export function Fideicomisos() {
         accion={accion}
       />
 
-      {/* <Dialog open={openDialogEliminar}>
+      <Dialog
+        open={openDialogEliminar}
+        keepMounted
+        TransitionComponent={Transition}
+      >
         <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
         <DialogContent>
-          <Typography sx={queries.medium_text}>
-            ¿Seguro que desea eliminar a este usuario?
-          </Typography>
+          <Typography>¿Seguro que desea eliminar este fideicomiso?</Typography>
         </DialogContent>
 
         <DialogActions>
           <Button
             sx={queries.buttonContinuar}
-            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+              borrarFideicomiso(idFideicomiso);
+            }}
           >
             Aceptar
           </Button>
           <Button
             sx={queries.buttonCancelar}
-            onClick={() => setOpendDialogEliminar(!openDialogEliminar)}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+            }}
           >
             Cancelar
           </Button>
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
     </Grid>
   );
 }

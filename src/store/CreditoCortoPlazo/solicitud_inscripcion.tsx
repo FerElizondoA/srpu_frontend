@@ -129,8 +129,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,

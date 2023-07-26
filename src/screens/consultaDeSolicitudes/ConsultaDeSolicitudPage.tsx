@@ -209,6 +209,7 @@ export function ConsultaDeSolicitudPage() {
     changeEncabezado(aux?.encabezado);
 
     changeInformacionGeneral(aux?.informacionGeneral);
+    
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       return addObligadoSolidarioAval(v);
     });
@@ -219,6 +220,11 @@ export function ConsultaDeSolicitudPage() {
       return addDocumento(v);
     });
   };
+  const idSolicitud: String = useCortoPlazoStore(
+    (state) => state.idSolicitud
+    );
+  
+
 
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
@@ -269,6 +275,7 @@ export function ConsultaDeSolicitudPage() {
       getSolicitudes(setDatos);
     }
   }, [openEliminar]);
+
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>

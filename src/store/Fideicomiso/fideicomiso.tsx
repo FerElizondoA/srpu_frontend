@@ -33,10 +33,10 @@ export interface SoporteDocumental {
 }
 
 export interface Fideicomiso {
-  generalFideicomiso: GeneralFideicomiso;
-  fideicomisario: Fideicomisario[];
-  tipoDeMovimiento: TipoMovimiento[];
-  soporteDocumental: SoporteDocumental[];
+  generalFideicomiso: GeneralFideicomiso; //fijo
+  fideicomisario: Fideicomisario[]; //tabla
+  tipoDeMovimiento: TipoMovimiento[]; //tabla
+  soporteDocumental: SoporteDocumental[];//tabla
 }
 
 export interface FideicomisoSlice {
@@ -57,6 +57,13 @@ export interface FideicomisoSlice {
   catalogoTiposDeFideicomitente: ICatalogo[];
   catalogoTiposDeFuente: ICatalogo[];
   catalogoFondosOIngresos: ICatalogo[];
+
+  borrarFideicomiso: (Id: string) => void;
+  changeIdFideicomiso : ( Id: string) => void;
+  idFideicomiso: string;
+
+  editarFideicomiso:(fideicomisario: Fideicomisario[] , 
+  tipoDeMovimiento: TipoMovimiento[], soporteDocumental: SoporteDocumental[]) => void;
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => void;
   setFideicomisario: (fideicomisario: Fideicomisario) => void;
@@ -89,6 +96,7 @@ export interface FideicomisoSlice {
   getFondosOIngresos: () => void;
 
   createFideicomiso: () => void;
+  modificarFideicomiso:() => void;
   getFideicomisos: () => void;
 }
 
@@ -96,6 +104,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   set,
   get
 ) => ({
+  idFideicomiso: "",
   generalFideicomiso: {
     numeroFideicomiso: "",
     tipoFideicomiso: { Id: "", Descripcion: "" },
@@ -132,6 +141,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   catalogoTiposDeFideicomitente: [],
   catalogoTiposDeFuente: [],
   catalogoFondosOIngresos: [],
+  
+  
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => {
     set(() => ({
@@ -143,7 +154,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
-  setFideicomisario: (fideicomisario: Fideicomisario) => {
+  setFideicomisario: (fideicomisario: Fideicomisario) => { //tabla
     set(() => ({
       fideicomisario: {
         fideicomisario: fideicomisario.fideicomisario,
@@ -151,12 +162,12 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
-  setTipoDeMovimiento: (tipoDeMovimiento: TipoMovimiento) => {
+  setTipoDeMovimiento: (tipoDeMovimiento: TipoMovimiento) => { // tabla
     set(() => ({
       tipoDeMovimiento: tipoDeMovimiento,
     }));
   },
-  setSoporteDocumental: (soporteDocumental: SoporteDocumental) => {
+  setSoporteDocumental: (soporteDocumental: SoporteDocumental) => { //tabla
     set(() => ({
       soporteDocumental: soporteDocumental,
     }));
@@ -241,6 +252,17 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
+
+  changeIdFideicomiso : (id: any) => set(() => ({ idFideicomiso: id })),
+
+  editarFideicomiso:(fideicomisario: Fideicomisario[] , tipoDeMovimiento: TipoMovimiento[],
+     soporteDocumental: SoporteDocumental[]) => {
+      set((state) => ({
+        tablaFideicomisario: fideicomisario,
+        tablaTipoMovimiento: tipoDeMovimiento,
+        tablaSoporteDocumental: soporteDocumental,
+      }))
+     },
 
   getTiposFideicomiso: async () => {
     await axios
@@ -368,10 +390,40 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
           TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
-          FechaFideicomiso: format(
-            new Date(state.generalFideicomiso.fechaFideicomiso),
-            "dd/MM/yyyy"
-          ),
+          FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
+          Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
+          Fideicomisario: JSON.stringify(state.tablaFideicomisario),
+          TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
+          SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+
+      .then(({ data }) => {
+        state.changeIdFideicomiso(data.data.id);
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "El fideicomiso se ha creado exitosamente",
+        });
+      });
+  },
+
+  modificarFideicomiso: async () => {
+    const state = useCortoPlazoStore.getState();
+    await axios
+      .put(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
+        {
+          IdFideicomiso: state.idFideicomiso,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
+          TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
+          FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
           Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
           Fideicomisario: JSON.stringify(state.tablaFideicomisario),
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
@@ -387,9 +439,59 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "El fideicomiso se ha creado exitosamente",
+          text: "El fideicomiso se ha modificado exitosamente",
+        });
+      })
+      .catch(function (error) {
+        Swal.fire({
+          icon: "error",
+          title: "No se Edito el fideicomiso.",
         });
       });
+      
+  },
+
+  borrarFideicomiso: async (Id: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
+    await axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-fideicomiso",
+        {
+          data: {
+            IdFideicomiso: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(function (response) {
+        
+        if (response.status === 200) {
+          window.location.reload()
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+            
+          });
+        }
+        return true;
+      })
+      .catch(function (error) {
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino el fideicomiso.",
+        });
+      });
+    return false;
   },
 
   getFideicomisos: async () => {

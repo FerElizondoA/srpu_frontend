@@ -18,13 +18,21 @@ import {
   TableBody,
   Checkbox,
   Paper,
+  FormControl,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { Fideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
+  label: string;
+}
+
+interface HeadSelect {
+  id: number;
   label: string;
 }
 
@@ -42,6 +50,36 @@ const theme = createTheme({
     },
   },
 });
+
+const CatalogoMecanismo: HeadSelect[] = [
+  {
+    id: 1,
+    label: "Fideicomiso",
+  },
+  {
+    id: 2,
+    label: "Institucion irrevocable",
+  },
+  {
+    id: 3,
+    label: "Mandato",
+  },
+];
+
+const CatalogoBonos: HeadSelect[] = [
+  {
+    id: 1,
+    label: "No aplica",
+  },
+  {
+    id: 2,
+    label: "Prueba1",
+  },
+  {
+    id: 3,
+    label: "Prueba2",
+  },
+];
 
 const headFideicomiso: Head[] = [
   {
@@ -130,8 +168,26 @@ const headFP: Head[] = [
 export function FuenteDePago() {
   const [fideicomiso, setFideicomiso] = useState(false);
 
-  const [noAplica, setNoAplica] = useState(false);
+  const [mecanismo, setMecanismo] = useState<any>("");
+  const [numeroFideicomiso, setNumerodelFideicomiso] = useState<any>("");
+  const [bonoCero, setBonoCero] = useState<any>("");
+
   const [asignarFuente, setAsignarFuente] = useState(false);
+
+  const getFideicomisos: Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+
+  const tablaFideicomisos: Fideicomiso[] = useCortoPlazoStore(
+    (state) => state.tablaFideicomisos
+  );
+  const changeIdFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.changeIdFideicomiso
+  );
+
+  useEffect(() => {
+    getFideicomisos();
+  }, []);
   return (
     <Grid
       container
@@ -142,7 +198,6 @@ export function FuenteDePago() {
       <Grid>
         <Divider sx={queries.bold_text}>MECANISMO O VEHÍCULO DE PAGO</Divider>
       </Grid>
-
       <Grid
         container
         flexDirection={"column"}
@@ -155,31 +210,63 @@ export function FuenteDePago() {
             <InputLabel sx={queries.medium_text}>
               Mecanismo o vehículo de pago
             </InputLabel>
-            <Select fullWidth variant="standard">
-              {headsAF.map((item, index) => (
-                <MenuItem key={index}>{item.label}</MenuItem>
-              ))}
-            </Select>
+
+            <FormControl fullWidth>
+              <Select
+                value={mecanismo}
+                fullWidth
+                variant="outlined"
+                onChange={(e) => {
+                  setMecanismo(e.target.value);
+                }}
+              >
+                {CatalogoMecanismo.map((item, index) => (
+                  <MenuItem value={item.label} key={index}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid md={4} lg={4} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Número del fideicomiso
             </InputLabel>
-            <Select fullWidth variant="standard" value={headsAF}>
-              {headsAF.map((item, index) => (
-                <MenuItem key={index}>{item.label}</MenuItem>
+            <Select
+              fullWidth
+              variant="standard"
+              value={numeroFideicomiso}
+              onChange={(e) => {
+                setNumerodelFideicomiso(e.target.value);
+              }}
+            >
+              {tablaFideicomisos.map((row: any, index: number) => (
+                <MenuItem value={row.NumeroDeFideicomiso} key={index}>
+                  {row.NumeroDeFideicomiso}
+                </MenuItem>
               ))}
             </Select>
           </Grid>
 
           <Grid md={4} lg={4} xl={3}>
             <InputLabel sx={queries.medium_text}>Bono cupón cero</InputLabel>
-            <Select fullWidth variant="standard" value={headsAF}>
-              {headsAF.map((item, index) => (
-                <MenuItem key={index}>{item.label}</MenuItem>
-              ))}
-            </Select>
+            <FormControl fullWidth>
+              <Select
+                fullWidth
+                variant="standard"
+                value={bonoCero}
+                onChange={(e) => {
+                  setBonoCero(e.target.value);
+                }}
+              >
+                {CatalogoBonos.map((item, index) => (
+                  <MenuItem value={item.label} key={index}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
 
@@ -194,11 +281,22 @@ export function FuenteDePago() {
                 <InputLabel sx={queries.medium_text}>
                   Clasificación del bono del cupón cero
                 </InputLabel>
-                <Select fullWidth variant="standard">
-                  {headsAF.map((item, index) => (
-                    <MenuItem key={index}>{item.label}</MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select
+                    fullWidth
+                    variant="standard"
+                    value={bonoCero}
+                    onChange={(e) => {
+                      setBonoCero(e.target.value);
+                    }}
+                  >
+                    {CatalogoBonos.map((item, index) => (
+                      <MenuItem value={item.label} key={index}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
 
               <Grid
@@ -327,7 +425,7 @@ export function FuenteDePago() {
                 display={"flex"}
                 justifyContent={"space-evenly"}
               >
-                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+                <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
                   <InputLabel>Clasificación</InputLabel>
                   <Select fullWidth variant="standard" value={headsAF}>
                     {headsAF.map((item, index) => (

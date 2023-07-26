@@ -20,12 +20,15 @@ import {
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
-import { TipoMovimiento } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import {
+  Fideicomisario,
+  TipoMovimiento,
+} from "../../../store/Fideicomiso/fideicomiso";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export interface HeadLabels {
   label: string;
