@@ -176,6 +176,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               )
                 .then(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "success",
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
@@ -185,6 +187,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 })
                 .catch(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "error",
                     title: "Mensaje",
                     text: "Ocurrió un error, inténtelo de nuevo",
@@ -201,6 +205,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               )
                 .then(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "success",
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
@@ -209,6 +215,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 })
                 .catch(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "error",
                     title: "Mensaje",
                     text: "Ocurrió un error, inténtelo de nuevo",
@@ -245,6 +253,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               )
                 .then(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "success",
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
@@ -252,6 +262,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 })
                 .catch(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "error",
                     title: "Mensaje",
                     text: "Ocurrió un error, inténtelo de nuevo",
@@ -268,6 +280,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               )
                 .then((r: any) => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "success",
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
@@ -275,6 +289,8 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 })
                 .catch(() => {
                   Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    cancelButtonColor: "rgb(175, 140, 85)",
                     icon: "error",
                     title: "Mensaje",
                     text: "Ocurrió un error, inténtelo de nuevo",

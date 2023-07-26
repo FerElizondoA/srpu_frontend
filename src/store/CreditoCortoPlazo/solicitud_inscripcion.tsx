@@ -129,7 +129,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
@@ -220,8 +221,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      position: "top-end",
-      showConfirmButton: false,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });

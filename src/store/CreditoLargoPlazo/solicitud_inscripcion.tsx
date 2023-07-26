@@ -216,8 +216,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      position: "top-end",
-      showConfirmButton: false,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });

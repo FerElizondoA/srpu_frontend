@@ -19,7 +19,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
-import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion"
+import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 //"./DialogSolicitarModificacion";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 const Transition = React.forwardRef(function Transition(
@@ -159,6 +159,8 @@ export function ConfirmacionDescargaSolicitud({
                   .then(() => {
                     addComentario(idSolicitud, comentario);
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
@@ -166,6 +168,8 @@ export function ConfirmacionDescargaSolicitud({
                   })
                   .catch(() => {
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "error",
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
@@ -186,6 +190,8 @@ export function ConfirmacionDescargaSolicitud({
                   .then(() => {
                     addComentario(idSolicitud, comentario);
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
@@ -193,6 +199,8 @@ export function ConfirmacionDescargaSolicitud({
                   })
                   .catch(() => {
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "error",
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
@@ -215,6 +223,8 @@ export function ConfirmacionDescargaSolicitud({
                   .then(() => {
                     addComentario(idSolicitud, comentario);
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
@@ -222,6 +232,8 @@ export function ConfirmacionDescargaSolicitud({
                   })
                   .catch(() => {
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "error",
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
@@ -242,6 +254,8 @@ export function ConfirmacionDescargaSolicitud({
                   .then(() => {
                     addComentario(idSolicitud, comentario);
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "success",
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
@@ -249,6 +263,8 @@ export function ConfirmacionDescargaSolicitud({
                   })
                   .catch(() => {
                     Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "error",
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",

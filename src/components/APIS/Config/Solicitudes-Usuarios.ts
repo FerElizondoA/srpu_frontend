@@ -4,8 +4,10 @@ import { IUsuarios } from "../../Interfaces/InterfacesUsuario/IUsuarios";
 
 const Toast = Swal.mixin({
   toast: true,
-  position: "top-end",
-  showConfirmButton: false,
+  position: "center",
+  showConfirmButton: true,
+  confirmButtonColor: "#15212f",
+  cancelButtonColor: "rgb(175, 140, 85)",
   timer: 3000,
   timerProgressBar: true,
   didOpen: (toast) => {
@@ -14,7 +16,13 @@ const Toast = Swal.mixin({
   },
 });
 
-export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comentario = '', setStatus: Function,setError:Function) => {
+export const createSolicitud = (
+  datos: IUsuarios,
+  tipoSolicitud: string,
+  comentario = "",
+  setStatus: Function,
+  setError: Function
+) => {
   axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-solicitud",
@@ -30,10 +38,16 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
         Celular: datos.Celular,
         Telefono: datos.Telefono,
         Extencion: datos.Ext,
-        DatosAdicionales: JSON.stringify({ idRol: datos.IdRol,rol:datos.Rol,cargo:datos.Cargo, idEntePublico: datos.MunicipioUOrganizacion, correoDeRecuperacion: datos.CorreoDeRecuperacion }),
+        DatosAdicionales: JSON.stringify({
+          idRol: datos.IdRol,
+          rol: datos.Rol,
+          cargo: datos.Cargo,
+          idEntePublico: datos.MunicipioUOrganizacion,
+          correoDeRecuperacion: datos.CorreoDeRecuperacion,
+        }),
         TipoSolicitud: tipoSolicitud,
-        CreadoPor: localStorage.getItem("IdCentral") || '',
-        IdApp: localStorage.getItem("IdApp") || ''
+        CreadoPor: localStorage.getItem("IdCentral") || "",
+        IdApp: localStorage.getItem("IdApp") || "",
       },
       {
         headers: {
@@ -42,48 +56,47 @@ export const createSolicitud = (datos: IUsuarios, tipoSolicitud: string, comenta
       }
     )
     .then((r) => {
-
       if (r.status === 200) {
-       
-        if (r.data.data[0][0].Respuesta === '403' || r.data.data[0][0].Respuesta === '406') {
+        if (
+          r.data.data[0][0].Respuesta === "403" ||
+          r.data.data[0][0].Respuesta === "406"
+        ) {
           Toast.fire({
             icon: "error",
             title: r.data.data[0][0].Mensaje,
           });
-          setError(r.data.data[0][0].Mensaje)
+          setError(r.data.data[0][0].Mensaje);
           setStatus(false);
         } else {
-          if (comentario !== "") { createComentarios(r.data.data[0][0].IdSolicitud, comentario); }
+          if (comentario !== "") {
+            createComentarios(r.data.data[0][0].IdSolicitud, comentario);
+          }
           Toast.fire({
             icon: "success",
             title: "¡Registro exitoso!",
           });
           setStatus(true);
-
         }
       } else {
         Toast.fire({
           icon: "error",
           title: "¡No se realizo el registro!",
         });
-        setError('¡No se realizo el registro, error del sistema!')
+        setError("¡No se realizo el registro, error del sistema!");
         setStatus(false);
       }
-
     })
     .catch((r) => {
-
       Toast.fire({
         icon: "error",
-        title: '¡No se realizo el registro, error del sistema!',
+        title: "¡No se realizo el registro, error del sistema!",
       });
-      setError('¡No se realizo el registro, error del sistema!')
+      setError("¡No se realizo el registro, error del sistema!");
       setStatus(false);
     });
 };
 
 const createComentarios = (idSolicitud: string, comentario: string) => {
-
   axios
     .post(
       process.env.REACT_APP_APPLICATION_LOGIN + "/api/create-comentario",
@@ -108,37 +121,33 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
     })
     .catch((r) => {
       if (r.response.status === 409) {
-
       }
     });
-
-
 };
 
-export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
-
-  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
-    params: {
-      IdApp: localStorage.getItem("IdApp"),
-      IdUsuario: localStorage.getItem("IdUsuario"),
-      PermisosEspeciales:permisosEspeciales
-    },
-    headers: {
-      'Authorization': localStorage.getItem("jwtToken"),
-      'Content-Type': 'application/json'
-    }
-  }).then(({ data }) => {
-    if(data.data[0].ERROR!=='Permisos Denegados')
-    {
-       setState(data.data)
-    }
-  })
+export const getListadoUsuarios = (
+  setState: Function,
+  permisosEspeciales = 0
+) => {
+  axios
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
+      params: {
+        IdApp: localStorage.getItem("IdApp"),
+        IdUsuario: localStorage.getItem("IdUsuario"),
+        PermisosEspeciales: permisosEspeciales,
+      },
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Content-Type": "application/json",
+      },
+    })
+    .then(({ data }) => {
+      if (data.data[0].ERROR !== "Permisos Denegados") {
+        setState(data.data);
+      }
+    })
     .catch((r) => {
       if (r.response.status === 409) {
-
       }
     });
 };
-
-
-

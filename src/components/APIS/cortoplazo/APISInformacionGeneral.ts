@@ -16,6 +16,8 @@ export async function getDestinos() {
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "(" + error.response.status + ") " + error.response.data.msg,
@@ -40,6 +42,8 @@ export function getObligadoSolidarioAval(setState: Function) {
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "(" + error.response.status + ") " + error.response.data.msg,
@@ -62,6 +66,8 @@ export function getSolicitudes(setState: Function) {
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "(" + error.response.status + ") " + error.response.data.msg,

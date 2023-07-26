@@ -36,7 +36,7 @@ export interface Fideicomiso {
   generalFideicomiso: GeneralFideicomiso; //fijo
   fideicomisario: Fideicomisario[]; //tabla
   tipoDeMovimiento: TipoMovimiento[]; //tabla
-  soporteDocumental: SoporteDocumental[];//tabla
+  soporteDocumental: SoporteDocumental[]; //tabla
 }
 
 export interface FideicomisoSlice {
@@ -59,11 +59,14 @@ export interface FideicomisoSlice {
   catalogoFondosOIngresos: ICatalogo[];
 
   borrarFideicomiso: (Id: string) => void;
-  changeIdFideicomiso : ( Id: string) => void;
+  changeIdFideicomiso: (Id: string) => void;
   idFideicomiso: string;
 
-  editarFideicomiso:(fideicomisario: Fideicomisario[] , 
-  tipoDeMovimiento: TipoMovimiento[], soporteDocumental: SoporteDocumental[]) => void;
+  editarFideicomiso: (
+    fideicomisario: Fideicomisario[],
+    tipoDeMovimiento: TipoMovimiento[],
+    soporteDocumental: SoporteDocumental[]
+  ) => void;
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => void;
   setFideicomisario: (fideicomisario: Fideicomisario) => void;
@@ -96,7 +99,7 @@ export interface FideicomisoSlice {
   getFondosOIngresos: () => void;
 
   createFideicomiso: () => void;
-  modificarFideicomiso:() => void;
+  modificarFideicomiso: () => void;
   getFideicomisos: () => void;
 }
 
@@ -141,8 +144,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   catalogoTiposDeFideicomitente: [],
   catalogoTiposDeFuente: [],
   catalogoFondosOIngresos: [],
-  
-  
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => {
     set(() => ({
@@ -154,7 +155,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
-  setFideicomisario: (fideicomisario: Fideicomisario) => { //tabla
+  setFideicomisario: (fideicomisario: Fideicomisario) => {
+    //tabla
     set(() => ({
       fideicomisario: {
         fideicomisario: fideicomisario.fideicomisario,
@@ -162,12 +164,14 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
-  setTipoDeMovimiento: (tipoDeMovimiento: TipoMovimiento) => { // tabla
+  setTipoDeMovimiento: (tipoDeMovimiento: TipoMovimiento) => {
+    // tabla
     set(() => ({
       tipoDeMovimiento: tipoDeMovimiento,
     }));
   },
-  setSoporteDocumental: (soporteDocumental: SoporteDocumental) => { //tabla
+  setSoporteDocumental: (soporteDocumental: SoporteDocumental) => {
+    //tabla
     set(() => ({
       soporteDocumental: soporteDocumental,
     }));
@@ -253,16 +257,19 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     }));
   },
 
-  changeIdFideicomiso : (id: any) => set(() => ({ idFideicomiso: id })),
+  changeIdFideicomiso: (id: any) => set(() => ({ idFideicomiso: id })),
 
-  editarFideicomiso:(fideicomisario: Fideicomisario[] , tipoDeMovimiento: TipoMovimiento[],
-     soporteDocumental: SoporteDocumental[]) => {
-      set((state) => ({
-        tablaFideicomisario: fideicomisario,
-        tablaTipoMovimiento: tipoDeMovimiento,
-        tablaSoporteDocumental: soporteDocumental,
-      }))
-     },
+  editarFideicomiso: (
+    fideicomisario: Fideicomisario[],
+    tipoDeMovimiento: TipoMovimiento[],
+    soporteDocumental: SoporteDocumental[]
+  ) => {
+    set((state) => ({
+      tablaFideicomisario: fideicomisario,
+      tablaTipoMovimiento: tipoDeMovimiento,
+      tablaSoporteDocumental: soporteDocumental,
+    }));
+  },
 
   getTiposFideicomiso: async () => {
     await axios
@@ -406,6 +413,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       .then(({ data }) => {
         state.changeIdFideicomiso(data.data.id);
         Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
           icon: "success",
           title: "Éxito",
           text: "El fideicomiso se ha creado exitosamente",
@@ -437,6 +446,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       )
       .then(({ data }) => {
         Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
           icon: "success",
           title: "Éxito",
           text: "El fideicomiso se ha modificado exitosamente",
@@ -444,18 +455,21 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       })
       .catch(function (error) {
         Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
           icon: "error",
           title: "No se Edito el fideicomiso.",
         });
       });
-      
   },
 
   borrarFideicomiso: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      position: "top-end",
-      showConfirmButton: false,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });
@@ -474,13 +488,11 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         }
       )
       .then(function (response) {
-        
         if (response.status === 200) {
-          window.location.reload()
+          window.location.reload();
           Toast.fire({
             icon: "success",
             title: "Eliminado con exito",
-            
           });
         }
         return true;

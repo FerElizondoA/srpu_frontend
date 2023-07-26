@@ -3,8 +3,10 @@ import Swal from "sweetalert2";
 
 export async function getTiposDocumentos(setState: Function) {
   await axios({
-    method: 'get',
-    url: process.env.REACT_APP_APPLICATION_BACK + '/api/get-tiposDocumentosCortoPlazo',
+    method: "get",
+    url:
+      process.env.REACT_APP_APPLICATION_BACK +
+      "/api/get-tiposDocumentosCortoPlazo",
     data: {},
     headers: {
       "Content-Type": "application/json",
@@ -16,9 +18,11 @@ export async function getTiposDocumentos(setState: Function) {
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "(" + error.response.status + ") " + error.response.data.msg,
-      })
+      });
     });
 }

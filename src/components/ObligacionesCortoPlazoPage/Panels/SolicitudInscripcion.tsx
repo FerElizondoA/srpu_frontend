@@ -85,9 +85,10 @@ export function SolicitudInscripcion() {
 
   const Toast = Swal.mixin({
     width: "690px",
-    confirmButtonColor: "#15212f",
     toast: true,
     showConfirmButton: true,
+    confirmButtonColor: "#15212f",
+    cancelButtonColor: "rgb(175, 140, 85)",
     confirmButtonText: "De acuerdo",
     didOpen: (toast) => {
       toast.addEventListener("mouseenter", Swal.stopTimer);
@@ -145,7 +146,9 @@ export function SolicitudInscripcion() {
       setOpenDialogModificacion(!openDialogModificacion);
     } else {
       Toast.fire({
-        showConfirmButton: false,
+        showConfirmButton: true,
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         buttonsStyling: true,
         html: `
         <div>
@@ -343,7 +346,9 @@ export function SolicitudInscripcion() {
       setOpenDialogEnviar(!openDialogEnviar);
     } else {
       Toast.fire({
-        showConfirmButton: false,
+        showConfirmButton: true,
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         buttonsStyling: true,
         html: `
         <div>
