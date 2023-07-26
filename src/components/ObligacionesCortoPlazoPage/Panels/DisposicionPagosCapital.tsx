@@ -351,13 +351,7 @@ export function DisposicionPagosCapital() {
   ]);
 
   useEffect(() => {
-    if (
-      disposicionFechaDisposicion !== "" &&
-      disposicionImporte.toString() !== "$ 0.00" &&
-      disposicionImporte !== 0 &&
-      disposicionesParciales === false &&
-      tablaDisposicion.length === 0
-    ) {
+    if (disposicionesParciales === false && tablaDisposicion.length === 0) {
       addRowsDisposicion();
     }
   }, [disposicionFechaDisposicion, disposicionImporte, disposicionesParciales]);
@@ -624,12 +618,7 @@ export function DisposicionPagosCapital() {
             </Grid>
           </Grid>
           {disposicionesParciales && (
-            <Grid
-              container
-              sx={queries.tablaDisposicionPagosCapital}
-              flexDirection={"column"}
-              alignItems={"center"}
-            >
+            <Grid container flexDirection={"column"} alignItems={"center"}>
               <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
@@ -653,10 +642,9 @@ export function DisposicionPagosCapital() {
                   Agregar
                 </Button>
               </ThemeProvider>
-              <Paper sx={{ height: "90%", width: "88%" }}>
+              <Paper sx={{ width: "88%" }}>
                 <TableContainer
                   sx={{
-                    maxHeight: "100%",
                     overflow: "auto",
                     "&::-webkit-scrollbar": {
                       width: ".5vw",
@@ -1169,7 +1157,7 @@ export function DisposicionPagosCapital() {
             {tasasParciales && (
               <Grid
                 container
-                sx={queries.tablaDisposicionPagosCapital}
+                // sx={queries.tablaDisposicionPagosCapital}
                 flexDirection={"column"}
                 alignItems={"center"}
               >
@@ -1200,10 +1188,9 @@ export function DisposicionPagosCapital() {
                   </Button>
                 </ThemeProvider>
 
-                <Paper sx={{ height: "90%", width: "88%" }}>
+                <Paper sx={{ width: "88%" }}>
                   <TableContainer
                     sx={{
-                      maxHeight: "100%",
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",

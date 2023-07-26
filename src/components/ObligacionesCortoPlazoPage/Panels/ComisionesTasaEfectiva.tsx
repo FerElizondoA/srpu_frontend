@@ -624,11 +624,10 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid container sx={queries.tablaDisposicionPagosCapital}>
-        <Paper sx={{ height: "100%", width: "88%", overflow: "auto" }}>
+      <Grid container justifyContent={"center"}>
+        <Paper sx={{ width: "88%", overflow: "auto" }}>
           <TableContainer
             sx={{
-              maxHeight: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",

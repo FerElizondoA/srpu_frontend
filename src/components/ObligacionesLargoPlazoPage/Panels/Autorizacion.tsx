@@ -102,7 +102,7 @@ export function Autorizacion() {
   );
 
   useEffect(() => {
-    if (autorizacionSelect[0]?.Id !== "") {
+    if (autorizacionSelect.length !== 0) {
       getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
       listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`);
     }
@@ -113,10 +113,7 @@ export function Autorizacion() {
   const [fileSelected, setFileSelected] = useState<any>("");
 
   useEffect(() => {
-    if (
-      pathDocumentos.length > 0 &&
-      pathDocumentos[0]?.NombreArchivo !== undefined
-    ) {
+    if (pathDocumentos.length > 0) {
       let loc: any = [...arrDocs];
       pathDocumentos?.map((val: any) => {
         return getDocumento(
@@ -192,15 +189,15 @@ export function Autorizacion() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid item lg={3}>
+          {/* <Grid item lg={3}>
             <Button sx={queries.buttonContinuar} variant="outlined">
               Asignar
             </Button>
-          </Grid>
+          </Grid> */}
 
           <Grid item lg={3}>
             <Button
-              sx={queries.buttonCancelar}
+              sx={queries.buttonContinuar}
               variant="outlined"
               onClick={() =>
                 setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion)
