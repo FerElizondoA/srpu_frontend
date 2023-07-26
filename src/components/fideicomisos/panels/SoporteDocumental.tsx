@@ -32,7 +32,7 @@ import enGB from "date-fns/locale/en-GB";
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { SoporteDocumental } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import {
   DateInput,
   StyledTableCell,

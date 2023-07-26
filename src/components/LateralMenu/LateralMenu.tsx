@@ -20,6 +20,7 @@ import {
   OutlinedInput,
   Tooltip,
   Badge,
+  TextField,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -46,7 +47,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
-import { useCortoPlazoStore } from "../../store/main";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 
@@ -189,6 +190,7 @@ export function LateralMenu() {
           label: "Su contraseña debe contar con al menos 8 caracteres.",
           show: true,
         });
+
         return null;
       }
 
@@ -256,7 +258,7 @@ export function LateralMenu() {
       <Dialog
         onClose={handleClosePasswordChange}
         open={openPasswordChange}
-        maxWidth={"sm"}
+        maxWidth={"lg"}
       >
         <Box
           sx={{
@@ -299,12 +301,51 @@ export function LateralMenu() {
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton onClick={() => setShow(!show)} edge="end">
-                    {show ? <VisibilityOff /> : <VisibilityIcon />}
+                    {show ? (
+                      <Tooltip title={"Ocultar contraseña"}>
+                        <VisibilityOff
+                          sx={{
+                            fontSize: {
+                              xs: "50%",
+                              sm: "80%",
+                              md: "70%",
+                              lg: "80%",
+                              xl: "100%",
+                            },
+                          }}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={"Ver contraseña"}>
+                        <VisibilityIcon
+                          sx={{
+                            fontSize: {
+                              xs: "50%",
+                              sm: "80%",
+                              md: "70%",
+                              lg: "80%",
+                              xl: "100%",
+                            },
+                          }}
+                        />
+                      </Tooltip>
+                    )}
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(v) => setNewPassword(v.target.value)}
+              onChange={(v) => {
+                setNewPassword(v.target.value);
+                setError({
+                  label: "Su contraseña debe contar con al menos 8 caracteres.",
+                  show: false,
+                });
+              }}
             />
+            {error.show ? (
+              <Typography sx={{ textAlign: "center", color: "red" }}>
+                {error.label}
+              </Typography>
+            ) : null}
           </Box>
 
           <Box
@@ -565,7 +606,7 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
-                        {/* <ListItemButton
+                        <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             reset();
@@ -579,7 +620,7 @@ export function LateralMenu() {
                           <Typography sx={queries.bold_text}>
                             Crédito simple largo plazo
                           </Typography>
-                        </ListItemButton> */}
+                        </ListItemButton>
                       </List>
                     </Collapse>
 
@@ -611,7 +652,7 @@ export function LateralMenu() {
                       </Typography>
                     </ListItemButton>
 
-                    {/* <ListItemButton onClick={handleFuentePagoClick}>
+                    <ListItemButton onClick={handleFuentePagoClick}>
                       <ListItemIcon>
                         <CurrencyExchangeIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -619,7 +660,7 @@ export function LateralMenu() {
                         Fuente de pago
                       </Typography>
                       {openFuentePago ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                     <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
                       <List>

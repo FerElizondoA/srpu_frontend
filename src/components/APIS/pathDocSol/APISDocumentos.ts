@@ -19,6 +19,22 @@ export async function getPathDocumentos(
     .catch((error) => {});
 }
 
+export async function getPathDocumentosAut(IdAut: string, setState: Function) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-DetailPathDocAut",
+    params: { IdAutorizacion: IdAut },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      setState(data.data);
+    })
+    .catch((error) => {});
+}
+
 export const getDocumento = async (
   ROUTE: string,
   NOMBRE: string,

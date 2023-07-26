@@ -18,9 +18,16 @@ import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DestalleDestino } from "../Panels/DetalleDestino";
-import { MontoAutorizado } from "../Panels/MontoAutorizado";
 import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
+import {
+  DestinoA,
+  DetalleDestino,
+  GeneralAutorizado,
+} from "../../../store/Autorizacion/agregarAutorizacion";
+import { DestinoAutorizado } from "../Panels/MontoAutorizado";
+import Swal from "sweetalert2";
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -59,6 +66,48 @@ export function DialogNuevaAutorizacion(props: Props) {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
   };
 
+  const registrarAutorizacion: GeneralAutorizado = useLargoPlazoStore(
+    (state) => state.registrarAutorizacion
+  );
+  const tablaDestinoAutorizado: DestinoA[] = useLargoPlazoStore(
+    (state) => state.tablaDestinoAutorizado
+  );
+  const tablaDetalleDestino: DetalleDestino[] = useLargoPlazoStore(
+    (state) => state.tablaDetalleDestino
+  );
+  const createAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.createAutorizacion
+  );
+
+  const setAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.setAutorizacion
+  );
+
+  const cleanAutorizacion = () => {
+    setAutorizacion(
+      {
+        entidad: {
+          Id: localStorage.getItem("IdEntePublicoObligado") || "",
+          Organismo: localStorage.getItem("EntePublicoObligado") || "",
+        },
+        numeroAutorizacion: 0,
+        fechaPublicacion: new Date().toString(),
+        medioPublicacion: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+        documentoSoporte: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+        acreditacionQuorum: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+      },
+      [],
+      []
+    );
+  };
+
   return (
     <>
       <Dialog
@@ -73,6 +122,7 @@ export function DialogNuevaAutorizacion(props: Props) {
                 edge="start"
                 onClick={() => {
                   props.handler(false);
+                  cleanAutorizacion();
                   //reset();
                 }}
                 sx={{ color: "white" }}
@@ -91,7 +141,32 @@ export function DialogNuevaAutorizacion(props: Props) {
 
             <Grid item sx={{ top: 12, bottom: "auto" }}>
               <ThemeProvider theme={theme}>
-                <Button sx={queries.buttonContinuar} onClick={() => {}}>
+                <Button
+                  disabled={
+                    registrarAutorizacion.entidad.Organismo === "" ||
+                    registrarAutorizacion.numeroAutorizacion === 0 ||
+                    registrarAutorizacion.fechaPublicacion === "" ||
+                    registrarAutorizacion.medioPublicacion.Descripcion === "" ||
+                    registrarAutorizacion.montoAutorizado === 0 ||
+                    registrarAutorizacion.documentoSoporte.nombreArchivo ===
+                      "" ||
+                    registrarAutorizacion.acreditacionQuorum.nombreArchivo ===
+                      "" ||
+                    tablaDestinoAutorizado.length === 0 ||
+                    tablaDetalleDestino.length === 0
+                  }
+                  sx={queries.buttonContinuar}
+                  onClick={() => {
+                    createAutorizacion().then(() => {
+                      props.handler(false);
+                      cleanAutorizacion();
+                      Swal.fire({
+                        icon: "success",
+                        text: "La autorización se ha creado exitosamente",
+                      });
+                    });
+                  }}
+                >
                   <Typography sx={queries.medium_text}>Agregar</Typography>
                 </Button>
               </ThemeProvider>
@@ -118,7 +193,7 @@ export function DialogNuevaAutorizacion(props: Props) {
 
             {tabIndex === 0 && <RegistrarNuevaAutorizacion />}
 
-            {tabIndex === 1 && <MontoAutorizado />}
+            {tabIndex === 1 && <DestinoAutorizado />}
 
             {tabIndex === 2 && <DestalleDestino />}
           </Grid>

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createNotification } from "../../LateralMenu/APINotificaciones";

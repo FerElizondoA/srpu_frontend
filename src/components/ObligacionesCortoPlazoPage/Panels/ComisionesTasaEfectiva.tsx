@@ -38,7 +38,7 @@ import { DateInput } from "../../CustomComponents";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 import { format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";

@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";

@@ -23,6 +23,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { moneyMask } from "./InformacionGeneral";
 
 interface Head {
   label: string;
@@ -57,34 +58,33 @@ const theme = createTheme({
 
 export function DestalleDestino() {
   const detalleDestino: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.generalDetalleDestino.detalleDestino);
+    useLargoPlazoStore((state) => state.detalleDestino.detalleDestino);
 
   const montoAutorizado: number = useLargoPlazoStore(
-    (state) => state.generalDetalleDestino.montoAutorizado
+    (state) => state.detalleDestino.montoAutorizado
   );
 
   const tablaDetalleDestino: any = useLargoPlazoStore(
     (state) => state.tablaDetalleDestino
   );
 
-  const changeGeneralDetalleDestino: Function = useLargoPlazoStore(
-    (state) => state.changeGeneralDetalleDestino
+  const changeDetalleDestino: Function = useLargoPlazoStore(
+    (state) => state.setDetalleDestino
   );
 
-  const addGeneralDetalleDestino: Function = useLargoPlazoStore(
-    (state) => state.addGeneralDetalleDestino
+  const addDetalleDestino: Function = useLargoPlazoStore(
+    (state) => state.addDetalleDestino
   );
 
   const removeDetalleDestino: Function = useLargoPlazoStore(
     (state) => state.removeDetalleDestino
   );
 
-  const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
-    (state) => state.catalogoOrganismos
-  );
+  const catalogoDetalleDestinosAutorizados: Array<ICatalogo> =
+    useLargoPlazoStore((state) => state.catalogoDetalleDestinosAutorizados);
 
-  const getOrganismosA: Function = useLargoPlazoStore(
-    (state) => state.getOrganismosA
+  const getDetalleDestinosAutorizados: Function = useLargoPlazoStore(
+    (state) => state.getDetalleDestinosAutorizados
   );
 
   const addRows = () => {
@@ -92,16 +92,16 @@ export function DestalleDestino() {
       detalleDestino: detalleDestino.Descripcion,
       montoAutorizado: montoAutorizado,
     };
-    addGeneralDetalleDestino(tab);
+    addDetalleDestino(tab);
   };
 
   useEffect(() => {
-    changeGeneralDetalleDestino({
+    changeDetalleDestino({
       detalleDestino: detalleDestino,
       montoAutorizado: montoAutorizado,
     });
 
-    getOrganismosA();
+    getDetalleDestinosAutorizados();
   }, []);
 
   return (
@@ -113,10 +113,8 @@ export function DestalleDestino() {
         justifyContent="space-evenly"
         sx={queries.contenedorAgregarAutorizacion.DetalleDestino}
       >
-        {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
-        
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid xs={12} sm={12} lg={4}>
+          <Grid item xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>
               Detalle del destino autorizado
             </InputLabel>
@@ -126,7 +124,7 @@ export function DestalleDestino() {
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={catalagoOrganismos}
+              options={catalogoDetalleDestinosAutorizados}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -140,7 +138,7 @@ export function DestalleDestino() {
                 Descripcion: detalleDestino.Descripcion || "",
               }}
               onChange={(event, text) =>
-                changeGeneralDetalleDestino({
+                changeDetalleDestino({
                   detalleDestino: {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
@@ -161,26 +159,43 @@ export function DestalleDestino() {
             />
           </Grid>
 
-          <Grid xs={12} sm={12} lg={4}>
+          <Grid item xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
-
             <TextField
-              fullWidth
-              variant="standard"
-              value={montoAutorizado === null ? "" : montoAutorizado.toString()}
+              value={
+                montoAutorizado <= 0
+                  ? moneyMask("0")
+                  : moneyMask(montoAutorizado.toString())
+              }
               onChange={(v) => {
-                if (validator.isNumeric(v.target.value)) {
-                  changeGeneralDetalleDestino({
+                if (
+                  validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                  parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
+                ) {
+                  changeDetalleDestino({
                     detalleDestino: detalleDestino,
-                    montoAutorizado: v.target.value,
+                    montoAutorizado: moneyMask(v.target.value),
                   });
                 } else if (v.target.value === "") {
-                  changeGeneralDetalleDestino({
+                  changeDetalleDestino({
                     detalleDestino: detalleDestino,
-                    montoAutorizado: null,
+                    montoAutorizado: moneyMask("0"),
                   });
                 }
               }}
+              fullWidth
+              InputLabelProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              InputProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+                // startAdornment: <AttachMoneyIcon />,
+              }}
+              variant="standard"
             />
           </Grid>
 
@@ -200,7 +215,7 @@ export function DestalleDestino() {
                   montoAutorizado === 0
                 }
                 onClick={() => {
-                  changeGeneralDetalleDestino({
+                  changeDetalleDestino({
                     detalleDestino: "",
                     montoAutorizado: null,
                   });

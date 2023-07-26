@@ -39,7 +39,7 @@ import {
 import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../queries";
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 export function Solicitudes() {
   //Declaraciones
@@ -196,7 +196,6 @@ export function Solicitudes() {
           flexDirection={"column"}
           display={"flex"}
           justifyContent={"space-evenly"}
-
         >
           <Grid
             sx={{
@@ -221,7 +220,6 @@ export function Solicitudes() {
               </Button>
             </Tooltip>
           </Grid>
-
 
           <Grid>
             <FormControl fullWidth>
@@ -440,8 +438,8 @@ export function Solicitudes() {
 
         {/********grid Formulario*********/}
         {indexSelect < 0 ||
-          solicitudesFiltered.length === 0 ||
-          detailSolicitud.Id === "" ? (
+        solicitudesFiltered.length === 0 ||
+        detailSolicitud.Id === "" ? (
           <Grid
             xs={6}
             sm={7}
@@ -472,15 +470,26 @@ export function Solicitudes() {
             </Box>
           </Grid>
         ) : (
-          <Grid xs={6} sm={7} md={7} lg={7} xl={9} sx={{overflow: "auto",
-          "&::-webkit-scrollbar": { //PARA CAMBIAR EL SCROLL
-            width: ".3vw",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(0,0,0,.5)",
-            outline: "1px solid slategrey",
-            borderRadius: 10,
-          }}}>
+          <Grid
+            item
+            xs={6}
+            sm={7}
+            md={7}
+            lg={7}
+            xl={9}
+            sx={{
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                //PARA CAMBIAR EL SCROLL
+                width: ".3vw",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,.5)",
+                outline: "1px solid slategrey",
+                borderRadius: 10,
+              },
+            }}
+          >
             <Box sx={queriesSolicitud.botonComentario}>
               <Badge badgeContent={cantidadComentarios} color="info">
                 <Tooltip title="Comentarios">
@@ -757,15 +766,13 @@ export function Solicitudes() {
       {/* Se manda como ternario para que los valores de los comentarios no se intenten mostrar
       luego luego al abrir la pagina por el userEffect
       */}
-      {
-        openDialogComentarios ? (
-          <DialogSolicitudesUsuarios
-            open={openDialogComentarios}
-            handleClose={openDialogUser}
-            comentarios={comentarios}
-          />
-        ) : null
-      }
-    </Grid >
+      {openDialogComentarios ? (
+        <DialogSolicitudesUsuarios
+          open={openDialogComentarios}
+          handleClose={openDialogUser}
+          comentarios={comentarios}
+        />
+      ) : null}
+    </Grid>
   );
 }

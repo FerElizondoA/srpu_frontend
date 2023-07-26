@@ -24,8 +24,8 @@ import {
   Paper,
   Checkbox,
 } from "@mui/material";
-import validator from 'validator';
-import CheckIcon from '@mui/icons-material/Check';
+import validator from "validator";
+import CheckIcon from "@mui/icons-material/Check";
 import { queries } from "../../../queries";
 import DeleteIcon from "@mui/icons-material/Delete";
 import enGB from "date-fns/locale/en-GB";
@@ -33,13 +33,13 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {
   ConfirmButton,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { lightFormat } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
@@ -73,7 +73,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-
 const theme = createTheme({
   components: {
     MuiButton: {
@@ -81,12 +80,12 @@ const theme = createTheme({
         root: {
           "&.Mui-disabled": {
             background: "#f3f3f3",
-            color: "#dadada"
-          }
-        }
-      }
-    }
-  }
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
 });
 
 export function DisposicionPagosCapital() {
@@ -128,7 +127,7 @@ export function DisposicionPagosCapital() {
     (state) => state.pagosDeCapital.fechaPrimerPago
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
+    useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
   const capitalNumeroPago: number = useLargoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
@@ -150,11 +149,11 @@ export function DisposicionPagosCapital() {
     (state) => state.tasaInteres.fechaPrimerPago
   );
   const tasaInteresDiasEjercicio: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.tasaInteres.diasEjercicio);
+    useLargoPlazoStore((state) => state.tasaInteres.diasEjercicio);
   const tasaInteresPeriocidadPago: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.tasaInteres.periocidadPago);
+    useLargoPlazoStore((state) => state.tasaInteres.periocidadPago);
   const tasaInteresTasaReferencia: { Id: string; Descripcion: string } =
-  useLargoPlazoStore((state) => state.tasaInteres.tasaReferencia);
+    useLargoPlazoStore((state) => state.tasaInteres.tasaReferencia);
   const tasaInteresSobreTasa: string = useLargoPlazoStore(
     (state) => state.tasaInteres.sobreTasa
   );
@@ -241,12 +240,25 @@ export function DisposicionPagosCapital() {
   };
 
   return (
-    <Grid container display="flex" justifyContent={"space-evenly"} height={"110%"} >
+    <Grid
+      container
+      display="flex"
+      justifyContent={"space-evenly"}
+      height={"110%"}
+    >
       <Grid item container>
-        <Grid item lg={6} flexDirection="column" height={"100%"} justifyContent={"space-evenly"} >
+        <Grid
+          item
+          lg={6}
+          flexDirection="column"
+          height={"100%"}
+          justifyContent={"space-evenly"}
+        >
           <Grid item>
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}>DISPOSICIÓN</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                DISPOSICIÓN
+              </Typography>
             </Divider>
           </Grid>
 
@@ -275,18 +287,19 @@ export function DisposicionPagosCapital() {
 
               <TextField
                 placeholder="0"
-                value={disposicionImporte <= 0 ? '' : disposicionImporte.toString()}
+                value={
+                  disposicionImporte <= 0 ? "" : disposicionImporte.toString()
+                }
                 onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeDisposicion(
                       disposicionFechaContratacion,
-                      v.target.value)
-                  } else if (v.target.value === '') {
-                    changeDisposicion(disposicionFechaContratacion, 0)
+                      v.target.value
+                    );
+                  } else if (v.target.value === "") {
+                    changeDisposicion(disposicionFechaContratacion, 0);
                   }
-                }
-
-                }
+                }}
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -297,9 +310,7 @@ export function DisposicionPagosCapital() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  startAdornment: (
-                    <AttachMoneyIcon />
-                  ),
+                  startAdornment: <AttachMoneyIcon />,
                 }}
                 variant="standard"
               />
@@ -307,14 +318,16 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
 
-        <Grid item container direction="column" lg={6} >
+        <Grid item container direction="column" lg={6}>
           <Grid item>
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}>PAGOS DE CAPITAL</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                PAGOS DE CAPITAL
+              </Typography>
             </Divider>
           </Grid>
-          <Grid item display={"flex"} justifyContent={"space-evenly"} >
-            <Grid lg={4}>
+          <Grid item display={"flex"} justifyContent={"space-evenly"}>
+            <Grid item lg={4}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de Primer Pago
               </InputLabel>
@@ -386,23 +399,24 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
                 placeholder="0"
-                value={capitalNumeroPago <= 0 ? '' : capitalNumeroPago.toString()}
+                value={
+                  capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()
+                }
                 onChange={(v) => {
                   if (validator.isNumeric(v.target.value)) {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
                       v.target.value
-                    )
-                  } else if (v.target.value === '') {
+                    );
+                  } else if (v.target.value === "") {
                     changeCapital(
                       capitalFechaPrimerPago,
                       capitalPeriocidadPago,
                       0
-                    )
+                    );
                   }
-                }
-                }
+                }}
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -420,16 +434,23 @@ export function DisposicionPagosCapital() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item width={"100%"} >
-        <Grid item  >
+      <Grid item width={"100%"}>
+        <Grid item>
           <Grid item>
-
             <Divider>
-              <Typography color={"#af8c55 "} fontWeight={"bold"}> TASA DE INTERÉS</Typography>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                {" "}
+                TASA DE INTERÉS
+              </Typography>
             </Divider>
           </Grid>
 
-          <Grid item display={"block"} flexDirection={"column"} justifyContent={"space-evenly"}>
+          <Grid
+            item
+            display={"block"}
+            flexDirection={"column"}
+            justifyContent={"space-evenly"}
+          >
             <Grid
               item
               container
@@ -441,7 +462,6 @@ export function DisposicionPagosCapital() {
             >
               <FormControl>
                 <RadioGroup
-
                   defaultValue="Tasa Fija"
                   value={radioValue}
                   onChange={handleChange}
@@ -466,15 +486,18 @@ export function DisposicionPagosCapital() {
               </FormControl>
             </Grid>
 
-            <Grid item container display={"flex"} justifyContent={"space-between"}>
+            <Grid
+              item
+              container
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
               {radioValue === "Tasa Fija" ? (
                 <Grid
                   item
                   container
                   display="flex"
                   justifyContent="space-evenly"
-
-
                 >
                   <Grid item lg={2} display={"block"}>
                     <InputLabel sx={queries.medium_text}>
@@ -504,14 +527,14 @@ export function DisposicionPagosCapital() {
                       />
                     </LocalizationProvider>
                   </Grid>
-                  <Grid lg={2} item>
-                    <InputLabel sx={queries.medium_text}>
-                      Tasa Fija
-                    </InputLabel>
+                  <Grid item lg={2}>
+                    <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                     <TextField
                       placeholder="0"
-                      value={tasaInteresTasa <= 0 ? '' : tasaInteresTasa.toString()}
+                      value={
+                        tasaInteresTasa <= 0 ? "" : tasaInteresTasa.toString()
+                      }
                       onChange={(v) => {
                         if (validator.isNumeric(v.target.value)) {
                           changeTasaInteres({
@@ -523,9 +546,8 @@ export function DisposicionPagosCapital() {
                             periocidadPago: tasaInteresPeriocidadPago,
                             tasaReferencia: { Id: "", Descripcion: "" },
                             sobreTasa: "",
-
-                          })
-                        } else if (v.target.value === '') {
+                          });
+                        } else if (v.target.value === "") {
                           changeTasaInteres({
                             tasaFija: 0,
                             tasaVariable: tasaInteresTasaVariable,
@@ -535,11 +557,9 @@ export function DisposicionPagosCapital() {
                             periocidadPago: tasaInteresPeriocidadPago,
                             tasaReferencia: { Id: "", Descripcion: "" },
                             sobreTasa: "",
-
-                          })
+                          });
                         }
-                      }
-                      }
+                      }}
                       fullWidth
                       InputLabelProps={{
                         style: {
@@ -658,25 +678,19 @@ export function DisposicionPagosCapital() {
                       control={
                         <Checkbox
                           //checked={comisionIva === 'SI'}
-                          onChange={(v) => {
-
-                          }}
+                          onChange={(v) => {}}
                         />
                       }
                     ></FormControlLabel>
                   </Grid>
                 </Grid>
-
-
               ) : (
-
                 <Grid
                   item
                   container
                   sx={{
                     justifyContent: "space-evenly",
                     display: "flex",
-
                   }}
                 >
                   <Grid item>
@@ -806,9 +820,7 @@ export function DisposicionPagosCapital() {
                   </Grid>
 
                   <Grid item>
-                    <InputLabel sx={queries.medium_text}>
-                      Sobre Tasa
-                    </InputLabel>
+                    <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
                     <TextField
                       value={tasaInteresSobreTasa}
                       onChange={(text) =>
@@ -892,27 +904,19 @@ export function DisposicionPagosCapital() {
                       control={
                         <Checkbox
                           //checked={comisionIva === 'SI'}
-                          onChange={(v) => {
-
-                          }}
+                          onChange={(v) => {}}
                         />
                       }
                     ></FormControlLabel>
                   </Grid>
-
                 </Grid>
               )}
-
-
             </Grid>
-
           </Grid>
-
         </Grid>
-
       </Grid>
 
-      <Grid >
+      <Grid>
         <ThemeProvider theme={theme}>
           <Button
             sx={queries.buttonContinuar}
@@ -920,8 +924,10 @@ export function DisposicionPagosCapital() {
               tasaInteresFechaPrimerPago === "" ||
               tasaInteresDiasEjercicio.Descripcion === "" ||
               tasaInteresPeriocidadPago.Descripcion === "" ||
-              (radioValue === "Tasa Fija" && tasaInteresTasa.toString() === "") ||
-              (radioValue === "Tasa Variable" && tasaInteresTasaReferencia.toString() === "") ||
+              (radioValue === "Tasa Fija" &&
+                tasaInteresTasa.toString() === "") ||
+              (radioValue === "Tasa Variable" &&
+                tasaInteresTasaReferencia.toString() === "") ||
               (radioValue === "Tasa Variable" && tasaInteresSobreTasa === "")
             }
             variant="outlined"
@@ -937,20 +943,23 @@ export function DisposicionPagosCapital() {
 
       <Grid container sx={queries.tablaDisposicionPagosCapital}>
         <Paper sx={{ height: "100%", width: "88%" }}>
-          <TableContainer sx={{
-            maxHeight: "100%", overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }} >
+          <TableContainer
+            sx={{
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
-              <TableHead  >
+              <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
@@ -975,7 +984,7 @@ export function DisposicionPagosCapital() {
                           </IconButton>
                         </Tooltip>
                       </StyledTableCell>
-                      <StyledTableCell align="center" component="th" >
+                      <StyledTableCell align="center" component="th">
                         {lightFormat(
                           new Date(row.fechaPrimerPago),
                           "dd-MM-yyyy"
@@ -1004,6 +1013,6 @@ export function DisposicionPagosCapital() {
           </TableContainer>
         </Paper>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }

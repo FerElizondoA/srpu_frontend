@@ -21,7 +21,7 @@ import { queries } from "../../../queries";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 import { SDocumental } from "../panels/SoporteDocumental";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

@@ -28,7 +28,7 @@ import {
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoLargoPlazo/condicion_financiera";
-import { ObligadoSolidarioAval } from "../../../store/informacion_general";
+import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IFileLP } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
@@ -119,7 +119,6 @@ const headsGC: Head[] = [
 ];
 
 const headsAutorizacion: Head[] = [
-
   {
     label: "Tipo de autorización",
   },
@@ -309,7 +308,8 @@ export function Resumen() {
     (state) => state.GastosCostos.montoGastosAdicionales
   );
 
-  const detalleInversionArchivo: {archivo: File, nombreArchivo: string} = useLargoPlazoStore((state) => state.detalleInversion);
+  const detalleInversionArchivo: { archivo: File; nombreArchivo: string } =
+    useLargoPlazoStore((state) => state.detalleInversion);
 
   const tablaGastosCostos: any = useLargoPlazoStore(
     (state) => state.tablaGastosCostos
@@ -540,7 +540,6 @@ export function Resumen() {
 
   const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
-
 
   return (
     <Grid

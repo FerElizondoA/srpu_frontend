@@ -18,7 +18,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
 import {
@@ -26,8 +26,8 @@ import {
   Disposicion,
   IComisiones,
   TasaInteres,
-} from "../../../store/condicion_financiera";
-import { ObligadoSolidarioAval } from "../../../store/informacion_general";
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IFile } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
@@ -55,7 +55,7 @@ interface HeadLabels {
   value: string;
 }
 
-interface IPathDocumentos {
+export interface IPathDocumentos {
   Id: string;
   IdSolicitud: string;
   Ruta: string;
@@ -232,9 +232,6 @@ export function Resumen() {
     //   value: ""
     // }
   ];
-
-
-
 
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
     []

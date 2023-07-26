@@ -20,10 +20,9 @@ import {
   Paper,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {useState } from "react";
+import { useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
 
 interface Head {
   label: string;
@@ -100,7 +99,8 @@ const headFP: Head[] = [
     label: "% asignado del ingreso fondo ",
   },
   {
-    label: "% acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
+    label:
+      "% acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
   },
   {
     label: "% de afectacion del gobierno del estado / 100 del ingreso o fondo",
@@ -112,10 +112,12 @@ const headFP: Head[] = [
     label: "% acumulado de afectación a los mecanismos de pago",
   },
   {
-    label: "% asignado al financiamiento u obligación respecto de lo fideicomitido",
+    label:
+      "% asignado al financiamiento u obligación respecto de lo fideicomitido",
   },
   {
-    label:"% asignado al financiamiento u obligación respecto del ingreso o fondo",
+    label:
+      "% asignado al financiamiento u obligación respecto del ingreso o fondo",
   },
   {
     label: "% acumulado de la asignación a las obligaciones",
@@ -135,13 +137,11 @@ export function FuenteDePago() {
       container
       direction={"column"}
       justifyContent={"space-evenly"}
-      height={!fideicomiso ? "30rem" : !asignarFuente ? "37rem": "68rem"}
+      height={!fideicomiso ? "30rem" : !asignarFuente ? "37rem" : "68rem"}
     >
-
       <Grid>
         <Divider sx={queries.bold_text}>MECANISMO O VEHÍCULO DE PAGO</Divider>
       </Grid>
-      
 
       <Grid
         container
@@ -229,10 +229,10 @@ export function FuenteDePago() {
 
       {fideicomiso && (
         <>
-        <Grid>
-          <Divider sx={queries.bold_text}>FIDEICOMISO</Divider>
-        </Grid>
-          
+          <Grid>
+            <Divider sx={queries.bold_text}>FIDEICOMISO</Divider>
+          </Grid>
+
           <Grid
             container
             display={"flex"}
@@ -311,21 +311,23 @@ export function FuenteDePago() {
           </Grid>
 
           {asignarFuente ? (
-            <Grid 
-            container
-            width={"100%"} 
-            height={"25rem"}
-            direction={"column"}
-            justifyContent={"space-between"}
+            <Grid
+              container
+              width={"100%"}
+              height={"25rem"}
+              direction={"column"}
+              justifyContent={"space-between"}
             >
-
               <Grid>
                 <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
               </Grid>
-              
-      
-              <Grid width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
-                <Grid xs={12} sm={12} md={2} lg={2} xl={2} >
+
+              <Grid
+                width={"100%"}
+                display={"flex"}
+                justifyContent={"space-evenly"}
+              >
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                   <InputLabel>Clasificación</InputLabel>
                   <Select fullWidth variant="standard" value={headsAF}>
                     {headsAF.map((item, index) => (
@@ -334,7 +336,7 @@ export function FuenteDePago() {
                   </Select>
                 </Grid>
 
-                <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                   <InputLabel>Tipo de fuente</InputLabel>
                   <Select fullWidth variant="standard" value={headsAF}>
                     {headsAF.map((item, index) => (
@@ -343,7 +345,7 @@ export function FuenteDePago() {
                   </Select>
                 </Grid>
 
-                <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                   <InputLabel>Fuente de pago</InputLabel>
                   <Select fullWidth variant="standard" value={headsAF}>
                     {headsAF.map((item, index) => (
@@ -352,7 +354,7 @@ export function FuenteDePago() {
                   </Select>
                 </Grid>
 
-                <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                   <InputLabel>Respecto a: </InputLabel>
                   <Select fullWidth variant="standard" value={headsAF}>
                     {headsAF.map((item, index) => (
@@ -403,7 +405,7 @@ export function FuenteDePago() {
           ) : null}
         </>
       )}
-      
+
       <Grid>
         <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
       </Grid>
@@ -428,7 +430,6 @@ export function FuenteDePago() {
           </Select>
         </Grid>
       </Grid>
-
     </Grid>
   );
 }

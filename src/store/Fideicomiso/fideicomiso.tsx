@@ -1,9 +1,9 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
-import { useCortoPlazoStore } from "../main";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface GeneralFideicomiso {
   numeroFideicomiso: string;
@@ -66,6 +66,11 @@ export interface FideicomisoSlice {
   addFideicomisario: (fideicomisario: Fideicomisario) => void;
   addTipoMovimiento: (tipoDeMovimiento: TipoMovimiento) => void;
   addSoporteDocumental: (soporteDocumental: SoporteDocumental) => void;
+
+  editFideicomiso: (
+    fideicomisarios: Fideicomisario[],
+    soporteDocumental: SoporteDocumental[]
+  ) => void;
 
   removeFideicomisario: (index: number) => void;
   removeTipoMovimiento: (index: number) => void;
@@ -173,6 +178,16 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         ...state.tablaSoporteDocumental,
         soporteDocumental,
       ],
+    }));
+  },
+
+  editFideicomiso: (
+    fideicomisarios: Fideicomisario[],
+    soporteDocumental: SoporteDocumental[]
+  ) => {
+    set((state) => ({
+      tablaFideicomisario: fideicomisarios,
+      tablaSoporteDocumental: soporteDocumental,
     }));
   },
 

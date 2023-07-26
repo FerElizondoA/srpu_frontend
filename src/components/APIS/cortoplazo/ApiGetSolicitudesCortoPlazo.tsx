@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function getComentariosSolicitudPlazo(
   idSolicitud: string,

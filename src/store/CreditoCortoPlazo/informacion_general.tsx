@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export type ObligadoSolidarioAval = {
   obligadoSolidario: string;
@@ -75,11 +75,11 @@ export const createInformacionGeneralSlice: StateCreator<
 
   tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "" },  // Descripcion: "No aplica"
-    tipoEntePublicoObligado: { Id: "", Descripcion: ""  }, // Descripcion: "No aplica"
-    entePublicoObligado: { Id: "", Descripcion: ""  },  // Descripcion: "No aplica"
+    obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
+    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
   },
-  
+
   catalogoInstituciones: [],
   catalogoDestinos: [],
   catalogoObligadoSolidarioAval: [],

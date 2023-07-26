@@ -21,7 +21,7 @@ import {
 import { queries } from "../../../queries";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
 import { TipoMovimiento } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";

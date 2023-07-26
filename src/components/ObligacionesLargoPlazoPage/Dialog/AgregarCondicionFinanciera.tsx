@@ -23,7 +23,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
@@ -35,7 +35,7 @@ import {
 //"../../../store/condicion_financiera";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
-import { Disposicion } from "../../../store/condicion_financiera";
+import { Disposicion } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

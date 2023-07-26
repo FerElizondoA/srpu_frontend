@@ -23,7 +23,7 @@ import {
 import {
   createFideicomisoSlice,
   FideicomisoSlice,
-} from "./Fideicomiso/fideicomiso";
+} from "../Fideicomiso/fideicomiso";
 
 export type SolicitudStore = EncabezadoSlice &
   InformacionGeneralSlice &

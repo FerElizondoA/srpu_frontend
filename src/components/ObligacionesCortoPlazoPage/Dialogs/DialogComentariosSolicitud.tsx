@@ -18,7 +18,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
@@ -148,7 +148,7 @@ export function VerComentariosSolicitud({
                           {Object.entries(JSON.parse(row.Comentarios)).map(
                             ([key, val], index) =>
                               (val as string) === "" ? null : (
-                                <Typography>
+                                <Typography key={index}>
                                   <strong>{key}:</strong>
                                   {val as string}
                                 </Typography>

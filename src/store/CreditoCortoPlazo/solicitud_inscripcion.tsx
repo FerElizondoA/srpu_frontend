@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
@@ -42,7 +42,7 @@ export interface SolicitudInscripcionSlice {
   borrarSolicitud: (Id: string) => void;
 
   addComentario: (idSolicitud: string, comentario: string) => void;
-  saveFiles: (idSolicitud: string, addRoute: boolean) => void;
+  saveFiles: (idRegistro: string, ruta: string) => void;
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
@@ -149,7 +149,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
         state.changeIdSolicitud(data.data.Id);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
+        state.saveFiles(
+          data.data.Id,
+          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
       });
   },
   modificaSolicitud: async (
@@ -208,7 +211,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
         state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
+        state.saveFiles(
+          data.data.Id,
+          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
         state.cleanComentario();
       });
   },
@@ -271,7 +277,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .catch((e) => {});
     }
   },
-  saveFiles: async (idSolicitud: string, addRoute: boolean) => {
+  saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
 
     return await state.tablaDocumentos.map((file, index) => {
@@ -279,8 +285,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         const url = new File([file.archivo], file.nombreArchivo);
 
         let dataArray = new FormData();
-        dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
-        dataArray.append("ADDROUTE", addRoute.toString());
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
 
         if (file.archivo.size > 0) {
@@ -296,7 +302,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             )
             .then(({ data }) => {
               state.savePathDoc(
-                idSolicitud,
+                idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO

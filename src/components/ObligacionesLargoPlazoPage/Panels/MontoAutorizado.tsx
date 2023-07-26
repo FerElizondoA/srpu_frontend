@@ -23,11 +23,12 @@ import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { moneyMask } from "./InformacionGeneral";
 
 interface Head {
   label: string;
 }
-const headsMontoAutorizado: Head[] = [
+const headsDestinoAutorizado: Head[] = [
   {
     label: "Destino autorizado",
   },
@@ -54,38 +55,35 @@ const theme = createTheme({
   },
 });
 
-export function MontoAutorizado() {
+export function DestinoAutorizado() {
   const destinoAutorizado: { Id: string; Descripcion: string } =
-    useLargoPlazoStore(
-      (state) => state.generalMontoAutorizado.destinoAutorizado
-    );
+    useLargoPlazoStore((state) => state.montoAutorizado.destinoAutorizado);
 
   const montoAutorizado: number = useLargoPlazoStore(
-    (state) => state.generalMontoAutorizado.montoAutorizado
+    (state) => state.montoAutorizado.montoAutorizado
   );
 
-  const tablaMontoAutorizado: any = useLargoPlazoStore(
-    (state) => state.tablaMontoAutorizado
+  const tablaDestinoAutorizado: any = useLargoPlazoStore(
+    (state) => state.tablaDestinoAutorizado
   );
 
-  const changeGeneralMontoAutorizado: Function = useLargoPlazoStore(
-    (state) => state.changeGeneralMontoAutorizado
+  const setDestinoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.setDestinoAutorizado
   );
 
-  const addGeneralMontoAutorizado: Function = useLargoPlazoStore(
-    (state) => state.addGeneralMontoAutorizado
+  const addDestinoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.addDestinoAutorizado
   );
 
-  const removeGeneralMontoAutorizado: Function = useLargoPlazoStore(
-    (state) => state.removeGeneralMontoAutorizado
+  const removeDestinoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.removeDestinoAutorizado
   );
 
-  const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
-    (state) => state.catalogoOrganismos
+  const catalogoDestinosAutorizados: Array<ICatalogo> = useLargoPlazoStore(
+    (state) => state.catalogoDestinosAutorizados
   );
-
-  const getOrganismosA: Function = useLargoPlazoStore(
-    (state) => state.getOrganismosA
+  const getDestinosAutorizados: Function = useLargoPlazoStore(
+    (state) => state.getDestinosAutorizados
   );
 
   const addRows = () => {
@@ -93,15 +91,11 @@ export function MontoAutorizado() {
       destinoAutorizado: destinoAutorizado.Descripcion,
       montoAutorizado: montoAutorizado,
     };
-    addGeneralMontoAutorizado(tab);
+    addDestinoAutorizado(tab);
   };
 
   useEffect(() => {
-    changeGeneralMontoAutorizado({
-      destinoAutorizado: destinoAutorizado,
-      montoAutorizado: montoAutorizado,
-    });
-    getOrganismosA();
+    getDestinosAutorizados();
   }, []);
 
   return (
@@ -116,7 +110,7 @@ export function MontoAutorizado() {
         {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
 
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid xs={12} sm={12} lg={4}>
+          <Grid item xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Destino Autorizado</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -124,7 +118,7 @@ export function MontoAutorizado() {
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={catalagoOrganismos}
+              options={catalogoDestinosAutorizados}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -138,7 +132,7 @@ export function MontoAutorizado() {
                 Descripcion: destinoAutorizado.Descripcion || "",
               }}
               onChange={(event, text) =>
-                changeGeneralMontoAutorizado({
+                setDestinoAutorizado({
                   destinoAutorizado: {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
@@ -159,25 +153,43 @@ export function MontoAutorizado() {
             />
           </Grid>
 
-          <Grid xs={12} sm={12} lg={4}>
+          <Grid item xs={12} sm={12} lg={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
-              fullWidth
-              variant="standard"
-              value={montoAutorizado === null ? "" : montoAutorizado.toString()}
+              value={
+                montoAutorizado <= 0
+                  ? moneyMask("0")
+                  : moneyMask(montoAutorizado.toString())
+              }
               onChange={(v) => {
-                if (validator.isNumeric(v.target.value)) {
-                  changeGeneralMontoAutorizado({
+                if (
+                  validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                  parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
+                ) {
+                  setDestinoAutorizado({
                     destinoAutorizado: destinoAutorizado,
-                    montoAutorizado: v.target.value,
+                    montoAutorizado: moneyMask(v.target.value),
                   });
                 } else if (v.target.value === "") {
-                  changeGeneralMontoAutorizado({
+                  setDestinoAutorizado({
                     destinoAutorizado: destinoAutorizado,
-                    montoAutorizado: null,
+                    montoAutorizado: moneyMask("0"),
                   });
                 }
               }}
+              fullWidth
+              InputLabelProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              InputProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+                // startAdornment: <AttachMoneyIcon />,
+              }}
+              variant="standard"
             />
           </Grid>
 
@@ -197,7 +209,7 @@ export function MontoAutorizado() {
                   montoAutorizado === 0
                 }
                 onClick={() => {
-                  changeGeneralMontoAutorizado({
+                  setDestinoAutorizado({
                     destinoAutorizado: "",
                     montoAutorizado: null,
                   });
@@ -221,7 +233,7 @@ export function MontoAutorizado() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {headsMontoAutorizado.map((head, index) => (
+                    {headsDestinoAutorizado.map((head, index) => (
                       <StyledTableCell align="center" key={index}>
                         {head.label}
                       </StyledTableCell>
@@ -230,7 +242,7 @@ export function MontoAutorizado() {
                 </TableHead>
 
                 <TableBody>
-                  {tablaMontoAutorizado.map((row: any, index: number) => {
+                  {tablaDestinoAutorizado.map((row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center" component="th">
@@ -247,9 +259,7 @@ export function MontoAutorizado() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
-                                removeGeneralMontoAutorizado(index)
-                              }
+                              onClick={() => removeDestinoAutorizado(index)}
                             >
                               <DeleteIcon />
                             </IconButton>

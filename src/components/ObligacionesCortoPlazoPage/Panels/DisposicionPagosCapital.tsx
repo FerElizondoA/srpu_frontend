@@ -32,7 +32,7 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import {
   DateInput,
   StyledTableCell,
@@ -390,7 +390,7 @@ export function DisposicionPagosCapital() {
           </Divider>
         </Grid>
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid lg={4}>
+          <Grid item lg={4}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -805,7 +805,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid lg={2} item>
+                <Grid item lg={2}>
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                   <TextField

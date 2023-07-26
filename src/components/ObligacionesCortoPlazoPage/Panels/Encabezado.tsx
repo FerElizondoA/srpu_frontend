@@ -7,7 +7,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateInput } from "../../CustomComponents";
 import { subDays } from "date-fns/esm";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {

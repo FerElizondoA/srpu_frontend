@@ -12,7 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
@@ -162,6 +162,7 @@ export function DialogSolicitarModificacion({
               sx={{
                 fontSize: "1.5ch",
               }}
+              key={index}
             >
               <strong>{key}:</strong>
               {val as string}

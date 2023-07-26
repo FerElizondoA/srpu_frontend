@@ -26,7 +26,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { useState } from "react";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 

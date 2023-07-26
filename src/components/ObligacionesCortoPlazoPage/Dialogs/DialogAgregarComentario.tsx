@@ -8,7 +8,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import DialogActions from "@mui/material/DialogActions";
 
 export function AgregarComentario({

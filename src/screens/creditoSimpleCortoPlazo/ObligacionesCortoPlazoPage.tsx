@@ -14,7 +14,7 @@ import { InformacionGeneral } from "../../components/ObligacionesCortoPlazoPage/
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
-import { useCortoPlazoStore } from "../../store/main";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);

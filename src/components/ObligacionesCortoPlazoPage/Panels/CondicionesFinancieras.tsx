@@ -4,7 +4,7 @@ import {
   Disposicion,
   IComisiones,
   TasaInteres,
-} from "../../../store/condicion_financiera";
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import {
   Grid,
   Table,
@@ -27,7 +27,7 @@ import {
   StyledTableRow,
   ConfirmButton,
 } from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { format, lightFormat } from "date-fns";

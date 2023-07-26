@@ -1,6 +1,6 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
-import { ICatalogo } from "../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { Disposicion, TasaInteres } from "./condicion_financiera";
 
 export interface PagosCapitalSlice {

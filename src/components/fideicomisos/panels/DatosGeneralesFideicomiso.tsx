@@ -30,7 +30,7 @@ import {
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { queries } from "../../../queries";
 import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
 
 interface HeadLabels {

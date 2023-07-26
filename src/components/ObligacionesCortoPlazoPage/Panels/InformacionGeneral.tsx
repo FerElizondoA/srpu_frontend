@@ -27,7 +27,7 @@ import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { DateInput } from "../../CustomComponents";
 import CheckIcon from "@mui/icons-material/Check";
 import validator from "validator";
@@ -345,7 +345,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}

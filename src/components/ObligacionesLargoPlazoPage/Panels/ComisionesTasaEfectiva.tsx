@@ -39,7 +39,7 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useCortoPlazoStore } from "../../../store/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 import { format } from "date-fns";

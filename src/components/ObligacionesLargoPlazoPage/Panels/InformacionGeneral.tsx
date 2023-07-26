@@ -302,7 +302,6 @@ export function InformacionGeneral() {
       saldoVigente: GCSaldoVigente,
       montoGastosAdicionales: GCMontoGastosAdicionales,
     });
-
   }, [contratacion, vencimiento]);
 
   return (
@@ -417,7 +416,7 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid lg={3}>
+        <Grid item lg={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -796,7 +795,7 @@ export function InformacionGeneral() {
                             </IconButton>
                           </Tooltip>
                         </StyledTableCell>
-                        
+
                         <StyledTableCell
                           align="center"
                           component="th"

@@ -27,7 +27,7 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
 import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../store/main";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -76,6 +76,10 @@ export function Fideicomisos() {
   );
   const getFideicomisos: Function = useCortoPlazoStore(
     (state) => state.getFideicomisos
+  );
+
+  const editFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.editFideicomiso
   );
 
   useEffect(() => {
@@ -186,7 +190,12 @@ export function Fideicomisos() {
                       <Tooltip title="Editar">
                         <IconButton
                           type="button"
-                          // onClick={() => removeSoporteDocumental(index)}
+                          onClick={() => {
+                            editFideicomiso(
+                              JSON.parse(row.Fideicomisario),
+                              JSON.parse(row.SoporteDocumental)
+                            );
+                          }}
                         >
                           <EditIcon />
                         </IconButton>
