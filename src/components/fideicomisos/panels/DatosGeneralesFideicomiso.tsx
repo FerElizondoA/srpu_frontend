@@ -133,6 +133,18 @@ export function DatoGeneralesFideicomiso() {
     },
   ];
 
+  const cambioNumClave  = () =>{
+    let aux = numeroFideicomiso;
+
+  }
+
+  const idFideicomiso : string = useCortoPlazoStore(
+    (state) => state.idFideicomiso
+  );
+
+
+
+
   return (
     <Grid container display="flex" direction={"column"} height={"85vh"}>
       <Grid
@@ -147,6 +159,7 @@ export function DatoGeneralesFideicomiso() {
             Numero del fideicomiso
           </InputLabel>
           <TextField
+            
             fullWidth
             type="number"
             value={numeroFideicomiso}
@@ -225,7 +238,7 @@ export function DatoGeneralesFideicomiso() {
           </LocalizationProvider>
         </Grid>
         <Grid item lg={5} width={"100%"}>
-          <InputLabel sx={queries.medium_text}>Fiudiciario</InputLabel>
+          <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
           <Autocomplete
             disableClearable
             clearText="Borrar"
@@ -233,6 +246,7 @@ export function DatoGeneralesFideicomiso() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
+            value={fiudiciario}
             options={catalogoFiudiciarios}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -248,7 +262,10 @@ export function DatoGeneralesFideicomiso() {
                 numeroFideicomiso: numeroFideicomiso,
                 tipoFideicomiso: tipoFideicomiso,
                 fechaFideicomiso: fechaFideicomiso,
-                fiudiciario: { Id: text?.Id, Descripcion: text?.Descripcion },
+                fiudiciario: { 
+                  Id: text?.Id, 
+                  Descripcion: text?.Descripcion 
+                },
               })
             }
             renderInput={(params) => (

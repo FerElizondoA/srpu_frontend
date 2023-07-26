@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
@@ -77,6 +77,19 @@ export function AgregarFideicomisos({
     (state) => state.createFideicomiso
   );
 
+  const modificarFideicomiso : Function = useCortoPlazoStore(
+    (state) => state.modificarFideicomiso
+  );
+
+  
+  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.setGeneralFideicomiso
+  );
+
+  const editarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.editarFideicomiso
+  );
+
   // const reset = () => {
   //   setGeneralFideicomiso({
   //     numeroFideicomiso: "",
@@ -87,6 +100,29 @@ export function AgregarFideicomisos({
   //   cleanFideicomisario();
   // };
 
+  const changeIdFideicomiso: Function = useCortoPlazoStore(
+    (state) => state.changeIdFideicomiso
+  );
+
+  const idFideicomiso : string = useCortoPlazoStore(
+    (state) => state.idFideicomiso
+  );
+
+  const limpiaFideicomiso = () =>{
+    changeIdFideicomiso("");
+
+    setGeneralFideicomiso({
+      numeroFideicomiso: "",
+      tipoFideicomiso: {Id: "", Descripcion: ""},
+      fechaFideicomiso: "",
+      fiudiciario: {Id: "", Descripcion: ""},
+    });
+    
+    editarSolicitud([], [], []);
+    
+  };
+
+
   return (
     <>
       <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -96,6 +132,7 @@ export function AgregarFideicomisos({
               <IconButton
                 edge="start"
                 onClick={() => {
+                  limpiaFideicomiso();
                   handler(false);
                   //reset();
                 }}
@@ -124,6 +161,7 @@ export function AgregarFideicomisos({
                       // reset();
                     } else if (accion === "Editar") {
                       // updateRow(indexA);
+                      modificarFideicomiso();
                       handler(false);
                       // reset();
                     }

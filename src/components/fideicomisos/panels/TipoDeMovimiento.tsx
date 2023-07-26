@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
-import { TipoMovimiento } from "../../../store/Fideicomiso/fideicomiso";
+import { Fideicomisario, TipoMovimiento } from "../../../store/Fideicomiso/fideicomiso";
 import { useCortoPlazoStore } from "../../../store/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
@@ -87,6 +87,7 @@ export function TipoDeMovimiento() {
   const tablaTipoMovimiento: TipoMovimiento[] = useCortoPlazoStore(
     (state) => state.tablaTipoMovimiento
   );
+
 
   useEffect(() => {
     getTiposDeFideicomitente();

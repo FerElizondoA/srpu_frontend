@@ -18,28 +18,24 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
-
 export function DialogEliminar({
-    handler,
-    openState,
-    texto,
-  }: {
-    handler: Function;
-    openState: boolean;
-    texto: string;
-    
-  }) {
-  
-    const borrarSolicitud: Function = useCortoPlazoStore(
-        (state) => state.borrarSolicitud
-      );
-      const idSolicitud: String = useCortoPlazoStore(
-        (state) => state.idSolicitud
-      );
+  handler,
+  openState,
+  texto,
+}: {
+  handler: Function;
+  openState: boolean;
+  texto: string;
+}) {
+  const borrarSolicitud: Function = useCortoPlazoStore(
+    (state) => state.borrarSolicitud
+  );
+  const idSolicitud: String = useCortoPlazoStore(
+    (state) => state.idSolicitud
+    );
+
 
     
-      
 
   return (
     <Dialog
@@ -52,16 +48,18 @@ export function DialogEliminar({
     >
       <DialogTitle>
         <Typography align="center" sx={queries.medium_text} mb={2}>
-           Confirmacion de Borrado 
+          Confirmacion de Borrado
         </Typography>
       </DialogTitle>
 
       <DialogContent>
-        <DialogContentText sx={{textalign: "center"}}>Deseas Eliminar la {texto}</DialogContentText>
+        <DialogContentText sx={{ textalign: "center" }}>
+          Deseas Eliminar la {texto}
+        </DialogContentText>
       </DialogContent>
 
       <DialogActions>
-        <Button 
+        <Button
           variant="text"
           onClick={() => handler(false)}
           sx={queries.buttonCancelar}
@@ -69,14 +67,11 @@ export function DialogEliminar({
           Cancelar
         </Button>
         <Button
-        sx={queries.buttonContinuar}
+          sx={queries.buttonContinuar}
           onClick={() => {
-            
-            
             handler(false);
-           borrarSolicitud(idSolicitud)
-          
-          }} 
+            borrarSolicitud(idSolicitud);
+          }}
         >
           Confirmar
         </Button>
