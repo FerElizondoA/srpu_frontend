@@ -4,11 +4,11 @@ module.exports = {
   //CREAR
   createMedioDePublicacion: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const Destino = req.body.Destino;
+    const Descripcion = req.body.Descripcion;
 
     if (
-      (Destino == null || /^[\s]*$/.test(Destino)) &&
-      Destino.length() <= 255
+      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
+      Descripcion.length() <= 255
     ) {
       return res.status(409).send({
         error: "Ingrese Descripcion válido.",
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarMedioDePublicacion('${IdUsuario}', '${Destino}' )`,
+        `CALL sp_AgregarMedioDePublicacion('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

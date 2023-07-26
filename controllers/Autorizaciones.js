@@ -4,16 +4,16 @@ module.exports = {
   //CREAR
   createAutorizacion: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const Descripcion = req.body.Descripcion;
+    const Entidad = req.body.Entidad;
+    const NumeroAutorizacion = req.body.NumeroAutorizacion;
+    const FechaPublicacion = req.body.FechaPublicacion;
+    const MedioPublicacion = req.body.MedioPublicacion;
+    const MontoAutorizado = req.body.MontoAutorizado;
+    const DocumentoSoporte = req.body.DocumentoSoporte;
+    const AcreditacionQuorum = req.body.AcreditacionQuorum;
+    const DestinoAutorizado = req.body.DestinoAutorizado;
+    const DetalleDestino = req.body.DetalleDestino;
 
-    if (
-      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
-      Descripcion.length() <= 255
-    ) {
-      return res.status(409).send({
-        error: "Ingrese Descripcion válido.",
-      });
-    }
     if (
       (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
       IdUsuario.length() <= 36
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarAutorizacion('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarAutorizacion('${IdUsuario}', '${Entidad}', '${NumeroAutorizacion}' , '${FechaPublicacion}' , '${MedioPublicacion}' , '${MontoAutorizado}' , '${DocumentoSoporte}' , '${AcreditacionQuorum}' , '${DestinoAutorizado}' , '${DetalleDestino}'  )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

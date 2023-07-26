@@ -767,7 +767,7 @@ router.post("/create-autorizacion", (req, res, express) => {
   createAutorizacion(req, res);
 });
 
-router.get("/get-autorizacion", (req, res) => {
+router.get("/get-autorizaciones", (req, res) => {
   getAutorizaciones(req, res);
 });
 
