@@ -138,6 +138,8 @@ const {
 const {
   addPathDocSol,
   getDetailPathDocSol,
+  addPathDocAut,
+  getDetailPathDocAut,
 } = require("../controllers/PathDocSol.js");
 const {
   getAutorizaciones,
@@ -751,13 +753,21 @@ router.get("/get-usuarios-asignables", (req, res) => {
 });
 //#endregion
 
-//#region PathDocSol
+//#region PathDoc
 router.post("/create-addPathDocSol", (req, res) => {
   addPathDocSol(req, res);
 });
 
 router.get("/get-DetailPathDocSol", (req, res) => {
   getDetailPathDocSol(req, res);
+});
+
+router.post("/create-addPathDocAut", (req, res) => {
+  addPathDocAut(req, res);
+});
+
+router.get("/get-DetailPathDocAut", (req, res) => {
+  getDetailPathDocAut(req, res);
 });
 
 //#endregion
