@@ -3,8 +3,10 @@ import Swal from "sweetalert2";
 
 const Toast = Swal.mixin({
   toast: true,
-  position: "top-end",
-  showConfirmButton: false,
+  position: "center",
+  showConfirmButton: true,
+  confirmButtonColor: "#15212f",
+  cancelButtonColor: "rgb(175, 140, 85)",
   timer: 4000,
   timerProgressBar: true,
   didOpen: (toast) => {
@@ -43,7 +45,7 @@ const Toast = Swal.mixin({
 //     .then((r) => {
 
 //       if (r.status === 200) {
-       
+
 //         if (r.data.data[0][0].Respuesta === '403' || r.data.data[0][0].Respuesta === '406') {
 //           Toast.fire({
 //             icon: "error",
@@ -111,53 +113,48 @@ const Toast = Swal.mixin({
 //       }
 //     });
 
-
 // };
 
-export const getListadoUsuarios = (setState: Function,permisosEspeciales = 0) => {
-
-  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
-    params: {
-      IdApp: localStorage.getItem("IdApp"),
-      IdUsuario:localStorage.getItem("IdUsuario"),
-      PermisosEspeciales:permisosEspeciales
-    },
-    headers: {
-      'Authorization': localStorage.getItem("jwtToken"),
-      'Content-Type': 'application/json'
-    }
-  }).then(({ data }) => {
-    setState(data.data)
-    
-  })
+export const getListadoUsuarios = (
+  setState: Function,
+  permisosEspeciales = 0
+) => {
+  axios
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
+      params: {
+        IdApp: localStorage.getItem("IdApp"),
+        IdUsuario: localStorage.getItem("IdUsuario"),
+        PermisosEspeciales: permisosEspeciales,
+      },
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Content-Type": "application/json",
+      },
+    })
+    .then(({ data }) => {
+      setState(data.data);
+    })
     .catch((r) => {
       Toast.fire({
         icon: "error",
-        title: r.response.data.error ||'Ocurrio un error.',
+        title: r.response.data.error || "Ocurrio un error.",
       });
     });
 };
 
-export const getRoles= (setState: Function,) => {
-
-  axios.get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
-    headers: {
-      'Authorization': localStorage.getItem("jwtToken"),
-      'Content-Type': 'application/json'
-    }
-  }).then(({ data }) => {
-
-    setState(data.data)
-
-  })
+export const getRoles = (setState: Function) => {
+  axios
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Content-Type": "application/json",
+      },
+    })
+    .then(({ data }) => {
+      setState(data.data);
+    })
     .catch((r) => {
       if (r.response.status === 409) {
-
       }
     });
 };
-
-
-
-
-

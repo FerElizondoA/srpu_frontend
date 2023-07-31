@@ -38,13 +38,22 @@ export function ObligacionesCortoPlazoPage() {
     getTiposDocumentos();
   }, []);
 
+  const NumeroRegistro: string = useCortoPlazoStore(
+    (state) => state.NumeroRegistro
+  );
+
   return (
     <Grid container direction="column">
       <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item>
-        <Grid mt={2} display={"flex"} justifyContent={"center"}>
+        <Grid
+          mt={2}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <Typography
             sx={{
               fontSize: "2.5ch",
@@ -62,6 +71,12 @@ export function ObligacionesCortoPlazoPage() {
           >
             Crédito Simple a Corto Plazo
           </Typography>
+          {NumeroRegistro && (
+            <Typography sx={queries.noRegistroAbsolute}>
+              <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
+            </Typography>
+          )}
+
           <Button
             sx={queries.buttonContinuarAbsolute}
             onClick={() => {

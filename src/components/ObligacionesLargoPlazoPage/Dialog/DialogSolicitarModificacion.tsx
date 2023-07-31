@@ -75,6 +75,8 @@ export function DialogSolicitarModificacion({
           .then(() => {
             addComentario(idSolicitud, comentario);
             Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
               icon: "success",
               title: "Mensaje",
               text: "La solicitud se envió con éxito",
@@ -82,6 +84,8 @@ export function DialogSolicitarModificacion({
           })
           .catch(() => {
             Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
               icon: "error",
               title: "Mensaje",
               text: "Ocurrió un error, inténtelo de nuevo",
@@ -101,6 +105,8 @@ export function DialogSolicitarModificacion({
           JSON.stringify(comentario)
         ).catch(() => {
           Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
             icon: "error",
             title: "Mensaje",
             text: "Ocurrió un error, inténtelo de nuevo",

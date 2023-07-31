@@ -11,7 +11,7 @@ import {
   continueSession,
   sessionValid,
 } from "./components/APIS/Config/validation";
-import { Configuracion } from "./components/Config/Configuracion";
+import { Configuracion } from "./screens/Config/Configuracion";
 import { HomePage } from "./components/HomePage/HomePage";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";

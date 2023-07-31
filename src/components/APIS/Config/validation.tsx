@@ -62,22 +62,31 @@ export const getUserDetails = (idCentral: string) => {
 
         localStorage.setItem("Rol", r.data.data.Rol);
         localStorage.setItem("Puesto", r.data.data.Cargo);
-        localStorage.setItem("IdRol",r.data.data.IdRol)
+        localStorage.setItem("IdRol", r.data.data.IdRol);
         localStorage.setItem(
           "EntePublicoObligado",
           r.data.data.EntePublicoObligado
         );
         localStorage.setItem("TipoEntePublicoObligado", r.data.data.Tipo);
 
-        localStorage.setItem("IdEntePublicoObligado",r.data.data.IdEntePublico);
-        localStorage.setItem("IdTipoEntePublicoObligado",r.data.data.IdTipoEntePublico);
-        
+        localStorage.setItem(
+          "IdEntePublicoObligado",
+          r.data.data.IdEntePublico
+        );
+        localStorage.setItem(
+          "IdTipoEntePublicoObligado",
+          r.data.data.IdTipoEntePublico
+        );
+
         return true;
       } else {
         getDataSolicitud(idCentral);
-      } 
+      }
     })
     .catch((error) => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
       if (error.response.status === 401) {
         localStorage.clear();
       }
@@ -87,18 +96,21 @@ export const getUserDetails = (idCentral: string) => {
 
 const getDataSolicitud = (idSolicitud: string) => {
   axios
-    .get(process.env.REACT_APP_APPLICATION_LOGIN + "/api/datosAdicionalesSolicitud", {
-      params: {
-        IdUsuario: idSolicitud,
-        IdApp: IdApp,
-      },
-      headers: {
-        "Content-Type": "application/json",
-        authorization: localStorage.getItem("jwtToken") || "",
-      },
-    })
+    .get(
+      process.env.REACT_APP_APPLICATION_LOGIN +
+        "/api/datosAdicionalesSolicitud",
+      {
+        params: {
+          IdUsuario: idSolicitud,
+          IdApp: IdApp,
+        },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("jwtToken") || "",
+        },
+      }
+    )
     .then((r) => {
-      
       if (r.status === 200) {
         let objetoDatosAdicionales = JSON.parse(
           r.data.data[0].DatosAdicionales
@@ -173,7 +185,7 @@ export const continueSession = () => {
 
 export const logout = () => {
   localStorage.clear();
-  window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || '');
+  window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
 };
 
 export interface IDatosAdicionales {

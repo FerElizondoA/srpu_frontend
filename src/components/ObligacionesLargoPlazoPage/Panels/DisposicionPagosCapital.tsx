@@ -66,7 +66,7 @@ const heads: readonly Head[] = [
     label: "Tasa de Referencia",
   },
   {
-    label: "Sobre Tasa",
+    label: "Sobretasa",
   },
   {
     label: "Dias del Ejercicio",
@@ -820,7 +820,7 @@ export function DisposicionPagosCapital() {
                   </Grid>
 
                   <Grid item>
-                    <InputLabel sx={queries.medium_text}>Sobre Tasa</InputLabel>
+                    <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                     <TextField
                       value={tasaInteresSobreTasa}
                       onChange={(text) =>

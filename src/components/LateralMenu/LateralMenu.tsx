@@ -231,10 +231,12 @@ export function LateralMenu() {
             handleClosePasswordChange();
             setNewPassword("");
             Swal.fire({
-              position: "top-end",
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              position: "center",
               icon: "success",
               title: "Contraseña actualizada",
-              showConfirmButton: false,
+              showConfirmButton: true,
               timer: 1500,
             });
           }
@@ -244,10 +246,12 @@ export function LateralMenu() {
             handleClosePasswordChange();
 
             Swal.fire({
-              position: "top-end",
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              position: "center",
               icon: "error",
               title: "Error",
-              showConfirmButton: false,
+              showConfirmButton: true,
               timer: 1500,
             });
           }

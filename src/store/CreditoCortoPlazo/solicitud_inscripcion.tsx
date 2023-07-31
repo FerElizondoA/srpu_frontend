@@ -6,6 +6,7 @@ import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPla
 
 export interface SolicitudInscripcionSlice {
   idSolicitud: string;
+  NumeroRegistro: string;
   editCreadoPor: string;
 
   inscripcion: {
@@ -21,6 +22,8 @@ export interface SolicitudInscripcionSlice {
   changeReglasAplicables: (newReglas: string) => void;
 
   changeIdSolicitud: (id: string) => void;
+
+  changeNoRegistro: (id: string) => void;
   changeEditCreadoPor: (id: string) => void;
 
   getReglas: () => void;
@@ -55,6 +58,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
   idSolicitud: "",
+  NumeroRegistro: "",
   editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
@@ -69,6 +73,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     set(() => ({ inscripcion: inscripcion })),
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+
+  changeNoRegistro: (num: any) => set(() => ({ NumeroRegistro: num })),
 
   changeEditCreadoPor: (id: any) => set(() => ({ editCreadoPor: id })),
 
@@ -129,7 +135,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
@@ -146,6 +153,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
+        state.changeNoRegistro(data.data.NumeroRegistro);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
         state.saveFiles(
@@ -209,19 +217,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
-        state.addComentario(data.data.Id, comentario);
+        state.changeNoRegistro(data.data.NumeroRegistro);
         state.saveFiles(
           data.data.Id,
           `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
-        state.cleanComentario();
       });
   },
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      position: "top-end",
-      showConfirmButton: false,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });

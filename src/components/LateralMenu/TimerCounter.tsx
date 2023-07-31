@@ -86,14 +86,14 @@ export const TimerCounter = () => {
 
   const alertaSession = () => {
     return Swal.fire({
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
       title: "Limite de tiempo",
       text: `${localStorage.getItem(
         "NombreUsuario"
       )}, el tiempo de tu sesión esta a punto de expirar. ¿Deseas renovar el tiempo de sesión?`,
       icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#000E4E",
-      cancelButtonColor: "#A40000",
       confirmButtonText: "Renovar",
       cancelButtonText: "Salir",
       allowOutsideClick: false,

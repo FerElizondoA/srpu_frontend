@@ -161,6 +161,8 @@ export function DialogNuevaAutorizacion(props: Props) {
                       props.handler(false);
                       cleanAutorizacion();
                       Swal.fire({
+                        confirmButtonColor: "#15212f",
+                        cancelButtonColor: "rgb(175, 140, 85)",
                         icon: "success",
                         text: "La autorización se ha creado exitosamente",
                       });

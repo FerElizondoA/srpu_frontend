@@ -284,15 +284,19 @@ export function ComisionesTasaEfectiva() {
           <Grid item>
             <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
             <TextField
-              value={tasaEfectivaTasaEfectiva}
-              type="number"
-              onChange={(v) =>
-                changeTasaEfectiva({
-                  diasEjercicio: tasaEfectivaDiasEjercicio,
-                  tasaEfectiva: v.target.value,
-                })
-              }
               fullWidth
+              value={tasaEfectivaTasaEfectiva}
+              onChange={(v) => {
+                if (
+                  validator.isNumeric(v.target.value) ||
+                  v.target.value === ""
+                ) {
+                  changeTasaEfectiva({
+                    diasEjercicio: tasaEfectivaDiasEjercicio,
+                    tasaEfectiva: v.target.value,
+                  });
+                }
+              }}
               InputLabelProps={{
                 style: {
                   fontFamily: "MontserratMedium",
@@ -302,6 +306,7 @@ export function ComisionesTasaEfectiva() {
                 style: {
                   fontFamily: "MontserratMedium",
                 },
+                endAdornment: <InputAdornment position="end">%</InputAdornment>,
               }}
               variant="standard"
             />
@@ -516,32 +521,42 @@ export function ComisionesTasaEfectiva() {
                 : moneyMask(comisionMonto)
             }
             onChange={(v) => {
+              console.log(v.target.value);
+              console.log(radioValue);
+
               if (
-                validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                 !noAplica &&
-                parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
-              ) {
+                (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
+                  v.target.value === "") &&
+                parseInt(v.target.value.replace(/\D/g, "")) <
+                  9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
-                  ? changeComision({
-                      fechaContratacion: comisionFechaContratacion,
-                      tipoDeComision: comisionTipoComision,
-                      periodicidadDePago: comisionPeriodicidadPago,
-                      porcentajeFijo: comisionPorcentajeFijo,
-                      montoFijo: comisionMontoFijo,
-                      porcentaje: v.target.value,
-                      monto: moneyMask("0"),
-                      iva: comisionIva,
-                    })
-                  : changeComision({
-                      fechaContratacion: comisionFechaContratacion,
-                      tipoDeComision: comisionTipoComision,
-                      periodicidadDePago: comisionPeriodicidadPago,
-                      porcentajeFijo: comisionPorcentajeFijo,
-                      montoFijo: comisionMontoFijo,
-                      porcentaje: "",
-                      monto: moneyMask(v.target.value.toString()),
-                      iva: comisionIva,
-                    });
+              ) {
+                changeComision({
+                  fechaContratacion: comisionFechaContratacion,
+                  tipoDeComision: comisionTipoComision,
+                  periodicidadDePago: comisionPeriodicidadPago,
+                  porcentajeFijo: comisionPorcentajeFijo,
+                  montoFijo: comisionMontoFijo,
+                  porcentaje: v.target.value,
+                  monto: moneyMask("0"),
+                  iva: comisionIva,
+                });
+              } else {
+                changeComision({
+                  fechaContratacion: comisionFechaContratacion,
+                  tipoDeComision: comisionTipoComision,
+                  periodicidadDePago: comisionPeriodicidadPago,
+                  porcentajeFijo: comisionPorcentajeFijo,
+                  montoFijo: comisionMontoFijo,
+                  porcentaje: "",
+                  monto: moneyMask(
+                    v.target.value.toString() === ""
+                      ? "0"
+                      : v.target.value.toString()
+                  ),
+                  iva: comisionIva,
+                });
               }
             }}
             InputLabelProps={{

@@ -142,12 +142,14 @@ export function Autorizacion() {
             Autorización de la legislatura local
           </InputLabel>
           <Autocomplete
+            disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
             options={autorizaciones}
+            value={autorizacionSelect[0]}
             getOptionLabel={(option) =>
               `${option.NumeroAutorizacion} - ${format(
                 new Date(option.FechaPublicacion),

@@ -15,6 +15,8 @@ export async function getCatalogo(setState: Function, getState: string) {
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "Ha sucedido un error, inténtelo de nuevo",
@@ -27,7 +29,8 @@ export async function modDesc(
   idDesc: string,
   desc: string,
   ocp: number,
-  olp: number
+  olp: number,
+  tipoEntePublico: string
 ) {
   await axios
     .put(
@@ -38,6 +41,7 @@ export async function modDesc(
         OCP: ocp,
         OLP: olp,
         IdUsuario: localStorage.getItem("IdUsuario"),
+        TipoEntePublico: tipoEntePublico,
       },
       {
         headers: {
@@ -48,6 +52,8 @@ export async function modDesc(
     )
     .then((r) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "success",
         title: "Éxito",
         text: "Descripción modificada con éxito.",
@@ -55,6 +61,8 @@ export async function modDesc(
     })
     .catch((error) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Mensaje",
         text: "Ha sucedido un error, inténtelo de nuevo",
@@ -66,7 +74,8 @@ export async function creaDesc(
   creaDesc: string,
   desc: string,
   ocp: number,
-  olp: number
+  olp: number,
+  tipoEntePublico: string
 ) {
   await axios
     .post(
@@ -76,6 +85,7 @@ export async function creaDesc(
         Descripcion: desc,
         OCP: ocp,
         OLP: olp,
+        TipoEntePublico: tipoEntePublico,
       },
       {
         headers: {
@@ -86,6 +96,8 @@ export async function creaDesc(
     )
     .then((r) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "success",
         title: "Éxito",
         text: "Descripción agregada con éxito.",
@@ -94,14 +106,18 @@ export async function creaDesc(
     .catch((err) => {
       if (desc === "") {
         Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
           icon: "error",
-          title: "Error",
-          text: "Ingrese nuevo elemento",
+          title: "¡Error!",
+          text: "Favor de completar los campos",
         });
       } else {
         Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
           icon: "error",
-          title: "Error",
+          title: "¡Error!",
           text: "Ha sucedido un error, inténtelo de nuevo",
         });
       }
@@ -123,6 +139,8 @@ export async function delDesc(delDesc: string, desc: string) {
     })
     .then((r) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "success",
         title: "Éxito",
         text: "Elemento eliminado con éxito.",
@@ -130,6 +148,8 @@ export async function delDesc(delDesc: string, desc: string) {
     })
     .catch((err) => {
       Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
         icon: "error",
         title: "Error",
         text: "Ha sucedido un error, inténtelo de nuevo",
