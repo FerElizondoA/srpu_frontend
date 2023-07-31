@@ -8,6 +8,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,90 +19,18 @@ import TablePagination from "@mui/material/TablePagination";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { DialogCatalogos, IDialog } from "../../components/Config/dialogCatalogos/DialogCatalogos";
+import {
+  DialogCatalogos,
+  IDialog,
+} from "../../components/Config/dialogCatalogos/DialogCatalogos";
 import InfoIcon from "@mui/icons-material/Info";
 import { getCatalogo } from "../../components/APIS/Config/APISCatalogos";
+import { modulos } from "./Configuracion";
+import SearchIcon from "@mui/icons-material/Search";
+import { queries } from "../../queries";
 
 export function Catalogos() {
   const params = new URLSearchParams(window.location.search);
-
-  const modulos = [
-    {
-      id: 0,
-      label: "Claves de inscripción",
-      fnc: "claveDeInscripcion",
-    },
-    {
-      id: 1,
-      label: "Destinos",
-      fnc: "destinos",
-    },
-    {
-      id: 2,
-      label: "Días del ejercicio",
-      fnc: "diasDelEjercicio",
-    },
-    {
-      id: 3,
-      label: "Entes público obligados",
-      fnc: "entePublicoObligado",
-    },
-    {
-      id: 4,
-      label: "Estatus",
-      fnc: "estatus",
-    },
-    {
-      id: 5,
-      label: "Fuentes de pago",
-      fnc: "fuenteDePago",
-    },
-    {
-      id: 6,
-      label: "Fuentes alternas de pago",
-      fnc: "fuenteAlternaDePago",
-    },
-    {
-      id: 7,
-      label: "Instituciones financieras",
-      fnc: "institucionesFinancieras",
-    },
-    {
-      id: 8,
-      label: "Obligados solidarios / avales",
-      fnc: "obligadoSolidarioAval",
-    },
-    {
-      id: 9,
-      label: "Periodicidad del pago",
-      fnc: "periodicidadDePago",
-    },
-    {
-      id: 10,
-      label: "Reglas de financiamiento",
-      fnc: "reglaDeFinanciamiento",
-    },
-    {
-      id: 11,
-      label: "Tasas de referencia",
-      fnc: "tasaDeReferencia",
-    },
-    {
-      id: 12,
-      label: "Tipos de comisión",
-      fnc: "tipoDeComision",
-    },
-    {
-      id: 13,
-      label: "Tipos de documento",
-      fnc: "tiposDocumento",
-    },
-    {
-      id: 14,
-      label: "Tipos de ente público",
-      fnc: "tiposEntePublico",
-    },
-  ];
 
   const [modulo, setModulo] = useState(
     modulos[parseInt(params.get("id") || "0")].label
@@ -113,6 +42,7 @@ export function Catalogos() {
       Descripcion: "",
       OCP: 0,
       OLP: 0,
+      Tipo: "",
     },
   ]);
 
@@ -121,9 +51,11 @@ export function Catalogos() {
     Id: parseInt(params.get("id") || "0"),
     IdDesc: "",
     Descripcion: "",
+    Tipo: { Id: "", Descripcion: "" },
     OCP: 0,
     OLP: 0,
     Modulo: modulo,
+    TipoEntePublico: "",
   });
 
   // const getCatalogos = () => {
@@ -137,19 +69,42 @@ export function Catalogos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDialog, modulo]);
 
+  useEffect(() => {
+    setCatalogoFiltrado(catalogo);
+  }, [catalogo]);
+
   const [page, setPage] = useState(0);
 
-  const renglonesPagina = 10;
-  const [rowsPerPage, setRowsPerPage] = useState(renglonesPagina);
+  const renglonesPagina = [10, 50, 100];
+  const [rowsPerPage, setRowsPerPage] = useState(renglonesPagina[0]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: any, newPage: number) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 5));
+    setRowsPerPage(parseInt(event.target.value));
     setPage(0);
+  };
+
+  const [txt, setTxt] = useState("");
+
+  const [catalogoFiltrado, setCatalogoFiltrado] = useState(catalogo);
+
+  const filtrar = (str: string) => {
+    if (str !== "") {
+      setCatalogoFiltrado(
+        catalogo.filter(
+          (x: ICatalogo) =>
+            x.Descripcion.toLowerCase().includes(str.toLowerCase()) ||
+            x.Descripcion.toLowerCase().includes(str.toLowerCase())
+        )
+      );
+    } else {
+      setCatalogoFiltrado(catalogo);
+    }
   };
 
   return (
@@ -190,6 +145,7 @@ export function Catalogos() {
                     ...{ Id: index },
                     ...{ Modulo: item.label },
                   });
+                  setPage(0);
                   // getCatalogos();
                 }}
               >
@@ -204,21 +160,59 @@ export function Catalogos() {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <Typography
-            textAlign={"center"}
+          <Grid
             sx={{
               bgcolor: "#f1f1f1",
               width: "90%",
               height: "10%",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               alignItems: "center",
               borderRadius: 5,
               fontFamily: "MontserratMedium",
             }}
           >
-            {modulo.toUpperCase()}
-          </Typography>
+            <Typography
+              sx={{
+                fontFamily: "MontserratMedium",
+              }}
+              textAlign={"center"}
+            >
+              {modulo.toUpperCase()}
+            </Typography>
+            <Grid
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                fontFamily: "MontserratMedium",
+              }}
+            >
+              <TextField
+                size="small"
+                sx={{ borderRadius: "50%" }}
+                label={"Buscar"}
+                multiline
+                onChange={(v) => {
+                  if (v.target.value === "") {
+                    setCatalogoFiltrado(catalogo);
+                  }
+                  setTxt(v.target.value);
+                }}
+              />
+              <IconButton
+                onClick={(v) => {
+                  filtrar(txt);
+                }}
+              >
+                <SearchIcon
+                  sx={{
+                    ...queries.buttonCancelar,
+                  }}
+                />
+              </IconButton>
+            </Grid>
+          </Grid>
+
           <Grid
             sx={{
               bgcolor: "#f1f1f1",
@@ -244,7 +238,10 @@ export function Catalogos() {
                   <TableRow
                     sx={{
                       display: "grid",
-                      gridTemplateColumns: "4fr 1fr",
+                      gridTemplateColumns:
+                        modulo === "Entes público obligados"
+                          ? "3fr 1fr 1fr"
+                          : "4fr 1fr ",
                     }}
                   >
                     <TableCell
@@ -255,6 +252,16 @@ export function Catalogos() {
                     >
                       Descripción
                     </TableCell>
+                    {edit.Modulo === "Entes público obligados" ? (
+                      <TableCell
+                        sx={{
+                          textAlign: "center",
+                          fontFamily: "MontserratMedium",
+                        }}
+                      >
+                        Tipo
+                      </TableCell>
+                    ) : null}
                     <TableCell
                       sx={{
                         textAlign: "center",
@@ -278,7 +285,7 @@ export function Catalogos() {
                     },
                   }}
                 >
-                  {catalogo
+                  {catalogoFiltrado
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((item, index) => {
                       return (
@@ -286,13 +293,30 @@ export function Catalogos() {
                           key={index}
                           sx={{
                             display: "grid",
-                            gridTemplateColumns: "4fr 1fr",
+                            gridTemplateColumns:
+                              modulo === "Entes público obligados"
+                                ? "3fr 1fr 1fr"
+                                : "4fr 1fr ",
                             height: "90%",
                           }}
                         >
-                          <TableCell sx={{ fontFamily: "Montserrat" }}>
+                          <TableCell
+                            sx={{
+                              fontFamily: "Montserrat",
+                            }}
+                          >
                             {item.Descripcion}
                           </TableCell>
+                          {modulo === "Entes público obligados" ? (
+                            <TableCell
+                              sx={{
+                                fontFamily: "Montserrat",
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.Tipo}
+                            </TableCell>
+                          ) : null}
                           <TableCell sx={{ textAlign: "center" }}>
                             {modulo === "Reglas de financiamiento" ||
                             modulo === "Tipos de documento" ? (
@@ -394,7 +418,7 @@ export function Catalogos() {
               alignItems: "center",
             }}
           >
-            <Tooltip title={"Agregar nuevo elemento a la tabla actual"}>
+            <Tooltip title={"Agregar"}>
               <Button
                 onClick={() => {
                   setEdit((edit) => ({
@@ -411,10 +435,11 @@ export function Catalogos() {
               </Button>
             </Tooltip>
             <TablePagination
-              rowsPerPageOptions={[renglonesPagina]}
+              rowsPerPageOptions={renglonesPagina}
+              labelRowsPerPage="Registros por página:"
               component="div"
               count={catalogo.length}
-              rowsPerPage={renglonesPagina}
+              rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
@@ -431,6 +456,7 @@ export interface ICatalogo {
   Descripcion: string;
   OCP: number;
   OLP: number;
+  Tipo: string;
 }
 
 export interface IModulos {

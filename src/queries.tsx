@@ -263,6 +263,14 @@ export const queries = {
     textTransform: "capitalize",
   },
 
+  noRegistroAbsolute: {
+    position: "absolute",
+    left: 500,
+    fontSize: "100%",
+    borderRadius: "0.8vh",
+    alignItems: "center",
+  },
+
   labelTextComentarios: {
     fontSize: "2ch",
     fontFamily: "MontserratBold",

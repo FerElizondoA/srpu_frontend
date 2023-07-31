@@ -6,6 +6,8 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
+  InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -15,8 +17,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import { IModulos } from "../../../screens/Config/Catalogos";
-import { creaDesc, delDesc, modDesc } from "../../APIS/Config/APISCatalogos";
+import {
+  creaDesc,
+  delDesc,
+  getCatalogo,
+  modDesc,
+} from "../../APIS/Config/APISCatalogos";
 import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export function DialogCatalogos({
   modulos,
@@ -33,23 +42,34 @@ export function DialogCatalogos({
 
   const [ocp, setOcp] = useState(0);
   const [olp, setOlp] = useState(0);
+  const [tipoEnte, setTipoEnte] = useState({ Id: "", Descripcion: "" });
 
   useEffect(() => {
     setOcp(edit.OCP);
     setOlp(edit.OLP);
   }, [edit.OCP, edit.OLP]);
 
+  const clean = () => {
+    setElement("");
+    setOcp(0);
+    setOlp(0);
+    setTipoEnte({ Id: "", Descripcion: "" });
+  };
+
   const funcion = () => {
     if (edit.Crud === "edita") {
-      modDesc(modulos[edit.Id].fnc, edit.IdDesc, element, ocp, olp);
-      setElement("");
-      setOcp(0);
-      setOlp(0);
+      modDesc(
+        modulos[edit.Id].fnc,
+        edit.IdDesc,
+        element,
+        ocp,
+        olp,
+        tipoEnte.Id
+      );
+      clean();
     } else if (edit.Crud === "crea") {
-      creaDesc(modulos[edit.Id].fnc, element, ocp, olp);
-      setElement("");
-      setOcp(0);
-      setOlp(0);
+      creaDesc(modulos[edit.Id].fnc, element, ocp, olp, tipoEnte.Id);
+      clean();
     } else {
       delDesc(modulos[edit.Id].fnc, edit.IdDesc);
     }
@@ -57,12 +77,27 @@ export function DialogCatalogos({
     setOpen(false);
   };
 
+  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoTipoEntePublicoObligado
+  );
+
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
+  );
+
+  useEffect(() => {
+    if (edit.Modulo === "Entes público obligados") {
+      getTipoEntePublicoObligado();
+    }
+  }, []);
+
   return (
     <Grid container direction="column" alignItems={"center"}>
       <Dialog
         open={open}
         onClose={() => {
           setOpen(false);
+          clean();
         }}
         fullWidth
         maxWidth={"md"}
@@ -71,13 +106,11 @@ export function DialogCatalogos({
           {edit.Crud === "crea"
             ? `Agregar nuevo elemento a la tabla: ${edit.Modulo}`
             : edit.Crud === "edita"
-            ? `Modificar descripción`
+            ? `Modificar elemento`
             : `¿Desea eliminar el elemento de la tabla
           ${edit.Modulo}?`}
         </DialogTitle>
-        {edit.Crud === "crea" ? (
-          ``
-        ) : (
+        {edit.Crud === "crea" ? null : (
           <DialogContent
             sx={{
               display: "grid",
@@ -85,7 +118,7 @@ export function DialogCatalogos({
               fontFamily: "MontserratMedium",
             }}
           >
-            Elemento: {edit.Descripcion}
+            {edit.Descripcion}
           </DialogContent>
         )}
         {edit.Crud === "crea" || edit.Crud === "edita" ? (
@@ -162,6 +195,51 @@ export function DialogCatalogos({
                 />
               </FormGroup>
             ) : null}
+
+            {edit.Modulo === "Entes público obligados" ? (
+              <Grid>
+                <InputLabel sx={queries.medium_text}>
+                  Tipo de ente público obligado
+                </InputLabel>
+                <Autocomplete
+                  clearText="Borrar"
+                  noOptionsText="Sin opciones"
+                  closeText="Cerrar"
+                  openText="Abrir"
+                  fullWidth
+                  options={catalogoTipoEntePublicoObligado}
+                  getOptionLabel={(option) => option.Descripcion}
+                  renderOption={(props, option) => {
+                    return (
+                      <li {...props} key={option.Descripcion}>
+                        <Typography>{option.Descripcion}</Typography>
+                      </li>
+                    );
+                  }}
+                  value={{
+                    Id: tipoEnte.Id || "",
+                    Descripcion: tipoEnte.Descripcion || "",
+                  }}
+                  onChange={(event, text) =>
+                    setTipoEnte({
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.Descripcion === value.Descripcion ||
+                    value.Descripcion === ""
+                  }
+                />
+              </Grid>
+            ) : null}
           </DialogContent>
         ) : null}
 
@@ -170,7 +248,7 @@ export function DialogCatalogos({
             color="error"
             onClick={() => {
               setOpen(false);
-              setElement("");
+              clean();
             }}
             sx={queries.buttonCancelar}
           >
@@ -196,7 +274,9 @@ export interface IDialog {
   Id: number;
   IdDesc: string;
   Descripcion: string;
+  Tipo: { Id: string; Descripcion: string };
   OCP: number;
   OLP: number;
   Modulo: string;
+  TipoEntePublico: string;
 }

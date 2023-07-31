@@ -56,7 +56,7 @@ export const headsTasa: readonly Head[] = [
     label: "Tasa de Referencia",
   },
   {
-    label: "Sobre Tasa",
+    label: "Sobretasa",
   },
   {
     label: "Dias del Ejercicio",

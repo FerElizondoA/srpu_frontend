@@ -1,5 +1,6 @@
 import CommentIcon from "@mui/icons-material/Comment";
 import {
+  Badge,
   Button,
   Dialog,
   DialogActions,
@@ -289,26 +290,54 @@ export function Documentacion() {
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
-                      <Tooltip title="Añadir comentario a este apartado">
-                        <IconButton
-                          color={
-                            comentario[val.descripcionTipo] &&
-                            comentario[val.descripcionTipo] !== ""
-                              ? "success"
-                              : "primary"
-                          }
-                          size="small"
-                          onClick={() => {
-                            setOpenComentarioApartado({
-                              open: true,
-                              apartado: val.descripcionTipo,
-                              tab: "TabDocumentacion",
-                            });
-                          }}
-                        >
-                          <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                        </IconButton>
-                      </Tooltip>
+                      {comentario[val.descripcionTipo] &&
+                      comentario[val.descripcionTipo] !== "" ? (
+                        <Badge badgeContent={"!"} color="primary">
+                          <Tooltip title="Añadir comentario a este apartado">
+                            <IconButton
+                              color={
+                                comentario[val.descripcionTipo] &&
+                                comentario[val.descripcionTipo] !== ""
+                                  ? "success"
+                                  : "primary"
+                              }
+                              size="small"
+                              onClick={() => {
+                                setOpenComentarioApartado({
+                                  open: true,
+                                  apartado: val.descripcionTipo,
+                                  tab: "TabDocumentacion",
+                                });
+                              }}
+                            >
+                              <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
+                            </IconButton>
+                          </Tooltip>
+                        </Badge>
+                      ) : (
+                        // <Badge badgeContent={"!"} color="primary">
+                        <Tooltip title="Añadir comentario a este apartado">
+                          <IconButton
+                            color={
+                              comentario[val.descripcionTipo] &&
+                              comentario[val.descripcionTipo] !== ""
+                                ? "success"
+                                : "primary"
+                            }
+                            size="small"
+                            onClick={() => {
+                              setOpenComentarioApartado({
+                                open: true,
+                                apartado: val.descripcionTipo,
+                                tab: "TabDocumentacion",
+                              });
+                            }}
+                          >
+                            <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
+                          </IconButton>
+                        </Tooltip>
+                        // </Badge>
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}

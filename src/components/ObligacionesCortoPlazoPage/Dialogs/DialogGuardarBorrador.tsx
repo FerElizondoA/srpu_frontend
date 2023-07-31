@@ -101,7 +101,12 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     (state) => state.cleanComentario
   );
 
+  const addComentario: Function = useCortoPlazoStore(
+    (state) => state.addComentario
+  );
+
   const reset = () => {
+    cleanComentario();
     changeEncabezado({
       tipoDocumento: "Crédito simple a corto plazo",
       solicitanteAutorizado: {
@@ -175,6 +180,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 JSON.stringify(comentario)
               )
                 .then(() => {
+                  addComentario(idSolicitud, JSON.stringify(comentario));
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",
@@ -204,6 +210,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 JSON.stringify(comentario)
               )
                 .then(() => {
+                  addComentario(idSolicitud, JSON.stringify(comentario));
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",

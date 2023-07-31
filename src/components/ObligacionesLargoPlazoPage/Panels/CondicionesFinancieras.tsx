@@ -39,7 +39,6 @@ import { queries } from "../../../queries";
 // import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import { Disposicion } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 
-
 interface Head {
   label: string;
 }
@@ -58,7 +57,7 @@ export const headsTasa: readonly Head[] = [
     label: "Tasa de Referencia",
   },
   {
-    label: "Sobre Tasa",
+    label: "Sobretasa",
   },
   {
     label: "Dias del Ejercicio",

@@ -29,7 +29,8 @@ export async function modDesc(
   idDesc: string,
   desc: string,
   ocp: number,
-  olp: number
+  olp: number,
+  tipoEntePublico: string
 ) {
   await axios
     .put(
@@ -40,6 +41,7 @@ export async function modDesc(
         OCP: ocp,
         OLP: olp,
         IdUsuario: localStorage.getItem("IdUsuario"),
+        TipoEntePublico: tipoEntePublico,
       },
       {
         headers: {
@@ -72,7 +74,8 @@ export async function creaDesc(
   creaDesc: string,
   desc: string,
   ocp: number,
-  olp: number
+  olp: number,
+  tipoEntePublico: string
 ) {
   await axios
     .post(
@@ -82,6 +85,7 @@ export async function creaDesc(
         Descripcion: desc,
         OCP: ocp,
         OLP: olp,
+        TipoEntePublico: tipoEntePublico,
       },
       {
         headers: {

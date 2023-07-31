@@ -36,6 +36,7 @@ import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazo
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 export interface IData {
   Id: string;
+  NumeroRegistro: string;
   Institucion: string;
   TipoEntePublico: string;
   ClaveDeInscripcion: string;
@@ -56,6 +57,11 @@ interface Head {
   label: string;
 }
 const heads: readonly Head[] = [
+  {
+    id: "NumeroRegistro",
+    isNumeric: true,
+    label: "Numero de Registro",
+  },
   {
     id: "Institucion",
     isNumeric: true,
@@ -166,6 +172,9 @@ export function ConsultaDeSolicitudPage() {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
+  const changeNoRegistro: Function = useCortoPlazoStore(
+    (state) => state.changeNoRegistro
+  );
   const changeEditCreadoPor: Function = useCortoPlazoStore(
     (state) => state.changeEditCreadoPor
   );
@@ -209,7 +218,7 @@ export function ConsultaDeSolicitudPage() {
     changeEncabezado(aux?.encabezado);
 
     changeInformacionGeneral(aux?.informacionGeneral);
-    
+
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       return addObligadoSolidarioAval(v);
     });
@@ -220,11 +229,7 @@ export function ConsultaDeSolicitudPage() {
       return addDocumento(v);
     });
   };
-  const idSolicitud: String = useCortoPlazoStore(
-    (state) => state.idSolicitud
-    );
-  
-
+  const idSolicitud: String = useCortoPlazoStore((state) => state.idSolicitud);
 
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
@@ -275,7 +280,6 @@ export function ConsultaDeSolicitudPage() {
       getSolicitudes(setDatos);
     }
   }, [openEliminar]);
-
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -434,6 +438,14 @@ export function ConsultaDeSolicitudPage() {
                         component="th"
                         scope="row"
                       >
+                        {row.NumeroRegistro}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        sx={{ padding: "1px 15px 1px 0" }}
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
                         {row.Institucion.toString()}
                       </StyledTableCell>
 
@@ -507,6 +519,7 @@ export function ConsultaDeSolicitudPage() {
                             onClick={() => {
                               llenaSolicitud(row);
                               changeIdSolicitud(row.Id);
+                              changeNoRegistro(row.NumeroRegistro);
                               changeOpenDialogVer(!openDialogVer);
                             }}
                           >
@@ -522,6 +535,7 @@ export function ConsultaDeSolicitudPage() {
                                 type="button"
                                 onClick={() => {
                                   changeIdSolicitud(row?.Id);
+                                  changeNoRegistro(row.NumeroRegistro);
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
                                   editarSolicitud();
