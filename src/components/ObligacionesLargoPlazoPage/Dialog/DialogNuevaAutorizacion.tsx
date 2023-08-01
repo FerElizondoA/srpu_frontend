@@ -40,6 +40,7 @@ const Transition = forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
+  accion: string;
 };
 
 const theme = createTheme({
@@ -56,6 +57,7 @@ const theme = createTheme({
     },
   },
 });
+
 export function DialogNuevaAutorizacion(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
@@ -81,6 +83,10 @@ export function DialogNuevaAutorizacion(props: Props) {
 
   const setAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setAutorizacion
+  );
+
+  const modificarAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.modificarAutorizacion
   );
 
   const cleanAutorizacion = () => {
@@ -134,7 +140,7 @@ export function DialogNuevaAutorizacion(props: Props) {
             <Grid container>
               <Grid item>
                 <Typography sx={queries.bold_text}>
-                  Agregar nueva autorización
+                  {props.accion} autorización
                 </Typography>
               </Grid>
             </Grid>
@@ -149,25 +155,32 @@ export function DialogNuevaAutorizacion(props: Props) {
                     registrarAutorizacion.medioPublicacion.Descripcion === "" ||
                     registrarAutorizacion.montoAutorizado === 0 ||
                     registrarAutorizacion.documentoSoporte.nombreArchivo ===
-                      "" ||
+                    "" ||
                     registrarAutorizacion.acreditacionQuorum.nombreArchivo ===
-                      "" ||
+                    "" ||
                     tablaDestinoAutorizado.length === 0 ||
                     tablaDetalleDestino.length === 0
                   }
                   sx={queries.buttonContinuar}
                   onClick={() => {
-                    createAutorizacion().then(() => {
+                    if (props.accion === "Agregar") {
+                      createAutorizacion().then(() => {
+                        props.handler(false);
+                        cleanAutorizacion();
+                        Swal.fire({
+                          icon: "success",
+                          text: "La autorización se ha creado exitosamente",
+                        });
+                      });
+                    } else if (props.accion === "Editar") {
+                      modificarAutorizacion()
                       props.handler(false);
                       cleanAutorizacion();
-                      Swal.fire({
-                        icon: "success",
-                        text: "La autorización se ha creado exitosamente",
-                      });
-                    });
+                    }
+
                   }}
                 >
-                  <Typography sx={queries.medium_text}>Agregar</Typography>
+                  <Typography sx={queries.medium_text}>{props.accion}</Typography>
                 </Button>
               </ThemeProvider>
             </Grid>

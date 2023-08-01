@@ -1,102 +1,155 @@
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import axios from "axios";
+import {Fideicomisario } from "../Fideicomiso/fideicomiso";
 
-export type AsignarFuente = {
-  clasificacion: string;
-  tipoFuente: string;
-  fuentePago: string;
-  respecto: string;
+
+export type Mecanismo = {
+  mecanismo: { Id: string; Descripcion: string };
+
+  bonoCuponCero: { Id: string; Descripcion: string };
+  clasificacionBonoCupo: { Id: string; Descripcion: string };
 };
 
+export type garantiaPago = {
+  Id: string;
+  Descripcion : string; 
+}
+
+
+
+export type AsignarFuente = {
+  clasificacion: { Id: string; Descripcion: string };
+  tipoFuente: { Id: string; Descripcion: string };
+  fuentePago: { Id: string; Descripcion: string };
+  RespectoA: { Id: string; Descripcion: string };
+};
+
+export type NumeroFideicomiso = {
+  Id: string;
+  DescripcionFiudiciario: string;
+  DescripcionTipoFideicomiso: string;
+  IdFiudiciario: string;
+  IdTipoFideicomiso: string;
+  NumeroDeFideicomiso: number;
+  TipoDeFideicomiso: string;
+  FechaDeFideicomiso: string;
+  Fiudiciario: string;
+  Fideicomisario: string;
+  TipoDeMovimiento: string;
+  SoporteDocumental: string;
+  FechaCreacion: string;
+  CreadoPor: string;
+  ModificadoPor: string;
+  UltimaModificacion: string;
+}
+
 export interface FuenteDePagoLargoPlazoSlice {
-  Mecanismo: {
-    vehiculoDePago: string;
-    numeroFideicomiso: string;
-    bonoCuponCero: string;
-    clasificacionBonoCuponCero: string;
-  };
 
-
-  tablaAsignarFuente: AsignarFuente[];
-  generalAsignarFuente: {
-    clasificacion: string;
-    tipoFuente: string;
-    fuentePago: string;
-    Respecto: string;
-  }
-
-  garantiaDePago: {
-    garantiaPago: string;
-  } 
+  Mecanismo: Mecanismo;
+  AsignarFuente: AsignarFuente;
   
-  catalogoClasificacion: ICatalogo[];
-  catalagoTipoFuente: ICatalogo[];
-  catalogoFuentePago: ICatalogo[];
-  catalogoRespecto: ICatalogo[]
+  garantiaPago: { Id: string; Descripcion: string };
+  tablaFideicomisarioFP: Fideicomisario[];
 
-  changeAsignarFuente:(
-    clasificacion: { Id: string; Descripcion: string },
-    tipoFuente: { Id: string; Descripcion: string },
-    fuentePago: { Id: string; Descripcion: string },
-    Respecto: { Id: string; Descripcion: string },
+  editFideicomisarioFuentePago: (fideicomisario: Fideicomisario[]) => void;
+
+  changeMecanismo :(
+  mecanismo: { Id: string; Descripcion: string },
+  bonoCuponCero: { Id: string; Descripcion: string },
+  clasificacionBonoCupo: { Id: string; Descripcion: string },
   ) => void;
 
-  changeMecanismo: (
-    vehiculoDePago: { Id: string; Descripcion: string },
-    numeroFideicomiso: { Id: string; Descripcion: string },
-    bonoCuponCero: { Id: string; Descripcion: string },
-    clasificacionBonoCuponCero: { Id: string; Descripcion: string },
+  changeAsignarFuente : (
+  clasificacion: { Id: string; Descripcion: string },
+  tipoFuente: { Id: string; Descripcion: string },
+  fuentePago: { Id: string; Descripcion: string },
+  RespectoA: { Id: string; Descripcion: string },
   ) => void;
 
   changeGarantiaPago : (
-    garantiaPago : string,
+    garantiaPago: { Id: string; Descripcion: string },
   ) => void;
 
+  numeroFideicomiso: NumeroFideicomiso[];
+  getNumeroFideicomiso : () => void; 
+  // el getFideicomiso se hace desde el otro zustando
 
-
+  numeroFideicomisoSelect : NumeroFideicomiso[];
+  setNumeroFideicomisoSelect : (numeroFideicomisoSelect : NumeroFideicomiso[] ) => void;
 }
 
+
 export const createFuentePagoLargoPLazoSlice: StateCreator<
-  FuenteDePagoLargoPlazoSlice
+FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
+  Mecanismo: {
+    mecanismo: { Id: "", Descripcion: "" },
+    numeroFideicomiso: { Id: "", Descripcion: "" },
+    bonoCuponCero: { Id: "", Descripcion: "" },
+    clasificacionBonoCupo: { Id: "", Descripcion: "" },
+  },
 
-    Mecanismo: {
-        vehiculoDePago: "",
-        numeroFideicomiso: "", 
-        bonoCuponCero: "",
-        clasificacionBonoCuponCero: "",
-    },
+  AsignarFuente : {
+    clasificacion: { Id: "", Descripcion: "" },
+    tipoFuente:{ Id: "", Descripcion: "" },
+    fuentePago:{ Id: "", Descripcion: "" },
+    RespectoA: { Id: "", Descripcion: "" },
+  },
 
-    tablaAsignarFuente: [],
-    generalAsignarFuente: {
-        clasificacion: "",
-        tipoFuente: "",
-        fuentePago: "",
-        Respecto:  "",
-    },
-    catalogoClasificacion: [],
-    catalagoTipoFuente: [],
-    catalogoFuentePago: [],
-    catalogoRespecto: [],
+  garantiaPago: { Id: "", Descripcion: "" },
 
-    
-  garantiaDePago: {
-    garantiaPago: "",
-  } ,
+  numeroFideicomisoSelect : [],
 
-    changeAsignarFuente:(generalAsignarFuente : any) =>
+  numeroFideicomiso : [], 
+
+  tablaFideicomisarioFP : [],
+
+
+  editFideicomisarioFuentePago: (fideicomisarios: Fideicomisario[]) => 
+  set((state) => ({
+    tablaFideicomisarioFP : fideicomisarios,
+  })),
+
+  changeMecanismo : (Mecanismo : any ) =>
+  set(() => ({
+    Mecanismo : Mecanismo
+  })),
+
+  changeAsignarFuente: (AsignarFuente : any) =>
+  set(() =>({
+    AsignarFuente : AsignarFuente
+  })),
+
+  changeGarantiaPago :(garantiaPago : garantiaPago ) =>
+  (() => ({
+    garantiaPago : garantiaPago
+  })),
+
+
+
+  getNumeroFideicomiso: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomiso", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          numeroFideicomiso: r,
+        }));
+      });
+  },
+
+
+  setNumeroFideicomisoSelect : (numeroFideicomisoSelect : NumeroFideicomiso[]) =>{
     set(() => ({
-        generalAsignarFuente: generalAsignarFuente,
-    })),
-    changeMecanismo: (newMecanismo: any) =>
-    set(() => ({
-        Mecanismo: newMecanismo
-    })),
+      numeroFideicomisoSelect : numeroFideicomisoSelect
+    }));
+  },
 
-    changeGarantiaPago : (garantiaDePago: any) => 
-    set(() => ({
-        garantiaDePago: garantiaDePago
-    })),
 
 
 });
