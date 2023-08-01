@@ -86,19 +86,17 @@ export function Autorizacion() {
     (state) => state.getAutorizaciones
   );
 
-  const idAutorizacion : string = useLargoPlazoStore(
+  const idAutorizacion: string = useLargoPlazoStore(
     (state) => state.idAutorizacion
   );
 
-  const changeIdAutorizacion : Function = useLargoPlazoStore(
+  const changeIdAutorizacion: Function = useLargoPlazoStore(
     (state) => state.changeIdAutorizacion
   );
 
-  const setAutorizacion : Function = useLargoPlazoStore(
+  const setAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setAutorizacion
   );
-
-  
 
   const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizacionSelect
@@ -107,17 +105,18 @@ export function Autorizacion() {
     (state) => state.setAutorizacionSelect
   );
 
-
-
-  const [indexTabla, setIndexTabla] = useState(0)
+  const [indexTabla, setIndexTabla] = useState(0);
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>([]);
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+    []
+  );
 
-  const [dialogNumAutorizacion, setDialogNumAutorizacion] = useState("")
+  const [dialogNumAutorizacion, setDialogNumAutorizacion] = useState("");
 
-  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] = useState(false);
+  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] =
+    useState(false);
 
   const [arrDocs, setArrDocs] = useState<any>([]);
 
@@ -125,15 +124,9 @@ export function Autorizacion() {
 
   const [accion, setAccion] = useState("");
 
-
   useEffect(() => {
     getAutorizaciones();
-  }, [
-    openDialogNuevaAutorizacion,
-    openDialogEliminarAutorizacion
-  ]);
-
-
+  }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
 
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
@@ -141,8 +134,6 @@ export function Autorizacion() {
       listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`);
     }
   }, [autorizacionSelect]);
-
-  
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
@@ -159,8 +150,6 @@ export function Autorizacion() {
       setArrDocs(loc);
     }
   }, [pathDocumentos]);
-
- 
 
   return (
     <Grid
@@ -236,8 +225,8 @@ export function Autorizacion() {
               sx={queries.buttonContinuar}
               variant="outlined"
               onClick={() => {
-                setAccion("Agregar")
-                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion)
+                setAccion("Agregar");
+                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion);
               }}
             >
               Nuevo
@@ -329,19 +318,20 @@ export function Autorizacion() {
                             gridTemplateColumns: "repeat(2,1fr)",
                           }}
                           align="center"
-                        
-                          >
-
+                        >
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                               onClick={() => {
-                                setIndexTabla(index)
-                                changeIdAutorizacion(row.Id || "")
-                                setDialogNumAutorizacion(row.NumeroAutorizacion)
-                                setOpenDialogEliminarAutorizacion(!openDialogEliminarAutorizacion)}
-                               }
-                                
+                              onClick={() => {
+                                setIndexTabla(index);
+                                changeIdAutorizacion(row.Id || "");
+                                setDialogNumAutorizacion(
+                                  row.NumeroAutorizacion
+                                );
+                                setOpenDialogEliminarAutorizacion(
+                                  !openDialogEliminarAutorizacion
+                                );
+                              }}
                             >
                               <DeleteIcon />
                             </IconButton>
@@ -351,29 +341,42 @@ export function Autorizacion() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                setAccion("Editar")
+                                setAccion("Editar");
                                 changeIdAutorizacion(row?.Id);
-                                 setAutorizacion({
-                                     entidad: {Id : row.IdEntidad , Organismo : row.DescripcionEntidad},
-                                     numeroAutorizacion: row.NumeroAutorizacion,
-                                     fechaPublicacion: row.FechaPublicacion,
-                                     medioPublicacion:  {Id: row.IdMedioPublicacion, Descripcion: row.DescripcionMedioPublicacion},
-                                     montoAutorizado: row.MontoAutorizado,
-                                     documentoSoporte: row.DocumentoSoporte,
-                                     acreditacionQuorum: row.AcreditacionQuorum,
-                                   },
+                                console.log(JSON.parse(row.DocumentoSoporte));
+
+                                setAutorizacion(
+                                  {
+                                    entidad: {
+                                      Id: row.IdEntidad,
+                                      Organismo: row.DescripcionEntidad,
+                                    },
+                                    numeroAutorizacion: row.NumeroAutorizacion,
+                                    fechaPublicacion: row.FechaPublicacion,
+                                    medioPublicacion: {
+                                      Id: row.IdMedioPublicacion,
+                                      Descripcion:
+                                        row.DescripcionMedioPublicacion,
+                                    },
+                                    montoAutorizado: row.MontoAutorizado,
+                                    documentoSoporte: JSON.parse(
+                                      row.DocumentoSoporte
+                                    ),
+                                    acreditacionQuorum: JSON.parse(
+                                      row.AcreditacionQuorum
+                                    ),
+                                  },
                                   JSON.parse(row.DestinoAutorizado),
-                                  JSON.parse(row.DetalleDestino),
-                                 );
-                                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion)
-                                
-                              }
-                            }
+                                  JSON.parse(row.DetalleDestino)
+                                );
+                                setOpenNuevaAutorizacion(
+                                  !openDialogNuevaAutorizacion
+                                );
+                              }}
                             >
                               <EditIcon />
                             </IconButton>
                           </Tooltip>
-
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -384,13 +387,13 @@ export function Autorizacion() {
         </Paper>
       </Grid>
 
-      <DialogEliminarAutorizacion 
-      idAutorizacion = {idAutorizacion}
-      handler={setOpenDialogEliminarAutorizacion}
-      openState = {openDialogEliminarAutorizacion}
-      numeroAutorizacion={dialogNumAutorizacion}
-      index={indexTabla}
-       />
+      <DialogEliminarAutorizacion
+        idAutorizacion={idAutorizacion}
+        handler={setOpenDialogEliminarAutorizacion}
+        openState={openDialogEliminarAutorizacion}
+        numeroAutorizacion={dialogNumAutorizacion}
+        index={indexTabla}
+      />
 
       <DialogNuevaAutorizacion
         handler={setOpenNuevaAutorizacion}
