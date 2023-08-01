@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  ModalEnviar,
-} from "@jbcecapmex/pakfirma";
-import { Grid} from "@mui/material";
+import { ModalEnviar } from "@jbcecapmex/pakfirma";
+import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
@@ -34,7 +32,7 @@ export const EnviarDocumento = () => {
         // setLoadingPage(false)
       })
       .catch((err) => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -43,7 +41,12 @@ export const EnviarDocumento = () => {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item sx={{ overflow: "hidden" }}>
-        <ModalEnviar info={docs} IdDoc={IdDoc!} />
+        <ModalEnviar
+          IdDoc={IdDoc!}
+          IdCentral={localStorage.getItem("IdCentral")!}
+          NombreUsuario={localStorage.getItem("NombreUsuario")!}
+          jwtToken={localStorage.getItem("jwtToken")!}
+        />
       </Grid>
     </Grid>
   );

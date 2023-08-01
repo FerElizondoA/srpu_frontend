@@ -1,5 +1,4 @@
-
-import {  TablaDocs  } from "@jbcecapmex/pakfirma";
+import { TablaDocs } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
@@ -19,11 +18,14 @@ export const Bandeja = () => {
       <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
-      <Grid item  sx={{height:'94vh', backgroundColor:'#f2f2f2'}}>
+      <Grid item sx={{ height: "94vh", backgroundColor: "#f2f2f2" }}>
         <TablaDocs
           TipoBandeja={NombreBandeja!}
           IdTipoBandeja={IdTipo!}
           PathEnvia={"../enviar/"}
+          IdCentral={localStorage.getItem("IdCentral")!}
+          jwtToken={localStorage.getItem("jwtToken")!}
+          IdApp={localStorage.getItem("IdApp")!}
         />
       </Grid>
     </Grid>
