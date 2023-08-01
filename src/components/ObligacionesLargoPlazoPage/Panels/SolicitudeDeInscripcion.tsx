@@ -233,13 +233,13 @@ export function SolicituDeInscripcion() {
           "Sección Condiciones Financieras: Agregar al menos una Tasa De Interés."
         );
       }
-      if (importe === undefined || importe === 0) {
-        err = 1;
+      // if (importe === undefined || importe === 0) {
+      //   err = 1;
 
-        erroresValidacion.push(
-          "Sección Condiciones Financieras: Ingrese el Importe."
-        );
-      }
+      //   erroresValidacion.push(
+      //     "Sección Condiciones Financieras: Ingrese el Importe."
+      //   );
+      // }
       if (numeroDePago === undefined || numeroDePago === 0) {
         err = 1;
 

@@ -1,27 +1,26 @@
-import { useState, forwardRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Dialog,
   AppBar,
-  Toolbar,
-  IconButton,
-  Slide,
   Button,
-  createTheme,
-  ThemeProvider,
-  DialogTitle,
+  Dialog,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Slide,
+  Tab,
+  Tabs,
+  ThemeProvider,
+  Toolbar,
+  Typography,
+  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
-import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { forwardRef, useState } from "react";
+import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
@@ -33,8 +32,8 @@ import {
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -141,6 +140,10 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.changeTasaInteres
   );
 
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
   const addRow = () => {
     const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
@@ -195,7 +198,7 @@ export function AgregarCondicionFinanciera(props: Props) {
     });
     cleanTasaInteres();
     cleanComision();
-    cleanDisposicion();
+    cleanDisposicion(monto);
   };
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);

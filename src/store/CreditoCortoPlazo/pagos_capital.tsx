@@ -2,6 +2,7 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { Disposicion, TasaInteres } from "./condicion_financiera";
+import { useCortoPlazoStore } from "./main";
 
 export interface PagosCapitalSlice {
   disposicionesParciales: boolean;
@@ -41,7 +42,7 @@ export interface PagosCapitalSlice {
 
   addDisposicion: (Disposicion: Disposicion) => void;
   updateDisposicion: (Disposicion: Disposicion[]) => void;
-  cleanDisposicion: () => void;
+  cleanDisposicion: (monto: number) => void;
   removeDisposicion: (index: number) => void;
 
   changeCapital: (
@@ -134,7 +135,15 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
       tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
     })),
 
-  cleanDisposicion: () => set((state) => ({ tablaDisposicion: [] })),
+  cleanDisposicion: (monto: number) =>
+    set((state) => ({
+      tablaDisposicion: [
+        {
+          fechaDisposicion: new Date().toString(),
+          importe: monto,
+        },
+      ],
+    })),
 
   changeCapital: (
     fechaPrimerPago: string,

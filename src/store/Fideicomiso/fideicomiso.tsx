@@ -497,7 +497,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         }
         return true;
       })
-      .catch(function (error) {
+      .catch(function () {
         Toast.fire({
           icon: "error",
           title: "No se elimino el fideicomiso.",

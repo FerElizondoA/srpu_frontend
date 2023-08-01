@@ -48,6 +48,8 @@ import {
   getPathDocumentos,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
+
+import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { AsignarFuente } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 
 interface Head {
@@ -326,37 +328,37 @@ export function Resumen() {
 
   //Mecanismo o vehiculo de pago
 
-  const vehiculoPago: string = useLargoPlazoStore(
-    (state) => state.Mecanismo.vehiculoDePago
+  const mecanismo: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.Mecanismo.mecanismo
   );
 
-  const numeroFideicomiso: string = useLargoPlazoStore(
-    (state) => state.Mecanismo.numeroFideicomiso
+  const numeroFideicomiso: NumeroFideicomiso[] = useLargoPlazoStore(
+    (state) => state.numeroFideicomiso
   );
 
-  const bonoCuponCero: string = useLargoPlazoStore(
+  const bonoCuponCero: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.Mecanismo.bonoCuponCero
   );
 
-  const clasificacionBono: string = useLargoPlazoStore(
-    (state) => state.Mecanismo.clasificacionBonoCuponCero
+  const clasificacionBono:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.Mecanismo.clasificacionBonoCupo
   );
 
   //Asignar Fuente
-  const clasificacion: string = useLargoPlazoStore(
-    (state) => state.generalAsignarFuente.clasificacion
+  const clasificacion:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuente.clasificacion
   );
 
-  const tipoFuente: string = useLargoPlazoStore(
-    (state) => state.generalAsignarFuente.tipoFuente
+  const tipoFuente:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuente.tipoFuente
   );
 
-  const fuentePago: string = useLargoPlazoStore(
-    (state) => state.generalAsignarFuente.fuentePago
+  const fuentePago:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuente.fuentePago
   );
 
-  const Respecto: string = useLargoPlazoStore(
-    (state) => state.generalAsignarFuente.Respecto
+  const Respecto:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuente.RespectoA
   );
 
   const [openTasa, setOpenTasa] = useState(false);
@@ -455,38 +457,38 @@ export function Resumen() {
   const vehiculoDePago: HeadLabels[] = [
     {
       label: "Mecanismo o vehículo de pago",
-      value: vehiculoPago,
+      value: mecanismo.Descripcion,
     },
     {
       label: "Numero del fideicomiso",
-      value: numeroFideicomiso,
+      value: JSON.stringify(numeroFideicomiso[0].NumeroDeFideicomiso)/////revisar********
     },
     {
       label: "Bono cupón cero",
-      value: bonoCuponCero,
+      value: bonoCuponCero.Descripcion,
     },
     {
       label: "Clasificacion del bono del cupon cero:",
-      value: clasificacionBono,
+      value: clasificacionBono.Descripcion,
     },
   ];
 
   const asignarFuente: HeadLabels[] = [
     {
       label: "Clasificacion",
-      value: clasificacion,
+      value: clasificacion.Descripcion,
     },
     {
       label: "Tipo de fuente",
-      value: tipoFuente,
+      value: tipoFuente.Descripcion,
     },
     {
       label: "Fuente de pago",
-      value: fuentePago,
+      value: fuentePago.Descripcion,
     },
     {
       label: "Respecto a",
-      value: Respecto,
+      value: Respecto.Descripcion,
     },
   ];
 

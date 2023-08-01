@@ -130,7 +130,7 @@ export function Catalogos() {
           {modulos.map((item, index) => {
             return (
               <Button
-                key={item.id}
+                key={index}
                 sx={{
                   width: "100%",
                   borderRadius: 20,
@@ -460,7 +460,6 @@ export interface ICatalogo {
 }
 
 export interface IModulos {
-  id: number;
   label: string;
   fnc: string;
 }

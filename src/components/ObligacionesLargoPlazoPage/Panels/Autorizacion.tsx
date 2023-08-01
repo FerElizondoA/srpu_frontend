@@ -35,6 +35,8 @@ import {
   getPathDocumentosAut,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
+import EditIcon from "@mui/icons-material/Edit";
+import { DialogEliminarAutorizacion } from "../Dialog/DialogEliminarAutorizacion";
 
 interface Head {
   label: string;
@@ -84,9 +86,17 @@ export function Autorizacion() {
     (state) => state.getAutorizaciones
   );
 
-  useEffect(() => {
-    getAutorizaciones();
-  }, [openDialogNuevaAutorizacion]);
+  const idAutorizacion: string = useLargoPlazoStore(
+    (state) => state.idAutorizacion
+  );
+
+  const changeIdAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.changeIdAutorizacion
+  );
+
+  const setAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.setAutorizacion
+  );
 
   const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizacionSelect
@@ -95,11 +105,28 @@ export function Autorizacion() {
     (state) => state.setAutorizacionSelect
   );
 
+  const [indexTabla, setIndexTabla] = useState(0);
+
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
     []
   );
+
+  const [dialogNumAutorizacion, setDialogNumAutorizacion] = useState("");
+
+  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] =
+    useState(false);
+
+  const [arrDocs, setArrDocs] = useState<any>([]);
+
+  const [fileSelected, setFileSelected] = useState<any>("");
+
+  const [accion, setAccion] = useState("");
+
+  useEffect(() => {
+    getAutorizaciones();
+  }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
 
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
@@ -108,16 +135,12 @@ export function Autorizacion() {
     }
   }, [autorizacionSelect]);
 
-  const [arrDocs, setArrDocs] = useState<any>([]);
-
-  const [fileSelected, setFileSelected] = useState<any>("");
-
   useEffect(() => {
     if (pathDocumentos.length > 0) {
       let loc: any = [...arrDocs];
       pathDocumentos?.map((val: any) => {
         return getDocumento(
-          val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
           val?.NombreIdentificador,
           (res: any, index: number) => {
             loc.push({ file: res, nombre: val.NombreArchivo });
@@ -201,9 +224,10 @@ export function Autorizacion() {
             <Button
               sx={queries.buttonContinuar}
               variant="outlined"
-              onClick={() =>
-                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion)
-              }
+              onClick={() => {
+                setAccion("Agregar");
+                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion);
+              }}
             >
               Nuevo
             </Button>
@@ -214,7 +238,7 @@ export function Autorizacion() {
       <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
         <Paper
           sx={{
-            width: "86%",
+            width: "90%",
           }}
         >
           <TableContainer sx={{ width: "100%" }}>
@@ -288,13 +312,69 @@ export function Autorizacion() {
                           </Typography>
                         </StyledTableCell>
 
-                        <StyledTableCell align="center">
+                        <StyledTableCell
+                          sx={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(2,1fr)",
+                          }}
+                          align="center"
+                        >
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              // onClick={() => removeDestinoAutorizado(index)}
+                              onClick={() => {
+                                setIndexTabla(index);
+                                changeIdAutorizacion(row.Id || "");
+                                setDialogNumAutorizacion(
+                                  row.NumeroAutorizacion
+                                );
+                                setOpenDialogEliminarAutorizacion(
+                                  !openDialogEliminarAutorizacion
+                                );
+                              }}
                             >
                               <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+
+                          <Tooltip title="Editar">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                setAccion("Editar");
+                                changeIdAutorizacion(row?.Id);
+                                console.log(JSON.parse(row.DocumentoSoporte));
+
+                                setAutorizacion(
+                                  {
+                                    entidad: {
+                                      Id: row.IdEntidad,
+                                      Organismo: row.DescripcionEntidad,
+                                    },
+                                    numeroAutorizacion: row.NumeroAutorizacion,
+                                    fechaPublicacion: row.FechaPublicacion,
+                                    medioPublicacion: {
+                                      Id: row.IdMedioPublicacion,
+                                      Descripcion:
+                                        row.DescripcionMedioPublicacion,
+                                    },
+                                    montoAutorizado: row.MontoAutorizado,
+                                    documentoSoporte: JSON.parse(
+                                      row.DocumentoSoporte
+                                    ),
+                                    acreditacionQuorum: JSON.parse(
+                                      row.AcreditacionQuorum
+                                    ),
+                                  },
+                                  JSON.parse(row.DestinoAutorizado),
+                                  JSON.parse(row.DetalleDestino)
+                                );
+                                setOpenNuevaAutorizacion(
+                                  !openDialogNuevaAutorizacion
+                                );
+                              }}
+                            >
+                              <EditIcon />
                             </IconButton>
                           </Tooltip>
                         </StyledTableCell>
@@ -307,10 +387,20 @@ export function Autorizacion() {
         </Paper>
       </Grid>
 
+      <DialogEliminarAutorizacion
+        idAutorizacion={idAutorizacion}
+        handler={setOpenDialogEliminarAutorizacion}
+        openState={openDialogEliminarAutorizacion}
+        numeroAutorizacion={dialogNumAutorizacion}
+        index={indexTabla}
+      />
+
       <DialogNuevaAutorizacion
         handler={setOpenNuevaAutorizacion}
         openState={openDialogNuevaAutorizacion}
+        accion={accion}
       />
+
       <Dialog
         open={showModalPrevia}
         onClose={() => {
