@@ -195,6 +195,13 @@ const {
   getDetalleDestinosAutorizados,
   createDetalleDestinoAutorizado,
 } = require("../controllers/DetalleDestinosAutorizados.js");
+const {
+  createDetalleInversion,
+  getDetallesInversion,
+  getDetailDetalleInversion,
+  modifyDetalleInversion,
+  deleteDetalleInversion,
+} = require("../controllers/DetalleDeLaInversion.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1034,6 +1041,28 @@ router.get("/get-detalleDestinosAutorizados", (req, res) => {
 // router.delete("/delete-fideicomiso", (req, res) => {
 //   deleteFideicomiso(req, res);
 // });
+//#endregion
+
+//#region Detalle Inversion
+router.post("/create-detalleInversion", (req, res, express) => {
+  createDetalleInversion(req, res);
+});
+
+router.get("/get-detalleInversion", (req, res) => {
+  getDetallesInversion(req, res);
+});
+
+router.get("/detail-detalleInversion", verifyToken.verifyJWT, (req, res) => {
+  getDetailDetalleInversion(req, res);
+});
+
+router.put("/modify-detalleInversion", (req, res) => {
+  modifyDetalleInversion(req, res);
+});
+
+router.delete("/delete-detalleInversion", (req, res) => {
+  deleteDetalleInversion(req, res);
+});
 //#endregion
 
 module.exports = router;

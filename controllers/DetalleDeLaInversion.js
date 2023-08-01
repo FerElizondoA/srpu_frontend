@@ -2,18 +2,18 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createAutorizacion: (req, res) => {
+  createDetalleInversion: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
-    const Entidad = req.body.Entidad;
-    const NumeroAutorizacion = req.body.NumeroAutorizacion;
-    const FechaPublicacion = req.body.FechaPublicacion;
-    const MedioPublicacion = req.body.MedioPublicacion;
-    const MontoAutorizado = req.body.MontoAutorizado;
-    const DocumentoSoporte = req.body.DocumentoSoporte;
-    const AcreditacionQuorum = req.body.AcreditacionQuorum;
-    const DestinoAutorizado = req.body.DestinoAutorizado;
-    const DetalleDestino = req.body.DetalleDestino;
+    const Descripcion = req.body.Descripcion;
 
+    if (
+      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
+      Descripcion.length() <= 255
+    ) {
+      return res.status(409).send({
+        error: "Ingrese Descripcion válido.",
+      });
+    }
     if (
       (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
       IdUsuario.length() <= 36
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarAutorizacion('${IdUsuario}', '${Entidad}', '${NumeroAutorizacion}' , '${FechaPublicacion}' , '${MedioPublicacion}' , '${MontoAutorizado}' , '${DocumentoSoporte}' , '${AcreditacionQuorum}' , '${DestinoAutorizado}' , '${DetalleDestino}'  )`,
+        `CALL sp_AgregarDetalleInversion('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -51,8 +51,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getAutorizaciones: (req, res) => {
-    db.query(`CALL sp_ListadoAutorizaciones()`, (err, result) => {
+  getDetallesInversion: (req, res) => {
+    db.query(`CALL sp_ListadoDetallesInversion()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -73,7 +73,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailAutorizacion: (req, res) => {
+  getDetailDetalleInversion: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -82,7 +82,7 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_DetalleAutorizacion('${IdDescripcion}')`,
+      `CALL sp_DetalleDetalleInversion('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -109,25 +109,30 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyAutorizacion: (req, res) => {
-    const IdAutorizacion = req.body.IdAutorizacion;
-    const Entidad = req.body.Entidad;
-    const FechaPublicacion = req.body.FechaPublicacion;
-    const MedioPublicacion = req.body.MedioPublicacion;
-    const MontoAutorizado = req.body.MontoAutorizado;
-    const DocumentoSoporte = req.body.DocumentoSoporte;
-    const AcreditacionQuorum = req.body.AcreditacionQuorum;
-    const DestinoAutorizado = req.body.DestinoAutorizado;
-    const DetalleDestino = req.body.DetalleDestino;
-    const IdUsuario = req.body.IdUsuario;
+  modifyDetalleInversion: (req, res) => {
+    const IdDescripcion = req.body.IdDescripcion;
+    const Descripcion = req.body.Descripcion;
+    const IdUsuarioModificador = req.body.IdUsuario;
 
-    if (IdAutorizacion == null || /^[\s]*$/.test(IdAutorizacion)) {
+    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
+    }
+
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
+      return res.status(409).send({
+        error: "Ingrese Nuevo DetalleInversion",
+      });
+    }
+
+    if (IdUsuarioModificador == null || /^[\s]*$/.test(IdUsuarioModificador)) {
+      return res.status(409).send({
+        error: "Ingrese Id usuario modificador",
+      });
     } else {
       db.query(
-        `CALL sp_ModificaAutorizacion('${IdAutorizacion}', '${Entidad}', '${FechaPublicacion}', '${MedioPublicacion}', '${MontoAutorizado}', '${DocumentoSoporte}', '${AcreditacionQuorum}', '${DestinoAutorizado}', '${DetalleDestino}', '${IdUsuario}')`,
+        `CALL sp_ModificaDetalleInversion('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -155,11 +160,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteAutorizacion: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    const IdUsuarioModificador = req.body.IdUsuario;
+  deleteDetalleInversion: (req, res) => {
+    const IdDescripcion = req.query.IdDescripcion;
+    const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaAutorizacion('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaDetalleInversion('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
