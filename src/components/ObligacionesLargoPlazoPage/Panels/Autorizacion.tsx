@@ -117,7 +117,7 @@ export function Autorizacion() {
       let loc: any = [...arrDocs];
       pathDocumentos?.map((val: any) => {
         return getDocumento(
-          val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
           val?.NombreIdentificador,
           (res: any, index: number) => {
             loc.push({ file: res, nombre: val.NombreArchivo });

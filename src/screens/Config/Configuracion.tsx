@@ -24,77 +24,66 @@ import { useNavigate } from "react-router-dom";
 
 export const modulos = [
   {
-    id: 0,
     label: "Claves de inscripción",
     fnc: "claveDeInscripcion",
   },
   {
-    id: 1,
     label: "Destinos",
     fnc: "destinos",
   },
   {
-    id: 2,
+    label: "Detalle de la inversión",
+    fnc: "detalleInversion",
+  },
+  {
     label: "Días del ejercicio",
     fnc: "diasDelEjercicio",
   },
   {
-    id: 3,
     label: "Entes público obligados",
     fnc: "entePublicoObligado",
   },
   // {
-  //   id: 4,
   //   label: "Estatus",
   //   fnc: "estatus",
   // },
   {
-    id: 5,
     label: "Fuentes de pago",
     fnc: "fuenteDePago",
   },
   {
-    id: 6,
     label: "Fuentes alternas de pago",
     fnc: "fuenteAlternaDePago",
   },
   {
-    id: 7,
     label: "Instituciones financieras",
     fnc: "institucionesFinancieras",
   },
   {
-    id: 8,
     label: "Obligados solidarios / avales",
     fnc: "obligadoSolidarioAval",
   },
   {
-    id: 9,
     label: "Periodicidad del pago",
     fnc: "periodicidadDePago",
   },
   {
-    id: 10,
     label: "Reglas de financiamiento",
     fnc: "reglaDeFinanciamiento",
   },
   {
-    id: 11,
     label: "Tasas de referencia",
     fnc: "tasaDeReferencia",
   },
   {
-    id: 12,
     label: "Tipos de comisión",
     fnc: "tipoDeComision",
   },
   {
-    id: 13,
     label: "Tipos de documento",
     fnc: "tiposDocumento",
   },
   {
-    id: 14,
     label: "Tipos de ente público",
     fnc: "tiposEntePublico",
   },
@@ -123,10 +112,10 @@ export function Configuracion() {
       <Grid
         item
         sx={{
-          width: "65%",
+          width: "70%",
           height: "70vh",
           display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
+          gridTemplateColumns: "repeat(5,1fr)",
           justifyItems: "center",
           alignItems: "center",
           mt: 15,
@@ -136,7 +125,7 @@ export function Configuracion() {
         {modulos.map((item, index) => {
           return (
             <Button
-              key={item.id}
+              key={index}
               sx={{
                 width: "80%",
                 height: "40%",
@@ -147,7 +136,7 @@ export function Configuracion() {
                 boxShadow: 1,
               }}
               onClick={() => {
-                navegar(item.id, item.label);
+                navegar(index, item.label);
               }}
             >
               {item.label}

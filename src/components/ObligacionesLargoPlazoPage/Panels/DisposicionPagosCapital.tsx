@@ -1,47 +1,43 @@
-import { useEffect, useState } from "react";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Grid,
+  Autocomplete,
+  Button,
+  Checkbox,
   Divider,
-  TextField,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputLabel,
+  Paper,
+  Radio,
+  RadioGroup,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  InputLabel,
-  Autocomplete,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Typography,
-  Radio,
-  Tooltip,
-  IconButton,
   TableRow,
-  Button,
+  TableSortLabel,
+  TextField,
   ThemeProvider,
+  Tooltip,
+  Typography,
   createTheme,
-  Paper,
-  Checkbox,
 } from "@mui/material";
-import validator from "validator";
-import CheckIcon from "@mui/icons-material/Check";
-import { queries } from "../../../queries";
-import DeleteIcon from "@mui/icons-material/Delete";
-import enGB from "date-fns/locale/en-GB";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateInput } from "../../CustomComponents";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { lightFormat } from "date-fns";
+import enGB from "date-fns/locale/en-GB";
+import { useEffect, useState } from "react";
+import validator from "validator";
+import { queries } from "../../../queries";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
-  ConfirmButton,
+  DateInput,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { lightFormat } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 

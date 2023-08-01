@@ -144,9 +144,6 @@ export function DisposicionPagosCapital() {
   const removeDisposicion: Function = useCortoPlazoStore(
     (state) => state.removeDisposicion
   );
-  const cleanDisposicion: Function = useCortoPlazoStore(
-    (state) => state.cleanDisposicion
-  );
 
   // PAGOS DE CAPITAL
   const capitalFechaPrimerPago: string = useCortoPlazoStore(
@@ -299,16 +296,6 @@ export function DisposicionPagosCapital() {
   };
 
   useEffect(() => {
-    if (disposicionesParciales === false) {
-      // cleanDisposicion();
-      changeDisposicion(
-        disposicionFechaDisposicion || new Date().toString(),
-        moneyMask(monto.toString())
-      );
-    }
-  }, [monto, disposicionesParciales]);
-
-  useEffect(() => {
     if (tasasParciales === false) {
       cleanTasaInteres();
     }
@@ -351,8 +338,25 @@ export function DisposicionPagosCapital() {
   ]);
 
   useEffect(() => {
-    if (disposicionesParciales === false && tablaDisposicion.length === 0) {
-      addRowsDisposicion();
+    if (disposicionesParciales === false) {
+      changeDisposicion(
+        disposicionFechaDisposicion,
+        moneyMask(monto.toString())
+      );
+    }
+  }, [monto, disposicionesParciales]);
+
+  const updateDisposicion: Function = useCortoPlazoStore(
+    (state) => state.updateDisposicion
+  );
+
+  useEffect(() => {
+    if (disposicionesParciales === false) {
+      let tab = {
+        fechaDisposicion: disposicionFechaDisposicion,
+        importe: disposicionImporte,
+      };
+      updateDisposicion([tab]);
     }
   }, [disposicionFechaDisposicion, disposicionImporte, disposicionesParciales]);
 
@@ -510,25 +514,7 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
-                      // cleanDisposicion();
                       setDisposicionesParciales(!disposicionesParciales);
-                      // changeDisposicion(
-                      //   disposicionFechaDisposicion,
-                      //   moneyMask("0")
-                      // );
-                      // if (!noAplica) {
-                      //   let tab = {
-                      //     fechaContratacion: new Date().toString(),
-                      //     tipoDeComision: "No aplica",
-                      //     periodicidadDePago: "No aplica",
-                      //     porcentajeFijo: "No aplica",
-                      //     montoFijo: "No aplica",
-                      //     porcentaje: "No aplica",
-                      //     monto: "No aplica",
-                      //     iva: "No aplica",
-                      //   };
-                      //   addComision(tab);
-                      // }
                     }}
                   />
                 }

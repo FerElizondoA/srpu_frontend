@@ -1,14 +1,14 @@
-import Button from "@mui/material/Button";
 import {
-  Grid,
-  Typography,
-  TextField,
-  Switch,
-  FormGroup,
-  FormControlLabel,
-  InputLabel,
   Autocomplete,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  InputLabel,
+  Switch,
+  TextField,
+  Typography,
 } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 
 import Dialog from "@mui/material/Dialog";
@@ -16,15 +16,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { IModulos } from "../../../screens/Config/Catalogos";
-import {
-  creaDesc,
-  delDesc,
-  getCatalogo,
-  modDesc,
-} from "../../APIS/Config/APISCatalogos";
 import { queries } from "../../../queries";
+import { IModulos } from "../../../screens/Config/Catalogos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { creaDesc, delDesc, modDesc } from "../../APIS/Config/APISCatalogos";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export function DialogCatalogos({
