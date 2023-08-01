@@ -142,9 +142,6 @@ export function DatoGeneralesFideicomiso() {
     (state) => state.idFideicomiso
   );
 
-
-
-
   return (
     <Grid container display="flex" direction={"column"} height={"85vh"}>
       <Grid

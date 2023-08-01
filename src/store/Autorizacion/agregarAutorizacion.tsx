@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import Swal from "sweetalert2";
 
 export type GeneralAutorizado = {
   entidad: { Id: string; Organismo: string };
@@ -27,6 +28,7 @@ export type DetalleDestino = {
 export type Autorizaciones = {
   Id: string;
   Entidad: { Id: string; Organismo: string };
+  DescripcionEntidad: string,
   NumeroAutorizacion: string;
   FechaPublicacion: string;
   MedioPublicacion: { Id: string; Descripcion: string };
@@ -37,7 +39,8 @@ export type Autorizaciones = {
   DetalleDestino: DetalleDestino[];
 };
 
-export interface AutorizacionLargoPlazoSlice {
+
+export interface AgregarAutorizacionLargoPlazoSlice {
   registrarAutorizacion: GeneralAutorizado;
 
   montoAutorizado: DestinoA;
@@ -50,6 +53,11 @@ export interface AutorizacionLargoPlazoSlice {
   catalogoDestinosAutorizados: ICatalogo[];
   catalogoDetalleDestinosAutorizados: ICatalogo[];
 
+  borrarAutorizacion : (Id: string) => void;
+  changeIdAutorizacion : (Id: string) => void;
+  idAutorizacion : string;
+
+
   setRegistrarAutorizacion: (autorizacion: any) => void;
   setDestinoAutorizado: (montoAutorizado: DestinoA) => void;
   setDetalleDestino: (detalleDestino: DetalleDestino) => void;
@@ -59,6 +67,11 @@ export interface AutorizacionLargoPlazoSlice {
     montoAutorizado: DestinoA[],
     detalleDestino: DetalleDestino[]
   ) => void;
+
+
+
+
+
 
   addDestinoAutorizado: (newDestinoAutorizado: DestinoA) => void;
   addDetalleDestino: (newDetalleDestino: DetalleDestino) => void;
@@ -86,16 +99,22 @@ export interface AutorizacionLargoPlazoSlice {
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[];
-  getAutorizaciones: () => void;
+  autorizaciones: Autorizaciones[]; //Los utilizaras desde el zustand de fideicomiso
+  getAutorizaciones: () => void; //Los utilizaras desde el zustand de fideicomiso
 
   autorizacionSelect: Autorizaciones[];
   setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
+  removeAutorizacionesSelect: (index : number) => void;
+
+  modificarAutorizacion: () => void;
+
 }
 
-export const createAutorizacionLargoPlazoSlice: StateCreator<
-  AutorizacionLargoPlazoSlice
+export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
+AgregarAutorizacionLargoPlazoSlice
 > = (set, get) => ({
+
+
   registrarAutorizacion: {
     entidad: {
       Id: localStorage.getItem("IdEntePublicoObligado") || "",
@@ -125,10 +144,16 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
 
   tablaDestinoAutorizado: [],
   tablaDetalleDestino: [],
+  tablaAutorizacion :[],
 
   catalogoMediosDePublicacion: [],
   catalogoDestinosAutorizados: [],
   catalogoDetalleDestinosAutorizados: [],
+
+  idAutorizacion :"",
+
+  changeIdAutorizacion: (id: any) => 
+  set(() => ({ idAutorizacion: id })),
 
   setRegistrarAutorizacion: (registrarAutorizacion: GeneralAutorizado) =>
     set(() => ({
@@ -270,6 +295,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        state.changeIdAutorizacion(data.data.id)
         state.saveFilesAutorizacion(
           data.data.Id,
           `/SRPU/AUTORIZACIONES/${data.data.Id}`,
@@ -281,6 +307,104 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           state.registrarAutorizacion.acreditacionQuorum
         );
       });
+  },
+
+  modificarAutorizacion: async () => {
+    const state = useLargoPlazoStore.getState();
+    await axios
+      .put(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-autorizacion",
+        {
+          IdAutorizacion : state.idAutorizacion,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          Entidad: state.registrarAutorizacion.entidad.Id,
+          NumeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
+          FechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
+          MedioPublicacion: state.registrarAutorizacion.medioPublicacion.Id,
+          MontoAutorizado: state.registrarAutorizacion.montoAutorizado,
+          DocumentoSoporte: JSON.stringify(
+            state.registrarAutorizacion.documentoSoporte
+          ),
+          AcreditacionQuorum: JSON.stringify(
+            state.registrarAutorizacion.acreditacionQuorum
+          ),
+          DestinoAutorizado: JSON.stringify(state.tablaDestinoAutorizado),
+          DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "El fideicomiso se ha modificado exitosamente",
+        });
+        state.changeIdAutorizacion(data.data.id)
+        state.saveFilesAutorizacion(
+          data.data.Id,
+          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          state.registrarAutorizacion.documentoSoporte
+        );
+        state.saveFilesAutorizacion(
+          data.data.Id,
+          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          state.registrarAutorizacion.acreditacionQuorum
+        );
+      })
+      .catch(function (error) {
+        Swal.fire({
+          icon: "error",
+          title: "No se pudo editar la autorizacion.",
+        });
+      });
+      
+  },
+
+  borrarAutorizacion : async (Id: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
+    await axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-autorizacion",
+        {
+          data: {
+            IdDescripcion: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(function (response) {
+        
+        if (response.status === 200) {
+          // window.location.reload()
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+            
+          });
+        }
+        return true;
+      })
+      .catch(function (error) {
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino el fideicomiso.",
+        });
+      });
+    return false;
   },
 
   savePathDocAut: async (
@@ -371,4 +495,11 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
       autorizacionSelect: autorizacion,
     }));
   },
+
+  removeAutorizacionesSelect :( index: number) =>
+  set((state) => ({
+    autorizacionSelect : state.autorizacionSelect.filter(
+      (_ , i) => i !== index
+    )
+  }))
 });

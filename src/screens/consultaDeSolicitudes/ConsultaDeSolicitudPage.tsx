@@ -258,8 +258,15 @@ export function ConsultaDeSolicitudPage() {
     setTablaDocumentos([]);
   };
 
-  const editarSolicitud = () => {
-    navigate("../ObligacionesCortoPlazo");
+  const editarSolicitud = (Tipo : string) => {
+
+    if(Tipo === "Crédito simple a corto plazo"){
+      navigate("../ObligacionesCortoPlazo");
+    }else{
+      navigate("../ObligacionesLargoPlazo");
+    }
+
+    
   };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
@@ -538,7 +545,7 @@ export function ConsultaDeSolicitudPage() {
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeEditCreadoPor(row?.CreadoPor);
                                   llenaSolicitud(row);
-                                  editarSolicitud();
+                                  editarSolicitud(row.TipoSolicitud);
                                 }}
                               >
                                 <EditIcon />

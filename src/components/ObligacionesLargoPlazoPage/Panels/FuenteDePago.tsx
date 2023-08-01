@@ -19,14 +19,18 @@ import {
   Checkbox,
   Paper,
   FormControl,
+  Autocomplete,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { Fideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-
+import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { format } from "date-fns";
 interface Head {
   label: string;
 }
@@ -78,6 +82,21 @@ const CatalogoBonos: HeadSelect[] = [
   {
     id: 3,
     label: "Prueba2",
+  },
+];
+
+const CatalogoGarantiaPago: HeadSelect[] = [
+  {
+    id: 1,
+    label: "No aplica",
+  },
+  {
+    id: 2,
+    label: "Pago 1",
+  },
+  {
+    id: 3,
+    label: "Pago 2",
   },
 ];
 
@@ -169,7 +188,7 @@ export function FuenteDePago() {
   const [fideicomiso, setFideicomiso] = useState(false);
 
   const [mecanismo, setMecanismo] = useState<any>("");
-  const [numeroFideicomiso, setNumerodelFideicomiso] = useState<any>("");
+
   const [bonoCero, setBonoCero] = useState<any>("");
 
   const [asignarFuente, setAsignarFuente] = useState(false);
@@ -178,14 +197,31 @@ export function FuenteDePago() {
     (state) => state.getFideicomisos
   );
 
-  const tablaFideicomisos: Fideicomiso[] = useCortoPlazoStore(
-    (state) => state.tablaFideicomisos
+  const numeroFideicomiso: NumeroFideicomiso[] = useLargoPlazoStore(
+    (state) => state.numeroFideicomiso
   );
-  const changeIdFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.changeIdFideicomiso
+  const numeroFideicomisoSelect: NumeroFideicomiso[] = useLargoPlazoStore(
+    (state) => state.numeroFideicomisoSelect
+  );
+
+  const setNumerodelFideicomiso: Function = useLargoPlazoStore(
+    (state) => state.setNumeroFideicomisoSelect
+  );
+
+  const getNumeroFideicomiso: Function = useLargoPlazoStore(
+    (state) => state.getNumeroFideicomiso
+  );
+
+  const garantiaPago : {Id: string, Descripcion: string} = useLargoPlazoStore(
+    (state) => state.garantiaPago
+  );
+
+  const changeGarantiaPago : Function = useLargoPlazoStore(
+    (state) => state.changeGarantiaPago
   );
 
   useEffect(() => {
+    getNumeroFideicomiso();
     getFideicomisos();
   }, []);
   return (
@@ -193,7 +229,8 @@ export function FuenteDePago() {
       container
       direction={"column"}
       justifyContent={"space-evenly"}
-      height={!fideicomiso ? "30rem" : !asignarFuente ? "37rem" : "68rem"}
+      height={!asignarFuente ? "38rem" : "68rem"}
+      //height={!fideicomiso ? "36rem" : !asignarFuente ? "68rem" : "68rem"}
     >
       <Grid>
         <Divider sx={queries.bold_text}>MECANISMO O VEHÍCULO DE PAGO</Divider>
@@ -233,24 +270,45 @@ export function FuenteDePago() {
             <InputLabel sx={queries.medium_text}>
               Número del fideicomiso
             </InputLabel>
-            <Select
+
+            <Autocomplete
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
               fullWidth
-              variant="standard"
-              value={numeroFideicomiso}
-              onChange={(e) => {
-                setNumerodelFideicomiso(e.target.value);
+              options={numeroFideicomiso}
+              getOptionLabel={(option) => `${option.NumeroDeFideicomiso}`}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{`${option.NumeroDeFideicomiso}`}</Typography>
+                  </li>
+                );
               }}
-            >
-              {tablaFideicomisos.map((row: any, index: number) => (
-                <MenuItem value={row.NumeroDeFideicomiso} key={index}>
-                  {row.NumeroDeFideicomiso}
-                </MenuItem>
-              ))}
-            </Select>
+              onChange={(event, text) => {
+                let loc = numeroFideicomiso.filter(
+                  (_i, index) => _i.Id === text?.Id
+                );
+
+                setNumerodelFideicomiso(loc!);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Id === value.Id || value.NumeroDeFideicomiso === 0
+              }
+            />
           </Grid>
 
           <Grid md={4} lg={4} xl={3}>
             <InputLabel sx={queries.medium_text}>Bono cupón cero</InputLabel>
+
             <FormControl fullWidth>
               <Select
                 fullWidth
@@ -325,91 +383,119 @@ export function FuenteDePago() {
         </Grid>
       </Grid>
 
-      {fideicomiso && (
-        <>
-          <Grid>
-            <Divider sx={queries.bold_text}>FIDEICOMISO</Divider>
-          </Grid>
+      {numeroFideicomisoSelect &&
+        numeroFideicomisoSelect.map((row: any, index: number) => {
+          // let Orden = JSON.parse(row.Fideicomisario).;
+          // let Fiduciario = JSON.parse(row.Fideicomisario)
+          return (
+            <>
+              <Grid>
+                <Divider sx={queries.bold_text}>FIDEICOMISO</Divider>
+              </Grid>
 
-          <Grid
-            container
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            width={"100%"}
-          >
-            <Grid
-              container
-              direction={"column"}
-              justifyContent={"space-between"}
-              height={"15rem"}
-              md={3}
-            >
-              <InputLabel>Tipo de fideicomiso</InputLabel>
-              <TextField
-                fullWidth
-                variant="standard"
-                sx={queries.medium_text}
-              />
-
-              <InputLabel>Fecha del fideicomiso</InputLabel>
-              <TextField
-                fullWidth
-                variant="standard"
-                sx={queries.medium_text}
-              />
-
-              <InputLabel>Fiduciario</InputLabel>
-              <TextField
-                fullWidth
-                variant="standard"
-                sx={queries.medium_text}
-              />
-              <FormControlLabel
-                value={"start"}
-                label={"Asignar fuente"}
-                labelPlacement="start"
-                control={
-                  <Checkbox
-                    checked={asignarFuente}
-                    onClick={() => setAsignarFuente(!asignarFuente)}
-                  />
-                }
-              ></FormControlLabel>
-            </Grid>
-
-            <Grid width={"55%"}>
-              <Paper>
-                <TableContainer
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
+              <Grid
+                container
+                display={"flex"}
+                justifyContent={"space-evenly"}
+                width={"100%"}
+              >
+                <Grid
+                  container
+                  direction={"column"}
+                  justifyContent={"space-between"}
+                  height={"15rem"}
+                  md={3}
                 >
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        {headFideicomiso.map((head, index) => (
-                          <StyledTableCell align="center" key={index}>
-                            {head.label}
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <StyledTableRow>
-                        <StyledTableCell />
-                        <StyledTableCell />
-                      </StyledTableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-          </Grid>
+                  <InputLabel>Tipo de fideicomiso</InputLabel>
+                  <TextField
+                    value={row.DescripcionTipoFideicomiso}
+                    fullWidth
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
 
-          {asignarFuente ? (
-            <Grid
+                  <InputLabel>Fecha del fideicomiso</InputLabel>
+                  <TextField
+                    value={format(
+                      new Date(row.FechaDeFideicomiso),
+                      "dd/MM/yyyy"
+                    )}
+                    fullWidth
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+
+                  <InputLabel>Fiduciario</InputLabel>
+                  <TextField
+                    value={row.DescripcionFiudiciario}
+                    fullWidth
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                  <FormControlLabel
+                    value={"start"}
+                    label={"Asignar fuente"}
+                    labelPlacement="start"
+                    control={
+                      <Checkbox
+                        checked={asignarFuente}
+                        onClick={() => setAsignarFuente(!asignarFuente)}
+                      />
+                    }
+                  ></FormControlLabel>
+                </Grid>
+
+                <Grid width={"55%"}>
+                  <Paper>
+                    <TableContainer
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            {headFideicomiso.map((head, index) => (
+                              <StyledTableCell align="center" key={index}>
+                                {head.label}
+                              </StyledTableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {JSON.parse(row.Fideicomisario).lengt !== 0
+                            ? JSON.parse(row.Fideicomisario).map(
+                                (row: any, index: number) => (
+                                  <StyledTableRow>
+                                    <StyledTableCell>
+                                      <Typography>
+                                        {row.fideicomisario.Descripcion}
+                                      </Typography>
+                                    </StyledTableCell>
+
+                                    <StyledTableCell>
+                                      <Typography>
+                                        {row.ordenFideicomisario.Descripcion}
+                                      </Typography>
+                                    </StyledTableCell>
+                                  </StyledTableRow>
+                                )
+                              )
+                            : null}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </>
+          );
+        })}
+
+      {asignarFuente ? ( 
+       <Grid
               container
               width={"100%"}
               height={"25rem"}
@@ -499,10 +585,8 @@ export function FuenteDePago() {
                   </TableContainer>
                 </Paper>
               </Grid>
-            </Grid>
-          ) : null}
-        </>
-      )}
+            </Grid> 
+      ) : null}
 
       <Grid>
         <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
@@ -519,8 +603,13 @@ export function FuenteDePago() {
           <InputLabel sx={queries.medium_text}>
             Tipo de garantía de pago
           </InputLabel>
-          <Select fullWidth variant="standard" value={headsAF}>
-            {headsAF.map((item, index) => (
+          <Select fullWidth variant="standard" value={garantiaPago}
+          onChange={(e, text) => {
+            changeGarantiaPago(e)
+          }}
+          
+          >
+            {CatalogoGarantiaPago.map((item, index) => (
               <MenuItem key={index} value={item.label}>
                 {item.label}
               </MenuItem>
