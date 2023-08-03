@@ -26,6 +26,7 @@ import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 import { Fideicomisos } from "./screens/Fideicomisos/Fideicomisos";
+import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios"
 
 export const appTheme = createTheme({
   palette: {
@@ -97,6 +98,13 @@ function App() {
             element={<ObligacionesLargoPlazoPage />}
           ></Route>
           <Route path="fideicomisos" element={<Fideicomisos />}></Route>
+
+          <Route path="IFrame"
+            element={<IFrame
+              source={"?jwt=" + localStorage.getItem("jwtToken") + "&IdApp=" + localStorage.getItem("IdApp")}
+              baseURL={String(process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN)}
+            />}></Route>
+            
         </Routes>
       </CssBaseline>
     </ThemeProvider>

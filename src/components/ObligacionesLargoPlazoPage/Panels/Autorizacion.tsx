@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { queries } from "../../../queries";
 import { Autorizaciones } from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
@@ -124,8 +124,11 @@ export function Autorizacion() {
 
   const [accion, setAccion] = useState("");
 
+
+
   useEffect(() => {
     getAutorizaciones();
+   
   }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
 
   useEffect(() => {
@@ -133,7 +136,9 @@ export function Autorizacion() {
       getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
       listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`);
     }
-  }, [autorizacionSelect]);
+  }, [autorizacionSelect, openDialogNuevaAutorizacion]);
+
+
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
@@ -150,6 +155,7 @@ export function Autorizacion() {
       setArrDocs(loc);
     }
   }, [pathDocumentos]);
+
 
   return (
     <Grid
@@ -193,6 +199,7 @@ export function Autorizacion() {
               let loc = autorizaciones.filter(
                 (_i, index) => _i.Id === text?.Id
               );
+              console.log("vairiable loc: ", loc)
               setAutorizacionSelect(loc!);
             }}
             renderInput={(params) => (
@@ -241,7 +248,7 @@ export function Autorizacion() {
             width: "90%",
           }}
         >
-          <TableContainer sx={{ width: "100%" }}>
+          <TableContainer  sx={{ width: "100%" }}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -253,11 +260,10 @@ export function Autorizacion() {
                 </TableRow>
               </TableHead>
 
-              <TableBody>
-                {autorizacionSelect &&
-                  autorizacionSelect.map((row: any, index: number) => {
+              <TableBody >
+                {autorizacionSelect && autorizacionSelect.map((row: any, index: number) => {
                     return (
-                      <StyledTableRow key={index}>
+                      <StyledTableRow  key={index} >
                         <StyledTableCell align="center" component="th">
                           <Typography>{"row.destinoAutorizado"}</Typography>
                         </StyledTableCell>
@@ -344,7 +350,6 @@ export function Autorizacion() {
                                 setAccion("Editar");
                                 changeIdAutorizacion(row?.Id);
                                 console.log(JSON.parse(row.DocumentoSoporte));
-
                                 setAutorizacion(
                                   {
                                     entidad: {

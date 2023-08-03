@@ -87,6 +87,10 @@ export const modulos = [
     label: "Tipos de ente público",
     fnc: "tiposEntePublico",
   },
+  {
+    label: "Usuarios",
+    fnc: "Usuarios",
+  },
 ];
 
 export function Configuracion() {

@@ -112,6 +112,11 @@ export function DialogSolicitarModificacion({
             text: "Ocurrió un error, inténtelo de nuevo",
           });
         });
+        createNotification(
+          "Crédito simple a largo plazo",
+          "Se te ha asignado una solicitud.",
+          [idUsuarioAsignado]
+        );
         navigate("../ConsultaDeSolicitudes");
       }
 

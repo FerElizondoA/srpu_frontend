@@ -309,7 +309,9 @@ export function SDocumental() {
                         <Tooltip title={"Mostrar vista previa del documento"}>
                           <IconButton
                             onClick={() => {
+                              console.log("Row.archivo",row.archivo)
                               toBase64(row.archivo).then((data) => {
+                                console.log("data iframe",data);
                                 setFileSelected(data);
                               });
                               setShowModalPrevia(true);
