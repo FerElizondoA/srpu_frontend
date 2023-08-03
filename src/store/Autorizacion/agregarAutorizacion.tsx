@@ -302,7 +302,6 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
 
   modificarAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
-
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/api/modify-autorizacion",
@@ -330,6 +329,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log(data.data);
         console.log(state.registrarAutorizacion.documentoSoporte);
         console.log(state.registrarAutorizacion.acreditacionQuorum);
         Swal.fire({

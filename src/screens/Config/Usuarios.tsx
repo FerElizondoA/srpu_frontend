@@ -354,7 +354,7 @@ export const Usuarios = () => {
                     endIcon={<PersonAddAlt1Icon />}
                     sx={queries.buttonContinuar}
                     onClick={() => {
-                      openNewUsuario();
+                     navigate("../Iframe");
                     }}
                   >
                     Añadir Usuario
