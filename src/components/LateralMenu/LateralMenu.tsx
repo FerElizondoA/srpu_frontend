@@ -610,7 +610,7 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
-                        {/* <ListItemButton
+                        <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             reset();
@@ -624,7 +624,7 @@ export function LateralMenu() {
                           <Typography sx={queries.bold_text}>
                             Crédito simple largo plazo
                           </Typography>
-                        </ListItemButton> */}
+                        </ListItemButton>
                       </List>
                     </Collapse>
 
@@ -647,16 +647,7 @@ export function LateralMenu() {
 
                 {localStorage.getItem("Rol") !== "Capturador" && (
                   <>
-                    <ListItemButton onClick={() => navigate("../firmar")}>
-                      <ListItemIcon>
-                        <EditIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Firmar con e.firma
-                      </Typography>
-                    </ListItemButton>
-
-                    {/* <ListItemButton onClick={handleFuentePagoClick}>
+                    <ListItemButton onClick={handleFuentePagoClick}>
                       <ListItemIcon>
                         <CurrencyExchangeIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -664,7 +655,7 @@ export function LateralMenu() {
                         Fuente de pago
                       </Typography>
                       {openFuentePago ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton> */}
+                    </ListItemButton>
 
                     <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
                       <List>
@@ -681,6 +672,15 @@ export function LateralMenu() {
                         </ListItemButton>
                       </List>
                     </Collapse>
+
+                    <ListItemButton onClick={() => navigate("../firmar")}>
+                      <ListItemIcon>
+                        <EditIcon sx={queries.icon} />
+                      </ListItemIcon>
+                      <Typography sx={queries.bold_text}>
+                        Firmar con e.firma
+                      </Typography>
+                    </ListItemButton>
 
                     <ListItemButton onClick={handleClickBandejas}>
                       <ListItemIcon>
