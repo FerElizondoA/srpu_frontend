@@ -610,7 +610,7 @@ export function LateralMenu() {
                           </Typography>
                         </ListItemButton>
 
-                        <ListItemButton
+                        {/* <ListItemButton
                           sx={{ marginLeft: 4 }}
                           onClick={() => {
                             reset();
@@ -622,9 +622,9 @@ export function LateralMenu() {
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
-                            Crédito simple largo plazo
+                            Crédito simple a largo plazo
                           </Typography>
-                        </ListItemButton>
+                        </ListItemButton> */}
                       </List>
                     </Collapse>
 
@@ -673,7 +673,7 @@ export function LateralMenu() {
                       </List>
                     </Collapse>
 
-                    <ListItemButton onClick={() => navigate("../firmar")}>
+                    {/* <ListItemButton onClick={() => navigate("../firmar")}>
                       <ListItemIcon>
                         <EditIcon sx={queries.icon} />
                       </ListItemIcon>
@@ -688,27 +688,32 @@ export function LateralMenu() {
                       </ListItemIcon>
                       <Typography sx={queries.bold_text}>Documentos</Typography>
                       {openBandejas ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
+                    </ListItemButton> */}
 
                     <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                       <List>
                         {bandejaInfo.length > 0 &&
-                          bandejaInfo.map((b, index) => (
-                            <ListItemButton
-                              key={index}
-                              onClick={() =>
-                                navigate("../bandeja/" + b.Nombre + "/" + b.Id)
-                              }
-                              sx={{ marginLeft: 4 }}
-                            >
-                              <ListItemIcon>
-                                <KeyboardArrowRightIcon sx={queries.icon} />
-                              </ListItemIcon>
-                              <Typography sx={queries.bold_text}>
-                                {b.Nombre}
-                              </Typography>
-                            </ListItemButton>
-                          ))}
+                          bandejaInfo.map(
+                            (b, index) =>
+                              b.Nombre === "Por enviar" && (
+                                <ListItemButton
+                                  key={index}
+                                  onClick={() =>
+                                    navigate(
+                                      "../bandeja/" + b.Nombre + "/" + b.Id
+                                    )
+                                  }
+                                  sx={{ marginLeft: 4 }}
+                                >
+                                  <ListItemIcon>
+                                    <KeyboardArrowRightIcon sx={queries.icon} />
+                                  </ListItemIcon>
+                                  <Typography sx={queries.bold_text}>
+                                    {b.Nombre}
+                                  </Typography>
+                                </ListItemButton>
+                              )
+                          )}
                       </List>
                     </Collapse>
 
