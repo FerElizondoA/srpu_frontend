@@ -63,9 +63,9 @@ export async function modDesc(
       Swal.fire({
         confirmButtonColor: "#15212f",
         cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Mensaje",
-        text: "Ha sucedido un error, inténtelo de nuevo",
+        icon: "info",
+        title: "¡Aviso!",
+        text: "No hubo cambios, asi que no se modificaron los campos",
       });
     });
 }

@@ -466,4 +466,58 @@ export const queries = {
       },
     },
   },
+
+  configuracion: {
+    width: "85%",
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    justifyItems: "center",
+    alignItems: "center",
+    boxShadow: 5,
+    borderRadius: 10,
+    height: "95%",
+  },
+
+  catalogosConfig : {
+    "@media (min-width: 480px)": {
+      height: "30rem",
+    },
+    "@media (min-width: 768px)": {
+      height: "34rem%",
+    },
+    "@media (min-width: 1140px)": {
+      height: "38rem",
+    },
+    "@media (min-width: 1400px)": {
+      height: "42rem",
+    },
+    "@media (min-width: 1870px)": {
+      height: "55rem",
+    },
+
+    contenedorListado : {
+      height: "90%",
+      flexDirection: "column",
+      display: "flex",
+      overflow: "auto",
+      "&::-webkit-scrollbar": {
+        width: ".2vw",
+        mt: 1,
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#AF8C55",
+        outline: "1px solid slategrey",
+        borderRadius: 1,
+      },
+    },
+
+    botonListado: {
+      width: "100%",
+      borderRadius: 20,
+      display: "flex",
+      justifyContent: "start",
+      fontFamily: "MontserratMedium",
+    }
+
+  }
 };
