@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
 import "./App.css";
 import "./Fonts.css";
@@ -36,6 +36,11 @@ export const appTheme = createTheme({
   },
 });
 
+export const  getToken = () => {
+  let token = localStorage.getItem("jwtToken");
+  return token
+}
+
 function App() {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
@@ -70,6 +75,12 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+ 
+  
+  useEffect (() => {
+    getToken()
+  }, [])
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
@@ -101,7 +112,7 @@ function App() {
 
           <Route path="IFrame"
             element={<IFrame
-              source={"?jwt=" + localStorage.getItem("jwtToken") + "&IdApp=" + localStorage.getItem("IdApp")}
+              source={"?jwt=" + getToken() + "&IdApp=" + localStorage.getItem("IdApp")}
               baseURL={String(process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN)}
             />}></Route>
             
