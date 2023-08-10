@@ -1,55 +1,54 @@
-import * as React from "react";
-import logo from "../../assets/images/logo.svg";
-import logo2 from "../../assets/images/logo2.svg";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import EditIcon from "@mui/icons-material/Edit";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
-  Dialog,
-  Grid,
-  Typography,
-  Button,
+  AppBar,
   Avatar,
+  Badge,
+  Button,
+  Collapse,
+  Dialog,
   Divider,
+  Drawer,
+  Grid,
+  IconButton,
   InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
-  IconButton,
-  Collapse,
-  Drawer,
-  AppBar,
-  Toolbar,
   OutlinedInput,
+  Toolbar,
   Tooltip,
-  Badge,
-  TextField,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
-import EditIcon from "@mui/icons-material/Edit";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import { useState } from "react";
-import { queries } from "../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useNavigate } from "react-router-dom";
-import { TimerCounter } from "./TimerCounter";
 import axios from "axios";
+import * as React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import logo from "../../assets/images/logo.svg";
+import logo2 from "../../assets/images/logo2.svg";
+import { queries } from "../../queries";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import HandshakeIcon from "@mui/icons-material/Handshake";
+import { TimerCounter } from "./TimerCounter";
 
 export interface IData {
   Id: string;
@@ -622,7 +621,7 @@ export function LateralMenu() {
                             <KeyboardArrowRightIcon sx={queries.icon} />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
-                            Crédito simple largo plazo
+                            Crédito simple a largo plazo
                           </Typography>
                         </ListItemButton>
                       </List>
@@ -693,22 +692,27 @@ export function LateralMenu() {
                     <Collapse in={openBandejas} timeout="auto" unmountOnExit>
                       <List>
                         {bandejaInfo.length > 0 &&
-                          bandejaInfo.map((b, index) => (
-                            <ListItemButton
-                              key={index}
-                              onClick={() =>
-                                navigate("../bandeja/" + b.Nombre + "/" + b.Id)
-                              }
-                              sx={{ marginLeft: 4 }}
-                            >
-                              <ListItemIcon>
-                                <KeyboardArrowRightIcon sx={queries.icon} />
-                              </ListItemIcon>
-                              <Typography sx={queries.bold_text}>
-                                {b.Nombre}
-                              </Typography>
-                            </ListItemButton>
-                          ))}
+                          bandejaInfo.map(
+                            (b, index) =>
+                              b.Nombre === "Por enviar" && (
+                                <ListItemButton
+                                  key={index}
+                                  onClick={() =>
+                                    navigate(
+                                      "../bandeja/" + b.Nombre + "/" + b.Id
+                                    )
+                                  }
+                                  sx={{ marginLeft: 4 }}
+                                >
+                                  <ListItemIcon>
+                                    <KeyboardArrowRightIcon sx={queries.icon} />
+                                  </ListItemIcon>
+                                  <Typography sx={queries.bold_text}>
+                                    {b.Nombre}
+                                  </Typography>
+                                </ListItemButton>
+                              )
+                          )}
                       </List>
                     </Collapse>
 
