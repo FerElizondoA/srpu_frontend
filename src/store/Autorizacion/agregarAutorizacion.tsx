@@ -92,9 +92,9 @@ export interface AgregarAutorizacionLargoPlazoSlice {
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[]; //Los utilizaras desde el zustand de fideicomiso
-  getAutorizaciones: () => void; //Los utilizaras desde el zustand de fideicomiso
-
+  autorizaciones: Autorizaciones[]; 
+  getAutorizaciones: () => void; 
+  
   autorizacionSelect: Autorizaciones[];
   setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
   removeAutorizacionesSelect: (index: number) => void;
@@ -284,8 +284,6 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(state.registrarAutorizacion.documentoSoporte);
-        console.log(state.registrarAutorizacion.acreditacionQuorum);
         state.changeIdAutorizacion(data.data.id);
         state.saveFilesAutorizacion(
           data.data.Id,
@@ -329,9 +327,6 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data.data);
-        console.log(state.registrarAutorizacion.documentoSoporte);
-        console.log(state.registrarAutorizacion.acreditacionQuorum);
         Swal.fire({
           icon: "success",
           title: "Éxito",

@@ -44,9 +44,11 @@ export function DatoGeneralesFideicomiso() {
   );
   const tipoFideicomiso: { Id: string; Descripcion: string } =
     useCortoPlazoStore((state) => state.generalFideicomiso.tipoFideicomiso);
-  const fechaFideicomiso: string = useCortoPlazoStore(
+  
+    const fechaFideicomiso: string = useCortoPlazoStore(
     (state) => state.generalFideicomiso.fechaFideicomiso
   );
+  
   const fiudiciario: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.generalFideicomiso.fiudiciario
   );
@@ -133,14 +135,23 @@ export function DatoGeneralesFideicomiso() {
     },
   ];
 
-  const cambioNumClave  = () =>{
-    let aux = numeroFideicomiso;
+ 
 
-  }
 
-  const idFideicomiso : string = useCortoPlazoStore(
-    (state) => state.idFideicomiso
-  );
+  // const idFideicomiso : string = useCortoPlazoStore(
+  //   (state) => state.idFideicomiso
+  // );
+  useEffect(() => {
+    setGeneralFideicomiso({
+      numeroFideicomiso: numeroFideicomiso,
+      tipoFideicomiso: tipoFideicomiso,
+      fechaFideicomiso: fechaFideicomiso,
+      fiudiciario: fiudiciario,
+    })
+  }, [])
+  
+
+
 
   return (
     <Grid container display="flex" direction={"column"} height={"85vh"}>
@@ -212,8 +223,11 @@ export function DatoGeneralesFideicomiso() {
             }
           />
         </Grid>
+
         <Grid item lg={5} width={"100%"}>
+
           <InputLabel sx={queries.medium_text}>Fecha de Fideicomiso</InputLabel>
+          
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
@@ -224,7 +238,7 @@ export function DatoGeneralesFideicomiso() {
                 setGeneralFideicomiso({
                   numeroFideicomiso: numeroFideicomiso,
                   tipoFideicomiso: tipoFideicomiso,
-                  fechaFideicomiso: date,
+                  fechaFideicomiso: date?.toString(),
                   fiudiciario: fiudiciario,
                 })
               }
@@ -234,6 +248,7 @@ export function DatoGeneralesFideicomiso() {
             />
           </LocalizationProvider>
         </Grid>
+
         <Grid item lg={5} width={"100%"}>
           <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
           <Autocomplete

@@ -156,7 +156,7 @@ export function Fideicomisos() {
     setGeneralFideicomiso({
       numeroFideicomiso: "",
       tipoFideicomiso: { Id: "", Descripcion: "" },
-      fechaFideicomiso: "",
+      fechaFideicomiso: new Date().toString(),
       fiudiciario: { Id: "", Descripcion: "" },
     });
 

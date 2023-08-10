@@ -127,9 +127,13 @@ export function Autorizacion() {
 
 
   useEffect(() => {
-    getAutorizaciones();
+    setTimeout(() => {
+       getAutorizaciones();
+    }, 2000);
    
+
   }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
+
 
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
@@ -199,7 +203,7 @@ export function Autorizacion() {
               let loc = autorizaciones.filter(
                 (_i, index) => _i.Id === text?.Id
               );
-              console.log("vairiable loc: ", loc)
+              
               setAutorizacionSelect(loc!);
             }}
             renderInput={(params) => (
@@ -349,7 +353,6 @@ export function Autorizacion() {
                               onClick={() => {
                                 setAccion("Editar");
                                 changeIdAutorizacion(row?.Id);
-                                console.log(JSON.parse(row.DocumentoSoporte));
                                 setAutorizacion(
                                   {
                                     entidad: {

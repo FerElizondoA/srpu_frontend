@@ -134,7 +134,6 @@ export function Catalogos() {
                     sx={{...queries.catalogosConfig.botonListado}}
                     onClick={() => {
                       vaciarBuscador()
-                      console.log("CON LOS Modulos: ", txt)
                       setModulo(item.label);
                       setEdit({
                         ...edit,
