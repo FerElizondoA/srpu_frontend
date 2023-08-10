@@ -26,6 +26,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import CloseIcon from "@mui/icons-material/Close";
+import { moneyMask } from "./InformacionGeneral";
 
 interface Head {
   label: string;
@@ -146,7 +147,7 @@ export function GastoCostos() {
       detalleInversion: generalGCDetalleInversion.Descripcion,
       claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
       descripcion: generalGCDescripcion,
-      monto: generalGCMonto,
+      monto: moneyMask(generalGCMonto.toString()),
     };
     addGeneralGastosCostos(tab);
   };
@@ -157,13 +158,13 @@ export function GastoCostos() {
       detalleInversion: generalGCDetalleInversion,
       claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
       descripcion: generalGCDescripcion,
-      monto: generalGCMonto,
+      monto: moneyMask(generalGCMonto.toString()),
     });
 
     changeGastosCostos({
       gastosAdicionales: GCGastosAdicionales,
-      saldoVigente: GCSaldoVigente,
-      montoGastosAdicionales: GCMontoGastosAdicionales,
+      saldoVigente: moneyMask(GCSaldoVigente.toString()),
+      montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
       //Archivo
     });
   }, [
@@ -223,7 +224,7 @@ export function GastoCostos() {
                 claveInscripcionFinanciamiento:
                   generalGCClaveInscripcionFinanciamiento,
                 descripcion: generalGCDescripcion,
-                monto: generalGCMonto,
+                monto: moneyMask(generalGCMonto.toString()),
               });
             }}
             renderInput={(params) => (
@@ -263,7 +264,7 @@ export function GastoCostos() {
                 detalleInversion: generalGCDetalleInversion,
                 claveInscripcionFinanciamiento: v.target.value,
                 descripcion: generalGCDescripcion,
-                monto: generalGCMonto,
+                monto: moneyMask(generalGCMonto.toString()),
               });
             }}
             InputLabelProps={{
@@ -289,7 +290,7 @@ export function GastoCostos() {
               changeGastosCostos({
                 gastosAdicionales: v.target.value,
                 saldoVigente: GCSaldoVigente,
-                montoGastosAdicionales: GCMontoGastosAdicionales,
+                montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
               });
             }}
             InputLabelProps={{
@@ -341,7 +342,7 @@ export function GastoCostos() {
                 claveInscripcionFinanciamiento:
                   generalGCClaveInscripcionFinanciamiento,
                 descripcion: generalGCDescripcion,
-                monto: generalGCMonto,
+                monto: moneyMask(generalGCMonto.toString()),
               });
             }}
             renderInput={(params) => (
@@ -369,7 +370,7 @@ export function GastoCostos() {
                 claveInscripcionFinanciamiento:
                   generalGCClaveInscripcionFinanciamiento,
                 descripcion: v.target.value,
-                monto: generalGCMonto,
+                monto: moneyMask(generalGCMonto.toString()),
               })
             }
             fullWidth
@@ -400,18 +401,25 @@ export function GastoCostos() {
                 : GCMontoGastosAdicionales.toString()
             }
             onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
+              if (
+                validator.isNumeric(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
+              ) {
                 changeGastosCostos({
                   gastosAdicionales: GCGastosAdicionales,
-                  saldoVigente: GCSaldoVigente,
-                  montoGastosAdicionales: v.target.value,
-                });
-              } else if (v.target.value === "") {
-                changeGastosCostos({
-                  gastosAdicionales: GCGastosAdicionales,
-                  saldoVigente: GCSaldoVigente,
-                  montoGastosAdicionales: 0,
-                });
+                  saldoVigente: moneyMask(GCSaldoVigente.toString()),
+                  montoGastosAdicionales: moneyMask(v.target.value.toString()),
+                })
               }
             }}
             InputLabelProps={{
@@ -423,7 +431,7 @@ export function GastoCostos() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+              //startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -461,7 +469,7 @@ export function GastoCostos() {
                   color: "#15212f",
                   border:
                     detalleInversion.nombreArchivo !==
-                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                       ? "2px dotted #af8c55"
                       : "2x dotted black",
                 }}
@@ -499,26 +507,30 @@ export function GastoCostos() {
           <TextField
             fullWidth
             placeholder="0"
-            value={generalGCMonto <= 0 ? "" : generalGCMonto.toString()}
+            value={generalGCMonto <= 0 ? "" : generalGCMonto}
             onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
+              if (
+                validator.isNumeric(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
+              ) {
                 changeGeneralGastosCostos({
                   destino: generalGCDestino,
                   detalleInversion: generalGCDetalleInversion,
                   claveInscripcionFinanciamiento:
                     generalGCClaveInscripcionFinanciamiento,
                   descripcion: generalGCDescripcion,
-                  monto: v.target.value,
-                });
-              } else if (v.target.value === "") {
-                changeGeneralGastosCostos({
-                  destino: generalGCDestino,
-                  detalleInversion: generalGCDetalleInversion,
-                  claveInscripcionFinanciamiento:
-                    generalGCClaveInscripcionFinanciamiento,
-                  descripcion: generalGCDescripcion,
-                  monto: 0,
-                });
+                  monto: moneyMask(v.target.value),
+                })
               }
             }}
             InputLabelProps={{
@@ -530,7 +542,7 @@ export function GastoCostos() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+              //startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -544,19 +556,26 @@ export function GastoCostos() {
             fullWidth
             value={GCSaldoVigente <= 0 ? "" : GCSaldoVigente.toString()}
             onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
+              if (
+                validator.isNumeric(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
+              ) {
                 changeGastosCostos({
                   gastosAdicionales: GCGastosAdicionales,
-                  saldoVigente: v.target.value,
+                  saldoVigente: moneyMask(v.target.value.toString()),
                   montoGastosAdicionales: GCMontoGastosAdicionales,
                 });
-              } else if (v.target.value === "") {
-                changeGastosCostos({
-                  gastosAdicionales: GCGastosAdicionales,
-                  saldoVigente: 0,
-                  montoGastosAdicionales: GCMontoGastosAdicionales,
-                });
-              }
+              } 
             }}
             InputLabelProps={{
               style: {
@@ -567,7 +586,7 @@ export function GastoCostos() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+              //startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -605,7 +624,7 @@ export function GastoCostos() {
       </Grid>
 
       <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "88%", overflow: "clip" }}>
+        <Paper sx={{ width: "95%", overflow: "clip" }}>
           <TableContainer
             sx={{
               maxHeight: "100%",

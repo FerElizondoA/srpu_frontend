@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 
 export const modulos = [
   {
-    label: "Claves de inscripción",
+    label: "Claves de Inscripción",
     fnc: "claveDeInscripcion",
   },
   {
@@ -32,15 +32,15 @@ export const modulos = [
     fnc: "destinos",
   },
   {
-    label: "Detalle de la inversión",
+    label: "Detalle de la Inversión",
     fnc: "detalleInversion",
   },
   {
-    label: "Días del ejercicio",
+    label: "Días del Ejercicio",
     fnc: "diasDelEjercicio",
   },
   {
-    label: "Entes público obligados",
+    label: "Entes Público Obligados",//SI
     fnc: "entePublicoObligado",
   },
   // {
@@ -48,45 +48,98 @@ export const modulos = [
   //   fnc: "estatus",
   // },
   {
-    label: "Fuentes de pago",
+    label: "Fuentes de Pago",
     fnc: "fuenteDePago",
   },
   {
-    label: "Fuentes alternas de pago",
+    label: "Fuentes Alternas de Pago",
     fnc: "fuenteAlternaDePago",
   },
   {
-    label: "Instituciones financieras",
+    label: "Instituciones Financieras",
     fnc: "institucionesFinancieras",
   },
   {
-    label: "Obligados solidarios / avales",
+    label: "Obligados Solidarios / Avales",
     fnc: "obligadoSolidarioAval",
   },
   {
-    label: "Periodicidad del pago",
+    label: "Periodicidad del Pago",
     fnc: "periodicidadDePago",
   },
   {
-    label: "Reglas de financiamiento",
+    label: "Reglas de Financiamiento",//SI
     fnc: "reglaDeFinanciamiento",
   },
   {
-    label: "Tasas de referencia",
+    label: "Tasas de Referencia",
     fnc: "tasaDeReferencia",
   },
   {
-    label: "Tipos de comisión",
+    label: "Tipos de Comisión",
     fnc: "tipoDeComision",
   },
   {
-    label: "Tipos de documento",
+    label: "Tipos de Documento",//SI
     fnc: "tiposDocumento",
   },
   {
-    label: "Tipos de ente público",
+    label: "Tipos de Ente Público",
     fnc: "tiposEntePublico",
   },
+  //Fideicomisos -- Datos generales
+  {
+    label: "Tipo de Fideicomiso",
+    fnc: "tiposDeFideicomiso",
+  },
+  {
+    label: "Fiduciario",
+    fnc: "fiudiciarios",
+  },
+  {
+    label: "Fideicomisario",
+    fnc: "fideicomisarios",
+  },
+  {
+    label: "Orden Fideicomisario",
+    fnc: "ordenesFideicomisario",
+  },
+
+  //Fideicomisos --Tipo de movimiento
+
+  {
+    label: "Tipo de Fideicomitente",
+    fnc: "tiposDeFideicomitente",
+  },
+  {
+    label: "Tipo de Fuente",
+    fnc: "tiposDeFuente",
+  },
+  {
+    label: "Fondo o Ingreso",
+    fnc: "fondosOIngresos",
+  },
+
+
+  //Autorizacion
+  
+  {
+    label: "Medio de Publicación",
+    fnc: "mediosDePublicacion",
+  },
+  {
+    label: "Destino Autorizado",
+    fnc: "destinosAutorizados",
+  },
+  {
+    label: "Destalle del Destino Autorizado",
+    fnc: "detalleDestinosAutorizados",
+  },
+  {
+    label : "Usuarios",
+    fnc: "Usuarios",
+  }
+
 ];
 
 export function Configuracion() {
@@ -109,40 +162,70 @@ export function Configuracion() {
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
+
+      <Grid>
+        <Typography sx={{
+          height: "4rem",
+          display:"flex",
+          alignItems:"center",
+          fontSize: "2.5ch",
+          fontFamily: "MontserratBold",
+          color: "#AF8C55",
+          "@media (max-width: 600px)": {
+            // XS (extra small) screen
+            fontSize: "1rem",
+          },
+          "@media (min-width: 601px) and (max-width: 900px)": {
+            // SM (small) screen
+            fontSize: "1.5ch",
+          },
+        }}>
+          Configuración
+        </Typography>
+      </Grid>
+
       <Grid
-        item
-        sx={{
-          width: "70%",
-          height: "70vh",
-          display: "grid",
-          gridTemplateColumns: "repeat(5,1fr)",
-          justifyItems: "center",
-          alignItems: "center",
-          mt: 15,
-          borderRadius: 10,
-        }}
+        width={"100%"}
+        height={"70vh"}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
       >
-        {modulos.map((item, index) => {
-          return (
-            <Button
-              key={index}
-              sx={{
-                width: "80%",
-                height: "40%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 20,
-                boxShadow: 1,
-              }}
-              onClick={() => {
-                navegar(index, item.label);
-              }}
-            >
-              {item.label}
-            </Button>
-          );
-        })}
+        <Grid
+          item
+          sx={{
+            width: "70%",
+            height: "100%",
+            display: "grid",
+            gridTemplateColumns: "repeat(5,1fr)",
+            justifyItems: "center",
+            alignItems: "center",
+
+            borderRadius: 10,
+          }}
+        >
+          {modulos.map((item, index) => {
+            return (
+              <Button
+                key={index}
+                sx={{
+                  width: "80%",
+                  height: "65%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 20,
+                  boxShadow: 1,
+                }}
+                onClick={() => {
+                  navegar(index, item.label);
+                }}
+              >
+                {item.label}
+              </Button>
+            );
+          })}
+        </Grid>
       </Grid>
     </Grid>
   );

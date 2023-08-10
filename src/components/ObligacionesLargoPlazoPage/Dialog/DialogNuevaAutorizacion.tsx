@@ -16,12 +16,13 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DestalleDestino } from "../Panels/DetalleDestino";
 import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
 import {
+  Autorizaciones,
   DestinoA,
   DetalleDestino,
   GeneralAutorizado,
@@ -89,6 +90,18 @@ export function DialogNuevaAutorizacion(props: Props) {
     (state) => state.modificarAutorizacion
   );
 
+
+
+  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
+    (state) => state.autorizacionSelect
+  );
+  const setAutorizacionSelect: Function = useLargoPlazoStore(
+    (state) => state.setAutorizacionSelect
+  );
+
+
+  let  tableRef = useRef();
+
   const cleanAutorizacion = () => {
     setAutorizacion(
       {
@@ -113,6 +126,10 @@ export function DialogNuevaAutorizacion(props: Props) {
       []
     );
   };
+
+  useEffect (() =>{
+    
+  }, [])
 
   return (
     <>
@@ -173,9 +190,15 @@ export function DialogNuevaAutorizacion(props: Props) {
                         });
                       });
                     } else if (props.accion === "Editar") {
-                      modificarAutorizacion();
-                      props.handler(false);
-                      cleanAutorizacion();
+                      modificarAutorizacion().then(() => {
+                        props.handler(false);
+                        cleanAutorizacion();
+                        Swal.fire({
+                          icon: "success",
+                          text: "La autorización se ha editado exitosamente",
+                        });
+                      });
+                      
                     }
                   }}
                 >

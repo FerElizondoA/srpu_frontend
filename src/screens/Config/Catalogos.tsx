@@ -107,344 +107,352 @@ export function Catalogos() {
     }
   };
 
+  const vaciarBuscador = () => {
+    let vacio = "";
+
+    return setTxt(vacio)
+  }
+
   return (
-    <Grid container direction="column" alignItems={"center"}>
-      <Grid item width={"100%"}>
+    <Grid container direction="column" alignItems={"center"} >
+      <Grid width={"100%"}>
         <LateralMenu />
       </Grid>
-      <Grid
-        item
-        sx={{
-          width: "65%",
-          height: "80vh",
-          display: "grid",
-          gridTemplateColumns: "1fr 3fr",
-          justifyItems: "center",
-          alignItems: "center",
-          boxShadow: 5,
-          mt: 10,
-          borderRadius: 10,
-        }}
+      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}
+        sx={{ ...queries.catalogosConfig, width: "100%" }}
       >
-        <Grid>
-          {modulos.map((item, index) => {
-            return (
-              <Button
-                key={index}
-                sx={{
-                  width: "100%",
-                  borderRadius: 20,
-                  display: "flex",
-                  justifyContent: "start",
-                  fontFamily: "MontserratMedium",
-                }}
-                onClick={() => {
-                  setModulo(item.label);
-                  setEdit({
-                    ...edit,
-                    ...{ Id: index },
-                    ...{ Modulo: item.label },
-                  });
-                  setPage(0);
-                  // getCatalogos();
-                }}
-              >
-                {item.label}
-              </Button>
-            );
-          })}
-        </Grid>
-        <Grid
-          container
-          sx={{ width: "90%", height: "90%", overflow: "auto" }}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Grid
-            sx={{
-              bgcolor: "#f1f1f1",
-              width: "90%",
-              height: "10%",
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              borderRadius: 5,
-              fontFamily: "MontserratMedium",
-            }}
-          >
-            <Typography
-              sx={{
-                fontFamily: "MontserratMedium",
-              }}
-              textAlign={"center"}
-            >
-              {modulo.toUpperCase()}
-            </Typography>
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                fontFamily: "MontserratMedium",
-              }}
-            >
-              <TextField
-                size="small"
-                sx={{ borderRadius: "50%" }}
-                label={"Buscar"}
-                multiline
-                onChange={(v) => {
-                  if (v.target.value === "") {
-                    setCatalogoFiltrado(catalogo);
-                  }
-                  setTxt(v.target.value);
-                }}
-              />
-              <IconButton
-                onClick={(v) => {
-                  filtrar(txt);
-                }}
-              >
-                <SearchIcon
-                  sx={{
-                    ...queries.buttonCancelar,
-                  }}
-                />
-              </IconButton>
-            </Grid>
-          </Grid>
+        <Grid sx={{ ...queries.configuracion }}>
 
+          <Grid sx={{...queries.catalogosConfig.contenedorListado}}
+          >
+            {modulos.map((item, index) => {
+
+              if (item.label !== "Usuarios") {
+                return (
+                  <Button
+                    key={index}
+                    sx={{...queries.catalogosConfig.botonListado}}
+                    onClick={() => {
+                      vaciarBuscador()
+                      setModulo(item.label);
+                      setEdit({
+                        ...edit,
+                        ...{ Id: index },
+                        ...{ Modulo: item.label },
+                      });
+                      setPage(0);
+                      // getCatalogos();
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              }
+            })}
+          </Grid>
           <Grid
-            sx={{
-              bgcolor: "#f1f1f1",
-              width: "100%",
-              height: "70%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".3vw",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "rgba(0,0,0,.5)",
-                outline: "1px solid slategrey",
-                borderRadius: 10,
-              },
-              borderRadius: 5,
-            }}
+            container
+            sx={{ width: "90%", height: "100%", overflow: "auto" }}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow
+            <Grid
+              sx={{
+                bgcolor: "#f1f1f1",
+                width: "90%",
+                height: "10%",
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+                borderRadius: 5,
+                fontFamily: "MontserratMedium",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: "MontserratMedium",
+                }}
+                textAlign={"center"}
+              >
+                {modulo.toUpperCase()}
+              </Typography>
+              <Grid
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontFamily: "MontserratMedium",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ borderRadius: "50%" }}
+                  label={"Buscar"}
+                  multiline
+                  value={txt}
+
+                  onChange={(v) => {
+                    if (v.target.value === "") {
+                      setCatalogoFiltrado(catalogo);
+                    }
+                    
+                    setTxt(v.target.value);
+                  }}
+                  onKeyPress={(ev) => {
+                    //cuando se presiona Enter
+                    if (ev.key === "Enter") {
+                      filtrar(txt);
+                      ev.preventDefault();
+                      return false;
+                    }
+                  }}
+                />
+                <IconButton
+                  onClick={(v) => {
+                    filtrar(txt);
+                  }}
+                >
+                  <SearchIcon
                     sx={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        modulo === "Entes público obligados"
-                          ? "3fr 1fr 1fr"
-                          : "4fr 1fr ",
+                      ...queries.buttonCancelar,
                     }}
-                  >
-                    <TableCell
+                  />
+                </IconButton>
+              </Grid>
+            </Grid>
+
+            <Grid
+              sx={{
+                bgcolor: "#f1f1f1",
+                width: "100%",
+                height: "70%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".3vw",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "rgba(0,0,0,.5)",
+                  outline: "1px solid slategrey",
+                  borderRadius: 10,
+                },
+                borderRadius: 5,
+              }}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow
                       sx={{
-                        textAlign: "center",
-                        fontFamily: "MontserratMedium",
+                        display: "grid",
+                        gridTemplateColumns:
+                          modulo === "Entes público obligados"
+                            ? "3fr 1fr 1fr"
+                            : "4fr 1fr ",
                       }}
                     >
-                      Descripción
-                    </TableCell>
-                    {edit.Modulo === "Entes público obligados" ? (
                       <TableCell
                         sx={{
                           textAlign: "center",
                           fontFamily: "MontserratMedium",
                         }}
                       >
-                        Tipo
+                        Descripción
                       </TableCell>
-                    ) : null}
-                    <TableCell
-                      sx={{
-                        textAlign: "center",
-                        fontFamily: "MontserratMedium",
-                      }}
-                    >
-                      Acción
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody
-                  sx={{
-                    overflow: "auto",
-                    "&::-webkit-scrollbar": {
-                      width: ".3vw",
-                    },
-                    "&::-webkit-scrollbar-thumb": {
-                      backgroundColor: "rgba(0,0,0,.5)",
-                      outline: "1px solid slategrey",
-                      borderRadius: 10,
-                    },
-                  }}
-                >
-                  {catalogoFiltrado
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((item, index) => {
-                      return (
-                        <TableRow
-                          key={index}
+                      {edit.Modulo === "Entes público obligados" ? (
+                        <TableCell
                           sx={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              modulo === "Entes público obligados"
-                                ? "3fr 1fr 1fr"
-                                : "4fr 1fr ",
-                            height: "90%",
+                            textAlign: "center",
+                            fontFamily: "MontserratMedium",
                           }}
                         >
-                          <TableCell
+                          Tipo
+                        </TableCell>
+                      ) : null}
+                      <TableCell
+                        sx={{
+                          textAlign: "center",
+                          fontFamily: "MontserratMedium",
+                        }}
+                      >
+                        Acción
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody
+                    sx={{
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".3vw",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "rgba(0,0,0,.5)",
+                        outline: "1px solid slategrey",
+                        borderRadius: 10,
+                      },
+                    }}
+                  >
+                    {catalogoFiltrado
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((item, index) => {
+                        return (
+                          <TableRow
+                            key={index}
                             sx={{
-                              fontFamily: "Montserrat",
+                              display: "grid",
+                              gridTemplateColumns:
+                                modulo === "Entes público obligados"
+                                  ? "3fr 1fr 1fr"
+                                  : "4fr 1fr ",
+                              height: "90%",
                             }}
                           >
-                            {item.Descripcion}
-                          </TableCell>
-                          {modulo === "Entes público obligados" ? (
                             <TableCell
                               sx={{
                                 fontFamily: "Montserrat",
-                                textAlign: "center",
                               }}
                             >
-                              {item.Tipo}
+                              {item.Descripcion}
                             </TableCell>
-                          ) : null}
-                          <TableCell sx={{ textAlign: "center" }}>
-                            {modulo === "Reglas de financiamiento" ||
-                            modulo === "Tipos de documento" ? (
-                              <Tooltip
-                                title={
-                                  item.OCP === 1 && item.OLP === 1
-                                    ? "Obligatorio en corto plazo y largo plazo"
-                                    : item.OCP === 1 && item.OLP === 0
-                                    ? "Obligatorio en corto plazo"
-                                    : item.OCP === 0 && item.OLP === 1
-                                    ? "Obligatorio en largo plazo"
-                                    : "No obligatorio en corto plazo o largo plazo"
-                                }
+                            {modulo === "Entes público obligados" ? (
+                              <TableCell
+                                sx={{
+                                  fontFamily: "Montserrat",
+                                  textAlign: "center",
+                                }}
                               >
-                                <IconButton>
-                                  <InfoIcon
+                                {item.Tipo}
+                              </TableCell>
+                            ) : null}
+                            <TableCell sx={{ textAlign: "center" }}>
+                              {modulo === "Reglas de financiamiento" ||
+                                modulo === "Tipos de documento" ? (
+                                <Tooltip
+                                  title={
+                                    item.OCP === 1 && item.OLP === 1
+                                      ? "Obligatorio en corto plazo y largo plazo"
+                                      : item.OCP === 1 && item.OLP === 0
+                                        ? "Obligatorio en corto plazo"
+                                        : item.OCP === 0 && item.OLP === 1
+                                          ? "Obligatorio en largo plazo"
+                                          : "No obligatorio en corto plazo o largo plazo"
+                                  }
+                                >
+                                  <IconButton>
+                                    <InfoIcon
+                                      fontSize="small"
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "orange",
+                                    //     },
+                                    //   },
+                                    // ]}
+                                    ></InfoIcon>
+                                  </IconButton>
+                                </Tooltip>
+                              ) : null}
+                              <Tooltip title="Editar">
+                                <IconButton
+                                  onClick={() => {
+                                    setEdit((edit) => ({
+                                      ...edit,
+                                      ...{ IdDesc: item.Id },
+                                      ...{ Descripcion: item.Descripcion },
+                                      ...{ Crud: "edita" },
+                                      ...{ OCP: item.OCP },
+                                      ...{ OLP: item.OLP },
+                                    }));
+                                    setOpenDialog(true);
+                                  }}
+                                >
+                                  <EditIcon
                                     fontSize="small"
-                                    sx={[
-                                      {
-                                        "&:hover": {
-                                          color: "orange",
-                                        },
-                                      },
-                                    ]}
-                                  ></InfoIcon>
+                                  // sx={[
+                                  //   {
+                                  //     "&:hover": {
+                                  //       color: "blue",
+                                  //     },
+                                  //   },
+                                  // ]}
+                                  />
                                 </IconButton>
                               </Tooltip>
-                            ) : null}
-                            <Tooltip title="Editar">
-                              <IconButton
-                                onClick={() => {
-                                  setEdit((edit) => ({
-                                    ...edit,
-                                    ...{ IdDesc: item.Id },
-                                    ...{ Descripcion: item.Descripcion },
-                                    ...{ Crud: "edita" },
-                                    ...{ OCP: item.OCP },
-                                    ...{ OLP: item.OLP },
-                                  }));
-                                  setOpenDialog(true);
-                                }}
-                              >
-                                <EditIcon
-                                  fontSize="small"
-                                  sx={[
-                                    {
-                                      "&:hover": {
-                                        color: "blue",
-                                      },
-                                    },
-                                  ]}
-                                />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Eliminar">
-                              <IconButton
-                                onClick={() => {
-                                  setEdit((edit) => ({
-                                    ...edit,
-                                    ...{ IdDesc: item.Id },
-                                    ...{ Descripcion: item.Descripcion },
-                                    ...{ Crud: "elimina" },
-                                  }));
-                                  setOpenDialog(true);
-                                }}
-                              >
-                                <DeleteIcon
-                                  fontSize="small"
-                                  sx={[
-                                    {
-                                      "&:hover": {
-                                        color: "red",
-                                      },
-                                    },
-                                  ]}
-                                />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
+                              <Tooltip title="Eliminar">
+                                <IconButton
+                                  onClick={() => {
+                                    setEdit((edit) => ({
+                                      ...edit,
+                                      ...{ IdDesc: item.Id },
+                                      ...{ Descripcion: item.Descripcion },
+                                      ...{ Crud: "elimina" },
+                                    }));
+                                    setOpenDialog(true);
+                                  }}
+                                >
+                                  <DeleteIcon
+                                    fontSize="small"
+                                  // sx={[
+                                  //   {
+                                  //     "&:hover": {
+                                  //       color: "red",
+                                  //     },
+                                  //   },
+                                  // ]}
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
 
-          <DialogCatalogos
-            modulos={modulos}
-            edit={edit}
-            open={openDialog}
-            setOpen={setOpenDialog}
-          />
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "end",
-              alignItems: "center",
-            }}
-          >
-            <Tooltip title={"Agregar"}>
-              <Button
-                onClick={() => {
-                  setEdit((edit) => ({
-                    ...edit,
-                    ...{ Crud: "crea" },
-                    ...{ Descripcion: "" },
-                    ...{ OCP: 0 },
-                    ...{ OLP: 0 },
-                  }));
-                  setOpenDialog(true);
-                }}
-              >
-                <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
-              </Button>
-            </Tooltip>
-            <TablePagination
-              rowsPerPageOptions={renglonesPagina}
-              labelRowsPerPage="Registros por página:"
-              component="div"
-              count={catalogo.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+            <DialogCatalogos
+              modulos={modulos}
+              edit={edit}
+              open={openDialog}
+              setOpen={setOpenDialog}
             />
-          </Box>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "end",
+                alignItems: "center",
+              }}
+            >
+              <Tooltip title={"Agregar"}>
+                <Button
+                  onClick={() => {
+                    setEdit((edit) => ({
+                      ...edit,
+                      ...{ Crud: "crea" },
+                      ...{ Descripcion: "" },
+                      ...{ OCP: 0 },
+                      ...{ OLP: 0 },
+                    }));
+                    setOpenDialog(true);
+                  }}
+                >
+                  <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
+                </Button>
+              </Tooltip>
+              <TablePagination
+                rowsPerPageOptions={renglonesPagina}
+                labelRowsPerPage="Registros por página:"
+                component="div"
+                count={catalogo.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

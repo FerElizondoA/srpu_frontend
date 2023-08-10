@@ -81,7 +81,7 @@ export function DialogCatalogos({
   );
 
   useEffect(() => {
-    if (edit.Modulo === "Entes público obligados") {
+    if (edit.Modulo === "Entes Público Obligados") {
       getTipoEntePublicoObligado();
     }
   }, []);
@@ -101,8 +101,8 @@ export function DialogCatalogos({
           {edit.Crud === "crea"
             ? `Agregar nuevo elemento a la tabla: ${edit.Modulo}`
             : edit.Crud === "edita"
-            ? `Modificar elemento`
-            : `¿Desea eliminar el elemento de la tabla
+              ? `Modificar elemento`
+              : `¿Desea eliminar el elemento de la tabla:
           ${edit.Modulo}?`}
         </DialogTitle>
         {edit.Crud === "crea" ? null : (
@@ -155,8 +155,8 @@ export function DialogCatalogos({
                 setElement(v.target.value);
               }}
             />
-            {edit.Modulo === "Reglas de financiamiento" ||
-            edit.Modulo === "Tipos de documento" ? (
+            {edit.Modulo === "Reglas de Financiamiento" ||
+              edit.Modulo === "Tipos de Documento" ? (
               <FormGroup>
                 <FormControlLabel
                   control={
@@ -191,7 +191,7 @@ export function DialogCatalogos({
               </FormGroup>
             ) : null}
 
-            {edit.Modulo === "Entes público obligados" ? (
+            {edit.Modulo === "Entes Público Obligados" ? (
               <Grid>
                 <InputLabel sx={queries.medium_text}>
                   Tipo de ente público obligado

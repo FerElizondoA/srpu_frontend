@@ -521,8 +521,7 @@ export function ComisionesTasaEfectiva() {
                 : moneyMask(comisionMonto)
             }
             onChange={(v) => {
-              console.log(v.target.value);
-              console.log(radioValue);
+             
 
               if (
                 !noAplica &&

@@ -220,6 +220,15 @@ export const Usuarios = () => {
     setOpenDialog(!openDialog);
   };
 
+  // useEffect(() => {
+  //   document.getElementById('Enter')?.addEventListener('keypress', function(e){
+  //     console.log(e);
+  //   });
+  // }, [])
+
+
+
+ 
   return (
     <Grid
       container
@@ -292,12 +301,16 @@ export const Usuarios = () => {
                   }}
                 >
                   <InputBase
+                    id="Enter"
                     sx={{ ml: 1, flex: 1 }}
                     placeholder="Buscar"
                     value={busqueda}
                     onChange={(e) => {
+
                       handleChange(e.target.value);
                     }}
+            
+                    
                     onKeyPress={(ev) => {
                       //cuando se presiona Enter
                       if (ev.key === "Enter") {
@@ -354,7 +367,7 @@ export const Usuarios = () => {
                     endIcon={<PersonAddAlt1Icon />}
                     sx={queries.buttonContinuar}
                     onClick={() => {
-                      openNewUsuario();
+                     navigate("../Iframe");
                     }}
                   >
                     Añadir Usuario

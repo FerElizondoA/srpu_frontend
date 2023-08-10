@@ -459,10 +459,10 @@ export function Resumen() {
       label: "Mecanismo o vehículo de pago",
       value: mecanismo.Descripcion,
     },
-    {
-      label: "Numero del fideicomiso",
-      value: JSON.stringify(numeroFideicomiso[0].NumeroDeFideicomiso)/////revisar********
-    },
+    // {
+    //   label: "Numero del fideicomiso",
+    //   value: JSON.stringify(numeroFideicomiso[0].NumeroDeFideicomiso)/////revisar********
+    // },
     {
       label: "Bono cupón cero",
       value: bonoCuponCero.Descripcion,

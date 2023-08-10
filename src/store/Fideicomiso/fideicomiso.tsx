@@ -147,14 +147,10 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => {
     set(() => ({
-      generalFideicomiso: {
-        numeroFideicomiso: generalFideicomiso.numeroFideicomiso,
-        tipoFideicomiso: generalFideicomiso.tipoFideicomiso,
-        fechaFideicomiso: generalFideicomiso.fechaFideicomiso,
-        fiudiciario: generalFideicomiso.fiudiciario,
-      },
+      generalFideicomiso: generalFideicomiso
     }));
   },
+  
   setFideicomisario: (fideicomisario: Fideicomisario) => {
     //tabla
     set(() => ({
@@ -164,12 +160,14 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       },
     }));
   },
+
   setTipoDeMovimiento: (tipoDeMovimiento: TipoMovimiento) => {
     // tabla
     set(() => ({
       tipoDeMovimiento: tipoDeMovimiento,
     }));
   },
+
   setSoporteDocumental: (soporteDocumental: SoporteDocumental) => {
     //tabla
     set(() => ({
@@ -182,11 +180,13 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       tablaFideicomisario: [...state.tablaFideicomisario, fideicomisario],
     }));
   },
+
   addTipoMovimiento: (tipoDeMovimiento: TipoMovimiento) => {
     set((state) => ({
       tablaTipoMovimiento: [...state.tablaTipoMovimiento, tipoDeMovimiento],
     }));
   },
+
   addSoporteDocumental: (soporteDocumental: SoporteDocumental) => {
     set((state) => ({
       tablaSoporteDocumental: [

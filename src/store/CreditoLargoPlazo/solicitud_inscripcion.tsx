@@ -7,6 +7,7 @@ import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabeza
 export interface SolicitudInscripcionLargoPlazoSlice {
   idSolicitud: string;
   editCreadoPor: string;
+  NumeroRegistro: string;
 
   inscripcion: {
     servidorPublicoDirigido: string;
@@ -21,6 +22,9 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   changeReglasAplicables: (newReglas: string) => void;
 
   changeIdSolicitud: (id: string) => void;
+
+  changeNoRegistro: (id: string) => void;
+
   changeEditCreadoPor: (id: string) => void;
 
   getReglas: () => void;
@@ -42,7 +46,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   borrarSolicitud: (Id: string) => void;
 
   addComentario: (idSolicitud: string, comentario: string) => void;
-  saveFiles: (idSolicitud: string, addRoute: boolean) => void;
+  saveFiles: (idRegistro: string, ruta: string) => void;
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
@@ -56,6 +60,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 > = (set, get) => ({
   idSolicitud: "",
   editCreadoPor: "",
+  NumeroRegistro: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública y Planeación Financiera",
@@ -70,6 +75,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
+  changeNoRegistro: (num: any) => set(() => ({ NumeroRegistro: num })),
+
   changeEditCreadoPor: (id: any) => set(() => ({ editCreadoPor: id })),
 
   changeReglasAplicables: (newReglas: any) =>
@@ -79,7 +86,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-reglaDeFinanciamiento",
+        "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -107,6 +114,21 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         ...state.informacionGeneral,
         obligadosSolidarios: state.tablaObligadoSolidarioAval,
       },
+
+      GastosCostos: {
+        ...state.GastosCostos,
+        generalGastosCostos: state.tablaGastosCostos
+      },
+
+      detalleInversion :{
+        ...state.detalleInversion
+      },
+
+      registrarAutorizacion: {
+        autorizacionSelect: state.autorizacionSelect
+      },
+      
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
@@ -122,7 +144,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
     };
 
-    await axios
+    return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
@@ -146,9 +168,14 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        state.changeIdSolicitud(data.data.Id);
+        state.changeNoRegistro(data.data.NumeroRegistro);
+        state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
-        state.cleanComentario();
+        state.saveFiles(
+          data.data.Id,
+          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
       });
   },
   modificaSolicitud: async (
@@ -165,6 +192,20 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         ...state.informacionGeneral,
         obligadosSolidarios: state.tablaObligadoSolidarioAval,
       },
+
+      GastosCostos: {
+        ...state.GastosCostos,
+        generalGastosCostos: state.tablaGastosCostos
+      },
+
+      detalleInversion :{
+        ...state.detalleInversion
+      },
+
+      registrarAutorizacion: {
+        autorizacionSelect: state.autorizacionSelect
+      },
+      
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
@@ -186,9 +227,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         {
           IdSolicitud: state.idSolicitud,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-          // ||"00b0470d-acb9-11ed-b719-2c4138b7dab1"
           IdEntePublico: state.encabezado.organismo.Id,
-          //||"f45b91b9-bc38-11ed-b789-2c4138b7dab1"
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
@@ -208,9 +247,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       )
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
-        state.addComentario(data.data.Id, comentario);
-        state.saveFiles(data.data.Id, true);
-        state.cleanComentario();
+        state.changeNoRegistro(data.data.NumeroRegistro);
+        state.saveFiles(
+          data.data.Id,
+          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
       });
   },
   borrarSolicitud: async (Id: string) => {
@@ -255,24 +296,26 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     return false;
   },
   addComentario: async (Id: string, comentario: any) => {
-    return await axios
-      .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
-        {
-          IdSolicitud: Id,
-          Comentario: comentario,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
+    if (comentario.length !== 2) {
+      await axios
+        .post(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+          {
+            IdSolicitud: Id,
+            Comentario: comentario,
+            IdUsuario: localStorage.getItem("IdUsuario"),
           },
-        }
-      )
-      .then(({ data }) => {})
-      .catch((e) => {});
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then(({ data }) => {})
+        .catch((e) => {});
+    }
   },
-  saveFiles: async (idSolicitud: string, addRoute: boolean) => {
+  saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useLargoPlazoStore.getState();
 
     return await state.tablaDocumentos.map((file, index) => {
@@ -280,8 +323,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         const url = new File([file.archivo], file.nombreArchivo);
 
         let dataArray = new FormData();
-        dataArray.append("ROUTE", `/SRPU/CORTOPLAZO/DOCSOL/${idSolicitud}`);
-        dataArray.append("ADDROUTE", addRoute.toString());
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
 
         if (file.archivo.size > 0) {
@@ -297,7 +340,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             )
             .then(({ data }) => {
               state.savePathDoc(
-                idSolicitud,
+                idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO
@@ -331,8 +374,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => { })
+      .catch((e) => { });
   },
 });
 
@@ -455,7 +498,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export const getUsuariosAsignables = async (
