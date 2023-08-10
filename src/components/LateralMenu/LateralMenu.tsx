@@ -1,17 +1,9 @@
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import HandshakeIcon from "@mui/icons-material/Handshake";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -49,6 +41,44 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import EditIcon from "@mui/icons-material/Edit";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+
+export const IconsMenu = (icon: string) => {
+  switch (icon) {
+    case "HomeOutlinedIcon":
+      return <HomeOutlinedIcon sx={queries.icon} />;
+    case "PostAddOutlinedIcon":
+      return <PostAddOutlinedIcon sx={queries.icon} />;
+    case "KeyboardDoubleArrowRightIcon":
+      return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
+    case "KeyboardArrowRightIcon":
+      return <KeyboardArrowRightIcon sx={queries.icon} />;
+    case "CurrencyExchangeIcon":
+      return <CurrencyExchangeIcon sx={queries.icon} />;
+    case "HandshakeIcon":
+      return <HandshakeIcon sx={queries.icon} />;
+    case "EditIcon":
+      return <EditIcon sx={queries.icon} />;
+    case "FolderOpenIcon":
+      return <FolderOpenIcon sx={queries.icon} />;
+    case "SettingsOutlinedIcon":
+      return <SettingsOutlinedIcon sx={queries.icon} />;
+    case "LockOutlinedIcon":
+      return <LockOutlinedIcon sx={queries.icon} />;
+    case "LogoutIcon":
+      return <LogoutIcon sx={queries.icon} />;
+
+    default:
+      break;
+  }
+};
 
 export interface IData {
   Id: string;
@@ -64,6 +94,11 @@ export interface IData {
   TipoSolicitud: string;
 }
 export function LateralMenu() {
+  const menu =
+    localStorage.getItem("Menu") !== undefined &&
+    localStorage.getItem("Menu") !== null
+      ? JSON.parse(localStorage.getItem("Menu")!)
+      : [];
   const logout = () => {
     localStorage.clear();
     window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
@@ -84,10 +119,9 @@ export function LateralMenu() {
     isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
   };
 
-  const [openInscripcion, setOpenInscripcion] = React.useState(true);
-  const [openFinanciamiento, setOpenFinanciamiento] = React.useState(true);
-
-  const [openFuentePago, setOpenFuentePago] = useState(false);
+  const [openModulo, setOpenModulo] = useState("");
+  const [openSubModulo, setOpenSubModulo] = useState("");
+  const [openSubModulo1, setOpenSubModulo1] = useState("");
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] =
@@ -98,18 +132,6 @@ export function LateralMenu() {
   );
 
   const [cantNoti, setCantNoti] = useState<number>();
-
-  const handleInscripcionClick = () => {
-    setOpenInscripcion(!openInscripcion);
-  };
-
-  const handleFinanciamientoClick = () => {
-    setOpenFinanciamiento(!openFinanciamiento);
-  };
-
-  const handleFuentePagoClick = () => {
-    setOpenFuentePago(!openFuentePago);
-  };
 
   let hash = 0;
   let i;
@@ -130,10 +152,6 @@ export function LateralMenu() {
   const [openBandejas, setOpenBandejas] = useState(false);
 
   const [show, setShow] = useState(false);
-
-  const handleClickBandejas = () => {
-    setOpenBandejas(!openBandejas);
-  };
 
   const [bandejaInfo, setBandejaInfo] = useState<any[]>([]);
 
@@ -554,222 +572,173 @@ export function LateralMenu() {
               <Divider />
 
               <List>
-                <ListItemButton
-                  onClick={() => {
-                    navigate("../home");
-                  }}
-                >
-                  <ListItemIcon>
-                    <HomeOutlinedIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Inicio</Typography>
-                </ListItemButton>
-
-                <ListItemButton onClick={handleInscripcionClick}>
-                  <ListItemIcon>
-                    <PostAddOutlinedIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Inscripción</Typography>
-                  {openInscripcion ? <ExpandMore /> : <ExpandLess />}
-                </ListItemButton>
-
-                <Collapse in={openInscripcion} timeout="auto" unmountOnExit>
-                  <List>
-                    <ListItemButton
-                      sx={{ marginLeft: 2 }}
-                      onClick={handleFinanciamientoClick}
-                    >
-                      <ListItemIcon>
-                        <KeyboardDoubleArrowRightIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Financiamiento y obligaciones
-                      </Typography>
-                      {openFinanciamiento ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
-                    <Collapse
-                      in={openFinanciamiento}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      <List>
-                        <ListItemButton
-                          sx={{ marginLeft: 4 }}
-                          onClick={() => {
-                            reset();
-                            navigate("../ObligacionesCortoPlazo");
-                            window.location.reload(); // REFRESH
-                          }}
-                        >
-                          <ListItemIcon>
-                            <KeyboardArrowRightIcon sx={queries.icon} />
-                          </ListItemIcon>
-                          <Typography sx={queries.bold_text}>
-                            Crédito simple a corto plazo
-                          </Typography>
-                        </ListItemButton>
-
-                        <ListItemButton
-                          sx={{ marginLeft: 4 }}
-                          onClick={() => {
-                            reset();
-                            navigate("../ObligacionesLargoPlazo");
-                            window.location.reload(); // REFRESH
-                          }}
-                        >
-                          <ListItemIcon>
-                            <KeyboardArrowRightIcon sx={queries.icon} />
-                          </ListItemIcon>
-                          <Typography sx={queries.bold_text}>
-                            Crédito simple a largo plazo
-                          </Typography>
-                        </ListItemButton>
-                      </List>
-                    </Collapse>
-
-                    <ListItemButton
-                      sx={{ marginLeft: 2 }}
-                      onClick={() => {
-                        reset();
-                        navigate("../ConsultaDeSolicitudes");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <KeyboardDoubleArrowRightIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Consulta de solicitudes
-                      </Typography>
-                    </ListItemButton>
-                  </List>
-                </Collapse>
-
-                {localStorage.getItem("Rol") !== "Capturador" && (
-                  <>
-                    <ListItemButton onClick={handleFuentePagoClick}>
-                      <ListItemIcon>
-                        <CurrencyExchangeIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Fuente de pago
-                      </Typography>
-                      {openFuentePago ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
-
-                    <Collapse in={openFuentePago} timeout="auto" unmountOnExit>
-                      <List>
-                        <ListItemButton
-                          sx={{ marginLeft: 2 }}
-                          onClick={() => navigate("../fideicomisos")}
-                        >
-                          <ListItemIcon>
-                            <HandshakeIcon />
-                          </ListItemIcon>
-                          <Typography sx={queries.bold_text}>
-                            Fideicomiso
-                          </Typography>
-                        </ListItemButton>
-                      </List>
-                    </Collapse>
-
-                    <ListItemButton onClick={() => navigate("../firmar")}>
-                      <ListItemIcon>
-                        <EditIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Firmar con e.firma
-                      </Typography>
-                    </ListItemButton>
-
-                    <ListItemButton onClick={handleClickBandejas}>
-                      <ListItemIcon>
-                        <FolderOpenIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>Documentos</Typography>
-                      {openBandejas ? <ExpandMore /> : <ExpandLess />}
-                    </ListItemButton>
-
-                    <Collapse in={openBandejas} timeout="auto" unmountOnExit>
-                      <List>
-                        {bandejaInfo.length > 0 &&
-                          bandejaInfo.map(
-                            (b, index) =>
-                              b.Nombre === "Por enviar" && (
-                                <ListItemButton
-                                  key={index}
-                                  onClick={() =>
-                                    navigate(
-                                      "../bandeja/" + b.Nombre + "/" + b.Id
-                                    )
-                                  }
-                                  sx={{ marginLeft: 4 }}
-                                >
-                                  <ListItemIcon>
-                                    <KeyboardArrowRightIcon sx={queries.icon} />
-                                  </ListItemIcon>
-                                  <Typography sx={queries.bold_text}>
-                                    {b.Nombre}
-                                  </Typography>
-                                </ListItemButton>
+                {menu.length > 0 &&
+                  menu.map(
+                    (v: any, i: number) =>
+                      ![
+                        "Configuración",
+                        "Cambiar contraseña",
+                        "Cerrar sesión",
+                      ].includes(v.ControlInterno) && (
+                        <Grid key={i}>
+                          <ListItemButton
+                            onClick={() => {
+                              if (v.Path !== "#") {
+                                navigate(v.Path);
+                              } else {
+                                if (openModulo === v.ControlInterno) {
+                                  setOpenModulo("");
+                                } else {
+                                  setOpenModulo(v.ControlInterno);
+                                }
+                              }
+                            }}
+                          >
+                            <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
+                            <Typography sx={queries.bold_text}>
+                              {v.Menu}
+                            </Typography>
+                            {v.item.length > 0 ? (
+                              v.ControlInterno === openModulo ? (
+                                <ExpandMore />
+                              ) : (
+                                <ExpandLess />
                               )
-                          )}
-                      </List>
-                    </Collapse>
+                            ) : null}
+                          </ListItemButton>
+                          {v.item.length > 0 && (
+                            <Collapse
+                              in={openModulo === v.ControlInterno}
+                              timeout="auto"
+                              unmountOnExit
+                              sx={{ ml: 2 }}
+                            >
+                              <List>
+                                {v.item.map((v: any, i: number) => (
+                                  <Grid key={i}>
+                                    <ListItemButton
+                                      onClick={() => {
+                                        if (v.Path !== "#") {
+                                          navigate(v.Path);
+                                        } else {
+                                          if (
+                                            openSubModulo === v.ControlInterno
+                                          ) {
+                                            setOpenSubModulo("");
+                                          } else {
+                                            setOpenSubModulo(v.ControlInterno);
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      <ListItemIcon>
+                                        {IconsMenu(v.Icon)}
+                                      </ListItemIcon>
+                                      <Typography sx={queries.bold_text}>
+                                        {v.Menu}
+                                      </Typography>
 
-                    {/* <ListItemButton
-                      onClick={() => navigate("../notificaciones")}
-                    >
-                      <ListItemIcon>
-                        <NotificationsActiveIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Notificaciones
-                      </Typography>
-                    </ListItemButton> */}
-                  </>
-                )}
+                                      {v.item.length > 0 ? (
+                                        v.ControlInterno === openSubModulo ? (
+                                          <ExpandMore />
+                                        ) : (
+                                          <ExpandLess />
+                                        )
+                                      ) : null}
+                                    </ListItemButton>
+                                    {v.item.length > 0 && (
+                                      <Collapse
+                                        in={openSubModulo === v.ControlInterno}
+                                        timeout="auto"
+                                        unmountOnExit
+                                        sx={{ ml: 2 }}
+                                      >
+                                        <List>
+                                          {v.item.map((v: any, i: number) => (
+                                            <Grid key={i}>
+                                              <ListItemButton
+                                                onClick={() => {
+                                                  if (v.Path !== "#") {
+                                                    navigate(v.Path);
+                                                    window.location.reload();
+                                                  } else {
+                                                    if (
+                                                      openSubModulo ===
+                                                      v.ControlInterno
+                                                    ) {
+                                                      setOpenSubModulo("");
+                                                    } else {
+                                                      setOpenSubModulo(
+                                                        v.ControlInterno
+                                                      );
+                                                    }
+                                                  }
+                                                }}
+                                              >
+                                                <ListItemIcon>
+                                                  {IconsMenu(v.Icon)}
+                                                </ListItemIcon>
+                                                <Typography
+                                                  sx={queries.bold_text}
+                                                >
+                                                  {v.Menu}
+                                                </Typography>
+                                              </ListItemButton>
+                                            </Grid>
+                                          ))}
+                                        </List>
+                                      </Collapse>
+                                    )}
+                                  </Grid>
+                                ))}
+                              </List>
+                            </Collapse>
+                          )}
+                        </Grid>
+                      )
+                  )}
               </List>
             </Grid>
 
             <Grid item container direction="column" justifyContent={"flex-end"}>
               <List>
                 <Divider />
-
-                {localStorage.getItem("Rol") !== "Capturador" && (
-                  <>
-                    <ListItemButton
-                      onClick={() => {
-                        navigate("../Config");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <SettingsOutlinedIcon sx={queries.icon} />
-                      </ListItemIcon>
-                      <Typography sx={queries.bold_text}>
-                        Configuración
-                      </Typography>
-                    </ListItemButton>
-                  </>
-                )}
-                <ListItemButton onClick={() => setOpenPasswordChange(true)}>
-                  <ListItemIcon>
-                    <LockOutlinedIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>
-                    Cambiar Contraseña
-                  </Typography>
-                </ListItemButton>
-
-                <ListItemButton
-                  onClick={() => {
-                    logout();
-                  }}
-                >
-                  <ListItemIcon>
-                    <LogoutIcon sx={queries.icon} />
-                  </ListItemIcon>
-                  <Typography sx={queries.bold_text}>Cerrar Sesión</Typography>
-                </ListItemButton>
+                {menu.length > 0 &&
+                  menu.map(
+                    (v: any, i: number) =>
+                      [
+                        "Configuración",
+                        "Cambiar contraseña",
+                        "Cerrar sesión",
+                      ].includes(v.ControlInterno) && (
+                        <Grid key={i}>
+                          <ListItemButton
+                            onClick={() => {
+                              if (v.Path !== "#") {
+                                navigate(v.Path);
+                              } else {
+                                if (openModulo === v.ControlInterno) {
+                                  setOpenModulo("");
+                                } else if (
+                                  v.ControlInterno === "Cambiar contraseña"
+                                ) {
+                                  setOpenPasswordChange(true);
+                                } else if (
+                                  v.ControlInterno === "Cerrar sesión"
+                                ) {
+                                  logout();
+                                }
+                              }
+                            }}
+                          >
+                            <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
+                            <Typography sx={queries.bold_text}>
+                              {v.Menu}
+                            </Typography>
+                          </ListItemButton>
+                        </Grid>
+                      )
+                  )}
               </List>
             </Grid>
           </Grid>

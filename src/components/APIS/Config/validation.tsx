@@ -78,10 +78,43 @@ export const getUserDetails = (idCentral: string) => {
           r.data.data.IdTipoEntePublico
         );
 
+        getUserAppDetail(idCentral);
+
         return true;
       } else {
         getDataSolicitud(idCentral);
       }
+    })
+    .catch((error) => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+      if (error.response.status === 401) {
+        localStorage.clear();
+      }
+      getDataSolicitud(idCentral);
+    });
+};
+
+export const getUserAppDetail = (idCentral: string) => {
+  return axios
+    .post(
+      process.env.REACT_APP_APPLICATION_LOGIN + "/api/userapp-detail",
+      {
+        IdUsuario: idCentral,
+        IdApp: IdApp || localStorage.getItem("IdApp"),
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("jwtToken") || "",
+        },
+      }
+    )
+    .then((r) => {
+      r.data.menus[0].length > 0 &&
+        localStorage.setItem("Menu", JSON.stringify(r.data.menus[0]));
+      return true;
     })
     .catch((error) => {
       setTimeout(() => {
@@ -184,8 +217,8 @@ export const continueSession = () => {
 };
 
 export const logout = () => {
-  localStorage.clear();
-  window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
+  // localStorage.clear();
+  // window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
 };
 
 export interface IDatosAdicionales {

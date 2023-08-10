@@ -110,31 +110,30 @@ export function Catalogos() {
   const vaciarBuscador = () => {
     let vacio = "";
 
-    return setTxt(vacio)
-  }
+    return setTxt(vacio);
+  };
 
   return (
-    <Grid container direction="column" alignItems={"center"} >
+    <Grid container direction="column" alignItems={"center"}>
       <Grid width={"100%"}>
         <LateralMenu />
       </Grid>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
         sx={{ ...queries.catalogosConfig, width: "100%" }}
       >
         <Grid sx={{ ...queries.configuracion }}>
-
-          <Grid sx={{...queries.catalogosConfig.contenedorListado}}
-          >
+          <Grid sx={{ ...queries.catalogosConfig.contenedorListado }}>
             {modulos.map((item, index) => {
-
               if (item.label !== "Usuarios") {
                 return (
                   <Button
                     key={index}
-                    sx={{...queries.catalogosConfig.botonListado}}
+                    sx={{ ...queries.catalogosConfig.botonListado }}
                     onClick={() => {
-                      vaciarBuscador()
-                      console.log("CON LOS Modulos: ", txt)
+                      vaciarBuscador();
                       setModulo(item.label);
                       setEdit({
                         ...edit,
@@ -190,12 +189,11 @@ export function Catalogos() {
                   label={"Buscar"}
                   multiline
                   value={txt}
-
                   onChange={(v) => {
                     if (v.target.value === "") {
                       setCatalogoFiltrado(catalogo);
                     }
-                    
+
                     setTxt(v.target.value);
                   }}
                   onKeyPress={(ev) => {
@@ -294,7 +292,10 @@ export function Catalogos() {
                     }}
                   >
                     {catalogoFiltrado
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       .map((item, index) => {
                         return (
                           <TableRow
@@ -327,28 +328,28 @@ export function Catalogos() {
                             ) : null}
                             <TableCell sx={{ textAlign: "center" }}>
                               {modulo === "Reglas de financiamiento" ||
-                                modulo === "Tipos de documento" ? (
+                              modulo === "Tipos de documento" ? (
                                 <Tooltip
                                   title={
                                     item.OCP === 1 && item.OLP === 1
                                       ? "Obligatorio en corto plazo y largo plazo"
                                       : item.OCP === 1 && item.OLP === 0
-                                        ? "Obligatorio en corto plazo"
-                                        : item.OCP === 0 && item.OLP === 1
-                                          ? "Obligatorio en largo plazo"
-                                          : "No obligatorio en corto plazo o largo plazo"
+                                      ? "Obligatorio en corto plazo"
+                                      : item.OCP === 0 && item.OLP === 1
+                                      ? "Obligatorio en largo plazo"
+                                      : "No obligatorio en corto plazo o largo plazo"
                                   }
                                 >
                                   <IconButton>
                                     <InfoIcon
                                       fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "orange",
-                                    //     },
-                                    //   },
-                                    // ]}
+                                      // sx={[
+                                      //   {
+                                      //     "&:hover": {
+                                      //       color: "orange",
+                                      //     },
+                                      //   },
+                                      // ]}
                                     ></InfoIcon>
                                   </IconButton>
                                 </Tooltip>
@@ -369,13 +370,13 @@ export function Catalogos() {
                                 >
                                   <EditIcon
                                     fontSize="small"
-                                  // sx={[
-                                  //   {
-                                  //     "&:hover": {
-                                  //       color: "blue",
-                                  //     },
-                                  //   },
-                                  // ]}
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "blue",
+                                    //     },
+                                    //   },
+                                    // ]}
                                   />
                                 </IconButton>
                               </Tooltip>
@@ -393,13 +394,13 @@ export function Catalogos() {
                                 >
                                   <DeleteIcon
                                     fontSize="small"
-                                  // sx={[
-                                  //   {
-                                  //     "&:hover": {
-                                  //       color: "red",
-                                  //     },
-                                  //   },
-                                  // ]}
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "red",
+                                    //     },
+                                    //   },
+                                    // ]}
                                   />
                                 </IconButton>
                               </Tooltip>

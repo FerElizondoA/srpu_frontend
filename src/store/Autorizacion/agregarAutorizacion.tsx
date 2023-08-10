@@ -284,8 +284,6 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(state.registrarAutorizacion.documentoSoporte);
-        console.log(state.registrarAutorizacion.acreditacionQuorum);
         state.changeIdAutorizacion(data.data.id);
         state.saveFilesAutorizacion(
           data.data.Id,
@@ -329,9 +327,6 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data.data);
-        console.log(state.registrarAutorizacion.documentoSoporte);
-        console.log(state.registrarAutorizacion.acreditacionQuorum);
         Swal.fire({
           icon: "success",
           title: "Éxito",
