@@ -16,9 +16,7 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Edit,
-} from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import IconButton from "@mui/material/IconButton";
@@ -35,7 +33,9 @@ import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsu
 export const Usuarios = () => {
   const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
+    []
+  );
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
@@ -222,13 +222,9 @@ export const Usuarios = () => {
 
   // useEffect(() => {
   //   document.getElementById('Enter')?.addEventListener('keypress', function(e){
-  //     console.log(e);
   //   });
   // }, [])
 
-
-
- 
   return (
     <Grid
       container
@@ -239,43 +235,66 @@ export const Usuarios = () => {
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>
-      <Grid sx={{display:"flex", justifyContent:"center", alignItems:"center", mt:1 }}>
-            <Typography sx={{ fontWeight: "bold",
-              fontSize: "1.5rem",
-             
-              color: "#AF8C55",
+      <Grid
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 1,
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            fontSize: "1.5rem",
 
-              fontFamily: "MontserratBold",
-              "@media (max-width: 600px)": {
-                // XS (extra small) screen
-                fontSize: "1rem",
-              },
-              "@media (min-width: 601px) and (max-width: 900px)": {
-                // SM (small) screen
-                fontSize: "1.5ch",
-              }
-            }}
-            >Listado de Usuarios</Typography>
-          </Grid>
+            color: "#AF8C55",
+
+            fontFamily: "MontserratBold",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1rem",
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
+            },
+          }}
+        >
+          Listado de Usuarios
+        </Typography>
+      </Grid>
 
       {/* GRID BODY */}
-      {usuarios.length <= 0 ?
-        <Box sx={{ width: '100vw', height: '90vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-          <InfoIcon sx={{ width: '80%', height: '80%', opacity: '10%' }} fontSize="large"></InfoIcon>
-          <Typography color={'RED'}>ERROR</Typography>
-          <Button variant="text" sx={{ textDecoration: 'underline' }}
-            onClick={() => { navigate("../home") }}
-          >VOLVER AL INICIO</Button>
-        </Box> :
-       
-        <Grid item
-
-          width={"100%"}
-          xs={12}
-          lg={12}
-          sm={12}
-        > 
-          <Grid item xs={12} lg={12} sm={12} >
+      {usuarios.length <= 0 ? (
+        <Box
+          sx={{
+            width: "100vw",
+            height: "90vh",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <InfoIcon
+            sx={{ width: "80%", height: "80%", opacity: "10%" }}
+            fontSize="large"
+          ></InfoIcon>
+          <Typography color={"RED"}>ERROR</Typography>
+          <Button
+            variant="text"
+            sx={{ textDecoration: "underline" }}
+            onClick={() => {
+              navigate("../home");
+            }}
+          >
+            VOLVER AL INICIO
+          </Button>
+        </Box>
+      ) : (
+        <Grid item width={"100%"} xs={12} lg={12} sm={12}>
+          <Grid item xs={12} lg={12} sm={12}>
             {/* GRRID Filtro Y BOTONES */}
             <Grid
               item
@@ -283,7 +302,6 @@ export const Usuarios = () => {
               lg={12}
               display="flex"
               justifyContent="flex-end"
-
             >
               <Grid
                 item
@@ -297,7 +315,7 @@ export const Usuarios = () => {
                   sx={{
                     display: "flex",
                     //alignItems: "center",
-                    width: "80%"
+                    width: "80%",
                   }}
                 >
                   <InputBase
@@ -306,11 +324,8 @@ export const Usuarios = () => {
                     placeholder="Buscar"
                     value={busqueda}
                     onChange={(e) => {
-
                       handleChange(e.target.value);
                     }}
-            
-                    
                     onKeyPress={(ev) => {
                       //cuando se presiona Enter
                       if (ev.key === "Enter") {
@@ -334,7 +349,11 @@ export const Usuarios = () => {
                 </Paper>
               </Grid>
 
-              <Grid display={"flex"} justifyContent={"space-evenly"} width={"25%"}>
+              <Grid
+                display={"flex"}
+                justifyContent={"space-evenly"}
+                width={"25%"}
+              >
                 <Grid
                   item
                   xs={2}
@@ -367,7 +386,7 @@ export const Usuarios = () => {
                     endIcon={<PersonAddAlt1Icon />}
                     sx={queries.buttonContinuar}
                     onClick={() => {
-                     navigate("../Iframe");
+                      navigate("../Iframe");
                     }}
                   >
                     Añadir Usuario
@@ -377,20 +396,23 @@ export const Usuarios = () => {
             </Grid>
           </Grid>
 
-
           <Grid container mt={1}>
             <Paper sx={queries.tablaUsuarios}>
-              <TableContainer sx={{ maxHeight: "100%",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0,5)",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },  }}  >
-                <Table stickyHeader aria-label="sticky table" >
+              <TableContainer
+                sx={{
+                  maxHeight: "100%",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(0,0,0,5)",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     {heads.map((head) => (
                       <StyledTableCell
@@ -406,7 +428,7 @@ export const Usuarios = () => {
                     {usuariosFiltrados?.map((row) => (
                       <StyledTableRow>
                         <StyledTableCell
-                          sx={{ display: "flex"}}
+                          sx={{ display: "flex" }}
                           component="th"
                           scope="row"
                           align="center"
@@ -430,8 +452,7 @@ export const Usuarios = () => {
                               <IconButton
                                 aria-label="delete"
                                 size="large"
-                                onClick={() => {
-                                }}
+                                onClick={() => {}}
                               >
                                 <DeleteIcon fontSize="inherit" />
                               </IconButton>
@@ -466,7 +487,6 @@ export const Usuarios = () => {
                           component="th"
                           scope="row"
                           align="center"
-
                         >
                           {row.MunicipioUOrganizacion.toString()}
                         </StyledTableCell>
@@ -533,7 +553,7 @@ export const Usuarios = () => {
             </Paper>
           </Grid>
         </Grid>
-      }
+      )}
       <DialogUsuarios
         ActionButton={butonLabel}
         open={openDialog}

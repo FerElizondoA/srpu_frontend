@@ -521,8 +521,6 @@ export function ComisionesTasaEfectiva() {
                 : moneyMask(comisionMonto)
             }
             onChange={(v) => {
-             
-
               if (
                 !noAplica &&
                 (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
