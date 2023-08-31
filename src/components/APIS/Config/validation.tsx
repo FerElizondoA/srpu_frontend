@@ -217,8 +217,8 @@ export const continueSession = () => {
 };
 
 export const logout = () => {
-  // localStorage.clear();
-  // window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
+  localStorage.clear();
+  window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
 };
 
 export interface IDatosAdicionales {

@@ -147,37 +147,37 @@ const headsAF: Head[] = [
 
 const headFP: Head[] = [
   {
-    label: "Tipo de fuente de pago",
+    label: "TIPO DE FUENTE DE PAGO",
   },
   {
-    label: "Fuente de pago",
+    label: "FUENTE DE PAGO",
   },
   {
-    label: "% asignado del ingreso fondo ",
-  },
-  {
-    label:
-      "% acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
-  },
-  {
-    label: "% de afectacion del gobierno del estado / 100 del ingreso o fondo",
-  },
-  {
-    label: "% afectado al fideicomiso",
-  },
-  {
-    label: "% acumulado de afectación a los mecanismos de pago",
+    label: "% ASIGNADO DEL INGRESO O FONDO al FIDEICOMISO ",
   },
   {
     label:
-      "% asignado al financiamiento u obligación respecto de lo fideicomitido",
+      "% ACUMULADO DE AFECTACIÓN DEL GOBIERNO DEL ESTADO A LOS MECANISMOS DE PAGO / 100",
+  },
+  {
+    label: "% DE AFECTACIÓN DEL GOBIERNO DEL ESTADO / 100 DEL INGRESO O FONDO",
+  },
+  {
+    label: "% AFECTADO AL FIDEICOMISO",
+  },
+  {
+    label: "% ACUMULADO DE AFECTACIÓN A LOS MECANISMOS DE PAGO",
   },
   {
     label:
-      "% asignado al financiamiento u obligación respecto del ingreso o fondo",
+      "% ASIGNADO AL FINANCIAMIENTO U OBLIGACIÓN RESPECTO DE LO FIDEICOMITIDO",
   },
   {
-    label: "% acumulado de la asignación a las obligaciones",
+    label:
+      "% ASIGNADO AL FINANCIAMIENTO U OBLIGACIÓN RESPECTO DEL INGRESO O FONDO",
+  },
+  {
+    label: "% ACUMULADO DE LA ASIGNACIÓN A LAS OBLIGACIONES",
   },
   {
     label: " ",
@@ -212,11 +212,11 @@ export function FuenteDePago() {
     (state) => state.getNumeroFideicomiso
   );
 
-  const garantiaPago : {Id: string, Descripcion: string} = useLargoPlazoStore(
+  const garantiaPago: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.garantiaPago
   );
 
-  const changeGarantiaPago : Function = useLargoPlazoStore(
+  const changeGarantiaPago: Function = useLargoPlazoStore(
     (state) => state.changeGarantiaPago
   );
 
@@ -494,98 +494,118 @@ export function FuenteDePago() {
           );
         })}
 
-      {asignarFuente ? ( 
-       <Grid
-              container
-              width={"100%"}
-              height={"25rem"}
-              direction={"column"}
-              justifyContent={"space-between"}
-            >
-              <Grid>
-                <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
-              </Grid>
+      {asignarFuente ? (
+        <Grid
+          container
+          width={"100%"}
+          height={"25rem"}
+          direction={"column"}
+          justifyContent={"space-between"}
+        >
+          <Grid>
+            <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
+          </Grid>
 
-              <Grid
-                width={"100%"}
-                display={"flex"}
-                justifyContent={"space-evenly"}
+          <Grid width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
+            <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
+              <InputLabel>Clasificación</InputLabel>
+              <Select fullWidth variant="standard" value={headsAF}>
+                {headsAF.map((item, index) => (
+                  <MenuItem key={index}>{item.label}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+              <InputLabel>Tipo de fuente</InputLabel>
+              <Select fullWidth variant="standard" value={headsAF}>
+                {headsAF.map((item, index) => (
+                  <MenuItem key={index}>{item.label}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+              <InputLabel>Fuente de pago</InputLabel>
+              <Select fullWidth variant="standard" value={headsAF}>
+                {headsAF.map((item, index) => (
+                  <MenuItem key={index}>{item.label}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+              <InputLabel>Respecto a: </InputLabel>
+              <Select fullWidth variant="standard" value={headsAF}>
+                {headsAF.map((item, index) => (
+                  <MenuItem key={index}>{item.label}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={2}
+            lg={2}
+            xl={2}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <ThemeProvider theme={theme}>
+              <Button
+                sx={queries.buttonContinuar}
+                variant="outlined"
+                onClick={(e) => {
+                  setFideicomiso(fideicomiso ? false : true);
+                }}
               >
-                <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
-                  <InputLabel>Clasificación</InputLabel>
-                  <Select fullWidth variant="standard" value={headsAF}>
-                    {headsAF.map((item, index) => (
-                      <MenuItem key={index}>{item.label}</MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
+                {/* <CheckIcon fontSize="small" /> */}
+                AGREGAR
+              </Button>
+            </ThemeProvider>
+          </Grid>
 
-                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
-                  <InputLabel>Tipo de fuente</InputLabel>
-                  <Select fullWidth variant="standard" value={headsAF}>
-                    {headsAF.map((item, index) => (
-                      <MenuItem key={index}>{item.label}</MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-
-                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
-                  <InputLabel>Fuente de pago</InputLabel>
-                  <Select fullWidth variant="standard" value={headsAF}>
-                    {headsAF.map((item, index) => (
-                      <MenuItem key={index}>{item.label}</MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-
-                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
-                  <InputLabel>Respecto a: </InputLabel>
-                  <Select fullWidth variant="standard" value={headsAF}>
-                    {headsAF.map((item, index) => (
-                      <MenuItem key={index}>{item.label}</MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-              </Grid>
-
-              <Grid>
-                <Paper>
-                  <TableContainer
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          {headFP.map((head, index) => (
-                            <StyledTableCell align="center" key={index}>
-                              {head.label}
-                            </StyledTableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <StyledTableRow>
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                          <StyledTableCell />
-                        </StyledTableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-            </Grid> 
+          <Grid display={"flex"} justifyContent={"center"}>
+            <Paper sx={{ width: "80%" }}>
+              <TableContainer
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {headFP.map((head, index) => (
+                        <StyledTableCell align="center" key={index}>
+                          {head.label}
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <StyledTableRow>
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+        </Grid>
       ) : null}
 
       <Grid>
@@ -603,11 +623,13 @@ export function FuenteDePago() {
           <InputLabel sx={queries.medium_text}>
             Tipo de garantía de pago
           </InputLabel>
-          <Select fullWidth variant="standard" value={garantiaPago}
-          onChange={(e, text) => {
-            changeGarantiaPago(e)
-          }}
-          
+          <Select
+            fullWidth
+            variant="standard"
+            value={garantiaPago}
+            onChange={(e, text) => {
+              changeGarantiaPago(e);
+            }}
           >
             {CatalogoGarantiaPago.map((item, index) => (
               <MenuItem key={index} value={item.label}>

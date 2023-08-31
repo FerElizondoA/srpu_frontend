@@ -77,11 +77,10 @@ export function AgregarFideicomisos({
     (state) => state.createFideicomiso
   );
 
-  const modificarFideicomiso : Function = useCortoPlazoStore(
+  const modificarFideicomiso: Function = useCortoPlazoStore(
     (state) => state.modificarFideicomiso
   );
 
-  
   const setGeneralFideicomiso: Function = useCortoPlazoStore(
     (state) => state.setGeneralFideicomiso
   );
@@ -104,102 +103,98 @@ export function AgregarFideicomisos({
     (state) => state.changeIdFideicomiso
   );
 
-  const idFideicomiso : string = useCortoPlazoStore(
+  const idFideicomiso: string = useCortoPlazoStore(
     (state) => state.idFideicomiso
   );
 
-  const limpiaFideicomiso = () =>{
+  const limpiaFideicomiso = () => {
     changeIdFideicomiso("");
 
     setGeneralFideicomiso({
       numeroFideicomiso: "",
-      tipoFideicomiso: {Id: "", Descripcion: ""},
+      tipoFideicomiso: { Id: "", Descripcion: "" },
       fechaFideicomiso: "",
-      fiudiciario: {Id: "", Descripcion: ""},
+      fiudiciario: { Id: "", Descripcion: "" },
     });
-    
+
     editarSolicitud([], [], []);
-    
   };
 
-
   return (
-    <>
-      <Dialog fullScreen open={openState} TransitionComponent={Transition}>
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
-            <Tooltip title="Volver">
-              <IconButton
-                edge="start"
-                onClick={() => {
-                  limpiaFideicomiso();
-                  handler(false);
-                  //reset();
-                }}
-                sx={{ color: "white" }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Tooltip>
-
-            <Grid container>
-              <Grid item>
-                <Typography sx={queries.bold_text}>
-                  {accion} Fideicomiso
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid item>
-              <ThemeProvider theme={theme}>
-                <Button
-                  sx={queries.buttonContinuar}
-                  onClick={() => {
-                    if (accion === "Agregar") {
-                      createFideicomiso();
-                      handler(false);
-                      // reset();
-                    } else if (accion === "Editar") {
-                      // updateRow(indexA);
-                      modificarFideicomiso();
-                      handler(false);
-                      // reset();
-                    }
-
-                    setTabIndex(0);
-                  }}
-                >
-                  <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
-                    {accion} fideicomiso
-                  </Typography>
-                </Button>
-              </ThemeProvider>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-        <Grid item container direction="column">
-          <Grid item>
-            <Tabs
-              value={tabIndex}
-              onChange={handleChange}
-              centered={query.isScrollable ? false : true}
-              variant={query.isScrollable ? "scrollable" : "standard"}
-              scrollButtons
-              allowScrollButtonsMobile
+    <Dialog fullScreen open={openState} TransitionComponent={Transition}>
+      <AppBar sx={{ position: "relative" }}>
+        <Toolbar>
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                limpiaFideicomiso();
+                handler(false);
+                //reset();
+              }}
+              sx={{ color: "white" }}
             >
-              <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
-              <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
-              <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
-            </Tabs>
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
 
-            {tabIndex === 0 && <DatoGeneralesFideicomiso />}
-
-            {tabIndex === 1 && <TipoDeMovimiento />}
-
-            {tabIndex === 2 && <SDocumental />}
+          <Grid container>
+            <Grid item>
+              <Typography sx={queries.bold_text}>
+                {accion} Fideicomiso
+              </Typography>
+            </Grid>
           </Grid>
+
+          <Grid item>
+            <ThemeProvider theme={theme}>
+              <Button
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  if (accion === "Agregar") {
+                    createFideicomiso();
+                    handler(false);
+                    // reset();
+                  } else if (accion === "Editar") {
+                    // updateRow(indexA);
+                    modificarFideicomiso();
+                    handler(false);
+                    // reset();
+                  }
+
+                  setTabIndex(0);
+                }}
+              >
+                <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
+                  {accion} fideicomiso
+                </Typography>
+              </Button>
+            </ThemeProvider>
+          </Grid>
+        </Toolbar>
+      </AppBar>
+      <Grid item container direction="column">
+        <Grid item>
+          <Tabs
+            value={tabIndex}
+            onChange={handleChange}
+            centered={query.isScrollable ? false : true}
+            variant={query.isScrollable ? "scrollable" : "standard"}
+            scrollButtons
+            allowScrollButtonsMobile
+          >
+            <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
+            <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
+            <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
+          </Tabs>
+
+          {tabIndex === 0 && <DatoGeneralesFideicomiso />}
+
+          {tabIndex === 1 && <TipoDeMovimiento />}
+
+          {tabIndex === 2 && <SDocumental />}
         </Grid>
-      </Dialog>
-    </>
+      </Grid>
+    </Dialog>
   );
 }

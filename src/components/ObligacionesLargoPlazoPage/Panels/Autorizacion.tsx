@@ -120,13 +120,13 @@ export function Autorizacion() {
 
   const [arrDocs, setArrDocs] = useState<any>([]);
 
-  const [fileSelected, setFileSelected] = useState<any>("");
-
   const [accion, setAccion] = useState("");
 
   useEffect(() => {
     getAutorizaciones();
   }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
+
+  const [fileSelected, setFileSelected] = useState<any>("");
 
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {

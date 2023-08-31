@@ -26,7 +26,7 @@ import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 import { Fideicomisos } from "./screens/Fideicomisos/Fideicomisos";
-import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios"
+import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
 
 export const appTheme = createTheme({
   palette: {
@@ -36,10 +36,10 @@ export const appTheme = createTheme({
   },
 });
 
-export const  getToken = () => {
+export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
-  return token
-}
+  return token;
+};
 
 function App() {
   const navigate = useNavigate();
@@ -75,11 +75,9 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
- 
-  
-  useEffect (() => {
-    getToken()
-  }, [])
+  useEffect(() => {
+    getToken();
+  }, []);
 
   return (
     <ThemeProvider theme={appTheme}>
@@ -110,12 +108,23 @@ function App() {
           ></Route>
           <Route path="fideicomisos" element={<Fideicomisos />}></Route>
 
-          <Route path="IFrame"
-            element={<IFrame
-              source={"?jwt=" + getToken() + "&IdApp=" + localStorage.getItem("IdApp")}
-              baseURL={String(process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN)}
-            />}></Route>
-            
+          <Route
+            path="IFrame"
+            element={
+              <IFrame
+                source={
+                  "?jwt=" +
+                  getToken() +
+                  "&IdApp=" +
+                  localStorage.getItem("IdApp")
+                }
+                // baseURL={String(
+                //   process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN
+                // )}
+                baseURL={String("http://localhost:80")} //log
+              />
+            }
+          ></Route>
         </Routes>
       </CssBaseline>
     </ThemeProvider>
