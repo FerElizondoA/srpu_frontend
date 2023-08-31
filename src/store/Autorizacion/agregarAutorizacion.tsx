@@ -92,9 +92,9 @@ export interface AgregarAutorizacionLargoPlazoSlice {
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[]; //Los utilizaras desde el zustand de fideicomiso
-  getAutorizaciones: () => void; //Los utilizaras desde el zustand de fideicomiso
-
+  autorizaciones: Autorizaciones[]; 
+  getAutorizaciones: () => void; 
+  
   autorizacionSelect: Autorizaciones[];
   setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
   removeAutorizacionesSelect: (index: number) => void;

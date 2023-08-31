@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 
 export const modulos = [
   {
-    label: "Claves de inscripción",
+    label: "Claves de Inscripción",
     fnc: "claveDeInscripcion",
   },
   {
@@ -32,15 +32,15 @@ export const modulos = [
     fnc: "destinos",
   },
   {
-    label: "Detalle de la inversión",
+    label: "Detalle de la Inversión",
     fnc: "detalleInversion",
   },
   {
-    label: "Días del ejercicio",
+    label: "Días del Ejercicio",
     fnc: "diasDelEjercicio",
   },
   {
-    label: "Entes público obligados",//SI
+    label: "Entes Público Obligados",//SI
     fnc: "entePublicoObligado",
   },
   // {

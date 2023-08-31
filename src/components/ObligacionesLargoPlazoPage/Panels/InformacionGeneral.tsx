@@ -230,6 +230,8 @@ export function InformacionGeneral() {
     addObligadoSolidarioAval(tab);
   };
 
+  
+
   const Denominaciones = ["Pesos", "UDIS"];
 
   useEffect(() => {
@@ -284,7 +286,7 @@ export function InformacionGeneral() {
       fechaVencimiento: vencimiento,
       plazo: res,
       destino: destino,
-      monto: monto,
+      monto: moneyMask(monto.toString()),
       denominacion: denominacion,
       institucionFinanciera: institucionFinanciera,
     });
@@ -294,13 +296,13 @@ export function InformacionGeneral() {
       detalleInversion: generalGCDetalleInversion,
       claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
       descripcion: generalGCDescripcion,
-      monto: generalGCMonto,
+      monto: moneyMask(monto.toString()),
     });
 
     changeGastosCostos({
       gastosAdicionales: GCGastosAdicionales,
       saldoVigente: GCSaldoVigente,
-      montoGastosAdicionales: GCMontoGastosAdicionales,
+      montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
     });
   }, [contratacion, vencimiento]);
 
@@ -378,23 +380,26 @@ export function InformacionGeneral() {
             placeholder="0"
             value={monto <= 0 ? "" : monto.toString()}
             onChange={(v) => {
-              if (validator.isNumeric(v.target.value)) {
+              if (
+                validator.isNumeric(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) &&
+                parseInt(
+                  v.target.value
+                    .replace(".", "")
+                    .replace(",", "")
+                    .replace(/\D/g, "")
+                ) < 9999999999999999
+              ) {
                 changeInformacionGeneral({
                   fechaContratacion: contratacion,
                   fechaVencimiento: vencimiento,
                   plazo: plazo,
                   destino: destino,
-                  monto: v.target.value,
-                  denominacion: denominacion,
-                  institucionFinanciera: institucionFinanciera,
-                });
-              } else if (v.target.value === "") {
-                changeInformacionGeneral({
-                  fechaContratacion: contratacion,
-                  fechaVencimiento: vencimiento,
-                  plazo: plazo,
-                  destino: destino,
-                  monto: 0,
+                  monto: moneyMask(v.target.value),
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
                 });
@@ -409,7 +414,7 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              startAdornment: <AttachMoneyIcon />,
+             // startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />

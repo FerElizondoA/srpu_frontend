@@ -193,6 +193,7 @@ export function Autorizacion() {
               let loc = autorizaciones.filter(
                 (_i, index) => _i.Id === text?.Id
               );
+              console.log("vairiable loc: ", loc);
               setAutorizacionSelect(loc!);
             }}
             renderInput={(params) => (

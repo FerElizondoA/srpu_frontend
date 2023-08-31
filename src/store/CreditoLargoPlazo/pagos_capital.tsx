@@ -7,6 +7,12 @@ import {
 } from "../CreditoCortoPlazo/condicion_financiera";
 
 export interface PagosCapitalLargoPlazoSlice {
+  disposicionesParciales: boolean;
+  setDisposicionesParciales: (bol: boolean) => void;
+  tasasParciales: boolean;
+  setTasasParciales: (bol: boolean) => void;
+
+
   tablaDisposicion: Disposicion[];
   disposicion: { fechaDisposicion: string; importe: number };
 
@@ -36,7 +42,7 @@ export interface PagosCapitalLargoPlazoSlice {
 
   addDisposicion: (Disposicion: Disposicion) => void;
   updateDisposicion: (Disposicion: Disposicion[]) => void;
-  cleanDisposicion: () => void;
+  cleanDisposicion: (monto: number) => void;
   removeDisposicion: (index: number) => void;
 
   changeCapital: (
@@ -69,6 +75,16 @@ export interface PagosCapitalLargoPlazoSlice {
 export const createPagosCapitalLargoPlazoSlice: StateCreator<
   PagosCapitalLargoPlazoSlice
 > = (set, get) => ({
+  disposicionesParciales: false,
+  setDisposicionesParciales: (bol: boolean) =>
+    set(() => ({
+      disposicionesParciales: bol,
+    })),
+  tasasParciales: false,
+  setTasasParciales: (bol: boolean) =>
+    set(() => ({
+      tasasParciales: bol,
+    })),
   tablaDisposicion: [],
   disposicion: {
     fechaDisposicion: new Date().toString(),
@@ -118,7 +134,15 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
       tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
     })),
 
-  cleanDisposicion: () => set(() => ({ tablaDisposicion: [] })),
+  cleanDisposicion: (monto: number) =>
+    set(() => ({
+      tablaDisposicion: [
+        {
+          fechaDisposicion: new Date().toString(),
+          importe: monto,
+        },
+      ],
+    })),
 
   changeCapital: (
     fechaPrimerPago: string,
