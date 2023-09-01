@@ -563,28 +563,6 @@ router.delete("/delete-tiposDocumento", verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeDocumento(req, res);
 });
 
-// //TipoDocumento
-// router.post("/create-TiposDocumento",  verifyToken.verifyJWT, (req, res, express) => {
-//   createTipoDocumento(req, res);
-// });
-
-// router.get("/get-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
-//   getTiposDocumento(req, res);
-// });
-
-// router.get("/detail-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
-//   getDetailTipoDocumento(req, res);
-// });
-
-// router.put("/modify-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
-//   modifyTipoDocumento(req, res);
-// });
-
-// router.delete("/delete-TiposDocumento", verifyToken.verifyJWT, (req, res) => {
-//   deleteTipoDocumento(req, res);
-// });
-//#endregion
-
 //#region TipoPeriodicidadDePago
 router.post(
   "/create-periodicidadDePago",
@@ -933,7 +911,7 @@ router.delete("/delete-fideicomisarios", (req, res) => {
 //#endregion
 
 //#region Ordenes Fideicomisario
-router.post("/create-ordenFideicomisario", (req, res, express) => {
+router.post("/create-ordenesFideicomisario", (req, res, express) => {
   createOrdenFideicomisario(req, res);
 });
 
