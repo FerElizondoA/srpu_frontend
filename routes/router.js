@@ -211,6 +211,13 @@ const {
   deleteMandatario,
   getMandatarios,
 } = require("../controllers/Mandatarios.js");
+const {
+  getTiposDeGarantiaDePago,
+  createTipoDeGarantiaDePago,
+  getDetailTipoDeGarantiaDePago,
+  modifyTipoDeGarantiaDePago,
+  deleteTipoDeGarantiaDePago,
+} = require("../controllers/TiposDeGarantiaDePago.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1093,6 +1100,32 @@ router.put("/modify-mandatario", (req, res) => {
 
 router.delete("/delete-mandatario", (req, res) => {
   deleteMandatario(req, res);
+});
+//#endregion
+
+//#region TiposDeGarantiaDePago
+router.post("/create-tiposDeGarantiaDePago", (req, res, express) => {
+  createTipoDeGarantiaDePago(req, res);
+});
+
+router.get("/get-tiposDeGarantiaDePago", (req, res) => {
+  getTiposDeGarantiaDePago(req, res);
+});
+
+router.get(
+  "/detail-tiposDeGarantiaDePago",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetailTipoDeGarantiaDePago(req, res);
+  }
+);
+
+router.put("/modify-tiposDeGarantiaDePago", (req, res) => {
+  modifyTipoDeGarantiaDePago(req, res);
+});
+
+router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
+  deleteTipoDeGarantiaDePago(req, res);
 });
 //#endregion
 
