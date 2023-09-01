@@ -943,7 +943,7 @@ router.get("/get-tiposDeFideicomitente", (req, res) => {
 //#endregion
 
 //#region Tipos De Fuente
-router.post("/create-tipoDeFuente", (req, res, express) => {
+router.post("/create-tiposDeFuente", (req, res, express) => {
   createTipoDeFuente(req, res);
 });
 
@@ -951,15 +951,15 @@ router.get("/get-tiposDeFuente", (req, res) => {
   getTiposDeFuente(req, res);
 });
 
-// router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
-//   getDetailFideicomiso(req, res);
+// router.get("/detail-tiposDeFuente", verifyToken.verifyJWT, (req, res) => {
+//   getDetailTiposDeFuente(req, res);
 // });
 
-router.put("/modify-tipoDeFuente", (req, res) => {
+router.put("/modify-tiposDeFuente", (req, res) => {
   modifyTipoDeFuente(req, res);
 });
 
-router.delete("/delete-tipoDeFuente", (req, res) => {
+router.delete("/delete-tiposDeFuente", (req, res) => {
   deleteTipoDeFuente(req, res);
 });
 //#endregion
