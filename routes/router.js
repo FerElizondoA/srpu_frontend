@@ -178,6 +178,8 @@ const {
 const {
   createTipoDeFuente,
   getTiposDeFuente,
+  deleteTipoDeFuente,
+  modifyTipoDeFuente,
 } = require("../controllers/TiposDeFuente.js");
 const {
   createFondoOIngreso,
@@ -953,13 +955,13 @@ router.get("/get-tiposDeFuente", (req, res) => {
 //   getDetailFideicomiso(req, res);
 // });
 
-// router.put("/modify-fideicomiso", (req, res) => {
-//   modifyFideicomiso(req, res);
-// });
+router.put("/modify-tipoDeFuente", (req, res) => {
+  modifyTipoDeFuente(req, res);
+});
 
-// router.delete("/delete-fideicomiso", (req, res) => {
-//   deleteFideicomiso(req, res);
-// });
+router.delete("/delete-tipoDeFuente", (req, res) => {
+  deleteTipoDeFuente(req, res);
+});
 //#endregion
 
 //#region Fondos O Ingresos
