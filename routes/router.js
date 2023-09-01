@@ -202,6 +202,13 @@ const {
   modifyDetalleInversion,
   deleteDetalleInversion,
 } = require("../controllers/DetalleDeLaInversion.js");
+const {
+  createMandatario,
+  getDetailMandatario,
+  modifyMandatario,
+  deleteMandatario,
+  getMandatarios,
+} = require("../controllers/Mandatarios.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1062,6 +1069,28 @@ router.put("/modify-detalleInversion", (req, res) => {
 
 router.delete("/delete-detalleInversion", (req, res) => {
   deleteDetalleInversion(req, res);
+});
+//#endregion
+
+//#region Mandatarios
+router.post("/create-mandatario", (req, res, express) => {
+  createMandatario(req, res);
+});
+
+router.get("/get-mandatario", (req, res) => {
+  getMandatarios(req, res);
+});
+
+router.get("/detail-mandatario", verifyToken.verifyJWT, (req, res) => {
+  getDetailMandatario(req, res);
+});
+
+router.put("/modify-mandatario", (req, res) => {
+  modifyMandatario(req, res);
+});
+
+router.delete("/delete-mandatario", (req, res) => {
+  deleteMandatario(req, res);
 });
 //#endregion
 
