@@ -71,7 +71,7 @@ export const AñadirNotificaciones = ({
           Enviar Notificacion
         </Typography>
       </DialogTitle>
-      <DialogContent>
+      {/* <DialogContent>
         <Grid
           mt={2}
           container
@@ -189,7 +189,7 @@ export const AñadirNotificaciones = ({
             Cancelar
           </Button>
         </DialogActions>
-      </DialogContent>
+      </DialogContent> */}
     </Dialog>
   ) : null;
 };

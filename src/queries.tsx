@@ -478,7 +478,7 @@ export const queries = {
     height: "95%",
   },
 
-  catalogosConfig : {
+  catalogosConfig: {
     "@media (min-width: 480px)": {
       height: "30rem",
     },
@@ -495,7 +495,7 @@ export const queries = {
       height: "55rem",
     },
 
-    contenedorListado : {
+    contenedorListado: {
       height: "90%",
       flexDirection: "column",
       display: "flex",
@@ -517,7 +517,6 @@ export const queries = {
       display: "flex",
       justifyContent: "start",
       fontFamily: "MontserratMedium",
-    }
-
-  }
+    },
+  },
 };

@@ -32,25 +32,23 @@ export const DialogUsuarios = ({
   UserObject?: IUsuarios;
   ActionButton: string;
 }) => {
-  const [registroDatos, setRegistroDatos] = useState<IUsuarios>({
-    id: UserObject?.id || "",
-    IdCentral: UserObject?.IdCentral || "",
+  const [registroDatos, setRegistroDatos] = useState({
+    Id: UserObject?.Id || "",
     Nombre: UserObject?.Nombre || "",
     ApellidoPaterno: UserObject?.ApellidoPaterno || "",
     ApellidoMaterno: UserObject?.ApellidoMaterno || "",
     NombreUsuario: UserObject?.NombreUsuario || "",
     CorreoElectronico: UserObject?.CorreoElectronico || "",
-    Curp: UserObject?.Curp || "",
-    Rfc: UserObject?.Rfc || "",
+    CURP: UserObject?.CURP || "",
+    RFC: UserObject?.RFC || "",
     Telefono: UserObject?.Telefono || "",
     Ext: UserObject?.Ext || "",
     Celular: UserObject?.Celular || "",
     Cargo: UserObject?.Cargo || "",
-    CorreoDeRecuperacion: UserObject?.CorreoDeRecuperacion || "",
     Rol: UserObject?.Rol || "",
     IdRol: UserObject?.IdRol || "",
     MunicipioUOrganizacion: UserObject?.MunicipioUOrganizacion || "",
-    IdMunicipioUOrganizacion: UserObject?.IdMunicipioUOrganizacion || "",
+    // IdMunicipioUOrganizacion: UserObject?.IdMunicipioUOrganizacion || "",
   });
 
   /*DIALOGF */
@@ -59,11 +57,11 @@ export const DialogUsuarios = ({
 
   const [entesPublicos, setEntesPublicos] = useState<Array<ICatalogo>>([]);
 
-  useEffect(() => {
-    if (UserObject !== undefined) {
-      setRegistroDatos(UserObject);
-    }
-  }, [UserObject]);
+  // useEffect(() => {
+  //   if (UserObject !== undefined) {
+  //     setRegistroDatos(UserObject);
+  //   }
+  // }, [UserObject]);
 
   useEffect(() => {
     getCatalogo(setTipoUsuario, "roles");
@@ -109,7 +107,12 @@ export const DialogUsuarios = ({
 
   const validaEmail = (dato: string) => {
     const format = /^[A-Z0-9._%+-]+@[^@]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if (dato.length < 255 && !format.test(dato) && dato.indexOf("@") === dato.lastIndexOf("@") && dato.indexOf(".") === dato.lastIndexOf(".")) {
+    if (
+      dato.length < 255 &&
+      !format.test(dato) &&
+      dato.indexOf("@") === dato.lastIndexOf("@") &&
+      dato.indexOf(".") === dato.lastIndexOf(".")
+    ) {
       setRegistroDatos({ ...registroDatos, CorreoElectronico: dato });
     }
   };
@@ -159,7 +162,7 @@ export const DialogUsuarios = ({
 
   const validaCargo = (dato: string) => {
     const format = /[¬°`!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?~]/;
-    if (dato.length < 255 && !format.test(dato) ) {
+    if (dato.length < 255 && !format.test(dato)) {
       setRegistroDatos({ ...registroDatos, Cargo: dato });
     }
   };
@@ -205,9 +208,9 @@ export const DialogUsuarios = ({
   const validaCURP = (dato: string) => {
     var format = /[¬°`!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?~]/;
     if (dato.length < 19 && !format.test(dato)) {
-      setRegistroDatos({ ...registroDatos, Curp: dato.toUpperCase() });
+      setRegistroDatos({ ...registroDatos, CURP: dato.toUpperCase() });
     }
-    if (registroDatos.Curp.length < 18) {
+    if (registroDatos.CURP.length < 18) {
       setErroresCurp(true);
       setLeyendaErrorCurp("El CURP esta incompleto");
     } else {
@@ -219,9 +222,9 @@ export const DialogUsuarios = ({
   const validaRFC = (dato: string) => {
     var format = /[¬°`!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?~]/;
     if (dato.length < 14 && !format.test(dato)) {
-      setRegistroDatos({ ...registroDatos, Rfc: dato.toUpperCase() });
+      setRegistroDatos({ ...registroDatos, RFC: dato.toUpperCase() });
     }
-    if (registroDatos.Rfc.length < 12 || registroDatos.Rfc.length > 13) {
+    if (registroDatos.RFC.length < 12 || registroDatos.RFC.length > 13) {
       setErroresRfc(true);
       setLeyendaErrorRfc("El RFC esta incompleto");
     } else {
@@ -238,12 +241,12 @@ export const DialogUsuarios = ({
     }
   };
 
-  const validaEmailRecuperacion = (dato: string) => {
-    const format =/^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-      if (dato.length < 101 && !format.test(dato) && dato.indexOf("@") === dato.lastIndexOf("@") && dato.indexOf(".") === dato.lastIndexOf(".")) {
-        setRegistroDatos({ ...registroDatos, CorreoDeRecuperacion: dato });
-    }
-  };
+  // const validaEmailRecuperacion = (dato: string) => {
+  //   const format =/^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+  //     if (dato.length < 101 && !format.test(dato) && dato.indexOf("@") === dato.lastIndexOf("@") && dato.indexOf(".") === dato.lastIndexOf(".")) {
+  //       setRegistroDatos({ ...registroDatos, CorreoDeRecuperacion: dato });
+  //   }
+  // };
 
   ////////////////////////////////////////////////////////
 
@@ -351,14 +354,14 @@ export const DialogUsuarios = ({
       setErrorTipoUsuario(false);
     }
 
-    if (registroDatos.Curp === null || /^[\s]*$/.test(registroDatos.Curp)) {
+    if (registroDatos.CURP === null || /^[\s]*$/.test(registroDatos.CURP)) {
       setErrorCurp(true);
       check = true;
     } else {
       setErrorCurp(false);
     }
 
-    if (registroDatos.Rfc === null || /^[\s]*$/.test(registroDatos.Rfc)) {
+    if (registroDatos.RFC === null || /^[\s]*$/.test(registroDatos.RFC)) {
       setErrorRfc(true);
       check = true;
     } else {
@@ -392,15 +395,15 @@ export const DialogUsuarios = ({
       setErrorExt(false);
     }
 
-    if (
-      registroDatos.CorreoDeRecuperacion === null ||
-      /^[\s]*$/.test(registroDatos.CorreoDeRecuperacion)
-    ) {
-      setErrorEmailAlt(true);
-      check = true;
-    } else {
-      setErrorEmailAlt(false);
-    }
+    // if (
+    //   registroDatos.CorreoDeRecuperacion === null ||
+    //   /^[\s]*$/.test(registroDatos.CorreoDeRecuperacion)
+    // ) {
+    //   setErrorEmailAlt(true);
+    //   check = true;
+    // } else {
+    //   setErrorEmailAlt(false);
+    // }
 
     if (!check) {
       setOpenDialogConfirm(true);
@@ -644,13 +647,13 @@ export const DialogUsuarios = ({
                 fullWidth
                 label="CURP"
                 required
-                value={registroDatos.Curp}
+                value={registroDatos.CURP}
                 onChange={(e) => {
                   validaCURP(e.target.value);
                 }}
                 helperText={
                   LeyendaErrorCurp || ErrorCurp
-                    ? "Curp incompleto o invalido"
+                    ? "CURP incompleto o invalido"
                     : ""
                 }
                 error={ErrorCurp || ErroresCurp}
@@ -671,7 +674,7 @@ export const DialogUsuarios = ({
                 fullWidth
                 label="RFC"
                 required
-                value={registroDatos.Rfc}
+                value={registroDatos.RFC}
                 onChange={(e) => {
                   validaRFC(e.target.value);
                 }}
@@ -765,7 +768,7 @@ export const DialogUsuarios = ({
               />
             </Grid>
 
-            <Grid
+            {/* <Grid
               item
               textTransform={"uppercase"}
               xs={12}
@@ -787,7 +790,7 @@ export const DialogUsuarios = ({
                 helperText={ErrorEmailAlt ? "Correo electrónico inválido." : ""}
                 error={ErrorEmailAlt}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid
               item
@@ -873,7 +876,8 @@ export const DialogUsuarios = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button sx ={queries.buttonCancelar}
+          <Button
+            sx={queries.buttonCancelar}
             onClick={() => {
               setOpenDialogConfirm(!openDialogConfirm);
               setError("");
@@ -881,15 +885,16 @@ export const DialogUsuarios = ({
           >
             Cancelar
           </Button>
-          <Button sx={queries.buttonContinuar}
+          <Button
+            sx={queries.buttonContinuar}
             onClick={() => {
-              createSolicitud(
-                registroDatos,
-                ActionButton === "Agregar" ? "ALTA" : "MODIFICACION",
-                comentario,
-                setStatusSolicitud,
-                setError
-              );
+              // createSolicitud(
+              //   registroDatos,
+              //   ActionButton === "Agregar" ? "ALTA" : "MODIFICACION",
+              //   comentario,
+              //   setStatusSolicitud,
+              //   setError
+              // );
               setOpenDialogConfirm(!openDialogConfirm);
             }}
             autoFocus

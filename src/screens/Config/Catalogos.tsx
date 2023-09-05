@@ -368,16 +368,7 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <EditIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "blue",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
+                                  <EditIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip title="Eliminar">
@@ -392,16 +383,7 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <DeleteIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "red",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
+                                  <DeleteIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
                             </TableCell>

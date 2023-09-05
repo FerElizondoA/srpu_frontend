@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect } from "react";
 import "./App.css";
 import "./Fonts.css";
 
-import { Route, Routes, useNavigate } from "react-router-dom"; //, useNavigate
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
@@ -116,12 +116,12 @@ function App() {
                   "?jwt=" +
                   getToken() +
                   "&IdApp=" +
-                  localStorage.getItem("IdApp")
+                  localStorage.getItem("IdApp") +
+                  "&idUsuarioModificado=" +
+                  localStorage.getItem("idUsuarioModificado")
                 }
-                // baseURL={String(
-                //   process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN
-                // )}
-                baseURL={String("http://localhost:80")} //log
+                // baseURL={String("http://localhost:80")} //log
+                baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)} //log
               />
             }
           ></Route>
