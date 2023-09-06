@@ -229,8 +229,8 @@ export function FuenteDePago() {
       container
       direction={"column"}
       justifyContent={"space-evenly"}
-      height={!asignarFuente ? "38rem" : "68rem"}
-      //height={!fideicomiso ? "36rem" : !asignarFuente ? "68rem" : "68rem"}
+      height={!asignarFuente ? "38rem" : "90rem"}
+      //height={numeroFideicomisoSelect ? "40rem" : asignarFuente ? "68rem" : "68rem"}
     >
       <Grid>
         <Divider sx={queries.bold_text}>MECANISMO O VEHÍCULO DE PAGO</Divider>
@@ -243,7 +243,7 @@ export function FuenteDePago() {
       >
         {/* Cuerpo */}
         <Grid display={"flex"} justifyContent={"space-evenly"}>
-          <Grid md={4} lg={4} xl={3.06}>
+          <Grid xs={3} sm={3.3} md={3.3} lg={3} xl={3.06}>
             <InputLabel sx={queries.medium_text}>
               Mecanismo o vehículo de pago
             </InputLabel>
@@ -266,7 +266,7 @@ export function FuenteDePago() {
             </FormControl>
           </Grid>
 
-          <Grid md={4} lg={4} xl={3}>
+          <Grid xs={3} sm={3.3} md={3.3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Número del fideicomiso
             </InputLabel>
@@ -306,7 +306,7 @@ export function FuenteDePago() {
             />
           </Grid>
 
-          <Grid md={4} lg={4} xl={3}>
+          <Grid xs={3} sm={3.3} md={3.3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Bono cupón cero</InputLabel>
 
             <FormControl fullWidth>
@@ -335,7 +335,7 @@ export function FuenteDePago() {
               display={"flex"}
               justifyContent={"space-between"}
             >
-              <Grid md={4} lg={4} xl={3.5}>
+              <Grid xs={7} md={4} lg={4} xl={3.5}>
                 <InputLabel sx={queries.medium_text}>
                   Clasificación del bono del cupón cero
                 </InputLabel>
@@ -358,9 +358,11 @@ export function FuenteDePago() {
               </Grid>
 
               <Grid
-                md={4}
-                lg={4}
-                xl={2}
+                xs={4}
+                sm={3.3}
+                md={3.3}
+                lg={3}
+                xl={3}
                 display={"flex"}
                 justifyContent={"center"}
                 alignItems={"center"}
@@ -400,11 +402,15 @@ export function FuenteDePago() {
                 width={"100%"}
               >
                 <Grid
+                  xs={10}
+                  sm={10}
+                  md={3.3}
+                  lg={3}
+                  xl={3}
                   container
                   direction={"column"}
                   justifyContent={"space-between"}
                   height={"15rem"}
-                  md={3}
                 >
                   <InputLabel>Tipo de fideicomiso</InputLabel>
                   <TextField
@@ -498,7 +504,6 @@ export function FuenteDePago() {
         <Grid
           container
           width={"100%"}
-          height={"25rem"}
           direction={"column"}
           justifyContent={"space-between"}
         >
@@ -506,8 +511,23 @@ export function FuenteDePago() {
             <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
           </Grid>
 
-          <Grid width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
-            <Grid xs={12} sm={12} md={2} lg={2} xl={2}>
+          <Grid
+            sx={{
+              ...queries.fuentePagoApartados,
+              width: "100%",
+              // display:"flex",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <Grid
+              item
+              sx={{ width: "100%" }}
+              xs={10}
+              sm={10}
+              md={10}
+              lg={2}
+              xl={2}
+            >
               <InputLabel>Clasificación</InputLabel>
               <Select fullWidth variant="standard" value={headsAF}>
                 {headsAF.map((item, index) => (
@@ -516,7 +536,15 @@ export function FuenteDePago() {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+            <Grid
+              item
+              sx={{ width: "100%" }}
+              xs={10}
+              sm={10}
+              md={10}
+              lg={2}
+              xl={2}
+            >
               <InputLabel>Tipo de fuente</InputLabel>
               <Select fullWidth variant="standard" value={headsAF}>
                 {headsAF.map((item, index) => (
@@ -525,7 +553,15 @@ export function FuenteDePago() {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+            <Grid
+              item
+              sx={{ width: "100%" }}
+              xs={10}
+              sm={10}
+              md={10}
+              lg={2}
+              xl={2}
+            >
               <InputLabel>Fuente de pago</InputLabel>
               <Select fullWidth variant="standard" value={headsAF}>
                 {headsAF.map((item, index) => (
@@ -534,7 +570,15 @@ export function FuenteDePago() {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+            <Grid
+              item
+              sx={{ width: "100%" }}
+              xs={10}
+              sm={10}
+              md={10}
+              lg={2}
+              xl={2}
+            >
               <InputLabel>Respecto a: </InputLabel>
               <Select fullWidth variant="standard" value={headsAF}>
                 {headsAF.map((item, index) => (
@@ -545,38 +589,13 @@ export function FuenteDePago() {
           </Grid>
 
           <Grid
-            item
-            xs={12}
-            sm={12}
-            md={2}
-            lg={2}
-            xl={2}
+            mt={4}
+            width={"100%"}
             display={"flex"}
             justifyContent={"center"}
-            alignItems={"center"}
           >
-            <ThemeProvider theme={theme}>
-              <Button
-                sx={queries.buttonContinuar}
-                variant="outlined"
-                onClick={(e) => {
-                  setFideicomiso(fideicomiso ? false : true);
-                }}
-              >
-                {/* <CheckIcon fontSize="small" /> */}
-                AGREGAR
-              </Button>
-            </ThemeProvider>
-          </Grid>
-
-          <Grid display={"flex"} justifyContent={"center"}>
-            <Paper sx={{ width: "80%" }}>
-              <TableContainer
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
+            <Paper sx={{ ...queries.tablaAsignarFuente }}>
+              <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -619,7 +638,7 @@ export function FuenteDePago() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Grid md={4} lg={4} xl={4}>
+        <Grid xs={10} sm={10} md={10} lg={10} xl={5}>
           <InputLabel sx={queries.medium_text}>
             Tipo de garantía de pago
           </InputLabel>

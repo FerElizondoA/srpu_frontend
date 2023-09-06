@@ -44,11 +44,11 @@ export function DatoGeneralesFideicomiso() {
   );
   const tipoFideicomiso: { Id: string; Descripcion: string } =
     useCortoPlazoStore((state) => state.generalFideicomiso.tipoFideicomiso);
-  
-    const fechaFideicomiso: string = useCortoPlazoStore(
+
+  const fechaFideicomiso: string = useCortoPlazoStore(
     (state) => state.generalFideicomiso.fechaFideicomiso
   );
-  
+
   const fiudiciario: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.generalFideicomiso.fiudiciario
   );
@@ -116,6 +116,15 @@ export function DatoGeneralesFideicomiso() {
     (state) => state.getOrdenesFideicomisario
   );
 
+  const getFideicomisos: Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+
+  useEffect(() => {
+    getFideicomisos()
+  }, [])
+
+
   useEffect(() => {
     getTiposFideicomiso();
     getFiudiciarios();
@@ -135,12 +144,12 @@ export function DatoGeneralesFideicomiso() {
     },
   ];
 
- 
 
 
   // const idFideicomiso : string = useCortoPlazoStore(
   //   (state) => state.idFideicomiso
   // );
+
   useEffect(() => {
     setGeneralFideicomiso({
       numeroFideicomiso: numeroFideicomiso,
@@ -149,324 +158,447 @@ export function DatoGeneralesFideicomiso() {
       fiudiciario: fiudiciario,
     })
   }, [])
-  
-
 
 
   return (
-    <Grid container display="flex" direction={"column"} height={"85vh"}>
-      <Grid
-        item
-        display={"grid"}
-        gridTemplateColumns={"repeat(2, 1fr)"}
-        justifyItems={"center"}
-        height={"25%"}
+    <>
+      <Grid container flexDirection="column" justifyContent={"space-evenly"}
+        sx={{
+          height: "46rem",
+          "@media (min-width: 480px)": {
+            height: "50rem"
+          },
+
+          "@media (min-width: 768px)": {
+            height: "70rem"
+          },
+
+          "@media (min-width: 1140px)": {
+            height: "70rem",
+          },
+
+          "@media (min-width: 1400px)": {
+            height: "38rem"
+          },
+
+          "@media (min-width: 1870px)": {
+            height: "51rem"
+          },
+        }}
       >
-        <Grid item lg={5} width={"100%"}>
-          <InputLabel sx={queries.medium_text}>
-            Numero del fideicomiso
-          </InputLabel>
-          <TextField
-            
-            fullWidth
-            type="number"
-            value={numeroFideicomiso}
-            onChange={(v) =>
-              setGeneralFideicomiso({
-                numeroFideicomiso: v.target.value,
-                tipoFideicomiso: tipoFideicomiso,
-                fechaFideicomiso: fechaFideicomiso,
-                fiudiciario: fiudiciario,
-              })
-            }
-          />
-        </Grid>
-        <Grid item lg={5} width={"100%"}>
-          <InputLabel sx={queries.medium_text}>Tipo de fideicomiso</InputLabel>
-          <Autocomplete
-            disableClearable
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText="Cerrar"
-            openText="Abrir"
-            options={catalogoTiposDeFideicomiso}
-            value={tipoFideicomiso}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Id}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            onChange={(event, text) =>
-              setGeneralFideicomiso({
-                numeroFideicomiso: numeroFideicomiso,
-                tipoFideicomiso: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
-                },
-                fechaFideicomiso: fechaFideicomiso,
-                fiudiciario: fiudiciario,
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
-              />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Descripcion === value.Descripcion ||
-              value.Descripcion === ""
-            }
-          />
-        </Grid>
+        <Grid
+          mt={2}
+          container display={"flex"} justifyContent={"space-evenly"}
+        // sx={{
 
-        <Grid item lg={5} width={"100%"}>
+        //   "@media (min-width: 480px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(1, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
 
-          <InputLabel sx={queries.medium_text}>Fecha de Fideicomiso</InputLabel>
-          
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
-            <DatePicker
-              value={new Date(fechaFideicomiso)}
-              onChange={(date) =>
+        //   "@media (min-width: 768px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "60%"
+        //   },
+
+        //   "@media (min-width: 1140px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
+
+        //   "@media (min-width: 1400px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
+
+        //   "@media (min-width: 1870px)": {
+        //     display: "flex",
+        //     justifyContent: "space-evenly",
+        //     height: "35%"
+        //   },
+
+        // }}
+        >
+          <Grid item xs={10} sm={4} md={4} lg={5} xl={4} >
+            <InputLabel sx={queries.medium_text}>
+              Numero del fideicomiso
+            </InputLabel>
+            <TextField
+              fullWidth
+              variant="standard"
+              type="number"
+              value={numeroFideicomiso}
+              onChange={(v) =>
                 setGeneralFideicomiso({
-                  numeroFideicomiso: numeroFideicomiso,
+                  numeroFideicomiso: v.target.value,
                   tipoFideicomiso: tipoFideicomiso,
-                  fechaFideicomiso: date?.toString(),
+                  fechaFideicomiso: fechaFideicomiso,
                   fiudiciario: fiudiciario,
                 })
               }
-              slots={{
-                textField: DateInput,
-              }}
             />
-          </LocalizationProvider>
+          </Grid>
+          <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+            <InputLabel sx={queries.medium_text}>Fondo o ingreso{/*Tipo de fideicomiso*/}</InputLabel>
+            <Autocomplete
+              disableClearable
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              options={catalogoTiposDeFideicomiso}
+              value={tipoFideicomiso}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              onChange={(event, text) =>
+                setGeneralFideicomiso({
+                  numeroFideicomiso: numeroFideicomiso,
+                  tipoFideicomiso: {
+                    Id: text?.Id,
+                    Descripcion: text?.Descripcion,
+                  },
+                  fechaFideicomiso: fechaFideicomiso,
+                  fiudiciario: fiudiciario,
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Descripcion === value.Descripcion ||
+                value.Descripcion === ""
+              }
+            />
+          </Grid>
         </Grid>
 
-        <Grid item lg={5} width={"100%"}>
-          <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
-          <Autocomplete
-            disableClearable
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText="Cerrar"
-            openText="Abrir"
-            fullWidth
-            value={fiudiciario}
-            options={catalogoFiudiciarios}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Id}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            // value={numeroFideicomiso}
-            onChange={(event, text) =>
-              setGeneralFideicomiso({
-                numeroFideicomiso: numeroFideicomiso,
-                tipoFideicomiso: tipoFideicomiso,
-                fechaFideicomiso: fechaFideicomiso,
-                fiudiciario: { 
-                  Id: text?.Id, 
-                  Descripcion: text?.Descripcion 
-                },
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
+          <Grid mt={2} xs={10} sm={4} md={4} lg={5} xl={4} item
+          >
+            <InputLabel sx={queries.medium_text}>Fecha de Fideicomiso</InputLabel>
+
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DatePicker
+                value={new Date(fechaFideicomiso)}
+                onChange={(date) =>
+                  setGeneralFideicomiso({
+                    numeroFideicomiso: numeroFideicomiso,
+                    tipoFideicomiso: tipoFideicomiso,
+                    fechaFideicomiso: date?.toString(),
+                    fiudiciario: fiudiciario,
+                  })
+                }
+                slots={{
+                  textField: DateInput,
+                }}
               />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Descripcion === value.Descripcion ||
-              value.Descripcion === ""
-            }
-          />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={10} sm={4} md={4} lg={5} xl={4} >
+            <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
+            <Autocomplete
+              disableClearable
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              value={fiudiciario}
+              options={catalogoFiudiciarios}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              // value={numeroFideicomiso}
+              onChange={(event, text) =>
+                setGeneralFideicomiso({
+                  numeroFideicomiso: numeroFideicomiso,
+                  tipoFideicomiso: tipoFideicomiso,
+                  fechaFideicomiso: fechaFideicomiso,
+                  fiudiciario: {
+                    Id: text?.Id,
+                    Descripcion: text?.Descripcion
+                  },
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Descripcion === value.Descripcion ||
+                value.Descripcion === ""
+              }
+            />
+          </Grid>
+
         </Grid>
-      </Grid>
 
-      <Divider>
-        <Typography sx={{ ...queries.bold_text, color: "#af8c55 " }}>
-          FIDEICOMISARIO
-        </Typography>
-      </Divider>
+        <Divider >
+          <Typography sx={{ ...queries.bold_text, color: "#af8c55 ", marginTop: "1rem" }}>
+            FIDEICOMISARIO
+          </Typography>
+        </Divider>
 
-      <Grid
-        item
-        container
-        display={"grid"}
-        justifyItems={"center"}
-        height={"30%"}
-      >
         <Grid
-          width={"100%"}
+          item
+          container
           display={"flex"}
-          justifyItems={"center"}
-          justifyContent={"space-evenly"}
+          justifyContent={"center"}
+          mt={2}
+
+        // sx={{
+        //   "@media (min-width: 480px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(1, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
+
+        //   "@media (min-width: 768px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "60%"
+        //   },
+
+        //   "@media (min-width: 1140px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
+
+        //   "@media (min-width: 1400px)": {
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(2, 1fr)",
+        //     justifyItems: "center",
+        //     height: "25%"
+        //   },
+
+        //   "@media (min-width: 1870px)": {
+        //     display: "flex",
+        //     justifyContent: "space-evenly",
+        //     height: "35%"
+        //   },
+        // }}
         >
-          <Grid item lg={3}>
-            <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
-            <Autocomplete
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoFideicomisarios}
-              value={fideicomisario}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) =>
-                setFideicomisario({
-                  fideicomisario: text,
-                  ordenFideicomisario: ordenFideicomisario,
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-          <Grid item lg={3}>
-            <InputLabel sx={queries.medium_text}>
-              Orden fideicomisario
-            </InputLabel>
-            <Autocomplete
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoOrdenesFideicomisario}
-              value={ordenFideicomisario}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) =>
-                setFideicomisario({
-                  fideicomisario: fideicomisario,
-                  ordenFideicomisario: text,
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-        </Grid>
-
-        <ThemeProvider theme={ButtonTheme}>
-          <Button
-            sx={{
-              ...queries.buttonContinuarSolicitudInscripcion,
-              width: "15vh",
-            }}
-            disabled={
-              fideicomisario.Descripcion === "" ||
-              ordenFideicomisario.Descripcion === ""
-            }
-            onClick={() => {
-              addFideicomisario({
-                fideicomisario: fideicomisario,
-                ordenFideicomisario: ordenFideicomisario,
-              });
-              cleanFideicomisario();
-            }}
+          <Grid
+            width={"100%"}
+            display={"flex"}
+            justifyItems={"center"}
+            justifyContent={"space-evenly"}
           >
-            Agregar
-          </Button>
-        </ThemeProvider>
-        <Paper sx={{ width: "88%" }}>
-          <TableContainer
-            sx={{
-              maxHeight: "50vh",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}
-          >
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {headsFideicomisario.map((head, index) => (
-                    <StyledTableCell align="center" key={index}>
-                      <Typography>{head.label}</Typography>
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {tablaFideicomisario.map((row: any, index: number) => {
+            <Grid item xs={5} sm={4} md={4} lg={3} xl={4} >
+              <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
+              <Autocomplete
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                options={catalogoFideicomisarios}
+                value={fideicomisario}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
                   return (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        <Tooltip title="Eliminar">
-                          <IconButton
-                            type="button"
-                            onClick={() => removeFideicomisario(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.fideicomisario.Descripcion}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.ordenFideicomisario.Descripcion}
-                      </StyledTableCell>
-                    </StyledTableRow>
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
                   );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+                }}
+                onChange={(event, text) =>
+                  setFideicomisario({
+                    fideicomisario: text,
+                    ordenFideicomisario: ordenFideicomisario,
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
+              />
+            </Grid>
+
+            <Grid item xs={4} sm={4} md={4} lg={3} xl={4}>
+              <InputLabel sx={queries.medium_text}>
+                Orden fideicomisario
+              </InputLabel>
+              <Autocomplete
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                options={catalogoOrdenesFideicomisario}
+                value={ordenFideicomisario}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                onChange={(event, text) =>
+                  setFideicomisario({
+                    fideicomisario: fideicomisario,
+                    ordenFideicomisario: text,
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
+              />
+            </Grid>
+          </Grid>
+
+          <ThemeProvider theme={ButtonTheme}>
+            <Button
+              sx={{
+                ...queries.buttonContinuarSolicitudInscripcion,
+                width: "15vh",
+                marginBottom: "1rem"
+              }}
+              disabled={
+                fideicomisario.Descripcion === "" ||
+                ordenFideicomisario.Descripcion === ""
+              }
+              onClick={() => {
+                addFideicomisario({
+                  fideicomisario: fideicomisario,
+                  ordenFideicomisario: ordenFideicomisario,
+                });
+                cleanFideicomisario();
+              }}
+            >
+              Agregar
+            </Button>
+          </ThemeProvider>
+          <Grid width={"100%"} display={"flex"} justifyContent={"center"}
+            sx={{
+              height:"18rem",
+              "@media (min-width: 480px)": {
+                height: "20rem"
+              },
+
+              "@media (min-width: 768px)": {
+                height: "30rem"
+              },
+
+              "@media (min-width: 1140px)": {
+                height: "30rem"
+              },
+
+              "@media (min-width: 1400px)": {
+                height: "15rem"
+              },
+
+              "@media (min-width: 1870px)": {
+                height: "22rem"
+              },
+            }}>
+            <Paper sx={{ width: "88%", height: "100%" }}>
+              <TableContainer
+                sx={{
+                  height: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    height: "1vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table stickyHeader >
+                  <TableHead  >
+                    <TableRow>
+                      {headsFideicomisario.map((head, index) => (
+                        <StyledTableCell align="center" key={index}>
+                          <Typography>{head.label}</Typography>
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {tablaFideicomisario.map((row: any, index: number) => {
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell align="center">
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                type="button"
+                                onClick={() => removeFideicomisario(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                            {row.fideicomisario.Descripcion}
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                            {row.ordenFideicomisario.Descripcion}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

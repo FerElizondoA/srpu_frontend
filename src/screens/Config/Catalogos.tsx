@@ -170,7 +170,7 @@ export function Catalogos() {
             >
               <Typography
                 sx={{
-                  fontFamily: "MontserratMedium",
+                  ...queries.catalogosConfig.modulo,
                 }}
                 textAlign={"center"}
               >
@@ -205,17 +205,20 @@ export function Catalogos() {
                     }
                   }}
                 />
-                <IconButton
-                  onClick={(v) => {
-                    filtrar(txt);
-                  }}
-                >
-                  <SearchIcon
-                    sx={{
-                      ...queries.buttonCancelar,
+
+                <Tooltip title="Buscar">
+                  <IconButton
+                    onClick={(v) => {
+                      filtrar(txt);
                     }}
-                  />
-                </IconButton>
+                  >
+                    <SearchIcon
+                      sx={{
+                        ...queries.buttonCancelar,
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
               </Grid>
             </Grid>
 
@@ -231,12 +234,10 @@ export function Catalogos() {
                 "&::-webkit-scrollbar-thumb": {
                   backgroundColor: "rgba(0,0,0,.5)",
                   outline: "1px solid slategrey",
-                  borderRadius: 10,
+                  borderRadius: 1,
                 },
                 borderRadius: 5,
               }}
-              justifyContent={"center"}
-              alignItems={"center"}
             >
               <TableContainer>
                 <Table>
@@ -245,7 +246,7 @@ export function Catalogos() {
                       sx={{
                         display: "grid",
                         gridTemplateColumns:
-                          modulo === "Entes público obligados"
+                          modulo === "Entes Público Obligados"
                             ? "3fr 1fr 1fr"
                             : "4fr 1fr ",
                       }}
@@ -258,7 +259,7 @@ export function Catalogos() {
                       >
                         Descripción
                       </TableCell>
-                      {edit.Modulo === "Entes público obligados" ? (
+                      {edit.Modulo === "Entes Público Obligados" ? (
                         <TableCell
                           sx={{
                             textAlign: "center",
@@ -303,7 +304,7 @@ export function Catalogos() {
                             sx={{
                               display: "grid",
                               gridTemplateColumns:
-                                modulo === "Entes público obligados"
+                                modulo === "Entes Público Obligados"
                                   ? "3fr 1fr 1fr"
                                   : "4fr 1fr ",
                               height: "90%",
@@ -316,7 +317,7 @@ export function Catalogos() {
                             >
                               {item.Descripcion}
                             </TableCell>
-                            {modulo === "Entes público obligados" ? (
+                            {modulo === "Entes Público Obligados" ? (
                               <TableCell
                                 sx={{
                                   fontFamily: "Montserrat",
@@ -368,7 +369,16 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <EditIcon fontSize="small" />
+                                  <EditIcon
+                                    fontSize="small"
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "blue",
+                                    //     },
+                                    //   },
+                                    // ]}
+                                  />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip title="Eliminar">
@@ -383,7 +393,16 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <DeleteIcon fontSize="small" />
+                                  <DeleteIcon
+                                    fontSize="small"
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "red",
+                                    //     },
+                                    //   },
+                                    // ]}
+                                  />
                                 </IconButton>
                               </Tooltip>
                             </TableCell>

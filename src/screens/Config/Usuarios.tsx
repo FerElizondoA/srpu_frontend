@@ -37,14 +37,6 @@ export const Usuarios = () => {
     []
   );
 
-  useEffect(() => {
-    getListadoUsuarios(setUsuarios);
-  }, []);
-
-  useEffect(() => {
-    setUsuariosFiltrados(usuarios);
-  }, [usuarios]);
-
   const heads = [
     {
       id: "Acciones",
@@ -89,7 +81,6 @@ export const Usuarios = () => {
   ];
 
   /* BUSCADOR */
-
   const [datos, setDatos] = useState<Array<IUsuarios>>([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -149,8 +140,16 @@ export const Usuarios = () => {
   // };
 
   useEffect(() => {
+    getListadoUsuarios(setUsuarios);
+  }, []);
+
+  useEffect(() => {
     getListadoUsuarios(setDatos);
   }, []);
+
+  useEffect(() => {
+    setUsuariosFiltrados(usuarios);
+  }, [usuarios]);
 
   useEffect(() => {
     setUsuariosFiltrados(datos);

@@ -170,6 +170,7 @@ export function CondicionesFinancieras() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
+                height: "1vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -184,7 +185,7 @@ export function CondicionesFinancieras() {
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
-                      <TableSortLabel>{head.label}</TableSortLabel>
+                      {head.label}
                     </StyledTableCell>
                   ))}
                 </TableRow>
@@ -538,7 +539,7 @@ export function CondicionesFinancieras() {
       </Grid>
 
       <Grid
-        item
+        container
         md={12}
         lg={12}
         height={75}

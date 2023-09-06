@@ -25,8 +25,11 @@ import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
-import { Fideicomisos } from "./screens/Fideicomisos/Fideicomisos";
+import { Fideicomisos } from "./screens/fuenteDePago/Fideicomisos";
 import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
+
+import { Mandatos } from "./screens/fuenteDePago/Mandatos";
+import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 
 export const appTheme = createTheme({
   palette: {
@@ -124,6 +127,12 @@ function App() {
                 baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)} //log
               />
             }
+          ></Route>
+
+          <Route path="mandatos" element={<Mandatos />}></Route>
+          <Route
+            path="intrucciones-irrevocables"
+            element={<InstruccionesIrrevocables />}
           ></Route>
         </Routes>
       </CssBaseline>

@@ -2,6 +2,8 @@ import { Grid, Typography } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { queries } from "../../queries";
+
 
 export const modulos = [
   {
@@ -187,13 +189,7 @@ export function Configuracion() {
               <Button
                 key={index}
                 sx={{
-                  width: "80%",
-                  height: "65%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 20,
-                  boxShadow: 1,
+                  ...queries.modulosConfig
                 }}
                 onClick={() => {
                   navegar(index, item.label);

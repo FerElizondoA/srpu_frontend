@@ -7,6 +7,8 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 import {
   AppBar,
   Avatar,

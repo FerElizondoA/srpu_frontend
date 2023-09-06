@@ -60,7 +60,8 @@ export function ObligacionesLargoPlazoPage() {
                 },
               }}
             >
-              Crédito Simple a Largo Plazo
+              Instrucciones Irrevocables
+              {/* Crédito Simple a Largo Plazo */}
             </Typography>
           </Grid>
 

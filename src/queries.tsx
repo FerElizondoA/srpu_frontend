@@ -29,7 +29,7 @@ export const queries = {
     fontFamily: "MontserratBold",
     "@media (max-width: 600px)": {
       // XS (extra small) screen
-      fontSize: "1rem",
+      fontSize: "0.7rem",
     },
     "@media (min-width: 601px) and (max-width: 900px)": {
       // SM (small) screen
@@ -75,28 +75,53 @@ export const queries = {
       // XS (extra small) screen
       fontSize: "1rem",
     },
-    "@media (min-width: 601px) and (max-width: 900px)": {
-      // SM (small) screen
-      fontSize: "1.5ch",
-    },
 
     "@media (min-width: 513px)": {
-      fontSize: "1.25ch",
+      fontSize: "1.10ch",
     },
     "@media (min-width: 600px)": {
-      fontSize: "1.30ch",
+      fontSize: "1.25ch",
     },
     "@media (min-width: 900px)": {
-      fontSize: "0.5ch",
+      fontSize: "1.25ch",
     },
     "@media (min-width: 1300px)": {
-      fontSize: "0.5ch",
+      fontSize: "1.35ch",
     },
     "@media (min-width: 1485px)": {
       fontSize: "1.35ch",
     },
     "@media (min-width: 1870px)": {
       fontSize: "1.5ch",
+    },
+  },
+
+  leyendaArchivoGastosCosto: {
+    display: "flex",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    //fontSize: "30%",
+    color: "#15212f",
+    "@media (min-width: 513px)": {
+      fontSize: "50%",
+    },
+    "@media (min-width: 600px)": {
+      fontSize: "50%",
+    },
+    "@media (min-width: 900px)": {
+      fontSize: "50%",
+    },
+    "@media (min-width: 1300px)": {
+      fontSize: "50%",
+    },
+    "@media (min-width: 1485px)": {
+      fontSize: "60%",
+    },
+    "@media (min-width: 1870px)": {
+      fontSize: "80%",
     },
   },
 
@@ -224,7 +249,7 @@ export const queries = {
   buttonCancelarSolicitudInscripcion: {
     marginTop: "2rem",
     backgroundColor: "rgb(175, 140, 85)",
-    height: "4vh",
+    height: "2.5",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(175, 140, 85, 0.6)",
@@ -238,7 +263,7 @@ export const queries = {
   buttonContinuarSolicitudInscripcion: {
     marginTop: "1rem",
     backgroundColor: "#15212f",
-    height: "4vh",
+    height: "2.5rem",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
@@ -288,7 +313,7 @@ export const queries = {
   },
 
   tablaSolicitudInscripcion: {
-    height: "50vh",
+    height: "49vh",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: ".2vw",
@@ -326,19 +351,16 @@ export const queries = {
   },
 
   contenedorTipoMovimiento: {
-    "@media (min-width: 513px)": {
-      height: "35rem",
-    },
-    "@media (min-width: 600px)": {
+    "@media (min-width: 480px)": {
       height: "36rem",
     },
-    "@media (min-width: 900px)": {
+    "@media (min-width: 768px)": {
       height: "37rem",
     },
-    "@media (min-width: 1300px)": {
+    "@media (min-width: 1140px)": {
       height: "38rem",
     },
-    "@media (min-width: 1485px)": {
+    "@media (min-width: 1400px)": {
       height: "38rem",
     },
     "@media (min-width: 1870px)": {
@@ -379,13 +401,13 @@ export const queries = {
   contenedorAgregarAutorizacion: {
     RegistrarAutorizacion: {
       "@media (min-width: 513px)": {
-        height: "26rem",
+        height: "20rem",
       },
       "@media (min-width: 600px)": {
-        height: "27rem",
+        height: "20rem",
       },
       "@media (min-width: 900px)": {
-        height: "28rem",
+        height: "20rem",
       },
       "@media (min-width: 1300px)": {
         height: "29rem",
@@ -467,6 +489,32 @@ export const queries = {
     },
   },
 
+  modulosConfig: {
+    width: "80%",
+    height: "65%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    boxShadow: 1,
+
+    "@media (min-width: 480px)": {
+      fontSize: "45%",
+    },
+    "@media (min-width: 768px)": {
+      fontSize: "65%",
+    },
+    "@media (min-width: 1140px)": {
+      fontSize: "80%",
+    },
+    "@media (min-width: 1400px)": {
+      fontSize: "85%",
+    },
+    "@media (min-width: 1870px)": {
+      fontSize: "100%",
+    },
+  },
+
   configuracion: {
     width: "85%",
     display: "grid",
@@ -480,10 +528,10 @@ export const queries = {
 
   catalogosConfig: {
     "@media (min-width: 480px)": {
-      height: "30rem",
+      height: "35rem",
     },
     "@media (min-width: 768px)": {
-      height: "34rem%",
+      height: "38rem",
     },
     "@media (min-width: 1140px)": {
       height: "38rem",
@@ -511,12 +559,230 @@ export const queries = {
       },
     },
 
+    modulo: {
+      fontFamily: "MontserratMedium",
+
+      "@media (min-width: 480px)": {
+        fontSize: "70%",
+      },
+      "@media (min-width: 768px)": {
+        fontSize: "80%",
+      },
+      "@media (min-width: 1140px)": {
+        fontSize: "95%",
+      },
+      "@media (min-width: 1400px)": {
+        fontSize: "100%",
+      },
+    },
+
     botonListado: {
       width: "100%",
       borderRadius: 20,
       display: "flex",
       justifyContent: "start",
       fontFamily: "MontserratMedium",
+
+      "@media (min-width: 480px)": {
+        fontSize: "50%",
+      },
+      "@media (min-width: 768px)": {
+        fontSize: "70%",
+      },
+      "@media (min-width: 1140px)": {
+        fontSize: "80%",
+      },
+      "@media (min-width: 1400px)": {
+        fontSize: "90%",
+      },
+      "@media (min-width: 1870px)": {
+        fontSize: "100%",
+      },
+    },
+  },
+
+  fuentePagoApartados: {
+    "@media (min-width: 480px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: " center",
+      justifyContent: "center",
+    },
+    "@media (min-width: 768px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: " center",
+      justifyContent: "center",
+    },
+    "@media (min-width: 1140px)": {
+      width: "100%",
+      flexDirection: "row",
+      display: "flex",
+      alignItems: " center",
+      justifyContent: "space-evenly",
+    },
+    "@media (min-width: 1400px)": {
+      width: "100%",
+      flexDirection: "row",
+      display: "flex",
+      alignItems: " center",
+      justifyContent: "space-evenly",
+    },
+    "@media (min-width: 1870px)": {
+      width: "100%",
+      flexDirection: "row",
+      display: "flex",
+      alignItems: " center",
+      justifyContent: "space-evenly",
+    },
+  },
+
+  tablaAsignarFuente: {
+    height: "30rem",
+    display: "flex",
+    justifyContent: "center",
+
+    "@media (min-width: 480px)": {
+      width: "80%",
+    },
+
+    "@media (min-width: 768px)": {
+      width: "80%",
+    },
+
+    "@media (min-width: 1140px)": {
+      width: "90%",
+    },
+
+    "@media (min-width: 1400px)": {
+      width: "90%",
+    },
+
+    "@media (min-width: 1870px)": {
+      width: "90%",
+    },
+  },
+
+  RegistrarNuevaAutorizacion: {
+    "@media (min-width: 480px)": {
+      height: "10rem",
+      width: "100%",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    "@media (min-width: 768px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+
+    "@media (min-width: 1140px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+
+    "@media (min-width: 1400px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+
+    "@media (min-width: 1870px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+    },
+  },
+
+  documentosAgregarNuevaAutorizacion: {
+    display: "flex",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+
+    color: "#15212f",
+    "@media (min-width: 480px)": {
+      fontSize: "50%",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "50%",
+    },
+
+    "@media (min-width: 1140px)": {
+      fontSize: "70%",
+    },
+
+    "@media (min-width: 1400px)": {
+      fontSize: "80%",
+    },
+
+    "@media (min-width: 1870px)": {
+      fontSize: "80%",
+    },
+  },
+
+  tamañoLetraArcivoFideicomiso: {
+    display: "flex",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "35%",
+
+    "@media (min-width: 480px)": {
+      fontSize: "70%",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "75%",
+    },
+
+    "@media (min-width: 1140px)": {
+      fontSize: "100%",
+    },
+
+    "@media (min-width: 1400px)": {
+      fontSize: "100%",
+    },
+
+    "@media (min-width: 1870px)": {
+      fontSize: "100%",
+    },
+  },
+
+  tablaAgregarFuentesPago: {
+    "@media (min-width: 480px)": {
+      height: "76vh",
+    },
+
+    "@media (min-width: 768px)": {
+      height: "84vh",
+    },
+
+    "@media (min-width: 1140px)": {
+      height: "84vh",
+    },
+
+    "@media (min-width: 1400px)": {
+      height: "75vh",
+    },
+
+    "@media (min-width: 1870px)": {
+      height: "80.8vh",
     },
   },
 };

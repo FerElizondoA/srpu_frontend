@@ -40,6 +40,7 @@ import {
   AgregarAutorizacionLargoPlazoSlice,
   createAgregarAutorizacionLargoPlazoSlice,
 } from "../Autorizacion/agregarAutorizacion";
+import { MandatoSlice, createMandatoSlice } from "../Mandatos/mandato";
 export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   InformacionGeneralLargoPlazoSlice &
   CondicionFinancieraLargoPlazoSlice &
@@ -49,7 +50,8 @@ export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   ComentarioApartadoLargoPlazoSlice &
   DocumentosLargoPlazoSlice &
   FuenteDePagoLargoPlazoSlice &
-  AgregarAutorizacionLargoPlazoSlice;
+  AgregarAutorizacionLargoPlazoSlice &
+  MandatoSlice;
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createEncabezadoLargoPlazoSlice(...x),
@@ -62,4 +64,5 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createDocumentoLargoPlazoSlice(...x),
   ...createFuentePagoLargoPLazoSlice(...x),
   ...createAgregarAutorizacionLargoPlazoSlice(...x),
+  ...createMandatoSlice(...x)
 }));

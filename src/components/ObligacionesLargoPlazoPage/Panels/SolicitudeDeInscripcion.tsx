@@ -8,6 +8,7 @@ import {
   Divider,
   Grid,
   InputLabel,
+  Paper,
   Table,
   TableBody,
   TableContainer,
@@ -474,7 +475,7 @@ export function SolicituDeInscripcion() {
             Declaratorias aplicables al financiamiento u obligación:
           </Divider>
         </Grid>
-        <Grid item md={9} lg={9} xl={9} display="flex">
+        <Grid item xs={9} sm={9} md={9} lg={9} xl={9} display="flex">
           <Grid>
             <Typography sx={{ display: "grid", justifyContent: "center" }}>
               Al seleccionar alguna de las siguientes secciones, estará
@@ -482,6 +483,9 @@ export function SolicituDeInscripcion() {
               señalado en cada apartado
             </Typography>
             <Grid item display={"flex"} width={"112%"}>
+              <Paper>
+                
+              </Paper>
               <TableContainer sx={queries.tablaSolicitudInscripcion}>
                 <Table stickyHeader>
                   <TableHead>

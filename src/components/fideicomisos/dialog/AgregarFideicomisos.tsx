@@ -65,14 +65,6 @@ export function AgregarFideicomisos({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
   };
 
-  // const setGeneralFideicomiso: Function = useCortoPlazoStore(
-  //   (state) => state.setGeneralFideicomiso
-  // );
-
-  // const cleanFideicomisario: Function = useCortoPlazoStore(
-  //   (state) => state.cleanFideicomisario
-  // );
-
   const createFideicomiso: Function = useCortoPlazoStore(
     (state) => state.createFideicomiso
   );
@@ -89,16 +81,6 @@ export function AgregarFideicomisos({
     (state) => state.editarFideicomiso
   );
 
-  // const reset = () => {
-  //   setGeneralFideicomiso({
-  //     numeroFideicomiso: "",
-  //     tipoFideicomiso: "",
-  //     fechaFideicomiso: { Id: "", Descripcion: "" },
-  //     fiudiciario: { Id: "", Descripcion: "" },
-  //   });
-  //   cleanFideicomisario();
-  // };
-
   const changeIdFideicomiso: Function = useCortoPlazoStore(
     (state) => state.changeIdFideicomiso
   );
@@ -106,6 +88,14 @@ export function AgregarFideicomisos({
   const idFideicomiso: string = useCortoPlazoStore(
     (state) => state.idFideicomiso
   );
+
+  const getFideicomisos: Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+
+  useEffect(() => {
+    getFideicomisos();
+  }, []);
 
   const limpiaFideicomiso = () => {
     changeIdFideicomiso("");
@@ -165,7 +155,19 @@ export function AgregarFideicomisos({
                   setTabIndex(0);
                 }}
               >
-                <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
+                <Typography
+                  sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
+                    // "@media (min-width: 601px) and (max-width: 900px)": {
+                    //   // SM (small) screen
+                    //   fontSize: "1.5ch",
+                    // }
+                  }}
+                >
                   {accion} fideicomiso
                 </Typography>
               </Button>

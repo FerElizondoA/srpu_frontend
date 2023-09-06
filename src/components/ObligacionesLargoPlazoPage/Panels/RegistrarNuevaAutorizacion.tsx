@@ -146,14 +146,14 @@ export function RegistrarNuevaAutorizacion() {
   return (
     <>
       <Grid
-        item
+
         container
         direction="column"
         justifyContent="space-around"
         sx={queries.contenedorAgregarAutorizacion.RegistrarAutorizacion}
       >
-        <Grid width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item lg={2}>
+        <Grid container sx={{ ...queries.RegistrarNuevaAutorizacion }}>
+          <Grid width={"100%"} item xs={5} sm={5} md={1} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>Entidad</InputLabel>
             <TextField
               disabled
@@ -176,7 +176,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item lg={4}>
+          <Grid item xs={5} sm={5} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Numero de autorización de la legislatura local
             </InputLabel>
@@ -212,7 +212,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item lg={2}>
+          <Grid width={"100%"} item xs={5} sm={5} md={3} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>
               Medio de publicación
             </InputLabel>
@@ -262,7 +262,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item lg={2}>
+          <Grid width={"100%"} item xs={5} sm={5} md={2} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>
               Fecha de publicacion
             </InputLabel>
@@ -291,8 +291,8 @@ export function RegistrarNuevaAutorizacion() {
           </Grid>
         </Grid>
 
-        <Grid display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item lg={2}>
+        <Grid container sx={{ ...queries.RegistrarNuevaAutorizacion }}>
+          <Grid width={"50%"} item xs={5} sm={5} md={2} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={
@@ -342,7 +342,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item lg={4} width={"100%"}>
+          <Grid item xs={5} sm={5} md={4} lg={4} xl={4} width={"100%"}>
             <InputLabel
               sx={{
                 ...queries.medium_text,
@@ -359,17 +359,10 @@ export function RegistrarNuevaAutorizacion() {
                 <Typography
                   position={"absolute"}
                   sx={{
-                    display: "flex",
-                    textAlign: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    height: "100%",
-                    fontSize: "80%",
-                    color: "#15212f",
+                    ...queries.documentosAgregarNuevaAutorizacion,
                     border:
                       documentoSoporte.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
@@ -401,34 +394,31 @@ export function RegistrarNuevaAutorizacion() {
             </Grid>
           </Grid>
 
-          <Grid item lg={4} width={"100%"}>
+          <Grid xs={5} sm={5} md={4} lg={4} xl={4} item width={"100%"}
+
+           
+          >
             <InputLabel
               sx={{
                 ...queries.medium_text,
-                width: "82%",
-                display: "flex",
-                justifyContent: "center",
+                width: "100%",
+
               }}
             >
               Acreditación del quórum y el sentido de la votación
             </InputLabel>
 
-            <Grid mt={1} display={"flex"} justifyContent={"center"}>
+            <Grid mt={1} display={"flex"} justifyContent={"center"}
+
+            >
               <Grid sx={{ position: "relative", width: "100%" }}>
                 <Typography
                   position={"absolute"}
                   sx={{
-                    display: "flex",
-                    textAlign: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    height: "100%",
-                    fontSize: "80%",
-                    color: "#15212f",
+                    ...queries.documentosAgregarNuevaAutorizacion,
                     border:
                       acreditacionQuorum.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
