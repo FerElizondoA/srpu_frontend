@@ -91,6 +91,15 @@ export function TipoDeMovimiento() {
     (state) => state.tablaTipoMovimiento
   );
 
+  const getFideicomisos :Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+  
+  useEffect(() => {
+    getFideicomisos()
+  }, [])
+  
+
   useEffect(() => {
     getTiposDeFideicomitente();
     getTiposDeFuente();
@@ -138,14 +147,15 @@ export function TipoDeMovimiento() {
           gridTemplateColumns={"repeat(3, 1fr)"}
           justifyItems={"center"}
           height={"35%"}
+        
         >
-          <Grid item>
+          <Grid xs={5} sm={6} md={6} lg={6} xl={9} item>
             <InputLabel sx={queries.medium_text}>
               Alta de fideicomitente
             </InputLabel>
           </Grid>
 
-          <Grid item lg={6} width={"100%"}>
+          <Grid item xs={9} sm={9} md={9} lg={9} xl={9}  width={"100%"}>
             <InputLabel sx={queries.medium_text}>
               Tipo de fideicomitente
             </InputLabel>
@@ -191,7 +201,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item lg={6} width={"100%"}>
+          <Grid item xs={9} sm={9} md={9} lg={9} xl={9} width={"100%"}>
             <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -237,7 +247,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item lg={6} width={"100%"}>
+          <Grid item xs={9} sm={9} md={9} lg={9} xl={9}   width={"100%"}>
             <InputLabel sx={queries.medium_text}>Tipo de fuente</InputLabel>
             <Autocomplete
               disableClearable
@@ -281,7 +291,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item lg={6} width={"100%"}>
+          <Grid item xs={9} sm={9} md={9} lg={9} xl={9} width={"100%"}>
             <InputLabel sx={queries.medium_text}>Fondo o ingreso</InputLabel>
             <Autocomplete
               disableClearable
@@ -357,14 +367,17 @@ export function TipoDeMovimiento() {
           flexDirection={"column"}
           alignItems={"center"}
           height={"60%"}
+          mt={2}
         >
-          <Paper sx={{ width: "88%" }}>
+          <Paper sx={{ width: "88%", height:"100%" }}>
             <TableContainer
               sx={{
+                height:"100%",
                 maxHeight: "50vh",
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
                   width: ".5vw",
+                  height: "1vh",
                   mt: 1,
                 },
                 "&::-webkit-scrollbar-thumb": {

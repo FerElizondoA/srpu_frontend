@@ -193,7 +193,7 @@ export function GastoCostos() {
       }}
     >
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -240,7 +240,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -281,7 +281,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
           <TextField
             fullWidth
@@ -289,7 +289,7 @@ export function GastoCostos() {
             onChange={(v) => {
               changeGastosCostos({
                 gastosAdicionales: v.target.value,
-                saldoVigente: GCSaldoVigente,
+                saldoVigente: moneyMask(GCSaldoVigente.toString()),
                 montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
               });
             }}
@@ -309,7 +309,7 @@ export function GastoCostos() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Detalle de la Inversión
           </InputLabel>
@@ -359,7 +359,7 @@ export function GastoCostos() {
         </Grid>
 
         {/* AQUI VA DESCRIPCION */}
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
           <TextField
             value={generalGCDescripcion}
@@ -367,8 +367,7 @@ export function GastoCostos() {
               changeGeneralGastosCostos({
                 destino: generalGCDestino,
                 detalleInversion: generalGCDetalleInversion,
-                claveInscripcionFinanciamiento:
-                  generalGCClaveInscripcionFinanciamiento,
+                claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
                 descripcion: v.target.value,
                 monto: moneyMask(generalGCMonto.toString()),
               })
@@ -388,7 +387,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Gastos Adicionales
           </InputLabel>
@@ -439,7 +438,7 @@ export function GastoCostos() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3} width={"100%"}>
+        <Grid item xs={12} sm={3.3} md={3} lg={3} xl={3} width={"100%"}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -459,14 +458,7 @@ export function GastoCostos() {
               <Typography
                 position={"absolute"}
                 sx={{
-                  display: "flex",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100%",
-                  fontSize: "80%",
-                  color: "#15212f",
+                  ...queries.leyendaArchivoGastosCosto,
                   border:
                     detalleInversion.nombreArchivo !==
                       "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -502,7 +494,7 @@ export function GastoCostos() {
           </Grid>
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Monto</InputLabel>
           <TextField
             fullWidth
@@ -548,7 +540,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel disabled sx={queries.medium_text}>
             Saldo Vigente
           </InputLabel>
@@ -573,7 +565,7 @@ export function GastoCostos() {
                 changeGastosCostos({
                   gastosAdicionales: GCGastosAdicionales,
                   saldoVigente: moneyMask(v.target.value.toString()),
-                  montoGastosAdicionales: GCMontoGastosAdicionales,
+                  montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
                 });
               } 
             }}

@@ -296,7 +296,7 @@ export function InformacionGeneral() {
       detalleInversion: generalGCDetalleInversion,
       claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
       descripcion: generalGCDescripcion,
-      monto: moneyMask(monto.toString()),
+      monto: moneyMask(generalGCMonto.toString()),
     });
 
     changeGastosCostos({
@@ -328,7 +328,7 @@ export function InformacionGeneral() {
       }}
     >
       <Grid item display="flex" justifyContent={"space-evenly"} sx={{}}>
-        <Grid item lg={3}>
+        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -350,7 +350,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
             fullWidth
@@ -371,7 +371,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Original Contratado
           </InputLabel>
@@ -421,7 +421,7 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
+        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -438,7 +438,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -486,7 +486,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3} >
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             fullWidth
@@ -514,7 +514,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"center"}>
-        <Grid item lg={10.5}>
+        <Grid item sm={11} md={11} lg={10.5} xl={10.5}  >
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
@@ -566,7 +566,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
@@ -618,7 +618,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3} >
           <InputLabel sx={queries.medium_text}>
             Tipo de ente público obligado
           </InputLabel>
@@ -672,7 +672,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item lg={3}>
+        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>

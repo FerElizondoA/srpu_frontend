@@ -110,7 +110,7 @@ export function DestinoAutorizado() {
         {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
 
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={12} sm={12} lg={4}>
+          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>Destino Autorizado</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -153,7 +153,7 @@ export function DestinoAutorizado() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={12} lg={4}>
+          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={

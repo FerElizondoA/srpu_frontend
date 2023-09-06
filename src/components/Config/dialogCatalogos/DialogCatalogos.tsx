@@ -84,7 +84,7 @@ export function DialogCatalogos({
     if (edit.Modulo === "Entes Público Obligados") {
       getTipoEntePublicoObligado();
     }
-  }, []);
+  }, [open]);
 
   return (
     <Grid container direction="column" alignItems={"center"}>

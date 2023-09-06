@@ -25,8 +25,11 @@ import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
-import { Fideicomisos } from "./screens/Fideicomisos/Fideicomisos";
+import { Fideicomisos } from "./screens/fuenteDePago/Fideicomisos";
 import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios"
+
+import { Mandatos } from "./screens/fuenteDePago/Mandatos";
+import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 
 export const appTheme = createTheme({
   palette: {
@@ -36,7 +39,7 @@ export const appTheme = createTheme({
   },
 });
 
-export const  getToken = () => {
+export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
   return token
 }
@@ -75,9 +78,9 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
- 
-  
-  useEffect (() => {
+
+
+  useEffect(() => {
     getToken()
   }, [])
 
@@ -115,7 +118,12 @@ function App() {
               source={"?jwt=" + getToken() + "&IdApp=" + localStorage.getItem("IdApp")}
               baseURL={String(process.env.REACT_APP_APPLICATION_BASE_URL_LOGIN)}
             />}></Route>
-            
+
+          <Route path="mandatos" element={<Mandatos />}></Route>
+          <Route path="intrucciones-irrevocables" element={<InstruccionesIrrevocables />}></Route>
+
+
+
         </Routes>
       </CssBaseline>
     </ThemeProvider>

@@ -7,7 +7,7 @@ import { GastoCostos } from "./GastosCostos";
 
 export function InfoGeneralGastoCosto() {
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 900px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
@@ -33,7 +33,7 @@ export function InfoGeneralGastoCosto() {
           variant={query.isScrollable ? "scrollable" : "standard"}
           scrollButtons="auto"
           allowScrollButtonsMobile
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", display:"flex", justifyContent:"center"  }}
         >
           <Tab
             label="Información General"

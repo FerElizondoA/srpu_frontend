@@ -30,16 +30,16 @@ export const IFrame = ({
       </Grid>
 
       <Grid display={"flex"}  width={"100%"} height={"4rem"}>
-        <Grid display={"flex"} width={"85%"} justifyContent={"space-evenly"}>
+        <Grid display={"flex"} width={"58.5%"} justifyContent={"space-between"}>
 
 
-          <Grid display={"flex"} justifyContent={"start"} width={"40%"}  alignItems={"center"}>
+          <Grid ml={2} display={"flex"} justifyContent={"start"} width={"10%"}  alignItems={"center"}>
             <Button sx={{ ...queries.buttonContinuar, fontSize:"90%" }}
               onClick={() => navigate("../users")}
             >Volver</Button>
           </Grid>
 
-          <Grid display={"flex"} justifyContent={"start"} width={"43%"} alignItems={"center"}>
+          <Grid display={"flex"} justifyContent={"start"} width={"25%"} alignItems={"center"}>
             <Typography
               sx={{
                 fontSize: "2.3ch",
@@ -51,7 +51,7 @@ export const IFrame = ({
                 },
                 "@media (min-width: 601px) and (max-width: 900px)": {
                   // SM (small) screen
-                  fontSize: "1.5ch",
+                  fontSize: "2ch",
                 },
               }}
             >
@@ -61,11 +61,33 @@ export const IFrame = ({
         </Grid>
       </Grid>
 
-      <Grid width={"100%"} height={"55rem"}>
+      <Grid width={"100%"} height={"38.5rem"}
+        sx={{
+          "@media (min-width: 480px)": {
+            height: "55rem"
+          },
+
+          "@media (min-width: 768px)": {
+            height: "57rem"
+          },
+
+          "@media (min-width: 1140px)": {
+            height: "38rem"
+          },
+
+          "@media (min-width: 1400px)": {
+            height: "37rem"
+          },
+
+          "@media (min-width: 1870px)": {
+            height: "51rem"
+          },
+        }}
+      >
         <Grid width={"100%"} height={"100%"}>
           <object
             style={{ width: "100%", height: "100%" }}
-            className="responsive-iframe"
+            //className="responsive-iframe"
             data={String(baseURL) + String(source)}
             type="text/html"
           ></object>

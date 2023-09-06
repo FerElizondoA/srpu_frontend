@@ -4,6 +4,7 @@ import { ICatalogo } from "../../screens/Config/Catalogos";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { IDatos } from "../../screens/fuenteDePago/Fideicomisos";
 
 export interface GeneralFideicomiso {
   numeroFideicomiso: string;
@@ -48,7 +49,7 @@ export interface FideicomisoSlice {
   tablaFideicomisario: Fideicomisario[];
   tablaTipoMovimiento: TipoMovimiento[];
   tablaSoporteDocumental: SoporteDocumental[];
-  tablaFideicomisos: Fideicomiso[];
+  tablaFideicomisos: IDatos[];
 
   catalogoTiposDeFideicomiso: ICatalogo[];
   catalogoFiudiciarios: ICatalogo[];
@@ -100,7 +101,10 @@ export interface FideicomisoSlice {
 
   createFideicomiso: () => void;
   modificarFideicomiso: () => void;
-  getFideicomisos: () => void;
+  getFideicomisos:(setState: Function) => void;
+
+
+  
 }
 
 export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
@@ -506,7 +510,9 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     return false;
   },
 
-  getFideicomisos: async () => {
+  getFideicomisos : async (
+    setState: Function,
+  ) => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomiso", {
         headers: {
@@ -515,9 +521,9 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       })
       .then(({ data }) => {
         let r = data.data;
-        set((state) => ({
-          tablaFideicomisos: r,
-        }));
+        setState(r);
       });
-  },
+  }
+
+  
 });

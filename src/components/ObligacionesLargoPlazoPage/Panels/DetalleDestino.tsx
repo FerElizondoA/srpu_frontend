@@ -114,7 +114,7 @@ export function DestalleDestino() {
         sx={queries.contenedorAgregarAutorizacion.DetalleDestino}
       >
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={12} sm={12} lg={4}>
+          <Grid item  xs={3} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Detalle del destino autorizado
             </InputLabel>
@@ -159,7 +159,7 @@ export function DestalleDestino() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={12} lg={4}>
+          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={

@@ -87,6 +87,15 @@ export function SDocumental() {
     (state) => state.cleanSoporteDocumental
   );
 
+  const getFideicomisos :Function = useCortoPlazoStore(
+    (state) => state.getFideicomisos
+  );
+  
+  useEffect(() => {
+    getFideicomisos()
+  }, [])
+  
+
   const [radioValue, setRadioValue] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,8 +143,8 @@ export function SDocumental() {
       justifyItems={"center"}
       mt={4}
     >
-      <FormControl>
-        <RadioGroup value={radioValue} onChange={handleChange}>
+      <FormControl sx={{width:"100%", justifyContent:"center", alignItems:"center"}}>
+        <RadioGroup sx={{marginLeft:5}} value={radioValue} onChange={handleChange}>
           <FormControlLabel
             value="Fideicomiso"
             control={<Radio />}
@@ -160,7 +169,7 @@ export function SDocumental() {
         justifyContent={"space-between"}
         height={"10rem"}
       >
-        <Grid>
+        <Grid  >
           <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -188,15 +197,12 @@ export function SDocumental() {
           <Typography
             position={"absolute"}
             sx={{
-              display: "flex",
+             ...queries.tamañoLetraArcivoFideicomiso,
               fontFamily:
                 soporteDocumental.nombreArchivo !== ""
                   ? "MontserratBold"
                   : "MontserratMedium",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "35%",
+              
               border:
                 soporteDocumental.nombreArchivo !== ""
                   ? "2px dotted #af8c55"
@@ -254,6 +260,8 @@ export function SDocumental() {
         alignItems={"center"}
         height={"60%"}
         gridColumn={"1/4"}
+        mt={4}
+       
       >
         <Paper sx={{ width: "88%" }}>
           <TableContainer
@@ -262,6 +270,7 @@ export function SDocumental() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
+                height: "1vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {

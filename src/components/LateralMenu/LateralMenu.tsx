@@ -15,6 +15,8 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import {
   AppBar,
   Avatar,
@@ -666,9 +668,36 @@ export function LateralMenu() {
                             <HandshakeIcon />
                           </ListItemIcon>
                           <Typography sx={queries.bold_text}>
-                            Fideicomiso
+                            Fideicomisos
                           </Typography>
                         </ListItemButton>
+
+                        
+                        <ListItemButton
+                          sx={{ marginLeft: 2 }}
+                          onClick={() => navigate("../Mandatos")}
+                        >
+                          <ListItemIcon>
+                            <AssignmentIcon />
+                          </ListItemIcon>
+                          <Typography sx={queries.bold_text}>
+                            Mandatos
+                          </Typography>
+                        </ListItemButton>
+
+                        <ListItemButton
+                          sx={{ marginLeft: 2 }}
+                          onClick={() => navigate("../Intrucciones-irrevocables")}
+                        >
+                          <ListItemIcon>
+                            <AssuredWorkloadIcon />
+                          </ListItemIcon>
+                          <Typography sx={queries.bold_text}>
+                          Instrucciones Irrevocables
+                          </Typography>
+                        </ListItemButton>
+
+                        
                       </List>
                     </Collapse>
 

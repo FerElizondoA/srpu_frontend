@@ -1,4 +1,3 @@
-import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
   Button,
@@ -13,15 +12,14 @@ import {
   Tooltip,
   Typography,
   createTheme,
+  useMediaQuery,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useEffect, useState } from "react";
+import { GridCloseIcon } from "@mui/x-data-grid";
 import { queries } from "../../../queries";
-import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
-import { SDocumental } from "../panels/SoporteDocumental";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { SoporteDocumental } from "../panels/SoporteDocumental";
+import { forwardRef, useState } from "react";
+import { TransitionProps } from "@mui/material/transitions";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -47,8 +45,7 @@ const theme = createTheme({
   },
 });
 
-
-export function AgregarFideicomisos({
+export function AgregarMandatos({
   handler,
   openState,
   accion,
@@ -63,58 +60,8 @@ export function AgregarFideicomisos({
   };
 
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
-
-
-  const createFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.createFideicomiso
-  );
-
-  const modificarFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.modificarFideicomiso
-  );
-
-
-  const setGeneralFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.setGeneralFideicomiso
-  );
-
-  const editarSolicitud: Function = useCortoPlazoStore(
-    (state) => state.editarFideicomiso
-  );
-
-  const changeIdFideicomiso: Function = useCortoPlazoStore(
-    (state) => state.changeIdFideicomiso
-  );
-
-  const idFideicomiso: string = useCortoPlazoStore(
-    (state) => state.idFideicomiso
-  );
-
-  const getFideicomisos: Function = useCortoPlazoStore(
-    (state) => state.getFideicomisos
-  );
-
-  useEffect(() => {
-    getFideicomisos()
-  }, [])
-
-
-  const limpiaFideicomiso = () => {
-    changeIdFideicomiso("");
-
-    setGeneralFideicomiso({
-      numeroFideicomiso: "",
-      tipoFideicomiso: { Id: "", Descripcion: "" },
-      fechaFideicomiso: "",
-      fiudiciario: { Id: "", Descripcion: "" },
-    });
-
-    editarSolicitud([], [], []);
-
-  };
-
 
   return (
     <>
@@ -125,20 +72,20 @@ export function AgregarFideicomisos({
               <IconButton
                 edge="start"
                 onClick={() => {
-                  limpiaFideicomiso();
+                  //limpiaFideicomiso();
                   handler(false);
                   //reset();
                 }}
                 sx={{ color: "white" }}
               >
-                <CloseIcon />
+                <GridCloseIcon />
               </IconButton>
             </Tooltip>
 
             <Grid container>
               <Grid item>
                 <Typography sx={queries.bold_text}>
-                  {accion} Fideicomiso
+                  {accion} Mandato
                 </Typography>
               </Grid>
             </Grid>
@@ -149,12 +96,12 @@ export function AgregarFideicomisos({
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
-                      createFideicomiso();
+                      //createFideicomiso();
                       handler(false);
                       // reset();
                     } else if (accion === "Editar") {
                       // updateRow(indexA);
-                      modificarFideicomiso();
+                      // modificarFideicomiso();
                       handler(false);
                       // reset();
                     }
@@ -162,26 +109,17 @@ export function AgregarFideicomisos({
                     setTabIndex(0);
                   }}
                 >
-                  <Typography sx={{
-                    fontSize: "1.3ch",
-                    fontFamily: "MontserratMedium",
-                    "@media (min-width: 480px)": {
-                      fontSize:"1.5ch",
-                    },
-                    // "@media (min-width: 601px) and (max-width: 900px)": {
-                    //   // SM (small) screen
-                    //   fontSize: "1.5ch",
-                    // }
-                  }}>
-                    {accion} fideicomiso
+                  <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
+                    {accion} mandato
                   </Typography>
                 </Button>
               </ThemeProvider>
             </Grid>
           </Toolbar>
         </AppBar>
-        <Grid item container direction="column">
-          <Grid item>
+
+        <Grid item container direction="column" >
+          <Grid item width={"100%"}>
             <Tabs
               value={tabIndex}
               onChange={handleChange}
@@ -190,16 +128,13 @@ export function AgregarFideicomisos({
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
-              <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
+              <Tab label="Tipo de Movimiento" sx={{...queries.bold_text}}></Tab>
               <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 
-            {tabIndex === 0 && <DatoGeneralesFideicomiso />}
+            {tabIndex === 0 && <TipoDeMovimiento />}
 
-            {tabIndex === 1 && <TipoDeMovimiento />}
-
-            {tabIndex === 2 && <SDocumental />}
+            {tabIndex === 1 && <SoporteDocumental />}
           </Grid>
         </Grid>
       </Dialog>

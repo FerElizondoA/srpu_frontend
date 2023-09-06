@@ -34,16 +34,11 @@ import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsu
 
 export const Usuarios = () => {
   const navigate = useNavigate();
-  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
-  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
 
-  useEffect(() => {
-    getListadoUsuarios(setUsuarios);
-  }, []);
 
-  useEffect(() => {
-    setUsuariosFiltrados(usuarios);
-  }, [usuarios]);
+
+
+ 
 
   const heads = [
     {
@@ -101,9 +96,11 @@ export const Usuarios = () => {
   ];
 
   /* BUSCADOR */
-
   const [datos, setDatos] = useState<Array<IUsuarios>>([]);
   const [busqueda, setBusqueda] = useState("");
+  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
+
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -161,8 +158,16 @@ export const Usuarios = () => {
   };
 
   useEffect(() => {
+    getListadoUsuarios(setUsuarios);
+  }, []);
+
+  useEffect(() => {
     getListadoUsuarios(setDatos);
   }, []);
+
+  useEffect(() => {
+    setUsuariosFiltrados(usuarios);
+  }, [usuarios]);
 
   useEffect(() => {
     setUsuariosFiltrados(datos);
@@ -219,14 +224,6 @@ export const Usuarios = () => {
   const openDialogUser = () => {
     setOpenDialog(!openDialog);
   };
-
-  // useEffect(() => {
-  //   document.getElementById('Enter')?.addEventListener('keypress', function(e){
-  //     console.log(e);
-  //   });
-  // }, [])
-
-
 
  
   return (

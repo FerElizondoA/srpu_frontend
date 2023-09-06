@@ -169,7 +169,7 @@ export function Autorizacion() {
       justifyContent={"space-evenly"}
       alignItems={"center"}
     >
-      <Grid display={"flex"} justifyContent={"center"} width={"60%"}>
+      <Grid display={"flex"} justifyContent={"center"} width={"80%"}>
         <Grid item lg={4}>
           <InputLabel sx={queries.medium_text}>
             Autorización de la legislatura local
@@ -231,7 +231,7 @@ export function Autorizacion() {
             </Button>
           </Grid> */}
 
-          <Grid item lg={3}>
+          <Grid item width={"100%"} lg={3} display={"flex"} justifyContent={"center"}>
             <Button
               sx={queries.buttonContinuar}
               variant="outlined"
