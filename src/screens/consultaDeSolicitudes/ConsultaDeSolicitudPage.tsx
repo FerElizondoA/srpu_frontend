@@ -36,6 +36,10 @@ import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazo
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { ConsultaSolicitud } from "../../store/SolicitudFirma/solicitudFirma";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+
 export interface IData {
   Id: string;
   NumeroRegistro: string;
@@ -212,9 +216,7 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.changeReglasAplicables
   );
 
-
-
-  // Largo plazo 
+  // Largo plazo
 
   const changeIdSolicitudLP: Function = useLargoPlazoStore(
     (state) => state.changeIdSolicitud
@@ -259,7 +261,7 @@ export function ConsultaDeSolicitudPage() {
 
   const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizacionSelect
-  )
+  );
 
   const setAutorizacionSelect: Function = useLargoPlazoStore(
     (state) => state.setAutorizacionSelect
@@ -267,66 +269,65 @@ export function ConsultaDeSolicitudPage() {
 
   const changeGastosCostos: Function = useLargoPlazoStore(
     (state) => state.changeGastosCostos
-  )
+  );
 
   const GastosCostos: {
     gastosAdicionales: string;
     saldoVigente: number;
-    montoGastosAdicionales: number
-  } = useLargoPlazoStore(
-    (state) => state.GastosCostos
-  )
+    montoGastosAdicionales: number;
+  } = useLargoPlazoStore((state) => state.GastosCostos);
 
-  const addGeneralGastosCostos : Function = useLargoPlazoStore(
+  const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
-  )
+  );
 
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+  const url: string = useSolicitudFirmaStore((state) => state.url);
+
+  useEffect(() => {
+    console.log(url);
+  }, [url]);
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud);
 
-
     if (TipoDocumento === "Crédito simple a corto plazo") {
-
       changeReglasAplicables(aux?.inscripcion.declaratorias);
       changeEncabezado(aux?.encabezado);
 
       changeInformacionGeneral(aux?.informacionGeneral);
 
-
-
-      aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
-        return addObligadoSolidarioAval(v);
-      });
+      aux?.informacionGeneral.obligadosSolidarios.map(
+        (v: any, index: number) => {
+          return addObligadoSolidarioAval(v);
+        }
+      );
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinanciera(v);
       });
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
-
     } else if (TipoDocumento === "Crédito simple a largo plazo") {
-
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
       changeEncabezadoLP(aux?.encabezado);
       changeInformacionGeneralLP(aux?.informacionGeneral);
-      changeGastosCostos(aux?.GastosCostos)
+      changeGastosCostos(aux?.GastosCostos);
 
-      
-
-      aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
-        return addObligadoSolidarioAvalLP(v);
-      });
+      aux?.informacionGeneral.obligadosSolidarios.map(
+        (v: any, index: number) => {
+          return addObligadoSolidarioAvalLP(v);
+        }
+      );
 
       // aux?.generalGastosCostos.map((v: any, index: number) =>{
       //   return addGeneralGastosCostos(v);
       // });
 
-      aux?.autorizacionSelect.map((v: any, index: number) =>{
+      aux?.autorizacionSelect.map((v: any, index: number) => {
         return setAutorizacionSelect(v);
       });
-
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinancieraLP(v);
@@ -334,12 +335,8 @@ export function ConsultaDeSolicitudPage() {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumentoLP(v);
       });
-
     } else {
-
     }
-
-
   };
   const idSolicitud: String = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -371,14 +368,11 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const editarSolicitud = (Tipo: string) => {
-
     if (Tipo === "Crédito simple a corto plazo") {
       navigate("../ObligacionesCortoPlazo");
     } else {
       navigate("../ObligacionesLargoPlazo");
     }
-
-
   };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
@@ -647,8 +641,25 @@ export function ConsultaDeSolicitudPage() {
                           </IconButton>
                         </Tooltip>
 
+                        {row.Estatus === "Por Firmar" && (
+                          <Tooltip title="Firmar documento">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                ConsultaSolicitud(row.Solicitud, setUrl);
+
+                                navigate("../firmar");
+                              }}
+                            >
+                              <HistoryEduIcon />
+                              {row.Acciones}
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
                         {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                          localStorage.getItem("Rol") !== "Administrador" && (
+                          localStorage.getItem("Rol") !== "Administrador" &&
+                          row.Estatus !== "Por Firmar" && (
                             <Tooltip title="Editar">
                               <IconButton
                                 type="button"
@@ -666,7 +677,7 @@ export function ConsultaDeSolicitudPage() {
                             </Tooltip>
                           )}
 
-                        {row.Estatus === "Por Firmar" && (
+                        {row.Estatus === "Revisión" && (
                           <Tooltip title="Descargar">
                             <IconButton
                               type="button"
@@ -697,7 +708,8 @@ export function ConsultaDeSolicitudPage() {
                         )}
 
                         {localStorage.getItem("IdUsuario") === row.CreadoPor &&
-                          localStorage.getItem("Rol") !== "Administrador" && (
+                          localStorage.getItem("Rol") !== "Administrador" &&
+                          row.Estatus !== "Por Firmar" && (
                             <Tooltip title="Borrar">
                               <IconButton
                                 type="button"

@@ -32,6 +32,8 @@
     "zustand": "^4.3.6"
   },
   "scripts": {
+    "dist-pakfirma": "del /S /Q .\\node_modules\\@jbcecapmex\\pakfirma\\dist\\* && xcopy ..\\pakfirma\\dist\\ .\\node_modules\\@jbcecapmex\\pakfirma\\dist /K /D /H /Y /E",
+    "json-pakfirma": "del /S /Q .\\node_modules\\@jbcecapmex\\pakfirma\\package.json && xcopy ..\\pakfirma\\package.json .\\node_modules\\@jbcecapmex\\pakfirma\\package.json /K /D /H /Y /E",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
