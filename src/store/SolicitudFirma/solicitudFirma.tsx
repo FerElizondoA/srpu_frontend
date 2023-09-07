@@ -5,7 +5,9 @@ import Swal from "sweetalert2";
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
   url: string;
+  infoDoc: string;
   changeIdSolicitud: (id: string) => void;
+  changeInfoDoc: (info: string) => void;
   setUrl: (url: string) => void;
 }
 
@@ -17,7 +19,38 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   url: "",
 
+  infoDoc: "",
+
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+  changeInfoDoc: (info: any) => {
+    set(() => ({ infoDoc: info }));
+
+    axios
+      .post(
+        process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+        {
+          IdPathDoc: info.IdPathDoc,
+          IdFirma: info.IdFirma,
+          NumeroOficio: info.NumeroOficio,
+          Asunto: info.Asunto,
+          Rfc: info.Rfc,
+          SerialCertificado: info.SerialCertificado,
+          FechaFirma: info.FechaFirma,
+          FechaDoc: info.FechaDoc,
+          PathDoc: info.PathDoc,
+          CreadoPor: info.CreadoPor,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+            "Access-Control-Allow-Origin": "*",
+          },
+          responseType: "arraybuffer",
+        }
+      )
+      .then((response) => {})
+      .catch((err) => {});
+  },
 
   setUrl: (url: any) => set(() => ({ url: url })),
 });
@@ -134,7 +167,6 @@ export async function ConsultaSolicitud(Solicitud: string, setUrl: Function) {
         new Blob([response.data], { type: "application/pdf" })
       );
 
-      console.log(url);
       setUrl(url);
     })
     .catch((err) => {});

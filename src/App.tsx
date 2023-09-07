@@ -30,6 +30,7 @@ import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
 
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
+import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 
 export const appTheme = createTheme({
   palette: {
@@ -89,6 +90,7 @@ function App() {
           <Route index element={<Init />} />
           <Route path="/" element={<HomePage />}></Route>
           <Route path="firmar" element={<Firma />} />
+          <Route path="firmaUrl" element={<FirmaConUrl />} />
           <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
           <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
           <Route path="home" element={<HomePage />}></Route>
@@ -123,15 +125,14 @@ function App() {
                   "&idUsuarioModificado=" +
                   localStorage.getItem("idUsuarioModificado")
                 }
-                // baseURL={String("http://localhost:80")} //log
-                baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)} //log
+                baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
               />
             }
           ></Route>
 
           <Route path="mandatos" element={<Mandatos />}></Route>
           <Route
-            path="intrucciones-irrevocables"
+            path="instruccionesIrrevocables"
             element={<InstruccionesIrrevocables />}
           ></Route>
         </Routes>

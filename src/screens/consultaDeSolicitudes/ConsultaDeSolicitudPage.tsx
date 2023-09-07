@@ -39,6 +39,10 @@ import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { ConsultaSolicitud } from "../../store/SolicitudFirma/solicitudFirma";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+
 export interface IData {
   Id: string;
   NumeroRegistro: string;
@@ -392,6 +396,8 @@ export function ConsultaDeSolicitudPage() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
@@ -644,8 +650,25 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
+                          {row.Estatus === "Por Firmar" && (
+                            <Tooltip title="Firmar documento">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  ConsultaSolicitud(row.Solicitud, setUrl);
+
+                                  navigate("../firmaUrl");
+                                }}
+                              >
+                                <HistoryEduIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
                           {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                            localStorage.getItem("Rol") !== "Administrador" && (
+                            localStorage.getItem("Rol") !== "Administrador" &&
+                            row.Estatus !== "Por Firmar" && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"
@@ -663,7 +686,7 @@ export function ConsultaDeSolicitudPage() {
                               </Tooltip>
                             )}
 
-                          {row.Estatus === "Por Firmar" && (
+                          {row.Estatus === "Firmado" && (
                             <Tooltip title="Descargar">
                               <IconButton
                                 type="button"
@@ -695,7 +718,8 @@ export function ConsultaDeSolicitudPage() {
 
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
-                            localStorage.getItem("Rol") !== "Administrador" && (
+                            localStorage.getItem("Rol") !== "Administrador" &&
+                            row.Estatus !== "Por Firmar" && (
                               <Tooltip title="Borrar">
                                 <IconButton
                                   type="button"

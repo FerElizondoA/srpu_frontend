@@ -9,6 +9,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
+import Groups2Icon from "@mui/icons-material/Groups2";
+
 import {
   AppBar,
   Avatar,
@@ -76,9 +78,13 @@ export const IconsMenu = (icon: string) => {
       return <LockOutlinedIcon sx={queries.icon} />;
     case "LogoutIcon":
       return <LogoutIcon sx={queries.icon} />;
+    case "Groups2Icon":
+      return <Groups2Icon sx={queries.icon} />;
+    case "AssignmentIcon":
+      return <AssignmentIcon sx={queries.icon} />;
 
     default:
-      break;
+      return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
   }
 };
 
