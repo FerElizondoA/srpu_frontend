@@ -113,6 +113,8 @@ const {
   deleteSolicitud,
   createComentario,
   getComentarios,
+  cambiaEstatus,
+  getSolicitudesAdministrador,
 } = require("../controllers/Solicitudes.js");
 const {
   createTipoDeDocumento,
@@ -740,6 +742,15 @@ router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
 router.delete("/delete-solicitud", verifyToken.verifyJWT, (req, res) => {
   deleteSolicitud(req, res);
 });
+
+router.post("/cambiaEstatus", verifyToken.verifyJWT, (req, res) => {
+  cambiaEstatus(req, res);
+});
+
+router.get("/get-solicitudesAdmin", verifyToken.verifyJWT, (req, res) => {
+  getSolicitudesAdministrador(req, res);
+});
+
 //#endregion
 
 //#region Comentarios

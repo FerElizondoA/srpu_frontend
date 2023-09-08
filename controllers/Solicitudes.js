@@ -367,4 +367,58 @@ module.exports = {
       }
     });
   },
+
+  cambiaEstatus: (req, res) => {
+    const Id = req.body.Id;
+    const Estatus = req.body.Estatus;
+    const ModificadoPor = req.body.ModificadoPor;
+
+    db.query(
+      `CALL sp_CambiaEstatusSolicitud('${Id}','${Estatus}','${ModificadoPor}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: err,
+          });
+        }
+
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
+
+  getSolicitudesAdministrador: (req, res) => {
+    const Estatus = req.query.Estado;
+
+    db.query(
+      `CALL sp_ListadoSolicitudesAdministrador('${Estatus}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: err,
+          });
+        }
+
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
 };
