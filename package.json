@@ -5,7 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@jbcecapmex/pakfirma": "^1.6.0",
+    "@jbcecapmex/pakfirma": "^1.7.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
     "@mui/x-data-grid": "^5.17.23",
