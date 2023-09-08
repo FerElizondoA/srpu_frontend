@@ -24,14 +24,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
-import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import {
+  getSolicitudes,
+  getSolicitudesAdmin,
+} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
 import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { DescargarConsultaSolicitud } from "../../store/CreditoCortoPlazo/solicitud_inscripcion";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
@@ -40,7 +42,10 @@ import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import { ConsultaSolicitud } from "../../store/SolicitudFirma/solicitudFirma";
+import {
+  ConsultaSolicitud,
+  getPdf,
+} from "../../store/SolicitudFirma/solicitudFirma";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 
 export interface IData {
@@ -58,6 +63,7 @@ export interface IData {
   TipoSolicitud: string;
   IdEditor: string;
   CreadoPor: string;
+  IdPathDoc: string;
 }
 
 interface Head {
@@ -130,25 +136,25 @@ export function ConsultaDeSolicitudPage() {
     // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
-        elemento.ClaveDeInscripcion.toString()
+        elemento.ClaveDeInscripcion?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.Estatus.toString()
+        elemento.Estatus?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.FechaContratacion.toString()
+        elemento.FechaContratacion?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.Institucion.toString()
+        elemento.Institucion?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.MontoOriginalContratado.toString()
+        elemento.MontoOriginalContratado?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.TipoEntePublico.toString()
+        elemento.TipoEntePublico?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.TipoSolicitud.toString()
+        elemento.TipoSolicitud?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
@@ -160,7 +166,18 @@ export function ConsultaDeSolicitudPage() {
   };
 
   useEffect(() => {
-    getSolicitudes(setDatos);
+    if (
+      localStorage.getItem("Rol") === "Capturador" ||
+      localStorage.getItem("Rol") === "Verificador"
+    ) {
+      getSolicitudes(setDatos);
+    } else if (localStorage.getItem("Rol") === "Revisor") {
+      getSolicitudesAdmin("Revision", setDatos);
+    } else if (localStorage.getItem("Rol") === "Validador") {
+      getSolicitudesAdmin("Validacion", setDatos);
+    } else if (localStorage.getItem("Rol") === "Autorizador") {
+      getSolicitudesAdmin("Autorizacion", setDatos);
+    }
   }, []);
 
   useEffect(() => {
@@ -335,8 +352,6 @@ export function ConsultaDeSolicitudPage() {
     }
   };
 
-  const idSolicitud: String = useCortoPlazoStore((state) => state.idSolicitud);
-
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
     changeEncabezado({
@@ -387,7 +402,18 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     if (!openEliminar) {
-      getSolicitudes(setDatos);
+      if (
+        localStorage.getItem("Rol") === "Capturador" ||
+        localStorage.getItem("Rol") === "Verificador"
+      ) {
+        getSolicitudes(setDatos);
+      } else if (localStorage.getItem("Rol") === "Revisor") {
+        getSolicitudesAdmin("Revision", setDatos);
+      } else if (localStorage.getItem("Rol") === "Validador") {
+        getSolicitudesAdmin("Validacion", setDatos);
+      } else if (localStorage.getItem("Rol") === "Autorizador") {
+        getSolicitudesAdmin("Autorizacion", setDatos);
+      }
     }
   }, [openEliminar]);
 
@@ -506,10 +532,13 @@ export function ConsultaDeSolicitudPage() {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
 
-                    if (row.Estatus === "Captura") {
+                    if (
+                      row.Estatus === "Captura" ||
+                      row.Estatus === "Revision"
+                    ) {
                       chip = (
                         <Chip
-                          label={row.Estatus}
+                          label={"En " + row.Estatus}
                           // icon={<WarningAmberIcon />}
                           color="warning"
                           variant="outlined"
@@ -517,10 +546,13 @@ export function ConsultaDeSolicitudPage() {
                       );
                     }
 
-                    if (row.Estatus === "Verificacion") {
+                    if (
+                      row.Estatus === "Verificacion" ||
+                      row.Estatus === "Validacion"
+                    ) {
                       chip = (
                         <Chip
-                          label={row.Estatus}
+                          label={"En " + row.Estatus}
                           // icon={<RateReviewSharpIcon />}
                           color="info"
                           variant="outlined"
@@ -528,7 +560,10 @@ export function ConsultaDeSolicitudPage() {
                       );
                     }
 
-                    if (row.Estatus === "Por Firmar") {
+                    if (
+                      row.Estatus === "Por Firmar" ||
+                      row.Estatus === "Por Autorizar"
+                    ) {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -538,10 +573,10 @@ export function ConsultaDeSolicitudPage() {
                         />
                       );
                     }
-                    if (row.Estatus === "Firmado") {
+                    if (row.Estatus === "Autorizado") {
                       chip = (
                         <Chip
-                          label={row.Estatus}
+                          label={"En " + row.Estatus}
                           // icon={<CheckIcon />}
                           color="success"
                           variant="outlined"
@@ -565,7 +600,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.Institucion.toString()}
+                          {row.Institucion?.toString()}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -574,7 +609,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.TipoEntePublico.toString()}
+                          {row.TipoEntePublico?.toString()}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -592,7 +627,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.ClaveDeInscripcion.toString()}
+                          {row.ClaveDeInscripcion?.toString()}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -601,7 +636,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.MontoOriginalContratado.toString()}
+                          {row.MontoOriginalContratado?.toString()}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -657,6 +692,7 @@ export function ConsultaDeSolicitudPage() {
                                 onClick={() => {
                                   ConsultaSolicitud(row.Solicitud, setUrl);
 
+                                  changeIdSolicitud(row.Id);
                                   navigate("../firmaUrl");
                                 }}
                               >
@@ -668,7 +704,8 @@ export function ConsultaDeSolicitudPage() {
 
                           {localStorage.getItem("IdUsuario") === row.IdEditor &&
                             localStorage.getItem("Rol") !== "Administrador" &&
-                            row.Estatus !== "Por Firmar" && (
+                            (row.Estatus === "Captura" ||
+                              row.Estatus === "Verificacion") && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"
@@ -686,19 +723,28 @@ export function ConsultaDeSolicitudPage() {
                               </Tooltip>
                             )}
 
-                          {row.Estatus === "Firmado" && (
-                            <Tooltip title="Descargar">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  DescargarConsultaSolicitud(row.Solicitud);
-                                }}
-                              >
-                                <DownloadIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                          {row.Estatus !== "Captura" &&
+                            row.Estatus !== "Verificacion" &&
+                            row.Estatus !== "Por Firmar" && (
+                              <Tooltip title="Descargar">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    getPdf(
+                                      row.IdPathDoc,
+                                      row.NumeroRegistro,
+                                      format(
+                                        new Date(row.FechaContratacion),
+                                        "dd/MM/yyyy"
+                                      )
+                                    );
+                                  }}
+                                >
+                                  <DownloadIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {localStorage.getItem("Rol") !== "Administrador" && (
                             <Tooltip title="Comentarios">
@@ -719,7 +765,8 @@ export function ConsultaDeSolicitudPage() {
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
                             localStorage.getItem("Rol") !== "Administrador" &&
-                            row.Estatus !== "Por Firmar" && (
+                            (row.Estatus === "Captura" ||
+                              row.Estatus === "Verificacion") && (
                               <Tooltip title="Borrar">
                                 <IconButton
                                   type="button"
@@ -727,7 +774,34 @@ export function ConsultaDeSolicitudPage() {
                                     changeIdSolicitud(row?.Id || "");
                                     changeEditCreadoPor(row?.CreadoPor);
                                     changeOpenEliminar(!openEliminar);
-                                    getSolicitudes(setDatos);
+                                    if (
+                                      localStorage.getItem("Rol") ===
+                                        "Capturador" ||
+                                      localStorage.getItem("Rol") ===
+                                        "Verificador"
+                                    ) {
+                                      getSolicitudes(setDatos);
+                                    } else if (
+                                      localStorage.getItem("Rol") === "Revisor"
+                                    ) {
+                                      getSolicitudesAdmin("Revision", setDatos);
+                                    } else if (
+                                      localStorage.getItem("Rol") ===
+                                      "Validador"
+                                    ) {
+                                      getSolicitudesAdmin(
+                                        "Validacion",
+                                        setDatos
+                                      );
+                                    } else if (
+                                      localStorage.getItem("Rol") ===
+                                      "Autorizador"
+                                    ) {
+                                      getSolicitudesAdmin(
+                                        "Autorizacion",
+                                        setDatos
+                                      );
+                                    }
                                   }}
                                 >
                                   <DeleteIcon />

@@ -15,10 +15,7 @@ const Toast = Swal.mixin({
   },
 });
 
-export const getListadoUsuarios = (
-  setState: Function,
-  permisosEspeciales = 0
-) => {
+export const getListadoUsuarios = (setState: Function) => {
   axios
     .get(process.env.REACT_APP_APPLICATION_LOGIN + "/api/users-app", {
       params: {

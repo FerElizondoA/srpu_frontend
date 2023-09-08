@@ -11,13 +11,13 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export interface IUsuariosCorto {
-  id: string;
+  IdUsuario: string;
   Nombre: string;
   ApellidoPaterno: string;
   ApellidoMaterno: string;
-  IdMunicipioUOrganizacion: string;
+  IdEntidad: string;
   IdRol: string;
-  Cargo: string;
+  Puesto: string;
 }
 
 export interface IRoles {
@@ -55,21 +55,23 @@ export function Encabezado() {
   );
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios, 1);
+    getListadoUsuarios(setUsuarios);
     getTiposEntesPublicos();
     getOrganismos();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {}, []);
-
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
+
   const selectedValue =
-    usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)
-      ?.id || "";
+    usuarios.find(
+      (usuario) => usuario.IdUsuario === solicitanteAutorizado.Solicitante
+    )?.IdUsuario || "";
   // Verificar si el valor seleccionado existe en la lista de opciones
-  const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
+  const isValueValid = usuarios.some(
+    (usuario) => usuario.IdUsuario === selectedValue
+  );
 
   return (
     <Grid container>
@@ -111,12 +113,14 @@ export function Encabezado() {
             fullWidth
             value={isValueValid ? selectedValue : ""}
             onChange={(e) => {
-              let x = usuarios.find((usuario) => usuario.id === e.target.value);
+              let x = usuarios.find(
+                (usuario) => usuario.IdUsuario === e.target.value
+              );
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.id || "",
-                  Cargo: x?.Cargo || "",
+                  Solicitante: x?.IdUsuario || "",
+                  Cargo: x?.Puesto || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
                 tipoEntePublico: tipoEntePublico,
@@ -127,7 +131,7 @@ export function Encabezado() {
             variant="standard"
           >
             {usuarios.map((usuario) => (
-              <MenuItem key={usuario.id} value={usuario.id}>
+              <MenuItem key={usuario.IdUsuario} value={usuario.IdUsuario}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}

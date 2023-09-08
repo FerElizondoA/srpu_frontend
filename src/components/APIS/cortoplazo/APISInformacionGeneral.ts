@@ -74,3 +74,29 @@ export function getSolicitudes(setState: Function) {
       });
     });
 }
+
+export async function getSolicitudesAdmin(Estado: string, setState: Function) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-solicitudesAdmin",
+    params: { Estado: Estado },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      console.log(data);
+
+      setState(data.data);
+    })
+    .catch((error) => {
+      Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
+        icon: "error",
+        title: "Mensaje",
+        text: "(" + error.response.status + ") " + error.response.data.msg,
+      });
+    });
+}

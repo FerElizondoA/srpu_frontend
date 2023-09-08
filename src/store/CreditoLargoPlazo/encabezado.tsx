@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   ICatalogo,
   IEntePublico,
-} from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado"
+} from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 //"../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface EncabezadoLargoPlazoSlice {
@@ -40,16 +40,14 @@ export interface EncabezadoLargoPlazoSlice {
   getTiposEntesPublicos: () => void;
 }
 
-
-export const createEncabezadoLargoPlazoSlice: StateCreator<EncabezadoLargoPlazoSlice> = (
-  set,
-  get
-) => ({
+export const createEncabezadoLargoPlazoSlice: StateCreator<
+  EncabezadoLargoPlazoSlice
+> = (set, get) => ({
   // IdSolicitud: "",
   encabezado: {
     tipoDocumento: "Crédito simple a largo plazo",
     solicitanteAutorizado: {
-      Solicitante: localStorage.getItem("IdUsuario") || "",
+      Solicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",
       Nombre: localStorage.getItem("NombreUsuario") || "",
     },

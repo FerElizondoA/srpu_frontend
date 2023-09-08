@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../queries";
 
-
 export const modulos = [
   {
     label: "Claves de Inscripción",
@@ -22,10 +21,10 @@ export const modulos = [
     label: "Días del Ejercicio",
     fnc: "diasDelEjercicio",
   },
-  {
-    label: "Entes Público Obligados", //SI
-    fnc: "entePublicoObligado",
-  },
+  // {
+  //   label: "Entes Público Obligados", //SI
+  //   fnc: "entePublicoObligado",
+  // },
   {
     label: "Fuentes de Pago",
     fnc: "fuenteDePago",
@@ -63,10 +62,10 @@ export const modulos = [
     label: "Tipos de Documento", //SI
     fnc: "tiposDocumento",
   },
-  {
-    label: "Tipos de Ente Público",
-    fnc: "tiposEntePublico",
-  },
+  // {
+  //   label: "Tipos de Ente Público",
+  //   fnc: "tiposEntePublico",
+  // },
   {
     label: "Tipos de Garantía de Pago",
     fnc: "tiposDeGarantiaDePago",
@@ -189,7 +188,7 @@ export function Configuracion() {
               <Button
                 key={index}
                 sx={{
-                  ...queries.modulosConfig
+                  ...queries.modulosConfig,
                 }}
                 onClick={() => {
                   navegar(index, item.label);

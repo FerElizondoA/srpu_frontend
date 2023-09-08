@@ -56,7 +56,7 @@ export function DialogSolicitarModificacion({
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios, 1);
+    getListadoUsuarios(setUsuarios);
   }, [openState]);
 
   useEffect(() => {

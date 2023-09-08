@@ -65,7 +65,7 @@ export function ConfirmacionDescargaSolicitud({
   );
 
   React.useEffect(() => {
-    getListadoUsuarios(setUsuarios, 1);
+    getListadoUsuarios(setUsuarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openState === true]);
 

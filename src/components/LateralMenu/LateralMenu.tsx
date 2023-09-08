@@ -53,6 +53,7 @@ import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -82,6 +83,8 @@ export const IconsMenu = (icon: string) => {
       return <Groups2Icon sx={queries.icon} />;
     case "AssignmentIcon":
       return <AssignmentIcon sx={queries.icon} />;
+    case "HistoryEduIcon":
+      return <HistoryEduIcon sx={queries.icon}></HistoryEduIcon>;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -129,7 +132,6 @@ export function LateralMenu() {
 
   const [openModulo, setOpenModulo] = useState("");
   const [openSubModulo, setOpenSubModulo] = useState("");
-  const [openSubModulo1, setOpenSubModulo1] = useState("");
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerNotificationOpen, setIsDrawerNotificationOpen] =
@@ -156,8 +158,6 @@ export function LateralMenu() {
     color += `00${value.toString(16)}`.slice(-2);
   }
   /* eslint-enable no-bitwise */
-
-  const [openBandejas, setOpenBandejas] = useState(false);
 
   const [show, setShow] = useState(false);
 
@@ -580,7 +580,7 @@ export function LateralMenu() {
               <Divider />
 
               <List>
-                {menu.length > 0 &&
+                {menu.length > 0 ? (
                   menu.map(
                     (v: any, i: number) =>
                       ![
@@ -704,7 +704,19 @@ export function LateralMenu() {
                           )}
                         </Grid>
                       )
-                  )}
+                  )
+                ) : (
+                  <ListItemButton
+                    onClick={() => {
+                      logout();
+                    }}
+                  >
+                    <ListItemIcon>{IconsMenu("LogoutIcon")}</ListItemIcon>
+                    <Typography sx={queries.bold_text}>
+                      Cerrar sesión
+                    </Typography>
+                  </ListItemButton>
+                )}
               </List>
             </Grid>
 

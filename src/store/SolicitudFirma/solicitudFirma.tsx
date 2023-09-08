@@ -1,6 +1,8 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useSolicitudFirmaStore } from "./main";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -22,34 +24,43 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   infoDoc: "",
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+
   changeInfoDoc: (info: any) => {
     set(() => ({ infoDoc: info }));
 
-    axios
-      .post(
-        process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
-        {
-          IdPathDoc: info.IdPathDoc,
-          IdFirma: info.IdFirma,
-          NumeroOficio: info.NumeroOficio,
-          Asunto: info.Asunto,
-          Rfc: info.Rfc,
-          SerialCertificado: info.SerialCertificado,
-          FechaFirma: info.FechaFirma,
-          FechaDoc: info.FechaDoc,
-          PathDoc: info.PathDoc,
-          CreadoPor: info.CreadoPor,
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-            "Access-Control-Allow-Origin": "*",
+    if (info) {
+      const inf = JSON.parse(info);
+
+      const state = useCortoPlazoStore.getState();
+      axios
+        .post(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
+          {
+            IdPathDoc: inf.IdPathDoc,
+            IdFirma: inf.IdFirma,
+            IdSolicitud: state.idSolicitud,
+            NumeroOficio: inf.NumeroOficio,
+            Asunto: inf.Asunto,
+            Rfc: inf.Rfc,
+            SerialCertificado: inf.SerialCertificado,
+            FechaFirma: inf.FechaFirma,
+            FechaDoc: inf.Fecha_doc,
+            PathDoc: inf.PathDoc,
+            CreadoPor: inf.IdUsuario,
           },
-          responseType: "arraybuffer",
-        }
-      )
-      .then((response) => {})
-      .catch((err) => {});
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+              "Access-Control-Allow-Origin": "*",
+            },
+            responseType: "arraybuffer",
+          }
+        )
+        .then((response) => {
+          CambiaEstatus("Revision", state.idSolicitud);
+        })
+        .catch((err) => {});
+    }
   },
 
   setUrl: (url: any) => set(() => ({ url: url })),
@@ -171,3 +182,58 @@ export async function ConsultaSolicitud(Solicitud: string, setUrl: Function) {
     })
     .catch((err) => {});
 }
+
+export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
+  axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/cambiaEstatus",
+      {
+        Id: IdSolicitud,
+        Estatus: Estatus,
+        ModificadoPor: localStorage.getItem("IdCentral"),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {})
+    .catch((err) => {});
+};
+
+export const getPdf = (
+  id: string,
+  noRegistro: string,
+  fechaContratacion: string
+) => {
+  let dataArray = new FormData();
+  dataArray.append("id", id);
+  dataArray.append("phrase", "");
+
+  axios
+    .post(process.env.REACT_APP_APPLICATION_FIEL + "/api/getfpdf", dataArray, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: localStorage.getItem("jwt") || "",
+      },
+      responseType: "arraybuffer",
+    })
+    .then((r) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([r.data], { type: "application/pdf" })
+      );
+
+      let link = document.createElement("a");
+
+      link.setAttribute("download", `${noRegistro}- ${fechaContratacion}.pdf`);
+      link.setAttribute("href", url);
+      document.body.appendChild(link);
+      link.click();
+    })
+    .catch((err) => {});
+};

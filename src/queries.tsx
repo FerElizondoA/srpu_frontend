@@ -499,19 +499,19 @@ export const queries = {
     boxShadow: 1,
 
     "@media (min-width: 480px)": {
-      fontSize: "45%",
+      fontSize: "40%",
     },
     "@media (min-width: 768px)": {
-      fontSize: "65%",
+      fontSize: "60%",
     },
     "@media (min-width: 1140px)": {
-      fontSize: "80%",
+      fontSize: "75%",
     },
     "@media (min-width: 1400px)": {
-      fontSize: "85%",
+      fontSize: "80%",
     },
     "@media (min-width: 1870px)": {
-      fontSize: "100%",
+      fontSize: "90%",
     },
   },
 

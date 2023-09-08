@@ -90,10 +90,11 @@ export const createInformacionGeneralSlice: StateCreator<
       informacionGeneral: informacionGeneral,
     })),
 
-  changeObligadoSolidarioAval: (obligadoSolidario: any) =>
+  changeObligadoSolidarioAval: (obligadoSolidario: any) => {
     set(() => ({
       generalObligadoSolidarioAval: obligadoSolidario,
-    })),
+    }));
+  },
 
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
     set((state) => ({
