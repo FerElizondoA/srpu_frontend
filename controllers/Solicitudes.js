@@ -294,6 +294,7 @@ module.exports = {
   createComentario: (req, res) => {
     const IdSolicitud = req.body.IdSolicitud;
     const Comentario = req.body.Comentario;
+    const Tipo = req.body.Tipo;
     const IdUsuario = req.body.IdUsuario;
 
     if (IdSolicitud == null || /^[\s]*$/.test(IdSolicitud)) {
@@ -314,7 +315,7 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_AgregarComentario( '${IdSolicitud}','${Comentario}', '${IdUsuario}')`,
+      `CALL sp_AgregarComentario( '${IdSolicitud}','${Comentario}','${Tipo}','${IdUsuario}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
