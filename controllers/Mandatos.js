@@ -60,39 +60,6 @@ module.exports = {
     });
   },
 
-  // DETALLE POR ID
-  getDetailMandato: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
-      return res.status(409).send({
-        error: "Ingrese IdDescripcion.",
-      });
-    }
-
-    db.query(`CALL sp_DetalleMandato('${IdDescripcion}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
-      if (result.length) {
-        const data = result[0][0];
-        if (data.error) {
-          return res.status(409).send({
-            result: data,
-          });
-        }
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
-      }
-    });
-  },
-
   //MODIFICA POR ID
   modifyMandato: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;

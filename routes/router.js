@@ -1194,16 +1194,8 @@ router.post("/create-mandato", (req, res, express) => {
 //   getTiposDeGarantiaDePago(req, res);
 // });
 
-// router.get(
-//   "/detail-tiposDeGarantiaDePago",
-//   verifyToken.verifyJWT,
-//   (req, res) => {
-//     getDetailTipoDeGarantiaDePago(req, res);
-//   }
-// );
-
-// router.put("/modify-tiposDeGarantiaDePago", (req, res) => {
-//   modifyTipoDeGarantiaDePago(req, res);
+// router.put("/modify-mandato", (req, res) => {
+//   modifyMandato(req, res);
 // });
 
 // router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
