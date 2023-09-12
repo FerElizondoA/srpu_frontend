@@ -33,7 +33,6 @@ module.exports = {
     db.query(
       `CALL sp_AgregarNotificacion('${Titulo}','${Mensaje}','${IdUsuarioCreador}', '${Usuarios}')`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
