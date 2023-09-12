@@ -11,26 +11,25 @@ import {
   continueSession,
   sessionValid,
 } from "./components/APIS/Config/validation";
-import { Configuracion } from "./screens/Config/Configuracion";
 import { HomePage } from "./components/HomePage/HomePage";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { Firma } from "./components/e.firma/Firma";
+import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
 import { Catalogos } from "./screens/Config/Catalogos";
+import { Configuracion } from "./screens/Config/Configuracion";
 import { Usuarios } from "./screens/Config/Usuarios";
 import { Notificaciones } from "./screens/Notificaciones/notificaciones";
 import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
-import { Init } from "./screens/int/Init";
-import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
-import { Link } from "react-router-dom";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 import { Fideicomisos } from "./screens/fuenteDePago/Fideicomisos";
-import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
+import { Init } from "./screens/int/Init";
+import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
-import { Mandatos } from "./screens/fuenteDePago/Mandatos";
-import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
+import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
+import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 
 export const appTheme = createTheme({
   palette: {

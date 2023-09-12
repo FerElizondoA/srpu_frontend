@@ -1,11 +1,11 @@
 import {
+  Chip,
   Grid,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  Chip,
+  TableSortLabel,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -17,36 +17,36 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 
-import Paper from "@mui/material/Paper";
-import InputBase from "@mui/material/InputBase";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import EditIcon from "@mui/icons-material/Edit";
 import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DownloadIcon from "@mui/icons-material/Download";
+import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import Paper from "@mui/material/Paper";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getSolicitudes,
   getSolicitudesAdmin,
 } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
-import DownloadIcon from "@mui/icons-material/Download";
-import { format } from "date-fns";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
-import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaSolicitud,
   getPdf,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 
 export interface IData {
   Id: string;
@@ -197,6 +197,9 @@ export function ConsultaDeSolicitudPage() {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
+  const changeEstatus: Function = useCortoPlazoStore(
+    (state) => state.changeEstatus
+  );
   const changeNoRegistro: Function = useCortoPlazoStore(
     (state) => state.changeNoRegistro
   );
@@ -236,7 +239,6 @@ export function ConsultaDeSolicitudPage() {
   );
 
   // Largo plazo
-
   const changeIdSolicitudLP: Function = useLargoPlazoStore(
     (state) => state.changeIdSolicitud
   );
@@ -407,11 +409,7 @@ export function ConsultaDeSolicitudPage() {
         localStorage.getItem("Rol") === "Verificador"
       ) {
         getSolicitudes(setDatos);
-      } else if (localStorage.getItem("Rol") === "Revisor") {
-        getSolicitudesAdmin("Revision", setDatos);
-      } else if (localStorage.getItem("Rol") === "Validador") {
-        getSolicitudesAdmin("Validacion", setDatos);
-      } else if (localStorage.getItem("Rol") === "Autorizador") {
+      } else {
         getSolicitudesAdmin("Autorizacion", setDatos);
       }
     }
@@ -540,7 +538,7 @@ export function ConsultaDeSolicitudPage() {
                         <Chip
                           label={"En " + row.Estatus}
                           // icon={<WarningAmberIcon />}
-                          color="warning"
+                          color="default"
                           variant="outlined"
                         />
                       );
@@ -560,10 +558,18 @@ export function ConsultaDeSolicitudPage() {
                       );
                     }
 
-                    if (
-                      row.Estatus === "Por Firmar" ||
-                      row.Estatus === "Por Autorizar"
-                    ) {
+                    if (row.Estatus === "Autorizacion") {
+                      chip = (
+                        <Chip
+                          label={"En " + row.Estatus}
+                          // icon={<RateReviewSharpIcon />}
+                          color="warning"
+                          variant="outlined"
+                        />
+                      );
+                    }
+
+                    if (row.Estatus.includes("Por Firmar")) {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -576,7 +582,7 @@ export function ConsultaDeSolicitudPage() {
                     if (row.Estatus === "Autorizado") {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={row.Estatus}
                           // icon={<CheckIcon />}
                           color="success"
                           variant="outlined"
@@ -676,6 +682,7 @@ export function ConsultaDeSolicitudPage() {
                               onClick={() => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
+                                changeEstatus(row.Estatus);
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
                               }}
@@ -685,13 +692,13 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {row.Estatus === "Por Firmar" && (
+                          {row.Estatus.includes("Por Firmar") && (
                             <Tooltip title="Firmar documento">
                               <IconButton
                                 type="button"
                                 onClick={() => {
                                   ConsultaSolicitud(row.Solicitud, setUrl);
-
+                                  changeEstatus(row.Estatus);
                                   changeIdSolicitud(row.Id);
                                   navigate("../firmaUrl");
                                 }}
@@ -725,7 +732,7 @@ export function ConsultaDeSolicitudPage() {
 
                           {row.Estatus !== "Captura" &&
                             row.Estatus !== "Verificacion" &&
-                            row.Estatus !== "Por Firmar" && (
+                            !row.Estatus.includes("Por Firmar") && (
                               <Tooltip title="Descargar">
                                 <IconButton
                                   type="button"
@@ -751,7 +758,7 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  changeIdSolicitud(row?.Id || "");
+                                  changeIdSolicitud(row?.Id);
                                   changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenVerComentarios(!openVerComentarios);
                                 }}
@@ -781,22 +788,7 @@ export function ConsultaDeSolicitudPage() {
                                         "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
-                                    } else if (
-                                      localStorage.getItem("Rol") === "Revisor"
-                                    ) {
-                                      getSolicitudesAdmin("Revision", setDatos);
-                                    } else if (
-                                      localStorage.getItem("Rol") ===
-                                      "Validador"
-                                    ) {
-                                      getSolicitudesAdmin(
-                                        "Validacion",
-                                        setDatos
-                                      );
-                                    } else if (
-                                      localStorage.getItem("Rol") ===
-                                      "Autorizador"
-                                    ) {
+                                    } else {
                                       getSolicitudesAdmin(
                                         "Autorizacion",
                                         setDatos

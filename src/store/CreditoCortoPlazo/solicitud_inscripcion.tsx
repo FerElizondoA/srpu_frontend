@@ -44,7 +44,11 @@ export interface SolicitudInscripcionSlice {
 
   borrarSolicitud: (Id: string) => void;
 
-  addComentario: (idSolicitud: string, comentario: string) => void;
+  addComentario: (
+    idSolicitud: string,
+    comentario: string,
+    tipo: string
+  ) => void;
   saveFiles: (idRegistro: string, ruta: string) => void;
   savePathDoc: (
     idSolicitud: string,
@@ -155,7 +159,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         state.changeIdSolicitud(data.data.Id);
         state.changeNoRegistro(data.data.NumeroRegistro);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
-        state.addComentario(data.data.Id, comentario);
+        state.addComentario(data.data.Id, comentario, "Captura");
         state.saveFiles(
           data.data.Id,
           `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
@@ -265,7 +269,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
-  addComentario: async (Id: string, comentario: any) => {
+  addComentario: async (Id: string, comentario: any, tipo: string) => {
     if (comentario.length !== 2) {
       await axios
         .post(
@@ -273,6 +277,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           {
             IdSolicitud: Id,
             Comentario: comentario,
+            Tipo: "Captura",
             IdUsuario: localStorage.getItem("IdUsuario"),
           },
           {

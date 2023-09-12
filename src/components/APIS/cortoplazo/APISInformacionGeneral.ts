@@ -86,8 +86,6 @@ export async function getSolicitudesAdmin(Estado: string, setState: Function) {
     },
   })
     .then(({ data }) => {
-      console.log(data);
-
       setState(data.data);
     })
     .catch((error) => {

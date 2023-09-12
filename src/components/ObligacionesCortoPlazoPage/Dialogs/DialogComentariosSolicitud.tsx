@@ -145,15 +145,18 @@ export function VerComentariosSolicitud({
                             fontSize: "1.5ch",
                           }}
                         >
-                          {Object.entries(JSON.parse(row.Comentarios)).map(
-                            ([key, val], index) =>
-                              (val as string) === "" ? null : (
-                                <Typography key={index}>
-                                  <strong>{key}:</strong>
-                                  {val as string}
-                                </Typography>
+                          {Object.entries(JSON.parse(row.Comentarios)).length >
+                          0
+                            ? Object.entries(JSON.parse(row.Comentarios)).map(
+                                ([key, val], index) =>
+                                  (val as string) === "" ? null : (
+                                    <Typography key={index}>
+                                      <strong>{key}:</strong>
+                                      {val as string}
+                                    </Typography>
+                                  )
                               )
-                          ) || row.Comentarios}
+                            : row.Comentarios}
                         </StyledTableCell>
                       </StyledTableRow>
                     );

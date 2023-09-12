@@ -168,8 +168,12 @@ export function ConfirmacionDescargaSolicitud({
                   )
                   .map((usuario, index) => {
                     return (
-                      <MenuItem value={usuario.id} key={index}>
-                        {usuario.Nombre + " - " + usuario.Rol}
+                      <MenuItem value={usuario.Id} key={index}>
+                        {usuario.Nombre +
+                          " " +
+                          usuario.ApellidoPaterno +
+                          " " +
+                          usuario.ApellidoMaterno}
                       </MenuItem>
                     );
                   })}
@@ -212,7 +216,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, JSON.stringify(comentarios));
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -244,7 +252,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, JSON.stringify(comentarios));
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -278,7 +290,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, JSON.stringify(comentarios));
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -310,7 +326,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, JSON.stringify(comentarios));
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",

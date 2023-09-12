@@ -113,8 +113,12 @@ export function ConfirmacionDescargaSolicitud({
                   )
                   .map((usuario, index) => {
                     return (
-                      <MenuItem value={usuario.id} key={index}>
-                        {usuario.Nombre + " - " + usuario.Rol}
+                      <MenuItem value={usuario.Id} key={index}>
+                        {usuario.Nombre +
+                          " " +
+                          usuario.ApellidoPaterno +
+                          " " +
+                          usuario.ApellidoMaterno}
                       </MenuItem>
                     );
                   })}

@@ -288,8 +288,9 @@ export function ComisionesTasaEfectiva() {
               value={tasaEfectivaTasaEfectiva}
               onChange={(v) => {
                 if (
-                  validator.isNumeric(v.target.value) ||
-                  v.target.value === ""
+                  (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
+                    v.target.value === "") &&
+                  parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
                 ) {
                   changeTasaEfectiva({
                     diasEjercicio: tasaEfectivaDiasEjercicio,

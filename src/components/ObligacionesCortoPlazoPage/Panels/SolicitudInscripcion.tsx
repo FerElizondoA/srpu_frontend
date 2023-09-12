@@ -187,18 +187,6 @@ export function SolicitudInscripcion() {
       InstitucionFinanciera:
         state.informacionGeneral.institucionFinanciera.Descripcion,
     };
-    /////////////////// Por definir /////////////////////
-    let entePublicoObligado = "";
-    let obligadoSolidario = "";
-    let tipoEntePublicoObligado = "";
-
-    for (let i = 0; i < state.tablaObligadoSolidarioAval.length; i++) {
-      const item = state.tablaObligadoSolidarioAval[0];
-      entePublicoObligado = item.entePublicoObligado;
-      obligadoSolidario = item.obligadoSolidario;
-      tipoEntePublicoObligado = item.tipoEntePublicoObligado;
-    }
-    ///////////////////   Condiciones Financieras /////////////////////
     let importe = 0;
     let numeroDePago = 0;
     let PeriocidadDePago = "";
@@ -387,20 +375,6 @@ export function SolicitudInscripcion() {
     arrReglas = aux;
     changeReglasAplicables(arrReglas);
   };
-
-  // const [botonComentarios, setBotonComentarios] = useState("hola")
-
-  // const labelBotonComentarios = () => {
-
-  //   //POR HACER
-  //       // let cont =comentarios.length||0;
-  //       // comentarios?.map((elemento)=>{
-  //       //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
-  //       // })
-
-  //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
-
-  // }
 
   return (
     <Grid container>
@@ -612,12 +586,10 @@ export function SolicitudInscripcion() {
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}
                   />
-                  {openDialogModificacion && (
-                    <DialogSolicitarModificacion
-                      handler={setOpenDialogModificacion}
-                      openState={openDialogModificacion}
-                    />
-                  )}
+                  <DialogSolicitarModificacion
+                    handler={setOpenDialogModificacion}
+                    openState={openDialogModificacion}
+                  />
                 </Grid>
               ) : null}
             </Grid>

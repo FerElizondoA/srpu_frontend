@@ -1,22 +1,22 @@
-import * as React from "react";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Dialog,
+  TextField,
+  Typography,
+} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import {
-  Typography,
-  Dialog,
-  Button,
-  Autocomplete,
-  TextField,
-  Box,
-} from "@mui/material";
-import { getListadoUsuariosCortoPlazo } from "../../APIS/cortoplazo/APISGetListaUsuariosCortoPlazo";
-import { useEffect, useState } from "react";
-import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
-import { INotificaciones } from "../../Interfaces/Notificaciones/NotificaconesUsuariosCortoPlazo";
-import { IDestinatarios } from "../../Interfaces/Notificaciones/NotificaconesUsuariosCortoPlazo";
-import { IUsuarios } from "../../Config/Interfaces/IUsuarios";
+import { useState } from "react";
 import { queries } from "../../../queries";
+import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
+import { IUsuarios } from "../../Config/Interfaces/IUsuarios";
+import {
+  IDestinatarios,
+  INotificaciones,
+} from "../../Interfaces/Notificaciones/NotificaconesUsuariosCortoPlazo";
 
 export function DialogCatalogoUsuarios({
   openState,
@@ -51,10 +51,6 @@ export function DialogCatalogoUsuarios({
       setRegistroNotificaciones({ ...registroNotificaciones, Titulo: dato });
     }
   };
-
-  useEffect(() => {
-    getListadoUsuariosCortoPlazo(setUsuarios, 0);
-  }, []);
 
   const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
 

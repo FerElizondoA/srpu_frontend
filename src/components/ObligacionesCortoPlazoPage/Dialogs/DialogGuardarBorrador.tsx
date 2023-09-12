@@ -180,7 +180,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 JSON.stringify(comentario)
               )
                 .then(() => {
-                  addComentario(idSolicitud, JSON.stringify(comentario));
+                  addComentario(
+                    idSolicitud,
+                    JSON.stringify(comentario),
+                    "Captura"
+                  );
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",
@@ -210,7 +214,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                 JSON.stringify(comentario)
               )
                 .then(() => {
-                  addComentario(idSolicitud, JSON.stringify(comentario));
+                  addComentario(
+                    idSolicitud,
+                    JSON.stringify(comentario),
+                    "Captura"
+                  );
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",

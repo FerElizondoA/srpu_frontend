@@ -86,7 +86,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-reglaDeFinanciamiento",
+          "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -117,17 +117,16 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       GastosCostos: {
         ...state.GastosCostos,
-        generalGastosCostos: state.tablaGastosCostos
+        generalGastosCostos: state.tablaGastosCostos,
       },
 
-      detalleInversion :{
-        ...state.detalleInversion
+      detalleInversion: {
+        ...state.detalleInversion,
       },
 
       registrarAutorizacion: {
-        autorizacionSelect: state.autorizacionSelect
+        autorizacionSelect: state.autorizacionSelect,
       },
-      
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
@@ -195,17 +194,17 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       GastosCostos: {
         ...state.GastosCostos,
-        generalGastosCostos: state.tablaGastosCostos
+        generalGastosCostos: state.tablaGastosCostos,
       },
 
-      detalleInversion :{
-        ...state.detalleInversion
+      detalleInversion: {
+        ...state.detalleInversion,
       },
 
       registrarAutorizacion: {
-        autorizacionSelect: state.autorizacionSelect
+        autorizacionSelect: state.autorizacionSelect,
       },
-      
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
@@ -303,6 +302,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           {
             IdSolicitud: Id,
             Comentario: comentario,
+            Tipo: "Captura",
             IdUsuario: localStorage.getItem("IdUsuario"),
           },
           {
@@ -374,8 +374,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => { })
-      .catch((e) => { });
+      .then((r) => {})
+      .catch((e) => {});
   },
 });
 
@@ -498,7 +498,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => { });
+    .catch((err) => {});
 }
 
 export const getUsuariosAsignables = async (

@@ -62,7 +62,7 @@ export function AgregarComentario({
         </Button>
         <Button
           onClick={() => {
-            addComentario(IdSolicitud, comentario);
+            addComentario(IdSolicitud, comentario, "Captura");
             setComentario("");
             handler(false);
           }}

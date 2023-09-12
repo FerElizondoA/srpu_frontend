@@ -1,10 +1,9 @@
-import { Firmado, FirmadoConUrl } from "@jbcecapmex/pakfirma";
+import { FirmadoConUrl } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import { useEffect } from "react";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 
 export const FirmaConUrl = () => {
   const query = {

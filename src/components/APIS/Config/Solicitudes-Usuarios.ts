@@ -38,13 +38,6 @@ export const createSolicitud = (
         Celular: datos.Celular,
         Telefono: datos.Telefono,
         Extencion: datos.Ext,
-        // DatosAdicionales: JSON.stringify({
-        //   idRol: datos.IdRol,
-        //   rol: datos.Rol,
-        //   cargo: datos.Cargo,
-        //   idEntePublico: datos.MunicipioUOrganizacion,
-        //   correoDeRecuperacion: datos.CorreoDeRecuperacion,
-        // }),
         TipoSolicitud: tipoSolicitud,
         CreadoPor: localStorage.getItem("IdCentral") || "",
         IdApp: localStorage.getItem("IdApp") || "",
@@ -125,16 +118,11 @@ const createComentarios = (idSolicitud: string, comentario: string) => {
     });
 };
 
-export const getListadoUsuarios = (
-  setState: Function,
-  permisosEspeciales = 0
-) => {
+export const getListadoUsuarioRol = (setState: Function) => {
   axios
     .get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
       params: {
         IdApp: localStorage.getItem("IdApp"),
-        IdUsuario: localStorage.getItem("IdUsuario"),
-        PermisosEspeciales: permisosEspeciales,
       },
       headers: {
         Authorization: localStorage.getItem("jwtToken"),
@@ -142,9 +130,7 @@ export const getListadoUsuarios = (
       },
     })
     .then(({ data }) => {
-      if (data.data[0].ERROR !== "Permisos Denegados") {
-        setState(data.data);
-      }
+      setState(data.data);
     })
     .catch((r) => {
       if (r.response.status === 409) {

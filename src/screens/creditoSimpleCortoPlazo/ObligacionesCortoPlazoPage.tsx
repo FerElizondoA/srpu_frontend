@@ -107,7 +107,7 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion />}
-      {tabIndex === 4 && <Resumen />}
+      {tabIndex === 4 && <Resumen coments={true} />}
       {tabIndex === 5 && <SolicitudInscripcion />}
       <ConfirmacionBorradorSolicitud
         handler={setOpenDialogBorrador}

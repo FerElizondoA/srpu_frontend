@@ -1,14 +1,14 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { useSolicitudFirmaStore } from "./main";
+import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
+  estatus: string;
   url: string;
   infoDoc: string;
   changeIdSolicitud: (id: string) => void;
+  changeEstatus: (id: string) => void;
   changeInfoDoc: (info: string) => void;
   setUrl: (url: string) => void;
 }
@@ -19,11 +19,15 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 ) => ({
   idSolicitud: "",
 
+  estatus: "",
+
   url: "",
 
   infoDoc: "",
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
+
+  changeEstatus: (estatus: any) => set(() => ({ estatus: estatus })),
 
   changeInfoDoc: (info: any) => {
     set(() => ({ infoDoc: info }));
@@ -57,7 +61,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          CambiaEstatus("Revision", state.idSolicitud);
+          CambiaEstatus(
+            state.estatus.includes("Autorizado") ? "Autorizado" : "Revision",
+            state.idSolicitud
+          );
         })
         .catch((err) => {});
     }
@@ -200,7 +207,9 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
         responseType: "arraybuffer",
       }
     )
-    .then((response) => {})
+    .then((response) => {
+      return true;
+    })
     .catch((err) => {});
 };
 
