@@ -1,10 +1,9 @@
-import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
-import React, { useEffect } from "react";
-import { LateralMenuMobile } from "../../../components/LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../../../components/LateralMenu/LateralMenu";
-import { queries } from "../../../queries";
+import { Button, Grid, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { getToken } from "../../../../src/App";
+import { LateralMenu } from "../../../components/LateralMenu/LateralMenu";
+import { queries } from "../../../queries";
 
 export const IFrame = ({
   baseURL,
@@ -49,16 +48,20 @@ export const IFrame = ({
               // SM (small) screen
               fontSize: "1.5ch",
             },
+            width: "52%",
+            textAlign: "end",
           }}
         >
           Agregar Usuario
         </Typography>
-        <Button
-          sx={{ ...queries.buttonContinuar, fontSize: "90%" }}
-          onClick={() => navigate("../users")}
-        >
-          Volver
-        </Button>
+        <Grid sx={{ width: "40%", textAlign: "end" }}>
+          <Button
+            sx={{ ...queries.buttonContinuar, fontSize: "90%", width: "20%" }}
+            onClick={() => navigate("../users")}
+          >
+            Volver
+          </Button>
+        </Grid>
       </Grid>
 
       <Grid width={"100%"} height={"85vh"}>
