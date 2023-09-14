@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  TextField,
-  InputLabel,
   Autocomplete,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
+  Button,
   Grid,
+  IconButton,
+  InputLabel,
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  ThemeProvider,
   Tooltip,
   Typography,
-  TableRow,
-  Button,
-  Paper,
   createTheme,
-  ThemeProvider,
-  IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { queries } from "../../../queries";
-import CheckIcon from "@mui/icons-material/Check";
+import { useEffect } from "react";
 import validator from "validator";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import CloseIcon from "@mui/icons-material/Close";
-import { moneyMask } from "./InformacionGeneral";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 interface Head {
   label: string;
@@ -70,12 +70,11 @@ const theme = createTheme({
 
 export function GastoCostos() {
   //CATALOGO
-  const catalogoDestinos: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoDestinos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoDestinos
   );
 
   // Datos tabla Gastos costos
-
   const generalGCDestino: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.generalGastosCostos.destino);
 
@@ -167,6 +166,7 @@ export function GastoCostos() {
       montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
       //Archivo
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     generalGCDestino,
     generalGCMonto,
@@ -193,7 +193,7 @@ export function GastoCostos() {
       }}
     >
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -240,7 +240,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -281,7 +281,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
           <TextField
             fullWidth
@@ -290,7 +290,9 @@ export function GastoCostos() {
               changeGastosCostos({
                 gastosAdicionales: v.target.value,
                 saldoVigente: moneyMask(GCSaldoVigente.toString()),
-                montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
+                montoGastosAdicionales: moneyMask(
+                  GCMontoGastosAdicionales.toString()
+                ),
               });
             }}
             InputLabelProps={{
@@ -309,7 +311,7 @@ export function GastoCostos() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Detalle de la Inversión
           </InputLabel>
@@ -359,7 +361,7 @@ export function GastoCostos() {
         </Grid>
 
         {/* AQUI VA DESCRIPCION */}
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
           <TextField
             value={generalGCDescripcion}
@@ -367,7 +369,8 @@ export function GastoCostos() {
               changeGeneralGastosCostos({
                 destino: generalGCDestino,
                 detalleInversion: generalGCDetalleInversion,
-                claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
+                claveInscripcionFinanciamiento:
+                  generalGCClaveInscripcionFinanciamiento,
                 descripcion: v.target.value,
                 monto: moneyMask(generalGCMonto.toString()),
               })
@@ -387,7 +390,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Gastos Adicionales
           </InputLabel>
@@ -418,7 +421,7 @@ export function GastoCostos() {
                   gastosAdicionales: GCGastosAdicionales,
                   saldoVigente: moneyMask(GCSaldoVigente.toString()),
                   montoGastosAdicionales: moneyMask(v.target.value.toString()),
-                })
+                });
               }
             }}
             InputLabelProps={{
@@ -438,7 +441,7 @@ export function GastoCostos() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={12} sm={3.3} md={3} lg={3} xl={3} width={"100%"}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3} width={"100%"}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -461,7 +464,7 @@ export function GastoCostos() {
                   ...queries.leyendaArchivoGastosCosto,
                   border:
                     detalleInversion.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                       ? "2px dotted #af8c55"
                       : "2x dotted black",
                 }}
@@ -494,7 +497,7 @@ export function GastoCostos() {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Monto</InputLabel>
           <TextField
             fullWidth
@@ -522,7 +525,7 @@ export function GastoCostos() {
                     generalGCClaveInscripcionFinanciamiento,
                   descripcion: generalGCDescripcion,
                   monto: moneyMask(v.target.value),
-                })
+                });
               }
             }}
             InputLabelProps={{
@@ -540,7 +543,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel disabled sx={queries.medium_text}>
             Saldo Vigente
           </InputLabel>
@@ -565,9 +568,11 @@ export function GastoCostos() {
                 changeGastosCostos({
                   gastosAdicionales: GCGastosAdicionales,
                   saldoVigente: moneyMask(v.target.value.toString()),
-                  montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
+                  montoGastosAdicionales: moneyMask(
+                    GCMontoGastosAdicionales.toString()
+                  ),
                 });
-              } 
+              }
             }}
             InputLabelProps={{
               style: {

@@ -1,3 +1,5 @@
+import CheckIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
@@ -18,19 +20,20 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
+import { useEffect, useState } from "react";
+import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { DateInput } from "../../CustomComponents";
-import CheckIcon from "@mui/icons-material/Check";
-import validator from "validator";
+import {
+  DateInput,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
@@ -187,6 +190,7 @@ export function InformacionGeneral() {
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
@@ -211,6 +215,7 @@ export function InformacionGeneral() {
       });
     } else {
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
@@ -337,7 +342,6 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              // startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -569,7 +573,7 @@ export function InformacionGeneral() {
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Descripcion}>
+                <li {...props} key={option.Id}>
                   <Typography>{option.Descripcion}</Typography>
                 </li>
               );
@@ -657,11 +661,8 @@ export function InformacionGeneral() {
             }
           />
         </Grid>
-        {/* 
-        <Grid item display={"flex"} alignItems={"center"}  >
-          
-        </Grid> */}
       </Grid>
+
       <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
         <ThemeProvider theme={theme}>
           <Button
@@ -694,7 +695,6 @@ export function InformacionGeneral() {
         </ThemeProvider>
       </Grid>
 
-      {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
       <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer
@@ -768,7 +768,6 @@ export function InformacionGeneral() {
           </TableContainer>
         </Paper>
       </Grid>
-      {/* </Box> */}
     </Grid>
   );
 }

@@ -1,41 +1,42 @@
-import { useEffect, useState } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  TextField,
-  InputLabel,
   Autocomplete,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
+  Button,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  ThemeProvider,
   Tooltip,
   Typography,
-  TableRow,
-  Button,
-  Paper,
   createTheme,
-  ThemeProvider,
-  Select,
-  MenuItem,
 } from "@mui/material";
-
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
-import enGB from "date-fns/locale/en-GB";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateInput } from "../../CustomComponents";
-import { subDays, addDays } from "date-fns/esm";
-import { queries } from "../../../queries";
 import { differenceInDays, startOfDay } from "date-fns";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
+import { addDays, subDays } from "date-fns/esm";
+import enGB from "date-fns/locale/en-GB";
+import { useEffect, useState } from "react";
 import validator from "validator";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { queries } from "../../../queries";
+import {
+  DateInput,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -78,46 +79,35 @@ const heads: Head[] = [
   },
 ];
 
-export const moneyMask = (value: string) => {
-  value = value.replace(/\D/g, "");
-
-  const options = { minimumFractionDigits: 2 };
-
-  const result = new Intl.NumberFormat("en-US", options).format(
-    parseInt(value) / 100
-  );
-  return "$ " + result;
-};
-
 export function InformacionGeneral() {
   // GET CATALOGOS
-  const getDestinos: Function = useLargoPlazoStore(
+  const getDestinos: Function = useCortoPlazoStore(
     (state) => state.getDestinos
   );
-  const getInstituciones: Function = useLargoPlazoStore(
+  const getInstituciones: Function = useCortoPlazoStore(
     (state) => state.getInstituciones
   );
-  const getTipoEntePublicoObligado: Function = useLargoPlazoStore(
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
-  const getObligadoSolidarioAval: Function = useLargoPlazoStore(
+  const getObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.getObligadoSolidarioAval
   );
 
   // CATALOGOS
-  const catalogoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoObligadoSolidarioAval
   );
-  const catalogoInstituciones: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
   );
-  const catalogoDestinos: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoDestinos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoDestinos
   );
-  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTipoEntePublicoObligado
   );
 
@@ -178,47 +168,8 @@ export function InformacionGeneral() {
     (state) => state.removeObligadoSolidarioAval
   );
 
-  // Datos tabla Gastos costos
-
-  const generalGCDestino: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.generalGastosCostos.destino);
-
-  const generalGCDetalleInversion: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.generalGastosCostos.detalleInversion);
-
-  const generalGCClaveInscripcionFinanciamiento: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.claveInscripcionFinanciamiento
-  );
-
-  const generalGCDescripcion: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.descripcion
-  );
-
-  const generalGCMonto: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.monto
-  );
-
-  //TABLA GASTOS Y COSTOS
-
-  const changeGeneralGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGeneralGastosCostos
-  );
-
-  // Gastos y costos
-  const changeGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGastosCostos
-  );
-
-  const GCGastosAdicionales: string = useLargoPlazoStore(
-    (state) => state.GastosCostos.gastosAdicionales
-  );
-
-  const GCSaldoVigente: number = useLargoPlazoStore(
-    (state) => state.GastosCostos.saldoVigente
-  );
-
-  const GCMontoGastosAdicionales: number = useLargoPlazoStore(
-    (state) => state.GastosCostos.montoGastosAdicionales
+  const cleanObligadoSolidarioAval: Function = useLargoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
   );
 
   const addRows = () => {
@@ -230,8 +181,6 @@ export function InformacionGeneral() {
     addObligadoSolidarioAval(tab);
   };
 
-  
-
   const Denominaciones = ["Pesos", "UDIS"];
 
   useEffect(() => {
@@ -239,9 +188,8 @@ export function InformacionGeneral() {
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const state = useLargoPlazoStore.getState();
 
   // Para que el apartado obligado solidario / aval tenga un resultado por defecto
   useEffect(() => {
@@ -263,7 +211,9 @@ export function InformacionGeneral() {
           Descripcion: "",
         },
       });
+    } else {
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
@@ -291,19 +241,7 @@ export function InformacionGeneral() {
       institucionFinanciera: institucionFinanciera,
     });
 
-    changeGeneralGastosCostos({
-      destino: generalGCDestino,
-      detalleInversion: generalGCDetalleInversion,
-      claveInscripcionFinanciamiento: generalGCClaveInscripcionFinanciamiento,
-      descripcion: generalGCDescripcion,
-      monto: moneyMask(generalGCMonto.toString()),
-    });
-
-    changeGastosCostos({
-      gastosAdicionales: GCGastosAdicionales,
-      saldoVigente: GCSaldoVigente,
-      montoGastosAdicionales: moneyMask(GCMontoGastosAdicionales.toString()),
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
   return (
@@ -327,8 +265,8 @@ export function InformacionGeneral() {
         },
       }}
     >
-      <Grid item display="flex" justifyContent={"space-evenly"} sx={{}}>
-        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+      <Grid item display="flex" justifyContent={"space-evenly"}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -350,7 +288,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
             fullWidth
@@ -371,7 +309,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Original Contratado
           </InputLabel>
@@ -414,14 +352,14 @@ export function InformacionGeneral() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-             // startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
         </Grid>
       </Grid>
+
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -438,7 +376,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -468,7 +406,7 @@ export function InformacionGeneral() {
                   Id: text?.Id || "",
                   Descripcion: text?.Descripcion || "",
                 },
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: denominacion,
                 institucionFinanciera: institucionFinanciera,
               });
@@ -486,7 +424,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item  xs={12} sm={3.3} md={3.3} lg={3} xl={3} >
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             fullWidth
@@ -498,7 +436,7 @@ export function InformacionGeneral() {
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
                 destino: destino,
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: v.target.value,
                 institucionFinanciera: institucionFinanciera,
               })
@@ -514,7 +452,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"center"}>
-        <Grid item sm={11} md={11} lg={10.5} xl={10.5}  >
+        <Grid item xs={10.5} sm={10.5} md={10.5} lg={10.5} xl={10.5}>
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
@@ -543,7 +481,7 @@ export function InformacionGeneral() {
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
                 destino: destino,
-                monto: monto,
+                monto: moneyMask(monto.toString()),
                 denominacion: denominacion,
                 institucionFinanciera: {
                   Id: text?.Id || "",
@@ -566,7 +504,7 @@ export function InformacionGeneral() {
       </Grid>
 
       <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
@@ -576,7 +514,7 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
-            options={catalogoObligadoSolidarioAval}
+            options={catalogoObligadoSolidarioAval} //.filter((td: any) => td.Descripcion !== "Capturador")
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -589,7 +527,14 @@ export function InformacionGeneral() {
               Id: generalObligadoSolidario.Id,
               Descripcion: generalObligadoSolidario.Descripcion,
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              if (
+                text?.Descripcion === "No aplica" ||
+                text?.Id === "" ||
+                text === null
+              ) {
+                cleanObligadoSolidarioAval();
+              }
               changeObligadoSolidarioAval({
                 obligadoSolidario: {
                   Id: text?.Id || "",
@@ -603,8 +548,8 @@ export function InformacionGeneral() {
                   Id: "",
                   Descripcion: "",
                 },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -613,12 +558,14 @@ export function InformacionGeneral() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id || value.Descripcion === ""
+              option.Id === value.Id ||
+              value.Descripcion === "" ||
+              value.Id === ""
             }
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3} >
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Tipo de ente público obligado
           </InputLabel>
@@ -636,7 +583,7 @@ export function InformacionGeneral() {
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Descripcion}>
+                <li {...props} key={option.Id}>
                   <Typography>{option.Descripcion}</Typography>
                 </li>
               );
@@ -672,7 +619,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3.3} md={3.3} lg={3} xl={3}>
+        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
@@ -724,11 +671,8 @@ export function InformacionGeneral() {
             }
           />
         </Grid>
-        {/* 
-        <Grid item display={"flex"} alignItems={"center"}  >
-          
-        </Grid> */}
       </Grid>
+
       <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
         <ThemeProvider theme={theme}>
           <Button
@@ -740,7 +684,20 @@ export function InformacionGeneral() {
               /^[\s]*$/.test(generalEntePublico.Descripcion)
             }
             variant="outlined"
-            onClick={() => addRows()}
+            onClick={() => {
+              changeObligadoSolidarioAval({
+                obligadoSolidario: {
+                  Id: "",
+                  Descripcion: "",
+                },
+                tipoEntePublicoObligado: "",
+                entePublicoObligado: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              });
+              addRows();
+            }}
           >
             <CheckIcon fontSize="small" />
             AGREGAR
@@ -748,8 +705,7 @@ export function InformacionGeneral() {
         </ThemeProvider>
       </Grid>
 
-      {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
-      <Grid height={"40%"} display={"flex"} justifyContent={"space-evenly"}>
+      <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer
             sx={{
@@ -800,7 +756,6 @@ export function InformacionGeneral() {
                             </IconButton>
                           </Tooltip>
                         </StyledTableCell>
-
                         <StyledTableCell
                           align="center"
                           component="th"

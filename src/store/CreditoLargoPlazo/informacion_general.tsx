@@ -1,6 +1,4 @@
 import { StateCreator } from "zustand";
-import axios from "axios";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IFileInfoGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
 
 export type ObligadoSolidarioAval = {
@@ -9,7 +7,6 @@ export type ObligadoSolidarioAval = {
   entePublicoObligado: string;
 };
 
-//NUEVOOOOOO
 export type GeneralGastosCostos = {
   destino: string;
   detalleInversion: string;
@@ -58,13 +55,6 @@ export interface InformacionGeneralLargoPlazoSlice {
     monto: number;
   };
 
-  //************ */
-  catalogoDestinosGastosCostos: ICatalogo[];
-  catalogoInstituciones: ICatalogo[];
-  catalogoDestinos: ICatalogo[];
-  catalogoObligadoSolidarioAval: ICatalogo[];
-  catalogoTipoEntePublicoObligado: ICatalogo[];
-
   changeInformacionGeneral: (
     fechaContratacion: string,
     fechaVencimiento: string,
@@ -109,15 +99,7 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
-  //getTiposDocumentos: () => void;
   tablaDocumentos: IFileInfoGeneral[];
-
-  /************************ */
-
-  getDestinos: () => void;
-  getInstituciones: () => void;
-  getTipoEntePublicoObligado: () => void;
-  getObligadoSolidarioAval: () => void;
 }
 
 export const createInformacionGeneralLargoPlazoSlice: StateCreator<
@@ -163,13 +145,6 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   },
 
   tablaDocumentos: [],
-  //************* */
-
-  catalogoDestinosGastosCostos: [],
-  catalogoInstituciones: [],
-  catalogoDestinos: [],
-  catalogoObligadoSolidarioAval: [],
-  catalogoTipoEntePublicoObligado: [],
 
   changeInformacionGeneral: (informacionGeneral: any) =>
     set(() => ({
@@ -240,74 +215,4 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
         nombreArchivo: "",
       },
     })),
-
-  // /**/*/ */
-
-  getDestinos: async () => {
-    return await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoDestinos: r,
-        }));
-      });
-  },
-  getInstituciones: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-institucionesFinancieras",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoInstituciones: r,
-        }));
-      });
-  },
-  getTipoEntePublicoObligado: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoTipoEntePublicoObligado: r,
-        }));
-      });
-  },
-  getObligadoSolidarioAval: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-obligadoSolidarioAval",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoObligadoSolidarioAval: r,
-        }));
-      });
-  },
 });

@@ -799,7 +799,7 @@ export function LateralMenu() {
 
               <Divider variant="fullWidth" />
               <Grid width={"100%"} item>
-                <List sx={{}}>
+                <List>
                   {notificaciones.map((noti, index) => (
                     <Grid key={index}>
                       <Grid>
@@ -861,7 +861,6 @@ export function LateralMenu() {
                         }}
                       >
                         <Button
-                          sx={{}}
                           onClick={() => {
                             leerMensaje(noti.Id);
                             getNotificaciones(setNotificaciones, setCantNoti);

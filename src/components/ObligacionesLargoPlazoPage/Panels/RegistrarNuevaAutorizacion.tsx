@@ -17,7 +17,7 @@ import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DateInput } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { moneyMask } from "./InformacionGeneral";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 export function RegistrarNuevaAutorizacion() {
   const entidad: { Id: string; Organismo: string } = useLargoPlazoStore(
@@ -146,7 +146,6 @@ export function RegistrarNuevaAutorizacion() {
   return (
     <>
       <Grid
-
         container
         direction="column"
         justifyContent="space-around"
@@ -362,7 +361,7 @@ export function RegistrarNuevaAutorizacion() {
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
                       documentoSoporte.nombreArchivo !==
-                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
@@ -394,23 +393,17 @@ export function RegistrarNuevaAutorizacion() {
             </Grid>
           </Grid>
 
-          <Grid xs={5} sm={5} md={4} lg={4} xl={4} item width={"100%"}
-
-           
-          >
+          <Grid xs={5} sm={5} md={4} lg={4} xl={4} item width={"100%"}>
             <InputLabel
               sx={{
                 ...queries.medium_text,
                 width: "100%",
-
               }}
             >
               Acreditación del quórum y el sentido de la votación
             </InputLabel>
 
-            <Grid mt={1} display={"flex"} justifyContent={"center"}
-
-            >
+            <Grid mt={1} display={"flex"} justifyContent={"center"}>
               <Grid sx={{ position: "relative", width: "100%" }}>
                 <Typography
                   position={"absolute"}
@@ -418,7 +411,7 @@ export function RegistrarNuevaAutorizacion() {
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
                       acreditacionQuorum.nombreArchivo !==
-                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}

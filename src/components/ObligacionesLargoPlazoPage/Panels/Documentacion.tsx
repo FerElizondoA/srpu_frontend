@@ -1,40 +1,41 @@
+import CommentIcon from "@mui/icons-material/Comment";
 import {
+  Badge,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Divider,
+  FormControl,
   Grid,
-  Typography,
+  MenuItem,
+  Select,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
-  FormControl,
-  Select,
-  MenuItem,
   TableRow,
-  Divider,
-  Tooltip,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
+  TableSortLabel,
   TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import CommentIcon from "@mui/icons-material/Comment";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { ITiposDocumentoLP } from "../../Interfaces/InterfacesLplazo/documentacion/IListTipoDocumento";
-import { useEffect, useState } from "react";
-import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
+import { useState } from "react";
 import { queries } from "../../../queries";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
 
 interface Head {
   label: string;
 }
 
-export interface IFileLP {
+export interface IFile {
   archivo: File;
   nombreArchivo: string;
   tipoArchivo: string;
@@ -61,36 +62,36 @@ const heads: readonly Head[] = [
 
 export function Documentacion() {
   // despliega la lista de tipos de documentos
-  const tiposDocumentosLP: ITiposDocumentoLP[] = useLargoPlazoStore(
-    (state) => state.catalogoTiposDocumentosLP
+  const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
+    (state) => state.catalogoTiposDocumentos
   );
 
-  const catalogoTiposDocumentosObligatoriosLP: ITiposDocumentoLP[] =
-    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatoriosLP);
+  const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
+    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
-  const tablaDocumentosLP: IFileLP[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLP
+  const tablaDocumentos: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentos
   );
 
-  const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoD
+  const addDocumento: Function = useLargoPlazoStore(
+    (state) => state.addDocumento
   );
 
-  const setTablaDocumentosLP: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosD
+  const setTablaDocumentos: Function = useLargoPlazoStore(
+    (state) => state.setTablaDocumentosLP
   );
 
   function cargarArchivo(event: any, index: number) {
     let file = event.target.files[0];
 
     if (file !== undefined) {
-      if (index < tablaDocumentosLP.length) {
-        let auxArrayArchivos = [...tablaDocumentosLP];
+      if (index < tablaDocumentos.length) {
+        let auxArrayArchivos = [...tablaDocumentos];
         auxArrayArchivos[index].archivo = file;
         auxArrayArchivos[index].nombreArchivo = file.name;
-        setTablaDocumentosLP(auxArrayArchivos);
+        setTablaDocumentos(auxArrayArchivos);
       } else {
-        addDocumentoLP({
+        addDocumento({
           archivo: file,
           nombreArchivo: file.name,
         });
@@ -99,14 +100,14 @@ export function Documentacion() {
   }
 
   const quitDocument: Function = useLargoPlazoStore(
-    (state) => state.removeDocumentoD
+    (state) => state.removeDocumento
   );
 
   const asignarTpoDoc = (index: number, valor: string, descripcion: string) => {
-    let aux = [...tablaDocumentosLP];
+    let aux = [...tablaDocumentos];
     aux[index].tipoArchivo = valor;
     aux[index].descripcionTipo = descripcion;
-    setTablaDocumentosLP(aux);
+    setTablaDocumentos(aux);
   };
 
   const scroll = () => {
@@ -172,10 +173,10 @@ export function Documentacion() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaDocumentosLP.map((val, index) => (
+                {tablaDocumentos.map((val, index) => (
                   <StyledTableRow key={index} id={`${index + 1}`}>
                     <StyledTableCell scope="row">
-                      {index < catalogoTiposDocumentosObligatoriosLP.length ? (
+                      {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography>Obligatorio</Typography>
                       ) : (
                         <IconButton
@@ -190,16 +191,22 @@ export function Documentacion() {
 
                     <StyledTableCell scope="row">
                       <TextField
+                        disabled={
+                          val.archivo?.name ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          val.nombreArchivo ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        }
                         size="small"
                         multiline
                         value={val.nombreArchivo}
                         onChange={(v) => {
-                          let auxArrayArchivos = [...tablaDocumentosLP];
+                          let auxArrayArchivos = [...tablaDocumentos];
                           auxArrayArchivos[index].nombreArchivo = v.target.value
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
-                          setTablaDocumentosLP(auxArrayArchivos);
+                          setTablaDocumentos(auxArrayArchivos);
                         }}
                       ></TextField>
                     </StyledTableCell>
@@ -246,19 +253,19 @@ export function Documentacion() {
                       />
                     </StyledTableCell>
                     <StyledTableCell>
-                      {index < catalogoTiposDocumentosObligatoriosLP.length ? (
+                      {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography>
-                          {tablaDocumentosLP[index]?.descripcionTipo}
+                          {tablaDocumentos[index]?.descripcionTipo}
                         </Typography>
                       ) : (
                         <FormControl required variant="standard" fullWidth>
                           <Select
-                            value={tablaDocumentosLP[index]?.tipoArchivo}
+                            value={tablaDocumentos[index]?.tipoArchivo}
                             onChange={(v) => {
                               asignarTpoDoc(
                                 index,
                                 v.target.value,
-                                tiposDocumentosLP.filter(
+                                tiposDocumentos.filter(
                                   (td: any) => td.Id === v.target.value
                                 )[0].Descripcion
                               );
@@ -267,14 +274,13 @@ export function Documentacion() {
                             inputProps={{
                               readOnly:
                                 index <
-                                catalogoTiposDocumentosObligatoriosLP.length,
+                                catalogoTiposDocumentosObligatorios.length,
                             }}
                             disabled={
-                              index <
-                              catalogoTiposDocumentosObligatoriosLP.length
+                              index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-                            {tiposDocumentosLP.map((tipo) => (
+                            {tiposDocumentos.map((tipo) => (
                               <MenuItem key={tipo.Id} value={tipo.Id}>
                                 {tipo.Descripcion}
                               </MenuItem>
@@ -284,26 +290,54 @@ export function Documentacion() {
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
-                      <Tooltip title="Añadir comentario a este apartado">
-                        <IconButton
-                          color={
-                            comentario[val.descripcionTipo] &&
-                            comentario[val.descripcionTipo] !== ""
-                              ? "success"
-                              : "primary"
-                          }
-                          size="small"
-                          onClick={() => {
-                            setOpenComentarioApartado({
-                              open: true,
-                              apartado: val.descripcionTipo,
-                              tab: "TabDocumentacion",
-                            });
-                          }}
-                        >
-                          <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                        </IconButton>
-                      </Tooltip>
+                      {comentario[val.descripcionTipo] &&
+                      comentario[val.descripcionTipo] !== "" ? (
+                        <Badge badgeContent={"!"} color="primary">
+                          <Tooltip title="Añadir comentario a este apartado">
+                            <IconButton
+                              color={
+                                comentario[val.descripcionTipo] &&
+                                comentario[val.descripcionTipo] !== ""
+                                  ? "success"
+                                  : "primary"
+                              }
+                              size="small"
+                              onClick={() => {
+                                setOpenComentarioApartado({
+                                  open: true,
+                                  apartado: val.descripcionTipo,
+                                  tab: "TabDocumentacion",
+                                });
+                              }}
+                            >
+                              <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
+                            </IconButton>
+                          </Tooltip>
+                        </Badge>
+                      ) : (
+                        // <Badge badgeContent={"!"} color="primary">
+                        <Tooltip title="Añadir comentario a este apartado">
+                          <IconButton
+                            color={
+                              comentario[val.descripcionTipo] &&
+                              comentario[val.descripcionTipo] !== ""
+                                ? "success"
+                                : "primary"
+                            }
+                            size="small"
+                            onClick={() => {
+                              setOpenComentarioApartado({
+                                open: true,
+                                apartado: val.descripcionTipo,
+                                tab: "TabDocumentacion",
+                              });
+                            }}
+                          >
+                            <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
+                          </IconButton>
+                        </Tooltip>
+                        // </Badge>
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -345,7 +379,7 @@ export function Documentacion() {
           type="file"
           accept="application/pdf"
           onChange={(v) => {
-            cargarArchivo(v, tablaDocumentosLP.length);
+            cargarArchivo(v, tablaDocumentos.length);
             scroll();
           }}
           style={{

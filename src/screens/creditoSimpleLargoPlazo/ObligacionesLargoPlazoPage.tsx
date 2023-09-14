@@ -30,8 +30,9 @@ export function ObligacionesLargoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
   const getTiposDocumentos: Function = useLargoPlazoStore(
-    (state) => state.getTiposDocumentosD
+    (state) => state.getTiposDocumentos
   );
+
   useEffect(() => {
     getTiposDocumentos();
   }, []);
@@ -60,12 +61,11 @@ export function ObligacionesLargoPlazoPage() {
                 },
               }}
             >
-              Instrucciones Irrevocables
-              {/* Crédito Simple a Largo Plazo */}
+              Crédito Simple a Largo Plazo
             </Typography>
           </Grid>
 
-          <Grid width={"2%"} display={"flex"} justifyContent={"end"} sx={{}}>
+          <Grid width={"2%"} display={"flex"} justifyContent={"end"}>
             <Button
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
@@ -122,7 +122,6 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 3 && <FuenteDePago />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
-      {/*tabIndex === 6 && <TablaDePagos />*/}
       {tabIndex === 6 && <Resumen />}
       {tabIndex === 7 && <SolicituDeInscripcion />}
 

@@ -1,9 +1,9 @@
-import { Grid, Tabs, Tab, Typography, Button } from "@mui/material";
+import { Grid, Tab, Tabs } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { queries } from "../../../queries";
-import { InformacionGeneral } from "./InformacionGeneral";
 import { GastoCostos } from "./GastosCostos";
+import { InformacionGeneral } from "./InformacionGeneral";
 
 export function InfoGeneralGastoCosto() {
   const query = {
@@ -33,7 +33,7 @@ export function InfoGeneralGastoCosto() {
           variant={query.isScrollable ? "scrollable" : "standard"}
           scrollButtons="auto"
           allowScrollButtonsMobile
-          sx={{ width: "100%", display:"flex", justifyContent:"center"  }}
+          sx={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
           <Tab
             label="Información General"

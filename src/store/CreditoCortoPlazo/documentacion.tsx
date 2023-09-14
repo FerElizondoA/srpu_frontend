@@ -3,6 +3,7 @@ import axios from "axios";
 import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { useCortoPlazoStore } from "./main";
+import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 
 export interface DocumentosSlice {
   documentosObligatorios: [];

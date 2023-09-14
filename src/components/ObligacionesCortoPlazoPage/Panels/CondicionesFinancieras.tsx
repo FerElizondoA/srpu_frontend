@@ -1,42 +1,38 @@
-import { useState, useEffect } from "react";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Tooltip,
+} from "@mui/material";
+import { useState } from "react";
 import {
   CondicionFinanciera,
   Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import {
-  Grid,
-  Table,
-  TableBody,
-  TableSortLabel,
-  TableContainer,
-  TableHead,
-  Tooltip,
-  IconButton,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TableRow,
-  Paper,
-} from "@mui/material";
 
-import {
-  StyledTableCell,
-  StyledTableRow,
-  ConfirmButton,
-} from "../../CustomComponents";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
-import { format, lightFormat } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
-import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 import { queries } from "../../../queries";
+import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
 interface Head {
   label: string;

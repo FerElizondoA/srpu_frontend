@@ -1,74 +1,73 @@
 import { StateCreator } from "zustand";
-import axios from "axios";
-import { IFileLP } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
-import { ITiposDocumentoLP } from  "../../components/Interfaces/InterfacesLplazo/documentacion/IListTipoDocumento"
+import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { useLargoPlazoStore } from "./main";
+import axios from "axios";
+import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
 export interface DocumentosLargoPlazoSlice {
   documentosObligatoriosLP: [];
 
-  tablaDocumentosLP: IFileLP[];
+  tablaDocumentosLP: IFile[];
+  catalogoTiposDocumentos: ITiposDocumento[];
+  catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
-  catalogoTiposDocumentosLP: ITiposDocumentoLP[];
-  catalogoTiposDocumentosObligatoriosLP: ITiposDocumentoLP[];
-
-  addDocumentoD: (newDocumento: IFileLP) => void;
-  removeDocumentoD: (index: number) => void;
-  setTablaDocumentosD: (docs: any) => any;
-
-  getTiposDocumentosD: () => void;
+  addDocumentoLP: (newDocumento: IFile) => void;
+  removeDocumentoLP: (index: number) => void;
+  setTablaDocumentosLP: (docs: any) => any;
+  getTiposDocumentos: () => void;
 }
 
-export const createDocumentoLargoPlazoSlice: StateCreator<DocumentosLargoPlazoSlice> = (
-  set,
-  get
-) => ({
+export const createDocumentoLargoPlazoSlice: StateCreator<
+  DocumentosLargoPlazoSlice
+> = (set, get) => ({
   documentosObligatoriosLP: [],
 
   tablaDocumentosLP: [],
 
-  catalogoTiposDocumentosLP: [],
-  catalogoTiposDocumentosObligatoriosLP: [],
+  catalogoTiposDocumentos: [],
+  catalogoTiposDocumentosObligatorios: [],
 
-  addDocumentoD: (newDocumento: IFileLP) =>
+  addDocumentoLP: (newDocumento: IFile) =>
     set((state) => ({
       tablaDocumentosLP: [...state.tablaDocumentosLP, newDocumento],
     })),
 
-  removeDocumentoD: (index: number) =>
+  removeDocumentoLP: (index: number) =>
     set((state) => ({
       tablaDocumentosLP: state.tablaDocumentosLP.filter((_, i) => i !== index),
     })),
 
-  setTablaDocumentosD: (docs: any) => set(() => ({ tablaDocumentosLP: docs })),
+  setTablaDocumentosLP: (docs: any) => set(() => ({ tablaDocumentosLP: docs })),
 
-  getTiposDocumentosD: async () => {
+  getTiposDocumentos: async () => {
     const state = useLargoPlazoStore.getState();
     await axios({
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-tiposDocumentosCortoPlazo",
+        "/api/get-tiposDocumentosLargoPlazo",
       data: {},
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
+      console.log(data);
+
       if (state.idSolicitud !== "") {
         set((state) => ({
-          catalogoTiposDocumentosLP: data.data,
-          catalogoTiposDocumentosObligatoriosLP: data.data.filter(
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
         }));
       } else {
         set((state) => ({
-          catalogoTiposDocumentosLP: data.data,
-          catalogoTiposDocumentosObligatoriosLP: data.data.filter(
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
-          tablaDocumentosLP: data.data
+          tablaDocumentos: data.data
             .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
               return {

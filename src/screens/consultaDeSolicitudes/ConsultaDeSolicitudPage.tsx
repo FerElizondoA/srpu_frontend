@@ -260,9 +260,9 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinancieraLP: Function = useLargoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const setTablaDocumentosLP: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosD
-  );
+  // const setTablaDocumentosLP: Function = useLargoPlazoStore(
+  //   (state) => state.setTablaDocumentos
+  // );
 
   const cleanObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
     (state) => state.cleanObligadoSolidarioAval

@@ -1,4 +1,5 @@
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
@@ -27,7 +28,7 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { lightFormat } from "date-fns";
+import { addDays, lightFormat } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import validator from "validator";
@@ -38,10 +39,9 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-import { addDays } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { moneyMask } from "./InformacionGeneral";
-//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -71,7 +71,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-
 const headsDisposicion: readonly Head[] = [
   {
     label: "Borrar",
@@ -84,7 +83,7 @@ const headsDisposicion: readonly Head[] = [
   },
 ];
 
-const theme = createTheme({
+export const ButtonTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
@@ -101,24 +100,24 @@ const theme = createTheme({
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
-  const getPeriocidadPago: Function = useLargoPlazoStore(
+  const getPeriocidadPago: Function = useCortoPlazoStore(
     (state) => state.getPeriocidadPago
   );
-  const getTasaReferencia: Function = useLargoPlazoStore(
+  const getTasaReferencia: Function = useCortoPlazoStore(
     (state) => state.getTasaReferencia
   );
-  const getDiasEjercicio: Function = useLargoPlazoStore(
+  const getDiasEjercicio: Function = useCortoPlazoStore(
     (state) => state.getDiasEjercicio
   );
 
   // CATALOGOS
-  const catalogoPeriocidadDePago: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoPeriocidadDePago: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoPeriocidadDePago
   );
-  const catalogoTasaReferencia: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoTasaReferencia: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTasaReferencia
   );
-  const catalogoDiasEjercicio: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoDiasEjercicio: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoDiasEjercicio
   );
 
@@ -126,32 +125,26 @@ export function DisposicionPagosCapital() {
   const disposicionFechaDisposicion: string = useLargoPlazoStore(
     (state) => state.disposicion.fechaDisposicion
   );
-
-  const disposicionFechaContratacion: string = useLargoPlazoStore(
-    (state) => state.disposicion.fechaDisposicion
-  );
   const disposicionImporte: number = useLargoPlazoStore(
     (state) => state.disposicion.importe
   );
-
-
   const monto: number = useLargoPlazoStore(
     (state) => state.informacionGeneral.monto
   );
 
-    // TABLA Disposicion
-    let tablaDisposicion: any = useLargoPlazoStore(
-      (state) => state.tablaDisposicion
-    );
-    const addDisposicion: Function = useLargoPlazoStore(
-      (state) => state.addDisposicion
-    );
-    const changeDisposicion: Function = useLargoPlazoStore(
-      (state) => state.changeDisposicion
-    );
-    const removeDisposicion: Function = useLargoPlazoStore(
-      (state) => state.removeDisposicion
-    );
+  // TABLA Disposicion
+  let tablaDisposicion: any = useLargoPlazoStore(
+    (state) => state.tablaDisposicion
+  );
+  const addDisposicion: Function = useLargoPlazoStore(
+    (state) => state.addDisposicion
+  );
+  const changeDisposicion: Function = useLargoPlazoStore(
+    (state) => state.changeDisposicion
+  );
+  const removeDisposicion: Function = useLargoPlazoStore(
+    (state) => state.removeDisposicion
+  );
 
   // PAGOS DE CAPITAL
   const capitalFechaPrimerPago: string = useLargoPlazoStore(
@@ -202,7 +195,6 @@ export function DisposicionPagosCapital() {
   const removeTasaInteres: Function = useLargoPlazoStore(
     (state) => state.removeTasaInteres
   );
-
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
@@ -225,7 +217,6 @@ export function DisposicionPagosCapital() {
   const tasasParciales: boolean = useLargoPlazoStore(
     (state) => state.tasasParciales
   );
-
 
   useEffect(() => {
     getPeriocidadPago();
@@ -305,7 +296,6 @@ export function DisposicionPagosCapital() {
     });
   };
 
-  
   useEffect(() => {
     if (tasasParciales === false) {
       cleanTasaInteres();
@@ -616,7 +606,7 @@ export function DisposicionPagosCapital() {
           </Grid>
           {disposicionesParciales && (
             <Grid container flexDirection={"column"} alignItems={"center"}>
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
                   disabled={
@@ -1158,7 +1148,7 @@ export function DisposicionPagosCapital() {
                 flexDirection={"column"}
                 alignItems={"center"}
               >
-                <ThemeProvider theme={theme}>
+                <ThemeProvider theme={ButtonTheme}>
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,

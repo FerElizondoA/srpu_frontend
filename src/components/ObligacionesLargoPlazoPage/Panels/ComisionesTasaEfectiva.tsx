@@ -1,52 +1,49 @@
 import * as React from "react";
 
 import {
-  Grid,
-  TextField,
-  Table,
-  TableBody,
-  TableSortLabel,
-  TableContainer,
-  TableHead,
-  InputLabel,
-  RadioGroup,
-  Radio,
-  FormControl,
-  InputAdornment,
   Autocomplete,
-  Typography,
-  Checkbox,
-  Tooltip,
-  IconButton,
-  TableRow,
-  Divider,
   Box,
   Button,
-  ThemeProvider,
-  createTheme,
+  Checkbox,
+  Divider,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
   Paper,
+  Radio,
+  RadioGroup,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TextField,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+  createTheme,
 } from "@mui/material";
 import validator from "validator";
 
-import CheckIcon from "@mui/icons-material/Check";
-import enGB from "date-fns/locale/en-GB";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateInput } from "../../CustomComponents";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
+import { DateInput } from "../../CustomComponents";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 import { format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { moneyMask } from "./InformacionGeneral";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 interface Head {
   label: string;
@@ -93,18 +90,18 @@ const theme = createTheme({
 
 export function ComisionesTasaEfectiva() {
   // GET CATALOGOS
-  const getTiposComision: Function = useLargoPlazoStore(
+  const getTiposComision: Function = useCortoPlazoStore(
     (state) => state.getTiposComision
   );
 
   // CATALOGOS
-  const catalogoPeriocidadDePago: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoPeriocidadDePago: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoPeriocidadDePago
   );
-  const catalogoDiasEjercicio: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoDiasEjercicio: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoDiasEjercicio
   );
-  const catalogoTiposComision: Array<ICatalogo> = useLargoPlazoStore(
+  const catalogoTiposComision: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTiposComision
   );
 
@@ -154,7 +151,7 @@ export function ComisionesTasaEfectiva() {
     (state) => state.removeComision
   );
 
-  const cleanComision: Function = useCortoPlazoStore(
+  const cleanComision: Function = useLargoPlazoStore(
     (state) => state.cleanComision
   );
 
@@ -291,8 +288,9 @@ export function ComisionesTasaEfectiva() {
               value={tasaEfectivaTasaEfectiva}
               onChange={(v) => {
                 if (
-                  validator.isNumeric(v.target.value) ||
-                  v.target.value === ""
+                  (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
+                    v.target.value === "") &&
+                  parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
                 ) {
                   changeTasaEfectiva({
                     diasEjercicio: tasaEfectivaDiasEjercicio,

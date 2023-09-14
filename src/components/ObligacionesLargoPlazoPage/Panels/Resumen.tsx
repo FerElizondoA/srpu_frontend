@@ -22,15 +22,8 @@ import { useState, useEffect } from "react";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
-import {
-  CondicionFinancieraLP,
-  Disposicion,
-  IComisiones,
-  TasaInteres,
-} from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { IFileLP } from "./Documentacion";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   headsComision,
@@ -51,6 +44,13 @@ import {
 
 import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { AsignarFuente } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+import {
+  Disposicion,
+  IComisiones,
+  TasaInteres,
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { IFile } from "../../ObligacionesCortoPlazoPage/Panels/Documentacion";
 
 interface Head {
   label: string;
@@ -322,7 +322,7 @@ export function Resumen() {
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
 
   // Documentación
-  const documentos: IFileLP[] = useLargoPlazoStore(
+  const documentos: IFile[] = useLargoPlazoStore(
     (state) => state.tablaDocumentosLP
   );
 
@@ -340,24 +340,23 @@ export function Resumen() {
     (state) => state.Mecanismo.bonoCuponCero
   );
 
-  const clasificacionBono:  { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.Mecanismo.clasificacionBonoCupo
-  );
+  const clasificacionBono: { Id: string; Descripcion: string } =
+    useLargoPlazoStore((state) => state.Mecanismo.clasificacionBonoCupo);
 
   //Asignar Fuente
-  const clasificacion:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const clasificacion: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.AsignarFuente.clasificacion
   );
 
-  const tipoFuente:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.AsignarFuente.tipoFuente
   );
 
-  const fuentePago:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const fuentePago: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.AsignarFuente.fuentePago
   );
 
-  const Respecto:  { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const Respecto: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.AsignarFuente.RespectoA
   );
 
@@ -498,7 +497,7 @@ export function Resumen() {
 
   const [fileSelected, setFileSelected] = useState<any>("");
 
-  const tablaDocumentos: IFileLP[] = useLargoPlazoStore(
+  const tablaDocumentos: IFile[] = useLargoPlazoStore(
     (state) => state.tablaDocumentos
   );
 

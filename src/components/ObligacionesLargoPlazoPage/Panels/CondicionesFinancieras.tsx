@@ -1,43 +1,38 @@
-import { useState } from "react";
 import {
-  CondicionFinancieraLP,
-  IComisiones,
-  TasaInteres,
-} from "../../../store/CreditoLargoPlazo/condicion_financiera";
-import {
-  Grid,
-  Table,
-  TableBody,
-  TableSortLabel,
-  TableContainer,
-  TableHead,
-  Tooltip,
-  IconButton,
   Button,
   Dialog,
-  DialogTitle,
   DialogContent,
-  TableRow,
+  DialogTitle,
+  Grid,
+  IconButton,
   Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Tooltip,
 } from "@mui/material";
-import {
-  StyledTableCell,
-  StyledTableRow,
-  ConfirmButton,
-} from "../../CustomComponents";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useState } from "react";
 
-import { format, lightFormat } from "date-fns";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
-import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
-
 import { queries } from "../../../queries";
-// import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
-import { Disposicion } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import {
+  Disposicion,
+  IComisiones,
+  TasaInteres,
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
 
 interface Head {
   label: string;
@@ -99,10 +94,10 @@ const heads: readonly Head[] = [
     label: "Acciones",
   },
   {
-    label: "Fecha de Disposición",
+    label: "Fecha Disposición",
   },
   {
-    label: "Importe de Disposición",
+    label: "Importe",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -125,7 +120,6 @@ export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
   const tablaCondicionesFinancieras: CondicionFinancieraLP[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
-
   const loadCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );
@@ -171,6 +165,7 @@ export function CondicionesFinancieras() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
+                height: "1vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -185,7 +180,7 @@ export function CondicionesFinancieras() {
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
-                      <TableSortLabel>{head.label}</TableSortLabel>
+                      {head.label}
                     </StyledTableCell>
                   ))}
                 </TableRow>
@@ -539,7 +534,7 @@ export function CondicionesFinancieras() {
       </Grid>
 
       <Grid
-        item
+        container
         md={12}
         lg={12}
         height={75}

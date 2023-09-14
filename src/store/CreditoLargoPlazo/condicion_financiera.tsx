@@ -1,31 +1,10 @@
 import { StateCreator } from "zustand";
 import { useLargoPlazoStore } from "./main";
-
-export interface TasaInteres {
-  tasaFija: boolean;
-  tasaVariable: boolean;
-  tasa: string;
-  fechaPrimerPago: string;
-  diasEjercicio: string;
-  periocidadPago: string;
-  tasaReferencia: string;
-  sobreTasa: string;
-}
-export interface Disposicion {
-  fechaDisposicion: string;
-  importe: number;
-}
-
-export interface IComisiones {
-  fechaContratacion: string;
-  tipoDeComision: string;
-  periodicidadDePago: string;
-  porcentajeFijo: boolean;
-  montoFijo: boolean;
-  porcentaje: string;
-  monto: string;
-  iva: boolean;
-}
+import {
+  Disposicion,
+  IComisiones,
+  TasaInteres,
+} from "../CreditoCortoPlazo/condicion_financiera";
 
 export type CondicionFinancieraLP = {
   id: number;

@@ -1,28 +1,17 @@
-import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
-import { queries } from "../../../queries";
-//import { useCortoPlazoStore } from "../../../store/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-//import { IRoles } from "../../ObligacionesCortoPlazoPage/Panels/Encabezado"
+import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { subDays } from "date-fns/esm";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
-import { DateInput } from "../../CustomComponents";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { DateInput } from "../../CustomComponents";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export interface IUsuariosCorto {
-  Id: string;
+  IdUsuario: string;
   Nombre: string;
   ApellidoPaterno: string;
   ApellidoMaterno: string;
@@ -31,15 +20,25 @@ export interface IUsuariosCorto {
   Puesto: string;
 }
 
+export interface IRoles {
+  Id: string;
+  Descripcion: string;
+}
+
 export function Encabezado() {
+  const getTiposEntesPublicos: Function = useCortoPlazoStore(
+    (state) => state.getTiposEntesPublicos
+  );
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+
   const tipoDocumento: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
-  const getTiposEntesPublicos: Function = useLargoPlazoStore(
-    (state) => state.getTiposEntesPublicos
-  );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
+
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -48,9 +47,6 @@ export function Encabezado() {
 
   const organismo: { Id: string; Organismo: string } = useLargoPlazoStore(
     (state) => state.encabezado.organismo
-  );
-  const getOrganismos: Function = useLargoPlazoStore(
-    (state) => state.getOrganismos
   );
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
@@ -71,9 +67,13 @@ export function Encabezado() {
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
 
   const selectedValue =
-    usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)
-      ?.Id || "";
-  const isValueValid = usuarios.some((usuario) => usuario.Id === selectedValue);
+    usuarios.find(
+      (usuario) => usuario.IdUsuario === solicitanteAutorizado.Solicitante
+    )?.IdUsuario || "";
+  // Verificar si el valor seleccionado existe en la lista de opciones
+  const isValueValid = usuarios.some(
+    (usuario) => usuario.IdUsuario === selectedValue
+  );
 
   return (
     <Grid container>
@@ -115,11 +115,13 @@ export function Encabezado() {
             fullWidth
             value={isValueValid ? selectedValue : ""}
             onChange={(e) => {
-              let x = usuarios.find((usuario) => usuario.Id === e.target.value);
+              let x = usuarios.find(
+                (usuario) => usuario.IdUsuario === e.target.value
+              );
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.Id || "",
+                  Solicitante: x?.IdUsuario || "",
                   Cargo: x?.Puesto || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
@@ -131,7 +133,7 @@ export function Encabezado() {
             variant="standard"
           >
             {usuarios.map((usuario) => (
-              <MenuItem key={usuario.Id} value={usuario.Id}>
+              <MenuItem key={usuario.IdUsuario} value={usuario.IdUsuario}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}
@@ -226,7 +228,19 @@ export function Encabezado() {
           >
             <DatePicker
               value={new Date(fechaContratacion)}
-              // onChange={(date) => changeFechaContratacion(date?.toString())}
+              onChange={(date) => {
+                changeEncabezado({
+                  tipoDocumento: tipoDocumento,
+                  solicitanteAutorizado: {
+                    Solicitante: solicitanteAutorizado.Solicitante || "",
+                    Cargo: solicitanteAutorizado?.Cargo || "",
+                    Nombre: solicitanteAutorizado.Nombre,
+                  },
+                  tipoEntePublico: tipoEntePublico,
+                  organismo: organismo,
+                  fechaContratacion: date,
+                });
+              }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{

@@ -1,6 +1,4 @@
-import axios from "axios";
 import { StateCreator } from "zustand";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import {
   Disposicion,
   TasaInteres,
@@ -9,9 +7,9 @@ import {
 export interface PagosCapitalLargoPlazoSlice {
   disposicionesParciales: boolean;
   setDisposicionesParciales: (bol: boolean) => void;
+
   tasasParciales: boolean;
   setTasasParciales: (bol: boolean) => void;
-
 
   tablaDisposicion: Disposicion[];
   disposicion: { fechaDisposicion: string; importe: number };
@@ -23,6 +21,7 @@ export interface PagosCapitalLargoPlazoSlice {
   };
 
   tablaTasaInteres: TasaInteres[];
+
   tasaInteres: {
     tasaFija: false;
     tasaVariable: false;
@@ -33,10 +32,6 @@ export interface PagosCapitalLargoPlazoSlice {
     tasaReferencia: { Id: string; Descripcion: string };
     sobreTasa: string;
   };
-
-  catalogoPeriocidadDePago: ICatalogo[];
-  catalogoTasaReferencia: ICatalogo[];
-  catalogoDiasEjercicio: ICatalogo[];
 
   changeDisposicion: (fechaDisposicion: string, importe: number) => void;
 
@@ -66,10 +61,6 @@ export interface PagosCapitalLargoPlazoSlice {
   updatePagosCapitalTable: (tasaInteresTable: TasaInteres[]) => void;
   cleanTasaInteres: () => void;
   removeTasaInteres: (index: number) => void;
-
-  getPeriocidadPago: () => void;
-  getTasaReferencia: () => void;
-  getDiasEjercicio: () => void;
 }
 
 export const createPagosCapitalLargoPlazoSlice: StateCreator<
@@ -179,54 +170,4 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
     })),
 
   cleanTasaInteres: () => set((state) => ({ tablaTasaInteres: [] })),
-
-  getPeriocidadPago: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-periodicidadDePago",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        set((state) => ({
-          catalogoPeriocidadDePago: data.data,
-        }));
-      });
-  },
-
-  getTasaReferencia: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tasaDeReferencia",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        set((state) => ({
-          catalogoTasaReferencia: data.data,
-        }));
-      });
-  },
-  getDiasEjercicio: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-diasDelEjercicio",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        set((state) => ({
-          catalogoDiasEjercicio: data.data,
-        }));
-      });
-  },
 });

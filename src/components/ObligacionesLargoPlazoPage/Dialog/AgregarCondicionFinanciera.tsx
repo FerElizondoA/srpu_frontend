@@ -1,41 +1,38 @@
-import { useState, forwardRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Dialog,
   AppBar,
-  Toolbar,
-  IconButton,
-  Slide,
   Button,
-  createTheme,
-  ThemeProvider,
-  DialogTitle,
+  Dialog,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Slide,
+  Tab,
+  Tabs,
+  ThemeProvider,
+  Toolbar,
+  Typography,
+  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
-import { queries } from "../../../queries";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { forwardRef, useState } from "react";
+import { queries } from "../../../queries";
 
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
-  CondicionFinancieraLP,
+  CondicionFinanciera,
+  Disposicion,
   IComisiones,
   TasaInteres,
-} from "../../../store/CreditoLargoPlazo/condicion_financiera";
-//"../../../store/condicion_financiera";
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
-import { Disposicion } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -78,12 +75,6 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   // DISPOSICION
-  const disposicionFechaContratacion: string = useLargoPlazoStore(
-    (state) => state.disposicion.fechaDisposicion
-  );
-  const disposicionImporte: number = useLargoPlazoStore(
-    (state) => state.disposicion.importe
-  );
 
   const tablaDisposicion: Disposicion[] = useLargoPlazoStore(
     (state) => state.tablaDisposicion
@@ -95,6 +86,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
+
   const capitalNumeroPago: number = useLargoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
@@ -133,6 +125,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const cleanComision: Function = useLargoPlazoStore(
     (state) => state.cleanComision
   );
+  const cleanDisposicion: Function = useLargoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
 
   // CONDICION FINANCIERA
   const addCondicionFinanciera: Function = useLargoPlazoStore(
@@ -145,8 +140,12 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.changeTasaInteres
   );
 
+  const monto: number = useLargoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
   const addRow = () => {
-    const CF: CondicionFinancieraLP = {
+    const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -163,7 +162,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   const updateRow = (indexA: number) => {
-    const CF: CondicionFinancieraLP = {
+    const CF: CondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -176,12 +175,11 @@ export function AgregarCondicionFinanciera(props: Props) {
       tasaEfectiva: tasaEfectivaTasaEfectiva,
       diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
     };
-
     upDataCondicionFinanciera(CF, indexA);
   };
 
   const reset = () => {
-    changeDisposicion(new Date().toString(), "");
+    changeDisposicion(new Date().toString(), 0);
     changeCapital(new Date().toString(), { Id: "", Descripcion: "" }, "");
     changeTasaInteres({
       tasaFija: false,
@@ -200,6 +198,7 @@ export function AgregarCondicionFinanciera(props: Props) {
     });
     cleanTasaInteres();
     cleanComision();
+    cleanDisposicion(monto);
   };
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
@@ -218,6 +217,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               edge="start"
               onClick={() => {
                 props.handler(false);
+                setTabIndex(0);
                 reset();
               }}
               sx={{ color: "white" }}
@@ -257,6 +257,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                         reset();
                       }
                     }
+                    setTabIndex(0);
                   }}
                 >
                   <Typography sx={queries.medium_text}>

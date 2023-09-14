@@ -3,8 +3,7 @@ import axios from "axios";
 import {
   ICatalogo,
   IEntePublico,
-} from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-//"../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+} from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface EncabezadoLargoPlazoSlice {
   encabezado: {
@@ -20,9 +19,6 @@ export interface EncabezadoLargoPlazoSlice {
     fechaContratacion: string;
   };
 
-  catalogoOrganismos: IEntePublico[];
-  catalogoTiposEntePublico: ICatalogo[];
-
   changeEncabezado: (
     tipoDocumento: string,
     solicitanteAutorizado: {
@@ -34,16 +30,11 @@ export interface EncabezadoLargoPlazoSlice {
     organismo: { Id: string; Organismo: string },
     fechaContratacion: string
   ) => void;
-
-  // changeIdSolicitud: (newId: string) => void;getTiposEntesPublicos: () => void;
-  getOrganismos: () => void;
-  getTiposEntesPublicos: () => void;
 }
 
 export const createEncabezadoLargoPlazoSlice: StateCreator<
   EncabezadoLargoPlazoSlice
 > = (set, get) => ({
-  // IdSolicitud: "",
   encabezado: {
     tipoDocumento: "Crédito simple a largo plazo",
     solicitanteAutorizado: {
@@ -62,46 +53,8 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
     fechaContratacion: new Date().toString(),
   },
 
-  catalogoOrganismos: [],
-  catalogoTiposEntePublico: [],
-  // changeIdSolicitud: (newId: string) => set(() => ({ IdSolicitud: newId })),
-
   changeEncabezado: (encabezado: any) =>
     set(() => ({
       encabezado: encabezado,
     })),
-
-  getTiposEntesPublicos: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        set((state) => ({
-          catalogoTiposEntePublico: data.data,
-        }));
-      });
-  },
-  getOrganismos: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoOrganismos: r,
-        }));
-      });
-  },
 });

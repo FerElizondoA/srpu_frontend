@@ -46,7 +46,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   borrarSolicitud: (Id: string) => void;
 
   addComentario: (idSolicitud: string, comentario: string) => void;
-  saveFiles: (idRegistro: string, ruta: string) => void;
+  // saveFiles: (idRegistro: string, ruta: string) => void;
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
@@ -129,13 +129,13 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      documentacion: state.tablaDocumentos.map((v, i) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+      // documentacion: state.tablaDocumentos.map((v, i) => {
+      //   return {
+      //     nombreArchivo: v.nombreArchivo,
+      //     tipoArchivo: v.tipoArchivo,
+      //     descripcionTipo: v.descripcionTipo,
+      //   };
+      // }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -171,10 +171,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         state.changeNoRegistro(data.data.NumeroRegistro);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario);
-        state.saveFiles(
-          data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        );
+        // state.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        // );
       });
   },
   modificaSolicitud: async (
@@ -206,13 +206,13 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      documentacion: state.tablaDocumentos.map((v, i) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+      // documentacion: state.tablaDocumentos.map((v, i) => {
+      //   return {
+      //     nombreArchivo: v.nombreArchivo,
+      //     tipoArchivo: v.tipoArchivo,
+      //     descripcionTipo: v.descripcionTipo,
+      //   };
+      // }),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -247,10 +247,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
         state.changeNoRegistro(data.data.NumeroRegistro);
-        state.saveFiles(
-          data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        );
+        // state.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        // );
       });
   },
   borrarSolicitud: async (Id: string) => {
@@ -315,44 +315,44 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         .catch((e) => {});
     }
   },
-  saveFiles: async (idRegistro: string, ruta: string) => {
-    const state = useLargoPlazoStore.getState();
+  // saveFiles: async (idRegistro: string, ruta: string) => {
+  //   const state = useLargoPlazoStore.getState();
 
-    return await state.tablaDocumentos.map((file, index) => {
-      return setTimeout(() => {
-        const url = new File([file.archivo], file.nombreArchivo);
+  //   return await state.tablaDocumentos.map((file, index) => {
+  //     return setTimeout(() => {
+  //       const url = new File([file.archivo], file.nombreArchivo);
 
-        let dataArray = new FormData();
-        dataArray.append("ROUTE", `${ruta}`);
-        dataArray.append("ADDROUTE", "true");
-        dataArray.append("FILE", url);
+  //       let dataArray = new FormData();
+  //       dataArray.append("ROUTE", `${ruta}`);
+  //       dataArray.append("ADDROUTE", "true");
+  //       dataArray.append("FILE", url);
 
-        if (file.archivo.size > 0) {
-          return axios
-            .post(
-              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-              dataArray,
-              {
-                headers: {
-                  Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
-            )
-            .then(({ data }) => {
-              state.savePathDoc(
-                idRegistro,
-                data.RESPONSE.RUTA,
-                data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
-              );
-            })
-            .catch((e) => {});
-        } else {
-          return null;
-        }
-      }, 1000);
-    });
-  },
+  //       if (file.archivo.size > 0) {
+  //         return axios
+  //           .post(
+  //             process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+  //             dataArray,
+  //             {
+  //               headers: {
+  //                 Authorization: localStorage.getItem("jwtToken"),
+  //               },
+  //             }
+  //           )
+  //           .then(({ data }) => {
+  //             state.savePathDoc(
+  //               idRegistro,
+  //               data.RESPONSE.RUTA,
+  //               data.RESPONSE.NOMBREIDENTIFICADOR,
+  //               data.RESPONSE.NOMBREARCHIVO
+  //             );
+  //           })
+  //           .catch((e) => {});
+  //       } else {
+  //         return null;
+  //       }
+  //     }, 1000);
+  //   });
+  // },
   savePathDoc: async (
     idSolicitud: string,
     Ruta: string,

@@ -1,29 +1,29 @@
-import { useState, useEffect } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Grid,
-  Typography,
+  Autocomplete,
   Button,
-  TextField,
+  Grid,
+  IconButton,
   InputLabel,
-  TableContainer,
+  Paper,
   Table,
+  TableBody,
+  TableContainer,
   TableHead,
   TableRow,
-  TableBody,
-  Paper,
-  Autocomplete,
+  TextField,
   ThemeProvider,
-  createTheme,
   Tooltip,
-  IconButton,
+  Typography,
+  createTheme,
 } from "@mui/material";
+import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { moneyMask } from "./InformacionGeneral";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 interface Head {
   label: string;
@@ -102,6 +102,7 @@ export function DestalleDestino() {
     });
 
     getDetalleDestinosAutorizados();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -114,7 +115,7 @@ export function DestalleDestino() {
         sx={queries.contenedorAgregarAutorizacion.DetalleDestino}
       >
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item  xs={3} sm={3} md={4} lg={4} xl={4}>
+          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Detalle del destino autorizado
             </InputLabel>
