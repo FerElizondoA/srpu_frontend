@@ -41,6 +41,7 @@ import {
   createAgregarAutorizacionLargoPlazoSlice,
 } from "../Autorizacion/agregarAutorizacion";
 import { MandatoSlice, createMandatoSlice } from "../Mandatos/mandato";
+
 export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   InformacionGeneralLargoPlazoSlice &
   CondicionFinancieraLargoPlazoSlice &

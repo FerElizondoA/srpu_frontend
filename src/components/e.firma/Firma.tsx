@@ -1,4 +1,4 @@
-import { Firmado, FirmadoConUrl } from "@jbcecapmex/pakfirma";
+// import { Firmado, FirmadoConUrl } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
@@ -26,13 +26,13 @@ export const Firma = () => {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item sx={{ height: "94vh", backgroundColor: "#f2f2f2" }}>
-        <Firmado
+        {/* <Firmado
           jwtToken={localStorage.getItem("jwtToken")!}
           IdCentral={localStorage.getItem("IdCentral")!}
           NombreUsuario={localStorage.getItem("NombreUsuario")!}
           IdApp={localStorage.getItem("IdApp")!}
           PathPorEnviar={localStorage.getItem("PathPorEnviar") || "/"}
-        />
+        /> */}
       </Grid>
     </Grid>
   );

@@ -307,7 +307,13 @@ export function AgregarInstruccionesIrrevocables({
                   }}
                 >
                   <Typography
-                    sx={{ ...queries.medium_text, fontSize: ".8rem" }}
+                     sx={{
+                      fontSize: "1.3ch",
+                      fontFamily: "MontserratMedium",
+                      "@media (min-width: 480px)": {
+                        fontSize: "1.5ch",
+                      },
+                    }}
                   >
                     {accion} Instrucción
                   </Typography>
@@ -317,11 +323,34 @@ export function AgregarInstruccionesIrrevocables({
           </Toolbar>
         </AppBar>
 
-        <Grid container flexDirection={"column"} justifyContent={"space-evenly"} height={"36rem"}>
+        <Grid container flexDirection={"column"} justifyContent={"space-evenly"}
+          sx={{
+            height: "70rem",
+            "@media (min-width: 480px)": {
+              height: "55rem",
+            },
 
-          <Grid display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
+            "@media (min-width: 768px)": {
+              height: "65rem",
+            },
 
-            <Grid width={"25%"}>
+            "@media (min-width: 1140px)": {
+              height: "50rem",
+            },
+
+            "@media (min-width: 1400px)": {
+              height: "40rem",
+            },
+
+            "@media (min-width: 1870px)": {
+              height: "53rem",
+            },
+          }}
+        >
+
+          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
+
+            <Grid item xs={10} sm={3} >
               <InputLabel sx={{ ...queries.medium_text }}>
                 Numero de cuenta
               </InputLabel>
@@ -342,7 +371,7 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
 
 
-            <Grid width={"25%"}>
+            <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
                 Cuenta CLABE
               </InputLabel>
@@ -363,7 +392,7 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
 
 
-            <Grid width={"25%"}>
+            <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
                 Banco
               </InputLabel>
@@ -410,8 +439,17 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
           </Grid>
 
-          <Divider >
+          <Grid>
+
+          </Grid>
+          <Divider sx={{
+            height: "1rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }} >
             <Typography sx={{
+
               textTransform: "uppercase",
               color: "#af8c55 ",
               fontSize: "2ch",
@@ -429,9 +467,9 @@ export function AgregarInstruccionesIrrevocables({
             </Typography>
           </Divider>
 
-          <Grid display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
+          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
 
-            <Grid item width={"25%"}
+            <Grid item xs={10} sm={3}
               display={"flex"}
               justifyContent={"center"}
             >
@@ -454,7 +492,7 @@ export function AgregarInstruccionesIrrevocables({
               ></FormControlLabel>
             </Grid>
 
-            <Grid width={"25%"}>
+            <Grid item xs={10} sm={3}>
               <InputLabel sx={queries.medium_text}>
                 Tipo de ente público obligado
               </InputLabel>
@@ -507,7 +545,7 @@ export function AgregarInstruccionesIrrevocables({
               />
             </Grid>
 
-            <Grid width={"25%"}>
+            <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
                 Entidad Federativa
               </InputLabel>
@@ -560,219 +598,209 @@ export function AgregarInstruccionesIrrevocables({
           </Grid>
 
 
-        </Grid>
+          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
 
-        <Grid display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
-
-          <Grid width={"25%"}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Tipo de fuente
-            </InputLabel>
-            <Autocomplete
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoTiposDeFuente}
-              value={{
-                Id: tipoFuente.Id || "",
-                Descripcion: tipoFuente.Descripcion || "",
-              }}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) =>
-                setTipoMovimientoInstrucciones({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublico: tipoEntePublico,
-                  entidadFederativa: entidadFederativa,
-                  tipoFuente: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  fondoIngreso: fondoIngreso,
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-
-          <Grid width={"25%"}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Fondo o ingreso
-            </InputLabel>
-            <Autocomplete
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoFondosOIngresos}
-              value={{
-                Id: fondoIngreso.Id || "",
-                Descripcion: fondoIngreso.Descripcion || "",
-              }}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) =>
-                setTipoMovimientoInstrucciones({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublico: tipoEntePublico,
-                  entidadFederativa: entidadFederativa,
-                  tipoFuente: tipoFuente,
-                  fondoIngreso: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-
-          <Grid width={"25%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-
-            <ThemeProvider theme={ButtonTheme}>
-              <Button sx={{ ...queries.buttonContinuar, width: "15vh" }}
-                disabled={
-                  tipoEntePublico.Descripcion === "" ||
-                  entidadFederativa.Descripcion === "" ||
-                  tipoFuente.Descripcion === "" ||
-                  fondoIngreso.Descripcion === ""
-                }
-                onClick={() => {
-                  addTipoMovimientoInstrucciones({
-                    altaDeudor: altaDeudor,
-                    tipoEntePublico: tipoEntePublico.Descripcion,
-                    entidadFederativa: entidadFederativa.Descripcion,
-                    tipoFuente: tipoFuente.Descripcion,
-                    fondoIngreso: fondoIngreso.Descripcion,
-                  })
+            <Grid item xs={10} sm={3}>
+              <InputLabel sx={{ ...queries.medium_text }}>
+                Tipo de fuente
+              </InputLabel>
+              <Autocomplete
+                disableClearable
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                options={catalogoTiposDeFuente}
+                value={{
+                  Id: tipoFuente.Id || "",
+                  Descripcion: tipoFuente.Descripcion || "",
                 }}
-              >
-                Agregar
-              </Button>
-            </ThemeProvider>
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                onChange={(event, text) =>
+                  setTipoMovimientoInstrucciones({
+                    altaDeudor: altaDeudor,
+                    tipoEntePublico: tipoEntePublico,
+                    entidadFederativa: entidadFederativa,
+                    tipoFuente: {
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    },
+                    fondoIngreso: fondoIngreso,
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
+              />
+            </Grid>
+
+
+            <Grid item xs={10} sm={3}>
+              <InputLabel sx={{ ...queries.medium_text }}>
+                Fondo o ingreso
+              </InputLabel>
+              <Autocomplete
+                disableClearable
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                options={catalogoFondosOIngresos}
+                value={{
+                  Id: fondoIngreso.Id || "",
+                  Descripcion: fondoIngreso.Descripcion || "",
+                }}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                onChange={(event, text) =>
+                  setTipoMovimientoInstrucciones({
+                    altaDeudor: altaDeudor,
+                    tipoEntePublico: tipoEntePublico,
+                    entidadFederativa: entidadFederativa,
+                    tipoFuente: tipoFuente,
+                    fondoIngreso: {
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    },
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
+              />
+            </Grid>
+
+
+            <Grid mt={2} sm={3} width={"20%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+
+              <ThemeProvider theme={ButtonTheme}>
+                <Button sx={{ ...queries.buttonContinuar, width: "15vh" }}
+                  disabled={
+                    tipoEntePublico.Descripcion === "" ||
+                    entidadFederativa.Descripcion === "" ||
+                    tipoFuente.Descripcion === "" ||
+                    fondoIngreso.Descripcion === ""
+                  }
+                  onClick={() => {
+                    addTipoMovimientoInstrucciones({
+                      altaDeudor: altaDeudor,
+                      tipoEntePublico: tipoEntePublico.Descripcion,
+                      entidadFederativa: entidadFederativa.Descripcion,
+                      tipoFuente: tipoFuente.Descripcion,
+                      fondoIngreso: fondoIngreso.Descripcion,
+                    })
+                  }}
+                >
+                  Agregar
+                </Button>
+              </ThemeProvider>
+            </Grid>
           </Grid>
         </Grid>
 
-        <Grid mt={2} height={"20rem"} display={"flex"} justifyContent={"center"}
-          sx={{
-            "@media (min-width: 480px)": {
-              width: "100%"
-            },
+        <Grid mt={5} mb={2} display={"flex"}justifyContent={"center"}>
 
-            "@media (min-width: 768px)": {
-              width: "100%"
-            },
-
-            "@media (min-width: 1140px)": {
-              width: "100%"
-            },
-
-            "@media (min-width: 1400px)": {
-              width: "100%"
-            },
-
-            "@media (min-width: 1870px)": {
-              width: "100%"
-            },
-          }}
-        >
-          <Paper sx={{ width: "90%", height: "100%" }}>
-            <TableContainer sx={{ width: "100%", height: "100%" }} >
-              <Table stickyHeader>
-                <TableHead>
-
-                  <TableRow>
-                    {headsLabels.map((head, index) => (
-                      <StyledTableCell align="center">
-                        <Typography>
-                          {head.label}
-                        </Typography>
-                      </StyledTableCell>
-                    ))}
-
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {tablaTipoMovimientoInstrucciones.map((row: any, index: number) => {
-
-                    return (
-                      <StyledTableRow>
+            <Paper sx={{ width: "90%", height: "40vh" }}>
+              <TableContainer sx={{
+                height: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: "1vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }} >
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {headsLabels.map((head, index) => (
                         <StyledTableCell align="center">
-                          {row.altaDeudor}
+                          <Typography>
+                            {head.label}
+                          </Typography>
                         </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
 
-                        <StyledTableCell align="center">
-                          {row.tipoEntePublico}
-                        </StyledTableCell>
+                  <TableBody>
+                    {tablaTipoMovimientoInstrucciones.map((row: any, index: number) => {
 
-                        <StyledTableCell align="center">
-                          {row.entidadFederativa}
-                        </StyledTableCell>
+                      return (
+                        <StyledTableRow>
+                          <StyledTableCell align="center">
+                            {row.altaDeudor}
+                          </StyledTableCell>
 
-                        <StyledTableCell align="center">
-                          {row.tipoFuente}
-                        </StyledTableCell>
+                          <StyledTableCell align="center">
+                            {row.tipoEntePublico}
+                          </StyledTableCell>
 
-                        <StyledTableCell align="center">
-                          {row.fondoIngreso}
-                        </StyledTableCell>
+                          <StyledTableCell align="center">
+                            {row.entidadFederativa}
+                          </StyledTableCell>
 
-                        <StyledTableCell align="center">
-                          <Tooltip title="Eliminar">
-                            <IconButton
-                              type="button"
-                              onClick={() => removeTipoMovimientoInstrucciones(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
+                          <StyledTableCell align="center">
+                            {row.tipoFuente}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center">
+                            {row.fondoIngreso}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center">
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                type="button"
+                                onClick={() => removeTipoMovimientoInstrucciones(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+
       </Dialog>
     </>
   );

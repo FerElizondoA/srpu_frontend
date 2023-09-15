@@ -32,42 +32,67 @@ export const IFrame = ({
       <Grid
         display={"flex"}
         width={"100%"}
-        justifyContent={"space-around"}
+        justifyContent={"space-evenly"}
         alignItems={"center"}
         height={"5vh"}
       >
-        <Typography
-          sx={{
-            fontSize: "2.3ch",
-            fontFamily: "MontserratBold",
-            color: "#AF8C55",
-            "@media (max-width: 600px)": {
-              // XS (extra small) screen
-              fontSize: "1rem",
-            },
-            "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
-              fontSize: "1.5ch",
-            },
-          }}
-        >
-          Agregar Usuario
-        </Typography>
-        <Button
-          sx={{ ...queries.buttonContinuar, fontSize: "90%" }}
-          onClick={() => navigate("../users")}
-        >
-          Volver
-        </Button>
+        <Grid width={"100%"} display={"flex"}>
+          <Grid width={"43%"} ml={2}>
+            <Button
+              sx={{
+                backgroundColor: "#15212f",
+                color: "white",
+                "&&:hover": {
+                  backgroundColor: "rgba(47, 47, 47, 0.4)",
+                  color: "#000",
+                },
+                //fontSize: "90%",
+                borderRadius: "0.8vh",
+                textTransform: "capitalize",
+                fontSize: "50%",
+                "@media (min-width: 480px)": {
+                  fontSize: "70%",
+                },
+
+                "@media (min-width: 768px)": {
+                  fontSize: "80%",
+                },
+              }}
+              onClick={() => navigate("../users")}
+            >
+              Volver
+            </Button>
+          </Grid>
+
+          <Typography
+            sx={{
+              fontSize: "2.3ch",
+              fontFamily: "MontserratBold",
+              color: "#AF8C55",
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1rem",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
+            }}
+          >
+            Agregar Usuario
+          </Typography>
+        </Grid>
       </Grid>
 
       <Grid width={"100%"} height={"85vh"}>
+
         <object
           style={{ width: "100%", height: "100%" }}
           data={String(baseURL) + String(source)}
           type="text/html"
           aria-label="Agregar Usuario"
         ></object>
+        
       </Grid>
     </>
   );

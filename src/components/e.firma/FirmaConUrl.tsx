@@ -1,4 +1,4 @@
-import { Firmado, FirmadoConUrl } from "@jbcecapmex/pakfirma";
+// import { Firmado, FirmadoConUrl } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
@@ -24,7 +24,7 @@ export const FirmaConUrl = () => {
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
       <Grid item sx={{ height: "94vh", backgroundColor: "#f2f2f2" }}>
-        <FirmadoConUrl
+        {/* <FirmadoConUrl
           datosEntrada={JSON.stringify({
             jwtToken: localStorage.getItem("jwtToken")!,
             IdCentral: localStorage.getItem("IdCentral")!,
@@ -34,7 +34,7 @@ export const FirmaConUrl = () => {
             File: url,
           })}
           setState={changeInfoDoc}
-        />
+        /> */}
       </Grid>
     </Grid>
   );

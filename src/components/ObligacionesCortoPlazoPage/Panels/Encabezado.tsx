@@ -72,15 +72,21 @@ export function Encabezado() {
   const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
 
   return (
-    <Grid container>
+    <Grid container
+    height={"25rem"}
+    >
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        mt={{xs: 2}}
+        // mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
+        // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        // spacing={{ xs: 2, md: 5, lg: 10 }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
       >
-        <Grid item xs={4} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
@@ -102,7 +108,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -134,7 +140,7 @@ export function Encabezado() {
           </Select>
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
           </InputLabel>
@@ -162,11 +168,14 @@ export function Encabezado() {
       <Grid
         item
         container
-        mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        // mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
+        // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        // spacing={{ xs: 2, md: 5, lg: 10 }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
       >
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
           <TextField
@@ -188,7 +197,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Municipio u Organismo
           </InputLabel>
@@ -212,7 +221,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>

@@ -179,7 +179,7 @@ export function TipoDeMovimiento() {
         }}
       >
         <Grid container display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
-          <Grid item xs={2} sm={3} md={3} lg={3} xl={3}
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
             display={"flex"}
             justifyContent={"center"}
           >
@@ -203,7 +203,7 @@ export function TipoDeMovimiento() {
             ></FormControlLabel>
           </Grid>
 
-          <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Tipo de ente publico obligado
             </InputLabel>
@@ -257,7 +257,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>Mandatario</InputLabel>
             <Autocomplete
               disableClearable
@@ -307,7 +307,7 @@ export function TipoDeMovimiento() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
-          <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Tipo de fuente
             </InputLabel>
@@ -357,7 +357,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Fondo o ingreso
             </InputLabel>
@@ -407,7 +407,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid xs={3} sm={3} md={3} lg={3} xl={3} >
+          <Grid xs={9} sm={3} md={3} lg={3} xl={3} >
 
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha mandato

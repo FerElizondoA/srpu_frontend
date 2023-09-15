@@ -43,64 +43,74 @@ export function ObligacionesCortoPlazoPage() {
   );
 
   return (
-    <Grid container direction="column">
-      <Grid item>
+    <>
+      {/* <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
-      </Grid>
-      <Grid item>
-        <Grid
-          mt={2}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Typography
-            sx={{
-              fontSize: "2.5ch",
-              fontFamily: "MontserratBold",
-              color: "#AF8C55",
-              "@media (max-width: 600px)": {
-                // XS (extra small) screen
-                fontSize: "1rem",
-              },
-              "@media (min-width: 601px) and (max-width: 900px)": {
-                // SM (small) screen
-                fontSize: "1.5ch",
-              },
-            }}
-          >
-            Crédito Simple a Corto Plazo
-          </Typography>
-          {NumeroRegistro && (
-            <Typography sx={queries.noRegistroAbsolute}>
-              <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
-            </Typography>
-          )}
+      </Grid> */}
 
-          <Button
-            sx={queries.buttonContinuarAbsolute}
-            onClick={() => {
-              setOpenDialogBorrador(!openDialogBorrador);
-            }}
+      <Grid width={"100%"}>
+        <LateralMenu />
+      </Grid>
+
+      <Grid item container direction="column">
+
+        <Grid mt={2} display={"flex"} justifyContent={"center"}>
+          <Grid width={"91%"} display={"flex"} justifyContent={"center"} alignItems={"center"}
           >
-            Guardar
-          </Button>
+            <Typography
+              sx={{
+                color: "#AF8C55",
+                ...queries.bold_text_Largo_Plazo.tituloCredito,
+              }}
+            >
+              Crédito Simple a Corto Plazo
+            </Typography>
+            {NumeroRegistro && (
+              <Typography sx={queries.noRegistroAbsolute}>
+                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid  display={"flex"} justifyContent={"end"} >
+            <Button
+              sx={{ ...queries.buttonContinuar}}
+              onClick={() => {
+                setOpenDialogBorrador(!openDialogBorrador);
+              }}
+            >
+              Guardar
+            </Button>
+          </Grid>
         </Grid>
-        <Tabs
-          value={tabIndex}
-          onChange={handleChange}
-          centered={query.isScrollable ? false : true}
-          variant={query.isScrollable ? "scrollable" : "standard"}
-          scrollButtons
-          allowScrollButtonsMobile
+
+
+
+        <Grid
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Tab label="Encabezado" sx={queries.bold_text} />
-          <Tab label="Información General" sx={queries.bold_text} />
-          <Tab label="Condiciones Financieras" sx={queries.bold_text} />
-          <Tab label="Documentación" sx={queries.bold_text} />
-          <Tab label="Resumen" sx={queries.bold_text} />
-          <Tab label="Solicitud de Inscripción" sx={queries.bold_text} />
-        </Tabs>
+          <Tabs
+            value={tabIndex}
+            onChange={handleChange}
+            centered={query.isScrollable ? false : true}
+            variant={query.isScrollable ? "scrollable" : "standard"}
+            scrollButtons
+            allowScrollButtonsMobile
+            sx={{ width: "100%", fontSize:".8rem" }}
+          >
+            <Tab label="Encabezado" sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Información General" sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Condiciones Financieras" sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Documentación" sx={{...queries.bold_text_Largo_Plazo}}/>
+            <Tab label="Resumen"sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Solicitud de Inscripción" sx={{...queries.bold_text_Largo_Plazo}} />
+          </Tabs>
+        </Grid>
       </Grid>
 
       {tabIndex === 0 && <Encabezado />}
@@ -113,6 +123,6 @@ export function ObligacionesCortoPlazoPage() {
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
       />
-    </Grid>
+    </ >
   );
 }

@@ -134,7 +134,7 @@ export function DatoGeneralesFideicomiso() {
 
   const headsFideicomisario: HeadLabels[] = [
     {
-      label: " ",
+      label: "Acciones",
     },
     {
       label: "Fideicomisario",
@@ -170,15 +170,15 @@ export function DatoGeneralesFideicomiso() {
           },
 
           "@media (min-width: 768px)": {
-            height: "70rem"
+            height: "60rem"
           },
 
           "@media (min-width: 1140px)": {
-            height: "70rem",
+            height: "35rem",
           },
 
           "@media (min-width: 1400px)": {
-            height: "38rem"
+            height: "38rem",
           },
 
           "@media (min-width: 1870px)": {
@@ -186,47 +186,8 @@ export function DatoGeneralesFideicomiso() {
           },
         }}
       >
-        <Grid
-          mt={2}
-          container display={"flex"} justifyContent={"space-evenly"}
-        // sx={{
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
 
-        //   "@media (min-width: 480px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(1, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 768px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "60%"
-        //   },
-
-        //   "@media (min-width: 1140px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 1400px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 1870px)": {
-        //     display: "flex",
-        //     justifyContent: "space-evenly",
-        //     height: "35%"
-        //   },
-
-        // }}
-        >
           <Grid item xs={10} sm={4} md={4} lg={5} xl={4} >
             <InputLabel sx={queries.medium_text}>
               Numero del fideicomiso
@@ -375,42 +336,6 @@ export function DatoGeneralesFideicomiso() {
           display={"flex"}
           justifyContent={"center"}
           mt={2}
-
-        // sx={{
-        //   "@media (min-width: 480px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(1, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 768px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "60%"
-        //   },
-
-        //   "@media (min-width: 1140px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 1400px)": {
-        //     display: "grid",
-        //     gridTemplateColumns: "repeat(2, 1fr)",
-        //     justifyItems: "center",
-        //     height: "25%"
-        //   },
-
-        //   "@media (min-width: 1870px)": {
-        //     display: "flex",
-        //     justifyContent: "space-evenly",
-        //     height: "35%"
-        //   },
-        // }}
         >
           <Grid
             width={"100%"}
@@ -421,6 +346,7 @@ export function DatoGeneralesFideicomiso() {
             <Grid item xs={5} sm={4} md={4} lg={3} xl={4} >
               <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
               <Autocomplete
+                disableClearable
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
@@ -460,6 +386,7 @@ export function DatoGeneralesFideicomiso() {
                 Orden fideicomisario
               </InputLabel>
               <Autocomplete
+                disableClearable
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
@@ -519,9 +446,9 @@ export function DatoGeneralesFideicomiso() {
           </ThemeProvider>
           <Grid width={"100%"} display={"flex"} justifyContent={"center"}
             sx={{
-              height:"18rem",
+              height: "18rem",
               "@media (min-width: 480px)": {
-                height: "20rem"
+                height: "30"
               },
 
               "@media (min-width: 768px)": {
@@ -540,7 +467,7 @@ export function DatoGeneralesFideicomiso() {
                 height: "22rem"
               },
             }}>
-            <Paper sx={{ width: "88%", height: "100%" }}>
+            <Paper sx={{ width: "90%", height: "100%" }}>
               <TableContainer
                 sx={{
                   height: "100%",

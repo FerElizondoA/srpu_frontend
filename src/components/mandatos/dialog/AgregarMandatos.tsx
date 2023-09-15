@@ -18,8 +18,10 @@ import { GridCloseIcon } from "@mui/x-data-grid";
 import { queries } from "../../../queries";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 import { SoporteDocumental } from "../panels/SoporteDocumental";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -54,14 +56,74 @@ export function AgregarMandatos({
   openState: boolean;
   accion: string;
 }) {
+
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
 
+
+
+  const createMandato: Function = useCortoPlazoStore(
+    (state) => state.createMandato
+  );
+
+  const getMandatos: Function = useCortoPlazoStore(
+    (state) => state.getMandato
+  )
+
+  const changeIdMandato: Function = useCortoPlazoStore(
+    (state) => state.changeIdMandato
+  )
+
+  const editarMandato: Function = useCortoPlazoStore(
+    (state) => state.editarMandato
+  )
+
+  const modificaMandato: Function = useCortoPlazoStore(
+    (state) => state.modificaMandato
+  )
+
+  const setTipoMovimientoMandato: Function = useLargoPlazoStore(
+    (state) => state.setTipoMovimientoMandato
+  )
+
+  const setSoporteDocumentalMandato: Function = useLargoPlazoStore(
+    (state) => state.setSoporteDocumentalMandato
+  )
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
+
+
+
+  const limpiaMandato = () => {
+    changeIdMandato("");
+
+    setTipoMovimientoMandato({
+      altaDeudor: "",
+      tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+      mandatario: { Id: "", Descripcion: "" },
+      tipoFuente: { Id: "", Descripcion: "" },
+      fondoIngreso: { Id: "", Descripcion: "" },
+      fechaMandato: new Date().toString(),
+    });
+
+    setSoporteDocumentalMandato({
+      tipo: "",
+      fechaArchivo: new Date().toString(),
+      archivo: new File([], ""),
+      nombreArchivo: "",
+    })
+
+    editarMandato([], []);
+  };
+
+  useEffect(() => {
+    getMandatos();
+  }, [])
+
 
   return (
     <>
@@ -72,9 +134,8 @@ export function AgregarMandatos({
               <IconButton
                 edge="start"
                 onClick={() => {
-                  //limpiaFideicomiso();
+                  limpiaMandato();
                   handler(false);
-                  //reset();
                 }}
                 sx={{ color: "white" }}
               >
@@ -96,20 +157,22 @@ export function AgregarMandatos({
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
-                      //createFideicomiso();
+                      createMandato();
                       handler(false);
-                      // reset();
                     } else if (accion === "Editar") {
-                      // updateRow(indexA);
-                      // modificarFideicomiso();
+                      modificaMandato();
                       handler(false);
-                      // reset();
                     }
-
                     setTabIndex(0);
                   }}
                 >
-                  <Typography sx={{ ...queries.medium_text, fontSize: "1rem" }}>
+                  <Typography sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
+                  }}>
                     {accion} mandato
                   </Typography>
                 </Button>
@@ -128,7 +191,7 @@ export function AgregarMandatos({
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Tipo de Movimiento" sx={{...queries.bold_text}}></Tab>
+              <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
               <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 

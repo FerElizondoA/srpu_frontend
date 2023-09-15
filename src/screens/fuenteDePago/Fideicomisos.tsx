@@ -33,7 +33,6 @@ import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/Agrega
 import { queries } from "../../queries";
 import {
   Fideicomisario,
-  Fideicomiso,
   GeneralFideicomiso,
   SoporteDocumental,
   TipoMovimiento,
@@ -103,10 +102,6 @@ export function Fideicomisos() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const navigate = useNavigate();
-
-
-  //
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
   const [accion, setAccion] = useState("Agregar");
@@ -114,7 +109,6 @@ export function Fideicomisos() {
   const tablaFideicomisos: IDatos[] = useCortoPlazoStore(
     (state) => state.tablaFideicomisos
   );
-
 
   const getFideicomisos: Function = useCortoPlazoStore(
     (state) => state.getFideicomisos
@@ -140,7 +134,6 @@ export function Fideicomisos() {
     (state) => state.editarFideicomiso
   );
 
-
   const handleChange = (dato: string) => {
     setBusqueda(dato);
   };
@@ -149,13 +142,10 @@ export function Fideicomisos() {
     filtrarDatos();
   };
 
-
   const [datos, setDatos] = useState<Array<IDatos>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [fideicomisos, setFideicomiso] = useState<Array<IDatos>>([]);
   const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<Array<IDatos>>([]);
-
-
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -185,7 +175,6 @@ export function Fideicomisos() {
   }, [fideicomisos]);
 
   useEffect(() => {
-
     setFideicomisoFiltrados(datos);
   }, [datos]);
 
@@ -197,15 +186,8 @@ export function Fideicomisos() {
 
   useEffect(() => {
     getFideicomisos(setDatos)
-  }, []);
-
-
-  useEffect(() => {
     getFideicomisos(setFideicomiso);
   }, []);
-
-
-
 
   useEffect(() => {
     if (openAgregarFideicomisos === false) {
@@ -218,9 +200,6 @@ export function Fideicomisos() {
       getFideicomisos(setDatos);
     }
   }, [openAgregarFideicomisos]);
-
-
-
 
 
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);

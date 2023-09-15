@@ -62,7 +62,7 @@ export function AgregarFideicomisos({
   };
 
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
   };
 
   const createFideicomiso: Function = useCortoPlazoStore(
@@ -144,12 +144,9 @@ export function AgregarFideicomisos({
                   if (accion === "Agregar") {
                     createFideicomiso();
                     handler(false);
-                    // reset();
                   } else if (accion === "Editar") {
-                    // updateRow(indexA);
                     modificarFideicomiso();
                     handler(false);
-                    // reset();
                   }
 
                   setTabIndex(0);
@@ -175,7 +172,7 @@ export function AgregarFideicomisos({
           </Grid>
         </Toolbar>
       </AppBar>
-      <Grid item container direction="column">
+ 
         <Grid item>
           <Tabs
             value={tabIndex}
@@ -184,6 +181,7 @@ export function AgregarFideicomisos({
             variant={query.isScrollable ? "scrollable" : "standard"}
             scrollButtons
             allowScrollButtonsMobile
+            
           >
             <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
             <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
@@ -196,7 +194,7 @@ export function AgregarFideicomisos({
 
           {tabIndex === 2 && <SDocumental />}
         </Grid>
-      </Grid>
+    
     </Dialog>
   );
 }
