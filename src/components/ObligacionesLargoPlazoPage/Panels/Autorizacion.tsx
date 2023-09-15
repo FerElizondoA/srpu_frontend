@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import {
   Autocomplete,
@@ -22,21 +24,19 @@ import {
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { format } from "date-fns";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { Autorizaciones } from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
-import CloseIcon from "@mui/icons-material/Close";
-import { IPathDocumentos } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
 import {
   getDocumento,
   getPathDocumentosAut,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
-import EditIcon from "@mui/icons-material/Edit";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { IPathDocumentos } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
 import { DialogEliminarAutorizacion } from "../Dialog/DialogEliminarAutorizacion";
+import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 
 interface Head {
   label: string;
@@ -65,7 +65,7 @@ const heads: Head[] = [
     label: "Detalle del destino",
   },
   {
-    label: "Accion",
+    label: "Acción",
   },
 ];
 
@@ -220,7 +220,13 @@ export function Autorizacion() {
             </Button>
           </Grid> */}
 
-          <Grid item width={"100%"} lg={3} display={"flex"} justifyContent={"center"}>
+          <Grid
+            item
+            width={"100%"}
+            lg={3}
+            display={"flex"}
+            justifyContent={"center"}
+          >
             <Button
               sx={queries.buttonContinuar}
               variant="outlined"

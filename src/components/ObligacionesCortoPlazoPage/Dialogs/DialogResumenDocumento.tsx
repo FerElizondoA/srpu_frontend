@@ -14,6 +14,7 @@ import { DialogSolicitarModificacion } from "./DialogSolicitarModificacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import Swal from "sweetalert2";
+import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -31,6 +32,8 @@ type Props = {
 
 export function VerBorradorDocumento(props: Props) {
   const [openDialogModificacion, setOpenDialogModificacion] =
+    React.useState(false);
+  const [openDialogCancelacion, setOpenDialogCancelacion] =
     React.useState(false);
 
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
@@ -119,6 +122,21 @@ export function VerBorradorDocumento(props: Props) {
             </Button>
           </Grid>
         )}
+
+        {estatus === "Autorizado" &&
+          localStorage.getItem("Rol") === "Verificador" && (
+            <Button
+              sx={{
+                ...queries.buttonCancelar,
+                fontSize: "70%",
+              }}
+              onClick={() => {
+                setOpenDialogCancelacion(true);
+              }}
+            >
+              Solicitar Cancelación
+            </Button>
+          )}
       </DialogTitle>
       <DialogContent
         sx={{
@@ -140,6 +158,11 @@ export function VerBorradorDocumento(props: Props) {
       <DialogSolicitarModificacion
         handler={setOpenDialogModificacion}
         openState={openDialogModificacion}
+      />
+
+      <DialogSolicitarCancelacion
+        handler={setOpenDialogCancelacion}
+        openState={openDialogCancelacion}
       />
     </Dialog>
   );

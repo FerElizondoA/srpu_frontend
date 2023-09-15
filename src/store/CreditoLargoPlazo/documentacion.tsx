@@ -52,8 +52,6 @@ export const createDocumentoLargoPlazoSlice: StateCreator<
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      console.log(data);
-
       if (state.idSolicitud !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,

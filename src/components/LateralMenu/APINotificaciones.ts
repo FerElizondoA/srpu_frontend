@@ -51,14 +51,12 @@ export const createNotification = (
 
 export const getNotificaciones = (
   setState: Function,
-  cantidadNotificaciones: Function,
-  permisosEspeciales = 0
+  cantidadNotificaciones: Function
 ) => {
   axios
     .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-notificaciones", {
       params: {
         IdUsuario: localStorage.getItem("IdUsuario"),
-        PermisosEspeciales: permisosEspeciales,
       },
       headers: {
         Authorization: localStorage.getItem("jwtToken"),

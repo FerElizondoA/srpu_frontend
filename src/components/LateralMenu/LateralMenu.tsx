@@ -1,5 +1,7 @@
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Groups2Icon from "@mui/icons-material/Groups2";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,10 +9,16 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
-import Groups2Icon from "@mui/icons-material/Groups2";
 
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import EditIcon from "@mui/icons-material/Edit";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import {
   AppBar,
   Avatar,
@@ -45,15 +53,6 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import HandshakeIcon from "@mui/icons-material/Handshake";
-import EditIcon from "@mui/icons-material/Edit";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {

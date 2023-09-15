@@ -1,27 +1,26 @@
-import * as React from "react";
 import {
-  Typography,
-  Dialog,
-  Slide,
   Button,
-  TextField,
-  DialogTitle,
-  DialogContent,
+  Dialog,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
-  Select,
-  MenuItem,
   Grid,
+  MenuItem,
+  Select,
+  Slide,
+  Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { IComentarios } from "../../Interfaces/InterfacesCplazo/CortoPlazo/IGetComent";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -65,9 +64,8 @@ export function ConfirmacionDescargaSolicitud({
   );
 
   React.useEffect(() => {
-    getListadoUsuarios(setUsuarios);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openState === true]);
+    getListadoUsuarioRol(setUsuarios);
+  }, [openState]);
 
   const navigate = useNavigate();
 

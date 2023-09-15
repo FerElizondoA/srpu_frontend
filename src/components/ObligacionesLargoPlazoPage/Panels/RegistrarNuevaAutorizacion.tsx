@@ -51,13 +51,6 @@ export function RegistrarNuevaAutorizacion() {
     (state) => state.setRegistrarAutorizacion
   );
 
-  // const getOrganismosA: Function = useLargoPlazoStore(
-  //   (state) => state.getOrganismos
-  // );
-  // const catalagoOrganismos: Array<ICatalogo> = useLargoPlazoStore(
-  //   (state) => state.catalogoOrganismos
-  // );
-
   const getMediosDePublicacion: Function = useLargoPlazoStore(
     (state) => state.getMediosDePublicacion
   );
@@ -77,7 +70,7 @@ export function RegistrarNuevaAutorizacion() {
           montoAutorizado: montoAutorizado,
           documentoSoporte: {
             archivo: file,
-            nombreArchivo: file.name,
+            nombreArchivo: numeroAutorizacion + file.name,
           },
           acreditacionQuorum: acreditacionQuorum,
         });
@@ -93,7 +86,7 @@ export function RegistrarNuevaAutorizacion() {
           documentoSoporte: documentoSoporte,
           acreditacionQuorum: {
             archivo: file,
-            nombreArchivo: file.name,
+            nombreArchivo: numeroAutorizacion + file.name,
           },
         });
       }

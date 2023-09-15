@@ -90,18 +90,6 @@ export function DialogNuevaAutorizacion(props: Props) {
     (state) => state.modificarAutorizacion
   );
 
-
-
-  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
-    (state) => state.autorizacionSelect
-  );
-  const setAutorizacionSelect: Function = useLargoPlazoStore(
-    (state) => state.setAutorizacionSelect
-  );
-
-
-  let  tableRef = useRef();
-
   const cleanAutorizacion = () => {
     setAutorizacion(
       {
@@ -127,9 +115,7 @@ export function DialogNuevaAutorizacion(props: Props) {
     );
   };
 
-  useEffect (() =>{
-    
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -198,7 +184,6 @@ export function DialogNuevaAutorizacion(props: Props) {
                           text: "La autorización se ha editado exitosamente",
                         });
                       });
-                      
                     }
                   }}
                 >

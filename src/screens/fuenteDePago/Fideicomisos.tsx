@@ -48,23 +48,20 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-
 export interface IDatos {
-  DescripcionFiudiciario: string
-  DescripcionTipoFideicomiso: string
-  FechaCreacion: string
-  FechaDeFideicomiso: string
-  Id: string
-  IdFiudiciario: string
-  IdTipoFideicomiso: string
-  ModificadoPor: string
-  NumeroDeFideicomiso: string
-  SoporteDocumental: string
-  TipoDeMovimiento: string
-  UltimaModificacion: string
+  DescripcionFiudiciario: string;
+  DescripcionTipoFideicomiso: string;
+  FechaCreacion: string;
+  FechaDeFideicomiso: string;
+  Id: string;
+  IdFiudiciario: string;
+  IdTipoFideicomiso: string;
+  ModificadoPor: string;
+  NumeroDeFideicomiso: string;
+  SoporteDocumental: string;
+  TipoDeMovimiento: string;
+  UltimaModificacion: string;
 }
-
-
 
 interface Head {
   label: string;
@@ -84,7 +81,7 @@ const heads: Head[] = [
     label: "Fiudiciario",
   },
   {
-    label: "Accion",
+    label: "Acción",
   },
 ];
 
@@ -105,7 +102,6 @@ export function Fideicomisos() {
 
   const navigate = useNavigate();
 
-
   //
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
@@ -114,7 +110,6 @@ export function Fideicomisos() {
   const tablaFideicomisos: IDatos[] = useCortoPlazoStore(
     (state) => state.tablaFideicomisos
   );
-
 
   const getFideicomisos: Function = useCortoPlazoStore(
     (state) => state.getFideicomisos
@@ -140,7 +135,6 @@ export function Fideicomisos() {
     (state) => state.editarFideicomiso
   );
 
-
   const handleChange = (dato: string) => {
     setBusqueda(dato);
   };
@@ -149,13 +143,12 @@ export function Fideicomisos() {
     filtrarDatos();
   };
 
-
   const [datos, setDatos] = useState<Array<IDatos>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [fideicomisos, setFideicomiso] = useState<Array<IDatos>>([]);
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<Array<IDatos>>([]);
-
-
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<
+    Array<IDatos>
+  >([]);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -185,7 +178,6 @@ export function Fideicomisos() {
   }, [fideicomisos]);
 
   useEffect(() => {
-
     setFideicomisoFiltrados(datos);
   }, [datos]);
 
@@ -196,16 +188,12 @@ export function Fideicomisos() {
   }, [busqueda]);
 
   useEffect(() => {
-    getFideicomisos(setDatos)
+    getFideicomisos(setDatos);
   }, []);
-
 
   useEffect(() => {
     getFideicomisos(setFideicomiso);
   }, []);
-
-
-
 
   useEffect(() => {
     if (openAgregarFideicomisos === false) {
@@ -218,10 +206,6 @@ export function Fideicomisos() {
       getFideicomisos(setDatos);
     }
   }, [openAgregarFideicomisos]);
-
-
-
-
 
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -299,7 +283,6 @@ export function Fideicomisos() {
               sx={{ p: "10px" }}
               aria-label="search"
               onClick={() => handleSearch()}
-
             >
               <SearchIcon
                 onClick={() => {
@@ -323,48 +306,53 @@ export function Fideicomisos() {
         </Grid>
       </Grid>
 
-      <Grid item  width={"100%"} display={"flex"} justifyContent={"center"} 
-      sx={{
-        marginBottom:"2rem",
-        height:"32rem",
-        "@media (min-width: 480px)": {
-          height:"20rem",
-          marginBottom:"0",
-          
-        },
-    
-        "@media (min-width: 768px)": {
-          height:"38rem"
-        },
-    
-        "@media (min-width: 1140px)": {
-          height:"38rem"
-        },
-    
-        "@media (min-width: 1400px)": {
-          height:"32rem"
-        },
-    
-        "@media (min-width: 1870px)": {
-          height:"46rem"
-        },
-    
-      }}
-    >
-        <Paper sx={{ width:"100%", height:"100%"}}>
-          <TableContainer  sx={{ height:"100%",
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: ".5vw",
-            height: "1vh",
-            mt: 1,
+      <Grid
+        item
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+        sx={{
+          marginBottom: "2rem",
+          height: "32rem",
+          "@media (min-width: 480px)": {
+            height: "20rem",
+            marginBottom: "0",
           },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#AF8C55",
-            outline: "1px solid slategrey",
-            borderRadius: 1,
+
+          "@media (min-width: 768px)": {
+            height: "38rem",
           },
-        }}>
+
+          "@media (min-width: 1140px)": {
+            height: "38rem",
+          },
+
+          "@media (min-width: 1400px)": {
+            height: "32rem",
+          },
+
+          "@media (min-width: 1870px)": {
+            height: "46rem",
+          },
+        }}
+      >
+        <Paper sx={{ width: "100%", height: "100%" }}>
+          <TableContainer
+            sx={{
+              height: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: "1vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -415,7 +403,9 @@ export function Fideicomisos() {
                                 JSON.parse(row.TipoDeMovimiento),
                                 JSON.parse(row.SoporteDocumental)
                               );
-                              changeAgregarFideicomisos(!openAgregarFideicomisos);
+                              changeAgregarFideicomisos(
+                                !openAgregarFideicomisos
+                              );
                             }}
                           >
                             <EditIcon />
@@ -442,7 +432,6 @@ export function Fideicomisos() {
             </Table>
           </TableContainer>
         </Paper>
-
       </Grid>
       <AgregarFideicomisos
         handler={changeAgregarFideicomisos}

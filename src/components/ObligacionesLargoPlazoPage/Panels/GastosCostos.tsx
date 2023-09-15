@@ -27,6 +27,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { GeneralGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 
 interface Head {
   label: string;
@@ -40,7 +41,7 @@ const headsGC: Head[] = [
     label: "Detalle de la inversión",
   },
   {
-    label: "Descripcion",
+    label: "Descripción",
   },
   {
     label: "Clave de Inscripción del Financiamiento",
@@ -49,7 +50,7 @@ const headsGC: Head[] = [
     label: "Monto",
   },
   {
-    label: "Accion",
+    label: "Acción",
   },
 ];
 
@@ -74,6 +75,14 @@ export function GastoCostos() {
     (state) => state.catalogoDestinos
   );
 
+  const catalogoDetallesInversion: Array<ICatalogo> = useLargoPlazoStore(
+    (state) => state.catalogoDetallesInversion
+  );
+
+  const getDetallesInversion: Function = useLargoPlazoStore(
+    (state) => state.getDetallesInversion
+  );
+
   // Datos tabla Gastos costos
   const generalGCDestino: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.generalGastosCostos.destino);
@@ -92,6 +101,13 @@ export function GastoCostos() {
   const generalGCMonto: number = useLargoPlazoStore(
     (state) => state.generalGastosCostos.monto
   );
+  const generalGastosCostos: {
+    destino: { Id: string; Descripcion: string };
+    detalleInversion: { Id: string; Descripcion: string };
+    descripcion: string;
+    claveInscripcionFinanciamiento: string;
+    monto: number;
+  } = useLargoPlazoStore((state) => state.generalGastosCostos);
 
   //TABLA GASTOS Y COSTOS
 
@@ -180,6 +196,11 @@ export function GastoCostos() {
       addDocumento(file, file.name);
     }
   }
+
+  useEffect(() => {
+    getDetallesInversion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Grid
@@ -288,7 +309,10 @@ export function GastoCostos() {
             value={GCGastosAdicionales}
             onChange={(v) => {
               changeGastosCostos({
-                gastosAdicionales: v.target.value,
+                gastosAdicionales:
+                  // /^[0-9]*$/.test(
+                  v.target.value,
+                // ) ? v.target.value : GCGastosAdicionales
                 saldoVigente: moneyMask(GCSaldoVigente.toString()),
                 montoGastosAdicionales: moneyMask(
                   GCMontoGastosAdicionales.toString()
@@ -321,7 +345,7 @@ export function GastoCostos() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
-            options={catalogoDestinos}
+            options={catalogoDetallesInversion}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -604,7 +628,7 @@ export function GastoCostos() {
             }
             onClick={() => {
               changeGeneralGastosCostos({
-                destino: { Id: "", Descripcion: "" },
+                ...generalGastosCostos,
                 detalleInversion: { Id: "", Descripcion: "" },
                 claveInscripcionFinanciamiento: "",
                 descripcion: "",

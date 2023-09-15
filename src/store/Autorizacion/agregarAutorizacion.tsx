@@ -92,9 +92,9 @@ export interface AgregarAutorizacionLargoPlazoSlice {
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[]; 
-  getAutorizaciones: () => void; 
-  
+  autorizaciones: Autorizaciones[];
+  getAutorizaciones: () => void;
+
   autorizacionSelect: Autorizaciones[];
   setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
   removeAutorizacionesSelect: (index: number) => void;
@@ -332,17 +332,18 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
           title: "Éxito",
           text: "El fideicomiso se ha modificado exitosamente",
         });
-        state.changeIdAutorizacion(data.data.id);
+        state.changeIdAutorizacion(data.result.id);
         state.saveFilesAutorizacion(
-          data.data.Id,
-          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          data.result.Id,
+          `/SRPU/AUTORIZACIONES/${data.result.Id}`,
           state.registrarAutorizacion.documentoSoporte
         );
         state.saveFilesAutorizacion(
-          data.data.Id,
-          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          data.result.Id,
+          `/SRPU/AUTORIZACIONES/${data.result.Id}`,
           state.registrarAutorizacion.acreditacionQuorum
         );
+        state.setAutorizacionSelect([]);
       })
       .catch(function (error) {
         Swal.fire({
@@ -417,6 +418,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
       .then((r) => {})
       .catch((e) => {});
   },
+
   saveFilesAutorizacion: async (
     idRegistro: string,
     ruta: string,
@@ -476,6 +478,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
   },
 
   autorizacionSelect: [],
+
   setAutorizacionSelect: (autorizacion: Autorizaciones[]) => {
     set((state) => ({
       autorizacionSelect: autorizacion,

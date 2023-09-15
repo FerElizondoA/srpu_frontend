@@ -1,5 +1,7 @@
 import { StateCreator } from "zustand";
 import { IFileInfoGeneral } from "../../components/ObligacionesLargoPlazoPage/Panels/InformacionGeneral";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import axios from "axios";
 
 export type ObligadoSolidarioAval = {
   obligadoSolidario: string;
@@ -55,15 +57,15 @@ export interface InformacionGeneralLargoPlazoSlice {
     monto: number;
   };
 
-  changeInformacionGeneral: (
-    fechaContratacion: string,
-    fechaVencimiento: string,
-    plazo: number,
-    destino: { Id: string; Descripcion: string },
-    monto: number,
-    denominacion: string,
-    institucionFinanciera: { Id: string; Descripcion: string }
-  ) => void;
+  changeInformacionGeneral: (informacionGeneral: {
+    fechaContratacion: string;
+    fechaVencimiento: string;
+    plazo: number;
+    destino: { Id: string; Descripcion: string };
+    monto: number;
+    denominacion: string;
+    institucionFinanciera: { Id: string; Descripcion: string };
+  }) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: ObligadoSolidarioAval
@@ -87,6 +89,7 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   //NUEVA TABLA CREDITO LARGO PLAZO
   addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) => void;
+
   changeGeneralGastosCostos: (
     destino: { Id: string; Descripcion: string },
     detalleInversion: { Id: string; Descripcion: string },
@@ -100,6 +103,10 @@ export interface InformacionGeneralLargoPlazoSlice {
   addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
   tablaDocumentos: IFileInfoGeneral[];
+
+  catalogoDetallesInversion: ICatalogo[];
+
+  getDetallesInversion: () => void;
 }
 
 export const createInformacionGeneralLargoPlazoSlice: StateCreator<
@@ -116,6 +123,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   },
 
   tablaObligadoSolidarioAval: [],
+
   generalObligadoSolidarioAval: {
     obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No aplica"
@@ -136,6 +144,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   },
 
   tablaGastosCostos: [],
+
   generalGastosCostos: {
     destino: { Id: "", Descripcion: "" },
     detalleInversion: { Id: "", Descripcion: "" },
@@ -146,9 +155,25 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   tablaDocumentos: [],
 
-  changeInformacionGeneral: (informacionGeneral: any) =>
+  changeInformacionGeneral: (informacionGeneral: {
+    fechaContratacion: string;
+    fechaVencimiento: string;
+    plazo: number;
+    destino: { Id: string; Descripcion: string };
+    monto: number;
+    denominacion: string;
+    institucionFinanciera: { Id: string; Descripcion: string };
+  }) =>
     set(() => ({
       informacionGeneral: informacionGeneral,
+      generalGastosCostos: {
+        destino: informacionGeneral.destino,
+        detalleInversion: { Id: "", Descripcion: "" },
+        descripcion: "",
+        claveInscripcionFinanciamiento: "",
+        monto: 0,
+      },
+      tablaGastosCostos: [],
     })),
 
   changeObligadoSolidarioAval: (obligadoSolidario: any) =>
@@ -215,4 +240,24 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
         nombreArchivo: "",
       },
     })),
+
+  catalogoDetallesInversion: [],
+
+  getDetallesInversion: async () => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/get-detalleInversion",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoDetallesInversion: r,
+        }));
+      });
+  },
 });

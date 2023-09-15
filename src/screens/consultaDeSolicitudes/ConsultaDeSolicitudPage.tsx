@@ -47,6 +47,7 @@ import {
   ConsultaSolicitud,
   getPdf,
 } from "../../store/SolicitudFirma/solicitudFirma";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
 export interface IData {
   Id: string;
@@ -764,6 +765,24 @@ export function ConsultaDeSolicitudPage() {
                                 }}
                               >
                                 <CommentIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
+                          {row.Estatus === "Autorizado" && (
+                            <Tooltip title="Solicitar Cancelación">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  llenaSolicitud(row, row.TipoSolicitud);
+                                  changeIdSolicitud(row.Id);
+                                  changeEstatus(row.Estatus);
+                                  changeNoRegistro(row.NumeroRegistro);
+                                  changeOpenDialogVer(!openDialogVer);
+                                }}
+                              >
+                                <DoDisturbOnIcon />
                                 {row.Acciones}
                               </IconButton>
                             </Tooltip>
