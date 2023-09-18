@@ -27,7 +27,6 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
-import { GeneralGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 
 interface Head {
   label: string;
@@ -213,8 +212,8 @@ export function GastoCostos() {
         justifyContent: "space-around",
       }}
     >
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -261,7 +260,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -302,7 +301,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
           <TextField
             fullWidth
@@ -334,8 +333,8 @@ export function GastoCostos() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Detalle de la Inversión
           </InputLabel>
@@ -385,7 +384,7 @@ export function GastoCostos() {
         </Grid>
 
         {/* AQUI VA DESCRIPCION */}
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
           <TextField
             value={generalGCDescripcion}
@@ -414,7 +413,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Gastos Adicionales
           </InputLabel>
@@ -464,8 +463,8 @@ export function GastoCostos() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3} width={"100%"}>
+      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+        <Grid xs={10} sm={3.3} md={3.3} lg={3} xl={3} item width={"100%"}>
           <InputLabel
             sx={{
               ...queries.medium_text,
@@ -480,8 +479,8 @@ export function GastoCostos() {
             Adjuntar detalle de la inversión pública productiva
           </InputLabel>
 
-          <Grid mt={1} display={"flex"} justifyContent={"center"}>
-            <Grid sx={{ position: "relative" }}>
+          <Grid mt={1} mb={1} item display={"flex"} justifyContent={"center"}>
+            <Grid item sx={{ position: "relative" }}>
               <Typography
                 position={"absolute"}
                 sx={{
@@ -521,7 +520,7 @@ export function GastoCostos() {
           </Grid>
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Monto</InputLabel>
           <TextField
             fullWidth
@@ -567,7 +566,7 @@ export function GastoCostos() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel disabled sx={queries.medium_text}>
             Saldo Vigente
           </InputLabel>
@@ -614,7 +613,13 @@ export function GastoCostos() {
         </Grid>
       </Grid>
 
-      <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
+      <Grid
+        width={"94%"}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <ThemeProvider theme={theme}>
           <Button
             sx={queries.buttonContinuar}
@@ -644,14 +649,21 @@ export function GastoCostos() {
         </ThemeProvider>
       </Grid>
 
-      <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
-        <Paper sx={{ width: "95%", overflow: "clip" }}>
+      <Grid
+        height={"40%"}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
+        <Paper sx={{ width: "95%", overflow: "clip", height: "100%" }}>
           <TableContainer
             sx={{
+              height: "100%",
               maxHeight: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".3vw",
+                height: ".5vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {

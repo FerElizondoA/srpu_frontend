@@ -38,34 +38,50 @@ export const queries = {
   },
 
   bold_text_Largo_Plazo: {
-    fontSize: "1.8ch",
+    fontSize: "0.7rem",
     fontFamily: "MontserratBold",
-    "@media (max-width: 600px)": {
-      // XS (extra small) screen
-      fontSize: "1rem",
-    },
-    "@media (min-width: 601px) and (max-width: 900px)": {
-      // SM (small) screen
-      fontSize: "1.5ch",
+    // "@media (max-width: 600px)": {
+    //   // XS (extra small) screen
+    //   fontSize: "1.5ch",
+    // },
+    // "@media (min-width: 601px) and (max-width: 900px)": {
+    //   // SM (small) screen
+    //   fontSize: "1.5ch",
+    // },
+    "@media (min-width: 480px)": {
+      fontSize: "0.8rem",
     },
 
-    "@media (min-width: 513px)": {
-      fontSize: "1.25ch",
+    "@media (min-width: 768px)": {
+      fontSize: ".8rem",
     },
-    "@media (min-width: 600px)": {
-      fontSize: "1.30ch",
+
+    "@media (min-width: 1140px)": {
+      fontSize: "1rem",
     },
-    "@media (min-width: 900px)": {
-      fontSize: "1.35ch",
+
+    "@media (min-width: 1400px)": {
+      fontSize: "1rem",
     },
-    "@media (min-width: 1300px)": {
-      fontSize: "1.40ch",
-    },
-    "@media (min-width: 1485px)": {
-      fontSize: "1.8ch",
-    },
-    "@media (min-width: 1870px)": {
-      fontSize: "1.8ch",
+
+    tituloCredito: {
+      fontFamily: "MontserratBold",
+      fontSize: "1rem",
+      "@media (min-width: 480px)": {
+        fontSize: "1.1rem",
+      },
+
+      "@media (min-width: 768px)": {
+        fontSize: "1.2rem",
+      },
+
+      "@media (min-width: 1140px)": {
+        fontSize: "1.3rem",
+      },
+
+      "@media (min-width: 1400px)": {
+        fontSize: "1.4rem",
+      },
     },
   },
 
@@ -73,26 +89,26 @@ export const queries = {
     fontFamily: "MontserratBold",
     "@media (max-width: 600px)": {
       // XS (extra small) screen
-      fontSize: "1rem",
+      fontSize: ".5rem",
     },
 
     "@media (min-width: 513px)": {
-      fontSize: "1.10ch",
+      fontSize: ".5rem",
     },
     "@media (min-width: 600px)": {
-      fontSize: "1.25ch",
+      fontSize: ".5rem",
     },
     "@media (min-width: 900px)": {
-      fontSize: "1.25ch",
+      fontSize: ".rem",
     },
     "@media (min-width: 1300px)": {
-      fontSize: "1.35ch",
+      fontSize: ".6rem",
     },
     "@media (min-width: 1485px)": {
-      fontSize: "1.35ch",
+      fontSize: ".7rem",
     },
     "@media (min-width: 1870px)": {
-      fontSize: "1.5ch",
+      fontSize: ".7rem",
     },
   },
 
@@ -105,21 +121,24 @@ export const queries = {
     height: "100%",
     //fontSize: "30%",
     color: "#15212f",
-    "@media (min-width: 513px)": {
+
+    fontSize: "50%",
+    "@media (min-width: 480px)": {
       fontSize: "50%",
     },
-    "@media (min-width: 600px)": {
+
+    "@media (min-width: 768px)": {
       fontSize: "50%",
     },
-    "@media (min-width: 900px)": {
+
+    "@media (min-width: 1140px)": {
       fontSize: "50%",
     },
-    "@media (min-width: 1300px)": {
-      fontSize: "50%",
+
+    "@media (min-width: 1400px)": {
+      fontSize: "80%",
     },
-    "@media (min-width: 1485px)": {
-      fontSize: "60%",
-    },
+
     "@media (min-width: 1870px)": {
       fontSize: "80%",
     },
@@ -173,9 +192,17 @@ export const queries = {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
       color: "#000",
     },
-    fontSize: "90%",
+    //fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
+    fontSize: "50%",
+    "@media (min-width: 480px)": {
+      fontSize: "70%",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "80%",
+    },
   },
 
   tablaDisposicionPagosCapital: {
@@ -351,20 +378,25 @@ export const queries = {
   },
 
   contenedorTipoMovimiento: {
+    height: "46rem",
     "@media (min-width: 480px)": {
-      height: "36rem",
+      height: "50rem",
     },
+
     "@media (min-width: 768px)": {
-      height: "37rem",
+      height: "70rem",
     },
+
     "@media (min-width: 1140px)": {
-      height: "38rem",
+      height: "70rem",
     },
+
     "@media (min-width: 1400px)": {
-      height: "38rem",
+      height: "35rem",
     },
+
     "@media (min-width: 1870px)": {
-      height: "49rem",
+      height: "51rem",
     },
   },
 
@@ -390,9 +422,23 @@ export const queries = {
   },
 
   contenedorInformacionGeneral: {
-    "@media (min-width: 1485px)": {
+    height: "68rem",
+    "@media (min-width: 480px)": {
+      height: "68rem",
+    },
+
+    "@media (min-width: 768px)": {
+      height: "60rem",
+    },
+
+    "@media (min-width: 1140px)": {
       height: "32rem",
     },
+
+    "@media (min-width: 1400px)": {
+      height: "32rem",
+    },
+
     "@media (min-width: 1870px)": {
       height: "44rem",
     },
@@ -400,20 +446,16 @@ export const queries = {
 
   contenedorAgregarAutorizacion: {
     RegistrarAutorizacion: {
-      "@media (min-width: 513px)": {
+      "@media (min-width: 480px)": {
+        height: "30rem",
+      },
+      "@media (min-width: 768px)": {
         height: "20rem",
       },
-      "@media (min-width: 600px)": {
-        height: "20rem",
-      },
-      "@media (min-width: 900px)": {
-        height: "20rem",
-      },
-      "@media (min-width: 1300px)": {
+      "@media (min-width: 1140px)": {
         height: "29rem",
       },
-
-      "@media (min-width: 1485px)": {
+      "@media (min-width: 1400px)": {
         height: "28rem",
       },
       "@media (min-width: 1870px)": {
@@ -422,69 +464,59 @@ export const queries = {
     },
 
     MontoAutorizado: {
-      "@media (min-width: 513px)": {
-        height: "26rem",
+      height: "34rem",
+      "@media (min-width: 480px)": {
+        height: "38rem",
       },
-      "@media (min-width: 600px)": {
-        height: "27rem",
+      "@media (min-width: 768px)": {
+        height: "30rem",
       },
-      "@media (min-width: 900px)": {
-        height: "28rem",
+      "@media (min-width: 1140px)": {
+        height: "30rem",
       },
-      "@media (min-width: 1300px)": {
-        height: "29rem",
-      },
-
-      "@media (min-width: 1485px)": {
-        height: "37rem",
+      "@media (min-width: 1400px)": {
+        height: "36rem",
       },
       "@media (min-width: 1870px)": {
-        height: "50rem",
-      },
-    },
-
-    DetalleDestino: {
-      "@media (min-width: 513px)": {
-        height: "26rem",
-      },
-      "@media (min-width: 600px)": {
-        height: "27rem",
-      },
-      "@media (min-width: 900px)": {
-        height: "28rem",
-      },
-      "@media (min-width: 1300px)": {
-        height: "29rem",
-      },
-
-      "@media (min-width: 1485px)": {
-        height: "37rem",
-      },
-      "@media (min-width: 1870px)": {
-        height: "50rem",
+        height: "42rem",
       },
     },
 
     Tablas: {
-      height: "13rem",
-
-      "@media (min-width: 513px)": {
-        height: "9rem",
+      height: "60%",
+      "@media (min-width: 480px)": {
+        height: "60%",
       },
-      "@media (min-width: 600px)": {
-        height: "10rem",
+      "@media (min-width: 768px)": {
+        height: "60%",
       },
-      "@media (min-width: 900px)": {
-        height: "12rem",
+      "@media (min-width: 1140px)": {
+        height: "60%",
       },
-      "@media (min-width: 1300px)": {
-        height: "13rem",
-      },
-      "@media (min-width: 1485px)": {
-        height: "28rem",
+      "@media (min-width: 1400px)": {
+        height: "80%",
       },
       "@media (min-width: 1870px)": {
-        height: "40rem",
+        height: "80%",
+      },
+    },
+
+    DetalleDestino: {
+      height: "34rem",
+      "@media (min-width: 480px)": {
+        height: "38rem",
+      },
+      "@media (min-width: 768px)": {
+        height: "30rem",
+      },
+      "@media (min-width: 1140px)": {
+        height: "30rem",
+      },
+      "@media (min-width: 1400px)": {
+        height: "36rem",
+      },
+      "@media (min-width: 1870px)": {
+        height: "42rem",
       },
     },
   },
@@ -497,12 +529,12 @@ export const queries = {
     alignItems: "center",
     borderRadius: 20,
     boxShadow: 1,
-
+    fontSize: "55%",
     "@media (min-width: 480px)": {
-      fontSize: "40%",
+      fontSize: "65%",
     },
     "@media (min-width: 768px)": {
-      fontSize: "60%",
+      fontSize: "75%",
     },
     "@media (min-width: 1140px)": {
       fontSize: "75%",
@@ -711,28 +743,32 @@ export const queries = {
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
-
+    height: "2.5rem",
     color: "#15212f",
+    width: "100%",
+    fontSize: "60%",
     "@media (min-width: 480px)": {
-      fontSize: "50%",
+      fontSize: "60%",
+      width: "100%",
     },
 
     "@media (min-width: 768px)": {
-      fontSize: "50%",
+      fontSize: "80%",
+      width: "100%",
     },
 
     "@media (min-width: 1140px)": {
-      fontSize: "70%",
+      fontSize: "100%",
     },
 
     "@media (min-width: 1400px)": {
-      fontSize: "80%",
+      fontSize: "90%",
+      width: "100%",
     },
 
     "@media (min-width: 1870px)": {
-      fontSize: "80%",
+      fontSize: "90%",
+      width: "100%",
     },
   },
 
@@ -742,7 +778,7 @@ export const queries = {
     justifyContent: "center",
     alignItems: "center",
     width: "35%",
-
+    fontSize: "60%",
     "@media (min-width: 480px)": {
       fontSize: "70%",
     },

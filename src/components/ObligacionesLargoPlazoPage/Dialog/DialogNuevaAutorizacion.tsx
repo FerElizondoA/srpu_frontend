@@ -29,6 +29,7 @@ import {
 } from "../../../store/Autorizacion/agregarAutorizacion";
 import { DestinoAutorizado } from "../Panels/MontoAutorizado";
 import Swal from "sweetalert2";
+
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -66,7 +67,8 @@ export function DialogNuevaAutorizacion(props: Props) {
   };
 
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1200)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 500px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   const registrarAutorizacion: GeneralAutorizado = useLargoPlazoStore(
@@ -89,6 +91,15 @@ export function DialogNuevaAutorizacion(props: Props) {
   const modificarAutorizacion: Function = useLargoPlazoStore(
     (state) => state.modificarAutorizacion
   );
+
+  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
+    (state) => state.autorizacionSelect
+  );
+  const setAutorizacionSelect: Function = useLargoPlazoStore(
+    (state) => state.setAutorizacionSelect
+  );
+
+  let tableRef = useRef();
 
   const cleanAutorizacion = () => {
     setAutorizacion(
@@ -195,8 +206,8 @@ export function DialogNuevaAutorizacion(props: Props) {
             </Grid>
           </Toolbar>
         </AppBar>
-        <Grid item container direction="column">
-          <Grid item>
+        <Grid container direction="column">
+          <Grid item width={"100%"}>
             <Tabs
               value={tabIndex}
               onChange={handleChange}

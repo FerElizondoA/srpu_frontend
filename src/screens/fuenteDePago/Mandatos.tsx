@@ -1,12 +1,15 @@
-import { Button, Grid, IconButton, InputBase, InputLabel, Paper, Slide, Table, TableBody, TableContainer, TableHead, TableRow, Typography, useMediaQuery } from "@mui/material";
+import { Button, Grid, IconButton, InputBase, InputLabel, Paper, Slide, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { queries } from "../../queries";
 import { GridSearchIcon } from "@mui/x-data-grid";
 import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -19,6 +22,21 @@ export const Transition = React.forwardRef(function Transition(
 
 interface Head {
   label: string;
+}
+
+export interface IDatosMandatos {
+  DescripcionFiudiciario: string
+  DescripcionTipoFideicomiso: string
+  FechaCreacion: string
+  FechaDeFideicomiso: string
+  Id: string
+  IdFiudiciario: string
+  IdTipoFideicomiso: string
+  ModificadoPor: string
+  NumeroDeFideicomiso: string
+  SoporteDocumental: string
+  TipoDeMovimiento: string
+  UltimaModificacion: string
 }
 
 const heads: Head[] = [
@@ -53,10 +71,13 @@ export function Mandatos() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const [busqueda, setBusqueda] = useState("");
   const [accion, setAccion] = useState("Agregar");
 
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
+
+  const getMandatos: Function = useCortoPlazoStore(
+    (state) => state.getMandato
+  )
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -65,6 +86,55 @@ export function Mandatos() {
   const handleSearch = () => {
     // filtrarDatos();
   };
+
+  const [datos, setDatos] = useState<Array<[]>>([]);
+  const [busqueda, setBusqueda] = useState("");
+  const [mandatos, setMandatos] = useState<Array<[]>>([]);
+  const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<[]>>([]);
+
+
+  // const filtrarDatos = () => {
+  //   // eslint-disable-next-line array-callback-return
+  //   let ResultadoBusqueda = datos.filter((elemento) => {
+  //     if (
+  //       // elemento.NumeroDeFideicomiso.toString()
+  //       //   .toLocaleLowerCase()
+  //       //   .includes(busqueda.toLocaleLowerCase()) ||
+  //       // elemento.FechaDeFideicomiso.toString()
+  //       //   .toLocaleLowerCase()
+  //       //   .includes(busqueda.toLocaleLowerCase()) ||
+  //       // elemento.DescripcionTipoFideicomiso.toString()
+  //       //   .toLocaleLowerCase()
+  //       //   .includes(busqueda.toLocaleLowerCase()) ||
+  //       // elemento.DescripcionFiudiciario.toString()
+  //       //   .toLocaleLowerCase()
+  //       //   .includes(busqueda.toLocaleLowerCase())
+  //     ) {
+  //       return elemento;
+  //     }
+  //   });
+  //   setMandatosFiltrados(ResultadoBusqueda);
+  // };
+
+  useEffect(() => {
+    setMandatosFiltrados(mandatos);
+  }, [mandatos]);
+
+  useEffect(() => {
+    setMandatosFiltrados(datos);
+  }, [datos]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length !== 0 ? setMandatosFiltrados(datos) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [busqueda]);
+
+  
+  useEffect(() => {
+    getMandatos(setDatos)
+    getMandatos(setMandatos);
+  }, []);
 
   return (
     <Grid direction={"column"} height={"75vh"}>
@@ -91,7 +161,7 @@ export function Mandatos() {
         </Typography>
       </Grid>
 
-      <Grid  display="center" justifyContent="space-between" height={"4rem"}>
+      <Grid display="center" justifyContent="space-between" height={"4rem"}>
         <Grid width={"80%"} height={"75%"} display={"flex"} justifyContent={"end"}>
           <Paper
             component="form"
@@ -121,8 +191,10 @@ export function Mandatos() {
 
         <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
           <Button
-            sx={{ ...queries.buttonContinuar,
-              height:"75%" }}
+            sx={{
+              ...queries.buttonContinuar,
+              height: "75%"
+            }}
             onClick={() => {
               setAccion("Agregar");
               setOpenAgregarMandato(!openAgregarMandato);
@@ -131,17 +203,19 @@ export function Mandatos() {
             Agregar
           </Button>
         </Grid>
-      </Grid>
 
-      <Paper sx={{width:"100%"}}>
-        <Grid container sx={{...queries.tablaAgregarFuentesPago,
-         width:"100%",
-         display:"flex",
-         justifyContent:"center"
-        }} >
+      </Grid>
+      <Grid container sx={{
+        ...queries.tablaAgregarFuentesPago,
+        width: "100%",
+        display: "flex",
+        justifyContent: "center"
+      }} 
+      >
+        <Paper sx={{ width: "100%" }}>
           <TableContainer sx={{
-            width:"98%",
-            
+            width: "98%",
+
             overflow: "auto",
             "&::-webkit-scrollbar": {
               width: ".5vw",
@@ -166,51 +240,97 @@ export function Mandatos() {
                 </TableRow>
               </TableHead>
               <TableBody>
-             
-                <StyledTableRow>
+                {mandatosFiltrados.map((row: any, index: number) => {
+                  return (
+                    <StyledTableRow>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.mecanismoPago}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.numeroMandato}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.fechaMandato}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.Mandatario}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.MunicipioMandante}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.OrganismoMandante}
+                      </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    Hola
-                  </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Tooltip title="Editar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              setAccion("Editar");
+                              // changeIdFideicomiso(row?.Id);
+                              // setGeneralFideicomiso({
+                              //   numeroFideicomiso: row.NumeroDeFideicomiso,
+                              //   tipoFideicomiso: {
+                              //     Id: row.IdTipoFideicomiso,
+                              //     Descripcion: row.DescripcionTipoFideicomiso,
+                              //   },
+                              //   fechaFideicomiso: row.FechaDeFideicomiso,
+                              //   fiudiciario: {
+                              //     Id: row.IdFiudiciario,
+                              //     Descripcion: row.DescripcionFiudiciario,
+                              //   },
+                              // });
+                              // editarSolicitud(
+                              //   JSON.parse(row.Fideicomisario),
+                              //   JSON.parse(row.TipoDeMovimiento),
+                              //   JSON.parse(row.SoporteDocumental)
+                              // );
+                              // changeAgregarFideicomisos(!openAgregarFideicomisos);
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
 
-                </StyledTableRow>
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              // changeIdFideicomiso(row?.Id || "");
+                              // setOpenDialogEliminar(!openDialogEliminar);
+                              // getFideicomisos(setDatos);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                      </StyledTableCell>
+
+                    </StyledTableRow>
+                  )
+                })}
+
               </TableBody>
-            
+
             </Table>
           </TableContainer>
-        </Grid>
-      </Paper>
+        </Paper>
+      </Grid>
 
-      <AgregarMandatos 
+      <AgregarMandatos
         handler={setOpenAgregarMandato}
         openState={openAgregarMandato}
         accion={accion}
       />
-      
+
     </Grid>
   );
 }

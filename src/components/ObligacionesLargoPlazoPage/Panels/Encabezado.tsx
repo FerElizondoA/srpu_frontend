@@ -5,40 +5,30 @@ import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { DateInput } from "../../CustomComponents";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export interface IUsuariosCorto {
-  IdUsuario: string;
+  id: string;
   Nombre: string;
   ApellidoPaterno: string;
   ApellidoMaterno: string;
-  IdEntidad: string;
+  IdMunicipioUOrganizacion: string;
   IdRol: string;
-  Puesto: string;
-}
-
-export interface IRoles {
-  Id: string;
-  Descripcion: string;
+  Cargo: string;
 }
 
 export function Encabezado() {
-  const getTiposEntesPublicos: Function = useCortoPlazoStore(
-    (state) => state.getTiposEntesPublicos
-  );
-  const getOrganismos: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
-
   const tipoDocumento: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
+  const getTiposEntesPublicos: Function = useCortoPlazoStore(
+    (state) => state.getTiposEntesPublicos
+  );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
-
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -47,6 +37,9 @@ export function Encabezado() {
 
   const organismo: { Id: string; Organismo: string } = useLargoPlazoStore(
     (state) => state.encabezado.organismo
+  );
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
   );
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
@@ -65,26 +58,23 @@ export function Encabezado() {
   }, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
-
   const selectedValue =
-    usuarios.find(
-      (usuario) => usuario.IdUsuario === solicitanteAutorizado.Solicitante
-    )?.IdUsuario || "";
-  // Verificar si el valor seleccionado existe en la lista de opciones
-  const isValueValid = usuarios.some(
-    (usuario) => usuario.IdUsuario === selectedValue
-  );
+    usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)
+      ?.id || "";
+  const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
 
   return (
-    <Grid container>
+    <Grid container height={"30rem"}>
       <Grid
-        item
         container
-        mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        mt={{ xs: 2 }}
+        // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        // spacing={{ xs: 2, md: 5, lg: 10 }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
       >
-        <Grid item xs={4} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
@@ -106,7 +96,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -115,14 +105,12 @@ export function Encabezado() {
             fullWidth
             value={isValueValid ? selectedValue : ""}
             onChange={(e) => {
-              let x = usuarios.find(
-                (usuario) => usuario.IdUsuario === e.target.value
-              );
+              let x = usuarios.find((usuario) => usuario.id === e.target.value);
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.IdUsuario || "",
-                  Cargo: x?.Puesto || "",
+                  Solicitante: x?.id || "",
+                  Cargo: x?.Cargo || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
                 tipoEntePublico: tipoEntePublico,
@@ -133,14 +121,14 @@ export function Encabezado() {
             variant="standard"
           >
             {usuarios.map((usuario) => (
-              <MenuItem key={usuario.IdUsuario} value={usuario.IdUsuario}>
+              <MenuItem key={usuario.id} value={usuario.id}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}
           </Select>
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
           </InputLabel>
@@ -166,13 +154,15 @@ export function Encabezado() {
       </Grid>
 
       <Grid
-        item
         container
-        mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
-        ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        spacing={{ xs: 2, md: 5, lg: 10 }}
+        // mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
+        // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
+        // spacing={{ xs: 2, md: 5, lg: 10 }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
       >
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
           <TextField
@@ -194,7 +184,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Municipio u Organismo
           </InputLabel>
@@ -218,7 +208,7 @@ export function Encabezado() {
           />
         </Grid>
 
-        <Grid item xs={3.5} md={3.5} lg={3}>
+        <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -228,19 +218,7 @@ export function Encabezado() {
           >
             <DatePicker
               value={new Date(fechaContratacion)}
-              onChange={(date) => {
-                changeEncabezado({
-                  tipoDocumento: tipoDocumento,
-                  solicitanteAutorizado: {
-                    Solicitante: solicitanteAutorizado.Solicitante || "",
-                    Cargo: solicitanteAutorizado?.Cargo || "",
-                    Nombre: solicitanteAutorizado.Nombre,
-                  },
-                  tipoEntePublico: tipoEntePublico,
-                  organismo: organismo,
-                  fechaContratacion: date,
-                });
-              }}
+              // onChange={(date) => changeFechaContratacion(date?.toString())}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{

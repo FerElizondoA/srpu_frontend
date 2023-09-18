@@ -140,12 +140,30 @@ export function RegistrarNuevaAutorizacion() {
     <>
       <Grid
         container
-        direction="column"
-        justifyContent="space-around"
-        sx={queries.contenedorAgregarAutorizacion.RegistrarAutorizacion}
+        width={"100%"}
+        // sx={{...queries.contenedorAgregarAutorizacion.RegistrarAutorizacion,
+
+        //   flexDirection:"column",
+        //   justifyContent:"space-between",
+        //   alignItems:"center",
+        //   justifyItems:"center",
+        //   "@media (min-width: 480px)": {
+        //     height: "20rem",
+        //   },
+        //   "@media (min-width: 768px)": {
+        //     height: "20rem",
+        //   },
+        // }}
       >
-        <Grid container sx={{ ...queries.RegistrarNuevaAutorizacion }}>
-          <Grid width={"100%"} item xs={5} sm={5} md={1} lg={2} xl={2}>
+        <Grid
+          container
+          //sx={{ ...queries.RegistrarNuevaAutorizacion }}
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          alignItems={"center"}
+          height={"20rem"}
+        >
+          <Grid width={"100%"} item xs={10} sm={5} md={1} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>Entidad</InputLabel>
             <TextField
               disabled
@@ -168,7 +186,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item xs={5} sm={5} md={4} lg={4} xl={4}>
+          <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Numero de autorización de la legislatura local
             </InputLabel>
@@ -204,7 +222,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid width={"100%"} item xs={5} sm={5} md={3} lg={2} xl={2}>
+          <Grid width={"100%"} item xs={10} sm={5} md={3} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>
               Medio de publicación
             </InputLabel>
@@ -254,7 +272,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid width={"100%"} item xs={5} sm={5} md={2} lg={2} xl={2}>
+          <Grid width={"100%"} item xs={10} sm={5} md={2} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>
               Fecha de publicacion
             </InputLabel>
@@ -283,8 +301,14 @@ export function RegistrarNuevaAutorizacion() {
           </Grid>
         </Grid>
 
-        <Grid container sx={{ ...queries.RegistrarNuevaAutorizacion }}>
-          <Grid width={"50%"} item xs={5} sm={5} md={2} lg={2} xl={2}>
+        <Grid
+          container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          alignItems={"center"}
+          //sx={{ ...queries.RegistrarNuevaAutorizacion }}
+        >
+          <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={
@@ -334,7 +358,7 @@ export function RegistrarNuevaAutorizacion() {
             />
           </Grid>
 
-          <Grid item xs={5} sm={5} md={4} lg={4} xl={4} width={"100%"}>
+          <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
             <InputLabel
               sx={{
                 ...queries.medium_text,
@@ -386,17 +410,47 @@ export function RegistrarNuevaAutorizacion() {
             </Grid>
           </Grid>
 
-          <Grid xs={5} sm={5} md={4} lg={4} xl={4} item width={"100%"}>
-            <InputLabel
+          <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
+            <Grid
               sx={{
-                ...queries.medium_text,
-                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "end",
+                height: "3rem",
+                "@media (min-width: 480px)": {
+                  height: "5rem",
+                  width: "100%",
+                },
+
+                "@media (min-width: 768px)": {
+                  height: "5rem",
+                  width: "100%",
+                  mb: 0,
+                },
+
+                "@media (min-width: 900px)": {
+                  alignItems: "start",
+                  height: "1.6rem",
+                  width: "100%",
+                },
               }}
             >
-              Acreditación del quórum y el sentido de la votación
-            </InputLabel>
+              <InputLabel
+                sx={{
+                  ...queries.medium_text,
+                  width: "100%",
+                }}
+              >
+                Acreditación del quórum y el sentido de la votación
+              </InputLabel>
+            </Grid>
 
-            <Grid mt={1} display={"flex"} justifyContent={"center"}>
+            <Grid
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              mb={{ xs: 2, sm: 2, md: 0 }}
+            >
               <Grid sx={{ position: "relative", width: "100%" }}>
                 <Typography
                   position={"absolute"}

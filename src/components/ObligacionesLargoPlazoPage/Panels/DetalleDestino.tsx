@@ -114,8 +114,8 @@ export function DestalleDestino() {
         justifyContent="space-evenly"
         sx={queries.contenedorAgregarAutorizacion.DetalleDestino}
       >
-        <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Detalle del destino autorizado
             </InputLabel>
@@ -160,7 +160,7 @@ export function DestalleDestino() {
             />
           </Grid>
 
-          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={
@@ -201,6 +201,11 @@ export function DestalleDestino() {
           </Grid>
 
           <Grid
+            xs={10}
+            sm={2}
+            md={2}
+            lg={2}
+            xl={2}
             height={"5rem"}
             display={"flex"}
             justifyContent={"center"}
@@ -228,10 +233,17 @@ export function DestalleDestino() {
             </ThemeProvider>
           </Grid>
         </Grid>
-        <Grid width={"100%"} display={"flex"} justifyContent={"center"}>
+        <Grid
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          sx={{
+            ...queries.contenedorAgregarAutorizacion.Tablas,
+          }}
+        >
           <Paper
             sx={{
-              ...queries.contenedorAgregarAutorizacion.Tablas,
+              height: "100",
               width: "86%",
             }}
           >

@@ -39,26 +39,21 @@ export function ObligacionesLargoPlazoPage() {
 
   return (
     <>
-      <Grid item>
+      {/* <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+      </Grid> */}
+
+      <Grid item width={"100%"}>
+        <LateralMenu />
       </Grid>
-      <Grid item>
+
+      <Grid item container direction="column">
         <Grid mt={2} display={"flex"} justifyContent={"center"}>
           <Grid width={"91%"} display={"flex"} justifyContent={"center"}>
             <Typography
               sx={{
-                fontSize: "2.5ch",
-                fontFamily: "MontserratBold",
                 color: "#AF8C55",
-                //padding: "1px 1px 1px 70px",
-                "@media (max-width: 600px)": {
-                  // XS (extra small) screen
-                  fontSize: "1rem",
-                },
-                "@media (min-width: 601px) and (max-width: 900px)": {
-                  // SM (small) screen
-                  fontSize: "1.5ch",
-                },
+                ...queries.bold_text_Largo_Plazo.tituloCredito,
               }}
             >
               Crédito Simple a Largo Plazo
@@ -92,9 +87,9 @@ export function ObligacionesLargoPlazoPage() {
             variant={query.isScrollable ? "scrollable" : "standard"}
             scrollButtons="auto"
             allowScrollButtonsMobile
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", fontSize: ".8rem" }}
           >
-            <Tab label="Encabezado" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Encabezado" sx={{ ...queries.bold_text_Largo_Plazo }} />
             <Tab
               label="Información General"
               sx={queries.bold_text_Largo_Plazo}

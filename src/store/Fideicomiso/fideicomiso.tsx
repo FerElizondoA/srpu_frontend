@@ -33,12 +33,12 @@ export interface SoporteDocumental {
   fechaArchivo: string;
 }
 
-export interface Fideicomiso {
-  generalFideicomiso: GeneralFideicomiso; //fijo
-  fideicomisario: Fideicomisario[]; //tabla
-  tipoDeMovimiento: TipoMovimiento[]; //tabla
-  soporteDocumental: SoporteDocumental[]; //tabla
-}
+// export interface Fideicomiso {
+//   generalFideicomiso: GeneralFideicomiso; //fijo
+//   fideicomisario: Fideicomisario[]; //tabla
+//   tipoDeMovimiento: TipoMovimiento[]; //tabla
+//   soporteDocumental: SoporteDocumental[]; //tabla
+// }
 
 export interface FideicomisoSlice {
   generalFideicomiso: GeneralFideicomiso;

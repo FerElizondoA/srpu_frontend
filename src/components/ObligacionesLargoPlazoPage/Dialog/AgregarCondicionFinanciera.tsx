@@ -211,7 +211,7 @@ export function AgregarCondicionFinanciera(props: Props) {
         open={props.openState}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar sx={{ position: "relative"}}>
           <Toolbar>
             <IconButton
               edge="start"

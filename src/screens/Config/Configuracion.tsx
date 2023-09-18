@@ -131,6 +131,7 @@ export function Configuracion() {
   };
   return (
     <Grid
+      width={"100%"}
       container
       direction="column"
       alignItems={"center"}
@@ -172,14 +173,25 @@ export function Configuracion() {
       >
         <Grid
           item
+          gridTemplateColumns={{
+            xs: "repeat(3,1fr)",
+            sm: "repeat(5,1fr)",
+            md: "repeat(5,1fr)",
+            lg: "repeat(5,1fr)",
+            xl: "repeat(5,1fr)"
+          }}
+          width={{
+            xs: "100%",
+            sm: "100%",
+            md: "80%",
+            lg: "70%",
+            xl: "70%"
+          }}
           sx={{
-            width: "70%",
             height: "100%",
             display: "grid",
-            gridTemplateColumns: "repeat(5,1fr)",
             justifyItems: "center",
             alignItems: "center",
-
             borderRadius: 10,
           }}
         >
@@ -194,12 +206,13 @@ export function Configuracion() {
                   navegar(index, item.label);
                 }}
               >
+                <></>
                 {item.label}
               </Button>
             );
           })}
         </Grid>
       </Grid>
-    </Grid>
+    </Grid >
   );
 }

@@ -91,14 +91,14 @@ export function TipoDeMovimiento() {
     (state) => state.tablaTipoMovimiento
   );
 
-  const getFideicomisos :Function = useCortoPlazoStore(
+  const getFideicomisos: Function = useCortoPlazoStore(
     (state) => state.getFideicomisos
   );
-  
+
   useEffect(() => {
     getFideicomisos()
   }, [])
-  
+
 
   useEffect(() => {
     getTiposDeFideicomitente();
@@ -113,7 +113,7 @@ export function TipoDeMovimiento() {
 
   const heads: HeadLabels[] = [
     {
-      label: " ",
+      label: "Acciones",
     },
     {
       label: "Tipo de movimiento",
@@ -133,29 +133,46 @@ export function TipoDeMovimiento() {
   ];
 
   return (
-    <Grid container sx={queries.contenedorTipoMovimiento}>
+    <>
       <Grid
-        item
         container
-        mt={2}
-        direction="column"
-        justifyContent={"space-evenly"}
+        flexDirection="column"
+        sx={{
+          justifyContent: "space-evenly",
+          height: "50rem",
+          "@media (min-width: 480px)": {
+            height: "55rem",
+          },
+
+          "@media (min-width: 768px)": {
+            height: "55rem",
+          },
+
+          "@media (min-width: 1140px)": {
+            height: "50rem",
+          },
+
+          "@media (min-width: 1400px)": {
+            height: "40rem",
+          },
+
+          "@media (min-width: 1870px)": {
+            height: "53rem",
+          },
+        }}
+
+
       >
-        <Grid
-          item
-          display={"grid"}
-          gridTemplateColumns={"repeat(3, 1fr)"}
-          justifyItems={"center"}
-          height={"35%"}
-        
-        >
-          <Grid xs={5} sm={6} md={6} lg={6} xl={9} item>
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
+
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} >
             <InputLabel sx={queries.medium_text}>
               Alta de fideicomitente
             </InputLabel>
+            <TextField fullWidth variant="standard" />
           </Grid>
 
-          <Grid item xs={9} sm={9} md={9} lg={9} xl={9}  width={"100%"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Tipo de fideicomitente
             </InputLabel>
@@ -201,7 +218,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={9} sm={9} md={9} lg={9} xl={9} width={"100%"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -246,8 +263,14 @@ export function TipoDeMovimiento() {
               }
             />
           </Grid>
-
-          <Grid item xs={9} sm={9} md={9} lg={9} xl={9}   width={"100%"}>
+        </Grid>
+        <Grid
+          container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          width={"100%"}
+        >
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Tipo de fuente</InputLabel>
             <Autocomplete
               disableClearable
@@ -291,7 +314,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={9} sm={9} md={9} lg={9} xl={9} width={"100%"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} >
             <InputLabel sx={queries.medium_text}>Fondo o ingreso</InputLabel>
             <Autocomplete
               disableClearable
@@ -335,31 +358,34 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <ThemeProvider theme={ButtonTheme}>
-            <Button
-              sx={{
-                ...queries.buttonContinuarSolicitudInscripcion,
-                width: "15vh",
-              }}
-              disabled={
-                tipoMovimiento.tipoFideicomitente.Descripcion === "" ||
-                tipoMovimiento.entidad.Descripcion === "" ||
-                tipoMovimiento.tipoFuente.Descripcion === "" ||
-                tipoMovimiento.fondoOIngreso.Descripcion === ""
-              }
-              onClick={() => {
-                addTipoMovimiento({
-                  tipo: "Alta de fideicomitente",
-                  tipoFideicomitente: tipoMovimiento.tipoFideicomitente,
-                  entidad: tipoMovimiento.entidad,
-                  tipoFuente: tipoMovimiento.tipoFuente,
-                  fondoOIngreso: tipoMovimiento.fondoOIngreso,
-                });
-              }}
-            >
-              Agregar
-            </Button>
-          </ThemeProvider>
+
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} display={"flex"} justifyContent={"center"}>
+            <ThemeProvider theme={ButtonTheme}>
+              <Button
+                sx={{
+                  ...queries.buttonContinuarSolicitudInscripcion,
+                  width: "15vh",
+                }}
+                disabled={
+                  tipoMovimiento.tipoFideicomitente.Descripcion === "" ||
+                  tipoMovimiento.entidad.Descripcion === "" ||
+                  tipoMovimiento.tipoFuente.Descripcion === "" ||
+                  tipoMovimiento.fondoOIngreso.Descripcion === ""
+                }
+                onClick={() => {
+                  addTipoMovimiento({
+                    tipo: "Alta de fideicomitente",
+                    tipoFideicomitente: tipoMovimiento.tipoFideicomitente,
+                    entidad: tipoMovimiento.entidad,
+                    tipoFuente: tipoMovimiento.tipoFuente,
+                    fondoOIngreso: tipoMovimiento.fondoOIngreso,
+                  });
+                }}
+              >
+                Agregar
+              </Button>
+            </ThemeProvider>
+          </Grid>
         </Grid>
 
         <Grid
@@ -368,12 +394,34 @@ export function TipoDeMovimiento() {
           alignItems={"center"}
           height={"60%"}
           mt={2}
+
+          sx={{
+            height:"45%",
+            "@media (min-width: 480px)": {
+              height:"60%",
+            },
+  
+            "@media (min-width: 768px)": {
+              height:"60%",
+            },
+  
+            "@media (min-width: 1140px)": {
+              height:"60%",
+            },
+  
+            "@media (min-width: 1400px)": {
+              height:"60%",
+            },
+  
+            "@media (min-width: 1870px)": {
+              height:"60%",
+            },
+          }}
         >
-          <Paper sx={{ width: "88%", height:"100%" }}>
+          <Paper sx={{ width: "90%", height: "100%" }}>
             <TableContainer
               sx={{
-                height:"100%",
-                maxHeight: "50vh",
+                height: "100%",
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
                   width: ".5vw",
@@ -397,7 +445,6 @@ export function TipoDeMovimiento() {
                     ))}
                   </TableRow>
                 </TableHead>
-
                 <TableBody>
                   {tablaTipoMovimiento.map((row: any, index: number) => {
                     return (
@@ -436,6 +483,8 @@ export function TipoDeMovimiento() {
           </Paper>
         </Grid>
       </Grid>
-    </Grid>
+
+
+    </>
   );
 }

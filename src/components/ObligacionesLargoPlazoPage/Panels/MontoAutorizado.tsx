@@ -109,8 +109,8 @@ export function DestinoAutorizado() {
       >
         {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
 
-        <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Destino Autorizado</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -153,7 +153,7 @@ export function DestinoAutorizado() {
             />
           </Grid>
 
-          <Grid item xs={3} sm={3} md={4} lg={4} xl={4}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={
@@ -194,6 +194,7 @@ export function DestinoAutorizado() {
           </Grid>
 
           <Grid
+            xs={10} sm={2} md={2} lg={2} xl={2}
             height={"5rem"}
             display={"flex"}
             justifyContent={"center"}
@@ -222,14 +223,19 @@ export function DestinoAutorizado() {
           </Grid>
         </Grid>
 
-        <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
+        <Grid item width={"100%"} display={"flex"} justifyContent={"center"}
+          mb={{}}
+          sx={{
+            ...queries.contenedorAgregarAutorizacion.Tablas
+          }}
+        >
           <Paper
             sx={{
-              ...queries.contenedorAgregarAutorizacion.Tablas,
+             height:"100",
               width: "86%",
             }}
           >
-            <TableContainer sx={{ width: "100%" }}>
+            <TableContainer sx={{ width: "100%", height: "100%" }}>
               <Table>
                 <TableHead>
                   <TableRow>

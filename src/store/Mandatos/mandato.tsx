@@ -23,7 +23,7 @@ export interface SoporteDocumentalMandato {
 
 export interface Mandato {
   tipoMovimiento: TipoMovimientoMandato[];
-  soporteDocumental: SoporteDocumentalMandato[];
+  soporteDocumentalMandato: SoporteDocumentalMandato[];
 }
 
 export interface MandatoSlice {
@@ -35,6 +35,7 @@ export interface MandatoSlice {
 
   //Aqui iran los catalogos
   catalogoMandatario: ICatalogo[];
+  catalogoMandato: ICatalogo[];
   //
 
   //borrarMandato: (Id: string) => void; //es un axios que no se ha creado
@@ -59,10 +60,13 @@ export interface MandatoSlice {
   cleanSoporteDocumentalMandato: () => void;
 
   //Aqui iran los Get y los axios
-
   getMandatario: () => void;
-
   //
+
+  getMandato: (setstate: Function) => void;
+  createMandato: () => void;
+  modificaMandato: () => void;
+
 }
 
 export const createMandatoSlice: StateCreator<MandatoSlice> = (
@@ -89,7 +93,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
 
   //AQUI VAN LOS CATALAGOS
 
-  catalogoMandatario:[],
+  catalogoMandatario: [],
+  catalogoMandato:[],
 
   //
   setTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => {
@@ -157,10 +162,10 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
     }))
   },
 
-  editarMandato: (tipoMovimientoMandato: TipoMovimientoMandato[], soporteDocumental: SoporteDocumentalMandato[]) => {
+  editarMandato: (tipoMovimientoMandato: TipoMovimientoMandato[], soporteDocumentalMandato: SoporteDocumentalMandato[]) => {
     set(() => ({
       tablaTipoMovimientoMandato: tipoMovimientoMandato,
-      tablaSoporteDocumental: soporteDocumental,
+      tablaSoporteDocumental: soporteDocumentalMandato,
     }))
   },
 
@@ -182,5 +187,94 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
       });
   },
 
+  getMandato: async (
+    setState: Function,
+  ) => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandato", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        
+        let r = data.data;
+        setState(r);
+      });
+  },
 
+  createMandato: async () => {
+    const state = useCortoPlazoStore.getState();
+
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
+        {
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          FechaMandato: state.tipoMovimientoMandato.fechaMandato,
+          Mandatario: state.tipoMovimientoMandato.mandatario,
+          MunicipioMandante: "PRUEBA SETEADA",
+          OrganismoMandante: "PRUEBA SETEADA",
+          TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
+          SoporteDocumental: JSON.stringify(state.soporteDocumentalMandato)
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        state.changeIdFideicomiso(data.data.id);
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Éxito",
+          text: "El fideicomiso se ha creado exitosamente",
+        });
+      });
+  },
+
+
+  modificaMandato: async () => {
+    const state = useCortoPlazoStore.getState();
+    await axios
+      .put(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
+        {
+          IdFideicomiso: state.idFideicomiso,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
+          TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
+          FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
+          Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
+          Fideicomisario: JSON.stringify(state.tablaFideicomisario),
+          TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
+          SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Éxito",
+          text: "El fideicomiso se ha modificado exitosamente",
+        });
+      })
+      .catch(function (error) {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "error",
+          title: "No se Edito el fideicomiso.",
+        });
+      });
+  },
 });

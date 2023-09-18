@@ -248,15 +248,43 @@ export function InformacionGeneral() {
 
   return (
     <Grid
+      container
+      height={{ xs: "35rem" }}
       sx={{
         display: "flex",
-        height: "79vh",
+
         flexDirection: "column",
         justifyContent: "space-evenly",
+        width: "100%",
+        height: "60rem",
+        "@media (min-width: 480px)": {
+          height: "60rem",
+        },
+
+        "@media (min-width: 768px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "49rem",
+        },
       }}
     >
-      <Grid item display="flex" justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Grid
+        container
+        display="flex"
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
@@ -278,7 +306,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
             fullWidth
@@ -299,7 +327,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Monto Original Contratado
           </InputLabel>
@@ -348,8 +376,13 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -366,7 +399,7 @@ export function InformacionGeneral() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -414,7 +447,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             fullWidth
@@ -441,8 +474,8 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"center"}>
-        <Grid item xs={10.5} sm={10.5} md={10.5} lg={10.5} xl={10.5}>
+      <Grid item display={"flex"} justifyContent={"center"} width={"100%"}>
+        <Grid item xs={10} sm={10.5} md={10.5} lg={10.5} xl={10.5}>
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
@@ -493,8 +526,13 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid item display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
@@ -555,7 +593,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Tipo de ente público obligado
           </InputLabel>
@@ -609,7 +647,7 @@ export function InformacionGeneral() {
           />
         </Grid>
 
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Ente público obligado
           </InputLabel>
@@ -695,7 +733,13 @@ export function InformacionGeneral() {
         </ThemeProvider>
       </Grid>
 
-      <Grid height={"35%"} display={"flex"} justifyContent={"space-evenly"}>
+      {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
+      <Grid
+        height={"35%"}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer
             sx={{
@@ -703,6 +747,7 @@ export function InformacionGeneral() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
+                height: ".3rem",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {

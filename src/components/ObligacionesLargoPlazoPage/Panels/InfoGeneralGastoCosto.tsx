@@ -7,7 +7,7 @@ import { InformacionGeneral } from "./InformacionGeneral";
 
 export function InfoGeneralGastoCosto() {
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 500px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
@@ -17,15 +17,8 @@ export function InfoGeneralGastoCosto() {
   };
 
   return (
-    <Grid>
-      <Grid
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+    <Grid container direction="column">
+      <Grid item width={"100%"}>
         <Tabs
           value={tabIndex}
           onChange={handleChange}
@@ -35,14 +28,8 @@ export function InfoGeneralGastoCosto() {
           allowScrollButtonsMobile
           sx={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
-          <Tab
-            label="Información General"
-            sx={queries.bold_text_InfoGeneralGastoCosto}
-          />
-          <Tab
-            label="DESTINO / GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACIÓN"
-            sx={queries.bold_text_InfoGeneralGastoCosto}
-          />
+          <Tab label="Información General" sx={queries.bold_text_InfoGeneralGastoCosto} />
+          <Tab label="DESTINO / GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACIÓN" sx={queries.bold_text_InfoGeneralGastoCosto}/>
         </Tabs>
       </Grid>
 

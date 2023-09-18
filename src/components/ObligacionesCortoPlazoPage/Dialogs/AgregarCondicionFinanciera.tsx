@@ -268,31 +268,28 @@ export function AgregarCondicionFinanciera(props: Props) {
             </Grid>
           </Toolbar>
         </AppBar>
-        <Grid item container direction="column">
-          <Grid item>
-            <Tabs
-              value={tabIndex}
-              onChange={handleChange}
-              centered={query.isScrollable ? false : true}
-              variant={query.isScrollable ? "scrollable" : "standard"}
-              scrollButtons
-              allowScrollButtonsMobile
-            >
-              <Tab
-                label="Disposición/Pagos de Capital"
-                sx={queries.bold_text}
-              ></Tab>
-              <Tab
-                label="Comisiones/Tasa Efectiva"
-                sx={queries.bold_text}
-              ></Tab>
-            </Tabs>
 
-            {tabIndex === 0 && <DisposicionPagosCapital />}
+        <Grid  container direction="column" >
+        <Grid item width={"100%"}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleChange}
+            centered={query.isScrollable ? false : true}
+            variant={query.isScrollable ? "scrollable" : "standard"}
+            scrollButtons
+            allowScrollButtonsMobile
+          >
+            <Tab label="Disposición/Pagos de Capital" sx={queries.bold_text}></Tab>
+            <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
+          </Tabs>
 
-            {tabIndex === 1 && <ComisionesTasaEfectiva />}
-          </Grid>
+          {tabIndex === 0 && <DisposicionPagosCapital />}
+
+          {tabIndex === 1 && <ComisionesTasaEfectiva />}
         </Grid>
+        </Grid>
+       
+
       </Dialog>
 
       <Dialog
@@ -307,7 +304,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             {tablaComisiones.length === 0 && tablaTasaInteres.length === 0
               ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
               : "No se puede realizar la accion de agregar condición financiera por falta datos en: " +
-                dialogValidacion}
+              dialogValidacion}
           </DialogContentText>
           <DialogActions>
             <Button

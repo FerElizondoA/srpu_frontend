@@ -25,7 +25,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { Fideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+
 import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";

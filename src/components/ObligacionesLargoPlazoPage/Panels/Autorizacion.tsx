@@ -159,8 +159,8 @@ export function Autorizacion() {
       justifyContent={"space-evenly"}
       alignItems={"center"}
     >
-      <Grid display={"flex"} justifyContent={"center"} width={"80%"}>
-        <Grid item lg={4}>
+      <Grid display={"flex"} justifyContent={"center"} width={"100%"}>
+        <Grid item xs={7} sm={3} md={3} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Autorización de la legislatura local
           </InputLabel>
@@ -220,13 +220,7 @@ export function Autorizacion() {
             </Button>
           </Grid> */}
 
-          <Grid
-            item
-            width={"100%"}
-            lg={3}
-            display={"flex"}
-            justifyContent={"center"}
-          >
+          <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
             <Button
               sx={queries.buttonContinuar}
               variant="outlined"
@@ -244,10 +238,25 @@ export function Autorizacion() {
       <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
         <Paper
           sx={{
-            width: "90%",
+            width: "95%",
           }}
         >
-          <TableContainer sx={{ width: "100%" }}>
+          <TableContainer
+            sx={{
+              width: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: ".6vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table>
               <TableHead>
                 <TableRow>
@@ -278,7 +287,11 @@ export function Autorizacion() {
                             )}
                           </Typography>
                         </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          sx={{ width: 200 }}
+                        >
                           <Typography>{row.MontoAutorizado}</Typography>
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">

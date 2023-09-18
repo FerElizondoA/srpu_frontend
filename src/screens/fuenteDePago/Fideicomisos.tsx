@@ -22,6 +22,9 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
+import { format } from "date-fns";
+import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   StyledTableCell,
@@ -31,22 +34,7 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
-import {
-  Fideicomisario,
-  Fideicomiso,
-  GeneralFideicomiso,
-  SoporteDocumental,
-  TipoMovimiento,
-} from "../../store/Fideicomiso/fideicomiso";
-import * as React from "react";
-import { TransitionProps } from "@mui/material/transitions";
-import { ICatalogo } from "../Config/Catalogos";
-import { useNavigate } from "react-router-dom";
-import { IEntePublico } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import axios from "axios";
-import Swal from "sweetalert2";
 
 export interface IDatos {
   DescripcionFiudiciario: string;
@@ -100,9 +88,6 @@ export function Fideicomisos() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const navigate = useNavigate();
-
-  //
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
   const [accion, setAccion] = useState("Agregar");
@@ -189,9 +174,6 @@ export function Fideicomisos() {
 
   useEffect(() => {
     getFideicomisos(setDatos);
-  }, []);
-
-  useEffect(() => {
     getFideicomisos(setFideicomiso);
   }, []);
 

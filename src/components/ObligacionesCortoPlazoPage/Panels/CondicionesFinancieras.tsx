@@ -13,6 +13,7 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import {
@@ -156,12 +157,35 @@ export function CondicionesFinancieras() {
   );
 
   return (
-    <Grid container>
-      <Grid item sx={queries.tablaCondicionFinanciera}>
+    <Grid
+      container
+      sx={{
+        height: "39rem",
+        "@media (min-width: 480px)": {
+          height: "39rem",
+        },
+
+        "@media (min-width: 768px)": {
+          height: "48rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "31rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "31rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "44rem",
+        },
+      }}
+    >
+      <Grid container height={"100%"}>
         <Paper sx={{ height: "100%", width: "100%" }}>
           <TableContainer
             sx={{
-              height: "100%",
               width: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
@@ -181,7 +205,16 @@ export function CondicionesFinancieras() {
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
-                      {head.label}
+                      <Typography
+                        sx={{
+                          fontSize: ".8rem",
+                          "@media (min-width: 480px)": {
+                            fontSize: "1rem",
+                          },
+                        }}
+                      >
+                        {head.label}
+                      </Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>
@@ -538,7 +571,7 @@ export function CondicionesFinancieras() {
         container
         md={12}
         lg={12}
-        height={75}
+        height={"4rem"}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}

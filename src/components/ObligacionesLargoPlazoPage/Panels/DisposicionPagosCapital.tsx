@@ -379,8 +379,9 @@ export function DisposicionPagosCapital() {
   }, [tablaDisposicion]);
 
   return (
-    <Grid container display="flex" justifyContent={"space-evenly"}>
-      <Grid item container mt={2} direction="column">
+    <Grid container >
+      <Grid container mt={2} direction="column">
+
         <Grid item>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
@@ -388,8 +389,10 @@ export function DisposicionPagosCapital() {
             </Typography>
           </Divider>
         </Grid>
+        
         <Grid item display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item lg={4}>
+
+          <Grid item display={"flex"} justifyContent={"space-evenly"} xs={10} sm={3} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>

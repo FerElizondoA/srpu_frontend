@@ -45,7 +45,7 @@ import { ThemeProvider } from "@emotion/react";
 export function SDocumental() {
   const heads: HeadLabels[] = [
     {
-      label: " ",
+      label: "Accion",
     },
     {
       label: "Tipo de documento",
@@ -57,7 +57,7 @@ export function SDocumental() {
       label: "Archivo",
     },
     {
-      label: " ",
+      label: "Ver Archivo",
     },
   ];
 
@@ -87,14 +87,14 @@ export function SDocumental() {
     (state) => state.cleanSoporteDocumental
   );
 
-  const getFideicomisos :Function = useCortoPlazoStore(
+  const getFideicomisos: Function = useCortoPlazoStore(
     (state) => state.getFideicomisos
   );
-  
+
   useEffect(() => {
     getFideicomisos()
   }, [])
-  
+
 
   const [radioValue, setRadioValue] = useState("");
 
@@ -138,134 +138,183 @@ export function SDocumental() {
   return (
     <Grid
       container
-      display={"grid"}
-      gridTemplateColumns={"repeat(3,1fr)"}
-      justifyItems={"center"}
-      mt={4}
+      flexDirection={"column"}
+      justifyContent={"space-evenly"}
+      //gridTemplateColumns={"repeat(3,1fr)"}
+      //justifyItems={"center"}
+      mt={3}
     >
-      <FormControl sx={{width:"100%", justifyContent:"center", alignItems:"center"}}>
-        <RadioGroup sx={{marginLeft:5}} value={radioValue} onChange={handleChange}>
-          <FormControlLabel
-            value="Fideicomiso"
-            control={<Radio />}
-            label="Fideicomiso"
-          />
-          <FormControlLabel
-            value="Convenio de adhesión"
-            control={<Radio />}
-            label="Convenio de adhesión"
-          />
-          <FormControlLabel
-            value="Convenio Modificatorio"
-            control={<Radio />}
-            label="Convenio Modificatorio"
-          />
-        </RadioGroup>
-      </FormControl>
 
       <Grid
         container
-        direction={"column"}
-        justifyContent={"space-between"}
-        height={"10rem"}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+      //height={"10rem"}
       >
-        <Grid  >
-          <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
-            <DatePicker
-              value={new Date(soporteDocumental.fechaArchivo)}
-              onChange={(date) =>
-                setSoporteDocumental({
-                  tipo: soporteDocumental.tipo,
-                  fechaArchivo: date,
-                  archivo: soporteDocumental.archivo,
-                  nombreArchivo: soporteDocumental.nombreArchivo,
-                })
-              }
-              slots={{
-                textField: DateInput,
+        <Grid height={"4rem"} width={"40%"}
+        sx={{
+          width:"40%",
+          "@media (min-width: 480px)": {
+            width:"40%"
+          },
+      
+          "@media (min-width: 768px)": {
+            width:"15%"
+          },
+      
+
+        }} >
+          <FormControl  >
+            <RadioGroup value={radioValue} onChange={handleChange}>
+              <FormControlLabel
+                value="Fideicomiso"
+                control={<Radio />}
+                label="Fideicomiso"
+              />
+              <FormControlLabel
+                value="Convenio de adhesión"
+                control={<Radio />}
+                label="Convenio de adhesión"
+              />
+              <FormControlLabel
+                value="Convenio Modificatorio"
+                control={<Radio />}
+                label="Convenio Modificatorio"
+              />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+
+
+        <Grid xs={6} sm={4} md={4} lg={4} xl={4}>
+
+          <Grid width={"90%"} >
+            <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DatePicker
+                value={new Date(soporteDocumental.fechaArchivo)}
+                onChange={(date) =>
+                  setSoporteDocumental({
+                    tipo: soporteDocumental.tipo,
+                    fechaArchivo: date,
+                    archivo: soporteDocumental.archivo,
+                    nombreArchivo: soporteDocumental.nombreArchivo,
+                  })
+                }
+                slots={{
+                  textField: DateInput,
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid>
+            <InputLabel>Archivo</InputLabel>
+            <Typography
+              position={"absolute"}
+              sx={{
+                display: "flex",
+                textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "45%",
+                fontSize: "60%",
+                "@media (min-width: 480px)": {
+                  fontSize: "60%",
+                  width: "30%",
+                },
+
+                "@media (min-width: 768px)": {
+                  fontSize: "60%",
+                  width: "30%",
+                },
+
+                "@media (min-width: 1140px)": {
+                  fontSize: "90%",
+                },
+
+                "@media (min-width: 1400px)": {
+                  fontSize: "90%",
+                  width: "30%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  fontSize: "90%",
+                  width: "30%",
+                },
+                fontFamily:
+                  soporteDocumental.nombreArchivo !== ""
+                    ? "MontserratBold"
+                    : "MontserratMedium",
+
+                border:
+                  soporteDocumental.nombreArchivo !== ""
+                    ? "2px dotted #af8c55"
+                    : "2px dotted black",
+              }}
+            >
+              {soporteDocumental.nombreArchivo ||
+                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            </Typography>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(v) => {
+                cargarArchivo(v);
+              }}
+              style={{
+                opacity: 0,
+                width: "100%",
+                height: "5vh",
+                cursor: "pointer",
               }}
             />
-          </LocalizationProvider>
-        </Grid>
+          </Grid>
 
-        <Grid>
-          <InputLabel>Archivo</InputLabel>
-          <Typography
-            position={"absolute"}
-            sx={{
-             ...queries.tamañoLetraArcivoFideicomiso,
-              fontFamily:
-                soporteDocumental.nombreArchivo !== ""
-                  ? "MontserratBold"
-                  : "MontserratMedium",
-              
-              border:
-                soporteDocumental.nombreArchivo !== ""
-                  ? "2px dotted #af8c55"
-                  : "2px dotted black",
-            }}
-          >
-            {soporteDocumental.nombreArchivo ||
-              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-          </Typography>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(v) => {
-              cargarArchivo(v);
-            }}
-            style={{
-              opacity: 0,
-              width: "100%",
-              height: "5vh",
-              cursor: "pointer",
-            }}
-          />
+        </Grid>
+        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} mt={1}>
+          <ThemeProvider theme={ButtonTheme}>
+            <Button
+              sx={{
+                ...queries.buttonContinuarSolicitudInscripcion,
+                width: "15vh",
+              }}
+              disabled={
+                soporteDocumental.tipo === "" ||
+                soporteDocumental.fechaArchivo === "" ||
+                soporteDocumental.nombreArchivo === ""
+              }
+              onClick={() => {
+                addSoporteDocumental({
+                  tipo: soporteDocumental.tipo,
+                  fechaArchivo: soporteDocumental.fechaArchivo,
+                  archivo: soporteDocumental.archivo,
+                  nombreArchivo: soporteDocumental.nombreArchivo,
+                });
+              }}
+            >
+              Agregar
+            </Button>
+          </ThemeProvider>
         </Grid>
       </Grid>
 
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
-        <ThemeProvider theme={ButtonTheme}>
-          <Button
-            sx={{
-              ...queries.buttonContinuarSolicitudInscripcion,
-              width: "15vh",
-            }}
-            disabled={
-              soporteDocumental.tipo === "" ||
-              soporteDocumental.fechaArchivo === "" ||
-              soporteDocumental.nombreArchivo === ""
-            }
-            onClick={() => {
-              addSoporteDocumental({
-                tipo: soporteDocumental.tipo,
-                fechaArchivo: soporteDocumental.fechaArchivo,
-                archivo: soporteDocumental.archivo,
-                nombreArchivo: soporteDocumental.nombreArchivo,
-              });
-            }}
-          >
-            Agregar
-          </Button>
-        </ThemeProvider>
-      </Grid>
+
 
       <Grid
         container
         flexDirection={"column"}
         alignItems={"center"}
-        height={"60%"}
         gridColumn={"1/4"}
         mt={4}
-       
       >
-        <Paper sx={{ width: "88%" }}>
+        <Paper sx={{ width: "88%", height: "50vh" }}>
           <TableContainer
             sx={{
+              height: "100%",
               maxHeight: "50vh",
               overflow: "auto",
               "&::-webkit-scrollbar": {
@@ -336,6 +385,7 @@ export function SDocumental() {
           </TableContainer>
         </Paper>
       </Grid>
+
       <Dialog
         open={showModalPrevia}
         onClose={() => {
@@ -370,6 +420,7 @@ export function SDocumental() {
           ></iframe>
         </DialogContent>
       </Dialog>
+
     </Grid>
   );
 }
