@@ -6,19 +6,10 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { DateInput } from "../../CustomComponents";
-
-export interface IUsuariosCorto {
-  id: string;
-  Nombre: string;
-  ApellidoPaterno: string;
-  ApellidoMaterno: string;
-  IdMunicipioUOrganizacion: string;
-  IdRol: string;
-  Cargo: string;
-}
+import { IUsuariosCorto } from "../../ObligacionesCortoPlazoPage/Panels/Encabezado";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function Encabezado() {
   const tipoDocumento: string = useLargoPlazoStore(
@@ -28,7 +19,8 @@ export function Encabezado() {
     (state) => state.getTiposEntesPublicos
   );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
-    useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
+    useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
+
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -58,16 +50,23 @@ export function Encabezado() {
   }, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
+
   const selectedValue =
-    usuarios.find((usuario) => usuario.id === solicitanteAutorizado.Solicitante)
-      ?.id || "";
-  const isValueValid = usuarios.some((usuario) => usuario.id === selectedValue);
+    usuarios.find(
+      (usuario) => usuario.IdUsuario === solicitanteAutorizado.Solicitante
+    )?.IdUsuario || "";
+  // Verificar si el valor seleccionado existe en la lista de opciones
+  const isValueValid = usuarios.some(
+    (usuario) => usuario.IdUsuario === selectedValue
+  );
 
   return (
-    <Grid container height={"30rem"}>
+    <Grid container height={"25rem"}>
       <Grid
+        item
         container
         mt={{ xs: 2 }}
+        // mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
         // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
         // spacing={{ xs: 2, md: 5, lg: 10 }}
         display={"flex"}
@@ -105,12 +104,14 @@ export function Encabezado() {
             fullWidth
             value={isValueValid ? selectedValue : ""}
             onChange={(e) => {
-              let x = usuarios.find((usuario) => usuario.id === e.target.value);
+              let x = usuarios.find(
+                (usuario) => usuario.IdUsuario === e.target.value
+              );
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.id || "",
-                  Cargo: x?.Cargo || "",
+                  Solicitante: x?.IdUsuario || "",
+                  Cargo: x?.Puesto || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
                 tipoEntePublico: tipoEntePublico,
@@ -121,7 +122,7 @@ export function Encabezado() {
             variant="standard"
           >
             {usuarios.map((usuario) => (
-              <MenuItem key={usuario.id} value={usuario.id}>
+              <MenuItem key={usuario.IdUsuario} value={usuario.IdUsuario}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}
@@ -154,6 +155,7 @@ export function Encabezado() {
       </Grid>
 
       <Grid
+        item
         container
         // mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
         // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
@@ -218,7 +220,19 @@ export function Encabezado() {
           >
             <DatePicker
               value={new Date(fechaContratacion)}
-              // onChange={(date) => changeFechaContratacion(date?.toString())}
+              onChange={(date) => {
+                changeEncabezado({
+                  tipoDocumento: tipoDocumento,
+                  solicitanteAutorizado: {
+                    Solicitante: solicitanteAutorizado.Solicitante || "",
+                    Cargo: solicitanteAutorizado?.Cargo || "",
+                    Nombre: solicitanteAutorizado.Nombre,
+                  },
+                  tipoEntePublico: tipoEntePublico,
+                  organismo: organismo,
+                  fechaContratacion: date,
+                });
+              }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
               slots={{
