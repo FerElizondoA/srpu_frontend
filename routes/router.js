@@ -857,6 +857,8 @@ router.delete("/delete-fideicomiso", (req, res) => {
 });
 //#endregion
 
+
+
 //#region TiposDeFideicomiso
 router.post("/create-tiposDeFideicomiso", (req, res, express) => {
   createTipoDeFideicomiso(req, res);
@@ -1189,6 +1191,15 @@ router.post("/create-firmaDetalle", (req, res, express) => {
 router.post("/create-mandato", (req, res, express) => {
   createMandato(req, res);
 });
+
+router.post("/modify-mandato", (req, res, express) => {
+  modifyMandato(req, res);
+});
+
+router.get("/get-mandato", (req, res, express) => {
+  getMandatos(req, res);
+});
+
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
 //   getTiposDeGarantiaDePago(req, res);
