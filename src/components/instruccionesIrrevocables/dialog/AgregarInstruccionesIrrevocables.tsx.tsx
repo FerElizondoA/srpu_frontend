@@ -64,13 +64,11 @@ const theme = createTheme({
 
 interface rowsPrueba {
   label: string;
-  id: string
+  id: string;
 }
-
 
 interface HeadLabels {
   label: string;
-
 }
 
 export function AgregarInstruccionesIrrevocables({
@@ -82,7 +80,6 @@ export function AgregarInstruccionesIrrevocables({
   openState: boolean;
   accion: string;
 }) {
-
   const headsLabels: HeadLabels[] = [
     {
       label: "Alta deudor",
@@ -102,40 +99,35 @@ export function AgregarInstruccionesIrrevocables({
     {
       label: "Acciones",
     },
-
   ];
-
 
   const rowsPrueba: rowsPrueba[] = [
     {
       label: "Prueba 1",
-      id: "0"
+      id: "0",
     },
     {
       label: "Prueba 2",
-      id: "1"
+      id: "1",
     },
     {
       label: "Prueba 3",
-      id: "2"
+      id: "2",
     },
     {
       label: "Prueba 4",
-      id: "3"
+      id: "3",
     },
     {
       label: "Prueba 5",
-      id: "4"
+      id: "4",
     },
     {
       label: "Prueba 6",
-      id: "5"
+      id: "5",
     },
   ];
   const [tabIndex, setTabIndex] = useState(0);
-
-
-
 
   //DATOS GENERALES
   const numeroCuenta: string = useCortoPlazoStore(
@@ -146,37 +138,37 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.generalInstrucciones.cuentaCLABE
   );
 
-  const banco: { Id: string, Descripcion: string } = useCortoPlazoStore(
+  const banco: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.generalInstrucciones.banco
   );
 
   //TIPO DE MOVIMIENTO
-  const tipoEntePublico: { Id: string, Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
-  );
+  const tipoEntePublico: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
+    );
 
   const altaDeudor: string = useCortoPlazoStore(
     (state) => state.tipoMovimientoInstrucciones.altaDeudor
   );
 
-  const entidadFederativa: { Id: string, Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.entidadFederativa
-  );
+  const entidadFederativa: { Id: string; Descripcion: string } =
+    useCortoPlazoStore(
+      (state) => state.tipoMovimientoInstrucciones.entidadFederativa
+    );
 
-  const tipoFuente: { Id: string, Descripcion: string } = useCortoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.tipoMovimientoInstrucciones.tipoFuente
   );
 
-  const fondoIngreso: { Id: string, Descripcion: string } = useCortoPlazoStore(
+  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.tipoMovimientoInstrucciones.fondoIngreso
   );
 
   //TABLA
 
-  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] = useCortoPlazoStore(
-    (state) => state.tablaTipoMovimientoInstrucciones
-  );
-
+  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
+    useCortoPlazoStore((state) => state.tablaTipoMovimientoInstrucciones);
 
   //CATALOGOS
   const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
@@ -205,16 +197,15 @@ export function AgregarInstruccionesIrrevocables({
   );
 
   const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getMunicipiosUOrganismosInstrucciones
+    (state) => state.getOrganismos
   );
 
   const getInstitucionesInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getInstitucionesInstrucciones
   );
 
-
   const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTipoEntePublicoObligadoInstrucciones
+    (state) => state.getTipoEntePublicoObligado
   );
 
   const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
@@ -248,8 +239,7 @@ export function AgregarInstruccionesIrrevocables({
 
   const setTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
     (state) => state.setTipoMovimientoInstrucciones
-  )
-
+  );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -257,9 +247,7 @@ export function AgregarInstruccionesIrrevocables({
     getInstitucionesInstrucciones();
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
-  }, [])
-
-
+  }, []);
 
   return (
     <>
@@ -307,7 +295,7 @@ export function AgregarInstruccionesIrrevocables({
                   }}
                 >
                   <Typography
-                     sx={{
+                    sx={{
                       fontSize: "1.3ch",
                       fontFamily: "MontserratMedium",
                       "@media (min-width: 480px)": {
@@ -323,7 +311,10 @@ export function AgregarInstruccionesIrrevocables({
           </Toolbar>
         </AppBar>
 
-        <Grid container flexDirection={"column"} justifyContent={"space-evenly"}
+        <Grid
+          container
+          flexDirection={"column"}
+          justifyContent={"space-evenly"}
           sx={{
             height: "70rem",
             "@media (min-width: 480px)": {
@@ -347,10 +338,13 @@ export function AgregarInstruccionesIrrevocables({
             },
           }}
         >
-
-          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
-
-            <Grid item xs={10} sm={3} >
+          <Grid
+            container
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            alignItems={"center"}
+          >
+            <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
                 Numero de cuenta
               </InputLabel>
@@ -359,17 +353,19 @@ export function AgregarInstruccionesIrrevocables({
                 variant="standard"
                 value={numeroCuenta}
                 onChange={(v) => {
-                  if (validator.isNumeric(v.target.value) || v.target.value === "") {
+                  if (
+                    validator.isNumeric(v.target.value) ||
+                    v.target.value === ""
+                  ) {
                     setGeneralInstruccion({
                       numeroCuenta: v.target.value,
                       cuentaCLABE: cuentaCLABE,
-                      banco: banco
-                    })
+                      banco: banco,
+                    });
                   }
                 }}
               />
             </Grid>
-
 
             <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
@@ -380,22 +376,22 @@ export function AgregarInstruccionesIrrevocables({
                 variant="standard"
                 value={cuentaCLABE}
                 onChange={(v) => {
-                  if (validator.isNumeric(v.target.value) || v.target.value === "") {
+                  if (
+                    validator.isNumeric(v.target.value) ||
+                    v.target.value === ""
+                  ) {
                     setGeneralInstruccion({
                       numeroCuenta: numeroCuenta,
                       cuentaCLABE: v.target.value,
-                      banco: banco
-                    })
+                      banco: banco,
+                    });
                   }
                 }}
               />
             </Grid>
 
-
             <Grid item xs={10} sm={3}>
-              <InputLabel sx={{ ...queries.medium_text }}>
-                Banco
-              </InputLabel>
+              <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
               <Autocomplete
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
@@ -439,37 +435,45 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
           </Grid>
 
-          <Grid>
-
-          </Grid>
-          <Divider sx={{
-            height: "1rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }} >
-            <Typography sx={{
-
-              textTransform: "uppercase",
-              color: "#af8c55 ",
-              fontSize: "2ch",
-              fontFamily: "MontserratBold",
-              "@media (max-width: 600px)": {
-                // XS (extra small) screen
-                fontSize: "0.7rem",
-              },
-              "@media (min-width: 601px) and (max-width: 900px)": {
-                // SM (small) screen
-                fontSize: "1.5ch",
-              },
-            }}>
+          <Grid></Grid>
+          <Divider
+            sx={{
+              height: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              sx={{
+                textTransform: "uppercase",
+                color: "#af8c55 ",
+                fontSize: "2ch",
+                fontFamily: "MontserratBold",
+                "@media (max-width: 600px)": {
+                  // XS (extra small) screen
+                  fontSize: "0.7rem",
+                },
+                "@media (min-width: 601px) and (max-width: 900px)": {
+                  // SM (small) screen
+                  fontSize: "1.5ch",
+                },
+              }}
+            >
               Tipo de Movimiento
             </Typography>
           </Divider>
 
-          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
-
-            <Grid item xs={10} sm={3}
+          <Grid
+            container
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            alignItems={"center"}
+          >
+            <Grid
+              item
+              xs={10}
+              sm={3}
               display={"flex"}
               justifyContent={"center"}
             >
@@ -556,7 +560,6 @@ export function AgregarInstruccionesIrrevocables({
                 openText="Abrir"
                 fullWidth
                 options={catalogoMunicipiosUOrganismos}
-
                 getOptionLabel={(option) => option.Descripcion}
                 renderOption={(props, option) => {
                   return (
@@ -579,9 +582,8 @@ export function AgregarInstruccionesIrrevocables({
                     },
                     tipoFuente: tipoFuente,
                     fondoIngreso: fondoIngreso,
-                  })
-                }
-                }
+                  });
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -594,12 +596,14 @@ export function AgregarInstruccionesIrrevocables({
                 }
               />
             </Grid>
-
           </Grid>
 
-
-          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"} >
-
+          <Grid
+            container
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            alignItems={"center"}
+          >
             <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
                 Tipo de fuente
@@ -648,7 +652,6 @@ export function AgregarInstruccionesIrrevocables({
                 }
               />
             </Grid>
-
 
             <Grid item xs={10} sm={3}>
               <InputLabel sx={{ ...queries.medium_text }}>
@@ -699,11 +702,17 @@ export function AgregarInstruccionesIrrevocables({
               />
             </Grid>
 
-
-            <Grid mt={2} sm={3} width={"20%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-
+            <Grid
+              mt={2}
+              sm={3}
+              width={"20%"}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
               <ThemeProvider theme={ButtonTheme}>
-                <Button sx={{ ...queries.buttonContinuar, width: "15vh" }}
+                <Button
+                  sx={{ ...queries.buttonContinuar, width: "15vh" }}
                   disabled={
                     tipoEntePublico.Descripcion === "" ||
                     entidadFederativa.Descripcion === "" ||
@@ -717,7 +726,7 @@ export function AgregarInstruccionesIrrevocables({
                       entidadFederativa: entidadFederativa.Descripcion,
                       tipoFuente: tipoFuente.Descripcion,
                       fondoIngreso: fondoIngreso.Descripcion,
-                    })
+                    });
                   }}
                 >
                   Agregar
@@ -727,10 +736,10 @@ export function AgregarInstruccionesIrrevocables({
           </Grid>
         </Grid>
 
-        <Grid mt={5} mb={2} display={"flex"}justifyContent={"center"}>
-
-            <Paper sx={{ width: "90%", height: "40vh" }}>
-              <TableContainer sx={{
+        <Grid mt={5} mb={2} display={"flex"} justifyContent={"center"}>
+          <Paper sx={{ width: "90%", height: "40vh" }}>
+            <TableContainer
+              sx={{
                 height: "100%",
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
@@ -743,23 +752,22 @@ export function AgregarInstruccionesIrrevocables({
                   outline: "1px solid slategrey",
                   borderRadius: 1,
                 },
-              }} >
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      {headsLabels.map((head, index) => (
-                        <StyledTableCell align="center">
-                          <Typography>
-                            {head.label}
-                          </Typography>
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
+              }}
+            >
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {headsLabels.map((head, index) => (
+                      <StyledTableCell align="center">
+                        <Typography>{head.label}</Typography>
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-                  <TableBody>
-                    {tablaTipoMovimientoInstrucciones.map((row: any, index: number) => {
-
+                <TableBody>
+                  {tablaTipoMovimientoInstrucciones.map(
+                    (row: any, index: number) => {
                       return (
                         <StyledTableRow>
                           <StyledTableCell align="center">
@@ -786,21 +794,23 @@ export function AgregarInstruccionesIrrevocables({
                             <Tooltip title="Eliminar">
                               <IconButton
                                 type="button"
-                                onClick={() => removeTipoMovimientoInstrucciones(index)}
+                                onClick={() =>
+                                  removeTipoMovimientoInstrucciones(index)
+                                }
                               >
                                 <DeleteIcon />
                               </IconButton>
                             </Tooltip>
                           </StyledTableCell>
                         </StyledTableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Grid>
-
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
       </Dialog>
     </>
   );

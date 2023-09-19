@@ -1,9 +1,9 @@
 import axios from "axios";
-import { StateCreator } from "zustand";
-import { ICatalogo } from "../../screens/Config/Catalogos";
-import Swal from "sweetalert2";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
+import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 
 export interface TipoMovimientoMandato {
   altaDeudor: string;
@@ -11,7 +11,7 @@ export interface TipoMovimientoMandato {
   mandatario: { Id: string; Descripcion: string };
   tipoFuente: { Id: string; Descripcion: string };
   fondoIngreso: { Id: string; Descripcion: string };
-  fechaMandato: string
+  fechaMandato: string;
 }
 
 export interface SoporteDocumentalMandato {
@@ -27,19 +27,15 @@ export interface Mandato {
 }
 
 export interface MandatoSlice {
+  numeroMandato: string;
   tipoMovimientoMandato: TipoMovimientoMandato;
   soporteDocumentalMandato: SoporteDocumentalMandato;
 
   tablaTipoMovimientoMandato: TipoMovimientoMandato[];
   tablaSoporteDocumentalMandato: SoporteDocumentalMandato[];
 
-  //Aqui iran los catalogos
-  catalogoMandatario: ICatalogo[];
-  catalogoMandato: ICatalogo[];
-  //
-
-  //borrarMandato: (Id: string) => void; //es un axios que no se ha creado
   changeIdMandato: (Id: string) => void;
+  changeNumeroMandato: (Id: string) => void;
   idMandato: string;
 
   editarMandato: (
@@ -47,11 +43,19 @@ export interface MandatoSlice {
     soporteDocumentalMandato: SoporteDocumentalMandato[]
   ) => void;
 
-  setTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => void;
-  setSoporteDocumentalMandato: (soporteDocumentalMandato: SoporteDocumentalMandato) => void;
+  setTipoMovimientoMandato: (
+    tipoMovimientoMandato: TipoMovimientoMandato
+  ) => void;
+  setSoporteDocumentalMandato: (
+    soporteDocumentalMandato: SoporteDocumentalMandato
+  ) => void;
 
-  addTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => void;
-  addSoporteDocumentalMandato: (soporteDocumentalMandato: SoporteDocumentalMandato) => void;
+  addTipoMovimientoMandato: (
+    tipoMovimientoMandato: TipoMovimientoMandato
+  ) => void;
+  addSoporteDocumentalMandato: (
+    soporteDocumentalMandato: SoporteDocumentalMandato
+  ) => void;
 
   removeTipoMovimientoMandato: (index: number) => void;
   removeSoporteDocumentalMandato: (index: number) => void;
@@ -59,23 +63,19 @@ export interface MandatoSlice {
   cleanTipoMovimientoMandato: () => void;
   cleanSoporteDocumentalMandato: () => void;
 
-  //Aqui iran los Get y los axios
-  getMandatario: () => void;
-  //
-
-  getMandato: (setstate: Function) => void;
+  getMandato: (setState: Function) => void;
   createMandato: () => void;
   modificaMandato: () => void;
 
+  cleanMandato: () => void;
 }
 
-export const createMandatoSlice: StateCreator<MandatoSlice> = (
-  set,
-  get
-) => ({
+export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
+  numeroMandato: "",
   idMandato: "",
+
   tipoMovimientoMandato: {
-    altaDeudor: "",
+    altaDeudor: "NO",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" },
     mandatario: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
@@ -94,43 +94,57 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
   //AQUI VAN LOS CATALAGOS
 
   catalogoMandatario: [],
-  catalogoMandato:[],
+  catalogoMandato: [],
 
   //
   setTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => {
     set(() => ({
-      tipoMovimientoMandato: tipoMovimientoMandato
-    }))
+      tipoMovimientoMandato: tipoMovimientoMandato,
+    }));
   },
 
-  setSoporteDocumentalMandato: (soporteDocumentalMandato: SoporteDocumentalMandato) => {
+  setSoporteDocumentalMandato: (
+    soporteDocumentalMandato: SoporteDocumentalMandato
+  ) => {
     set(() => ({
-      soporteDocumentalMandato: soporteDocumentalMandato
-    }))
+      soporteDocumentalMandato: soporteDocumentalMandato,
+    }));
   },
 
   addTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => {
     set((state) => ({
-      tablaTipoMovimientoMandato: [...state.tablaTipoMovimientoMandato, tipoMovimientoMandato]
-    }))
+      tablaTipoMovimientoMandato: [
+        ...state.tablaTipoMovimientoMandato,
+        tipoMovimientoMandato,
+      ],
+    }));
   },
 
-  addSoporteDocumentalMandato: (soporteDocumentalMandato: SoporteDocumentalMandato) => {
+  addSoporteDocumentalMandato: (
+    soporteDocumentalMandato: SoporteDocumentalMandato
+  ) => {
     set((state) => ({
-      tablaSoporteDocumentalMandato: [...state.tablaSoporteDocumentalMandato, soporteDocumentalMandato]
-    }))
+      tablaSoporteDocumentalMandato: [
+        ...state.tablaSoporteDocumentalMandato,
+        soporteDocumentalMandato,
+      ],
+    }));
   },
 
   removeTipoMovimientoMandato: (index: number) => {
     set((state) => ({
-      tablaTipoMovimientoMandato: state.tablaTipoMovimientoMandato.filter((_, i) => i !== index),
-    }))
+      tablaTipoMovimientoMandato: state.tablaTipoMovimientoMandato.filter(
+        (_, i) => i !== index
+      ),
+    }));
   },
 
   removeSoporteDocumentalMandato: (index: number) => {
     set((state) => ({
-      tablaSoporteDocumentalMandato: state.tablaSoporteDocumentalMandato.filter((_, i) => i !== index),
-    }))
+      tablaSoporteDocumentalMandato: state.tablaSoporteDocumentalMandato.filter(
+        (_, i) => i !== index
+      ),
+    }));
   },
 
   cleanTipoMovimientoMandato: () => {
@@ -142,9 +156,10 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "" },
         fechaMandato: new Date().toString(),
-      }
-    }))
+      },
+    }));
   },
+
   cleanSoporteDocumentalMandato: () => {
     set(() => ({
       soporteDocumentalMandato: {
@@ -152,71 +167,61 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
         archivo: new File([], ""),
         nombreArchivo: "",
         fechaArchivo: new Date().toString(),
-      }
-    }))
+      },
+    }));
   },
 
   changeIdMandato: (Id: any) => {
     set(() => ({
-      idMandato: Id
-    }))
+      idMandato: Id,
+    }));
+  },
+  changeNumeroMandato: (NumeroMandato: any) => {
+    set(() => ({
+      numeroMandato: NumeroMandato,
+    }));
   },
 
-  editarMandato: (tipoMovimientoMandato: TipoMovimientoMandato[], soporteDocumentalMandato: SoporteDocumentalMandato[]) => {
+  editarMandato: (
+    tipoMovimientoMandato: TipoMovimientoMandato[],
+    soporteDocumentalMandato: SoporteDocumentalMandato[]
+  ) => {
     set(() => ({
       tablaTipoMovimientoMandato: tipoMovimientoMandato,
       tablaSoporteDocumental: soporteDocumentalMandato,
-    }))
+    }));
   },
 
-  getMandatario: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandatario",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoMandatario: r,
-        }));
-      });
-  },
-
-  getMandato: async (
-    setState: Function,
-  ) => {
-    await axios
+  getMandato: (setState: Function) => {
+    axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandato", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
       })
       .then(({ data }) => {
-        
         let r = data.data;
         setState(r);
       });
   },
 
   createMandato: async () => {
-    const state = useCortoPlazoStore.getState();
-
+    const state = useLargoPlazoStore.getState();
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
         {
+          NumeroMandato: state.numeroMandato,
           IdUsuario: localStorage.getItem("IdUsuario"),
-          FechaMandato: state.tipoMovimientoMandato.fechaMandato,
-          Mandatario: state.tipoMovimientoMandato.mandatario,
+          FechaMandato: format(
+            new Date(state.tipoMovimientoMandato.fechaMandato),
+            "dd/MM/yyyy"
+          ),
+          Mandatario: state.tipoMovimientoMandato.mandatario.Id,
           MunicipioMandante: "PRUEBA SETEADA",
           OrganismoMandante: "PRUEBA SETEADA",
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
-          SoporteDocumental: JSON.stringify(state.soporteDocumentalMandato)
+          SoporteDocumental: JSON.stringify(state.soporteDocumentalMandato),
         },
         {
           headers: {
@@ -225,7 +230,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
         }
       )
       .then(({ data }) => {
-        state.changeIdFideicomiso(data.data.id);
+        state.changeIdMandato(data.data.Id);
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
@@ -235,7 +240,6 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
         });
       });
   },
-
 
   modificaMandato: async () => {
     const state = useCortoPlazoStore.getState();
@@ -276,5 +280,26 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (
           title: "No se Edito el fideicomiso.",
         });
       });
+  },
+
+  cleanMandato: () => {
+    set(() => ({
+      tipoMovimientoMandato: {
+        altaDeudor: "",
+        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+        mandatario: { Id: "", Descripcion: "" },
+        tipoFuente: { Id: "", Descripcion: "" },
+        fondoIngreso: { Id: "", Descripcion: "" },
+        fechaMandato: new Date().toString(),
+      },
+      soporteDocumentalMandato: {
+        tipo: "",
+        archivo: new File([], ""),
+        nombreArchivo: "",
+        fechaArchivo: new Date().toString(),
+      },
+      tablaTipoMovimientoMandato: [],
+      tablaSoporteDocumentalMandato: [],
+    }));
   },
 });

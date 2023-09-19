@@ -1,14 +1,32 @@
-import { Button, Grid, IconButton, InputBase, InputLabel, Paper, Slide, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, useMediaQuery } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import React, { useEffect, useState } from "react";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { queries } from "../../queries";
-import { GridSearchIcon } from "@mui/x-data-grid";
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
-import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Slide,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
+import { GridSearchIcon } from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
+import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 
 export const Transition = React.forwardRef(function Transition(
@@ -25,18 +43,18 @@ interface Head {
 }
 
 export interface IDatosMandatos {
-  DescripcionFiudiciario: string
-  DescripcionTipoFideicomiso: string
-  FechaCreacion: string
-  FechaDeFideicomiso: string
-  Id: string
-  IdFiudiciario: string
-  IdTipoFideicomiso: string
-  ModificadoPor: string
-  NumeroDeFideicomiso: string
-  SoporteDocumental: string
-  TipoDeMovimiento: string
-  UltimaModificacion: string
+  DescripcionFiudiciario: string;
+  DescripcionTipoFideicomiso: string;
+  FechaCreacion: string;
+  FechaDeFideicomiso: string;
+  Id: string;
+  IdFiudiciario: string;
+  IdTipoFideicomiso: string;
+  ModificadoPor: string;
+  NumeroDeFideicomiso: string;
+  SoporteDocumental: string;
+  TipoDeMovimiento: string;
+  UltimaModificacion: string;
 }
 
 const heads: Head[] = [
@@ -59,11 +77,9 @@ const heads: Head[] = [
     label: "Organismo mandante",
   },
   {
-    label: "Acciones"
+    label: "Acciones",
   },
 ];
-
-
 
 export function Mandatos() {
   const query = {
@@ -75,9 +91,7 @@ export function Mandatos() {
 
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
 
-  const getMandatos: Function = useCortoPlazoStore(
-    (state) => state.getMandato
-  )
+  const getMandatos: Function = useCortoPlazoStore((state) => state.getMandato);
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -87,11 +101,10 @@ export function Mandatos() {
     // filtrarDatos();
   };
 
-  const [datos, setDatos] = useState<Array<[]>>([]);
+  // const [datos, setDatos] = useState<Array<[]>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [mandatos, setMandatos] = useState<Array<[]>>([]);
   const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<[]>>([]);
-
 
   // const filtrarDatos = () => {
   //   // eslint-disable-next-line array-callback-return
@@ -120,49 +133,54 @@ export function Mandatos() {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
 
-  useEffect(() => {
-    setMandatosFiltrados(datos);
-  }, [datos]);
+  const cleanMandato: Function = useCortoPlazoStore(
+    (state) => state.cleanMandato
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length !== 0 ? setMandatosFiltrados(datos) : null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busqueda]);
-
-  
-  useEffect(() => {
-    getMandatos(setDatos)
     getMandatos(setMandatos);
-  }, []);
+    cleanMandato();
+  }, [openAgregarMandato]);
 
   return (
-    <Grid direction={"column"} height={"75vh"}>
-
+    <Grid height={"75vh"}>
       <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
 
-      <Grid display={"flex"} justifyContent={"center"} width={"97%"} height={"4rem"} alignItems={"center"} >
-        <Typography sx={{
-          fontSize: "2.3ch",
-          fontFamily: "MontserratBold",
-          color: "#AF8C55",
-          "@media (max-width: 600px)": {
-            // XS (extra small) screen
-            fontSize: "1rem",
-          },
-          "@media (min-width: 601px) and (max-width: 900px)": {
-            // SM (small) screen
-            fontSize: "1.5ch",
-          },
-        }}>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        width={"97%"}
+        height={"4rem"}
+        alignItems={"center"}
+      >
+        <Typography
+          sx={{
+            fontSize: "2.3ch",
+            fontFamily: "MontserratBold",
+            color: "#AF8C55",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1rem",
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
+            },
+          }}
+        >
           Mandatos
         </Typography>
       </Grid>
 
       <Grid display="center" justifyContent="space-between" height={"4rem"}>
-        <Grid width={"80%"} height={"75%"} display={"flex"} justifyContent={"end"}>
+        <Grid
+          width={"80%"}
+          height={"75%"}
+          display={"flex"}
+          justifyContent={"end"}
+        >
           <Paper
             component="form"
             sx={{
@@ -193,7 +211,7 @@ export function Mandatos() {
           <Button
             sx={{
               ...queries.buttonContinuar,
-              height: "75%"
+              height: "75%",
             }}
             onClick={() => {
               setAccion("Agregar");
@@ -203,32 +221,34 @@ export function Mandatos() {
             Agregar
           </Button>
         </Grid>
-
       </Grid>
-      <Grid container sx={{
-        ...queries.tablaAgregarFuentesPago,
-        width: "100%",
-        display: "flex",
-        justifyContent: "center"
-      }} 
+      <Grid
+        container
+        sx={{
+          ...queries.tablaAgregarFuentesPago,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
       >
         <Paper sx={{ width: "100%" }}>
-          <TableContainer sx={{
-            width: "98%",
+          <TableContainer
+            sx={{
+              width: "98%",
 
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              height: "1vh",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-
-          }}>
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: "1vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table>
               <TableHead>
                 <TableRow>
@@ -242,18 +262,17 @@ export function Mandatos() {
               <TableBody>
                 {mandatosFiltrados.map((row: any, index: number) => {
                   return (
-                    <StyledTableRow>
-
+                    <StyledTableRow key={index}>
                       <StyledTableCell align="center">
-                        {row.mecanismoPago}
+                        {"Mandato"}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.numeroMandato}
+                        {row.NumeroMandato}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.fechaMandato}
+                        {row.FechaMandato}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -311,15 +330,11 @@ export function Mandatos() {
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
-
                       </StyledTableCell>
-
                     </StyledTableRow>
-                  )
+                  );
                 })}
-
               </TableBody>
-
             </Table>
           </TableContainer>
         </Paper>
@@ -330,7 +345,6 @@ export function Mandatos() {
         openState={openAgregarMandato}
         accion={accion}
       />
-
     </Grid>
   );
 }

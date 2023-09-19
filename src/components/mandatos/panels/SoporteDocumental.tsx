@@ -1,19 +1,43 @@
-import { Button, Dialog, DialogContent, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, InputLabel, Paper, Radio, RadioGroup, Table, TableBody, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip, Typography } from "@mui/material";
-import { queries } from "../../../queries";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { DateInput, StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { format } from "date-fns";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { useState } from "react";
-import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputLabel,
+  Paper,
+  Radio,
+  RadioGroup,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { GridCloseIcon } from "@mui/x-data-grid";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
-import { SoporteDocumentalMandato, TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
+import { useState } from "react";
+import { queries } from "../../../queries";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
+import {
+  DateInput,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../CustomComponents";
+import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
 
 const heads: HeadLabels[] = [
   {
@@ -34,7 +58,6 @@ const heads: HeadLabels[] = [
 ];
 
 export function SoporteDocumental() {
-
   const [fileSelected, setFileSelected] = useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -58,37 +81,34 @@ export function SoporteDocumental() {
 
   const tipo: string = useLargoPlazoStore(
     (state) => state.soporteDocumentalMandato.tipo
-  )
+  );
 
   const archivo: File = useLargoPlazoStore(
     (state) => state.soporteDocumentalMandato.archivo
-  )
+  );
 
   const nombreArchivo: string = useLargoPlazoStore(
     (state) => state.soporteDocumentalMandato.nombreArchivo
-  )
+  );
 
   const fechaArchivo: string = useLargoPlazoStore(
     (state) => state.soporteDocumentalMandato.fechaArchivo
-  )
-
+  );
 
   const setSoporteDocumentalMandato: Function = useLargoPlazoStore(
     (state) => state.setSoporteDocumentalMandato
-  )
+  );
 
   const addSoporteDocumentalMandato: Function = useLargoPlazoStore(
     (state) => state.addSoporteDocumentalMandato
-  )
+  );
 
   const removeSoporteDocumentalMandato: Function = useLargoPlazoStore(
     (state) => state.removeSoporteDocumentalMandato
-  )
+  );
 
-
-  const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] = useLargoPlazoStore(
-    (state) => state.tablaSoporteDocumentalMandato
-  )
+  const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
+    useLargoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
@@ -103,7 +123,6 @@ export function SoporteDocumental() {
     }
   }
 
-
   const [radioValue, setRadioValue] = useState("");
   return (
     <Grid
@@ -112,26 +131,26 @@ export function SoporteDocumental() {
       justifyContent={"space-evenly"}
       mt={1}
     >
-      <Grid
-        container
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        mt={4}
-      >
-        <Grid sx={{
-          display: "flex",
-          width: "40%",
-          "@media (min-width: 480px)": {
-            width: "40%"
-          },
+      <Grid container display={"flex"} justifyContent={"space-evenly"} mt={4}>
+        <Grid
+          sx={{
+            display: "flex",
+            width: "40%",
+            "@media (min-width: 480px)": {
+              width: "40%",
+            },
 
-          "@media (min-width: 768px)": {
-            width: "15%"
-          },
-        }}
+            "@media (min-width: 768px)": {
+              width: "15%",
+            },
+          }}
         >
-          <FormControl >
-            <RadioGroup sx={{ marginLeft: 3 }} value={radioValue} onChange={handleChange}>
+          <FormControl>
+            <RadioGroup
+              sx={{ marginLeft: 3 }}
+              value={radioValue}
+              onChange={handleChange}
+            >
               <FormControlLabel
                 value="Mandato"
                 control={<Radio />}
@@ -146,10 +165,11 @@ export function SoporteDocumental() {
           </FormControl>
         </Grid>
 
-
-        <Grid xs={6} sm={4} md={4} lg={4} xl={4}>
+        <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
           <Grid width={"90%"}>
-            <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
+            <InputLabel sx={queries.medium_text}>
+              Fecha del documento
+            </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
@@ -206,9 +226,7 @@ export function SoporteDocumental() {
                   width: "30%",
                 },
                 fontFamily:
-                  nombreArchivo !== ""
-                    ? "MontserratBold"
-                    : "MontserratMedium",
+                  nombreArchivo !== "" ? "MontserratBold" : "MontserratMedium",
 
                 border:
                   nombreArchivo !== ""
@@ -235,7 +253,12 @@ export function SoporteDocumental() {
           </Grid>
         </Grid>
 
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} mt={1}>
+        <Grid
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          mt={1}
+        >
           <ThemeProvider theme={ButtonTheme}>
             <Button
               sx={{
@@ -243,9 +266,7 @@ export function SoporteDocumental() {
                 width: "15vh",
               }}
               disabled={
-                tipo === "" ||
-                fechaArchivo === "" ||
-                nombreArchivo === ""
+                tipo === "" || fechaArchivo === "" || nombreArchivo === ""
               }
               onClick={() => {
                 addSoporteDocumentalMandato({
@@ -268,12 +289,11 @@ export function SoporteDocumental() {
         alignItems={"center"}
         gridColumn={"1/4"}
         mt={4}
-
       >
         <Paper sx={{ width: "91%", height: "50vh" }}>
           <TableContainer
             sx={{
-              height:"100%",
+              height: "100%",
               maxHeight: "50vh",
               overflow: "auto",
               "&::-webkit-scrollbar": {
@@ -300,47 +320,51 @@ export function SoporteDocumental() {
               </TableHead>
 
               <TableBody>
-                {tablaSoporteDocumentalMandato.map((row: any, index: number) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        <Tooltip title="Eliminar">
-                          <IconButton
-                            type="button"
-                            onClick={() => removeSoporteDocumentalMandato(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.tipo}
-                      </StyledTableCell>
+                {tablaSoporteDocumentalMandato.map(
+                  (row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center">
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() =>
+                                removeSoporteDocumentalMandato(index)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.tipo}
+                        </StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        {format(new Date(row.fechaArchivo), "dd/MM/yyyy")}
-                      </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {format(new Date(row.fechaArchivo), "dd/MM/yyyy")}
+                        </StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        {row.nombreArchivo}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <Tooltip title={"Mostrar vista previa del documento"}>
-                          <IconButton
-                            onClick={() => {
-                              toBase64(row.archivo).then((data) => {
-                                setFileSelected(data);
-                              });
-                              setShowModalPrevia(true);
-                            }}
-                          >
-                            <FileOpenIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
+                        <StyledTableCell align="center">
+                          {row.nombreArchivo}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Tooltip title={"Mostrar vista previa del documento"}>
+                            <IconButton
+                              onClick={() => {
+                                toBase64(row.archivo).then((data) => {
+                                  setFileSelected(data);
+                                });
+                                setShowModalPrevia(true);
+                              }}
+                            >
+                              <FileOpenIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  }
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -380,7 +404,6 @@ export function SoporteDocumental() {
           ></iframe>
         </DialogContent>
       </Dialog>
-
     </Grid>
-  )
+  );
 }

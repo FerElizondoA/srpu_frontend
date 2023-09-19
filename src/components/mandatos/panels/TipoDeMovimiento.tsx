@@ -1,8 +1,8 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
   Checkbox,
-  Dialog,
   FormControlLabel,
   Grid,
   IconButton,
@@ -18,23 +18,26 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { queries } from "../../../queries";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { DateInput, StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
+import enGB from "date-fns/locale/en-GB";
+import { useEffect } from "react";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
+import {
+  DateInput,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { formatDate } from "@jbcecapmex/pakfirma/dist/screens/tabladocumentos/TablaDocs";
 
 interface HeadLabels {
   label: string;
-
 }
 
 export function TipoDeMovimiento() {
@@ -66,38 +69,37 @@ export function TipoDeMovimiento() {
 
   const altaDeudor: string = useLargoPlazoStore(
     (state) => state.tipoMovimientoMandato.altaDeudor
-  )
+  );
 
-  const tipoEntePublicoObligado: { Id: string, Descripcion: string } = useLargoPlazoStore(
-    (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
-  )
+  const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
+    useLargoPlazoStore(
+      (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
+    );
 
-  const mandatario: { Id: string, Descripcion: string } = useLargoPlazoStore(
+  const mandatario: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.tipoMovimientoMandato.mandatario
-  )
+  );
 
-  const tipoFuente: { Id: string, Descripcion: string } = useLargoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.tipoMovimientoMandato.tipoFuente
-  )
+  );
 
-  const fondoIngreso: { Id: string, Descripcion: string } = useLargoPlazoStore(
+  const fondoIngreso: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.tipoMovimientoMandato.fondoIngreso
-  )
+  );
 
   const fechaMandato: string = useLargoPlazoStore(
     (state) => state.tipoMovimientoMandato.fechaMandato
-  )
+  );
 
-  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] = useLargoPlazoStore(
-    (state) => state.tablaTipoMovimientoMandato
-  )
+  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
+    useLargoPlazoStore((state) => state.tablaTipoMovimientoMandato);
 
   // separacion
 
   const setTipoMovimientoMandato: Function = useLargoPlazoStore(
     (state) => state.setTipoMovimientoMandato
-  )
-
+  );
 
   //catalogo
   const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
@@ -112,12 +114,6 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoFondosOIngresos
   );
 
-  const catalogoMandatario: Array<ICatalogo> = useLargoPlazoStore(
-    (state) => state.catalogoMandatario
-  );
-
-  //Add
-
   const addTipoMovimientoMandato: Function = useLargoPlazoStore(
     (state) => state.addTipoMovimientoMandato
   );
@@ -127,59 +123,97 @@ export function TipoDeMovimiento() {
     (state) => state.getTiposDeFuenteInstrucciones
   );
 
-  const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTipoEntePublicoObligadoInstrucciones
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
   );
 
   const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getFondosOIngresosInstrucciones
   );
 
-  const getMandatario: Function = useLargoPlazoStore(
-    (state) => state.getMandatario
-  );
-
   //
 
   const removeTipoMovimientoMandato: Function = useLargoPlazoStore(
     (state) => state.removeTipoMovimientoMandato
-  )
+  );
+
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+
+  const catalogoOrganismos: any = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
+  const cleanTipoMovimientoMandato: Function = useCortoPlazoStore(
+    (state) => state.cleanTipoMovimientoMandato
+  );
+
+  const numeroMandato: string = useCortoPlazoStore(
+    (state) => state.numeroMandato
+  );
+  const changeNumeroMandato: Function = useCortoPlazoStore(
+    (state) => state.changeNumeroMandato
+  );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
-    getTipoEntePublicoObligadoInstrucciones();
+    getTipoEntePublicoObligado();
     getFondosOIngresosInstrucciones();
-    getMandatario();
-  }, [])
+    getOrganismos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
-      <Grid container flexDirection={"column"} justifyContent={"space-around"} width={"100%"}
+      <Grid
+        container
+        flexDirection={"column"}
+        justifyContent={"space-around"}
+        width={"100%"}
         sx={{
           "@media (min-width: 480px)": {
-           
-            height: "50rem"
+            height: "50rem",
           },
 
           "@media (min-width: 768px)": {
-            height: "38rem"
+            height: "38rem",
           },
 
           "@media (min-width: 1140px)": {
-            height: "38rem"
+            height: "38rem",
           },
 
           "@media (min-width: 1400px)": {
-            height: "38rem"
+            height: "38rem",
           },
 
           "@media (min-width: 1870px)": {
-            height: "38rem"
+            height: "50rem",
           },
         }}
       >
-        <Grid container display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+        <Grid
+          container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          width={"100%"}
+        >
+          <TextField
+            label={"Numero de mandato"}
+            title={"Numero de mandato"}
+            onChange={(v) => {
+              changeNumeroMandato(v.target.value);
+            }}
+            value={numeroMandato}
+          />
+          <Grid
+            item
+            xs={10}
+            sm={3}
+            md={3}
+            lg={3}
+            xl={3}
             display={"flex"}
             justifyContent={"center"}
           >
@@ -195,7 +229,7 @@ export function TipoDeMovimiento() {
                       mandatario: mandatario,
                       tipoFuente: tipoFuente,
                       fondoIngreso: fondoIngreso,
-                      fechaMandato: fechaMandato
+                      fechaMandato: fechaMandato,
                     });
                   }}
                 />
@@ -204,43 +238,34 @@ export function TipoDeMovimiento() {
           </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Tipo de ente publico obligado
+            <InputLabel sx={queries.medium_text}>
+              Tipo de ente público obligado
             </InputLabel>
             <Autocomplete
+              disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              // disabled={
-              //   tipoEntePublico.Descripcion === "No aplica" ||
-              //   /^[\s]*$/.test(tipoEntePublico.Descripcion)
-              // }
               fullWidth
               options={catalogoTipoEntePublicoObligado}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
-                  <li {...props} key={option.Descripcion}>
+                  <li {...props} key={option.Id}>
                     <Typography>{option.Descripcion}</Typography>
                   </li>
                 );
               }}
-              value={{
-                Id: tipoEntePublicoObligado.Id || "",
-                Descripcion: tipoEntePublicoObligado.Descripcion || "",
-              }}
+              value={tipoEntePublicoObligado}
               onChange={(event, text) =>
                 setTipoMovimientoMandato({
                   altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  mandatario: mandatario,
+                  tipoEntePublicoObligado: text,
+                  mandatario: { Id: "", Descripcion: "" },
                   tipoFuente: tipoFuente,
                   fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato
+                  fechaMandato: fechaMandato,
                 })
               }
               renderInput={(params) => (
@@ -258,18 +283,21 @@ export function TipoDeMovimiento() {
           </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={{ ...queries.medium_text }}>Mandatario</InputLabel>
+            <InputLabel sx={queries.medium_text}>Mandatario</InputLabel>
             <Autocomplete
               disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              options={catalogoMandatario}
-              value={{
-                Id: mandatario.Id || "",
-                Descripcion: mandatario.Descripcion || "",
-              }}
+              disabled={
+                tipoEntePublicoObligado.Descripcion === "No aplica" ||
+                /^[\s]*$/.test(tipoEntePublicoObligado.Descripcion)
+              }
+              fullWidth
+              options={catalogoOrganismos.filter(
+                (td: any) => td.IdTipoEntePublico === tipoEntePublicoObligado.Id
+              )}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -278,19 +306,10 @@ export function TipoDeMovimiento() {
                   </li>
                 );
               }}
-              onChange={(event, text) =>
-                setTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado,
-                  mandatario: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  tipoFuente: tipoFuente,
-                  fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato
-                })
-              }
+              value={{
+                Id: mandatario.Id || "",
+                Descripcion: mandatario.Descripcion || "",
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -299,14 +318,28 @@ export function TipoDeMovimiento() {
                 />
               )}
               isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
+                option.Id === value.Id || value.Descripcion === ""
               }
+              onChange={(event, text) => {
+                setTipoMovimientoMandato({
+                  altaDeudor: altaDeudor,
+                  tipoEntePublicoObligado: tipoEntePublicoObligado,
+                  mandatario: { Id: text.Id, Descripcion: text.Descripcion },
+                  tipoFuente: tipoFuente,
+                  fondoIngreso: fondoIngreso,
+                  fechaMandato: fechaMandato,
+                });
+              }}
             />
           </Grid>
         </Grid>
 
-        <Grid container display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
+        <Grid
+          container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          width={"100%"}
+        >
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Tipo de fuente
@@ -340,7 +373,7 @@ export function TipoDeMovimiento() {
                     Descripcion: text?.Descripcion || "",
                   },
                   fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato
+                  fechaMandato: fechaMandato,
                 })
               }
               renderInput={(params) => (
@@ -390,7 +423,7 @@ export function TipoDeMovimiento() {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
                   },
-                  fechaMandato: fechaMandato
+                  fechaMandato: fechaMandato,
                 })
               }
               renderInput={(params) => (
@@ -407,8 +440,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid xs={9} sm={3} md={3} lg={3} xl={3} >
-
+          <Grid item xs={9} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha mandato
             </InputLabel>
@@ -425,7 +457,7 @@ export function TipoDeMovimiento() {
                     mandatario: mandatario,
                     tipoFuente: tipoFuente,
                     fondoIngreso: fondoIngreso,
-                    fechaMandato: date?.toString(),
+                    fechaMandato: date,
                   })
                 }
                 slots={{
@@ -435,15 +467,24 @@ export function TipoDeMovimiento() {
             </LocalizationProvider>
           </Grid>
         </Grid>
-        
-        <Grid display={"flex"} justifyContent={"center"}
+
+        <Grid
+          display={"flex"}
+          justifyContent={"center"}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-          }} >
+          }}
+        >
           <ThemeProvider theme={ButtonTheme}>
             <Button
+              disabled={
+                tipoEntePublicoObligado.Id === "" ||
+                mandatario.Id === "" ||
+                tipoFuente.Id === "" ||
+                fondoIngreso.Id === ""
+              }
               sx={{
                 ...queries.buttonContinuar,
                 width: "15vh",
@@ -455,45 +496,45 @@ export function TipoDeMovimiento() {
                   mandatario: mandatario.Descripcion,
                   tipoFuente: tipoFuente.Descripcion,
                   fondoIngreso: fondoIngreso.Descripcion,
-                  fechaMandato: fechaMandato
-                })
+                  fechaMandato: fechaMandato,
+                });
+                cleanTipoMovimientoMandato();
               }}
-            >Agregar
+            >
+              Agregar
             </Button>
-
           </ThemeProvider>
-
         </Grid>
 
-        <Grid 
-        width={"100%"}
-        height={"25rem"} 
-        display={"flex"}
-        justifyContent={"center"}
+        <Grid
+          width={"100%"}
+          height={"25rem"}
+          display={"flex"}
+          justifyContent={"center"}
         >
-          <Paper sx={{ width: "95%", height: "100%", }}>
-            <TableContainer sx={{
-              height: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                height: "1vh",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}>
+          <Paper sx={{ width: "95%", height: "100%" }}>
+            <TableContainer
+              sx={{
+                height: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: "1vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
                     {heads.map((head, index) => (
                       <StyledTableCell align="center" key={index}>
-                        <Typography>
-                          {head.label}
-                        </Typography>
+                        <Typography>{head.label}</Typography>
                       </StyledTableCell>
                     ))}
                   </TableRow>
@@ -502,44 +543,33 @@ export function TipoDeMovimiento() {
                   {tablaTipoMovimientoMandato.map((row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
-                        <StyledTableCell align="center" key={index}>
+                        <StyledTableCell align="center">
+                          <Typography>{row.altaDeudor}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography>{row.tipoEntePublicoObligado}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography>{row.mandatario}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography>{row.tipoFuente}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography>{row.fondoIngreso}</Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
                           <Typography>
-                            {row.altaDeudor}
+                            {format(new Date(row.fechaMandato), "dd/MM/yyyy")}
                           </Typography>
                         </StyledTableCell>
 
-                        <StyledTableCell align="center" key={index}>
-                          <Typography>
-                            {row.tipoEntePublicoObligado}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center" key={index}>
-                          <Typography>
-                            {row.mandatario}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center" key={index}>
-                          <Typography>
-                            {row.tipoFuente}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center" key={index}>
-                          <Typography>
-                            {row.fondoIngreso}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center" key={index}>
-                          <Typography>
-                          {format(new Date(row.fechaMandato), "dd/MM/yyyy")}
-                           
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center" key={index}>
+                        <StyledTableCell align="center">
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
@@ -550,13 +580,12 @@ export function TipoDeMovimiento() {
                           </Tooltip>
                         </StyledTableCell>
                       </StyledTableRow>
-                    )
+                    );
                   })}
                 </TableBody>
               </Table>
             </TableContainer>
           </Paper>
-
         </Grid>
       </Grid>
     </>

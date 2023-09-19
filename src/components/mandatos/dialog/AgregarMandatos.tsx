@@ -7,6 +7,7 @@ import {
   Slide,
   Tab,
   Tabs,
+  TextField,
   ThemeProvider,
   Toolbar,
   Tooltip,
@@ -22,6 +23,10 @@ import { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import {
+  SoporteDocumentalMandato,
+  TipoMovimientoMandato,
+} from "../../../store/Mandatos/mandato";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -56,47 +61,43 @@ export function AgregarMandatos({
   openState: boolean;
   accion: string;
 }) {
-
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
 
-
-
-  const createMandato: Function = useCortoPlazoStore(
-    (state) => state.createMandato
-  );
-
-  const getMandatos: Function = useCortoPlazoStore(
-    (state) => state.getMandato
-  )
-
   const changeIdMandato: Function = useCortoPlazoStore(
     (state) => state.changeIdMandato
-  )
+  );
 
   const editarMandato: Function = useCortoPlazoStore(
     (state) => state.editarMandato
-  )
+  );
 
   const modificaMandato: Function = useCortoPlazoStore(
     (state) => state.modificaMandato
-  )
+  );
 
   const setTipoMovimientoMandato: Function = useLargoPlazoStore(
     (state) => state.setTipoMovimientoMandato
-  )
+  );
 
   const setSoporteDocumentalMandato: Function = useLargoPlazoStore(
     (state) => state.setSoporteDocumentalMandato
-  )
+  );
+
+  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
+    useLargoPlazoStore((state) => state.tablaTipoMovimientoMandato);
+  const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
+    useLargoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-
+  const createMandato: Function = useCortoPlazoStore(
+    (state) => state.createMandato
+  );
 
   const limpiaMandato = () => {
     changeIdMandato("");
@@ -115,15 +116,10 @@ export function AgregarMandatos({
       fechaArchivo: new Date().toString(),
       archivo: new File([], ""),
       nombreArchivo: "",
-    })
+    });
 
     editarMandato([], []);
   };
-
-  useEffect(() => {
-    getMandatos();
-  }, [])
-
 
   return (
     <>
@@ -144,11 +140,7 @@ export function AgregarMandatos({
             </Tooltip>
 
             <Grid container>
-              <Grid item>
-                <Typography sx={queries.bold_text}>
-                  {accion} Mandato
-                </Typography>
-              </Grid>
+              <Typography sx={queries.bold_text}>{accion} Mandato</Typography>
             </Grid>
 
             <Grid item>
@@ -166,13 +158,15 @@ export function AgregarMandatos({
                     setTabIndex(0);
                   }}
                 >
-                  <Typography sx={{
-                    fontSize: "1.3ch",
-                    fontFamily: "MontserratMedium",
-                    "@media (min-width: 480px)": {
-                      fontSize: "1.5ch",
-                    },
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: "1.3ch",
+                      fontFamily: "MontserratMedium",
+                      "@media (min-width: 480px)": {
+                        fontSize: "1.5ch",
+                      },
+                    }}
+                  >
                     {accion} mandato
                   </Typography>
                 </Button>
@@ -181,7 +175,7 @@ export function AgregarMandatos({
           </Toolbar>
         </AppBar>
 
-        <Grid item container direction="column" >
+        <Grid item container direction="column">
           <Grid item width={"100%"}>
             <Tabs
               value={tabIndex}
@@ -191,7 +185,10 @@ export function AgregarMandatos({
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
+              <Tab
+                label="Tipo de Movimiento"
+                sx={{ ...queries.bold_text }}
+              ></Tab>
               <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 

@@ -1,101 +1,58 @@
 import {
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Divider,
-  TextField,
-  InputLabel,
-  Select,
-  MenuItem,
-  Table,
-  TableContainer,
-  TableRow,
-  TableHead,
-  ThemeProvider,
-  Button,
-  createTheme,
-  TableBody,
-  Checkbox,
-  Paper,
-  FormControl,
   Autocomplete,
+  Checkbox,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
-import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
+import { format } from "date-fns";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { format } from "date-fns";
 interface Head {
   label: string;
 }
 
 interface HeadSelect {
-  id: number;
   label: string;
 }
 
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
-
 const CatalogoMecanismo: HeadSelect[] = [
   {
-    id: 1,
     label: "Fideicomiso",
   },
   {
-    id: 2,
     label: "Institucion irrevocable",
   },
   {
-    id: 3,
     label: "Mandato",
-  },
-];
-
-const CatalogoBonos: HeadSelect[] = [
-  {
-    id: 1,
-    label: "No aplica",
-  },
-  {
-    id: 2,
-    label: "Prueba1",
-  },
-  {
-    id: 3,
-    label: "Prueba2",
   },
 ];
 
 const CatalogoGarantiaPago: HeadSelect[] = [
   {
-    id: 1,
     label: "No aplica",
   },
   {
-    id: 2,
     label: "Pago 1",
   },
   {
-    id: 3,
     label: "Pago 2",
   },
 ];
@@ -189,8 +146,6 @@ export function FuenteDePago() {
 
   const [mecanismo, setMecanismo] = useState<any>("");
 
-  const [bonoCero, setBonoCero] = useState<any>("");
-
   const [asignarFuente, setAsignarFuente] = useState(false);
 
   const getFideicomisos: Function = useCortoPlazoStore(
@@ -224,6 +179,7 @@ export function FuenteDePago() {
     getNumeroFideicomiso();
     getFideicomisos();
   }, []);
+
   return (
     <Grid
       container
@@ -304,83 +260,6 @@ export function FuenteDePago() {
                 option.Id === value.Id || value.NumeroDeFideicomiso === 0
               }
             />
-          </Grid>
-
-          <Grid xs={3} sm={3.3} md={3.3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Bono cupón cero</InputLabel>
-
-            <FormControl fullWidth>
-              <Select
-                fullWidth
-                variant="standard"
-                value={bonoCero}
-                onChange={(e) => {
-                  setBonoCero(e.target.value);
-                }}
-              >
-                {CatalogoBonos.map((item, index) => (
-                  <MenuItem value={item.label} key={index}>
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Grid width={"100%"}>
-          <Grid display={"flex"} width={"100%"} justifyContent={"center"}>
-            <Grid
-              width={"88%"}
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Grid xs={7} md={4} lg={4} xl={3.5}>
-                <InputLabel sx={queries.medium_text}>
-                  Clasificación del bono del cupón cero
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    fullWidth
-                    variant="standard"
-                    value={bonoCero}
-                    onChange={(e) => {
-                      setBonoCero(e.target.value);
-                    }}
-                  >
-                    {CatalogoBonos.map((item, index) => (
-                      <MenuItem value={item.label} key={index}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid
-                xs={4}
-                sm={3.3}
-                md={3.3}
-                lg={3}
-                xl={3}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-              >
-                <ThemeProvider theme={theme}>
-                  <Button
-                    sx={queries.buttonContinuar}
-                    variant="outlined"
-                    onClick={(e) => {
-                      setFideicomiso(fideicomiso ? false : true);
-                    }}
-                  >
-                    {/* <CheckIcon fontSize="small" /> */}
-                    AGREGAR
-                  </Button>
-                </ThemeProvider>
-              </Grid>
-            </Grid>
           </Grid>
         </Grid>
       </Grid>
