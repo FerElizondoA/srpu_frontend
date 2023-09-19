@@ -206,7 +206,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   createMandato: async () => {
-    const state = useLargoPlazoStore.getState();
+    const state = useCortoPlazoStore.getState();
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",

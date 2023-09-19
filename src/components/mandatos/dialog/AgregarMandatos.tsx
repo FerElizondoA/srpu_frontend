@@ -78,18 +78,18 @@ export function AgregarMandatos({
     (state) => state.modificaMandato
   );
 
-  const setTipoMovimientoMandato: Function = useLargoPlazoStore(
+  const setTipoMovimientoMandato: Function = useCortoPlazoStore(
     (state) => state.setTipoMovimientoMandato
   );
 
-  const setSoporteDocumentalMandato: Function = useLargoPlazoStore(
+  const setSoporteDocumentalMandato: Function = useCortoPlazoStore(
     (state) => state.setSoporteDocumentalMandato
   );
 
   const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-    useLargoPlazoStore((state) => state.tablaTipoMovimientoMandato);
+  useCortoPlazoStore((state) => state.tablaTipoMovimientoMandato);
   const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
-    useLargoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
+  useCortoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),

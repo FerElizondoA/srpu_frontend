@@ -51,8 +51,7 @@ export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   ComentarioApartadoLargoPlazoSlice &
   DocumentosLargoPlazoSlice &
   FuenteDePagoLargoPlazoSlice &
-  AgregarAutorizacionLargoPlazoSlice &
-  MandatoSlice;
+  AgregarAutorizacionLargoPlazoSlice ;
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createEncabezadoLargoPlazoSlice(...x),
@@ -65,5 +64,5 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createDocumentoLargoPlazoSlice(...x),
   ...createFuentePagoLargoPLazoSlice(...x),
   ...createAgregarAutorizacionLargoPlazoSlice(...x),
-  ...createMandatoSlice(...x)
+
 }));

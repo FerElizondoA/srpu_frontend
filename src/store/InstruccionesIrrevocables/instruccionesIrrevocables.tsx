@@ -221,23 +221,23 @@ export const createInstruccionesIrrevocables: StateCreator<
       });
   },
 
-  getMunicipiosUOrganismosInstrucciones: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoMunicipiosUOrganismos: r,
-        }));
-      });
-  },
+  // getMunicipiosUOrganismosInstrucciones: async () => {
+  //   return await axios
+  //     .get(
+  //       process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
+  //       {
+  //         headers: {
+  //           Authorization: localStorage.getItem("jwtToken"),
+  //         },
+  //       }
+  //     )
+  //     .then(({ data }) => {
+  //       let r = data.data;
+  //       set((state) => ({
+  //         catalogoMunicipiosUOrganismos: r,
+  //       }));
+  //     });
+  // },
 
   //
 });

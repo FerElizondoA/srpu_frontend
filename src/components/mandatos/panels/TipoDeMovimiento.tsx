@@ -67,37 +67,37 @@ export function TipoDeMovimiento() {
     },
   ];
 
-  const altaDeudor: string = useLargoPlazoStore(
+  const altaDeudor: string = useCortoPlazoStore(
     (state) => state.tipoMovimientoMandato.altaDeudor
   );
 
   const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
-    useLargoPlazoStore(
+  useCortoPlazoStore(
       (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
     );
 
-  const mandatario: { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const mandatario: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.tipoMovimientoMandato.mandatario
   );
 
-  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.tipoMovimientoMandato.tipoFuente
   );
 
-  const fondoIngreso: { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.tipoMovimientoMandato.fondoIngreso
   );
 
-  const fechaMandato: string = useLargoPlazoStore(
+  const fechaMandato: string = useCortoPlazoStore(
     (state) => state.tipoMovimientoMandato.fechaMandato
   );
 
   const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-    useLargoPlazoStore((state) => state.tablaTipoMovimientoMandato);
+  useCortoPlazoStore((state) => state.tablaTipoMovimientoMandato);
 
   // separacion
 
-  const setTipoMovimientoMandato: Function = useLargoPlazoStore(
+  const setTipoMovimientoMandato: Function = useCortoPlazoStore(
     (state) => state.setTipoMovimientoMandato
   );
 
@@ -114,7 +114,7 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoFondosOIngresos
   );
 
-  const addTipoMovimientoMandato: Function = useLargoPlazoStore(
+  const addTipoMovimientoMandato: Function = useCortoPlazoStore(
     (state) => state.addTipoMovimientoMandato
   );
 
@@ -133,7 +133,7 @@ export function TipoDeMovimiento() {
 
   //
 
-  const removeTipoMovimientoMandato: Function = useLargoPlazoStore(
+  const removeTipoMovimientoMandato: Function = useCortoPlazoStore(
     (state) => state.removeTipoMovimientoMandato
   );
 
