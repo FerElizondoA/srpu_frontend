@@ -3,16 +3,17 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createMandato: (req, res) => {
+    const NumeroMandato = req.body.NumeroMandato;
     const FechaMandato = req.body.FechaMandato;
     const Mandatario = req.body.Mandatario;
     const MunicipioMandante = req.body.MunicipioMandante;
     const OrganismoMandante = req.body.OrganismoMandante;
     const TipoMovimiento = req.body.TipoMovimiento;
     const SoporteDocumental = req.body.SoporteDocumental;
-    const CreadoPor = req.body.CreadoPor;
+    const CreadoPor = req.body.IdUsuario;
 
     db.query(
-      `CALL sp_AgregarMandato('${FechaMandato}', '${Mandatario}', '${MunicipioMandante}' , '${OrganismoMandante}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
+      `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioMandante}' , '${OrganismoMandante}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -111,7 +112,7 @@ module.exports = {
       });
     }
 
-    if (IdUsuario == null || /^[\s]*$/.test(IdUsuarioModificador)) {
+    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
         error: "Ingrese Id usuario modificador",
       });

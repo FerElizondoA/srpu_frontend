@@ -248,7 +248,11 @@ const {
   deleteTipoDeGarantiaDePago,
 } = require("../controllers/TiposDeGarantiaDePago.js");
 const { createFirmaDetalle } = require("../controllers/FirmaDetalle.js");
-const { createMandato } = require("../controllers/Mandatos.js");
+const {
+  createMandato,
+  modifyMandato,
+  getMandatos,
+} = require("../controllers/Mandatos.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -857,8 +861,6 @@ router.delete("/delete-fideicomiso", (req, res) => {
 });
 //#endregion
 
-
-
 //#region TiposDeFideicomiso
 router.post("/create-tiposDeFideicomiso", (req, res, express) => {
   createTipoDeFideicomiso(req, res);
@@ -1166,25 +1168,6 @@ router.post("/create-firmaDetalle", (req, res, express) => {
   createFirmaDetalle(req, res);
 });
 
-// router.get("/get-tiposDeGarantiaDePago", (req, res) => {
-//   getTiposDeGarantiaDePago(req, res);
-// });
-
-// router.get(
-//   "/detail-tiposDeGarantiaDePago",
-//   verifyToken.verifyJWT,
-//   (req, res) => {
-//     getDetailTipoDeGarantiaDePago(req, res);
-//   }
-// );
-
-// router.put("/modify-tiposDeGarantiaDePago", (req, res) => {
-//   modifyTipoDeGarantiaDePago(req, res);
-// });
-
-// router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
-//   deleteTipoDeGarantiaDePago(req, res);
-// });
 //#endregion
 
 //#region Mandatos
@@ -1199,7 +1182,6 @@ router.post("/modify-mandato", (req, res, express) => {
 router.get("/get-mandato", (req, res, express) => {
   getMandatos(req, res);
 });
-
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
 //   getTiposDeGarantiaDePago(req, res);
