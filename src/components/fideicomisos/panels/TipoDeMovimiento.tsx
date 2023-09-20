@@ -20,50 +20,47 @@ import {
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
-import {
-  Fideicomisario,
-  TipoMovimiento,
-} from "../../../store/Fideicomiso/fideicomiso";
+import { TipoMovimiento } from "../../../store/Fideicomiso/fideicomiso";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
 export interface HeadLabels {
   label: string;
 }
 
 export function TipoDeMovimiento() {
-  const tipoMovimiento: TipoMovimiento = useCortoPlazoStore(
+  const tipoMovimiento: TipoMovimiento = useFideicomisoStore(
     (state) => state.tipoDeMovimiento
   );
 
-  const setTipoDeMovimiento: Function = useCortoPlazoStore(
+  const setTipoDeMovimiento: Function = useFideicomisoStore(
     (state) => state.setTipoDeMovimiento
   );
 
-  const catalogoTiposDeFideicomitente: ICatalogo[] = useCortoPlazoStore(
-    (state) => state.catalogoTiposDeFideicomitente
+  const catalogoTipoEntePublicoObligado: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoTipoEntePublicoObligado
   );
 
-  const getTiposDeFideicomitente: Function = useCortoPlazoStore(
-    (state) => state.getTiposDeFideicomitente
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
   );
-
-  const catalogoTiposDeFuente: ICatalogo[] = useCortoPlazoStore(
+  const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoTiposDeFuente
   );
 
-  const getTiposDeFuente: Function = useCortoPlazoStore(
+  const getTiposDeFuente: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: ICatalogo[] = useCortoPlazoStore(
+  const catalogoFondosOIngresos: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
-  const getFondosOIngresos: Function = useCortoPlazoStore(
+  const getFondosOIngresos: Function = useFideicomisoStore(
     (state) => state.getFondosOIngresos
   );
 
@@ -75,33 +72,24 @@ export function TipoDeMovimiento() {
     (state) => state.getOrganismos
   );
 
-  const addTipoMovimiento: Function = useCortoPlazoStore(
+  const addTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.addTipoMovimiento
   );
 
-  const cleanTipoMovimiento: Function = useCortoPlazoStore(
+  const cleanTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.cleanTipoMovimiento
   );
 
-  const removeTipoMovimiento: Function = useCortoPlazoStore(
+  const removeTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.removeTipoMovimiento
   );
 
-  const tablaTipoMovimiento: TipoMovimiento[] = useCortoPlazoStore(
+  const tablaTipoMovimiento: TipoMovimiento[] = useFideicomisoStore(
     (state) => state.tablaTipoMovimiento
   );
 
-  const getFideicomisos: Function = useCortoPlazoStore(
-    (state) => state.getFideicomisos
-  );
-
   useEffect(() => {
-    getFideicomisos()
-  }, [])
-
-
-  useEffect(() => {
-    getTiposDeFideicomitente();
+    getTipoEntePublicoObligado();
     getTiposDeFuente();
     getFondosOIngresos();
     getOrganismos();
@@ -160,17 +148,13 @@ export function TipoDeMovimiento() {
             height: "53rem",
           },
         }}
-
-
       >
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} >
-            <InputLabel sx={queries.medium_text}>
-              Alta de fideicomitente
-            </InputLabel>
-            <TextField fullWidth variant="standard" />
-          </Grid>
+          {/* <Grid item xs={10} sm={3} md={3} lg={3} xl={3}> */}
+          <InputLabel sx={queries.medium_text}>
+            Alta de fideicomitente
+          </InputLabel>
+          {/* </Grid> */}
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
@@ -182,7 +166,7 @@ export function TipoDeMovimiento() {
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              options={catalogoTiposDeFideicomitente}
+              options={catalogoTipoEntePublicoObligado}
               value={tipoMovimiento.tipoFideicomitente}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
@@ -226,7 +210,7 @@ export function TipoDeMovimiento() {
               closeText="Cerrar"
               openText="Abrir"
               options={catalogoOrganismos.filter(
-                (_, i) => _.Tipo === "Municipio"
+                (_, i) => _.Tipo?.toLowerCase() === "municipio"
               )}
               value={tipoMovimiento.entidad}
               getOptionLabel={(option) => option.Descripcion}
@@ -314,7 +298,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} >
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Fondo o ingreso</InputLabel>
             <Autocomplete
               disableClearable
@@ -358,8 +342,16 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} display={"flex"} justifyContent={"center"}>
+          <Grid
+            item
+            xs={10}
+            sm={3}
+            md={3}
+            lg={3}
+            xl={3}
+            display={"flex"}
+            justifyContent={"center"}
+          >
             <ThemeProvider theme={ButtonTheme}>
               <Button
                 sx={{
@@ -394,27 +386,26 @@ export function TipoDeMovimiento() {
           alignItems={"center"}
           height={"60%"}
           mt={2}
-
           sx={{
-            height:"45%",
+            height: "45%",
             "@media (min-width: 480px)": {
-              height:"60%",
+              height: "60%",
             },
-  
+
             "@media (min-width: 768px)": {
-              height:"60%",
+              height: "60%",
             },
-  
+
             "@media (min-width: 1140px)": {
-              height:"60%",
+              height: "60%",
             },
-  
+
             "@media (min-width: 1400px)": {
-              height:"60%",
+              height: "60%",
             },
-  
+
             "@media (min-width: 1870px)": {
-              height:"60%",
+              height: "60%",
             },
           }}
         >
@@ -483,8 +474,6 @@ export function TipoDeMovimiento() {
           </Paper>
         </Grid>
       </Grid>
-
-
     </>
   );
 }

@@ -27,14 +27,21 @@ import { format } from "date-fns";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
+  getDocumento,
+  getPathDocumentosFideicomiso,
+  listFile,
+} from "../../components/APIS/pathDocSol/APISDocumentos";
+import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
+import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 
 export interface IDatos {
   DescripcionFiudiciario: string;
@@ -92,31 +99,33 @@ export function Fideicomisos() {
 
   const [accion, setAccion] = useState("Agregar");
 
-  const tablaFideicomisos: IDatos[] = useCortoPlazoStore(
-    (state) => state.tablaFideicomisos
-  );
-
-  const getFideicomisos: Function = useCortoPlazoStore(
+  const getFideicomisos: Function = useFideicomisoStore(
     (state) => state.getFideicomisos
   );
 
-  const borrarFideicomiso: Function = useCortoPlazoStore(
+  // const fideicomisos: IDatos[] = useFideicomisoStore(
+  //   (state) => state.tablaFideicomisos
+  // );
+
+  const [fideicomisos, setFideicomisos] = useState<IDatos[]>([]);
+
+  const borrarFideicomiso: Function = useFideicomisoStore(
     (state) => state.borrarFideicomiso
   );
 
-  const idFideicomiso: string = useCortoPlazoStore(
+  const idFideicomiso: string = useFideicomisoStore(
     (state) => state.idFideicomiso
   );
 
-  const changeIdFideicomiso: Function = useCortoPlazoStore(
+  const changeIdFideicomiso: Function = useFideicomisoStore(
     (state) => state.changeIdFideicomiso
   );
 
-  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+  const setGeneralFideicomiso: Function = useFideicomisoStore(
     (state) => state.setGeneralFideicomiso
   );
 
-  const editarSolicitud: Function = useCortoPlazoStore(
+  const editarSolicitud: Function = useFideicomisoStore(
     (state) => state.editarFideicomiso
   );
 
@@ -128,16 +137,51 @@ export function Fideicomisos() {
     filtrarDatos();
   };
 
-  const [datos, setDatos] = useState<Array<IDatos>>([]);
   const [busqueda, setBusqueda] = useState("");
-  const [fideicomisos, setFideicomiso] = useState<Array<IDatos>>([]);
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<
-    Array<IDatos>
-  >([]);
+
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
+    useState<Array<IDatos>>(fideicomisos);
+
+  const fideicomisoSelect: Fideicomiso[] = useFideicomisoStore(
+    (state) => state.fideicomisoSelect
+  );
+  const setFideicomisoSelect: Function = useFideicomisoStore(
+    (state) => state.setFideicomisoSelect
+  );
+
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+    []
+  );
+
+  const arrDocs: any[] = useFideicomisoStore((state) => state.arrDocs);
+  const setArrDocs: Function = useFideicomisoStore((state) => state.setArrDocs);
+
+  useEffect(() => {
+    if (pathDocumentos.length > 0) {
+      let loc: any = [...arrDocs];
+      pathDocumentos?.map((val: any) => {
+        return getDocumento(
+          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.NombreIdentificador,
+          (res: any, index: number) => {
+            loc.push({ file: res, nombre: val.NombreArchivo });
+          }
+        );
+      });
+      setArrDocs(loc);
+    }
+  }, [pathDocumentos]);
+
+  useEffect(() => {
+    if (fideicomisoSelect.length !== 0) {
+      getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
+      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
+    }
+  }, [fideicomisoSelect]);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
-    let ResultadoBusqueda = datos.filter((elemento) => {
+    let ResultadoBusqueda = fideicomisos.filter((elemento) => {
       if (
         elemento.NumeroDeFideicomiso.toString()
           .toLocaleLowerCase()
@@ -163,18 +207,13 @@ export function Fideicomisos() {
   }, [fideicomisos]);
 
   useEffect(() => {
-    setFideicomisoFiltrados(datos);
-  }, [datos]);
-
-  useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length !== 0 ? setFideicomisoFiltrados(datos) : null;
+    busqueda.length !== 0 ? setFideicomisoFiltrados(fideicomisos) : null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
   useEffect(() => {
-    getFideicomisos(setDatos);
-    getFideicomisos(setFideicomiso);
+    getFideicomisos(setFideicomisos);
   }, []);
 
   useEffect(() => {
@@ -185,7 +224,7 @@ export function Fideicomisos() {
 
   useEffect(() => {
     if (!openDialogEliminar) {
-      getFideicomisos(setDatos);
+      getFideicomisos(setFideicomisos);
     }
   }, [openAgregarFideicomisos]);
 
@@ -251,14 +290,6 @@ export function Fideicomisos() {
               onChange={(e) => {
                 handleChange(e.target.value);
               }}
-              onKeyPress={(ev) => {
-                //cuando se presiona Enter
-                if (ev.key === "Enter") {
-                  handleSearch();
-                  ev.preventDefault();
-                  return false;
-                }
-              }}
             />
             <IconButton
               type="button"
@@ -266,11 +297,7 @@ export function Fideicomisos() {
               aria-label="search"
               onClick={() => handleSearch()}
             >
-              <SearchIcon
-                onClick={() => {
-                  handleSearch();
-                }}
-              />
+              <SearchIcon />
             </IconButton>
           </Paper>
         </Grid>
@@ -367,7 +394,11 @@ export function Fideicomisos() {
                             type="button"
                             onClick={() => {
                               setAccion("Editar");
+
                               changeIdFideicomiso(row?.Id);
+
+                              setFideicomisoSelect([row]);
+
                               setGeneralFideicomiso({
                                 numeroFideicomiso: row.NumeroDeFideicomiso,
                                 tipoFideicomiso: {
@@ -380,11 +411,13 @@ export function Fideicomisos() {
                                   Descripcion: row.DescripcionFiudiciario,
                                 },
                               });
+
                               editarSolicitud(
                                 JSON.parse(row.Fideicomisario),
                                 JSON.parse(row.TipoDeMovimiento),
                                 JSON.parse(row.SoporteDocumental)
                               );
+
                               changeAgregarFideicomisos(
                                 !openAgregarFideicomisos
                               );
@@ -400,7 +433,6 @@ export function Fideicomisos() {
                             onClick={() => {
                               changeIdFideicomiso(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
-                              getFideicomisos(setDatos);
                             }}
                           >
                             <DeleteIcon />

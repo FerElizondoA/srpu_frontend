@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 
+import { ThemeProvider } from "@emotion/react";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
@@ -32,15 +33,14 @@ import enGB from "date-fns/locale/en-GB";
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { SoporteDocumental } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import {
   DateInput,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-import { HeadLabels } from "./TipoDeMovimiento";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { ThemeProvider } from "@emotion/react";
+import { HeadLabels } from "./TipoDeMovimiento";
 
 export function SDocumental() {
   const heads: HeadLabels[] = [
@@ -63,38 +63,29 @@ export function SDocumental() {
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const soporteDocumental: SoporteDocumental = useCortoPlazoStore(
+  const soporteDocumental: SoporteDocumental = useFideicomisoStore(
     (state) => state.soporteDocumental
   );
 
-  const setSoporteDocumental: Function = useCortoPlazoStore(
+  const setSoporteDocumental: Function = useFideicomisoStore(
     (state) => state.setSoporteDocumental
   );
 
-  const addSoporteDocumental: Function = useCortoPlazoStore(
+  const addSoporteDocumental: Function = useFideicomisoStore(
     (state) => state.addSoporteDocumental
   );
 
-  const tablaSoporteDocumental: SoporteDocumental[] = useCortoPlazoStore(
+  const tablaSoporteDocumental: SoporteDocumental[] = useFideicomisoStore(
     (state) => state.tablaSoporteDocumental
   );
 
-  const removeSoporteDocumental: Function = useCortoPlazoStore(
+  const removeSoporteDocumental: Function = useFideicomisoStore(
     (state) => state.removeSoporteDocumental
   );
 
-  const cleanSoporteDocumental: Function = useCortoPlazoStore(
+  const cleanSoporteDocumental: Function = useFideicomisoStore(
     (state) => state.cleanSoporteDocumental
   );
-
-  const getFideicomisos: Function = useCortoPlazoStore(
-    (state) => state.getFideicomisos
-  );
-
-  useEffect(() => {
-    getFideicomisos()
-  }, [])
-
 
   const [radioValue, setRadioValue] = useState("");
 
@@ -135,6 +126,7 @@ export function SDocumental() {
       reader.onerror = reject;
     });
 
+  const arrDocs: any[] = useFideicomisoStore((state) => state.arrDocs);
   return (
     <Grid
       container
@@ -144,27 +136,27 @@ export function SDocumental() {
       //justifyItems={"center"}
       mt={3}
     >
-
       <Grid
         container
         display={"flex"}
         justifyContent={"space-evenly"}
-      //height={"10rem"}
+        //height={"10rem"}
       >
-        <Grid height={"4rem"} width={"40%"}
-        sx={{
-          width:"40%",
-          "@media (min-width: 480px)": {
-            width:"40%"
-          },
-      
-          "@media (min-width: 768px)": {
-            width:"15%"
-          },
-      
+        <Grid
+          height={"4rem"}
+          width={"40%"}
+          sx={{
+            width: "40%",
+            "@media (min-width: 480px)": {
+              width: "40%",
+            },
 
-        }} >
-          <FormControl  >
+            "@media (min-width: 768px)": {
+              width: "15%",
+            },
+          }}
+        >
+          <FormControl>
             <RadioGroup value={radioValue} onChange={handleChange}>
               <FormControlLabel
                 value="Fideicomiso"
@@ -185,11 +177,11 @@ export function SDocumental() {
           </FormControl>
         </Grid>
 
-
-        <Grid xs={6} sm={4} md={4} lg={4} xl={4}>
-
-          <Grid width={"90%"} >
-            <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
+        <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
+          <Grid width={"90%"}>
+            <InputLabel sx={queries.medium_text}>
+              Fecha del documento
+            </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
@@ -273,9 +265,13 @@ export function SDocumental() {
               }}
             />
           </Grid>
-
         </Grid>
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} mt={1}>
+        <Grid
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          mt={1}
+        >
           <ThemeProvider theme={ButtonTheme}>
             <Button
               sx={{
@@ -301,8 +297,6 @@ export function SDocumental() {
           </ThemeProvider>
         </Grid>
       </Grid>
-
-
 
       <Grid
         container
@@ -367,9 +361,19 @@ export function SDocumental() {
                         <Tooltip title={"Mostrar vista previa del documento"}>
                           <IconButton
                             onClick={() => {
-                              toBase64(row.archivo).then((data) => {
-                                setFileSelected(data);
-                              });
+                              toBase64(row.archivo)
+                                .then((data) => {
+                                  setFileSelected(data);
+                                })
+                                .catch((err) => {
+                                  setFileSelected(
+                                    `data:application/pdf;base64,${
+                                      arrDocs.filter((td: any) =>
+                                        td.nombre.includes(row.nombreArchivo)
+                                      )[0].file
+                                    }`
+                                  );
+                                });
                               setShowModalPrevia(true);
                             }}
                           >
@@ -420,7 +424,6 @@ export function SDocumental() {
           ></iframe>
         </DialogContent>
       </Dialog>
-
     </Grid>
   );
 }

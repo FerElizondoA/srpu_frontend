@@ -242,20 +242,20 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   modificaMandato: async () => {
-    const state = useCortoPlazoStore.getState();
+    // const state = useFideicomisoStore.getState();
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
         {
-          IdFideicomiso: state.idFideicomiso,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-          NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
-          TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
-          FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
-          Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
-          Fideicomisario: JSON.stringify(state.tablaFideicomisario),
-          TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
+          // IdFideicomiso: state.idFideicomiso,
+          // IdUsuario: localStorage.getItem("IdUsuario"),
+          // NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
+          // TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
+          // FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
+          // Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
+          // Fideicomisario: JSON.stringify(state.tablaFideicomisario),
+          // TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
+          // SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
         },
         {
           headers: {

@@ -21,10 +21,6 @@ import {
   createComentarioSlice,
 } from "./comentarios_apartado";
 import {
-  createFideicomisoSlice,
-  FideicomisoSlice,
-} from "../Fideicomiso/fideicomiso";
-import {
   createSolicitudFirmaSlice,
   SolicitudFirmaSlice,
 } from "../SolicitudFirma/solicitudFirma";
@@ -42,7 +38,6 @@ export type SolicitudStore = EncabezadoSlice &
   CondicionFinancieraSlice &
   DocumentosSlice &
   ComentarioApartadoSlice &
-  FideicomisoSlice &
   SolicitudFirmaSlice &
   InstruccionesIrrevocablesSlice &
   MandatoSlice;
@@ -56,9 +51,7 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createCondicionFinancieraSlice(...x),
   ...createDocumentoSlice(...x),
   ...createComentarioSlice(...x),
-  ...createFideicomisoSlice(...x),
   ...createSolicitudFirmaSlice(...x),
   ...createInstruccionesIrrevocables(...x),
   ...createMandatoSlice(...x),
-
 }));

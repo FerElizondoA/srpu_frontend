@@ -35,6 +35,27 @@ export async function getPathDocumentosAut(IdAut: string, setState: Function) {
     .catch((error) => {});
 }
 
+export async function getPathDocumentosFideicomiso(
+  IdFideicomiso: string,
+  setState: Function
+) {
+  await axios({
+    method: "get",
+    url:
+      process.env.REACT_APP_APPLICATION_BACK +
+      "/api/get-DetailPathDocFideicomiso",
+    params: { IdFideicomiso: IdFideicomiso },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      setState(data.data);
+    })
+    .catch((error) => {});
+}
+
 export const getDocumento = async (
   ROUTE: string,
   NOMBRE: string,

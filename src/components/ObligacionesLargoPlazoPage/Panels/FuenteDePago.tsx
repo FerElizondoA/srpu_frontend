@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
   Checkbox,
@@ -22,9 +23,9 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import { format } from "date-fns";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 interface Head {
   label: string;
 }
@@ -142,13 +143,11 @@ const headFP: Head[] = [
 ];
 
 export function FuenteDePago() {
-  const [fideicomiso, setFideicomiso] = useState(false);
-
   const [mecanismo, setMecanismo] = useState<any>("");
 
   const [asignarFuente, setAsignarFuente] = useState(false);
 
-  const getFideicomisos: Function = useCortoPlazoStore(
+  const getFideicomisos: Function = useFideicomisoStore(
     (state) => state.getFideicomisos
   );
 

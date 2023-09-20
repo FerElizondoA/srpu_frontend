@@ -21,7 +21,7 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   DateInput,
   StyledTableCell,
@@ -32,6 +32,8 @@ import { queries } from "../../../queries";
 import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { IDatos } from "../../../screens/fuenteDePago/Fideicomisos";
 
 interface HeadLabels {
   label: string;
@@ -39,91 +41,84 @@ interface HeadLabels {
 
 export function DatoGeneralesFideicomiso() {
   // DATOS GENERALES
-  const numeroFideicomiso: string = useCortoPlazoStore(
+  const numeroFideicomiso: string = useFideicomisoStore(
     (state) => state.generalFideicomiso.numeroFideicomiso
   );
   const tipoFideicomiso: { Id: string; Descripcion: string } =
-    useCortoPlazoStore((state) => state.generalFideicomiso.tipoFideicomiso);
+    useFideicomisoStore((state) => state.generalFideicomiso.tipoFideicomiso);
 
-  const fechaFideicomiso: string = useCortoPlazoStore(
+  const fechaFideicomiso: string = useFideicomisoStore(
     (state) => state.generalFideicomiso.fechaFideicomiso
   );
 
-  const fiudiciario: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const fiudiciario: { Id: string; Descripcion: string } = useFideicomisoStore(
     (state) => state.generalFideicomiso.fiudiciario
   );
 
   // FIDEICOMISARIO
   const fideicomisario: { Id: string; Descripcion: string } =
-    useCortoPlazoStore((state) => state.fideicomisario.fideicomisario);
+    useFideicomisoStore((state) => state.fideicomisario.fideicomisario);
   const ordenFideicomisario: { Id: string; Descripcion: string } =
-    useCortoPlazoStore((state) => state.fideicomisario.ordenFideicomisario);
+    useFideicomisoStore((state) => state.fideicomisario.ordenFideicomisario);
 
-  const tablaFideicomisario: Fideicomisario[] = useCortoPlazoStore(
+  const tablaFideicomisario: Fideicomisario[] = useFideicomisoStore(
     (state) => state.tablaFideicomisario
   );
 
   // TABLA FIDEICOMISARIO
-  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+  const setGeneralFideicomiso: Function = useFideicomisoStore(
     (state) => state.setGeneralFideicomiso
   );
 
-  const setFideicomisario: Function = useCortoPlazoStore(
+  const [error, setError] = useState(false);
+
+  const setFideicomisario: Function = useFideicomisoStore(
     (state) => state.setFideicomisario
   );
 
-  const addFideicomisario: Function = useCortoPlazoStore(
+  const addFideicomisario: Function = useFideicomisoStore(
     (state) => state.addFideicomisario
   );
 
-  const removeFideicomisario: Function = useCortoPlazoStore(
+  const removeFideicomisario: Function = useFideicomisoStore(
     (state) => state.removeFideicomisario
   );
 
-  const cleanFideicomisario: Function = useCortoPlazoStore(
+  const cleanFideicomisario: Function = useFideicomisoStore(
     (state) => state.cleanFideicomisario
   );
 
-  const catalogoTiposDeFideicomiso: ICatalogo[] = useCortoPlazoStore(
+  const catalogoTiposDeFideicomiso: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoTiposDeFideicomiso
   );
 
-  const getTiposFideicomiso: Function = useCortoPlazoStore(
+  const getTiposFideicomiso: Function = useFideicomisoStore(
     (state) => state.getTiposFideicomiso
   );
 
-  const catalogoFiudiciarios: ICatalogo[] = useCortoPlazoStore(
+  const catalogoFiudiciarios: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoFiudiciarios
   );
 
-  const getFiudiciarios: Function = useCortoPlazoStore(
+  const getFiudiciarios: Function = useFideicomisoStore(
     (state) => state.getFiudiciarios
   );
 
-  const catalogoFideicomisarios: ICatalogo[] = useCortoPlazoStore(
+  const catalogoFideicomisarios: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoFideicomisarios
   );
 
-  const getFideicomisarios: Function = useCortoPlazoStore(
+  const getFideicomisarios: Function = useFideicomisoStore(
     (state) => state.getFideicomisarios
   );
 
-  const catalogoOrdenesFideicomisario: ICatalogo[] = useCortoPlazoStore(
+  const catalogoOrdenesFideicomisario: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoOrdenesFideicomisario
   );
 
-  const getOrdenesFideicomisario: Function = useCortoPlazoStore(
+  const getOrdenesFideicomisario: Function = useFideicomisoStore(
     (state) => state.getOrdenesFideicomisario
   );
-
-  const getFideicomisos: Function = useCortoPlazoStore(
-    (state) => state.getFideicomisos
-  );
-
-  useEffect(() => {
-    getFideicomisos()
-  }, [])
-
 
   useEffect(() => {
     getTiposFideicomiso();
@@ -144,8 +139,6 @@ export function DatoGeneralesFideicomiso() {
     },
   ];
 
-
-
   // const idFideicomiso : string = useCortoPlazoStore(
   //   (state) => state.idFideicomiso
   // );
@@ -156,21 +149,27 @@ export function DatoGeneralesFideicomiso() {
       tipoFideicomiso: tipoFideicomiso,
       fechaFideicomiso: fechaFideicomiso,
       fiudiciario: fiudiciario,
-    })
-  }, [])
+    });
+  }, []);
 
+  const tablaFideicomisos: IDatos[] = useFideicomisoStore(
+    (state) => state.tablaFideicomisos
+  );
 
   return (
     <>
-      <Grid container flexDirection="column" justifyContent={"space-evenly"}
+      <Grid
+        container
+        flexDirection="column"
+        justifyContent={"space-evenly"}
         sx={{
           height: "46rem",
           "@media (min-width: 480px)": {
-            height: "50rem"
+            height: "50rem",
           },
 
           "@media (min-width: 768px)": {
-            height: "60rem"
+            height: "60rem",
           },
 
           "@media (min-width: 1140px)": {
@@ -182,13 +181,12 @@ export function DatoGeneralesFideicomiso() {
           },
 
           "@media (min-width: 1870px)": {
-            height: "51rem"
+            height: "51rem",
           },
         }}
       >
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
-
-          <Grid item xs={10} sm={4} md={4} lg={5} xl={4} >
+          <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
             <InputLabel sx={queries.medium_text}>
               Numero del fideicomiso
             </InputLabel>
@@ -197,18 +195,27 @@ export function DatoGeneralesFideicomiso() {
               variant="standard"
               type="number"
               value={numeroFideicomiso}
-              onChange={(v) =>
+              onChange={(v) => {
+                tablaFideicomisos.filter(
+                  (_) => _.NumeroDeFideicomiso === v.target.value
+                ).length > 0
+                  ? setError(true)
+                  : setError(false);
                 setGeneralFideicomiso({
                   numeroFideicomiso: v.target.value,
                   tipoFideicomiso: tipoFideicomiso,
                   fechaFideicomiso: fechaFideicomiso,
                   fiudiciario: fiudiciario,
-                })
-              }
+                });
+              }}
+              error={error}
+              helperText={error && "Número de registro ya existente"}
             />
           </Grid>
           <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
-            <InputLabel sx={queries.medium_text}>Fondo o ingreso{/*Tipo de fideicomiso*/}</InputLabel>
+            <InputLabel sx={queries.medium_text}>
+              Fondo o ingreso{/*Tipo de fideicomiso*/}
+            </InputLabel>
             <Autocomplete
               disableClearable
               clearText="Borrar"
@@ -252,9 +259,10 @@ export function DatoGeneralesFideicomiso() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
-          <Grid mt={2} xs={10} sm={4} md={4} lg={5} xl={4} item
-          >
-            <InputLabel sx={queries.medium_text}>Fecha de Fideicomiso</InputLabel>
+          <Grid mt={2} xs={10} sm={4} md={4} lg={5} xl={4} item>
+            <InputLabel sx={queries.medium_text}>
+              Fecha de Fideicomiso
+            </InputLabel>
 
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
@@ -277,7 +285,7 @@ export function DatoGeneralesFideicomiso() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={4} md={4} lg={5} xl={4} >
+          <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
             <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
             <Autocomplete
               disableClearable
@@ -304,7 +312,7 @@ export function DatoGeneralesFideicomiso() {
                   fechaFideicomiso: fechaFideicomiso,
                   fiudiciario: {
                     Id: text?.Id,
-                    Descripcion: text?.Descripcion
+                    Descripcion: text?.Descripcion,
                   },
                 })
               }
@@ -321,29 +329,24 @@ export function DatoGeneralesFideicomiso() {
               }
             />
           </Grid>
-
         </Grid>
 
-        <Divider >
-          <Typography sx={{ ...queries.bold_text, color: "#af8c55 ", marginTop: "1rem" }}>
+        <Divider>
+          <Typography
+            sx={{ ...queries.bold_text, color: "#af8c55 ", marginTop: "1rem" }}
+          >
             FIDEICOMISARIO
           </Typography>
         </Divider>
 
-        <Grid
-          item
-          container
-          display={"flex"}
-          justifyContent={"center"}
-          mt={2}
-        >
+        <Grid item container display={"flex"} justifyContent={"center"} mt={2}>
           <Grid
             width={"100%"}
             display={"flex"}
             justifyItems={"center"}
             justifyContent={"space-evenly"}
           >
-            <Grid item xs={5} sm={4} md={4} lg={3} xl={4} >
+            <Grid item xs={5} sm={4} md={4} lg={3} xl={4}>
               <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
               <Autocomplete
                 disableClearable
@@ -427,7 +430,7 @@ export function DatoGeneralesFideicomiso() {
               sx={{
                 ...queries.buttonContinuarSolicitudInscripcion,
                 width: "15vh",
-                marginBottom: "1rem"
+                marginBottom: "1rem",
               }}
               disabled={
                 fideicomisario.Descripcion === "" ||
@@ -444,29 +447,33 @@ export function DatoGeneralesFideicomiso() {
               Agregar
             </Button>
           </ThemeProvider>
-          <Grid width={"100%"} display={"flex"} justifyContent={"center"}
+          <Grid
+            width={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
             sx={{
               height: "18rem",
               "@media (min-width: 480px)": {
-                height: "30"
+                height: "30",
               },
 
               "@media (min-width: 768px)": {
-                height: "30rem"
+                height: "30rem",
               },
 
               "@media (min-width: 1140px)": {
-                height: "30rem"
+                height: "30rem",
               },
 
               "@media (min-width: 1400px)": {
-                height: "15rem"
+                height: "15rem",
               },
 
               "@media (min-width: 1870px)": {
-                height: "22rem"
+                height: "22rem",
               },
-            }}>
+            }}
+          >
             <Paper sx={{ width: "90%", height: "100%" }}>
               <TableContainer
                 sx={{
@@ -484,8 +491,8 @@ export function DatoGeneralesFideicomiso() {
                   },
                 }}
               >
-                <Table stickyHeader >
-                  <TableHead  >
+                <Table stickyHeader>
+                  <TableHead>
                     <TableRow>
                       {headsFideicomisario.map((head, index) => (
                         <StyledTableCell align="center" key={index}>
@@ -523,7 +530,6 @@ export function DatoGeneralesFideicomiso() {
               </TableContainer>
             </Paper>
           </Grid>
-
         </Grid>
       </Grid>
     </>

@@ -1,10 +1,22 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
-import Swal from "sweetalert2";
-import { format } from "date-fns";
-import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IDatos } from "../../screens/fuenteDePago/Fideicomisos";
+import { useFideicomisoStore } from "./main";
+
+export type Fideicomiso = {
+  Id: string;
+  NumeroDeFideicomiso: string;
+  IdTipoFideicomiso: string;
+  DescripcionTipoFideicomiso: string;
+  FechaDeFideicomiso: string;
+  IdFiudiciario: string;
+  DescripcionFiudiciario: string;
+  Fideicomisario: string;
+  TipoDeMovimiento: string;
+  SoporteDocumental: string;
+};
 
 export interface GeneralFideicomiso {
   numeroFideicomiso: string;
@@ -33,14 +45,9 @@ export interface SoporteDocumental {
   fechaArchivo: string;
 }
 
-// export interface Fideicomiso {
-//   generalFideicomiso: GeneralFideicomiso; //fijo
-//   fideicomisario: Fideicomisario[]; //tabla
-//   tipoDeMovimiento: TipoMovimiento[]; //tabla
-//   soporteDocumental: SoporteDocumental[]; //tabla
-// }
-
 export interface FideicomisoSlice {
+  fideicomisoSelect: Fideicomiso[];
+  setFideicomisoSelect: (fideicomiso: Fideicomiso[]) => void;
   generalFideicomiso: GeneralFideicomiso;
   fideicomisario: Fideicomisario;
   tipoDeMovimiento: TipoMovimiento;
@@ -101,16 +108,38 @@ export interface FideicomisoSlice {
 
   createFideicomiso: () => void;
   modificarFideicomiso: () => void;
-  getFideicomisos:(setState: Function) => void;
+  getFideicomisos: (setState: any) => void;
 
+  saveFilesFideicomiso: (
+    idRegistro: string,
+    ruta: string,
+    archivo: { archivo: File; nombreArchivo: string }
+  ) => void;
 
-  
+  savePathDocFideicomiso: (
+    idFideicomiso: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => void;
+
+  arrDocs: any[];
+
+  setArrDocs: (arr: any) => void;
 }
 
 export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   set,
   get
 ) => ({
+  fideicomisoSelect: [],
+
+  setFideicomisoSelect: (fideicomiso: Fideicomiso[]) => {
+    set((state) => ({
+      fideicomisoSelect: fideicomiso,
+    }));
+  },
+
   idFideicomiso: "",
   generalFideicomiso: {
     numeroFideicomiso: "",
@@ -151,10 +180,10 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   setGeneralFideicomiso: (generalFideicomiso: GeneralFideicomiso) => {
     set(() => ({
-      generalFideicomiso: generalFideicomiso
+      generalFideicomiso: generalFideicomiso,
     }));
   },
-  
+
   setFideicomisario: (fideicomisario: Fideicomisario) => {
     //tabla
     set(() => ({
@@ -392,7 +421,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
 
   createFideicomiso: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useFideicomisoStore.getState();
 
     await axios
       .post(
@@ -416,6 +445,14 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
       .then(({ data }) => {
         state.changeIdFideicomiso(data.data.id);
+        state.tablaSoporteDocumental.map((dato, index) => {
+          return state.saveFilesFideicomiso(
+            data.data.Id,
+            `/SRPU/FIDEICOMISOS/${data.data.Id}`,
+            state.tablaSoporteDocumental[index]
+          );
+        });
+
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
@@ -427,7 +464,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
 
   modificarFideicomiso: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useFideicomisoStore.getState();
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
@@ -449,6 +486,14 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         }
       )
       .then(({ data }) => {
+        state.changeIdFideicomiso(data.result.Id);
+        state.tablaSoporteDocumental.map((dato, index) => {
+          return state.saveFilesFideicomiso(
+            data.result.Id,
+            `/SRPU/FIDEICOMISOS/${data.result.Id}`,
+            { archivo: dato.archivo, nombreArchivo: dato.nombreArchivo }
+          );
+        });
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
@@ -462,7 +507,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
           icon: "error",
-          title: "No se Edito el fideicomiso.",
+          title: "Se encontró un error, verifique la información.",
         });
       });
   },
@@ -510,9 +555,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     return false;
   },
 
-  getFideicomisos : async (
-    setState: Function,
-  ) => {
+  getFideicomisos: async (setState: any) => {
+    const state = useFideicomisoStore.getState();
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomiso", {
         headers: {
@@ -521,9 +565,83 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       })
       .then(({ data }) => {
         let r = data.data;
+        state.tablaFideicomisos = r;
         setState(r);
       });
-  }
+  },
 
-  
+  saveFilesFideicomiso: async (
+    idRegistro: string,
+    ruta: string,
+    archivo: { archivo: File; nombreArchivo: string }
+  ) => {
+    const state = useFideicomisoStore.getState();
+
+    return setTimeout(() => {
+      const url = new File([archivo.archivo], archivo.nombreArchivo);
+
+      let dataArray = new FormData();
+      dataArray.append("ROUTE", `${ruta}`);
+      dataArray.append("ADDROUTE", "true");
+      dataArray.append("FILE", url);
+
+      if (archivo.archivo.size > 0) {
+        return axios
+          .post(
+            process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+            dataArray,
+            {
+              headers: {
+                Authorization: localStorage.getItem("jwtToken"),
+              },
+            }
+          )
+          .then(({ data }) => {
+            state.savePathDocFideicomiso(
+              idRegistro,
+              data.RESPONSE.RUTA,
+              data.RESPONSE.NOMBREIDENTIFICADOR,
+              data.RESPONSE.NOMBREARCHIVO
+            );
+          })
+          .catch((e) => {});
+      } else {
+        return null;
+      }
+    }, 1000);
+  },
+
+  savePathDocFideicomiso: async (
+    idFideicomiso: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => {
+    return await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/api/create-addPathDocFideicomiso",
+        {
+          IdFideicomiso: idFideicomiso,
+          Ruta: Ruta,
+          NombreIdentificador: NombreIdentificador,
+          NombreArchivo: NombreArchivo,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((r) => {})
+      .catch((e) => {});
+  },
+
+  arrDocs: [],
+
+  setArrDocs(arr: any) {
+    set((state) => ({
+      arrDocs: arr,
+    }));
+  },
 });

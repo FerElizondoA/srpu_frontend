@@ -16,12 +16,18 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
+import {
+  Fideicomisario,
+  GeneralFideicomiso,
+  SoporteDocumental,
+  TipoMovimiento,
+} from "../../../store/Fideicomiso/fideicomiso";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
-import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 import { SDocumental } from "../panels/SoporteDocumental";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -65,37 +71,41 @@ export function AgregarFideicomisos({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
   };
 
-  const createFideicomiso: Function = useCortoPlazoStore(
+  const createFideicomiso: Function = useFideicomisoStore(
     (state) => state.createFideicomiso
   );
 
-  const modificarFideicomiso: Function = useCortoPlazoStore(
+  const modificarFideicomiso: Function = useFideicomisoStore(
     (state) => state.modificarFideicomiso
   );
 
-  const setGeneralFideicomiso: Function = useCortoPlazoStore(
+  const setGeneralFideicomiso: Function = useFideicomisoStore(
     (state) => state.setGeneralFideicomiso
   );
 
-  const editarSolicitud: Function = useCortoPlazoStore(
+  const editarSolicitud: Function = useFideicomisoStore(
     (state) => state.editarFideicomiso
   );
 
-  const changeIdFideicomiso: Function = useCortoPlazoStore(
+  const changeIdFideicomiso: Function = useFideicomisoStore(
     (state) => state.changeIdFideicomiso
   );
 
-  const idFideicomiso: string = useCortoPlazoStore(
-    (state) => state.idFideicomiso
+  const generalFideicomiso: GeneralFideicomiso = useFideicomisoStore(
+    (state) => state.generalFideicomiso
   );
 
-  const getFideicomisos: Function = useCortoPlazoStore(
-    (state) => state.getFideicomisos
+  const tablaFideicomisario: Fideicomisario[] = useFideicomisoStore(
+    (state) => state.tablaFideicomisario
   );
 
-  useEffect(() => {
-    getFideicomisos();
-  }, []);
+  const tablaTipoMovimiento: TipoMovimiento[] = useFideicomisoStore(
+    (state) => state.tablaTipoMovimiento
+  );
+
+  const tablaSoporteDocumental: SoporteDocumental[] = useFideicomisoStore(
+    (state) => state.tablaSoporteDocumental
+  );
 
   const limpiaFideicomiso = () => {
     changeIdFideicomiso("");
@@ -139,6 +149,15 @@ export function AgregarFideicomisos({
           <Grid item>
             <ThemeProvider theme={theme}>
               <Button
+                disabled={
+                  generalFideicomiso.fiudiciario.Id === "" ||
+                  generalFideicomiso.numeroFideicomiso === "" ||
+                  generalFideicomiso.tipoFideicomiso.Id === "" ||
+                  generalFideicomiso.fechaFideicomiso === "" ||
+                  tablaFideicomisario.length < 0 ||
+                  tablaTipoMovimiento.length < 0 ||
+                  tablaSoporteDocumental.length < 0
+                }
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   if (accion === "Agregar") {
@@ -159,10 +178,6 @@ export function AgregarFideicomisos({
                     "@media (min-width: 480px)": {
                       fontSize: "1.5ch",
                     },
-                    // "@media (min-width: 601px) and (max-width: 900px)": {
-                    //   // SM (small) screen
-                    //   fontSize: "1.5ch",
-                    // }
                   }}
                 >
                   {accion} fideicomiso
@@ -172,29 +187,27 @@ export function AgregarFideicomisos({
           </Grid>
         </Toolbar>
       </AppBar>
- 
-        <Grid item>
-          <Tabs
-            value={tabIndex}
-            onChange={handleChange}
-            centered={query.isScrollable ? false : true}
-            variant={query.isScrollable ? "scrollable" : "standard"}
-            scrollButtons
-            allowScrollButtonsMobile
-            
-          >
-            <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
-            <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
-            <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
-          </Tabs>
 
-          {tabIndex === 0 && <DatoGeneralesFideicomiso />}
+      <Grid item>
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          centered={query.isScrollable ? false : true}
+          variant={query.isScrollable ? "scrollable" : "standard"}
+          scrollButtons
+          allowScrollButtonsMobile
+        >
+          <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
+          <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>
+          <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
+        </Tabs>
 
-          {tabIndex === 1 && <TipoDeMovimiento />}
+        {tabIndex === 0 && <DatoGeneralesFideicomiso />}
 
-          {tabIndex === 2 && <SDocumental />}
-        </Grid>
-    
+        {tabIndex === 1 && <TipoDeMovimiento />}
+
+        {tabIndex === 2 && <SDocumental />}
+      </Grid>
     </Dialog>
   );
 }
