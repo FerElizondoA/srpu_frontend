@@ -187,6 +187,18 @@ export function SolicitudInscripcion() {
       InstitucionFinanciera:
         state.informacionGeneral.institucionFinanciera.Descripcion,
     };
+    /////////////////// Por definir /////////////////////
+    let entePublicoObligado = "";
+    let obligadoSolidario = "";
+    let tipoEntePublicoObligado = "";
+
+    for (let i = 0; i < state.tablaObligadoSolidarioAval.length; i++) {
+      const item = state.tablaObligadoSolidarioAval[0];
+      entePublicoObligado = item.entePublicoObligado;
+      obligadoSolidario = item.obligadoSolidario;
+      tipoEntePublicoObligado = item.tipoEntePublicoObligado;
+    }
+    ///////////////////   Condiciones Financieras /////////////////////
     let importe = 0;
     let numeroDePago = 0;
     let PeriocidadDePago = "";
@@ -376,6 +388,20 @@ export function SolicitudInscripcion() {
     changeReglasAplicables(arrReglas);
   };
 
+  // const [botonComentarios, setBotonComentarios] = useState("hola")
+
+  // const labelBotonComentarios = () => {
+
+  //   //POR HACER
+  //       // let cont =comentarios.length||0;
+  //       // comentarios?.map((elemento)=>{
+  //       //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
+  //       // })
+
+  //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
+
+  // }
+
   return (
     <Grid container>
       <Grid
@@ -459,7 +485,7 @@ export function SolicitudInscripcion() {
         </Grid>
       </Grid>
 
-      <Grid item container justifyContent={"center"} alignItems={"flex-start"}>
+      <Grid item container justifyContent={"center"} >
         <Grid item md={9} lg={9} xl={10}>
           <Divider sx={queries.medium_text}>
             Declaratorias aplicables al financiamiento u obligación:
@@ -586,10 +612,12 @@ export function SolicitudInscripcion() {
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}
                   />
-                  <DialogSolicitarModificacion
-                    handler={setOpenDialogModificacion}
-                    openState={openDialogModificacion}
-                  />
+                  {openDialogModificacion && (
+                    <DialogSolicitarModificacion
+                      handler={setOpenDialogModificacion}
+                      openState={openDialogModificacion}
+                    />
+                  )}
                 </Grid>
               ) : null}
             </Grid>

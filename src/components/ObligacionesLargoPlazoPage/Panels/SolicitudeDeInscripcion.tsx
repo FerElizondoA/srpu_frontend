@@ -395,7 +395,7 @@ export function SolicituDeInscripcion() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item md={3} lg={3}>
+        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Servidor público a quien va dirigido:
           </InputLabel>
@@ -418,7 +418,7 @@ export function SolicituDeInscripcion() {
           />
         </Grid>
 
-        <Grid item md={3} lg={3}>
+        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
             fullWidth
@@ -442,7 +442,7 @@ export function SolicituDeInscripcion() {
       </Grid>
 
       <Grid item container mt={2} mb={2} justifyContent={"center"}>
-        <Grid item md={3} lg={3} xl={4}>
+        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -632,16 +632,22 @@ export function SolicituDeInscripcion() {
           }}
         >
           {erroresValidacion?.map((item, index) => {
+
             const division = item.indexOf(":");
+
             const markedText =
               division !== -1 ? item.substring(0, division + 1) : item;
+
             const restText =
               division !== -1 ? item.substring(division + 1) : "";
+
             return (
-              <Typography key={index} color={"red"}>
+              <Typography color={"red"} sx={{fontSize:".9rem"}}>
+
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>
+
                 <span style={{ color: "red" }}>
                   {restText} <br /> <br />
                 </span>

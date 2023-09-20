@@ -71,7 +71,7 @@ export function AgregarCondicionFinanciera(props: Props) {
     setTabIndex(newTabIndex);
   };
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   // DISPOSICION
@@ -268,8 +268,8 @@ export function AgregarCondicionFinanciera(props: Props) {
             </Grid>
           </Toolbar>
         </AppBar>
-        <Grid item container direction="column">
-          <Grid item>
+        <Grid container direction="column">
+          <Grid item width={"100%"}>
             <Tabs
               value={tabIndex}
               onChange={handleChange}

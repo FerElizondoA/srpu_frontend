@@ -28,7 +28,6 @@ import {
   createInstruccionesIrrevocables,
   InstruccionesIrrevocablesSlice,
 } from "../InstruccionesIrrevocables/instruccionesIrrevocables";
-import { MandatoSlice, createMandatoSlice } from "../Mandatos/mandato";
 
 export type SolicitudStore = EncabezadoSlice &
   InformacionGeneralSlice &
@@ -39,8 +38,7 @@ export type SolicitudStore = EncabezadoSlice &
   DocumentosSlice &
   ComentarioApartadoSlice &
   SolicitudFirmaSlice &
-  InstruccionesIrrevocablesSlice &
-  MandatoSlice;
+  InstruccionesIrrevocablesSlice;
 
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
@@ -53,5 +51,4 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createComentarioSlice(...x),
   ...createSolicitudFirmaSlice(...x),
   ...createInstruccionesIrrevocables(...x),
-  ...createMandatoSlice(...x),
 }));

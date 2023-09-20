@@ -2,8 +2,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
-import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
+import { useMandatoStore } from "./main";
 
 export interface TipoMovimientoMandato {
   altaDeudor: string;
@@ -206,7 +205,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   createMandato: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useMandatoStore.getState();
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
@@ -242,7 +241,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   modificaMandato: async () => {
-    // const state = useFideicomisoStore.getState();
+    const state = useMandatoStore.getState();
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",

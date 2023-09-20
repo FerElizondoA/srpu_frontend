@@ -39,6 +39,7 @@ import {
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
 
 const heads: HeadLabels[] = [
   {
@@ -80,36 +81,36 @@ export function SoporteDocumental() {
     });
   };
 
-  const tipo: string = useCortoPlazoStore(
+  const tipo: string = useMandatoStore(
     (state) => state.soporteDocumentalMandato.tipo
   );
 
-  const archivo: File = useCortoPlazoStore(
+  const archivo: File = useMandatoStore(
     (state) => state.soporteDocumentalMandato.archivo
   );
 
-  const nombreArchivo: string = useCortoPlazoStore(
+  const nombreArchivo: string = useMandatoStore(
     (state) => state.soporteDocumentalMandato.nombreArchivo
   );
 
-  const fechaArchivo: string = useCortoPlazoStore(
+  const fechaArchivo: string = useMandatoStore(
     (state) => state.soporteDocumentalMandato.fechaArchivo
   );
 
-  const setSoporteDocumentalMandato: Function = useCortoPlazoStore(
+  const setSoporteDocumentalMandato: Function = useMandatoStore(
     (state) => state.setSoporteDocumentalMandato
   );
 
-  const addSoporteDocumentalMandato: Function = useCortoPlazoStore(
+  const addSoporteDocumentalMandato: Function = useMandatoStore(
     (state) => state.addSoporteDocumentalMandato
   );
 
-  const removeSoporteDocumentalMandato: Function = useCortoPlazoStore(
+  const removeSoporteDocumentalMandato: Function = useMandatoStore(
     (state) => state.removeSoporteDocumentalMandato
   );
 
   const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
-  useCortoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
+  useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];

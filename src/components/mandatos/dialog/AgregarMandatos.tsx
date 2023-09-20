@@ -27,6 +27,7 @@ import {
   SoporteDocumentalMandato,
   TipoMovimientoMandato,
 } from "../../../store/Mandatos/mandato";
+import { useMandatoStore } from "../../../store/Mandatos/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -66,36 +67,36 @@ export function AgregarMandatos({
     setTabIndex(newTabIndex);
   };
 
-  const changeIdMandato: Function = useCortoPlazoStore(
+  const changeIdMandato: Function = useMandatoStore(
     (state) => state.changeIdMandato
   );
 
-  const editarMandato: Function = useCortoPlazoStore(
+  const editarMandato: Function = useMandatoStore(
     (state) => state.editarMandato
   );
 
-  const modificaMandato: Function = useCortoPlazoStore(
+  const modificaMandato: Function = useMandatoStore(
     (state) => state.modificaMandato
   );
 
-  const setTipoMovimientoMandato: Function = useCortoPlazoStore(
+  const setTipoMovimientoMandato: Function = useMandatoStore(
     (state) => state.setTipoMovimientoMandato
   );
 
-  const setSoporteDocumentalMandato: Function = useCortoPlazoStore(
+  const setSoporteDocumentalMandato: Function = useMandatoStore(
     (state) => state.setSoporteDocumentalMandato
   );
 
   const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-  useCortoPlazoStore((state) => state.tablaTipoMovimientoMandato);
+  useMandatoStore((state) => state.tablaTipoMovimientoMandato);
   const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
-  useCortoPlazoStore((state) => state.tablaSoporteDocumentalMandato);
+  useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
 
-  const createMandato: Function = useCortoPlazoStore(
+  const createMandato: Function = useMandatoStore(
     (state) => state.createMandato
   );
 

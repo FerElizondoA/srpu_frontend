@@ -28,6 +28,7 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { useMandatoStore } from "../../store/Mandatos/main";
 
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -91,7 +92,7 @@ export function Mandatos() {
 
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
 
-  const getMandatos: Function = useCortoPlazoStore((state) => state.getMandato);
+  const getMandatos: Function = useMandatoStore((state) => state.getMandato);
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -133,7 +134,7 @@ export function Mandatos() {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
 
-  const cleanMandato: Function = useCortoPlazoStore(
+  const cleanMandato: Function = useMandatoStore(
     (state) => state.cleanMandato
   );
 
@@ -143,7 +144,7 @@ export function Mandatos() {
   }, [openAgregarMandato]);
 
   return (
-    <Grid height={"75vh"}>
+    <Grid height={"74vh"}>
       <Grid item>
         {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
       </Grid>
@@ -231,11 +232,11 @@ export function Mandatos() {
           justifyContent: "center",
         }}
       >
-        <Paper sx={{ width: "100%" }}>
+        <Paper sx={{ width: "100%", height:"100%" }}>
           <TableContainer
             sx={{
-              width: "98%",
-
+              width: "100%",
+              height:"100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",

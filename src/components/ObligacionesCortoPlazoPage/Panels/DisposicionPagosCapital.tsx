@@ -389,20 +389,21 @@ export function DisposicionPagosCapital() {
       justifyContent={"space-between"}
       height={query.isMobile === false ?
         disposicionesParciales === false && tasasParciales === false ? "32rem"
-          : disposicionesParciales === true && tasasParciales === false ? "42rem"
-            : disposicionesParciales === false && tasasParciales === true ? "42rem"
+          : disposicionesParciales === true && tasasParciales === false ? "38rem"
+            : disposicionesParciales === false && tasasParciales === true ? "38rem"
               : disposicionesParciales === true && tasasParciales === true ? "60rem"
                 : "36rem"
         : query.isMobile === true ?
           disposicionesParciales === false && tasasParciales === false ? "50rem"
             : disposicionesParciales === true && tasasParciales === false ? "65rem"
-              : disposicionesParciales === false && tasasParciales === true ? "75rem"
-                : disposicionesParciales === true && tasasParciales === true ? "90rem"
+              : disposicionesParciales === false && tasasParciales === true ? "65rem"
+                : disposicionesParciales === true && tasasParciales === true ? "80rem"
                   : "52rem"
           : "36rem"}
     >
 
       <Grid item container mt={2} direction="column">
+
         <Grid item>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
@@ -412,6 +413,7 @@ export function DisposicionPagosCapital() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
+          
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
@@ -570,6 +572,7 @@ export function DisposicionPagosCapital() {
                 />
               </LocalizationProvider>
             </Grid>
+
             <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
@@ -718,7 +721,6 @@ export function DisposicionPagosCapital() {
                   </TableContainer>
                 </Paper>
               </Grid>
-
             </Grid>
           )}
         </Grid>
@@ -785,6 +787,7 @@ export function DisposicionPagosCapital() {
           <Grid container display={"flex"} justifyContent={"center"} mb={2}>
             {radioValue === "Tasa Fija" ? (
               <Grid item container display="flex" justifyContent="space-evenly">
+
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2} display={"block"}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
@@ -1207,7 +1210,7 @@ export function DisposicionPagosCapital() {
                   </Button>
                 </ThemeProvider>
 
-                <Grid mb={4} width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
+                <Grid  width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
                   <Paper sx={{ width: "88%", height: "100%" }}>
                     <TableContainer
                       sx={{

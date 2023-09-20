@@ -35,6 +35,7 @@ import {
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { formatDate } from "@jbcecapmex/pakfirma/dist/screens/tabladocumentos/TablaDocs";
+import { useMandatoStore } from "../../../store/Mandatos/main";
 
 interface HeadLabels {
   label: string;
@@ -67,37 +68,37 @@ export function TipoDeMovimiento() {
     },
   ];
 
-  const altaDeudor: string = useCortoPlazoStore(
+  const altaDeudor: string = useMandatoStore(
     (state) => state.tipoMovimientoMandato.altaDeudor
   );
 
   const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
-  useCortoPlazoStore(
+  useMandatoStore(
       (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
     );
 
-  const mandatario: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const mandatario: { Id: string; Descripcion: string } = useMandatoStore(
     (state) => state.tipoMovimientoMandato.mandatario
   );
 
-  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useMandatoStore(
     (state) => state.tipoMovimientoMandato.tipoFuente
   );
 
-  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const fondoIngreso: { Id: string; Descripcion: string } = useMandatoStore(
     (state) => state.tipoMovimientoMandato.fondoIngreso
   );
 
-  const fechaMandato: string = useCortoPlazoStore(
+  const fechaMandato: string = useMandatoStore(
     (state) => state.tipoMovimientoMandato.fechaMandato
   );
 
   const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-  useCortoPlazoStore((state) => state.tablaTipoMovimientoMandato);
+  useMandatoStore((state) => state.tablaTipoMovimientoMandato);
 
   // separacion
 
-  const setTipoMovimientoMandato: Function = useCortoPlazoStore(
+  const setTipoMovimientoMandato: Function = useMandatoStore(
     (state) => state.setTipoMovimientoMandato
   );
 
@@ -114,7 +115,7 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoFondosOIngresos
   );
 
-  const addTipoMovimientoMandato: Function = useCortoPlazoStore(
+  const addTipoMovimientoMandato: Function = useMandatoStore(
     (state) => state.addTipoMovimientoMandato
   );
 
@@ -131,9 +132,7 @@ export function TipoDeMovimiento() {
     (state) => state.getFondosOIngresosInstrucciones
   );
 
-  //
-
-  const removeTipoMovimientoMandato: Function = useCortoPlazoStore(
+  const removeTipoMovimientoMandato: Function = useMandatoStore(
     (state) => state.removeTipoMovimientoMandato
   );
 
@@ -145,14 +144,14 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoOrganismos
   );
 
-  const cleanTipoMovimientoMandato: Function = useCortoPlazoStore(
+  const cleanTipoMovimientoMandato: Function = useMandatoStore(
     (state) => state.cleanTipoMovimientoMandato
   );
 
-  const numeroMandato: string = useCortoPlazoStore(
+  const numeroMandato: string = useMandatoStore(
     (state) => state.numeroMandato
   );
-  const changeNumeroMandato: Function = useCortoPlazoStore(
+  const changeNumeroMandato: Function = useMandatoStore(
     (state) => state.changeNumeroMandato
   );
 

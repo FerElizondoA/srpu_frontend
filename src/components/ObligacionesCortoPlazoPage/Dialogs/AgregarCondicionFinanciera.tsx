@@ -72,7 +72,7 @@ export function AgregarCondicionFinanciera(props: Props) {
     setTabIndex(newTabIndex);
   };
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   // DISPOSICION
