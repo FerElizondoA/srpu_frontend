@@ -2,8 +2,8 @@ import axios from "axios";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
-import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
+import { useMandatoStore } from "./main";
+
 
 export interface TipoMovimientoMandato {
   altaDeudor: string;
@@ -206,7 +206,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   createMandato: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useMandatoStore.getState();
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
@@ -242,20 +242,20 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   },
 
   modificaMandato: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useMandatoStore.getState();
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
         {
-          IdFideicomiso: state.idFideicomiso,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-          NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
-          TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
-          FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
-          Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
-          Fideicomisario: JSON.stringify(state.tablaFideicomisario),
-          TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
+          // IdFideicomiso: state.idFideicomiso,
+          // IdUsuario: localStorage.getItem("IdUsuario"),
+          // NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
+          // TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
+          // FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
+          // Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
+          // Fideicomisario: JSON.stringify(state.tablaFideicomisario),
+          // TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
+          // SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
         },
         {
           headers: {

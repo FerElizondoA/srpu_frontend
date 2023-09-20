@@ -360,6 +360,8 @@ export function Resumen() {
     (state) => state.AsignarFuente.RespectoA
   );
 
+
+
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
 
@@ -543,7 +545,7 @@ export function Resumen() {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (
-    <Grid
+    <Grid  width={"100%"}
       container
       sx={{
         display: "flex",
@@ -560,7 +562,9 @@ export function Resumen() {
           justifyContent: "center",
         }}
       >
-        <Grid mt={5}>
+        <Grid 
+        mt={{xs:1, sm:5, md:5, lg:5, xl:5}}
+        >
           <Typography sx={queries.bold_text}>Encabezado</Typography>
           <Grid
             sx={{
@@ -593,11 +597,11 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                   </IconButton>
                 </Tooltip>
 
-                <Typography sx={queries.medium_text}>
+                <Typography sx={{...queries.medium_text, mb:2}}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -608,7 +612,7 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Grid mt={5} mb={4}>
+        <Grid mt={5} mb={4} width={"100%"}>
           <Typography sx={queries.bold_text}>Información General</Typography>
           <Grid
             sx={{
@@ -640,12 +644,12 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                   </IconButton>
                 </Tooltip>
                 {/* Revisar */}
 
-                <Typography sx={queries.medium_text}>
+                <Typography sx={{...queries.medium_text, mb:2}}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -655,8 +659,8 @@ export function Resumen() {
             ))}
           </Grid>
 
-          <Grid item display="flex" height={350} mt={2} mb={2}>
-            <Grid mt={2}>
+          <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
+            <Grid mt={2} >
               {/* Revisar */}
 
               <Tooltip title="Añadir comentario a este apartado">
@@ -676,20 +680,22 @@ export function Resumen() {
                     });
                   }}
                 >
-                  <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                 </IconButton>
               </Tooltip>
 
               {/* Revisar */}
             </Grid>
 
-            <Paper sx={{ width: "100%" }}>
+            <Paper sx={{ width: "96%" }}>
               <TableContainer
                 sx={{
                   maxHeight: "100%",
+                  width:"95%",
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".5vw",
+                    height: ".5vh",
                     mt: 1,
                   },
                   "&::-webkit-scrollbar-thumb": {
@@ -805,10 +811,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={queries.medium_text}>
+                <Typography sx={{...queries.medium_text, mb:2}}>
                   <strong>{head.label}: </strong> {head.value}
                 </Typography>
               </Grid>
@@ -836,18 +842,19 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
-          <Paper sx={{ width: "96%", overflow: "clip" }}>
+          <Paper sx={{ width: "96%"}}>
             <TableContainer
               sx={{
                 height: "18rem",
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
                   width: ".3vw",
+                  height:".5vh",
                   mt: 1,
                 },
                 "&::-webkit-scrollbar-thumb": {
@@ -933,13 +940,28 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
               </IconButton>
             </Tooltip>
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{ height: "20rem", width: "100%" }}>
+            <TableContainer sx={{ 
+              height: "20rem",
+              width: "100%",
+              maxHeight: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height:".5vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+           }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -994,10 +1016,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={queries.medium_text}>
+                <Typography sx={{...queries.medium_text, mb:2}}>
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
@@ -1005,7 +1027,7 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Grid display={"flex"}>
+        <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
           <Grid>
             {/* Revisar */}
             <Tooltip title="Añadir comentario a este apartado">
@@ -1025,14 +1047,28 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
 
-          <Paper sx={{ width: "100%" }}>
-            <TableContainer sx={{ height: "20rem", width: "100%" }}>
+          <Paper sx={{ width: "95%" }}>
+            <TableContainer sx={{ 
+              height: "18rem", 
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".3vw",
+                height:".5vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+          
+          }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1046,6 +1082,7 @@ export function Resumen() {
               </Table>
             </TableContainer>
           </Paper>
+
         </Grid>
 
         {/* FIN BRUEBA*************** */}
@@ -1088,10 +1125,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={queries.medium_text}>
+                <Typography sx={{...queries.medium_text, mb:2}}>
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
@@ -1099,8 +1136,8 @@ export function Resumen() {
           </Grid>
         </Grid>
 
-        <Grid display={"flex"}>
-          <Grid>
+        <Grid item display={"flex"} mt={2} mb={2}>
+          <Grid mt={2}>
             {/* Revisar */}
             <Tooltip title="Añadir comentario a este apartado">
               <IconButton
@@ -1119,14 +1156,29 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
 
-          <Paper sx={{ width: "100%" }}>
-            <TableContainer sx={{ height: "20rem", width: "100%" }}>
+          <Paper sx={{ width: "95%" }}>
+            <TableContainer sx={{ 
+              height: 350,
+               maxHeight: "100%",
+               width:"100%",
+               overflow: "auto",
+               "&::-webkit-scrollbar": {
+                 width: ".5vw",
+                 height: ".5vh",
+                 mt: 1,
+               },
+               "&::-webkit-scrollbar-thumb": {
+                 backgroundColor: "#AF8C55",
+                 outline: "1px solid slategrey",
+                 borderRadius: 1,
+               },
+             }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1147,7 +1199,7 @@ export function Resumen() {
             Condiciones Financieras
           </Typography>
           <Divider color="lightGrey"></Divider>
-          <Grid width={"103%"} mt={3} item display={"flex"} height={350}>
+          <Grid width={"100%"} mt={3} item display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
               <Tooltip title="Añadir comentario a este apartado">
@@ -1167,22 +1219,24 @@ export function Resumen() {
                     });
                   }}
                 >
-                  <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }}/>
                 </IconButton>
               </Tooltip>
               {/* Revisar */}
             </Grid>
 
-            <Paper sx={{ width: "100%" }}>
+            <Paper sx={{ width: "95%" }}>
               {
                 tablaCondicionesFinancieras.length > 0 ? (
                   <TableContainer
                     sx={{
+                      height: 350,
                       maxHeight: "100%",
                       width: "100%",
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
+                        height: ".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {
@@ -1477,6 +1531,7 @@ export function Resumen() {
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
+                        height:".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {
@@ -1528,10 +1583,10 @@ export function Resumen() {
         </Grid>
 
         {/* <Divider color="lightGrey"></Divider> */}
-        <Grid mt={5} mb={4}>
+        <Grid mt={5} mb={4} width={"100%"}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Divider color="lightGrey"></Divider>
-          <Grid
+          <Grid  width={"100%"}
             sx={{
               flexDirection: "row",
               mt: 1,
@@ -1542,7 +1597,9 @@ export function Resumen() {
               //border: "1px solid"
             }}
           >
-            <TableContainer>
+            <TableContainer sx={{
+              width:"100%"
+            }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1552,7 +1609,7 @@ export function Resumen() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {documentos.map((row, index) => {
+                  {tablaDocumentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
                         <Tooltip title="Añadir comentario a este apartado">

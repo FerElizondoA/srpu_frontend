@@ -516,7 +516,7 @@ export function Resumen({ coments }: { coments: boolean }) {
         </Grid>
         {/* <Divider color="lightGrey"></Divider> */}
 
-        <Grid mt={3}>
+        <Grid mt={3} width={"100%"}>
           <Typography sx={queries.bold_text}>
             Condiciones Financieras
           </Typography>
@@ -548,15 +548,17 @@ export function Resumen({ coments }: { coments: boolean }) {
                 )}
             </Grid>
 
-            <Paper>
+            <Paper sx={{width:"100%"}}>
               {
-                tablaCondicionesFinancieras.length > 0 ? (
+                tablaCondicionesFinancieras.length > 0 
+                ? (
                   <TableContainer
                     sx={{
                       maxHeight: "100%",
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
+                        height:".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {
@@ -850,6 +852,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
+                        height:".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {

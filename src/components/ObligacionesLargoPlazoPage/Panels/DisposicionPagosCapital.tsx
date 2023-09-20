@@ -25,6 +25,7 @@ import {
   Tooltip,
   Typography,
   createTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -378,8 +379,28 @@ export function DisposicionPagosCapital() {
     setRestante(res);
   }, [tablaDisposicion]);
 
+  const query = {
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
+  }
+
   return (
-    <Grid container >
+    <Grid container
+      flexDirection={"column"}
+      justifyContent={"space-between"}
+      height={query.isMobile === false ?
+        disposicionesParciales === false && tasasParciales === false ? "32rem"
+          : disposicionesParciales === true && tasasParciales === false ? "38rem"
+            : disposicionesParciales === false && tasasParciales === true ? "38rem"
+              : disposicionesParciales === true && tasasParciales === true ? "60rem"
+                : "36rem"
+        : query.isMobile === true ?
+          disposicionesParciales === false && tasasParciales === false ? "50rem"
+            : disposicionesParciales === true && tasasParciales === false ? "65rem"
+              : disposicionesParciales === false && tasasParciales === true ? "65rem"
+                : disposicionesParciales === true && tasasParciales === true ? "80rem"
+                  : "52rem"
+          : "36rem"}
+    >
       <Grid container mt={2} direction="column">
 
         <Grid item>
@@ -389,10 +410,10 @@ export function DisposicionPagosCapital() {
             </Typography>
           </Divider>
         </Grid>
-        
-        <Grid item display={"flex"} justifyContent={"space-evenly"}>
 
-          <Grid item display={"flex"} justifyContent={"space-evenly"} xs={10} sm={3} md={4} lg={4} xl={4}>
+        <Grid container display={"flex"} justifyContent={"space-evenly"}>
+
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -418,7 +439,7 @@ export function DisposicionPagosCapital() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item lg={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -460,7 +481,7 @@ export function DisposicionPagosCapital() {
             />
           </Grid>
 
-          <Grid item lg={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
             <TextField
               placeholder="0"
@@ -497,8 +518,8 @@ export function DisposicionPagosCapital() {
         </Grid>
       </Grid>
 
-      <Grid item container mt={2} direction="column">
-        <Grid item>
+      <Grid container direction="column" width={"100%"}>
+        <Grid item width={"100%"}>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               DISPOSICIÓN
@@ -506,12 +527,13 @@ export function DisposicionPagosCapital() {
           </Divider>
 
           <Grid
-            item
+            container
             display={"flex"}
             justifyContent={"space-evenly"}
             alignItems={"center"}
+            width={"100%"}
           >
-            <Grid item lg={2}>
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <FormControlLabel
                 label="Disposiciones parciales"
                 control={
@@ -524,7 +546,7 @@ export function DisposicionPagosCapital() {
                 }
               ></FormControlLabel>
             </Grid>
-            <Grid item lg={4}>
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>
                 Fecha de disposición
               </InputLabel>
@@ -549,7 +571,8 @@ export function DisposicionPagosCapital() {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item lg={4}>
+
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
               <TextField
@@ -557,9 +580,9 @@ export function DisposicionPagosCapital() {
                 helperText={
                   disposicionesParciales
                     ? "Monto original contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
+                    monto +
+                    "; Monto restante: " +
+                    restante.toFixed(2)
                     : ""
                 }
                 value={
@@ -572,9 +595,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseInt(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
+                    9999999999999999 &&
                     parseInt(v.target.value.replace(/\D/g, "")) <=
-                      restante * 100
+                    restante * 100
                   ) {
                     changeDisposicion(
                       disposicionFechaDisposicion,
@@ -608,7 +631,7 @@ export function DisposicionPagosCapital() {
             </Grid>
           </Grid>
           {disposicionesParciales && (
-            <Grid container flexDirection={"column"} alignItems={"center"}>
+            <Grid container flexDirection={"column"} alignItems={"center"}  width={"100%"}>
               <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
@@ -618,7 +641,7 @@ export function DisposicionPagosCapital() {
                       disposicionImporte.toString().replace(/\D/g, "")
                     ) === 0 ||
                     parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                      restante * 100
+                    restante * 100
                   }
                   variant="outlined"
                   onClick={() => {
@@ -632,70 +655,75 @@ export function DisposicionPagosCapital() {
                   Agregar
                 </Button>
               </ThemeProvider>
-              <Paper sx={{ width: "88%" }}>
-                <TableContainer
-                  sx={{
-                    overflow: "auto",
-                    "&::-webkit-scrollbar": {
-                      width: ".5vw",
-                      mt: 1,
-                    },
-                    "&::-webkit-scrollbar-thumb": {
-                      backgroundColor: "#AF8C55",
-                      outline: "1px solid slategrey",
-                      borderRadius: 1,
-                    },
-                  }}
-                >
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        {headsDisposicion.map((head, index) => (
-                          <StyledTableCell align="center" key={index}>
-                            <TableSortLabel>{head.label}</TableSortLabel>
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tablaDisposicion.map((row: any, index: number) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell align="center">
-                              <Tooltip title="Eliminar">
-                                <IconButton
-                                  type="button"
-                                  onClick={() => {
-                                    removeDisposicion(index);
-                                  }}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
+
+              <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"12rem"} >
+                <Paper sx={{ width: "88%", height: "100%" }}>
+                  <TableContainer
+                    sx={{
+                      height: "100%",
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".5vw",
+                        height:".5vh",
+                        mt: 1,
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#AF8C55",
+                        outline: "1px solid slategrey",
+                        borderRadius: 1,
+                      },
+                    }}
+                  >
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                          {headsDisposicion.map((head, index) => (
+                            <StyledTableCell align="center" key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
                             </StyledTableCell>
-                            <StyledTableCell align="center" component="th">
-                              {lightFormat(
-                                new Date(row.fechaDisposicion),
-                                "dd-MM-yyyy"
-                              )}
-                            </StyledTableCell>
-                            <StyledTableCell align="center" component="th">
-                              {row.importe}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tablaDisposicion.map((row: any, index: number) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell align="center">
+                                <Tooltip title="Eliminar">
+                                  <IconButton
+                                    type="button"
+                                    onClick={() => {
+                                      removeDisposicion(index);
+                                    }}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </StyledTableCell>
+                              <StyledTableCell align="center" component="th">
+                                {lightFormat(
+                                  new Date(row.fechaDisposicion),
+                                  "dd-MM-yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center" component="th">
+                                {row.importe}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
             </Grid>
           )}
         </Grid>
       </Grid>
 
-      <Grid item container mt={2} direction="column">
-        <Grid item>
+      <Grid container direction="column">
+        <Grid item > 
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               TASA DE INTERÉS
@@ -703,7 +731,7 @@ export function DisposicionPagosCapital() {
           </Divider>
         </Grid>
 
-        <Grid item flexDirection={"column"} justifyContent={"space-evenly"}>
+        <Grid container flexDirection={"column"} justifyContent={"space-evenly"}>
           <Grid
             item
             container
@@ -752,10 +780,11 @@ export function DisposicionPagosCapital() {
             </Grid>
           </Grid>
 
-          <Grid item container display={"flex"} justifyContent={"center"}>
+          <Grid container display={"flex"} justifyContent={"center"} mb={2}>
             {radioValue === "Tasa Fija" ? (
               <Grid item container display="flex" justifyContent="space-evenly">
-                <Grid item lg={2} display={"block"}>
+
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2} display={"block"}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -783,7 +812,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                   <TextField
@@ -830,7 +859,7 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2} >
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -878,7 +907,8 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-                <Grid item>
+                
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periocidad de Pago
                   </InputLabel>
@@ -929,14 +959,13 @@ export function DisposicionPagosCapital() {
               </Grid>
             ) : (
               <Grid
-                item
                 container
                 sx={{
                   justifyContent: "space-evenly",
                   display: "flex",
                 }}
               >
-                <Grid item>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -964,7 +993,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periocidad de Pago
                   </InputLabel>
@@ -1013,7 +1042,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Tasa de Referencia
                   </InputLabel>
@@ -1062,7 +1091,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
                     type="number"
@@ -1094,7 +1123,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -1178,75 +1207,79 @@ export function DisposicionPagosCapital() {
                   </Button>
                 </ThemeProvider>
 
-                <Paper sx={{ width: "88%" }}>
-                  <TableContainer
-                    sx={{
-                      overflow: "auto",
-                      "&::-webkit-scrollbar": {
-                        width: ".5vw",
-                        mt: 1,
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "#AF8C55",
-                        outline: "1px solid slategrey",
-                        borderRadius: 1,
-                      },
-                    }}
-                  >
-                    <Table stickyHeader aria-label="sticky table">
-                      <TableHead>
-                        <TableRow>
-                          {heads.map((head, index) => (
-                            <StyledTableCell align="center" key={index}>
-                              <TableSortLabel>{head.label}</TableSortLabel>
-                            </StyledTableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {tablaTasaInteres.map((row: any, index: number) => {
-                          return (
-                            <StyledTableRow key={index}>
-                              <StyledTableCell align="center">
-                                <Tooltip title="Eliminar">
-                                  <IconButton
-                                    type="button"
-                                    onClick={() => {
-                                      removeTasaInteres(index);
-                                    }}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </Tooltip>
+                <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
+                  <Paper sx={{ width: "88%", height: "100%" }}>
+                    <TableContainer
+                      sx={{
+                        height: "100%",
+                        overflow: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: ".3vw",
+                          height: ".5vh",
+                          mt: 1,
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#AF8C55",
+                          outline: "1px solid slategrey",
+                          borderRadius: 1,
+                        },
+                      }}
+                    >
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                          <TableRow>
+                            {heads.map((head, index) => (
+                              <StyledTableCell align="center" key={index}>
+                                <TableSortLabel>{head.label}</TableSortLabel>
                               </StyledTableCell>
-                              <StyledTableCell align="center" component="th">
-                                {lightFormat(
-                                  new Date(row.fechaPrimerPago),
-                                  "dd-MM-yyyy"
-                                )}
-                              </StyledTableCell>
-                              <StyledTableCell align="center" component="th">
-                                {row.tasa}
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                {row.periocidadPago}
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                {row.tasaReferencia}
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                {row.sobreTasa}
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                {row.diasEjercicio}
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {tablaTasaInteres.map((row: any, index: number) => {
+                            return (
+                              <StyledTableRow key={index}>
+                                <StyledTableCell align="center">
+                                  <Tooltip title="Eliminar">
+                                    <IconButton
+                                      type="button"
+                                      onClick={() => {
+                                        removeTasaInteres(index);
+                                      }}
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </StyledTableCell>
+                                <StyledTableCell align="center" component="th">
+                                  {lightFormat(
+                                    new Date(row.fechaPrimerPago),
+                                    "dd-MM-yyyy"
+                                  )}
+                                </StyledTableCell>
+                                <StyledTableCell align="center" component="th">
+                                  {row.tasa}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.periocidadPago}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.tasaReferencia}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.sobreTasa}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                  {row.diasEjercicio}
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
               </Grid>
             )}
           </Grid>

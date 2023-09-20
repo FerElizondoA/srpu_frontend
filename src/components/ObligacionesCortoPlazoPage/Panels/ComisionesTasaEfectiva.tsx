@@ -716,7 +716,7 @@ export function ComisionesTasaEfectiva() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
-                height: ".6vh",
+                height: ".5vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {

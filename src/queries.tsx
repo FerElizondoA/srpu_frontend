@@ -13,28 +13,48 @@ export const queries = {
     },
   },
   medium_text: {
-    fontSize: "2ch",
+    fontSize: "0.8rem",
     fontFamily: "MontserratMedium",
-    "@media (max-width: 600px)": {
-      // XS (extra small) screen
+
+    "@media (min-width: 480px)": {
+      fontSize: "0.8rem",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: ".8rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      fontSize: ".9rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      fontSize: ".9rem",
+    },
+
+
+  },
+
+  bold_text: {
+    fontSize: "0.8rem",
+    fontFamily: "MontserratBold",
+
+    "@media (min-width: 480px)": {
+      fontSize: "0.8rem",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: ".8rem",
+    },
+
+    "@media (min-width: 1140px)": {
       fontSize: "1rem",
     },
-    "@media (min-width: 601px) and (max-width: 900px)": {
-      // SM (small) screen
-      fontSize: "1.5ch",
+
+    "@media (min-width: 1400px)": {
+      fontSize: "1rem",
     },
-  },
-  bold_text: {
-    fontSize: "1.8ch",
-    fontFamily: "MontserratBold",
-    "@media (max-width: 600px)": {
-      // XS (extra small) screen
-      fontSize: "0.7rem",
-    },
-    "@media (min-width: 601px) and (max-width: 900px)": {
-      // SM (small) screen
-      fontSize: "1.5ch",
-    },
+
   },
 
   bold_text_Largo_Plazo: {
@@ -814,11 +834,11 @@ export const queries = {
     },
 
     "@media (min-width: 1400px)": {
-      height: "75vh",
+      height: "74vh",
     },
 
     "@media (min-width: 1870px)": {
-      height: "80.8vh",
+      height: "80vh",
     },
   },
 };

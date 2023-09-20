@@ -110,7 +110,7 @@ export const TimerCounter = () => {
     <Box
       sx={{
         fontFamily: "MontserratMedium",
-        fontSize: ".8vw",
+        fontSize: ".8rem",
         width: "2vw",
         height: "100%",
         display: "flex",
