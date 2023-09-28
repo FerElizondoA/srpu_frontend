@@ -1,15 +1,33 @@
-import { Button, Grid, IconButton, InputBase, Paper, Slide, Table, TableBody, TableContainer, TableHead, TableRow, Typography, createTheme, useMediaQuery } from "@mui/material";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { forwardRef, useState } from "react";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Slide,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import { queries } from "../../queries";
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+import { forwardRef, useEffect, useState } from "react";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { AgregarInstruccionesIrrevocables } from "../../components/instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
-import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { queries } from "../../queries";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { useInstruccionesStore } from "../../store/InstruccionesIrrevocables/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -32,10 +50,10 @@ const heads: Head[] = [
     label: "Cuenta CLABE",
   },
   {
-    label: "Fondo o ingreso",
+    label: "Banco",
   },
   {
-    label: "Banco",
+    label: "Ente Publico",
   },
   {
     label: "Acciones",
@@ -61,123 +79,137 @@ export function InstruccionesIrrevocables() {
     // filtrarDatos();
   };
 
- 
+  const [instrucciones, setInstrucciones] = useState([]);
 
+  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState([]);
 
-  //CATALOGOS
-  const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoTiposDeFuente
+  const changeIdInstruccion: Function = useInstruccionesStore(
+    (state) => state.changeIdInstruccion
   );
 
-  const catalogoFondosOIngresos : Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoFondosOIngresos
+  const setInstruccionSelect: Function = useInstruccionesStore(
+    (state) => state.setInstruccionSelect
   );
 
-  const catalogoTipoEntePublicoObligado : Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoTipoEntePublicoObligado
+  const setGeneralInstruccion: Function = useInstruccionesStore(
+    (state) => state.setGeneralInstruccion
   );
 
-  const catalogoInstituciones : Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoInstituciones
+  const editarInstruccion: Function = useInstruccionesStore(
+    (state) => state.editarInstruccion
   );
 
-  const catalogoMunicipiosUOrganismos : Array <ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoMunicipiosUOrganismos
+  const getInstruccion: Function = useInstruccionesStore(
+    (state) => state.getInstruccion
   );
 
+  useEffect(() => {
+    getInstruccion(setInstrucciones);
+    !openAgregarInstruccion && cleanInstruccion();
+  }, [openAgregarInstruccion]);
 
+  useEffect(() => {
+    setInstruccionesFiltrados(instrucciones);
+  }, [instrucciones]);
 
-
+  const cleanInstruccion: Function = useInstruccionesStore(
+    (state) => state.cleanInstruccion
+  );
 
   return (
-    <Grid direction={"column"} height={"75vh"}>
+    <Grid container direction={"column"} height={"75vh"}>
+      <Grid item>
+        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+      </Grid>
 
-    <Grid item>
-      {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
-    </Grid>
-
-    <Grid display={"flex"} justifyContent={"center"} width={"97%"} height={"4rem"} alignItems={"center"} >
-      <Typography sx={{
-        fontSize: "2.3ch",
-        fontFamily: "MontserratBold",
-        color: "#AF8C55",
-        "@media (max-width: 600px)": {
-          // XS (extra small) screen
-          fontSize: "1rem",
-        },
-        "@media (min-width: 601px) and (max-width: 900px)": {
-          // SM (small) screen
-          fontSize: "1.5ch",
-        },
-      }}>
-        Instrucciones Irrevocables
-      </Typography>
-    </Grid>
-
-    <Grid  display="center" justifyContent="space-between" height={"4rem"}>
-      <Grid width={"80%"} height={"75%"} display={"flex"} justifyContent={"end"}>
-        <Paper
-          component="form"
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        width={"97%"}
+        height={"4rem"}
+        alignItems={"center"}
+      >
+        <Typography
           sx={{
-            display: "flex",
-            width: "80%",
+            fontSize: "2.3ch",
+            fontFamily: "MontserratBold",
+            color: "#AF8C55",
+            "@media (max-width: 600px)": {
+              fontSize: "1rem",
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              fontSize: "1.5ch",
+            },
           }}
         >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Buscar"
-            value={busqueda}
-            onChange={(e) => {
-              handleChange(e.target.value);
+          Instrucciones Irrevocables
+        </Typography>
+      </Grid>
+
+      <Grid display="center" justifyContent="space-between" height={"4rem"}>
+        <Grid
+          width={"80%"}
+          height={"75%"}
+          display={"flex"}
+          justifyContent={"end"}
+        >
+          <Paper
+            component="form"
+            sx={{
+              display: "flex",
+              width: "80%",
             }}
-          />
-          <IconButton
-            type="button"
-            sx={{ p: "10px" }}
-            aria-label="search"
-            onClick={() => handleSearch()}
           >
-            <GridSearchIcon />
-          </IconButton>
-        </Paper>
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Buscar"
+              value={busqueda}
+              onChange={(e) => {
+                handleChange(e.target.value);
+              }}
+            />
+            <IconButton
+              type="button"
+              sx={{ p: "10px" }}
+              aria-label="search"
+              onClick={() => handleSearch()}
+            >
+              <GridSearchIcon />
+            </IconButton>
+          </Paper>
+        </Grid>
+
+        <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
+          <Button
+            sx={{ ...queries.buttonContinuar, height: "75%" }}
+            onClick={() => {
+              setAccion("Agregar");
+              setOpenAgregarInstruccion(!openAgregarInstruccion);
+            }}
+          >
+            Agregar
+          </Button>
+        </Grid>
       </Grid>
 
-      <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
-        <Button
-          sx={{ ...queries.buttonContinuar,
-            height:"75%" }}
-          onClick={() => {
-            setAccion("Agregar");
-            setOpenAgregarInstruccion(!openAgregarInstruccion);
+      <Paper sx={{ width: "100%" }}>
+        <TableContainer
+          sx={{
+            width: "98%",
+
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: ".5vw",
+              height: "1vh",
+              mt: 1,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#AF8C55",
+              outline: "1px solid slategrey",
+              borderRadius: 1,
+            },
           }}
         >
-          Agregar
-        </Button>
-      </Grid>
-    </Grid>
-
-    <Paper sx={{width:"100%"}}>
-      <Grid container sx={{...queries.tablaAgregarFuentesPago,
-       width:"100%",
-       display:"flex",
-       justifyContent:"center"
-      }} >
-        <TableContainer sx={{
-          width:"98%",
-          
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: ".5vw",
-            height: "1vh",
-            mt: 1,
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#AF8C55",
-            outline: "1px solid slategrey",
-            borderRadius: 1,
-          },
-
-        }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -189,21 +221,79 @@ export function InstruccionesIrrevocables() {
               </TableRow>
             </TableHead>
             <TableBody>
-           
-              <StyledTableRow>
-                
-              </StyledTableRow>
+              {instruccionesFiltrados.map((row: any, index: number) => {
+                return (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">
+                      {row.NumeroCuenta}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {row.CLABE}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {row.Institucion}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {row.EntePublico}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <Tooltip title="Editar">
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            setAccion("Editar");
+
+                            changeIdInstruccion(row?.Id);
+
+                            setInstruccionSelect(row);
+
+                            setGeneralInstruccion({
+                              numeroCuenta: row.NumeroCuenta,
+                              cuentaCLABE: row.CLABE,
+                              banco: {
+                                Id: row.Banco,
+                                Descripcion: row.Institucion,
+                              },
+                            });
+                            editarInstruccion(JSON.parse(row.TipoMovimiento));
+
+                            setOpenAgregarInstruccion(!openAgregarInstruccion);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            // changeIdFideicomiso(row?.Id || "");
+                            // setOpenDialogEliminar(!openDialogEliminar);
+                            // getFideicomisos(setDatos);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
-    </Paper>
+      </Paper>
 
-    <AgregarInstruccionesIrrevocables
-       handler={setOpenAgregarInstruccion}
-       openState={openAgregarInstruccion}
-       accion={accion}
-    />
-  </Grid>
+      <AgregarInstruccionesIrrevocables
+        handler={setOpenAgregarInstruccion}
+        openState={openAgregarInstruccion}
+        accion={accion}
+      />
+    </Grid>
   );
 }

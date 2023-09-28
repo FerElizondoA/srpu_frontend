@@ -29,6 +29,7 @@ import {
 import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { queries } from "../../queries";
 import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
+import { useSolicitudUsuarioStore } from "../../store/SolicitudUsuario/main";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
@@ -160,6 +161,10 @@ export const Usuarios = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
+  const changeIdUsuarioModificado: Function = useSolicitudUsuarioStore(
+    (state) => state.changeIdUsuarioModificado
+  );
+
   return (
     <Grid
       container
@@ -286,7 +291,7 @@ export const Usuarios = () => {
                   endIcon={<PersonAddAlt1Icon />}
                   sx={queries.buttonContinuar}
                   onClick={() => {
-                    localStorage.setItem("idUsuarioModificado", "");
+                    changeIdUsuarioModificado("");
                     navigate("../Iframe");
                   }}
                 >
@@ -331,10 +336,7 @@ export const Usuarios = () => {
                           <IconButton
                             size="medium"
                             onClick={() => {
-                              localStorage.setItem(
-                                "idUsuarioModificado",
-                                row.IdUsuario
-                              );
+                              changeIdUsuarioModificado(row.IdUsuario);
                               navigate(`../Iframe`);
                             }}
                           >

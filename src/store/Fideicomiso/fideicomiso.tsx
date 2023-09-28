@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
-import { IDatos } from "../../screens/fuenteDePago/Fideicomisos";
+import { IDatosFideicomiso } from "../../screens/fuenteDePago/Fideicomisos";
 import { useFideicomisoStore } from "./main";
 
 export type Fideicomiso = {
@@ -56,7 +56,7 @@ export interface FideicomisoSlice {
   tablaFideicomisario: Fideicomisario[];
   tablaTipoMovimiento: TipoMovimiento[];
   tablaSoporteDocumental: SoporteDocumental[];
-  tablaFideicomisos: IDatos[];
+  tablaFideicomisos: IDatosFideicomiso[];
 
   catalogoTiposDeFideicomiso: ICatalogo[];
   catalogoFiudiciarios: ICatalogo[];

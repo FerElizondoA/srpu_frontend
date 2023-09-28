@@ -30,6 +30,7 @@ import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
+import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
 
 export const appTheme = createTheme({
   palette: {
@@ -82,6 +83,10 @@ function App() {
     getToken();
   }, []);
 
+  const idUsuarioModificado: string = useSolicitudUsuarioStore(
+    (state) => state.idUsuarioModificado
+  );
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
@@ -122,7 +127,7 @@ function App() {
                   "&IdApp=" +
                   localStorage.getItem("IdApp") +
                   "&idUsuarioModificado=" +
-                  localStorage.getItem("idUsuarioModificado")
+                  idUsuarioModificado
                 }
                 baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
               />

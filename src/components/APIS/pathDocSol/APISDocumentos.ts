@@ -56,6 +56,26 @@ export async function getPathDocumentosFideicomiso(
     .catch((error) => {});
 }
 
+export async function getPathDocumentosMandato(
+  IdMandato: string,
+  setState: Function
+) {
+  await axios({
+    method: "get",
+    url:
+      process.env.REACT_APP_APPLICATION_BACK + "/api/get-DetailPathDocMandato",
+    params: { IdMandato: IdMandato },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      setState(data.data);
+    })
+    .catch((error) => {});
+}
+
 export const getDocumento = async (
   ROUTE: string,
   NOMBRE: string,

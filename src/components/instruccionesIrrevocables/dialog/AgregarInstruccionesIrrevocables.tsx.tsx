@@ -1,42 +1,45 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AppBar,
   Autocomplete,
   Button,
-  Checkbox,
   Dialog,
   Divider,
-  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
   Paper,
   Slide,
-  Tab,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   ThemeProvider,
   Toolbar,
   Tooltip,
   Typography,
   createTheme,
-  useMediaQuery,
 } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { queries } from "../../../queries";
-import { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { GridCloseIcon } from "@mui/x-data-grid";
+import { forwardRef, useEffect, useState } from "react";
 import validator from "validator";
+import { queries } from "../../../queries";
+import { modulos } from "../../../screens/Config/Configuracion";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import {
+  DialogCatalogos,
+  IDialog,
+} from "../../Config/dialogCatalogos/DialogCatalogos";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -62,11 +65,6 @@ const theme = createTheme({
   },
 });
 
-interface rowsPrueba {
-  label: string;
-  id: string;
-}
-
 interface HeadLabels {
   label: string;
 }
@@ -81,9 +79,6 @@ export function AgregarInstruccionesIrrevocables({
   accion: string;
 }) {
   const headsLabels: HeadLabels[] = [
-    {
-      label: "Alta deudor",
-    },
     {
       label: "Tipo ente público",
     },
@@ -101,81 +96,54 @@ export function AgregarInstruccionesIrrevocables({
     },
   ];
 
-  const rowsPrueba: rowsPrueba[] = [
-    {
-      label: "Prueba 1",
-      id: "0",
-    },
-    {
-      label: "Prueba 2",
-      id: "1",
-    },
-    {
-      label: "Prueba 3",
-      id: "2",
-    },
-    {
-      label: "Prueba 4",
-      id: "3",
-    },
-    {
-      label: "Prueba 5",
-      id: "4",
-    },
-    {
-      label: "Prueba 6",
-      id: "5",
-    },
-  ];
-  const [tabIndex, setTabIndex] = useState(0);
-
   //DATOS GENERALES
-  const numeroCuenta: string = useCortoPlazoStore(
+  const numeroCuenta: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.numeroCuenta
   );
 
-  const cuentaCLABE: string = useCortoPlazoStore(
+  const cuentaCLABE: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.cuentaCLABE
   );
 
-  const banco: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.generalInstrucciones.banco
   );
 
   //TIPO DE MOVIMIENTO
   const tipoEntePublico: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
     );
 
-  const altaDeudor: string = useCortoPlazoStore(
+  const altaDeudor: string = useInstruccionesStore(
     (state) => state.tipoMovimientoInstrucciones.altaDeudor
   );
 
   const entidadFederativa: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.entidadFederativa
     );
 
-  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.tipoMovimientoInstrucciones.tipoFuente
   );
 
-  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.fondoIngreso
-  );
+  const fondoIngreso: { Id: string; Descripcion: string } =
+    useInstruccionesStore(
+      (state) => state.tipoMovimientoInstrucciones.fondoIngreso
+    );
 
   //TABLA
 
   const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
-    useCortoPlazoStore((state) => state.tablaTipoMovimientoInstrucciones);
+    useInstruccionesStore((state) => state.tablaTipoMovimientoInstrucciones);
 
   //CATALOGOS
-  const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTiposDeFuente: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoFondosOIngresos: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -187,13 +155,9 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.catalogoInstituciones
   );
 
-  const catalogoMunicipiosUOrganismos: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoMunicipiosUOrganismos
-  );
-
   //GET
-  const getTiposDeFuenteInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTiposDeFuenteInstrucciones
+  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
   );
 
   const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
@@ -201,45 +165,69 @@ export function AgregarInstruccionesIrrevocables({
   );
 
   const getInstitucionesInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getInstitucionesInstrucciones
+    (state) => state.getInstituciones
   );
 
   const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
 
-  const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getFondosOIngresosInstrucciones
+  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
   );
 
   //FUNCTION
-  const setGeneralInstruccion: Function = useCortoPlazoStore(
+  const setGeneralInstruccion: Function = useInstruccionesStore(
     (state) => state.setGeneralInstruccion
   );
 
-  const addTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.addTipoMovimientoInstrucciones
   );
 
-  const removeTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const removeTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.removeTipoMovimientoInstrucciones
   );
 
-  const cleanTipoMovimientoInstruccion: Function = useCortoPlazoStore(
+  const cleanTipoMovimientoInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanTipoMovimientoInstruccion
   );
 
-  const editarInstruccion: Function = useCortoPlazoStore(
+  const editarInstruccion: Function = useInstruccionesStore(
     (state) => state.editarInstruccion
   );
 
-  const changeIdInstruccion: Function = useCortoPlazoStore(
+  const changeIdInstruccion: Function = useInstruccionesStore(
     (state) => state.changeIdInstruccion
   );
 
-  const setTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.setTipoMovimientoInstrucciones
   );
+
+  const catalogoOrganismos: IEntePublico[] = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+
+  const createInstruccion: Function = useInstruccionesStore(
+    (state) => state.createInstruccion
+  );
+
+  const [edit, setEdit] = useState<IDialog>({
+    Crud: "crea",
+    Id: 6,
+    IdDesc: "",
+    Descripcion: "",
+    Tipo: { Id: "", Descripcion: "" },
+    OCP: 0,
+    OLP: 0,
+    Modulo: "institucionesFinancieras",
+    TipoEntePublico: "",
+  });
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -247,7 +235,18 @@ export function AgregarInstruccionesIrrevocables({
     getInstitucionesInstrucciones();
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
+    getOrganismos();
   }, []);
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    getInstitucionesInstrucciones();
+  }, [openDialog]);
+
+  const modificaInstruccion: Function = useInstruccionesStore(
+    (state) => state.modificaInstruccion
+  );
 
   return (
     <>
@@ -282,16 +281,12 @@ export function AgregarInstruccionesIrrevocables({
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
-                      //createFideicomiso();
+                      createInstruccion();
                       handler(false);
-                      // reset();
                     } else if (accion === "Editar") {
-                      // updateRow(indexA);
-                      // modificarFideicomiso();
+                      modificaInstruccion();
                       handler(false);
-                      // reset();
                     }
-                    setTabIndex(0);
                   }}
                 >
                   <Typography
@@ -338,6 +333,30 @@ export function AgregarInstruccionesIrrevocables({
             },
           }}
         >
+          <Divider
+            sx={{
+              height: "1rem",
+            }}
+          >
+            <Typography
+              sx={{
+                textTransform: "uppercase",
+                color: "#af8c55 ",
+                fontSize: "2ch",
+                fontFamily: "MontserratBold",
+                "@media (max-width: 600px)": {
+                  // XS (extra small) screen
+                  fontSize: "0.7rem",
+                },
+                "@media (min-width: 601px) and (max-width: 900px)": {
+                  // SM (small) screen
+                  fontSize: "1.5ch",
+                },
+              }}
+            >
+              Cuenta destino
+            </Typography>
+          </Divider>
           <Grid
             container
             display={"flex"}
@@ -433,15 +452,24 @@ export function AgregarInstruccionesIrrevocables({
                 }
               />
             </Grid>
+            <Button
+              sx={queries.buttonContinuar}
+              onClick={() => {
+                setEdit((edit) => ({
+                  ...edit,
+                  ...{ Crud: "crea" },
+                  ...{ Descripcion: "" },
+                }));
+                setOpenDialog(true);
+              }}
+            >
+              Otro
+            </Button>
           </Grid>
 
-          <Grid></Grid>
           <Divider
             sx={{
               height: "1rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
             }}
           >
             <Typography
@@ -451,11 +479,9 @@ export function AgregarInstruccionesIrrevocables({
                 fontSize: "2ch",
                 fontFamily: "MontserratBold",
                 "@media (max-width: 600px)": {
-                  // XS (extra small) screen
                   fontSize: "0.7rem",
                 },
                 "@media (min-width: 601px) and (max-width: 900px)": {
-                  // SM (small) screen
                   fontSize: "1.5ch",
                 },
               }}
@@ -468,60 +494,30 @@ export function AgregarInstruccionesIrrevocables({
             container
             display={"flex"}
             justifyContent={"space-evenly"}
+            width={"100%"}
             alignItems={"center"}
           >
-            <Grid
-              item
-              xs={10}
-              sm={3}
-              display={"flex"}
-              justifyContent={"center"}
-            >
-              <FormControlLabel
-                label="Alta deudor"
-                control={
-                  <Checkbox
-                    checked={altaDeudor === "SI"}
-                    onChange={(v) => {
-                      setTipoMovimientoInstrucciones({
-                        altaDeudor: v.target.checked ? "SI" : "NO",
-                        tipoEntePublico: tipoEntePublico,
-                        entidadFederativa: entidadFederativa,
-                        tipoFuente: tipoFuente,
-                        fondoIngreso: fondoIngreso,
-                      });
-                    }}
-                  />
-                }
-              ></FormControlLabel>
-            </Grid>
+            <InputLabel>Alta de deudor</InputLabel>
 
-            <Grid item xs={10} sm={3}>
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>
                 Tipo de ente público obligado
               </InputLabel>
               <Autocomplete
+                disableClearable
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
                 openText="Abrir"
-                // disabled={
-                //   tipoEntePublico.Descripcion === "No aplica" ||
-                //   /^[\s]*$/.test(tipoEntePublico.Descripcion)
-                // }
-                fullWidth
                 options={catalogoTipoEntePublicoObligado}
+                value={tipoEntePublico}
                 getOptionLabel={(option) => option.Descripcion}
                 renderOption={(props, option) => {
                   return (
-                    <li {...props} key={option.Descripcion}>
+                    <li {...props} key={option.Id}>
                       <Typography>{option.Descripcion}</Typography>
                     </li>
                   );
-                }}
-                value={{
-                  Id: tipoEntePublico.Id || "",
-                  Descripcion: tipoEntePublico.Descripcion || "",
                 }}
                 onChange={(event, text) =>
                   setTipoMovimientoInstrucciones({
@@ -549,17 +545,18 @@ export function AgregarInstruccionesIrrevocables({
               />
             </Grid>
 
-            <Grid item xs={10} sm={3}>
-              <InputLabel sx={{ ...queries.medium_text }}>
-                Entidad Federativa
-              </InputLabel>
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+              <InputLabel sx={queries.medium_text}>Entidad</InputLabel>
               <Autocomplete
+                disabled={tipoEntePublico.Id === ""}
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
                 openText="Abrir"
-                fullWidth
-                options={catalogoMunicipiosUOrganismos}
+                options={catalogoOrganismos.filter(
+                  (_, i) => _.IdTipoEntePublico === tipoEntePublico.Id
+                )}
+                value={entidadFederativa}
                 getOptionLabel={(option) => option.Descripcion}
                 renderOption={(props, option) => {
                   return (
@@ -567,10 +564,6 @@ export function AgregarInstruccionesIrrevocables({
                       <Typography>{option.Descripcion}</Typography>
                     </li>
                   );
-                }}
-                value={{
-                  Id: entidadFederativa.Id || "",
-                  Descripcion: entidadFederativa.Descripcion || "",
                 }}
                 onChange={(event, text) => {
                   setTipoMovimientoInstrucciones({
@@ -584,6 +577,7 @@ export function AgregarInstruccionesIrrevocables({
                     fondoIngreso: fondoIngreso,
                   });
                 }}
+                disableClearable
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -592,7 +586,8 @@ export function AgregarInstruccionesIrrevocables({
                   />
                 )}
                 isOptionEqualToValue={(option, value) =>
-                  option.Id === value.Id || value.Descripcion === ""
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
                 }
               />
             </Grid>
@@ -703,6 +698,7 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
 
             <Grid
+              item
               mt={2}
               sm={3}
               width={"20%"}
@@ -758,7 +754,7 @@ export function AgregarInstruccionesIrrevocables({
                 <TableHead>
                   <TableRow>
                     {headsLabels.map((head, index) => (
-                      <StyledTableCell align="center">
+                      <StyledTableCell align="center" key={index}>
                         <Typography>{head.label}</Typography>
                       </StyledTableCell>
                     ))}
@@ -769,11 +765,7 @@ export function AgregarInstruccionesIrrevocables({
                   {tablaTipoMovimientoInstrucciones.map(
                     (row: any, index: number) => {
                       return (
-                        <StyledTableRow>
-                          <StyledTableCell align="center">
-                            {row.altaDeudor}
-                          </StyledTableCell>
-
+                        <StyledTableRow key={index}>
                           <StyledTableCell align="center">
                             {row.tipoEntePublico}
                           </StyledTableCell>
@@ -811,6 +803,12 @@ export function AgregarInstruccionesIrrevocables({
             </TableContainer>
           </Paper>
         </Grid>
+        <DialogCatalogos
+          modulos={modulos}
+          edit={edit}
+          open={openDialog}
+          setOpen={setOpenDialog}
+        />
       </Dialog>
     </>
   );

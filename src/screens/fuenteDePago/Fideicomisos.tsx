@@ -43,7 +43,7 @@ import { queries } from "../../queries";
 import { Fideicomiso } from "../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 
-export interface IDatos {
+export interface IDatosFideicomiso {
   DescripcionFiudiciario: string;
   DescripcionTipoFideicomiso: string;
   FechaCreacion: string;
@@ -107,7 +107,7 @@ export function Fideicomisos() {
   //   (state) => state.tablaFideicomisos
   // );
 
-  const [fideicomisos, setFideicomisos] = useState<IDatos[]>([]);
+  const [fideicomisos, setFideicomisos] = useState<IDatosFideicomiso[]>([]);
 
   const borrarFideicomiso: Function = useFideicomisoStore(
     (state) => state.borrarFideicomiso
@@ -125,7 +125,7 @@ export function Fideicomisos() {
     (state) => state.setGeneralFideicomiso
   );
 
-  const editarSolicitud: Function = useFideicomisoStore(
+  const editarFideicomiso: Function = useFideicomisoStore(
     (state) => state.editarFideicomiso
   );
 
@@ -140,7 +140,7 @@ export function Fideicomisos() {
   const [busqueda, setBusqueda] = useState("");
 
   const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<Array<IDatos>>(fideicomisos);
+    useState<Array<IDatosFideicomiso>>(fideicomisos);
 
   const fideicomisoSelect: Fideicomiso[] = useFideicomisoStore(
     (state) => state.fideicomisoSelect
@@ -175,7 +175,7 @@ export function Fideicomisos() {
   useEffect(() => {
     if (fideicomisoSelect.length !== 0) {
       getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
+      // listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
     }
   }, [fideicomisoSelect]);
 
@@ -240,7 +240,7 @@ export function Fideicomisos() {
       fiudiciario: { Id: "", Descripcion: "" },
     });
 
-    editarSolicitud([], [], []);
+    editarFideicomiso([], [], []);
   };
 
   return (
@@ -412,7 +412,7 @@ export function Fideicomisos() {
                                 },
                               });
 
-                              editarSolicitud(
+                              editarFideicomiso(
                                 JSON.parse(row.Fideicomisario),
                                 JSON.parse(row.TipoDeMovimiento),
                                 JSON.parse(row.SoporteDocumental)

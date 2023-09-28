@@ -94,14 +94,23 @@ export async function creaDesc(
         },
       }
     )
-    .then((r) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "success",
-        title: "Éxito",
-        text: "Descripción agregada con éxito.",
-      });
+    .then(({ data }) => {
+      data.data.error
+        ? Swal.fire({
+            customClass: { container: ".swal2-container" },
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "success",
+            title: "Éxito",
+            text: "Descripción agregada con éxito.",
+          })
+        : Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "error",
+            title: "¡Error!",
+            text: "Descripción ya existente",
+          });
     })
     .catch((err) => {
       if (desc === "") {

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
+import Swal from "sweetalert2";
+import { useInstruccionesStore } from "./main";
 
 export interface GeneralIntrucciones {
   numeroCuenta: string;
@@ -16,35 +18,30 @@ export interface TipoMovimientoInstrucciones {
   fondoIngreso: { Id: string; Descripcion: string };
 }
 
-export interface Mandato {
+export interface Instruccion {
   generalInstrucciones: GeneralIntrucciones;
   tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
 }
 
 export interface InstruccionesIrrevocablesSlice {
+  idInstruccion: string;
+  instruccionSelect: Instruccion[];
+  setInstruccionSelect: (instruccion: Instruccion[]) => void;
+
   generalInstrucciones: GeneralIntrucciones;
   tipoMovimientoInstrucciones: TipoMovimientoInstrucciones;
 
   tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
+  tablaInstrucciones: Array<any>;
 
-  //CATALOGOS
-  catalogoTiposDeFuente: ICatalogo[];
-  catalogoFondosOIngresos: ICatalogo[];
-  catalogoTipoEntePublicoObligado: ICatalogo[];
-  catalogoInstituciones: ICatalogo[];
-  catalogoMunicipiosUOrganismos: ICatalogo[];
-
-  //
-
-  //borrarInstruccion: (Id: string) => void;
   changeIdInstruccion: (Id: string) => void;
-  idInstruccion: string;
 
   editarInstruccion: (
     tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
   ) => void;
 
   setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
+
   setTipoMovimientoInstrucciones: (
     tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
   ) => void;
@@ -57,27 +54,47 @@ export interface InstruccionesIrrevocablesSlice {
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
 
-  //Get's
-  getTiposDeFuenteInstrucciones: () => void;
-  getInstitucionesInstrucciones: () => void;
-  getFondosOIngresosInstrucciones: () => void;
-  //
+  getInstruccion: (setState: Function) => void;
+  createInstruccion: () => void;
+  modificaInstruccion: () => void;
 
-  // createInstruccion: () => void;
-  // modificarInstruccion: () => void;
+  cleanInstruccion: () => void;
 
-  //getInstruccion:() => void;
+  saveFilesInstruccion: (
+    idRegistro: string,
+    ruta: string,
+    archivo: { archivo: File; nombreArchivo: string }
+  ) => void;
+  savePathDocInstruccion: (
+    idInstruccion: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => void;
+
+  arrDocs: any[];
+
+  setArrDocs: (arr: any) => void;
 }
 
 export const createInstruccionesIrrevocables: StateCreator<
   InstruccionesIrrevocablesSlice
 > = (set, get) => ({
   idInstruccion: "",
+  instruccionSelect: [],
+
+  setInstruccionSelect: (instruccion: Instruccion[]) => {
+    set((state) => ({
+      instruccionSelect: instruccion,
+    }));
+  },
+
   generalInstrucciones: {
     numeroCuenta: "",
     cuentaCLABE: "",
     banco: { Id: "", Descripcion: "" },
   },
+
   tipoMovimientoInstrucciones: {
     altaDeudor: "NO",
     tipoEntePublico: { Id: "", Descripcion: "" },
@@ -87,12 +104,7 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   tablaTipoMovimientoInstrucciones: [],
-
-  catalogoTiposDeFuente: [],
-  catalogoFondosOIngresos: [],
-  catalogoTipoEntePublicoObligado: [],
-  catalogoInstituciones: [],
-  catalogoMunicipiosUOrganismos: [],
+  tablaInstrucciones: [],
 
   setGeneralInstruccion: (generalInstrucciones: GeneralIntrucciones) => {
     set(() => ({
@@ -119,6 +131,52 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
+  createInstruccion: async () => {
+    const state = useInstruccionesStore.getState();
+
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-instruccion",
+        {
+          NumeroCuenta: state.generalInstrucciones.numeroCuenta,
+          CLABE: state.generalInstrucciones.cuentaCLABE,
+          Banco: state.generalInstrucciones.banco.Id,
+          TipoMovimiento: JSON.stringify(
+            state.tablaTipoMovimientoInstrucciones
+          ),
+          EntePublico: localStorage.getItem("EntePublicoObligado"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        if (data.data.ERROR) {
+          Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "error",
+            title: "Error",
+            text: "Instrucción ya existente",
+          });
+        } else {
+          Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "success",
+            title: "Éxito",
+            text: "La instruccion se ha creado exitosamente",
+          });
+          state.cleanInstruccion();
+          state.changeIdInstruccion(data.data.Id);
+        }
+      })
+      .catch((err) => {});
+  },
+
   editarInstruccion: (
     tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
   ) => {
@@ -132,6 +190,78 @@ export const createInstruccionesIrrevocables: StateCreator<
       idInstruccion: Id,
     }));
   },
+
+  cleanInstruccion: () => {
+    set(() => ({
+      idInstruccion: "",
+      generalInstrucciones: {
+        numeroCuenta: "",
+        cuentaCLABE: "",
+        banco: { Id: "", Descripcion: "" },
+      },
+      tablaTipoMovimientoInstrucciones: [],
+    }));
+  },
+
+  getInstruccion: (setState: Function) => {
+    axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-instruccion", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set(() => ({
+          tablaInstrucciones: r,
+        }));
+        setState(r);
+      });
+  },
+
+  modificaInstruccion: async () => {
+    const state = useInstruccionesStore.getState();
+
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-instruccion",
+        {
+          Id: state.idInstruccion,
+          NumeroCuenta: state.generalInstrucciones.numeroCuenta,
+          CLABE: state.generalInstrucciones.cuentaCLABE,
+          Banco: state.generalInstrucciones.banco.Id,
+          TipoMovimiento: JSON.stringify(
+            state.tablaTipoMovimientoInstrucciones
+          ),
+          EntePublico: localStorage.getItem("EntePublicoObligado"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        data.data.ERROR
+          ? Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "error",
+              title: "Error",
+              text: "Instrucción ya existente",
+            })
+          : Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "success",
+              title: "Éxito",
+              text: "La instruccion se ha creado exitosamente",
+            });
+      })
+      .catch((err) => {});
+  },
+
   cleanTipoMovimientoInstruccion: () => {
     set(() => ({
       tipoMovimientoInstrucciones: {
@@ -150,94 +280,16 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  //Gets
-  getTiposDeFuenteInstrucciones: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposDeFuente", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoTiposDeFuente: r,
-        }));
-      });
-  },
+  saveFilesInstruccion(idRegistro, ruta, archivo) {},
 
-  getFondosOIngresosInstrucciones: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-fondosOIngresos",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoFondosOIngresos: r,
-        }));
-      });
-  },
+  savePathDocInstruccion(
+    idInstruccion,
+    Ruta,
+    NombreIdentificador,
+    NombreArchivo
+  ) {},
 
-  getTipoEntePublicoObligadoInstrucciones: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoTipoEntePublicoObligado: r,
-        }));
-      });
-  },
+  arrDocs: [],
 
-  getInstitucionesInstrucciones: async () => {
-    return await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-institucionesFinancieras",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoInstituciones: r,
-        }));
-      });
-  },
-
-  // getMunicipiosUOrganismosInstrucciones: async () => {
-  //   return await axios
-  //     .get(
-  //       process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem("jwtToken"),
-  //         },
-  //       }
-  //     )
-  //     .then(({ data }) => {
-  //       let r = data.data;
-  //       set((state) => ({
-  //         catalogoMunicipiosUOrganismos: r,
-  //       }));
-  //     });
-  // },
-
-  //
+  setArrDocs(arr) {},
 });

@@ -22,10 +22,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
 import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
 import {
   DateInput,
@@ -34,8 +34,8 @@ import {
 } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { formatDate } from "@jbcecapmex/pakfirma/dist/screens/tabladocumentos/TablaDocs";
-import { useMandatoStore } from "../../../store/Mandatos/main";
+import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
 interface HeadLabels {
   label: string;
@@ -45,9 +45,6 @@ export function TipoDeMovimiento() {
   //const [altaDeudor, setAltaDeudor] = useState(false);
 
   const heads: HeadLabels[] = [
-    {
-      label: "Alta Deudor",
-    },
     {
       label: "Tipo ente publico obligado",
     },
@@ -73,7 +70,7 @@ export function TipoDeMovimiento() {
   );
 
   const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
-  useMandatoStore(
+    useMandatoStore(
       (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
     );
 
@@ -93,8 +90,9 @@ export function TipoDeMovimiento() {
     (state) => state.tipoMovimientoMandato.fechaMandato
   );
 
-  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-  useMandatoStore((state) => state.tablaTipoMovimientoMandato);
+  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] = useMandatoStore(
+    (state) => state.tablaTipoMovimientoMandato
+  );
 
   // separacion
 
@@ -107,11 +105,11 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoTipoEntePublicoObligado
   );
 
-  const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTiposDeFuente: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoFondosOIngresos: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -120,16 +118,16 @@ export function TipoDeMovimiento() {
   );
 
   //GET
-  const getTiposDeFuenteInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTiposDeFuenteInstrucciones
+  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
   );
 
   const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
 
-  const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getFondosOIngresosInstrucciones
+  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
   );
 
   const removeTipoMovimientoMandato: Function = useMandatoStore(
@@ -148,9 +146,7 @@ export function TipoDeMovimiento() {
     (state) => state.cleanTipoMovimientoMandato
   );
 
-  const numeroMandato: string = useMandatoStore(
-    (state) => state.numeroMandato
-  );
+  const numeroMandato: string = useMandatoStore((state) => state.numeroMandato);
   const changeNumeroMandato: Function = useMandatoStore(
     (state) => state.changeNumeroMandato
   );
@@ -162,6 +158,13 @@ export function TipoDeMovimiento() {
     getOrganismos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const tablaMandatos: IDatosMandatos[] = useMandatoStore(
+    (state) => state.tablaMandatos
+  );
+  const [error, setError] = useState(false);
+
+  const idMandato: string = useMandatoStore((state) => state.idMandato);
 
   return (
     <>
@@ -197,44 +200,25 @@ export function TipoDeMovimiento() {
           display={"flex"}
           justifyContent={"space-evenly"}
           width={"100%"}
+          alignItems={"center"}
         >
+          <InputLabel>Alta de deudor</InputLabel>
           <TextField
-            label={"Numero de mandato"}
-            title={"Numero de mandato"}
+            disabled={idMandato !== ""}
+            label={"Número de mandato"}
+            title={"Número de mandato"}
             onChange={(v) => {
+              tablaMandatos.filter(
+                (_) => _.NumeroMandato.toString() === v.target.value
+              ).length > 0
+                ? setError(true)
+                : setError(false);
               changeNumeroMandato(v.target.value);
             }}
             value={numeroMandato}
+            error={error}
+            helperText={error && "Número de mandato ya existente"}
           />
-          <Grid
-            item
-            xs={10}
-            sm={3}
-            md={3}
-            lg={3}
-            xl={3}
-            display={"flex"}
-            justifyContent={"center"}
-          >
-            <FormControlLabel
-              label="Alta deudor"
-              control={
-                <Checkbox
-                  checked={altaDeudor === "SI"}
-                  onChange={(v) => {
-                    setTipoMovimientoMandato({
-                      altaDeudor: v.target.checked ? "SI" : "NO",
-                      tipoEntePublicoObligado: tipoEntePublicoObligado,
-                      mandatario: mandatario,
-                      tipoFuente: tipoFuente,
-                      fondoIngreso: fondoIngreso,
-                      fechaMandato: fechaMandato,
-                    });
-                  }}
-                />
-              }
-            ></FormControlLabel>
-          </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
@@ -257,16 +241,19 @@ export function TipoDeMovimiento() {
                 );
               }}
               value={tipoEntePublicoObligado}
-              onChange={(event, text) =>
+              onChange={(event, text) => {
                 setTipoMovimientoMandato({
                   altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: text,
+                  tipoEntePublicoObligado: {
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
+                  },
                   mandatario: { Id: "", Descripcion: "" },
                   tipoFuente: tipoFuente,
                   fondoIngreso: fondoIngreso,
                   fechaMandato: fechaMandato,
-                })
-              }
+                });
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -368,8 +355,8 @@ export function TipoDeMovimiento() {
                   tipoEntePublicoObligado: tipoEntePublicoObligado,
                   mandatario: mandatario,
                   tipoFuente: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
+                    Id: text?.Id,
+                    Descripcion: text?.Descripcion,
                   },
                   fondoIngreso: fondoIngreso,
                   fechaMandato: fechaMandato,
@@ -419,8 +406,8 @@ export function TipoDeMovimiento() {
                   mandatario: mandatario,
                   tipoFuente: tipoFuente,
                   fondoIngreso: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
+                    Id: text?.Id,
+                    Descripcion: text?.Descripcion,
                   },
                   fechaMandato: fechaMandato,
                 })
@@ -491,10 +478,10 @@ export function TipoDeMovimiento() {
               onClick={() => {
                 addTipoMovimientoMandato({
                   altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado.Descripcion,
-                  mandatario: mandatario.Descripcion,
-                  tipoFuente: tipoFuente.Descripcion,
-                  fondoIngreso: fondoIngreso.Descripcion,
+                  tipoEntePublicoObligado: tipoEntePublicoObligado,
+                  mandatario: mandatario,
+                  tipoFuente: tipoFuente,
+                  fondoIngreso: fondoIngreso,
                   fechaMandato: fechaMandato,
                 });
                 cleanTipoMovimientoMandato();
@@ -543,28 +530,28 @@ export function TipoDeMovimiento() {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          <Typography>{row.altaDeudor}</Typography>
+                          <Typography>
+                            {row?.tipoEntePublicoObligado.Descripcion}
+                          </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          <Typography>{row.tipoEntePublicoObligado}</Typography>
+                          <Typography>{row?.mandatario.Descripcion}</Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          <Typography>{row.mandatario}</Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Typography>{row.tipoFuente}</Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Typography>{row.fondoIngreso}</Typography>
+                          <Typography>{row?.tipoFuente.Descripcion}</Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
                           <Typography>
-                            {format(new Date(row.fechaMandato), "dd/MM/yyyy")}
+                            {row?.fondoIngreso.Descripcion}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography>
+                            {format(new Date(row?.fechaMandato), "dd/MM/yyyy")}
                           </Typography>
                         </StyledTableCell>
 

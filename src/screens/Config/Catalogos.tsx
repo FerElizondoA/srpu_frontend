@@ -141,7 +141,6 @@ export function Catalogos() {
                         ...{ Modulo: item.label },
                       });
                       setPage(0);
-                      // getCatalogos();
                     }}
                   >
                     {item.label}
@@ -197,7 +196,6 @@ export function Catalogos() {
                     setTxt(v.target.value);
                   }}
                   onKeyPress={(ev) => {
-                    //cuando se presiona Enter
                     if (ev.key === "Enter") {
                       filtrar(txt);
                       ev.preventDefault();
@@ -342,16 +340,7 @@ export function Catalogos() {
                                   }
                                 >
                                   <IconButton>
-                                    <InfoIcon
-                                      fontSize="small"
-                                      // sx={[
-                                      //   {
-                                      //     "&:hover": {
-                                      //       color: "orange",
-                                      //     },
-                                      //   },
-                                      // ]}
-                                    ></InfoIcon>
+                                    <InfoIcon fontSize="small"></InfoIcon>
                                   </IconButton>
                                 </Tooltip>
                               ) : null}
@@ -369,16 +358,7 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <EditIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "blue",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
+                                  <EditIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip title="Eliminar">
@@ -393,16 +373,7 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <DeleteIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "red",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
+                                  <DeleteIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
                             </TableCell>

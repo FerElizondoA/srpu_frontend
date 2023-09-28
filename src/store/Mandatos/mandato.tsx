@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { useMandatoStore } from "./main";
+import { IDatosMandatos } from "../../screens/fuenteDePago/Mandatos";
 
 export interface TipoMovimientoMandato {
   altaDeudor: string;
@@ -21,21 +22,26 @@ export interface SoporteDocumentalMandato {
 }
 
 export interface Mandato {
-  tipoMovimiento: TipoMovimientoMandato[];
-  soporteDocumentalMandato: SoporteDocumentalMandato[];
+  Id: string;
+  TipoMovimiento: TipoMovimientoMandato[];
+  SoporteDocumental: SoporteDocumentalMandato[];
 }
 
 export interface MandatoSlice {
+  idMandato: string;
+  mandatoSelect: Mandato[];
+  setMandatoSelect: (mandato: Mandato[]) => void;
+
   numeroMandato: string;
   tipoMovimientoMandato: TipoMovimientoMandato;
   soporteDocumentalMandato: SoporteDocumentalMandato;
 
   tablaTipoMovimientoMandato: TipoMovimientoMandato[];
   tablaSoporteDocumentalMandato: SoporteDocumentalMandato[];
+  tablaMandatos: IDatosMandatos[];
 
   changeIdMandato: (Id: string) => void;
   changeNumeroMandato: (Id: string) => void;
-  idMandato: string;
 
   editarMandato: (
     tipoMovimientoMandato: TipoMovimientoMandato[],
@@ -45,6 +51,7 @@ export interface MandatoSlice {
   setTipoMovimientoMandato: (
     tipoMovimientoMandato: TipoMovimientoMandato
   ) => void;
+
   setSoporteDocumentalMandato: (
     soporteDocumentalMandato: SoporteDocumentalMandato
   ) => void;
@@ -52,6 +59,7 @@ export interface MandatoSlice {
   addTipoMovimientoMandato: (
     tipoMovimientoMandato: TipoMovimientoMandato
   ) => void;
+
   addSoporteDocumentalMandato: (
     soporteDocumentalMandato: SoporteDocumentalMandato
   ) => void;
@@ -67,11 +75,36 @@ export interface MandatoSlice {
   modificaMandato: () => void;
 
   cleanMandato: () => void;
+
+  saveFilesMandato: (
+    idRegistro: string,
+    ruta: string,
+    archivo: { archivo: File; nombreArchivo: string }
+  ) => void;
+
+  savePathDocMandato: (
+    idMandato: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => void;
+
+  arrDocs: any[];
+
+  setArrDocs: (arr: any) => void;
 }
 
 export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
-  numeroMandato: "",
   idMandato: "",
+  mandatoSelect: [],
+
+  setMandatoSelect: (mandato: Mandato[]) => {
+    set((state) => ({
+      mandatoSelect: mandato,
+    }));
+  },
+
+  numeroMandato: "",
 
   tipoMovimientoMandato: {
     altaDeudor: "NO",
@@ -81,24 +114,44 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     fondoIngreso: { Id: "", Descripcion: "" },
     fechaMandato: new Date().toString(),
   },
+
   soporteDocumentalMandato: {
     tipo: "",
     archivo: new File([], ""),
     nombreArchivo: "",
     fechaArchivo: new Date().toString(),
   },
+
   tablaTipoMovimientoMandato: [],
   tablaSoporteDocumentalMandato: [],
-
-  //AQUI VAN LOS CATALAGOS
+  tablaMandatos: [],
 
   catalogoMandatario: [],
   catalogoMandato: [],
 
-  //
   setTipoMovimientoMandato: (tipoMovimientoMandato: TipoMovimientoMandato) => {
     set(() => ({
-      tipoMovimientoMandato: tipoMovimientoMandato,
+      tipoMovimientoMandato: {
+        altaDeudor: tipoMovimientoMandato.altaDeudor,
+        tipoEntePublicoObligado: {
+          Id: tipoMovimientoMandato.tipoEntePublicoObligado.Id,
+          Descripcion:
+            tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion,
+        },
+        mandatario: {
+          Id: tipoMovimientoMandato.mandatario.Id,
+          Descripcion: tipoMovimientoMandato.mandatario.Descripcion,
+        },
+        tipoFuente: {
+          Id: tipoMovimientoMandato.tipoFuente.Id,
+          Descripcion: tipoMovimientoMandato.tipoFuente.Descripcion,
+        },
+        fondoIngreso: {
+          Id: tipoMovimientoMandato.fondoIngreso.Id,
+          Descripcion: tipoMovimientoMandato.fondoIngreso.Descripcion,
+        },
+        fechaMandato: tipoMovimientoMandato.fechaMandato,
+      },
     }));
   },
 
@@ -149,7 +202,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   cleanTipoMovimientoMandato: () => {
     set(() => ({
       tipoMovimientoMandato: {
-        altaDeudor: "",
+        altaDeudor: "NO",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
@@ -185,9 +238,9 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     tipoMovimientoMandato: TipoMovimientoMandato[],
     soporteDocumentalMandato: SoporteDocumentalMandato[]
   ) => {
-    set(() => ({
+    set((state) => ({
       tablaTipoMovimientoMandato: tipoMovimientoMandato,
-      tablaSoporteDocumental: soporteDocumentalMandato,
+      tablaSoporteDocumentalMandato: soporteDocumentalMandato,
     }));
   },
 
@@ -200,12 +253,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       })
       .then(({ data }) => {
         let r = data.data;
+        set(() => ({
+          tablaMandatos: r,
+        }));
         setState(r);
       });
   },
 
   createMandato: async () => {
     const state = useMandatoStore.getState();
+
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
@@ -216,11 +273,14 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
             new Date(state.tipoMovimientoMandato.fechaMandato),
             "dd/MM/yyyy"
           ),
-          Mandatario: state.tipoMovimientoMandato.mandatario.Id,
-          MunicipioMandante: "PRUEBA SETEADA",
-          OrganismoMandante: "PRUEBA SETEADA",
+          Mandatario:
+            state.tablaTipoMovimientoMandato[0].mandatario.Descripcion,
+          MunicipioMandante: localStorage.getItem("EntePublicoObligado"),
+          OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
-          SoporteDocumental: JSON.stringify(state.soporteDocumentalMandato),
+          SoporteDocumental: JSON.stringify(
+            state.tablaSoporteDocumentalMandato
+          ),
         },
         {
           headers: {
@@ -230,12 +290,20 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       )
       .then(({ data }) => {
         state.changeIdMandato(data.data.Id);
+        state.tablaSoporteDocumentalMandato.map((dato, index) => {
+          return state.saveFilesMandato(
+            data.data.Id,
+            `/SRPU/MANDATOS/${data.data.Id}`,
+            state.tablaSoporteDocumentalMandato[index]
+          );
+        });
+
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
           icon: "success",
           title: "Éxito",
-          text: "El fideicomiso se ha creado exitosamente",
+          text: "El mandato se ha creado exitosamente",
         });
       });
   },
@@ -244,17 +312,22 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     const state = useMandatoStore.getState();
     await axios
       .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-mandato",
         {
-          // IdFideicomiso: state.idFideicomiso,
-          // IdUsuario: localStorage.getItem("IdUsuario"),
-          // NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
-          // TipoFideicomiso: state.generalFideicomiso.tipoFideicomiso.Id,
-          // FechaFideicomiso: state.generalFideicomiso.fechaFideicomiso,
-          // Fiudiciario: state.generalFideicomiso.fiudiciario.Id,
-          // Fideicomisario: JSON.stringify(state.tablaFideicomisario),
-          // TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          // SoporteDocumental: JSON.stringify(state.tablaSoporteDocumental),
+          IdMandato: state.idMandato,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          FechaMandato: format(
+            new Date(state.tipoMovimientoMandato.fechaMandato),
+            "dd/MM/yyyy"
+          ),
+          Mandatario:
+            state.tablaTipoMovimientoMandato[0].mandatario.Descripcion,
+          MunicipioMandante: localStorage.getItem("EntePublicoObligado"),
+          OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
+          SoporteDocumental: JSON.stringify(
+            state.tablaSoporteDocumentalMandato
+          ),
         },
         {
           headers: {
@@ -263,12 +336,20 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         }
       )
       .then(({ data }) => {
+        state.changeIdMandato(data.result.Id);
+        state.tablaSoporteDocumentalMandato.map((dato, index) => {
+          return state.saveFilesMandato(
+            data.result.Id,
+            `/SRPU/MANDATOS/${data.result.Id}`,
+            { archivo: dato.archivo, nombreArchivo: dato.nombreArchivo }
+          );
+        });
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
           icon: "success",
           title: "Éxito",
-          text: "El fideicomiso se ha modificado exitosamente",
+          text: "El mandato se ha modificado exitosamente",
         });
       })
       .catch(function (error) {
@@ -276,7 +357,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
           icon: "error",
-          title: "No se Edito el fideicomiso.",
+          title: "Se encontró un error, verifique la información.",
         });
       });
   },
@@ -284,7 +365,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   cleanMandato: () => {
     set(() => ({
       tipoMovimientoMandato: {
-        altaDeudor: "",
+        altaDeudor: "NO",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
@@ -299,6 +380,81 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       },
       tablaTipoMovimientoMandato: [],
       tablaSoporteDocumentalMandato: [],
+    }));
+  },
+
+  saveFilesMandato: async (
+    idRegistro: string,
+    ruta: string,
+    archivo: { archivo: File; nombreArchivo: string }
+  ) => {
+    const state = useMandatoStore.getState();
+
+    return setTimeout(() => {
+      const url = new File([archivo.archivo], archivo.nombreArchivo);
+
+      let dataArray = new FormData();
+      dataArray.append("ROUTE", `${ruta}`);
+      dataArray.append("ADDROUTE", "true");
+      dataArray.append("FILE", url);
+
+      if (archivo.archivo.size > 0) {
+        return axios
+          .post(
+            process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+            dataArray,
+            {
+              headers: {
+                Authorization: localStorage.getItem("jwtToken"),
+              },
+            }
+          )
+          .then(({ data }) => {
+            state.savePathDocMandato(
+              idRegistro,
+              data.RESPONSE.RUTA,
+              data.RESPONSE.NOMBREIDENTIFICADOR,
+              data.RESPONSE.NOMBREARCHIVO
+            );
+          })
+          .catch((e) => {});
+      } else {
+        return null;
+      }
+    }, 1000);
+  },
+
+  savePathDocMandato: async (
+    idMandato: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => {
+    return await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/api/create-addPathDocMandato",
+        {
+          IdMandato: idMandato,
+          Ruta: Ruta,
+          NombreIdentificador: NombreIdentificador,
+          NombreArchivo: NombreArchivo,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((r) => {})
+      .catch((e) => {});
+  },
+
+  arrDocs: [],
+
+  setArrDocs(arr: any) {
+    set((state) => ({
+      arrDocs: arr,
     }));
   },
 });

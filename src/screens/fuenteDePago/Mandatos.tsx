@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -27,8 +28,14 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../store/Mandatos/main";
+import { Mandato } from "../../store/Mandatos/mandato";
+import {
+  getDocumento,
+  getPathDocumentosMandato,
+  listFile,
+} from "../../components/APIS/pathDocSol/APISDocumentos";
+import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -44,38 +51,28 @@ interface Head {
 }
 
 export interface IDatosMandatos {
-  DescripcionFiudiciario: string;
-  DescripcionTipoFideicomiso: string;
-  FechaCreacion: string;
-  FechaDeFideicomiso: string;
   Id: string;
-  IdFiudiciario: string;
-  IdTipoFideicomiso: string;
-  ModificadoPor: string;
-  NumeroDeFideicomiso: string;
+  NumeroMandato: string;
+  FechaMandato: string;
+  Mandatario: string;
+  MunicipioMandante: string;
+  OrganismoMandante: string;
+  TipoMovimiento: string;
   SoporteDocumental: string;
-  TipoDeMovimiento: string;
-  UltimaModificacion: string;
 }
 
 const heads: Head[] = [
   {
-    label: "Tipo de mecanismo de pago",
-  },
-  {
     label: "Número de mandato",
   },
   {
-    label: "Fecha",
+    label: "Fecha del mandato",
   },
   {
     label: "Mandatario",
   },
   {
-    label: "Municipio mandante",
-  },
-  {
-    label: "Organismo mandante",
+    label: "Mandante",
   },
   {
     label: "Acciones",
@@ -102,10 +99,32 @@ export function Mandatos() {
     // filtrarDatos();
   };
 
-  // const [datos, setDatos] = useState<Array<[]>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [mandatos, setMandatos] = useState<Array<[]>>([]);
   const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<[]>>([]);
+
+  const idMandato: string = useMandatoStore((state) => state.idMandato);
+  const changeIdMandato: Function = useMandatoStore(
+    (state) => state.changeIdMandato
+  );
+
+  const mandatoSelect: Mandato[] = useMandatoStore(
+    (state) => state.mandatoSelect
+  );
+  const setMandatoSelect: Function = useMandatoStore(
+    (state) => state.setMandatoSelect
+  );
+
+  const editarMandato: Function = useMandatoStore(
+    (state) => state.editarMandato
+  );
+
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+    []
+  );
+
+  const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
+  const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
 
   // const filtrarDatos = () => {
   //   // eslint-disable-next-line array-callback-return
@@ -134,14 +153,39 @@ export function Mandatos() {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
 
-  const cleanMandato: Function = useMandatoStore(
-    (state) => state.cleanMandato
-  );
+  useEffect(() => {
+    if (pathDocumentos.length > 0) {
+      let loc: any = [...arrDocs];
+      pathDocumentos?.map((val: any) => {
+        return getDocumento(
+          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.NombreIdentificador,
+          (res: any, index: number) => {
+            loc.push({ file: res, nombre: val.NombreArchivo });
+          }
+        );
+      });
+      setArrDocs(loc);
+    }
+  }, [pathDocumentos]);
+
+  useEffect(() => {
+    if (mandatoSelect.length !== 0) {
+      getPathDocumentosMandato(idMandato, setPathDocumentos);
+      // listFile(`/Autorizaciones/${idMandato}`);
+    }
+  }, [mandatoSelect]);
+
+  const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
 
   useEffect(() => {
     getMandatos(setMandatos);
-    cleanMandato();
+    !openAgregarMandato && cleanMandato();
   }, [openAgregarMandato]);
+
+  const changeNumeroMandato: Function = useMandatoStore(
+    (state) => state.changeNumeroMandato
+  );
 
   return (
     <Grid height={"74vh"}>
@@ -162,11 +206,9 @@ export function Mandatos() {
             fontFamily: "MontserratBold",
             color: "#AF8C55",
             "@media (max-width: 600px)": {
-              // XS (extra small) screen
               fontSize: "1rem",
             },
             "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
               fontSize: "1.5ch",
             },
           }}
@@ -232,11 +274,11 @@ export function Mandatos() {
           justifyContent: "center",
         }}
       >
-        <Paper sx={{ width: "100%", height:"100%" }}>
+        <Paper sx={{ width: "100%", height: "100%" }}>
           <TableContainer
             sx={{
               width: "100%",
-              height:"100%",
+              height: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -265,10 +307,6 @@ export function Mandatos() {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
-                        {"Mandato"}
-                      </StyledTableCell>
-
-                      <StyledTableCell align="center">
                         {row.NumeroMandato}
                       </StyledTableCell>
 
@@ -285,34 +323,24 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.OrganismoMandante}
-                      </StyledTableCell>
-
-                      <StyledTableCell align="center">
                         <Tooltip title="Editar">
                           <IconButton
                             type="button"
                             onClick={() => {
                               setAccion("Editar");
-                              // changeIdFideicomiso(row?.Id);
-                              // setGeneralFideicomiso({
-                              //   numeroFideicomiso: row.NumeroDeFideicomiso,
-                              //   tipoFideicomiso: {
-                              //     Id: row.IdTipoFideicomiso,
-                              //     Descripcion: row.DescripcionTipoFideicomiso,
-                              //   },
-                              //   fechaFideicomiso: row.FechaDeFideicomiso,
-                              //   fiudiciario: {
-                              //     Id: row.IdFiudiciario,
-                              //     Descripcion: row.DescripcionFiudiciario,
-                              //   },
-                              // });
-                              // editarSolicitud(
-                              //   JSON.parse(row.Fideicomisario),
-                              //   JSON.parse(row.TipoDeMovimiento),
-                              //   JSON.parse(row.SoporteDocumental)
-                              // );
-                              // changeAgregarFideicomisos(!openAgregarFideicomisos);
+
+                              changeNumeroMandato(row.NumeroMandato);
+
+                              changeIdMandato(row?.Id);
+
+                              setMandatoSelect(row);
+
+                              editarMandato(
+                                JSON.parse(row.TipoMovimiento),
+                                JSON.parse(row.SoporteDocumental)
+                              );
+
+                              setOpenAgregarMandato(!openAgregarMandato);
                             }}
                           >
                             <EditIcon />

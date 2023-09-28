@@ -1,33 +1,29 @@
 import { create } from "zustand";
 
-import { createEncabezadoSlice, EncabezadoSlice } from "./encabezado";
-import {
-  createInformacionGeneralSlice,
-  InformacionGeneralSlice,
-} from "./informacion_general";
-import {
-  createSolicitudInscripcionSlice,
-  SolicitudInscripcionSlice,
-} from "./solicitud_inscripcion";
-import { createPagosCapitalSlice, PagosCapitalSlice } from "./pagos_capital";
-import { createTasaEfectivaSlice, TasaEfectivaSlice } from "./tasa_efectiva";
-import {
-  createCondicionFinancieraSlice,
-  CondicionFinancieraSlice,
-} from "./condicion_financiera";
-import { createDocumentoSlice, DocumentosSlice } from "./documentacion";
-import {
-  ComentarioApartadoSlice,
-  createComentarioSlice,
-} from "./comentarios_apartado";
 import {
   createSolicitudFirmaSlice,
   SolicitudFirmaSlice,
 } from "../SolicitudFirma/solicitudFirma";
 import {
-  createInstruccionesIrrevocables,
-  InstruccionesIrrevocablesSlice,
-} from "../InstruccionesIrrevocables/instruccionesIrrevocables";
+  ComentarioApartadoSlice,
+  createComentarioSlice,
+} from "./comentarios_apartado";
+import {
+  CondicionFinancieraSlice,
+  createCondicionFinancieraSlice,
+} from "./condicion_financiera";
+import { createDocumentoSlice, DocumentosSlice } from "./documentacion";
+import { createEncabezadoSlice, EncabezadoSlice } from "./encabezado";
+import {
+  createInformacionGeneralSlice,
+  InformacionGeneralSlice,
+} from "./informacion_general";
+import { createPagosCapitalSlice, PagosCapitalSlice } from "./pagos_capital";
+import {
+  createSolicitudInscripcionSlice,
+  SolicitudInscripcionSlice,
+} from "./solicitud_inscripcion";
+import { createTasaEfectivaSlice, TasaEfectivaSlice } from "./tasa_efectiva";
 
 export type SolicitudStore = EncabezadoSlice &
   InformacionGeneralSlice &
@@ -37,8 +33,7 @@ export type SolicitudStore = EncabezadoSlice &
   CondicionFinancieraSlice &
   DocumentosSlice &
   ComentarioApartadoSlice &
-  SolicitudFirmaSlice &
-  InstruccionesIrrevocablesSlice;
+  SolicitudFirmaSlice;
 
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
@@ -50,5 +45,4 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createDocumentoSlice(...x),
   ...createComentarioSlice(...x),
   ...createSolicitudFirmaSlice(...x),
-  ...createInstruccionesIrrevocables(...x),
 }));

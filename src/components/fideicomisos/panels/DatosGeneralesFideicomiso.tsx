@@ -33,7 +33,7 @@ import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
-import { IDatos } from "../../../screens/fuenteDePago/Fideicomisos";
+import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
 
 interface HeadLabels {
   label: string;
@@ -152,7 +152,7 @@ export function DatoGeneralesFideicomiso() {
     });
   }, []);
 
-  const tablaFideicomisos: IDatos[] = useFideicomisoStore(
+  const tablaFideicomisos: IDatosFideicomiso[] = useFideicomisoStore(
     (state) => state.tablaFideicomisos
   );
 
@@ -214,7 +214,7 @@ export function DatoGeneralesFideicomiso() {
           </Grid>
           <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
             <InputLabel sx={queries.medium_text}>
-              Fondo o ingreso{/*Tipo de fideicomiso*/}
+              Tipo de fideicomiso
             </InputLabel>
             <Autocomplete
               disableClearable

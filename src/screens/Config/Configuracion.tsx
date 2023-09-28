@@ -21,10 +21,6 @@ export const modulos = [
     label: "Días del Ejercicio",
     fnc: "diasDelEjercicio",
   },
-  // {
-  //   label: "Entes Público Obligados", //SI
-  //   fnc: "entePublicoObligado",
-  // },
   {
     label: "Fuentes de Pago",
     fnc: "fuenteDePago",
@@ -62,10 +58,6 @@ export const modulos = [
     label: "Tipos de Documento", //SI
     fnc: "tiposDocumento",
   },
-  // {
-  //   label: "Tipos de Ente Público",
-  //   fnc: "tiposEntePublico",
-  // },
   {
     label: "Tipos de Garantía de Pago",
     fnc: "tiposDeGarantiaDePago",
@@ -151,11 +143,9 @@ export function Configuracion() {
             fontFamily: "MontserratBold",
             color: "#AF8C55",
             "@media (max-width: 600px)": {
-              // XS (extra small) screen
               fontSize: "1rem",
             },
             "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
               fontSize: "1.5ch",
             },
           }}
@@ -178,14 +168,14 @@ export function Configuracion() {
             sm: "repeat(5,1fr)",
             md: "repeat(5,1fr)",
             lg: "repeat(5,1fr)",
-            xl: "repeat(5,1fr)"
+            xl: "repeat(5,1fr)",
           }}
           width={{
             xs: "100%",
             sm: "100%",
             md: "80%",
             lg: "70%",
-            xl: "70%"
+            xl: "70%",
           }}
           sx={{
             height: "100%",
@@ -213,6 +203,6 @@ export function Configuracion() {
           })}
         </Grid>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }

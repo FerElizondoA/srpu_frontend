@@ -10,7 +10,7 @@ import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-U
 import { DateInput } from "../../CustomComponents";
 
 export interface IUsuariosCorto {
-  IdUsuario: string;
+  Id: string;
   Nombre: string;
   ApellidoPaterno: string;
   ApellidoMaterno: string;
@@ -64,22 +64,17 @@ export function Encabezado() {
   const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
 
   const selectedValue =
-    usuarios.find(
-      (usuario) => usuario.IdUsuario === solicitanteAutorizado.Solicitante
-    )?.IdUsuario || "";
-  // Verificar si el valor seleccionado existe en la lista de opciones
-  const isValueValid = usuarios.some(
-    (usuario) => usuario.IdUsuario === selectedValue
-  );
+    usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)
+      ?.Id || "";
+
+  const isValueValid = usuarios.some((usuario) => usuario.Id === selectedValue);
 
   return (
-    <Grid container
-    height={"25rem"}
-    >
+    <Grid container height={"25rem"}>
       <Grid
         item
         container
-        mt={{xs: 2}}
+        mt={{ xs: 2 }}
         // mt={{ xs: 10, sm: 10, md: 10, lg: 5 }}
         // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
         // spacing={{ xs: 2, md: 5, lg: 10 }}
@@ -118,13 +113,11 @@ export function Encabezado() {
             fullWidth
             value={isValueValid ? selectedValue : ""}
             onChange={(e) => {
-              let x = usuarios.find(
-                (usuario) => usuario.IdUsuario === e.target.value
-              );
+              let x = usuarios.find((usuario) => usuario.Id === e.target.value);
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.IdUsuario || "",
+                  Solicitante: x?.Id || "",
                   Cargo: x?.Puesto || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
@@ -136,7 +129,7 @@ export function Encabezado() {
             variant="standard"
           >
             {usuarios.map((usuario) => (
-              <MenuItem key={usuario.IdUsuario} value={usuario.IdUsuario}>
+              <MenuItem key={usuario.Id} value={usuario.Id}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}

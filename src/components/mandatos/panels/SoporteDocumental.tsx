@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import {
@@ -22,14 +24,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
 import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
 import {
   DateInput,
@@ -38,8 +39,6 @@ import {
 } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useMandatoStore } from "../../../store/Mandatos/main";
 
 const heads: HeadLabels[] = [
   {
@@ -73,6 +72,7 @@ export function SoporteDocumental() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
+
     setSoporteDocumentalMandato({
       tipo: (event.target as HTMLInputElement).value,
       fechaArchivo: fechaArchivo,
@@ -110,7 +110,11 @@ export function SoporteDocumental() {
   );
 
   const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
-  useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
+    useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
+
+  const cleanSoporteDocumentalMandato: Function = useMandatoStore(
+    (state) => state.cleanSoporteDocumentalMandato
+  );
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
@@ -125,7 +129,14 @@ export function SoporteDocumental() {
     }
   }
 
+  useEffect(() => {
+    cleanSoporteDocumentalMandato();
+  }, [tablaSoporteDocumentalMandato]);
+
   const [radioValue, setRadioValue] = useState("");
+
+  const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
+
   return (
     <Grid
       container
@@ -353,9 +364,19 @@ export function SoporteDocumental() {
                           <Tooltip title={"Mostrar vista previa del documento"}>
                             <IconButton
                               onClick={() => {
-                                toBase64(row.archivo).then((data) => {
-                                  setFileSelected(data);
-                                });
+                                toBase64(row.archivo)
+                                  .then((data) => {
+                                    setFileSelected(data);
+                                  })
+                                  .catch((err) => {
+                                    setFileSelected(
+                                      `data:application/pdf;base64,${
+                                        arrDocs.filter((td: any) =>
+                                          td.nombre.includes(row.nombreArchivo)
+                                        )[0].file
+                                      }`
+                                    );
+                                  });
                                 setShowModalPrevia(true);
                               }}
                             >
@@ -373,7 +394,7 @@ export function SoporteDocumental() {
         </Paper>
       </Grid>
       <Dialog
-        open={false}
+        open={showModalPrevia}
         onClose={() => {
           setShowModalPrevia(false);
         }}
@@ -392,7 +413,7 @@ export function SoporteDocumental() {
               color: "black",
             }}
           >
-            <GridCloseIcon />
+            <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ height: "100vh" }}>

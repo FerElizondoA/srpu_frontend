@@ -7,7 +7,6 @@ import {
   Slide,
   Tab,
   Tabs,
-  TextField,
   ThemeProvider,
   Toolbar,
   Tooltip,
@@ -15,19 +14,13 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { queries } from "../../../queries";
-import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
-import { SoporteDocumental } from "../panels/SoporteDocumental";
-import { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import {
-  SoporteDocumentalMandato,
-  TipoMovimientoMandato,
-} from "../../../store/Mandatos/mandato";
+import { GridCloseIcon } from "@mui/x-data-grid";
+import { forwardRef, useState } from "react";
+import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
+import { SoporteDocumental } from "../panels/SoporteDocumental";
+import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -86,11 +79,6 @@ export function AgregarMandatos({
   const setSoporteDocumentalMandato: Function = useMandatoStore(
     (state) => state.setSoporteDocumentalMandato
   );
-
-  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-  useMandatoStore((state) => state.tablaTipoMovimientoMandato);
-  const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
-  useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
