@@ -142,6 +142,10 @@ const {
   getDetailPathDocSol,
   addPathDocAut,
   getDetailPathDocAut,
+  addPathDocFideicomiso,
+  getDetailPathDocFideicomiso,
+  addPathDocMandato,
+  getDetailPathDocMandato,
 } = require("../controllers/PathDocSol.js");
 const {
   getAutorizaciones,
@@ -253,6 +257,11 @@ const {
   modifyMandato,
   getMandatos,
 } = require("../controllers/Mandatos.js");
+const {
+  createInstruccion,
+  modifyInstruccion,
+  getInstrucciones,
+} = require("../controllers/InstruccionesIrrevocables.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -815,6 +824,22 @@ router.get("/get-DetailPathDocAut", (req, res) => {
   getDetailPathDocAut(req, res);
 });
 
+router.post("/create-addPathDocFideicomiso", (req, res) => {
+  addPathDocFideicomiso(req, res);
+});
+
+router.get("/get-DetailPathDocFideicomiso", (req, res) => {
+  getDetailPathDocFideicomiso(req, res);
+});
+
+router.post("/create-addPathDocMandato", (req, res) => {
+  addPathDocMandato(req, res);
+});
+
+router.get("/get-DetailPathDocMandato", (req, res) => {
+  getDetailPathDocMandato(req, res);
+});
+
 //#endregion
 
 //#region Autorizacion
@@ -1181,6 +1206,32 @@ router.post("/modify-mandato", (req, res, express) => {
 
 router.get("/get-mandato", (req, res, express) => {
   getMandatos(req, res);
+});
+
+// router.get("/get-tiposDeGarantiaDePago", (req, res) => {
+//   getTiposDeGarantiaDePago(req, res);
+// });
+
+// router.put("/modify-mandato", (req, res) => {
+//   modifyMandato(req, res);
+// });
+
+// router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
+//   deleteTipoDeGarantiaDePago(req, res);
+// });
+//#endregion
+
+//#region Mandatos
+router.post("/create-instruccion", (req, res, express) => {
+  createInstruccion(req, res);
+});
+
+router.post("/modify-instruccion", (req, res, express) => {
+  modifyInstruccion(req, res);
+});
+
+router.get("/get-instruccion", (req, res, express) => {
+  getInstrucciones(req, res);
 });
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
