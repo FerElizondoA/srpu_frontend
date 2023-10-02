@@ -144,7 +144,7 @@ export const Usuarios = () => {
   }, [busqueda]);
 
   const changeIdUsuarioModificado: Function = useSolicitudUsuarioStore(
-    (state) => state.changeIdUsuarioModificado
+    (state: any) => state.changeIdUsuarioModificado
   );
 
   return (

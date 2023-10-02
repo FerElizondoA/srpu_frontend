@@ -37,6 +37,8 @@ import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/Disposicion
 import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import DeleteIcon from "@mui/icons-material/Delete";
 import validator from "validator";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -62,7 +64,6 @@ const theme = createTheme({
   },
 });
 
-
 interface rowsPrueba {
   label: string;
   id: string;
@@ -73,7 +74,6 @@ interface HeadLabels {
 }
 
 export function TipoDeMovimientoIntrucciones() {
-
   const headsLabels: HeadLabels[] = [
     {
       label: "Alta deudor",
@@ -124,52 +124,53 @@ export function TipoDeMovimientoIntrucciones() {
   const [tabIndex, setTabIndex] = useState(0);
 
   //DATOS GENERALES
-  const numeroCuenta: string = useCortoPlazoStore(
+  const numeroCuenta: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.numeroCuenta
   );
 
-  const cuentaCLABE: string = useCortoPlazoStore(
+  const cuentaCLABE: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.cuentaCLABE
   );
 
-  const banco: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.generalInstrucciones.banco
   );
 
   //TIPO DE MOVIMIENTO
   const tipoEntePublico: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
     );
 
-  const altaDeudor: string = useCortoPlazoStore(
+  const altaDeudor: string = useInstruccionesStore(
     (state) => state.tipoMovimientoInstrucciones.altaDeudor
   );
 
   const entidadFederativa: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
+    useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.entidadFederativa
     );
 
-  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const tipoFuente: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.tipoMovimientoInstrucciones.tipoFuente
   );
 
-  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.fondoIngreso
-  );
+  const fondoIngreso: { Id: string; Descripcion: string } =
+    useInstruccionesStore(
+      (state) => state.tipoMovimientoInstrucciones.fondoIngreso
+    );
 
   //TABLA
 
   const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
-    useCortoPlazoStore((state) => state.tablaTipoMovimientoInstrucciones);
+    useInstruccionesStore((state) => state.tablaTipoMovimientoInstrucciones);
 
   //CATALOGOS
-  const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTiposDeFuente: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoFondosOIngresos: Array<ICatalogo> = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -182,12 +183,12 @@ export function TipoDeMovimientoIntrucciones() {
   );
 
   const catalogoMunicipiosUOrganismos: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoMunicipiosUOrganismos
+    (state) => state.catalogoOrganismos
   );
 
   //GET
-  const getTiposDeFuenteInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTiposDeFuenteInstrucciones
+  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
   );
 
   const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
@@ -195,43 +196,43 @@ export function TipoDeMovimientoIntrucciones() {
   );
 
   const getInstitucionesInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getInstitucionesInstrucciones
+    (state) => state.getInstituciones
   );
 
   const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
 
-  const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getFondosOIngresosInstrucciones
+  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
   );
 
   //FUNCTION
-  const setGeneralInstruccion: Function = useCortoPlazoStore(
+  const setGeneralInstruccion: Function = useInstruccionesStore(
     (state) => state.setGeneralInstruccion
   );
 
-  const addTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.addTipoMovimientoInstrucciones
   );
 
-  const removeTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const removeTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.removeTipoMovimientoInstrucciones
   );
 
-  const cleanTipoMovimientoInstruccion: Function = useCortoPlazoStore(
+  const cleanTipoMovimientoInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanTipoMovimientoInstruccion
   );
 
-  const editarInstruccion: Function = useCortoPlazoStore(
+  const editarInstruccion: Function = useInstruccionesStore(
     (state) => state.editarInstruccion
   );
 
-  const changeIdInstruccion: Function = useCortoPlazoStore(
+  const changeIdInstruccion: Function = useInstruccionesStore(
     (state) => state.changeIdInstruccion
   );
 
-  const setTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
+  const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.setTipoMovimientoInstrucciones
   );
 
@@ -242,7 +243,6 @@ export function TipoDeMovimientoIntrucciones() {
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
   }, []);
-
 
   return (
     <Grid>
@@ -279,13 +279,7 @@ export function TipoDeMovimientoIntrucciones() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid
-            item
-            xs={10}
-            sm={3}
-            display={"flex"}
-            justifyContent={"center"}
-          >
+          <Grid item xs={10} sm={3} display={"flex"} justifyContent={"center"}>
             <FormControlLabel
               label="Alta deudor"
               control={
@@ -621,6 +615,5 @@ export function TipoDeMovimientoIntrucciones() {
         </Paper>
       </Grid>
     </Grid>
-  )
-
+  );
 }

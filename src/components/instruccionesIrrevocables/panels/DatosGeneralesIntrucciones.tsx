@@ -1,47 +1,20 @@
-
 import {
-  AppBar,
   Autocomplete,
-  Button,
-  Checkbox,
-  Dialog,
-  Divider,
   FormControl,
-  FormControlLabel,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
-  Slide,
-  Tab,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tabs,
   TextField,
-  ThemeProvider,
-  Toolbar,
-  Tooltip,
   Typography,
-  createTheme,
-  useMediaQuery,
 } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { queries } from "../../../queries";
-import { forwardRef, useEffect, useState } from "react";
-import { TransitionProps } from "@mui/material/transitions";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useEffect, useState } from "react";
 import validator from "validator";
-import { useMandatoStore } from "../../../store/Mandatos/main";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 interface HeadSelect {
   label: string;
@@ -60,73 +33,26 @@ const CatalogoMecanismo: HeadSelect[] = [
 ];
 
 export function DatosGeneralesIntrucciones() {
-  const [tabIndex, setTabIndex] = useState(0);
-
   //DATOS GENERALES
-  const numeroCuenta: string = useCortoPlazoStore(
+  const numeroCuenta: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.numeroCuenta
   );
 
-  const cuentaCLABE: string = useCortoPlazoStore(
+  const cuentaCLABE: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.cuentaCLABE
   );
 
-  const banco: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.generalInstrucciones.banco
-  );
-
-  //TIPO DE MOVIMIENTO
-  const tipoEntePublico: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
-      (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
-    );
-
-  const altaDeudor: string = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.altaDeudor
-  );
-
-  const entidadFederativa: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
-      (state) => state.tipoMovimientoInstrucciones.entidadFederativa
-    );
-
-  const tipoFuente: { Id: string; Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.tipoFuente
-  );
-
-  const fondoIngreso: { Id: string; Descripcion: string } = useCortoPlazoStore(
-    (state) => state.tipoMovimientoInstrucciones.fondoIngreso
-  );
-
-  //TABLA
-
-  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
-    useCortoPlazoStore((state) => state.tablaTipoMovimientoInstrucciones);
-
-  //CATALOGOS
-  const catalogoTiposDeFuente: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoTiposDeFuente
-  );
-
-  const catalogoFondosOIngresos: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoFondosOIngresos
-  );
-
-  const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoTipoEntePublicoObligado
   );
 
   const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
   );
 
-  const catalogoMunicipiosUOrganismos: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoMunicipiosUOrganismos
-  );
-
   //GET
-  const getTiposDeFuenteInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getTiposDeFuenteInstrucciones
+  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
   );
 
   const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
@@ -134,55 +60,23 @@ export function DatosGeneralesIntrucciones() {
   );
 
   const getInstitucionesInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getInstitucionesInstrucciones
+    (state) => state.getInstituciones
   );
 
   const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
 
-  const getFondosOIngresosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getFondosOIngresosInstrucciones
+  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
   );
 
   //FUNCTION
-  const setGeneralInstruccion: Function = useCortoPlazoStore(
+  const setGeneralInstruccion: Function = useInstruccionesStore(
     (state) => state.setGeneralInstruccion
   );
 
-  const addTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.addTipoMovimientoInstrucciones
-  );
-
-  const removeTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.removeTipoMovimientoInstrucciones
-  );
-
-  const cleanTipoMovimientoInstruccion: Function = useCortoPlazoStore(
-    (state) => state.cleanTipoMovimientoInstruccion
-  );
-
-  const editarInstruccion: Function = useCortoPlazoStore(
-    (state) => state.editarInstruccion
-  );
-
-  const changeIdInstruccion: Function = useCortoPlazoStore(
-    (state) => state.changeIdInstruccion
-  );
-
-  const setTipoMovimientoInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.setTipoMovimientoInstrucciones
-  );
-
   const [mecanismo, setMecanismo] = useState<any>("");
-
-  const numeroMandato: string = useMandatoStore(
-    (state) => state.numeroMandato
-  );
-
-  const changeNumeroMandato: Function = useMandatoStore(
-    (state) => state.changeNumeroMandato
-  );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -324,7 +218,12 @@ export function DatosGeneralesIntrucciones() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid xs={10} sm={4} md={4} lg={4} xl={4}
+          <Grid
+            xs={10}
+            sm={4}
+            md={4}
+            lg={4}
+            xl={4}
             height={{ xs: "4rem", sm: "0rem" }}
           >
             <InputLabel sx={queries.medium_text}>
@@ -347,30 +246,27 @@ export function DatosGeneralesIntrucciones() {
                 ))}
               </Select>
             </FormControl>
-
           </Grid>
 
-          <Grid xs={10} sm={4} md={4} lg={4} xl={4}
-          height={{ xs: "4rem", sm: "0rem" }}
-        >
-          <InputLabel sx={queries.medium_text}>
-            Municipio
-          </InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            // label={"Municipio mandante"}
-            // title={"Municipio mandante"}
-            onChange={(v) => {
-             
-            }}
-            
-          />
+          <Grid
+            xs={10}
+            sm={4}
+            md={4}
+            lg={4}
+            xl={4}
+            height={{ xs: "4rem", sm: "0rem" }}
+          >
+            <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
+            <TextField
+              fullWidth
+              variant="standard"
+              // label={"Municipio mandante"}
+              // title={"Municipio mandante"}
+              onChange={(v) => {}}
+            />
+          </Grid>
         </Grid>
-        </Grid>
-
       </Grid>
     </>
-  )
-
+  );
 }
