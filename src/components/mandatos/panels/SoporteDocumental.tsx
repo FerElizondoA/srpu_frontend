@@ -24,7 +24,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -32,11 +32,7 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
 
@@ -187,7 +183,8 @@ export function SoporteDocumental() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+                sx={{ width: "100%" }}
                 value={new Date(fechaArchivo)}
                 onChange={(date) =>
                   setSoporteDocumentalMandato({
@@ -197,9 +194,9 @@ export function SoporteDocumental() {
                     nombreArchivo: nombreArchivo,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -217,7 +214,7 @@ export function SoporteDocumental() {
                 fontSize: "60%",
                 "@media (min-width: 480px)": {
                   fontSize: "60%",
-                  width: "30%",
+                  width: "45%",
                 },
 
                 "@media (min-width: 768px)": {

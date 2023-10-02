@@ -3,10 +3,8 @@ import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabeza
 import axios from "axios";
 import {Fideicomisario } from "../Fideicomiso/fideicomiso";
 
-
 export type Mecanismo = {
   mecanismo: { Id: string; Descripcion: string };
-
   bonoCuponCero: { Id: string; Descripcion: string };
   clasificacionBonoCupo: { Id: string; Descripcion: string };
 };
@@ -15,8 +13,6 @@ export type garantiaPago = {
   Id: string;
   Descripcion : string; 
 }
-
-
 
 export type AsignarFuente = {
   clasificacion: { Id: string; Descripcion: string };
@@ -41,6 +37,22 @@ export type NumeroFideicomiso = {
   FechaCreacion: string;
   CreadoPor: string;
   ModificadoPor: string;
+  UltimaModificacion: string;
+}
+
+export type NumeroMandato = {
+  CreadoPor: string;
+  Deleted: string;
+  FechaCreacion: string;
+  FechaMandato: string;
+  Id: string;
+  Mandatario: string;
+  ModificadoPor: string;
+  MunicipioMandante: string;
+  NumeroMandato: number;
+  OrganismoMandante: string;
+  SoporteDocumental: string;
+  TipoMovimiento: string;
   UltimaModificacion: string;
 }
 
@@ -77,7 +89,15 @@ export interface FuenteDePagoLargoPlazoSlice {
 
   numeroFideicomisoSelect : NumeroFideicomiso[];
   setNumeroFideicomisoSelect : (numeroFideicomisoSelect : NumeroFideicomiso[] ) => void;
+
+  numeroMandato: NumeroMandato[];
+  getNumeroMandato : () => void;
+
+  numeroMandatoSelect: NumeroMandato[];
+  setNumeroMandatoSelect: (numeroMandato: NumeroMandato[]) => void;
+
 }
+
 
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
@@ -102,6 +122,12 @@ FuenteDePagoLargoPlazoSlice
   numeroFideicomisoSelect : [],
 
   numeroFideicomiso : [], 
+
+
+  numeroMandato:[],
+
+  numeroMandatoSelect:[],
+
 
   tablaFideicomisarioFP : [],
 
@@ -148,6 +174,28 @@ FuenteDePagoLargoPlazoSlice
     set(() => ({
       numeroFideicomisoSelect : numeroFideicomisoSelect
     }));
+  },
+
+  getNumeroMandato: async () => {
+    await axios
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandato", {
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    })
+    .then(({ data }) => {
+      let r = data.data;
+      set((state) => ({
+        numeroMandato: r,
+      }));
+    });
+    
+  },
+
+  setNumeroMandatoSelect(numeroMandatoSelect: NumeroMandato[]) {
+    set(() =>({
+      numeroMandatoSelect: numeroMandatoSelect
+    }))
   },
 
 

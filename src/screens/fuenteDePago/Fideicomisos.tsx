@@ -138,7 +138,6 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
-
   const [fideicomisosFiltrados, setFideicomisoFiltrados] =
     useState<Array<IDatosFideicomiso>>(fideicomisos);
 
@@ -201,6 +200,13 @@ export function Fideicomisos() {
     });
     setFideicomisoFiltrados(ResultadoBusqueda);
   };
+
+  useEffect(() => {
+    if (fideicomisoSelect.length !== 0) {
+      getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
+      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
+    }
+  }, [fideicomisoSelect]);
 
   useEffect(() => {
     setFideicomisoFiltrados(fideicomisos);

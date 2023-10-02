@@ -49,14 +49,16 @@ interface Head {
 }
 
 export interface IDatosMandatos {
-  Id: string;
-  NumeroMandato: string;
+  FechaCreacion: string;
   FechaMandato: string;
+  Id: string;
   Mandatario: string;
+  ModificadoPor: string;
   MunicipioMandante: string;
+  NumeroMandato: string;
   OrganismoMandante: string;
-  TipoMovimiento: string;
   SoporteDocumental: string;
+  TipoMovimiento: string;
 }
 
 const heads: Head[] = [
@@ -89,17 +91,62 @@ export function Mandatos() {
 
   const getMandatos: Function = useMandatoStore((state) => state.getMandato);
 
+  const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
+
   const handleChange = (dato: string) => {
     setBusqueda(dato);
   };
 
   const handleSearch = () => {
-    // filtrarDatos();
+    filtrarDatos();
   };
 
   const [busqueda, setBusqueda] = useState("");
-  const [mandatos, setMandatos] = useState<Array<[]>>([]);
-  const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<[]>>([]);
+  const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
+  const [mandatosFiltrados, setMandatosFiltrados] = useState<IDatosMandatos[]>(
+    []
+  );
+
+  const filtrarDatos = () => {
+    let ResultadoBusqueda = mandatos.filter((elemento) => {
+      if (
+        elemento.NumeroMandato.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.FechaCreacion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Mandatario.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MunicipioMandante.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.OrganismoMandante.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
+        return elemento;
+      }
+    });
+    setMandatosFiltrados(ResultadoBusqueda);
+  };
+
+  // useEffect(() => { PARA DIALOG ELIMINAR
+  //   if (!openDialogEliminar) {
+  //     getFideicomisos(setFideicomisos);
+  //   }
+  // }, [openAgregarFideicomisos]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length !== 0 ? setMandatos(mandatos) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [busqueda]);
+
+  useEffect(() => {
+    getMandatos(setMandatos);
+  }, []);
 
   const idMandato: string = useMandatoStore((state) => state.idMandato);
   const changeIdMandato: Function = useMandatoStore(
@@ -174,8 +221,6 @@ export function Mandatos() {
     }
   }, [mandatoSelect]);
 
-  const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
-
   useEffect(() => {
     getMandatos(setMandatos);
     !openAgregarMandato && cleanMandato();
@@ -188,7 +233,8 @@ export function Mandatos() {
   return (
     <Grid height={"74vh"}>
       <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
+        <LateralMenu />
       </Grid>
 
       <Grid
@@ -234,7 +280,18 @@ export function Mandatos() {
               placeholder="Buscar"
               value={busqueda}
               onChange={(e) => {
+                if (e.target.value === "") {
+                  handleSearch();
+                }
                 handleChange(e.target.value);
+              }}
+              onKeyPress={(ev) => {
+                //cuando se presiona Enter
+                if (ev.key === "Enter") {
+                  handleSearch();
+                  ev.preventDefault();
+                  return false;
+                }
               }}
             />
             <IconButton

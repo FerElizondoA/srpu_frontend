@@ -215,7 +215,7 @@ export const queries = {
     //fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
-    fontSize: "50%",
+    fontSize: "70%",
     "@media (min-width: 480px)": {
       fontSize: "70%",
     },
@@ -294,9 +294,8 @@ export const queries = {
   },
 
   buttonCancelarSolicitudInscripcion: {
-    marginTop: "2rem",
     backgroundColor: "rgb(175, 140, 85)",
-    height: "2.5",
+    height: "2.8rem",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(175, 140, 85, 0.6)",
@@ -305,12 +304,32 @@ export const queries = {
     fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
+    width:"6rem",
+    
+    "@media (min-width: 480px)": {
+      width:"6rem",
+    },
+
+    "@media (min-width: 768px)": {
+      width:"10rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      width:"10rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      width:"12rem",
+    },
+
+    "@media (min-width: 1870px)": {
+      width:"12rem",
+    },
   },
 
   buttonContinuarSolicitudInscripcion: {
-    marginTop: "1rem",
     backgroundColor: "#15212f",
-    height: "2.5rem",
+    height: "2.8rem",
     color: "white",
     "&&:hover": {
       backgroundColor: "rgba(47, 47, 47, 0.4)",
@@ -319,6 +338,26 @@ export const queries = {
     fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
+    width:"6rem",
+    "@media (min-width: 480px)": {
+      width:"6rem",
+    },
+
+    "@media (min-width: 768px)": {
+      width:"10rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      width:"10rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      width:"12rem",
+    },
+
+    "@media (min-width: 1870px)": {
+      width:"12rem",
+    },
   },
 
   buttonContinuarAbsolute: {
@@ -575,10 +614,26 @@ export const queries = {
     alignItems: "center",
     boxShadow: 5,
     borderRadius: 10,
-    height: "95%",
+    height: "35rem",
+    "@media (min-width: 480px)": {
+      height: "95%",
+    },
+    "@media (min-width: 768px)": {
+      height: "95%",
+    },
+    "@media (min-width: 1140px)": {
+      height: "95%",
+    },
+    "@media (min-width: 1400px)": {
+      height: "95%",
+    },
+    "@media (min-width: 1870px)": {
+      height: "95%",
+    },
   },
 
   catalogosConfig: {
+    height: "32rem",
     "@media (min-width: 480px)": {
       height: "35rem",
     },
@@ -596,7 +651,6 @@ export const queries = {
     },
 
     contenedorListado: {
-      height: "90%",
       flexDirection: "column",
       display: "flex",
       overflow: "auto",
@@ -604,16 +658,31 @@ export const queries = {
         width: ".2vw",
         mt: 1,
       },
+
       "&::-webkit-scrollbar-thumb": {
         backgroundColor: "#AF8C55",
         outline: "1px solid slategrey",
         borderRadius: 1,
       },
+
+      height: "70%",
+      "@media (min-width: 480px)": {
+        height: "90%",
+      },
+      "@media (min-width: 768px)": {
+        height: "90%",
+      },
+      "@media (min-width: 1140px)": {
+        height: "90%",
+      },
+      "@media (min-width: 1400px)": {
+        height: "90%",
+      },
     },
 
     modulo: {
       fontFamily: "MontserratMedium",
-
+      fontSize: "65%",
       "@media (min-width: 480px)": {
         fontSize: "70%",
       },
@@ -632,13 +701,14 @@ export const queries = {
       width: "100%",
       borderRadius: 20,
       display: "flex",
-      justifyContent: "start",
+      justifyContent: "center",
       fontFamily: "MontserratMedium",
-
+      fontSize: "50%",
       "@media (min-width: 480px)": {
-        fontSize: "50%",
+        fontSize: "60%",
       },
       "@media (min-width: 768px)": {
+        justifyContent: "start",
         fontSize: "70%",
       },
       "@media (min-width: 1140px)": {
@@ -692,7 +762,7 @@ export const queries = {
   },
 
   tablaAsignarFuente: {
-    height: "30rem",
+    height: "25rem",
     display: "flex",
     justifyContent: "center",
 
@@ -705,15 +775,17 @@ export const queries = {
     },
 
     "@media (min-width: 1140px)": {
-      width: "90%",
+      width: "100%",
     },
 
     "@media (min-width: 1400px)": {
-      width: "90%",
+      width: "100%",
+      height: "20rem",
     },
 
     "@media (min-width: 1870px)": {
-      width: "90%",
+      height: "33rem",
+      width: "100%",
     },
   },
 

@@ -65,7 +65,7 @@ export const createDocumentoLargoPlazoSlice: StateCreator<
           catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
-          tablaDocumentos: data.data
+          tablaDocumentosLP: data.data
             .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
               return {

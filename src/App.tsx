@@ -98,9 +98,7 @@ function App() {
           <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
           <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
           <Route path="home" element={<HomePage />}></Route>
-          <Route
-            path="obligacionesCortoPlazo"
-            element={<ObligacionesCortoPlazoPage />}
+          <Route path="obligacionesCortoPlazo"element={<ObligacionesCortoPlazoPage />}
           ></Route>
           <Route path="config" element={<Configuracion />}></Route>
           <Route

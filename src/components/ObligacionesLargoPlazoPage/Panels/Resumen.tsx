@@ -311,7 +311,7 @@ export function Resumen() {
   );
 
   const detalleInversionArchivo: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.detalleInversion);
+    useLargoPlazoStore((state) => state.archivoDetalleInversion);
 
   const tablaGastosCostos: any = useLargoPlazoStore(
     (state) => state.tablaGastosCostos
@@ -500,7 +500,7 @@ export function Resumen() {
   const [fileSelected, setFileSelected] = useState<any>("");
 
   const tablaDocumentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentos
+    (state) => state.tablaDocumentosLP
   );
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);

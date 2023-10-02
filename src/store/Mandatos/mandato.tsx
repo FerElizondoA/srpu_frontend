@@ -256,6 +256,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         set(() => ({
           tablaMandatos: r,
         }));
+
         setState(r);
       });
   },

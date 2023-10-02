@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GridCloseIcon } from "@mui/x-data-grid";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { enGB } from "date-fns/locale";
 import { useEffect } from "react";
@@ -280,7 +280,8 @@ export function RegistrarNuevaAutorizacion() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+              sx={{width:"100%"}}
                 value={new Date(fechaPublicacion)}
                 onChange={(date) =>
                   changeAutorizacion({
@@ -293,9 +294,9 @@ export function RegistrarNuevaAutorizacion() {
                     acreditacionQuorum: acreditacionQuorum,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>

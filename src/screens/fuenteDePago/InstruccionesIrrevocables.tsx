@@ -44,6 +44,9 @@ interface Head {
 
 const heads: Head[] = [
   {
+    label: "Tipo de mecanismo de pago",
+  },
+  {
     label: "Numero de cuenta",
   },
   {
@@ -54,6 +57,21 @@ const heads: Head[] = [
   },
   {
     label: "Ente Publico",
+  },
+  {
+    label: "Fecha",
+  },
+  {
+    label: "Entidad Federativa",
+  },
+  {
+    label: "Fondo o ingreso",
+  },
+  // {
+  //   label: "Banco",
+  // },
+  {
+    label: "Municipio",
   },
   {
     label: "Acciones",

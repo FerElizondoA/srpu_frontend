@@ -18,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
@@ -268,7 +268,8 @@ export function DatoGeneralesFideicomiso() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+                sx={{ width: "100%" }}
                 value={new Date(fechaFideicomiso)}
                 onChange={(date) =>
                   setGeneralFideicomiso({
@@ -278,9 +279,9 @@ export function DatoGeneralesFideicomiso() {
                     fiudiciario: fiudiciario,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
               />
             </LocalizationProvider>
           </Grid>

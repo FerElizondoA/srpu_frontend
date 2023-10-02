@@ -18,7 +18,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -205,23 +209,36 @@ export function TipoDeMovimiento() {
           width={"100%"}
           alignItems={"center"}
         >
-          <InputLabel>Alta de deudor</InputLabel>
-          <TextField
-            disabled={idMandato !== ""}
-            label={"Número de mandato"}
-            title={"Número de mandato"}
-            onChange={(v) => {
-              tablaMandatos.filter(
-                (_) => _.NumeroMandato.toString() === v.target.value
-              ).length > 0
-                ? setError(true)
-                : setError(false);
-              changeNumeroMandato(v.target.value);
-            }}
-            value={numeroMandato}
-            error={error}
-            helperText={error && "Número de mandato ya existente"}
-          />
+          <Grid
+            item
+            mt={{ xs: "1rem", sm: "0rem" }}
+            xs={10}
+            sm={3}
+            md={3}
+            lg={3}
+            xl={3}
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            <FormControlLabel
+              label="Alta deudor"
+              control={
+                <Checkbox
+                  checked={altaDeudor === "SI"}
+                  onChange={(v) => {
+                    setTipoMovimientoMandato({
+                      altaDeudor: v.target.checked ? "SI" : "NO",
+                      tipoEntePublicoObligado: tipoEntePublicoObligado,
+                      mandatario: mandatario,
+                      tipoFuente: tipoFuente,
+                      fondoIngreso: fondoIngreso,
+                      fechaMandato: fechaMandato,
+                    });
+                  }}
+                />
+              }
+            ></FormControlLabel>
+          </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
@@ -436,7 +453,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={9} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha mandato
             </InputLabel>
@@ -444,7 +461,8 @@ export function TipoDeMovimiento() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+                sx={{ width: "100%" }}
                 value={new Date(fechaMandato)}
                 onChange={(date) =>
                   setTipoMovimientoMandato({
@@ -456,15 +474,16 @@ export function TipoDeMovimiento() {
                     fechaMandato: date,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>
         </Grid>
 
         <Grid
+          height={"4rem"}
           display={"flex"}
           justifyContent={"center"}
           sx={{

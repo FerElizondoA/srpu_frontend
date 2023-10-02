@@ -261,9 +261,9 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinancieraLP: Function = useLargoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  // const setTablaDocumentosLP: Function = useLargoPlazoStore(
-  //   (state) => state.setTablaDocumentos
-  // );
+  const setTablaDocumentosLP: Function = useLargoPlazoStore(
+    (state) => state.setTablaDocumentosLP
+  );
 
   const cleanObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
     (state) => state.cleanObligadoSolidarioAval
@@ -274,7 +274,7 @@ export function ConsultaDeSolicitudPage() {
   );
 
   const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumento
+    (state) => state.addDocumentoLP
   );
 
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(
@@ -309,6 +309,7 @@ export function ConsultaDeSolicitudPage() {
     if (TipoDocumento === "Crédito simple a corto plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
+
       changeReglasAplicables(aux?.inscripcion.declaratorias);
       changeEncabezado(aux?.encabezado);
       changeInformacionGeneral(aux?.informacionGeneral);
@@ -324,8 +325,10 @@ export function ConsultaDeSolicitudPage() {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
+
     } else if (TipoDocumento === "Crédito simple a largo plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud);
+
+      let aux: any = JSON.parse(solicitud.Solicitud!);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
       changeEncabezadoLP(aux?.encabezado);
@@ -338,20 +341,21 @@ export function ConsultaDeSolicitudPage() {
         }
       );
 
-      aux?.generalGastosCostos.map((v: any, index: number) => {
-        return addGeneralGastosCostos(v);
-      });
+       aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+         return addGeneralGastosCostos(v);
+       });
 
-      aux?.autorizacionSelect.map((v: any, index: number) => {
-        return setAutorizacionSelect(v);
-      });
+       //aux?.registrarAutorizacion.autorizacionSelect.map((v: any, index: number) => {
+       //  return setAutorizacionSelect(v);
+       //});
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinancieraLP(v);
       });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumentoLP(v);
-      });
+
+       aux?.documentacion.map((v: any, index: number) => {
+         return addDocumentoLP(v);
+       });
     }
   };
 

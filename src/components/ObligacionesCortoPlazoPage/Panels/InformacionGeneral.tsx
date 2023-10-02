@@ -20,7 +20,7 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
@@ -246,6 +246,9 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
+ 
+  
+
   return (
     <Grid
       container
@@ -292,16 +295,18 @@ export function InformacionGeneral() {
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
           >
-            <DatePicker
+            <DesktopDatePicker
+            disablePast={false}
+              sx={{width:"100%"}}
               value={new Date(contratacion)}
               onChange={(date) => {
                 setContratacion(date?.toString() || "");
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              slots={{
-                textField: DateInput,
-              }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -388,13 +393,15 @@ export function InformacionGeneral() {
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
           >
-            <DatePicker
+            <DesktopDatePicker
+           
+            sx={{width:"100%"}}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
-              minDate={new Date(addDays(new Date(contratacion), 1))}
-              slots={{
-                textField: DateInput,
-              }}
+              minDate={new Date(addDays(new Date(contratacion), 0))} //1
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>
