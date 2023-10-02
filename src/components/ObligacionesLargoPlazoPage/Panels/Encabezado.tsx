@@ -1,5 +1,5 @@
 import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
@@ -218,7 +218,7 @@ export function Encabezado() {
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
           >
-            <DatePicker
+            <DesktopDatePicker
               value={new Date(fechaContratacion)}
               onChange={(date) => {
                 changeEncabezado({
@@ -235,9 +235,9 @@ export function Encabezado() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              slots={{
-                textField: DateInput,
-              }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>

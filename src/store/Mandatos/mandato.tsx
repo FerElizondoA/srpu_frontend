@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { useMandatoStore } from "./main";
+import { IDatosMandatos } from "../../screens/fuenteDePago/Mandatos";
 
 export interface TipoMovimientoMandato {
   altaDeudor: string;
@@ -26,6 +27,8 @@ export interface Mandato {
 }
 
 export interface MandatoSlice {
+  mandatoSelect: IDatosMandatos[]
+
   numeroMandato: string;
   tipoMovimientoMandato: TipoMovimientoMandato;
   soporteDocumentalMandato: SoporteDocumentalMandato;
@@ -70,6 +73,15 @@ export interface MandatoSlice {
 }
 
 export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
+  mandatoSelect: [],
+
+  setFideicomisoSelect: (mandato: IDatosMandatos[]) => {
+    set((state) => ({
+      mandatoSelect: mandato,
+    }));
+  },
+
+
   numeroMandato: "",
   idMandato: "",
 
@@ -200,6 +212,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       })
       .then(({ data }) => {
         let r = data.data;
+  
         setState(r);
       });
   },

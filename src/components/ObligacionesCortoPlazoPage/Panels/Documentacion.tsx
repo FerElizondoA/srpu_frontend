@@ -21,17 +21,13 @@ import {
   Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
-import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { GridCloseIcon } from "@mui/x-data-grid";
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado"; 
 
 interface Head {
   label: string;
@@ -126,12 +122,6 @@ export function Documentacion() {
     tab: "Tab",
   });
 
-  const removeDocumento: Function = useLargoPlazoStore(
-    (state) => state.removeDocumento
-  );
-
-  const detalleInversion: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.detalleInversion);
 
 
   // function cargarArchivo(event: any) {
@@ -271,7 +261,7 @@ export function Documentacion() {
                         type="file"
                         accept="application/pdf"
                         onChange={(v) => {
-                          //cargarArchivo(v, index);
+                          cargarArchivo(v, index);
                         }}
                         style={{
                           opacity: 0,
@@ -472,46 +462,42 @@ export function Documentacion() {
           <Typography
             position={"absolute"}
             sx={{
-              display:"flex",
-              justifyContent:"center",
-              alignItems:"center",
-              border:
-                detalleInversion.nombreArchivo !==
-                  "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                  ? "2px dotted #af8c55"
-                  : "2x dotted black",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "2px dotted black",
 
-                  width: "80%",
-                  height: "2.5rem",
-                  fontSize:"0.6rem" ,
+              width: "80%",
+              height: "2.5rem",
+              fontSize: "0.6rem",
 
-                  "@media (min-width: 480px)": {
-                    width: "100%",
-                    fontSize:"0.7rem" 
-                  },
-              
-                  "@media (min-width: 768px)": {
-                    width: "70%",
-                    fontSize:"0.8rem" 
-                  },
-              
-                  "@media (min-width: 1140px)": {
-                    width: "50%",
-                    fontSize:"0.8rem" 
-                  },
-              
-                  "@media (min-width: 1400px)": {
-                    width: "40%",
-                    fontSize:"0.9rem" 
-                  },
-              
-                  "@media (min-width: 1870px)": {
-                    width: "34%",
-                    fontSize:"0.9rem" 
-                  },
+              "@media (min-width: 480px)": {
+                width: "100%",
+                fontSize: "0.7rem"
+              },
+
+              "@media (min-width: 768px)": {
+                width: "70%",
+                fontSize: "0.8rem"
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "50%",
+                fontSize: "0.8rem"
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "40%",
+                fontSize: "0.9rem"
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "34%",
+                fontSize: "0.9rem"
+              },
             }}
           >
-              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
           </Typography>
           <input
             type="file"

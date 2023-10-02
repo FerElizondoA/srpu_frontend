@@ -106,7 +106,7 @@ export interface IData {
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-    localStorage.getItem("Menu") !== null
+      localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
   const logout = () => {
@@ -126,7 +126,7 @@ export function LateralMenu() {
   const navigate = useNavigate();
 
   const query = {
-    isXs: useMediaQuery("(min-width: 0px) and (max-width: 1025px)"),
+    isXs: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   const [openModulo, setOpenModulo] = useState("");
@@ -515,12 +515,17 @@ export function LateralMenu() {
         <Drawer
           anchor="left"
           open={isDrawerOpen}
+          sx={{
+            width: query.isXs ? "16rem" : "30vw",
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: { width: query.isXs ? "16rem" : "30vw", boxSizing: 'border-box' },
+          }}
           onClose={() => setIsDrawerOpen(false)}
         >
           <Grid
             container
             sx={{
-              width: query.isXs ? "40vw" : "30vw",
+              width: query.isXs ? "16rem" : "30vw",
               height: "inherit",
               overflow: "auto",
               "&::-webkit-scrollbar": {

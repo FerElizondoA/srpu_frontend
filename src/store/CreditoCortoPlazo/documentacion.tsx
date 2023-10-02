@@ -9,14 +9,12 @@ export interface DocumentosSlice {
   documentosObligatorios: [];
 
   tablaDocumentos: IFile[];
-
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
   addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;
   setTablaDocumentos: (docs: any) => any;
-
   getTiposDocumentos: () => void;
 }
 

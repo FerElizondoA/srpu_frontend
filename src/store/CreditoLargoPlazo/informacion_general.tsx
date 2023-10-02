@@ -37,7 +37,7 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   //NUEVA TABLA CREDITO LARGO PLAZO
 
-  detalleInversion: {
+  archivoDetalleInversion: {
     archivo: File;
     nombreArchivo: string;
   };
@@ -57,15 +57,16 @@ export interface InformacionGeneralLargoPlazoSlice {
     monto: number;
   };
 
-  changeInformacionGeneral: (informacionGeneral: {
-    fechaContratacion: string;
-    fechaVencimiento: string;
-    plazo: number;
-    destino: { Id: string; Descripcion: string };
-    monto: number;
-    denominacion: string;
-    institucionFinanciera: { Id: string; Descripcion: string };
-  }) => void;
+  changeInformacionGeneral: (
+    informacionGeneral: {
+      fechaContratacion: string;
+      fechaVencimiento: string;
+      plazo: number;
+      destino: { Id: string; Descripcion: string };
+      monto: number;
+      denominacion: string;
+      institucionFinanciera: { Id: string; Descripcion: string };
+    }) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: ObligadoSolidarioAval
@@ -82,9 +83,11 @@ export interface InformacionGeneralLargoPlazoSlice {
   //campo gastos costos
 
   changeGastosCostos: (
-    gastosAdicionales: string,
-    saldoVigente: number,
-    montoGastosAdicionales: number
+    GastosCostos: {
+      gastosAdicionales: "",
+      saldoVigente: 0,
+      montoGastosAdicionales: 0,
+    }
   ) => void;
 
   //NUEVA TABLA CREDITO LARGO PLAZO
@@ -102,7 +105,7 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
-  tablaDocumentos: IFileInfoGeneral[];
+  //tablaDocumentos: IFileInfoGeneral[];
 
   catalogoDetallesInversion: ICatalogo[];
 
@@ -138,7 +141,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
     montoGastosAdicionales: 0,
   },
 
-  detalleInversion: {
+  archivoDetalleInversion: {
     archivo: new File([], ""),
     nombreArchivo: "",
   },
@@ -153,7 +156,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
     monto: 0,
   },
 
-  tablaDocumentos: [],
+  //tablaDocumentos: [],
 
   changeInformacionGeneral: (informacionGeneral: {
     fechaContratacion: string;
@@ -166,14 +169,14 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   }) =>
     set(() => ({
       informacionGeneral: informacionGeneral,
-      generalGastosCostos: {
-        destino: informacionGeneral.destino,
-        detalleInversion: { Id: "", Descripcion: "" },
-        descripcion: "",
-        claveInscripcionFinanciamiento: "",
-        monto: 0,
-      },
-      tablaGastosCostos: [],
+      // generalGastosCostos: {
+      //   destino: informacionGeneral.destino,
+      //   detalleInversion: { Id: "", Descripcion: "" },
+      //   descripcion: "",
+      //   claveInscripcionFinanciamiento: "",
+      //   monto: 0,
+      // },
+      // tablaGastosCostos: [],
     })),
 
   changeObligadoSolidarioAval: (obligadoSolidario: any) =>
@@ -183,10 +186,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
     set((state) => ({
-      tablaObligadoSolidarioAval: [
-        ...state.tablaObligadoSolidarioAval,
-        newObligadoSolidarioAval,
-      ],
+      tablaObligadoSolidarioAval: [...state.tablaObligadoSolidarioAval, newObligadoSolidarioAval],
     })),
 
   removeObligadoSolidarioAval: (index: number) =>
@@ -199,9 +199,14 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-  changeGastosCostos: (GastoCostos: any) =>
+  changeGastosCostos: (
+    GastosCostos: {
+      gastosAdicionales: string,
+      saldoVigente: number,
+      montoGastosAdicionales: number,
+    },) =>
     set(() => ({
-      GastosCostos: GastoCostos,
+      GastosCostos: GastosCostos,
     })),
 
   // NUEVA TABLA LARGO PLAZO
@@ -227,7 +232,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   addDocumento: (newDocument: File, nombreArchivo: string) =>
     set(() => ({
-      detalleInversion: {
+      archivoDetalleInversion: {
         archivo: newDocument,
         nombreArchivo: nombreArchivo,
       },
@@ -235,7 +240,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   removeDocumento: () =>
     set(() => ({
-      detalleInversion: {
+      archivoDetalleInversion: {
         archivo: new File([], ""),
         nombreArchivo: "",
       },

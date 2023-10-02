@@ -114,11 +114,14 @@ export function Catalogos() {
   };
 
   return (
-    <Grid container direction="column" alignItems={"center"}>
+    <Grid container direction="column" alignItems={"center"} sx={{ width: "100%" }}>
+
       <Grid width={"100%"}>
         <LateralMenu />
       </Grid>
+
       <Grid
+        mt={{ xs: 3, sm: 0 }}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
@@ -150,17 +153,19 @@ export function Catalogos() {
               }
             })}
           </Grid>
+
           <Grid
             container
-            sx={{ width: "90%", height: "100%", overflow: "auto" }}
+            sx={{ width: "95%", height: "100%", overflow: "auto" }}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Grid
+            <Grid container
               sx={{
+                //buscador
                 bgcolor: "#f1f1f1",
-                width: "90%",
-                height: "10%",
+                width: "100%",
+                height: "13%",
                 display: "flex",
                 justifyContent: "space-around",
                 alignItems: "center",
@@ -168,15 +173,19 @@ export function Catalogos() {
                 fontFamily: "MontserratMedium",
               }}
             >
-              <Typography
-                sx={{
-                  ...queries.catalogosConfig.modulo,
-                }}
-                textAlign={"center"}
-              >
-                {modulo.toUpperCase()}
-              </Typography>
-              <Grid
+              <Grid xs={10} sm={5}>
+                <Typography
+                  sx={{
+                    ...queries.catalogosConfig.modulo,
+                  }}
+                  textAlign={"center"}
+                >
+                  {modulo.toUpperCase()}
+                </Typography>
+              </Grid>
+
+
+              <Grid xs={10} sm={5}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -329,28 +338,28 @@ export function Catalogos() {
                             ) : null}
                             <TableCell sx={{ textAlign: "center" }}>
                               {modulo === "Reglas de financiamiento" ||
-                              modulo === "Tipos de documento" ? (
+                                modulo === "Tipos de documento" ? (
                                 <Tooltip
                                   title={
                                     item.OCP === 1 && item.OLP === 1
                                       ? "Obligatorio en corto plazo y largo plazo"
                                       : item.OCP === 1 && item.OLP === 0
-                                      ? "Obligatorio en corto plazo"
-                                      : item.OCP === 0 && item.OLP === 1
-                                      ? "Obligatorio en largo plazo"
-                                      : "No obligatorio en corto plazo o largo plazo"
+                                        ? "Obligatorio en corto plazo"
+                                        : item.OCP === 0 && item.OLP === 1
+                                          ? "Obligatorio en largo plazo"
+                                          : "No obligatorio en corto plazo o largo plazo"
                                   }
                                 >
                                   <IconButton>
                                     <InfoIcon
                                       fontSize="small"
-                                      // sx={[
-                                      //   {
-                                      //     "&:hover": {
-                                      //       color: "orange",
-                                      //     },
-                                      //   },
-                                      // ]}
+                                    // sx={[
+                                    //   {
+                                    //     "&:hover": {
+                                    //       color: "orange",
+                                    //     },
+                                    //   },
+                                    // ]}
                                     ></InfoIcon>
                                   </IconButton>
                                 </Tooltip>
@@ -371,13 +380,13 @@ export function Catalogos() {
                                 >
                                   <EditIcon
                                     fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "blue",
-                                    //     },
-                                    //   },
-                                    // ]}
+                                  // sx={[
+                                  //   {
+                                  //     "&:hover": {
+                                  //       color: "blue",
+                                  //     },
+                                  //   },
+                                  // ]}
                                   />
                                 </IconButton>
                               </Tooltip>
@@ -395,13 +404,13 @@ export function Catalogos() {
                                 >
                                   <DeleteIcon
                                     fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "red",
-                                    //     },
-                                    //   },
-                                    // ]}
+                                  // sx={[
+                                  //   {
+                                  //     "&:hover": {
+                                  //       color: "red",
+                                  //     },
+                                  //   },
+                                  // ]}
                                   />
                                 </IconButton>
                               </Tooltip>
@@ -420,41 +429,54 @@ export function Catalogos() {
               open={openDialog}
               setOpen={setOpenDialog}
             />
-            <Box
+            <Grid
               sx={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "end",
-                alignItems: "center",
+                justifyContent:"center",
+                alignItems:"center"
               }}
             >
-              <Tooltip title={"Agregar"}>
-                <Button
-                  onClick={() => {
-                    setEdit((edit) => ({
-                      ...edit,
-                      ...{ Crud: "crea" },
-                      ...{ Descripcion: "" },
-                      ...{ OCP: 0 },
-                      ...{ OLP: 0 },
-                    }));
-                    setOpenDialog(true);
-                  }}
-                >
-                  <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
-                </Button>
-              </Tooltip>
-              <TablePagination
-                rowsPerPageOptions={renglonesPagina}
-                labelRowsPerPage="Registros por página:"
-                component="div"
-                count={catalogo.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Box>
+              <Grid xs={10}
+                display={"flex"}
+                alignItems={{xs:"end", sm:"center"}}
+                justifyContent={{xs:"end", sm:"center"}}
+              >
+                <Tooltip title={"Agregar"}>
+                  <Button
+                    onClick={() => {
+                      setEdit((edit) => ({
+                        ...edit,
+                        ...{ Crud: "crea" },
+                        ...{ Descripcion: "" },
+                        ...{ OCP: 0 },
+                        ...{ OLP: 0 },
+                      }));
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
+                  </Button>
+                </Tooltip>
+              </Grid>
+
+              <Grid  xs={10}
+              
+              >
+                <TablePagination
+                  rowsPerPageOptions={renglonesPagina}
+                  labelRowsPerPage="Registros por página:"
+                  component="div"
+                  count={catalogo.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Grid>
+
+            </Grid>
+
           </Grid>
         </Grid>
       </Grid>

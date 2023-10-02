@@ -29,7 +29,7 @@ import {
 import validator from "validator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
@@ -227,9 +227,30 @@ export function ComisionesTasaEfectiva() {
     <Grid
       container
       width={"100%"}
-      height={"115%"}
       flexDirection="column"
       justifyContent={"space-evenly"}
+      sx={{
+        height: "60rem",
+        "@media (min-width: 480px)": {
+          height: "70rem",
+        },
+
+        "@media (min-width: 768px)": {
+          height: "58rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "38rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "38rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "50rem",
+        },
+      }}
     >
       <Grid item>
         <Divider>
@@ -239,81 +260,87 @@ export function ComisionesTasaEfectiva() {
         </Divider>
       </Grid>
 
-      <Box>
-        <Grid display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item>
-            <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
-            <Autocomplete
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoDiasEjercicio}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Descripcion}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              value={tasaEfectivaDiasEjercicio}
-              onChange={(event, text) =>
-                changeTasaEfectiva({
-                  diasEjercicio: text || {
-                    Id: "",
-                    Descripcion: "",
-                  },
-                  tasaEfectiva: tasaEfectivaTasaEfectiva,
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-          <Grid item>
-            <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
-            <TextField
-              fullWidth
-              value={tasaEfectivaTasaEfectiva}
-              onChange={(v) => {
-                if (
-                  (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
-                    v.target.value === "") &&
-                  parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
-                ) {
-                  changeTasaEfectiva({
-                    diasEjercicio: tasaEfectivaDiasEjercicio,
-                    tasaEfectiva: v.target.value,
-                  });
-                }
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
+
+      <Grid
+        container
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+      >
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogoDiasEjercicio}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={tasaEfectivaDiasEjercicio}
+            onChange={(event, text) =>
+              changeTasaEfectiva({
+                diasEjercicio: text || {
+                  Id: "",
+                  Descripcion: "",
                 },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              }}
-              variant="standard"
-            />
-          </Grid>
+                tasaEfectiva: tasaEfectivaTasaEfectiva,
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
         </Grid>
-      </Box>
+
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
+          <TextField
+            fullWidth
+            value={tasaEfectivaTasaEfectiva}
+            onChange={(v) => {
+              if (
+                (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
+                  v.target.value === "") &&
+                parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
+              ) {
+                changeTasaEfectiva({
+                  diasEjercicio: tasaEfectivaDiasEjercicio,
+                  tasaEfectiva: v.target.value,
+                });
+              }
+            }}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            }}
+            variant="standard"
+          />
+        </Grid>
+      </Grid>
+
 
       <Grid item>
         <Divider>
@@ -323,8 +350,8 @@ export function ComisionesTasaEfectiva() {
         </Divider>
       </Grid>
 
-      <Grid item container justifyContent={"space-evenly"}>
-        <Grid item>
+      <Grid container justifyContent={"space-evenly"}>
+        <Grid item xs={10} sm={2} md={1} lg={1} xl={1}>
           <FormControlLabel
             label="No aplica"
             control={
@@ -352,13 +379,13 @@ export function ComisionesTasaEfectiva() {
             }
           ></FormControlLabel>
         </Grid>
-        <Grid item>
+        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fecha de Comisión</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
           >
-            <DatePicker
+            <DesktopDatePicker
               disabled={noAplica}
               value={new Date(comisionFechaContratacion)}
               onChange={(date) => {
@@ -373,14 +400,14 @@ export function ComisionesTasaEfectiva() {
                   iva: comisionIva,
                 });
               }}
-              slots={{
-                textField: DateInput,
-              }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>
 
-        <Grid item lg={2}>
+        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Tipo de Comisión</InputLabel>
           <Autocomplete
             disabled={noAplica}
@@ -427,7 +454,7 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
-        <Grid item>
+        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
           <Autocomplete
             disabled={noAplica}
@@ -476,8 +503,18 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid item container justifyContent={"space-evenly"}>
-        <Grid item>
+      <Grid container justifyContent={"space-evenly"}>
+        <Grid
+          item
+          xs={10}
+          sm={3}
+          md={3}
+          lg={3}
+          xl={3}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <FormControl>
             <RadioGroup
               defaultValue="Porcentaje Fijo"
@@ -505,7 +542,7 @@ export function ComisionesTasaEfectiva() {
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item>
+        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           {radioValue === "Porcentaje Fijo" ? (
             <InputLabel sx={queries.medium_text}>Porcentaje</InputLabel>
           ) : (
@@ -518,8 +555,8 @@ export function ComisionesTasaEfectiva() {
               radioValue === "Porcentaje Fijo"
                 ? comisionPorcentaje
                 : parseFloat(comisionMonto) <= 0
-                ? ""
-                : moneyMask(comisionMonto)
+                  ? ""
+                  : moneyMask(comisionMonto)
             }
             onChange={(v) => {
               if (
@@ -527,7 +564,7 @@ export function ComisionesTasaEfectiva() {
                 (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
                   v.target.value === "") &&
                 parseInt(v.target.value.replace(/\D/g, "")) <
-                  9999999999999999 &&
+                9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
                 changeComision({
@@ -589,7 +626,17 @@ export function ComisionesTasaEfectiva() {
           />
         </Grid>
 
-        <Grid item>
+        <Grid
+          item
+          xs={10}
+          sm={2}
+          md={2}
+          lg={2}
+          xl={2}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <FormControlLabel
             label="Causa IVA"
             control={
@@ -613,10 +660,38 @@ export function ComisionesTasaEfectiva() {
           ></FormControlLabel>
         </Grid>
 
-        <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <Grid 
+         item
+         xs={10}
+         sm={3}
+         md={3}
+         lg={2}
+         xl={2}
+         display={"flex"}
+         justifyContent={"center"}
+         alignItems={"center"}
+        >
           <ThemeProvider theme={theme}>
             <Button
-              sx={queries.buttonContinuar}
+              sx={{
+                backgroundColor: "#15212f",
+                color: "white",
+                "&&:hover": {
+                  backgroundColor: "rgba(47, 47, 47, 0.4)",
+                  color: "#000",
+                },
+                //fontSize: "90%",
+                borderRadius: "0.8vh",
+                textTransform: "capitalize",
+                fontSize: "100%",
+                "@media (min-width: 480px)": {
+                  fontSize: "90%",
+                },
+
+                "@media (min-width: 768px)": {
+                  fontSize: "90%",
+                },
+              }}
               disabled={
                 comisionFechaContratacion === "" ||
                 comisionTipoComision.Descripcion === "" ||
@@ -637,8 +712,8 @@ export function ComisionesTasaEfectiva() {
         </Grid>
       </Grid>
 
-      <Grid container justifyContent={"center"}>
-        <Paper sx={{ width: "88%", overflow: "auto" }}>
+      <Grid container justifyContent={"center"} height={"40%"}>
+        <Paper sx={{ width: "88%", overflow: "auto", height: "100%" }}>
           <TableContainer
             sx={{
               overflow: "auto",

@@ -121,21 +121,34 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       detalleInversion: {
-        ...state.detalleInversion,
+        ...state.archivoDetalleInversion,
       },
+
+      //registrarAutorizacion: state.autorizacionSelect,
+      
 
       registrarAutorizacion: {
-        autorizacionSelect: state.autorizacionSelect,
-      },
+        registrarAutorizacion: state.autorizacionSelect,
+  
+      //  numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
+    
+      //  fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
+    
+      //  montoAutorizado: state.registrarAutorizacion.montoAutorizado,
+    
+      //  medioPublicacion: state.registrarAutorizacion.medioPublicacion,
+     },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      // documentacion: state.tablaDocumentos.map((v, i) => {
-      //   return {
-      //     nombreArchivo: v.nombreArchivo,
-      //     tipoArchivo: v.tipoArchivo,
-      //     descripcionTipo: v.descripcionTipo,
-      //   };
-      // }),
+      
+      documentacion: state.tablaDocumentosLP.map((v, i) => {
+        return {
+          nombreArchivo: v.nombreArchivo,
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
+      }),
+
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -145,13 +158,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/documento_srpu_largo",
+        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
         {
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera:state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
@@ -197,22 +209,28 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         generalGastosCostos: state.tablaGastosCostos,
       },
 
-      detalleInversion: {
-        ...state.detalleInversion,
-      },
-
-      registrarAutorizacion: {
-        autorizacionSelect: state.autorizacionSelect,
-      },
+      //detalleInversion: {
+      //  ...state.archivoDetalleInversion,
+      //},
+//
+      //registrarAutorizacion: {
+      //  autorizacionSelect: state.autorizacionSelect
+      //  // numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
+      //  // fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
+      //  // montoAutorizado: state.registrarAutorizacion.montoAutorizado,
+      //  // medioPublicacion: state.registrarAutorizacion.medioPublicacion,
+      //},
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      // documentacion: state.tablaDocumentos.map((v, i) => {
-      //   return {
-      //     nombreArchivo: v.nombreArchivo,
-      //     tipoArchivo: v.tipoArchivo,
-      //     descripcionTipo: v.descripcionTipo,
-      //   };
-      // }),
+
+       documentacion: state.tablaDocumentosLP.map((v, i) => {
+         return {
+           nombreArchivo: v.nombreArchivo,
+           tipoArchivo: v.tipoArchivo,
+           descripcionTipo: v.descripcionTipo,
+         };
+       }),
+       
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -228,8 +246,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,

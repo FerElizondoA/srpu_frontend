@@ -567,6 +567,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         let r = data.data;
         state.tablaFideicomisos = r;
         setState(r);
+
       });
   },
 

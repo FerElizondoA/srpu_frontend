@@ -26,16 +26,28 @@ interface Head {
 
 const heads: Head[] = [
   {
+    label: "Tipo de mecanismo de pago",
+  },
+  {
     label: "Numero de cuenta",
   },
   {
     label: "Cuenta CLABE",
   },
   {
-    label: "Fondo o ingreso",
+    label: "Fecha",
   },
   {
-    label: "Banco",
+    label: "Entidad Federativa",
+  },
+  {
+    label: "Fondo o ingreso",
+  },
+  // {
+  //   label: "Banco",
+  // },
+  {
+    label: "Municipio",
   },
   {
     label: "Acciones",

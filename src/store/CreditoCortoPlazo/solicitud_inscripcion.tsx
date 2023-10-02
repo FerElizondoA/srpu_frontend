@@ -181,6 +181,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         obligadosSolidarios: state.tablaObligadoSolidarioAval,
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
+      
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
           nombreArchivo: v.nombreArchivo,

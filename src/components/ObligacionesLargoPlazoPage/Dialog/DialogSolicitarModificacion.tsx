@@ -17,12 +17,9 @@ import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
-export interface IUsuariosAsignables {
-  id: string;
-  Nombre: string;
-  Rol: string;
-}
 
 export function DialogSolicitarModificacion({
   handler,
@@ -55,7 +52,7 @@ export function DialogSolicitarModificacion({
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarioRol(setUsuarios);
   }, [openState]);
 
   useEffect(() => {
@@ -124,6 +121,8 @@ export function DialogSolicitarModificacion({
     }
   };
 
+  const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
+
   return (
     <Dialog
       fullWidth
@@ -148,20 +147,42 @@ export function DialogSolicitarModificacion({
               }}
               helperText={
                 errorAsignacion === true
-                  ? "Debe de asigarle a un usuario la solicitud"
+                  ? "Debe de asigarle la solicitud a un usuario"
                   : null
               }
               error={errorAsignacion}
             >
-              {usuarios
-                .filter((td: any) => td.Rol === "Capturador")
-                .map((usuario, index) => {
-                  return (
-                    <MenuItem value={usuario.id} key={index}>
-                      {usuario.Nombre + " " + usuario.Rol}
-                    </MenuItem>
-                  );
-                })}
+              {rolesAdmin.includes(localStorage.getItem("Rol")!)
+                ? usuarios
+                    .filter((usr) => usr.Rol === "Verificador")
+                    .map((usuario, index) => {
+                      return (
+                        <MenuItem value={usuario.Id} key={index}>
+                          {usuario.Nombre +
+                            " " +
+                            usuario.ApellidoPaterno +
+                            " " +
+                            usuario.ApellidoMaterno +
+                            " - " +
+                            (usuario.Rol || "")}
+                        </MenuItem>
+                      );
+                    })
+                : usuarios
+                    .filter((usr) => usr.Rol === "Capturador")
+                    .map((usuario, index) => {
+                      return (
+                        <MenuItem value={usuario.Id} key={index}>
+                          {usuario.Nombre +
+                            " " +
+                            usuario.ApellidoPaterno +
+                            " " +
+                            usuario.ApellidoMaterno +
+                            " - " +
+                            (usuario.Rol || "")}
+                        </MenuItem>
+                      );
+                    })}
             </TextField>
           </FormControl>
         </Grid>
@@ -172,6 +193,7 @@ export function DialogSolicitarModificacion({
               sx={{
                 fontSize: "1.5ch",
               }}
+              key={index}
             >
               <strong>{key}:</strong>
               {val as string}

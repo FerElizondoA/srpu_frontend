@@ -138,10 +138,9 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] =useState<Array<IDatos>>(fideicomisos);
 
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<Array<IDatos>>(fideicomisos);
-
+  
   const fideicomisoSelect: Fideicomiso[] = useFideicomisoStore(
     (state) => state.fideicomisoSelect
   );
@@ -172,12 +171,6 @@ export function Fideicomisos() {
     }
   }, [pathDocumentos]);
 
-  useEffect(() => {
-    if (fideicomisoSelect.length !== 0) {
-      getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
-    }
-  }, [fideicomisoSelect]);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -202,6 +195,15 @@ export function Fideicomisos() {
     setFideicomisoFiltrados(ResultadoBusqueda);
   };
 
+
+
+  useEffect(() => {
+    if (fideicomisoSelect.length !== 0) {
+      getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
+      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
+    }
+  }, [fideicomisoSelect]);
+
   useEffect(() => {
     setFideicomisoFiltrados(fideicomisos);
   }, [fideicomisos]);
@@ -214,6 +216,7 @@ export function Fideicomisos() {
 
   useEffect(() => {
     getFideicomisos(setFideicomisos);
+   
   }, []);
 
   useEffect(() => {
@@ -398,6 +401,7 @@ export function Fideicomisos() {
                               changeIdFideicomiso(row?.Id);
 
                               setFideicomisoSelect([row]);
+
 
                               setGeneralFideicomiso({
                                 numeroFideicomiso: row.NumeroDeFideicomiso,

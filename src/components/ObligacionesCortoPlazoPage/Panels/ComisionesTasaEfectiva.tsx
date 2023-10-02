@@ -29,7 +29,7 @@ import {
 import validator from "validator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
@@ -306,6 +306,7 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
+        
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
           <TextField
@@ -381,7 +382,7 @@ export function ComisionesTasaEfectiva() {
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
           >
-            <DatePicker
+            <DesktopDatePicker
               disabled={noAplica}
               value={new Date(comisionFechaContratacion)}
               onChange={(date) => {
@@ -396,9 +397,9 @@ export function ComisionesTasaEfectiva() {
                   iva: comisionIva,
                 });
               }}
-              slots={{
-                textField: DateInput,
-              }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>

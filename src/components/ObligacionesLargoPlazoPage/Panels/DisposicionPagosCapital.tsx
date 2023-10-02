@@ -27,7 +27,7 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { addDays, lightFormat } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -421,7 +421,8 @@ export function DisposicionPagosCapital() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+              sx={{width:"100%"}}
                 value={new Date(capitalFechaPrimerPago)}
                 onChange={(date) =>
                   changeCapital(
@@ -432,9 +433,9 @@ export function DisposicionPagosCapital() {
                 }
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                slots={{
-                  textField: DateInput,
-                }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -554,8 +555,9 @@ export function DisposicionPagosCapital() {
                 dateAdapter={AdapterDateFns}
                 adapterLocale={enGB}
               >
-                <DatePicker
+                <DesktopDatePicker
                   // disabled={!disposicionesParciales}
+                  sx={{width:"100%"}}
                   value={new Date(disposicionFechaDisposicion)}
                   onChange={(date) => {
                     changeDisposicion(
@@ -565,9 +567,9 @@ export function DisposicionPagosCapital() {
                   }}
                   minDate={new Date()}
                   maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                  slots={{
-                    textField: DateInput,
-                  }}
+                  // slots={{
+                  //   textField: DateInput,
+                  // }}
                 />
               </LocalizationProvider>
             </Grid>
@@ -792,7 +794,8 @@ export function DisposicionPagosCapital() {
                     dateAdapter={AdapterDateFns}
                     adapterLocale={enGB}
                   >
-                    <DatePicker
+                    <DesktopDatePicker
+                    sx={{width:"100%"}}
                       value={new Date(tasaInteresFechaPrimerPago)}
                       onChange={(date) =>
                         changeTasaInteres({
@@ -806,9 +809,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: "",
                         })
                       }
-                      slots={{
-                        textField: DateInput,
-                      }}
+                      // slots={{
+                      //   textField: DateInput,
+                      // }}
                     />
                   </LocalizationProvider>
                 </Grid>

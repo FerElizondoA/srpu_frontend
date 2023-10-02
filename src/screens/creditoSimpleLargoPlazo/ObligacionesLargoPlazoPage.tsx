@@ -8,7 +8,6 @@ import { Autorizacion } from "../../components/ObligacionesLargoPlazoPage/Panels
 import { CondicionesFinancieras } from "../../components/ObligacionesLargoPlazoPage/Panels/CondicionesFinancieras";
 import { Documentacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesLargoPlazoPage/Panels/Encabezado";
-import { FuenteDePago } from "../../components/ObligacionesLargoPlazoPage/Panels/FuenteDePago";
 import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
 import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
 //import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
@@ -16,6 +15,7 @@ import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLarg
 import { InfoGeneralGastoCosto } from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto";
 import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage/Panels/FuentePagoSecciones"; 
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
@@ -114,7 +114,7 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 0 && <Encabezado />}
       {tabIndex === 1 && <InfoGeneralGastoCosto />}
       {tabIndex === 2 && <Autorizacion />}
-      {tabIndex === 3 && <FuenteDePago />}
+      {tabIndex === 3 && <FuentePagoSecciones />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
       {tabIndex === 6 && <Resumen />}

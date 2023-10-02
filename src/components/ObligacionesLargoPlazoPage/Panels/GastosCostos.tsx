@@ -153,7 +153,7 @@ export function GastoCostos() {
   );
 
   const detalleInversion: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.detalleInversion);
+    useLargoPlazoStore((state) => state.archivoDetalleInversion);
 
   const addRows = () => {
     let tab = {
@@ -487,7 +487,7 @@ export function GastoCostos() {
                   ...queries.leyendaArchivoGastosCosto,
                   border:
                     detalleInversion.nombreArchivo !==
-                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                       ? "2px dotted #af8c55"
                       : "2x dotted black",
                 }}
@@ -633,7 +633,10 @@ export function GastoCostos() {
             }
             onClick={() => {
               changeGeneralGastosCostos({
-                ...generalGastosCostos,
+                destino: {
+                  Id: "",
+                  Descripcion: ""
+                },
                 detalleInversion: { Id: "", Descripcion: "" },
                 claveInscripcionFinanciamiento: "",
                 descripcion: "",

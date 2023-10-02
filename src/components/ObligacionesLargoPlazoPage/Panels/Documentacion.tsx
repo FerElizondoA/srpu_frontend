@@ -21,10 +21,8 @@ import {
   Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
@@ -69,15 +67,15 @@ export function Documentacion() {
   const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
     useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
-  const tablaDocumentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentos
+  const tablaDocumentosLP: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentosLP
   );
 
-  const addDocumento: Function = useLargoPlazoStore(
-    (state) => state.addDocumento
+  const addDocumentoLP: Function = useLargoPlazoStore(
+    (state) => state.addDocumentoLP
   );
 
-  const setTablaDocumentos: Function = useLargoPlazoStore(
+  const setTablaDocumentosLP: Function = useLargoPlazoStore(
     (state) => state.setTablaDocumentosLP
   );
 
@@ -85,13 +83,13 @@ export function Documentacion() {
     let file = event.target.files[0];
 
     if (file !== undefined) {
-      if (index < tablaDocumentos.length) {
-        let auxArrayArchivos = [...tablaDocumentos];
+      if (index < tablaDocumentosLP.length) {
+        let auxArrayArchivos = [...tablaDocumentosLP];
         auxArrayArchivos[index].archivo = file;
         auxArrayArchivos[index].nombreArchivo = file.name;
-        setTablaDocumentos(auxArrayArchivos);
+        setTablaDocumentosLP(auxArrayArchivos);
       } else {
-        addDocumento({
+        addDocumentoLP({
           archivo: file,
           nombreArchivo: file.name,
         });
@@ -100,14 +98,14 @@ export function Documentacion() {
   }
 
   const quitDocument: Function = useLargoPlazoStore(
-    (state) => state.removeDocumento
+    (state) => state.removeDocumentoLP
   );
 
   const asignarTpoDoc = (index: number, valor: string, descripcion: string) => {
-    let aux = [...tablaDocumentos];
+    let aux = [...tablaDocumentosLP];
     aux[index].tipoArchivo = valor;
     aux[index].descripcionTipo = descripcion;
-    setTablaDocumentos(aux);
+    setTablaDocumentosLP(aux);
   };
 
   const scroll = () => {
@@ -130,29 +128,41 @@ export function Documentacion() {
     <Grid
       item
       container
-      direction="column"
+      display="flex"
+      //height={"30rem"}
+      width={"100%"}
       sx={{
-        maxHeight: "73vh",
-        overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: ".5vw",
-          mt: 1,
+        height: "27rem",
+        "@media (min-width: 480px)": {
+          height: "28rem",
         },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#AF8C55",
-          outline: "1px solid slategrey",
-          borderRadius: 1,
+
+        "@media (min-width: 768px)": {
+          height: "26rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "26rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "30rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "42rem",
         },
       }}
     >
-      <Grid item>
-        <Grid item ml={window.innerWidth / 90} lg={10}>
+      <Grid container height={"100%"} width={"100%"}>
+        <Grid item height={"100%"} width={"100%"}>
           <TableContainer
             sx={{
               height: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
+                height: ".5vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -173,7 +183,7 @@ export function Documentacion() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaDocumentos.map((val, index) => (
+                {tablaDocumentosLP.map((val, index) => (
                   <StyledTableRow key={index} id={`${index + 1}`}>
                     <StyledTableCell scope="row">
                       {index < catalogoTiposDocumentosObligatorios.length ? (
@@ -193,20 +203,20 @@ export function Documentacion() {
                       <TextField
                         disabled={
                           val.archivo?.name ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         }
                         size="small"
                         multiline
                         value={val.nombreArchivo}
                         onChange={(v) => {
-                          let auxArrayArchivos = [...tablaDocumentos];
+                          let auxArrayArchivos = [...tablaDocumentosLP];
                           auxArrayArchivos[index].nombreArchivo = v.target.value
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
-                          setTablaDocumentos(auxArrayArchivos);
+                            setTablaDocumentosLP(auxArrayArchivos);
                         }}
                       ></TextField>
                     </StyledTableCell>
@@ -218,7 +228,7 @@ export function Documentacion() {
                           display: "flex",
                           fontFamily:
                             val.archivo?.name !==
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "MontserratBold"
                               : "MontserratMedium",
                           textAlign: "center",
@@ -229,7 +239,7 @@ export function Documentacion() {
                           fontSize: "80%",
                           border:
                             val.archivo?.name !==
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "2px dotted #af8c55"
                               : "2px dotted black",
                         }}
@@ -255,12 +265,12 @@ export function Documentacion() {
                     <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography>
-                          {tablaDocumentos[index]?.descripcionTipo}
+                          {tablaDocumentosLP[index]?.descripcionTipo}
                         </Typography>
                       ) : (
                         <FormControl required variant="standard" fullWidth>
                           <Select
-                            value={tablaDocumentos[index]?.tipoArchivo}
+                            value={tablaDocumentosLP[index]?.tipoArchivo}
                             onChange={(v) => {
                               asignarTpoDoc(
                                 index,
@@ -291,13 +301,13 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                      comentario[val.descripcionTipo] !== "" ? (
+                        comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                                  comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -320,7 +330,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                              comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -348,7 +358,7 @@ export function Documentacion() {
         </Grid>
       </Grid>
 
-      <Grid
+      {/* <Grid
         item
         container
         position="fixed"
@@ -389,7 +399,74 @@ export function Documentacion() {
             cursor: "pointer",
           }}
         ></input>
+      </Grid> */}
+
+      <Grid mt={1} container display={"flex"} justifyContent={"center"} width={"100%"}>
+        <Grid item mb={2} width={"100%"} display={"flex"} justifyContent={"center"} sx={{ position: "relative" }}>
+          <Typography
+            position={"absolute"}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "2px dotted black",
+
+              width: "80%",
+              height: "2.5rem",
+              fontSize: "0.6rem",
+
+              "@media (min-width: 480px)": {
+                width: "100%",
+                fontSize: "0.7rem"
+              },
+
+              "@media (min-width: 768px)": {
+                width: "70%",
+                fontSize: "0.8rem"
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "50%",
+                fontSize: "0.8rem"
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "40%",
+                fontSize: "0.9rem"
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "34%",
+                fontSize: "0.9rem"
+              },
+            }}
+          >
+            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+          </Typography>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(v) => {
+              cargarArchivo(v, tablaDocumentosLP.length);
+            }}
+            style={{
+              opacity: 0,
+              width: "60%",
+              height: "3vh",
+              cursor: "pointer",
+            }}
+          />
+        </Grid>
+
+        {/* <Grid display={"flex"} justifyContent={"end"}>
+          <Tooltip title={"Remover Archivo"}>
+            <Button onClick={() => removeDocumento()}>
+              <GridCloseIcon />
+            </Button>
+          </Tooltip>
+        </Grid> */}
       </Grid>
+
       <ComentarioApartado
         setOpen={setOpenComentarioApartado}
         openState={openComentarioApartado}

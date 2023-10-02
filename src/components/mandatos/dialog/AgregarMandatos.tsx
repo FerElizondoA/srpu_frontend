@@ -28,6 +28,7 @@ import {
   TipoMovimientoMandato,
 } from "../../../store/Mandatos/mandato";
 import { useMandatoStore } from "../../../store/Mandatos/main";
+import { DatosGeneralesMandatos } from "../panels/DatosGeneralesMandatos";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -186,16 +187,16 @@ export function AgregarMandatos({
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab
-                label="Tipo de Movimiento"
-                sx={{ ...queries.bold_text }}
-              ></Tab>
+              <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
+              <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
               <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 
-            {tabIndex === 0 && <TipoDeMovimiento />}
+            {tabIndex === 0 && <DatosGeneralesMandatos />}
+          
+            {tabIndex === 1 && <TipoDeMovimiento />}
 
-            {tabIndex === 1 && <SoporteDocumental />}
+            {tabIndex === 2 && <SoporteDocumental />}
           </Grid>
         </Grid>
       </Dialog>

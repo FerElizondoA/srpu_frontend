@@ -18,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -73,7 +73,7 @@ export function TipoDeMovimiento() {
   );
 
   const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
-  useMandatoStore(
+    useMandatoStore(
       (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
     );
 
@@ -94,7 +94,7 @@ export function TipoDeMovimiento() {
   );
 
   const tablaTipoMovimientoMandato: TipoMovimientoMandato[] =
-  useMandatoStore((state) => state.tablaTipoMovimientoMandato);
+    useMandatoStore((state) => state.tablaTipoMovimientoMandato);
 
   // separacion
 
@@ -198,16 +198,9 @@ export function TipoDeMovimiento() {
           justifyContent={"space-evenly"}
           width={"100%"}
         >
-          <TextField
-            label={"Numero de mandato"}
-            title={"Numero de mandato"}
-            onChange={(v) => {
-              changeNumeroMandato(v.target.value);
-            }}
-            value={numeroMandato}
-          />
           <Grid
             item
+            mt={{xs:"1rem", sm:"0rem"}}
             xs={10}
             sm={3}
             md={3}
@@ -439,7 +432,7 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={9} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha mandato
             </InputLabel>
@@ -447,7 +440,8 @@ export function TipoDeMovimiento() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+                sx={{ width: "100%" }}
                 value={new Date(fechaMandato)}
                 onChange={(date) =>
                   setTipoMovimientoMandato({
@@ -459,15 +453,16 @@ export function TipoDeMovimiento() {
                     fechaMandato: date,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
               />
             </LocalizationProvider>
           </Grid>
         </Grid>
 
         <Grid
+          height={"4rem"}
           display={"flex"}
           justifyContent={"center"}
           sx={{

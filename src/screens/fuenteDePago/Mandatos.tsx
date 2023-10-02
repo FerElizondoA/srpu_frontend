@@ -44,18 +44,16 @@ interface Head {
 }
 
 export interface IDatosMandatos {
-  DescripcionFiudiciario: string;
-  DescripcionTipoFideicomiso: string;
-  FechaCreacion: string;
-  FechaDeFideicomiso: string;
-  Id: string;
-  IdFiudiciario: string;
-  IdTipoFideicomiso: string;
-  ModificadoPor: string;
-  NumeroDeFideicomiso: string;
-  SoporteDocumental: string;
-  TipoDeMovimiento: string;
-  UltimaModificacion: string;
+  FechaCreacion: string,
+  FechaMandato: string,
+  Id: string,
+  Mandatario: string,
+  ModificadoPor: string,
+  MunicipioMandante: string,
+  NumeroMandato: string,
+  OrganismoMandante: string,
+  SoporteDocumental: string,
+  TipoMovimiento: string,
 }
 
 const heads: Head[] = [
@@ -94,49 +92,71 @@ export function Mandatos() {
 
   const getMandatos: Function = useMandatoStore((state) => state.getMandato);
 
+  const cleanMandato: Function = useMandatoStore(
+    (state) => state.cleanMandato
+  );
+
+
   const handleChange = (dato: string) => {
     setBusqueda(dato);
   };
 
   const handleSearch = () => {
-    // filtrarDatos();
+    filtrarDatos();
   };
 
-  // const [datos, setDatos] = useState<Array<[]>>([]);
   const [busqueda, setBusqueda] = useState("");
-  const [mandatos, setMandatos] = useState<Array<[]>>([]);
-  const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<[]>>([]);
+  const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
+  const [mandatosFiltrados, setMandatosFiltrados] = useState<IDatosMandatos[]>([]);
 
-  // const filtrarDatos = () => {
-  //   // eslint-disable-next-line array-callback-return
-  //   let ResultadoBusqueda = datos.filter((elemento) => {
-  //     if (
-  //       // elemento.NumeroDeFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.FechaDeFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.DescripcionTipoFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.DescripcionFiudiciario.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase())
-  //     ) {
-  //       return elemento;
-  //     }
-  //   });
-  //   setMandatosFiltrados(ResultadoBusqueda);
-  // };
+  const filtrarDatos = () => {
+    let ResultadoBusqueda = mandatos.filter((elemento) => {
+      if (
+        elemento.NumeroMandato.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.FechaCreacion.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Mandatario.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MunicipioMandante.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.OrganismoMandante.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
+        return elemento;
+      }
+    });
+    setMandatosFiltrados(ResultadoBusqueda);
+  };
+
+
+
+  // useEffect(() => { PARA DIALOG ELIMINAR
+  //   if (!openDialogEliminar) {
+  //     getFideicomisos(setFideicomisos);
+  //   }
+  // }, [openAgregarFideicomisos]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length !== 0 ? setMandatos(mandatos) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [busqueda]);
+
+  useEffect(() => {
+    getMandatos(setMandatos);
+  }, []);
+
 
   useEffect(() => {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
 
-  const cleanMandato: Function = useMandatoStore(
-    (state) => state.cleanMandato
-  );
 
   useEffect(() => {
     getMandatos(setMandatos);
@@ -146,7 +166,8 @@ export function Mandatos() {
   return (
     <Grid height={"74vh"}>
       <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
+        <LateralMenu />
       </Grid>
 
       <Grid
@@ -194,7 +215,18 @@ export function Mandatos() {
               placeholder="Buscar"
               value={busqueda}
               onChange={(e) => {
+                if (e.target.value === "") {
+                  handleSearch();
+                }
                 handleChange(e.target.value);
+              }}
+              onKeyPress={(ev) => {
+                //cuando se presiona Enter
+                if (ev.key === "Enter") {
+                  handleSearch();
+                  ev.preventDefault();
+                  return false;
+                }
               }}
             />
             <IconButton
@@ -232,11 +264,11 @@ export function Mandatos() {
           justifyContent: "center",
         }}
       >
-        <Paper sx={{ width: "100%", height:"100%" }}>
+        <Paper sx={{ width: "100%", height: "100%" }}>
           <TableContainer
             sx={{
               width: "100%",
-              height:"100%",
+              height: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",

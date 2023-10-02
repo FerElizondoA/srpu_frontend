@@ -12,7 +12,8 @@ export function HomePage() {
   return (
     <Grid container direction="column">
       <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+        <LateralMenu />
+        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
       </Grid>
       <Grid
         item
@@ -26,6 +27,6 @@ export function HomePage() {
         <img src={escudo} alt="Escudo" style={{ width: "25vw" }} />
       </Grid>
     </Grid>
-   
+
   );
 }

@@ -23,7 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GridCloseIcon } from "@mui/x-data-grid";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -176,7 +176,8 @@ export function SoporteDocumental() {
               dateAdapter={AdapterDateFns}
               adapterLocale={enGB}
             >
-              <DatePicker
+              <DesktopDatePicker
+              sx={{width:"100%"}}
                 value={new Date(fechaArchivo)}
                 onChange={(date) =>
                   setSoporteDocumentalMandato({
@@ -186,9 +187,9 @@ export function SoporteDocumental() {
                     nombreArchivo: nombreArchivo,
                   })
                 }
-                slots={{
-                  textField: DateInput,
-                }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -206,7 +207,7 @@ export function SoporteDocumental() {
                 fontSize: "60%",
                 "@media (min-width: 480px)": {
                   fontSize: "60%",
-                  width: "30%",
+                  width: "45%",
                 },
 
                 "@media (min-width: 768px)": {

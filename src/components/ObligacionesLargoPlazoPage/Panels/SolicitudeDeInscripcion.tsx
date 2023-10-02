@@ -17,6 +17,7 @@ import {
   TableSortLabel,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
@@ -385,7 +386,9 @@ export function SolicituDeInscripcion() {
     arrReglas = aux;
     changeReglasAplicables(arrReglas);
   };
-
+  const query = {
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
+  }
   return (
     <Grid container>
       <Grid
@@ -395,7 +398,7 @@ export function SolicituDeInscripcion() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
+        <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Servidor público a quien va dirigido:
           </InputLabel>
@@ -418,7 +421,7 @@ export function SolicituDeInscripcion() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
+        <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
           <TextField
             fullWidth
@@ -442,7 +445,7 @@ export function SolicituDeInscripcion() {
       </Grid>
 
       <Grid item container mt={2} mb={2} justifyContent={"center"}>
-        <Grid item xs={10} sm={5} md={4} lg={4} xl={3}>
+        <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -469,102 +472,162 @@ export function SolicituDeInscripcion() {
         </Grid>
       </Grid>
 
-      <Grid item container justifyContent={"center"} alignItems={"flex-start"}>
-        <Grid item md={9} lg={9} xl={10}>
-          <Divider sx={queries.medium_text}>
+      <Grid container justifyContent={"center"} alignItems={"flex-start"} width={"100%"}>
+        <Grid item xs={12} sm={10} md={10} lg={10} xl={10}>
+          <Divider sx={{
+            fontWeight: "bold",
+            fontFamily: "MontserratMedium",
+            width: "100%",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1.4ch",
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
+            },
+          }}>
             Declaratorias aplicables al financiamiento u obligación:
           </Divider>
         </Grid>
-        <Grid item xs={9} sm={9} md={9} lg={9} xl={9} display="flex">
-          <Grid>
-            <Typography sx={{ display: "grid", justifyContent: "center" }}>
+
+        <Grid container xs={10} sm={11} md={10} lg={10} xl={9} display="flex" width={"100%"}>
+
+          <Grid width={"100%"}>
+            <Typography sx={{
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1.4ch",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
+            }}>
               Al seleccionar alguna de las siguientes secciones, estará
               manifestando bajo protesta de decir verdad que cumple con lo
               señalado en cada apartado
             </Typography>
-            <Grid item display={"flex"} width={"112%"}>
-              <Paper>
-                
-              </Paper>
-              <TableContainer sx={queries.tablaSolicitudInscripcion}>
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      {heads.map((head, index) => (
-                        <StyledTableCell key={index}>
-                          <TableSortLabel>{head.label}</TableSortLabel>
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {catalogoReglas.map((row, index) => {
-                      // const stringIndex = index.toString()
-                      return (
-                        <StyledTableRow key={index}>
-                          <StyledTableCell padding="checkbox">
-                            <Checkbox
-                              checked={reglasAplicables.includes(
-                                row.Descripcion
-                              )}
-                              disabled={
-                                (checkObj[1] === true && index === 2) ||
-                                (checkObj[2] === true && index === 1) ||
-                                (checkObj[3] === true && index === 4) ||
-                                (checkObj[4] === true && index === 3)
-                              }
-                              onChange={(v) => {
-                                v.target.checked
-                                  ? setCheckObj({ ...checkObj, [index]: true })
-                                  : setCheckObj({
+
+            <Grid container={query.isMobile} display={"flex"} width={"100%"} >
+              <Grid width={"100%"}>
+                <TableContainer sx={{
+                  ...queries.tablaSolicitudInscripcion,
+                  width: "100%"
+                }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        {heads.map((head, index) => (
+                          <StyledTableCell key={index}>
+                            <TableSortLabel>{head.label}</TableSortLabel>
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {catalogoReglas.map((row, index) => {
+                        // const stringIndex = index.toString()
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell padding="checkbox">
+                              <Checkbox
+                                checked={reglasAplicables.includes(
+                                  row.Descripcion
+                                )}
+                                disabled={
+                                  (checkObj[1] === true && index === 2) ||
+                                  (checkObj[2] === true && index === 1) ||
+                                  (checkObj[3] === true && index === 4) ||
+                                  (checkObj[4] === true && index === 3)
+                                }
+                                onChange={(v) => {
+                                  v.target.checked
+                                    ? setCheckObj({ ...checkObj, [index]: true })
+                                    : setCheckObj({
                                       ...checkObj,
                                       [index]: false,
                                     });
 
-                                v.target.checked
-                                  ? arrReglas.push(row.Descripcion)
-                                  : removeRegla(row.Descripcion);
-                                changeReglasAplicables(arrReglas);
-                              }}
-                            />
-                          </StyledTableCell>
-                          <StyledTableCell>{row.Descripcion}</StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                                  v.target.checked
+                                    ? arrReglas.push(row.Descripcion)
+                                    : removeRegla(row.Descripcion);
+                                  changeReglasAplicables(arrReglas);
+                                }}
+                              />
+                            </StyledTableCell>
+                            <StyledTableCell>{row.Descripcion}</StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
 
               {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
                 <Grid
                   container
-                  ml={1}
+                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}}
                   sx={{
-                    width: "15%",
+                    width: "100%",
                     display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "end",
+                    justifyContent: "center",
+                    mb: 2,
+                    ml: 2,
+                    height: "7rem",
+                    "@media (max-width: 974px)": {
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-evenly"
+                    },
+                    "@media (min-width: 974.1px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
+
+                    "@media (min-width: 1140px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
+
+                    "@media (min-width: 1400px)": {
+                      width: "10%",
+                    },
+
+                    "@media (min-width: 1870px)": {
+                      width: "5%",
+                      height: "35rem",
+                    },
                   }}
                 >
-                  <Button
-                    onClick={() => {
-                      setOpenDialogCancelar(!openDialogCancelar);
-                    }}
-                    sx={queries.buttonCancelar}
-                  >
-                    Cancelar
-                  </Button>
+                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                    <Button
+                      onClick={() => {
+                        setOpenDialogCancelar(!openDialogCancelar);
+                      }}
+                      sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                    >
+                      Cancelar
+                    </Button>
+                  </Grid>
 
                   {localStorage.getItem("Rol") === "Verificador" ? (
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        infoValidaciones("Modificacion");
-                      }}
-                    >
-                      Solicitar Modificación
-                    </Button>
+
+                    <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                      <Button
+                        sx={queries.buttonContinuarSolicitudInscripcion}
+                        onClick={() => {
+                          infoValidaciones("Modificacion");
+                        }}
+                      >
+                        Solicitar Modificación
+                      </Button>
+                    </Grid>
                   ) : null}
 
                   {/* <Button
@@ -576,16 +639,18 @@ export function SolicituDeInscripcion() {
                     Guardar Borrador
                   </Button> */}
 
-                  <Button
-                    sx={queries.buttonContinuarSolicitudInscripcion}
-                    onClick={() => {
-                      infoValidaciones("Enviar");
-                    }}
-                  >
-                    {localStorage.getItem("Rol") === "Verificador"
-                      ? "Finalizar"
-                      : "Enviar"}
-                  </Button>
+                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        infoValidaciones("Enviar");
+                      }}
+                    >
+                      {localStorage.getItem("Rol") === "Verificador"
+                        ? "Finalizar"
+                        : "Enviar"}
+                    </Button>
+                  </Grid>
 
                   <ConfirmacionBorradorSolicitud
                     handler={setOpenDialogBorrador}
@@ -607,7 +672,9 @@ export function SolicituDeInscripcion() {
                   )}
                 </Grid>
               ) : null}
+
             </Grid>
+
           </Grid>
         </Grid>
       </Grid>
@@ -642,7 +709,7 @@ export function SolicituDeInscripcion() {
               division !== -1 ? item.substring(division + 1) : "";
 
             return (
-              <Typography color={"red"} sx={{fontSize:".9rem"}}>
+              <Typography color={"red"} sx={{ fontSize: ".9rem" }}>
 
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
