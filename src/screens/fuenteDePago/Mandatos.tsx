@@ -21,22 +21,20 @@ import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import {
+  getDocumento,
+  getPathDocumentosMandato,
+} from "../../components/APIS/pathDocSol/APISDocumentos";
+import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
+import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
 import { useMandatoStore } from "../../store/Mandatos/main";
 import { Mandato } from "../../store/Mandatos/mandato";
-import {
-  getDocumento,
-  getPathDocumentosMandato,
-  listFile,
-} from "../../components/APIS/pathDocSol/APISDocumentos";
-import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
-
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;

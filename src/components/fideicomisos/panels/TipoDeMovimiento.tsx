@@ -26,7 +26,10 @@ import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import {
+  ICatalogo,
+  IFondoOIngreso,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export interface HeadLabels {
   label: string;
@@ -56,7 +59,7 @@ export function TipoDeMovimiento() {
     (state) => state.getTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: ICatalogo[] = useFideicomisoStore(
+  const catalogoFondosOIngresos: IFondoOIngreso[] = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -280,7 +283,10 @@ export function TipoDeMovimiento() {
                     Id: text?.Id,
                     Descripcion: text?.Descripcion,
                   },
-                  fondoOIngreso: tipoMovimiento.fondoOIngreso,
+                  fondoOIngreso: {
+                    Id: "",
+                    Descripcion: "",
+                  },
                   entidad: tipoMovimiento.entidad,
                 })
               }
@@ -301,12 +307,15 @@ export function TipoDeMovimiento() {
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Fondo o ingreso</InputLabel>
             <Autocomplete
+              disabled={tipoMovimiento.tipoFuente.Id === ""}
               disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              options={catalogoFondosOIngresos}
+              options={catalogoFondosOIngresos.filter(
+                (td) => td.TipoDeFuente === tipoMovimiento.tipoFuente.Id
+              )}
               value={tipoMovimiento.fondoOIngreso}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {

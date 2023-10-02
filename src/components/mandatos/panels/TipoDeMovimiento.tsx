@@ -32,7 +32,10 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import {
+  ICatalogo,
+  IFondoOIngreso,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
@@ -109,7 +112,7 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: Array<ICatalogo> = useFideicomisoStore(
+  const catalogoFondosOIngresos: Array<IFondoOIngreso> = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -358,7 +361,10 @@ export function TipoDeMovimiento() {
                     Id: text?.Id,
                     Descripcion: text?.Descripcion,
                   },
-                  fondoIngreso: fondoIngreso,
+                  fondoIngreso: {
+                    Id: "",
+                    Descripcion: "",
+                  },
                   fechaMandato: fechaMandato,
                 })
               }
@@ -381,15 +387,19 @@ export function TipoDeMovimiento() {
               Fondo o ingreso
             </InputLabel>
             <Autocomplete
+              disabled={tipoFuente.Id === ""}
               disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              options={catalogoFondosOIngresos}
+              options={catalogoFondosOIngresos.filter(
+                (td) => td.TipoDeFuente === tipoFuente.Id
+              )}
               value={{
                 Id: fondoIngreso.Id || "",
                 Descripcion: fondoIngreso.Descripcion || "",
+                TipoDeFuente: tipoFuente.Id,
               }}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {

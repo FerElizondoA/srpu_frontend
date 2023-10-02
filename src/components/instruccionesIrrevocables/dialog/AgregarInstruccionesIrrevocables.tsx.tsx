@@ -38,7 +38,10 @@ import {
 } from "../../Config/dialogCatalogos/DialogCatalogos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IEntePublico } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import {
+  ICatalogo,
+  IFondoOIngreso,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
@@ -143,7 +146,7 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.catalogoTiposDeFuente
   );
 
-  const catalogoFondosOIngresos: Array<ICatalogo> = useFideicomisoStore(
+  const catalogoFondosOIngresos: Array<IFondoOIngreso> = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
 
@@ -631,7 +634,10 @@ export function AgregarInstruccionesIrrevocables({
                       Id: text?.Id || "",
                       Descripcion: text?.Descripcion || "",
                     },
-                    fondoIngreso: fondoIngreso,
+                    fondoIngreso: {
+                      Id: "",
+                      Descripcion: "",
+                    },
                   })
                 }
                 renderInput={(params) => (
@@ -653,15 +659,19 @@ export function AgregarInstruccionesIrrevocables({
                 Fondo o ingreso
               </InputLabel>
               <Autocomplete
+                disabled={tipoFuente.Id === ""}
                 disableClearable
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
                 openText="Abrir"
-                options={catalogoFondosOIngresos}
+                options={catalogoFondosOIngresos.filter(
+                  (td) => td.TipoDeFuente === tipoFuente.Id
+                )}
                 value={{
                   Id: fondoIngreso.Id || "",
                   Descripcion: fondoIngreso.Descripcion || "",
+                  TipoDeFuente: tipoFuente.Id,
                 }}
                 getOptionLabel={(option) => option.Descripcion}
                 renderOption={(props, option) => {

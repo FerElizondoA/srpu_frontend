@@ -4,6 +4,7 @@ import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import { IDatosFideicomiso } from "../../screens/fuenteDePago/Fideicomisos";
 import { useFideicomisoStore } from "./main";
+import { IFondoOIngreso } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export type Fideicomiso = {
   Id: string;
@@ -64,7 +65,7 @@ export interface FideicomisoSlice {
   catalogoOrdenesFideicomisario: ICatalogo[];
   catalogoTiposDeFideicomitente: ICatalogo[];
   catalogoTiposDeFuente: ICatalogo[];
-  catalogoFondosOIngresos: ICatalogo[];
+  catalogoFondosOIngresos: IFondoOIngreso[];
 
   borrarFideicomiso: (Id: string) => void;
   changeIdFideicomiso: (Id: string) => void;

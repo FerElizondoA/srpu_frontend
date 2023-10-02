@@ -24,7 +24,6 @@ export interface IUsuarios {
   ApellidoMaterno: string;
   CorreoElectronico: string;
   Puesto: string;
-  Contrasena: string;
   CURP: string;
   RFC: string;
   Telefono: string;
@@ -39,12 +38,7 @@ export interface IUsuarios {
   UltimaModificacion: string;
   ModificadoPor: string;
   Deleted: string;
-  IdUsuario: string;
-  IdApp: string;
+  Dependencia: string;
+  TipoUsuario: string;
   IdEntidad: string;
-  // se van
-  MunicipioUOrganizacion: string;
-  IdRol: string;
-  Cargo: string;
-  Rol: string;
 }

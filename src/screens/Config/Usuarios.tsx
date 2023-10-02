@@ -1,34 +1,32 @@
-import { useEffect, useState } from "react";
+import { Edit } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   Grid,
-  Paper,
   InputBase,
-  TableContainer,
+  Paper,
   Table,
-  TableHead,
   TableBody,
-  Box,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
-import { useNavigate } from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Edit } from "@mui/icons-material";
-import InfoIcon from "@mui/icons-material/Info";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-import { getListadoUsuarios } from "../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { queries } from "../../queries";
-import { DialogUsuarios } from "../../components/Config/DialogUsuarios/DialogUsuarios";
 import { useSolicitudUsuarioStore } from "../../store/SolicitudUsuario/main";
 
 export const Usuarios = () => {
@@ -67,6 +65,7 @@ export const Usuarios = () => {
       id: "Puesto",
       label: "Puesto",
     },
+    { id: "Dependencia", label: "Dependencia" },
     {
       id: "Telefono",
       label: "Teléfono",
@@ -82,7 +81,7 @@ export const Usuarios = () => {
   ];
 
   /* BUSCADOR */
-  const [datos, setDatos] = useState<Array<IUsuarios>>([]);
+  // const [datos, setDatos] = useState<Array<IUsuarios>>([]);
   const [busqueda, setBusqueda] = useState("");
 
   const handleChange = (dato: string) => {
@@ -93,59 +92,46 @@ export const Usuarios = () => {
   //   filtrarDatos();
   // };
 
-  // const filtrarDatos = () => {
-  //   // eslint-disable-next-line array-callback-return
-  //   let ResultadoBusqueda = datos.filter((elemento) => {
-  //     if (
-  //       elemento.Nombre.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.ApellidoPaterno.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.ApellidoMaterno.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.MunicipioUOrganizacion.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Cargo.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Rol.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.CorreoElectronico.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Telefono.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Ext.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Celular.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Curp.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase()) ||
-  //       elemento.Rfc.toString()
-  //         .toLocaleLowerCase()
-  //         .includes(busqueda.toLocaleLowerCase())
-  //     ) {
-  //       return elemento;
-  //     }
-  //   });
-  //   setUsuariosFiltrados(ResultadoBusqueda);
-  // };
+  const filtrarDatos = () => {
+    // eslint-disable-next-line array-callback-return
+    let ResultadoBusqueda = usuarios.filter((elemento) => {
+      if (
+        elemento.Nombre?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.ApellidoPaterno?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.ApellidoMaterno?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.NombreUsuario?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.CorreoElectronico?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.Puesto?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.Dependencia?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.Telefono?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        ) ||
+        elemento.Celular?.toLocaleLowerCase().includes(
+          busqueda?.toLocaleLowerCase()
+        )
+      ) {
+        return elemento;
+      }
+    });
+    setUsuariosFiltrados(ResultadoBusqueda);
+  };
 
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
-  }, []);
-
-  useEffect(() => {
-    getListadoUsuarios(setDatos);
   }, []);
 
   useEffect(() => {
@@ -153,11 +139,7 @@ export const Usuarios = () => {
   }, [usuarios]);
 
   useEffect(() => {
-    setUsuariosFiltrados(datos);
-  }, [datos]);
-
-  useEffect(() => {
-    busqueda.length !== 0 && setUsuariosFiltrados(datos);
+    busqueda.length !== 0 && setUsuariosFiltrados(usuarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
@@ -234,7 +216,7 @@ export const Usuarios = () => {
                   onKeyPress={(ev) => {
                     //cuando se presiona Enter
                     if (ev.key === "Enter") {
-                      // handleSearch();
+                      filtrarDatos();
                       ev.preventDefault();
                       return false;
                     }
@@ -243,13 +225,12 @@ export const Usuarios = () => {
                 <IconButton
                   type="button"
                   sx={{ p: "10px" }}
-                  aria-label="search"
+                  title="Buscar"
+                  onClick={() => {
+                    filtrarDatos();
+                  }}
                 >
-                  <SearchIcon
-                  // onClick={() => {
-                  //   handleSearch();
-                  // }}
-                  />
+                  <SearchIcon />
                 </IconButton>
               </Paper>
             </Grid>
@@ -318,25 +299,27 @@ export const Usuarios = () => {
             >
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
-                  {heads.map((head) => (
-                    <StyledTableCell
-                      key={head.id}
-                      align="center"
-                      sx={{ height: "10vh" }}
-                    >
-                      {head.label}
-                    </StyledTableCell>
-                  ))}
+                  <TableRow>
+                    {heads.map((head) => (
+                      <StyledTableCell
+                        key={head.id}
+                        align="center"
+                        sx={{ height: "10vh" }}
+                      >
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
                 </TableHead>
                 <TableBody>
-                  {usuariosFiltrados?.map((row) => (
-                    <StyledTableRow>
+                  {usuariosFiltrados?.map((row, index) => (
+                    <StyledTableRow key={index}>
                       <StyledTableCell align="center">
                         <Tooltip title="Editar / Eliminar Usuario">
                           <IconButton
                             size="medium"
                             onClick={() => {
-                              changeIdUsuarioModificado(row.IdUsuario);
+                              changeIdUsuarioModificado(row.Id);
                               navigate(`../Iframe`);
                             }}
                           >
@@ -386,6 +369,13 @@ export const Usuarios = () => {
                         align="center"
                       >
                         {row.Puesto}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        {row.Dependencia}
                       </StyledTableCell>
                       <StyledTableCell
                         component="th"

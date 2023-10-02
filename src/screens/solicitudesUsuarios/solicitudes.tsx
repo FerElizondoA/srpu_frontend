@@ -1,60 +1,49 @@
-import { Fragment, useEffect, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import InfoIcon from "@mui/icons-material/Info";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import {
-  Grid,
   Box,
-  TextField,
   Button,
-  Typography,
-  Badge,
+  Grid,
+  TextField,
   Tooltip,
-  IconButton,
+  Typography,
 } from "@mui/material";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
 import ListItemButton from "@mui/material/ListItemButton";
-import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
-import InfoIcon from "@mui/icons-material/Info";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  getComentariosUsuarios,
   getDetailSolicitudUsuario,
   getPreviewSolicitud,
 } from "../../components/APIS/solicitudesUsuarios/APIGetSolicitudes";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { queriesSolicitud } from "./queriesSolicitudes";
 import {
-  IComentarios,
-  IDatosAdicionales,
   IDetailSolicitudUsuario,
   ISolicitudes,
 } from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
-import { DialogSolicitudesUsuarios } from "./DialogSolicitudesUsuarios";
-import { useNavigate } from "react-router-dom";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { queries } from "../../queries";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { queriesSolicitud } from "./queriesSolicitudes";
 
 export function Solicitudes() {
-  //Declaraciones
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
-  // Llamada a la base de datos
   const [filtro, setFiltro] = useState<number>(4);
   const [solicitudes, setSolicitudes] = useState<Array<ISolicitudes>>([]);
   const [solicitudesFiltered, setSolicitudesFiltered] = useState<
     Array<ISolicitudes>
   >([]);
-  const [cantidadComentarios, setCantidadComentarios] = useState(0);
-  const [comentarios, setComentarios] = useState<Array<IComentarios>>([]);
 
   const [detailSolicitud, setDetailSolicitud] =
     useState<IDetailSolicitudUsuario>({
@@ -64,29 +53,23 @@ export function Solicitudes() {
       CorreoElectronico: "",
       CreadoPor: "",
       Curp: "",
-      DatosAdicionales: "",
-      Estatus: "",
+      Entidad: "",
       Ext: "",
       FechaDeCreacion: "",
       Id: "",
-      Mensaje: "",
+      IdEntidad: "",
+      IdTipoUsuario: "",
       Nombre: "",
       NombreApp: "",
       NombreSolicitante: "",
       NombreUsuario: "",
+      PuedeFirmar: "",
       Puesto: "",
-      Respuesta: "",
       Rfc: "",
+      Roles: "",
       Telefono: "",
+      TpoUsuario: "",
     });
-  const [datosAdicionales, setDatosAdicionales] = useState<IDatosAdicionales>({
-    idRol: "",
-    rol: "",
-    cargo: "",
-    idEntePublico: "",
-    entePublico: "",
-    correoDeRecuperacion: "",
-  });
 
   const getEstatus = (estatus: number) => {
     switch (estatus) {
@@ -121,7 +104,6 @@ export function Solicitudes() {
     }
   };
 
-  //const elmento Seleccionado
   const [indexSelect, setIndexSelect] = useState(-1);
 
   const prevSolicitud = () => {
@@ -133,20 +115,10 @@ export function Solicitudes() {
   };
 
   useEffect(() => {
-    if (detailSolicitud.DatosAdicionales !== "")
-      setDatosAdicionales(JSON.parse(detailSolicitud.DatosAdicionales));
-  }, [detailSolicitud]);
-
-  useEffect(() => {
     if (indexSelect >= 0) {
       getDetailSolicitudUsuario(
         solicitudesFiltered[indexSelect].Id,
         setDetailSolicitud
-      );
-      getComentariosUsuarios(
-        solicitudesFiltered[indexSelect].Id,
-        setCantidadComentarios,
-        setComentarios
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,11 +131,6 @@ export function Solicitudes() {
   useEffect(() => {
     setSolicitudesFiltered(solicitudes);
   }, [solicitudes]);
-
-  const [openDialogComentarios, setOpenDialogComentarios] = useState(false);
-  const openDialogUser = () => {
-    setOpenDialogComentarios(!openDialogComentarios);
-  };
 
   const navigate = useNavigate();
 
@@ -181,12 +148,10 @@ export function Solicitudes() {
           alignItems: "center",
           justifyContent: "center",
           direction: "row",
-          //marginBottom: "20px"
         }}
       >
-        {/* grid  columna del previsualizacion y filtro*/}
-
         <Grid
+          item
           sm={4}
           xl={3.5}
           xs={12}
@@ -203,7 +168,6 @@ export function Solicitudes() {
               display: "flex",
               alignItems: "center",
               direction: "row",
-              //marginBottom: "20px"
             }}
           >
             <Tooltip title="Volver a consulta de solicitudes">
@@ -245,17 +209,15 @@ export function Solicitudes() {
           </Grid>
 
           <Grid
+            item
             xs={12}
             sm={12}
             md={12}
             lg={12}
             xl={12}
             sx={{
-              //background: "red",
               overflow: "auto",
-              //maxHeight: "calc(96vh - 200px)",
               "&::-webkit-scrollbar": {
-                //PARA CAMBIAR EL SCROLL
                 width: ".3vw",
               },
               "&::-webkit-scrollbar-thumb": {
@@ -271,8 +233,8 @@ export function Solicitudes() {
             <List sx={queriesSolicitud.buscador_solicitudes}>
               {solicitudesFiltered?.map((dato, index) => {
                 return (
-                  <Grid>
-                    <ListItem disablePadding key={index}>
+                  <Grid key={index}>
+                    <ListItem disablePadding>
                       <ListItemButton
                         sx={{
                           border: index === indexSelect ? "2px solid" : null,
@@ -441,6 +403,7 @@ export function Solicitudes() {
         solicitudesFiltered.length === 0 ||
         detailSolicitud.Id === "" ? (
           <Grid
+            item
             xs={6}
             sm={7}
             md={8}
@@ -480,7 +443,6 @@ export function Solicitudes() {
             sx={{
               overflow: "auto",
               "&::-webkit-scrollbar": {
-                //PARA CAMBIAR EL SCROLL
                 width: ".3vw",
               },
               "&::-webkit-scrollbar-thumb": {
@@ -490,37 +452,22 @@ export function Solicitudes() {
               },
             }}
           >
-            <Box sx={queriesSolicitud.botonComentario}>
-              <Badge badgeContent={cantidadComentarios} color="info">
-                <Tooltip title="Comentarios">
-                  <IconButton
-                    onClick={() => {
-                      openDialogUser();
-                    }}
-                  >
-                    <SpeakerNotesIcon fontSize="large" color="primary" />
-                  </IconButton>
-                </Tooltip>
-              </Badge>
-            </Box>
-
             <Box sx={queriesSolicitud.boxContenidoFormulario}>
               <Box sx={queriesSolicitud.boxApartadosFormulario}>
                 <Grid
+                  item
                   container
                   sm={11}
                   xl={11}
                   xs={11}
                   md={11}
                   lg={11}
-                  justifyContent={"space-between"}
+                  justifyContent={"space-around"}
                 >
-                  {/* grid contenido*/}
                   <Grid item sm={2} xl={3} xs={6} md={3} lg={3}>
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Solicitado Por"
                       variant="standard"
                       value={detailSolicitud?.NombreSolicitante || ""}
@@ -531,8 +478,7 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
-                      label="Fecha de Creación"
+                      label="Fecha de Solicitud"
                       variant="standard"
                       value={
                         detailSolicitud?.FechaDeCreacion.split("T")[0] || ""
@@ -544,6 +490,7 @@ export function Solicitudes() {
 
               <Box sx={queriesSolicitud.boxApartadosFormulario}>
                 <Grid
+                  item
                   container
                   sm={12}
                   xl={11}
@@ -556,7 +503,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Nombre(s)"
                       variant="standard"
                       value={detailSolicitud?.Nombre || ""}
@@ -567,7 +513,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Apellido Paterno"
                       variant="standard"
                       value={detailSolicitud?.ApellidoPaterno || ""}
@@ -578,7 +523,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Apellido Materno"
                       variant="standard"
                       value={detailSolicitud?.ApellidoMaterno || ""}
@@ -589,51 +533,7 @@ export function Solicitudes() {
 
               <Box sx={queriesSolicitud.boxApartadosFormulario}>
                 <Grid
-                  container
-                  sm={12}
-                  xl={11}
-                  xs={12}
-                  md={12}
-                  lg={12}
-                  justifyContent={"space-between"}
-                >
-                  <Grid item xs={8} sm={3} md={3} lg={3} xl={3}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ readOnly: true }}
-                      id="outlined-basic"
-                      label="Cargo"
-                      variant="standard"
-                      value={datosAdicionales.cargo || ""}
-                    />
-                  </Grid>
-
-                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ readOnly: true }}
-                      id="outlined-basic"
-                      label="Rol"
-                      variant="standard"
-                      value={datosAdicionales?.rol || ""}
-                    />
-                  </Grid>
-
-                  <Grid item sm={2} xl={3} xs={8} md={3} lg={3}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ readOnly: true }}
-                      id="outlined-basic"
-                      label="Ente Público"
-                      variant="standard"
-                      value={datosAdicionales?.entePublico || ""}
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-
-              <Box sx={queriesSolicitud.boxApartadosFormulario}>
-                <Grid
+                  item
                   container
                   justifyContent={"space-between"}
                   sm={12}
@@ -646,7 +546,6 @@ export function Solicitudes() {
                   <Grid item xl={2} md={2} sm={1.5}>
                     <TextField
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Usuario"
                       variant="standard"
                       value={detailSolicitud?.NombreUsuario || ""}
@@ -657,7 +556,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Correo Electrónico"
                       variant="standard"
                       value={detailSolicitud?.CorreoElectronico || ""}
@@ -668,7 +566,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Teléfono Movil"
                       variant="standard"
                       value={detailSolicitud?.Celular || ""}
@@ -688,13 +585,10 @@ export function Solicitudes() {
                   md={12}
                   lg={12}
                 >
-                  {/* grid contenido*/}
-
                   <Grid item sm={2} xl={2} xs={8} md={2} lg={2}>
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="RFC"
                       variant="standard"
                       value={detailSolicitud?.Rfc || ""}
@@ -705,7 +599,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="CURP"
                       variant="standard"
                       value={detailSolicitud?.Curp || ""}
@@ -716,7 +609,6 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Teléfono"
                       variant="standard"
                       value={detailSolicitud?.Telefono || ""}
@@ -727,10 +619,46 @@ export function Solicitudes() {
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
-                      id="outlined-basic"
                       label="Extensión"
                       variant="standard"
                       value={detailSolicitud?.Ext || ""}
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Box sx={queriesSolicitud.boxApartadosFormulario}>
+                <Grid
+                  container
+                  item
+                  justifyContent={"space-around"}
+                  sm={12}
+                  xl={11}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                >
+                  <Grid item xl={4} md={2} sm={2} xs={8}>
+                    <TextField
+                      multiline
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      label="Entidad"
+                      variant="standard"
+                      value={detailSolicitud?.Entidad || ""}
+                    />
+                  </Grid>
+                  <Grid item xl={2} md={1} sm={1} xs={8}>
+                    <TextField
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                      label="Rol"
+                      variant="standard"
+                      value={
+                        (detailSolicitud.Roles &&
+                          JSON.parse(detailSolicitud.Roles)[0]?.Descripcion) ||
+                        ""
+                      }
                     />
                   </Grid>
                 </Grid>
@@ -762,17 +690,6 @@ export function Solicitudes() {
           </Grid>
         )}
       </Grid>
-
-      {/* Se manda como ternario para que los valores de los comentarios no se intenten mostrar
-      luego luego al abrir la pagina por el userEffect
-      */}
-      {openDialogComentarios ? (
-        <DialogSolicitudesUsuarios
-          open={openDialogComentarios}
-          handleClose={openDialogUser}
-          comentarios={comentarios}
-        />
-      ) : null}
     </Grid>
   );
 }
