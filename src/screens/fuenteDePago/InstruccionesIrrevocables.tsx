@@ -1,5 +1,9 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputBase,
@@ -16,7 +20,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -29,7 +33,21 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useInstruccionesStore } from "../../store/InstruccionesIrrevocables/main";
 
-const Transition = forwardRef(function Transition(
+
+export interface IDatosInstrucciones {
+  Id: string,
+  NumeroCuenta: string,
+  CLABE: string,
+  IdBanco: string,
+  DescripcionBanco: string, //Revisar nombre
+  MecanismoPago: string,
+  TipoMovimiento: string,
+  EntePublico: string, //REVISAR NOMBRE
+  FechaCreacion: string,
+  CreadoPor: string,
+}
+
+const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
   },
@@ -55,18 +73,18 @@ const heads: Head[] = [
   {
     label: "Banco",
   },
-  {
-    label: "Ente Publico",
-  },
-  {
-    label: "Fecha",
-  },
-  {
-    label: "Entidad Federativa",
-  },
-  {
-    label: "Fondo o ingreso",
-  },
+  // {
+  //   label: "Ente Publico",
+  // },
+  // {
+  //   label: "Fecha",
+  // },
+  // {
+  //   label: "Entidad Federativa",
+  // },
+  // {
+  //   label: "Fondo o ingreso",
+  //},
   // {
   //   label: "Banco",
   // },
@@ -84,26 +102,12 @@ export function InstruccionesIrrevocables() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const [busqueda, setBusqueda] = useState("");
   const [accion, setAccion] = useState("Agregar");
 
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
 
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
 
-  const handleSearch = () => {
-    // filtrarDatos();
-  };
 
-  const [instrucciones, setInstrucciones] = useState([]);
-
-  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState([]);
-
-  const changeIdInstruccion: Function = useInstruccionesStore(
-    (state) => state.changeIdInstruccion
-  );
 
   const setInstruccionSelect: Function = useInstruccionesStore(
     (state) => state.setInstruccionSelect
@@ -121,31 +125,116 @@ export function InstruccionesIrrevocables() {
     (state) => state.getInstruccion
   );
 
-  useEffect(() => {
-    getInstruccion(setInstrucciones);
-    !openAgregarInstruccion && cleanInstruccion();
-  }, [openAgregarInstruccion]);
+  const changeIdInstruccion: Function = useInstruccionesStore(
+    (state) => state.changeIdInstruccion
+  )
 
-  useEffect(() => {
-    setInstruccionesFiltrados(instrucciones);
-  }, [instrucciones]);
+  const borrarInstruccion: Function = useInstruccionesStore(
+    (state) => state.borrarInstruccion
+  )
+
+  const idInstruccion: string = useInstruccionesStore(
+    (state) => state.idInstruccion
+  )
 
   const cleanInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanInstruccion
   );
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+
+
+  const handleChange = (dato: string) => {
+    setBusqueda(dato);
+  };
+
+  const handleSearch = () => {
+    filtrarDatos();
+  };
+  
+  const [busqueda, setBusqueda] = useState("");
+  const [instruccionesIrrevocables, setInstruccionesIrrevocables] = useState<IDatosInstrucciones[]>([]);
+  const [instruccionesIrrevocablesFiltrado, setInstruccionesIrrevocablesFiltrado] = useState<IDatosInstrucciones[]>([]);
+
+  // const [instrucciones, setInstrucciones] = useState([]);
+  // const [instruccionesFiltrados, setInstruccionesFiltrados] = useState([]);
+
+  const filtrarDatos = () => {
+
+    let ResultadoBusqueda = instruccionesIrrevocables.filter((elemento) => {
+      if (
+        elemento.MecanismoPago.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+
+        elemento.NumeroCuenta.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+
+        elemento.CLABE.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+
+        elemento.DescripcionBanco.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+
+        elemento.EntePublico.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) 
+      ) {
+        return elemento;
+      }
+    });
+    setInstruccionesIrrevocablesFiltrado(ResultadoBusqueda);
+  };
+
+  useEffect(() => {
+    setInstruccionesIrrevocablesFiltrado(instruccionesIrrevocables);
+  }, [instruccionesIrrevocables]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    busqueda.length !== 0 ? setInstruccionesIrrevocablesFiltrado(instruccionesIrrevocables) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [busqueda]);
+
+  useEffect(() => {
+    getInstruccion(setInstruccionesIrrevocables);
+  }, []);
+
+  useEffect(() => {
+    if (openAgregarInstruccion=== false) {
+      cleanInstruccion();
+    }
+  }, [openAgregarInstruccion]);
+
+  useEffect(() => {
+    if (!openDialogEliminar) {
+      getInstruccion(setInstruccionesIrrevocables);
+    }
+  }, [openAgregarInstruccion]);
+
+  useEffect(() => {
+    getInstruccion(setInstruccionesIrrevocables);
+    !openAgregarInstruccion && cleanInstruccion();
+  }, [openAgregarInstruccion]);
+
+
+
+
 
   return (
-    <Grid container direction={"column"} height={"75vh"}>
+    <Grid container flexDirection={"column"} justifyContent={"space-between"} >
       <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+        <LateralMenu />
+        {/* //{query.isMobile ? <LateralMenuMobile /> : } */}
       </Grid>
 
       <Grid
         display={"flex"}
         justifyContent={"center"}
-        width={"97%"}
-        height={"4rem"}
         alignItems={"center"}
+        height={60}
       >
         <Typography
           sx={{
@@ -164,10 +253,10 @@ export function InstruccionesIrrevocables() {
         </Typography>
       </Grid>
 
-      <Grid display="center" justifyContent="space-between" height={"4rem"}>
+      <Grid item mb={2} lg={12} display="center" justifyContent="space-between" width={"95%"}>
         <Grid
+          item
           width={"80%"}
-          height={"75%"}
           display={"flex"}
           justifyContent={"end"}
         >
@@ -183,7 +272,18 @@ export function InstruccionesIrrevocables() {
               placeholder="Buscar"
               value={busqueda}
               onChange={(e) => {
+                if (e.target.value === "") {
+                  handleSearch();
+                }
                 handleChange(e.target.value);
+              }}
+              onKeyPress={(ev) => {
+                //cuando se presiona Enter
+                if (ev.key === "Enter") {
+                  handleSearch();
+                  ev.preventDefault();
+                  return false;
+                }
               }}
             />
             <IconButton
@@ -197,9 +297,9 @@ export function InstruccionesIrrevocables() {
           </Paper>
         </Grid>
 
-        <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
+        <Grid width={"10%"} display={"flex"} justifyContent={"center"}>
           <Button
-            sx={{ ...queries.buttonContinuar, height: "75%" }}
+            sx={{ ...queries.buttonContinuar }}
             onClick={() => {
               setAccion("Agregar");
               setOpenAgregarInstruccion(!openAgregarInstruccion);
@@ -210,108 +310,175 @@ export function InstruccionesIrrevocables() {
         </Grid>
       </Grid>
 
-      <Paper sx={{ width: "100%" }}>
-        <TableContainer
-          sx={{
-            width: "98%",
+      <Grid
+        item
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+        sx={{
+          marginBottom: "2rem",
+          height: "28rem",
+          "@media (min-width: 480px)": {
+            height: "20rem",
+            marginBottom: "0",
+          },
 
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              height: "1vh",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                {heads.map((head, index) => (
-                  <StyledTableCell key={index} align="center">
-                    {head.label}
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {instruccionesFiltrados.map((row: any, index: number) => {
-                return (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">
-                      {row.NumeroCuenta}
+          "@media (min-width: 768px)": {
+            height: "38rem",
+          },
+
+          "@media (min-width: 1140px)": {
+            height: "38rem",
+          },
+
+          "@media (min-width: 1400px)": {
+            height: "32rem",
+          },
+
+          "@media (min-width: 1870px)": {
+            height: "46rem",
+          },
+        }}>
+        <Paper sx={{ width: "100%", height: "100%" }}>
+          <TableContainer
+            sx={{
+              width: "100%",
+              height: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: "1vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell key={index} align="center">
+                      {head.label}
                     </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {instruccionesIrrevocablesFiltrado.map((row: any, index: number) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        {row.MecanismoPago}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center">
-                      {row.CLABE}
-                    </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.NumeroCuenta}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center">
-                      {row.Institucion}
-                    </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.CLABE}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center">
-                      {row.EntePublico}
-                    </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.DescripcionBanco}
+                      </StyledTableCell>
 
-                    <StyledTableCell align="center">
-                      <Tooltip title="Editar">
-                        <IconButton
-                          type="button"
-                          onClick={() => {
-                            setAccion("Editar");
+                      <StyledTableCell align="center">
+                        {row.EntePublico}
+                      </StyledTableCell>
 
-                            changeIdInstruccion(row?.Id);
+                      <StyledTableCell align="center">
+                        <Tooltip title="Editar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              setAccion("Editar");
+                              changeIdInstruccion(row?.Id);
 
-                            setInstruccionSelect(row);
+                              setInstruccionSelect([row]);
 
-                            setGeneralInstruccion({
-                              numeroCuenta: row.NumeroCuenta,
-                              cuentaCLABE: row.CLABE,
-                              banco: {
-                                Id: row.Banco,
-                                Descripcion: row.Institucion,
-                              },
-                            });
-                            editarInstruccion(JSON.parse(row.TipoMovimiento));
+                              setGeneralInstruccion({
+                                //numeroCuenta: row.NumeroCuenta,
+                                cuentaCLABE: row.CLABE,
+                                // banco: {
+                                //   Id: row.Banco,
+                                //   Descripcion: row.Banco.Descripcion,
+                                // },
+                                 mecanismo: row.mecanismo,
+                                //  municipio: row.municipio
+                              });
 
-                            setOpenAgregarInstruccion(!openAgregarInstruccion);
-                          }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
+                              editarInstruccion(JSON.parse(row.TipoMovimiento));
 
-                      <Tooltip title="Eliminar">
-                        <IconButton
-                          type="button"
-                          onClick={() => {
-                            // changeIdFideicomiso(row?.Id || "");
-                            // setOpenDialogEliminar(!openDialogEliminar);
-                            // getFideicomisos(setDatos);
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+                              setOpenAgregarInstruccion(!openAgregarInstruccion);
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              changeIdInstruccion(row?.Id || "");
+                              setOpenDialogEliminar(!openDialogEliminar);
+                             // getInstruccion(setDatos);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
 
       <AgregarInstruccionesIrrevocables
         handler={setOpenAgregarInstruccion}
         openState={openAgregarInstruccion}
         accion={accion}
       />
+
+      <Dialog
+        open={openDialogEliminar}
+        keepMounted
+        TransitionComponent={Transition}
+      >
+        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogContent>
+          <Typography>¿Seguro que desea eliminar este instruccion irrevocable?</Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+              borrarInstruccion(idInstruccion);
+            }}
+          >
+            Aceptar
+          </Button>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+            }}
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

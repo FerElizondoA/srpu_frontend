@@ -3,6 +3,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputBase,
@@ -72,7 +76,7 @@ const heads: Head[] = [
     label: "Mandatario",
   },
   {
-    label: "Mandante",
+    label: "Organismo / Municipio Mandante",
   },
   {
     label: "Acciones",
@@ -148,7 +152,12 @@ export function Mandatos() {
     getMandatos(setMandatos);
   }, []);
 
+  const borrarMandato: Function = useMandatoStore(
+    (state) => state.borrarMandato
+  );
+
   const idMandato: string = useMandatoStore((state) => state.idMandato);
+
   const changeIdMandato: Function = useMandatoStore(
     (state) => state.changeIdMandato
   );
@@ -167,6 +176,8 @@ export function Mandatos() {
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
     []
   );
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+
 
   const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
   const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
@@ -374,7 +385,7 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.MunicipioMandante}
+                        {row.MunicipioOrganismoMandante}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -406,8 +417,8 @@ export function Mandatos() {
                           <IconButton
                             type="button"
                             onClick={() => {
-                              // changeIdFideicomiso(row?.Id || "");
-                              // setOpenDialogEliminar(!openDialogEliminar);
+                              changeIdMandato(row?.Id || "");
+                              setOpenDialogEliminar(!openDialogEliminar);
                               // getFideicomisos(setDatos);
                             }}
                           >
@@ -429,6 +440,38 @@ export function Mandatos() {
         openState={openAgregarMandato}
         accion={accion}
       />
+
+
+      <Dialog
+        open={openDialogEliminar}
+        keepMounted
+        TransitionComponent={Transition}
+      >
+        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogContent>
+          <Typography>¿Seguro que desea eliminar este fideicomiso?</Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+              borrarMandato(idMandato);
+            }}
+          >
+            Aceptar
+          </Button>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+            }}
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

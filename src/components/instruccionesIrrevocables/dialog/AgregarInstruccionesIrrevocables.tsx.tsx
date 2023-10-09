@@ -23,6 +23,8 @@ import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
+import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -91,6 +93,32 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.createInstruccion
   );
 
+  //TIPO DE MOVIMIENTO
+  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] = useInstruccionesStore(
+    (state) => state.tablaTipoMovimientoInstrucciones
+  )
+
+  //DATOS GENERALES
+  const numeroCuenta: string = useInstruccionesStore(
+    (state) => state.generalInstrucciones.numeroCuenta
+  );
+
+  const cuentaCLABE: string = useInstruccionesStore(
+    (state) => state.generalInstrucciones.cuentaCLABE
+  );
+
+  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
+    (state) => state.generalInstrucciones.banco
+  );
+
+  const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
+    (state) => state.generalInstrucciones.municipio
+  )
+
+  const setGeneralInstruccion: Function = useInstruccionesStore(
+    (state) => state.setGeneralInstruccion
+  );
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
   };
@@ -108,6 +136,35 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.modificaInstruccion
   );
 
+  const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
+    (state) => state.addTipoMovimientoInstrucciones
+  );
+
+  const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
+    (state) => state.setTipoMovimientoInstrucciones
+  );
+
+  const limpiaInstruccion = () => {
+    setGeneralInstruccion({
+      numeroCuenta: "",
+      cuentaCLABE: "",
+      banco: { Id: "", Descripcion: "" },
+      mecanismo: "",
+      municipio: { Id: "", Descripcion: "" },
+    })
+
+    addTipoMovimientoInstrucciones([])
+
+    setTipoMovimientoInstrucciones({
+      altaDeudor: "NO",
+      tipoEntePublico: { Id: "", Descripcion: "" },
+      entidadFederativa: { Id: "", Descripcion: "" },
+      tipoFuente: { Id: "", Descripcion: "" },
+      fondoIngreso: { Id: "", Descripcion: "" },
+    });
+
+  }
+
   return (
     <>
       <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -117,7 +174,7 @@ export function AgregarInstruccionesIrrevocables({
               <IconButton
                 edge="start"
                 onClick={() => {
-                  //limpiaFideicomiso();
+                  limpiaInstruccion();
                   handler(false);
                   //reset();
                 }}
@@ -138,6 +195,11 @@ export function AgregarInstruccionesIrrevocables({
             <Grid item>
               <ThemeProvider theme={theme}>
                 <Button
+                  disabled={tablaTipoMovimientoInstrucciones.length <= 0 ||
+                    (numeroCuenta === "" || parseInt(numeroCuenta) === 0) ||
+                    (cuentaCLABE === "" || parseInt(cuentaCLABE) === 0) ||
+                    banco === null || municipio === null
+                  }
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
@@ -147,6 +209,7 @@ export function AgregarInstruccionesIrrevocables({
                       modificaInstruccion();
                       handler(false);
                     }
+                    setTabIndex(0);
                   }}
                 >
                   <Typography

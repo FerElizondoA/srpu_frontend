@@ -8,6 +8,8 @@ export interface GeneralIntrucciones {
   numeroCuenta: string;
   cuentaCLABE: string;
   banco: { Id: string; Descripcion: string };
+  mecanismo: string;
+  municipio: { Id: string, Descripcion: string },
 }
 
 export interface TipoMovimientoInstrucciones {
@@ -57,6 +59,8 @@ export interface InstruccionesIrrevocablesSlice {
   getInstruccion: (setState: Function) => void;
   createInstruccion: () => void;
   modificaInstruccion: () => void;
+  borrarInstruccion:(Id: string) => void;
+
 
   cleanInstruccion: () => void;
 
@@ -93,6 +97,8 @@ export const createInstruccionesIrrevocables: StateCreator<
     numeroCuenta: "",
     cuentaCLABE: "",
     banco: { Id: "", Descripcion: "" },
+    mecanismo: "Intrucciones Irrevocables",
+    municipio: { Id: "", Descripcion: "" },
   },
 
   tipoMovimientoInstrucciones: {
@@ -138,13 +144,16 @@ export const createInstruccionesIrrevocables: StateCreator<
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-instruccion",
         {
+          IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
           CLABE: state.generalInstrucciones.cuentaCLABE,
           Banco: state.generalInstrucciones.banco.Id,
           TipoMovimiento: JSON.stringify(
             state.tablaTipoMovimientoInstrucciones
           ),
-          EntePublico: localStorage.getItem("EntePublicoObligado"),
+          //Municipio: state.generalInstrucciones.municipio,
+          MecanismoPago: "Instrucciones Irrevocables",
+          EntePublico: state.generalInstrucciones.municipio.Descripcion,
           CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
@@ -174,7 +183,113 @@ export const createInstruccionesIrrevocables: StateCreator<
           state.changeIdInstruccion(data.data.Id);
         }
       })
-      .catch((err) => {});
+      .catch((error) => {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "error",
+          title: "Mensaje",
+          text: "Ha sucedido un error, inténtelo de nuevo",
+        });
+      });
+  },
+
+  modificaInstruccion: async () => {
+    const state = useInstruccionesStore.getState();
+
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-Instruccion",
+        {
+          Id: state.idInstruccion,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          NumeroCuenta: state.generalInstrucciones.numeroCuenta,
+          CLABE: state.generalInstrucciones.cuentaCLABE,
+          Banco: state.generalInstrucciones.banco.Id,
+          TipoMovimiento: JSON.stringify(
+            state.tablaTipoMovimientoInstrucciones
+          ),
+          //Municipio: state.generalInstrucciones.municipio,
+          MecanismoPago: state.generalInstrucciones.mecanismo,
+          EntePublico: state.generalInstrucciones.municipio,
+          //EntePublico: localStorage.getItem("EntePublicoObligado"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        data.data.ERROR
+          ? Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "error",
+            title: "Error",
+            text: "Instrucción ya existente",
+          })
+          : Swal.fire({
+            confirmButtonColor: "#15212f",
+            cancelButtonColor: "rgb(175, 140, 85)",
+            icon: "success",
+            title: "Éxito",
+            text: "La instruccion se ha creado exitosamente",
+          });
+      })
+      .catch((error) => {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "error",
+          title: "Mensaje",
+          text: "Ha sucedido un error, inténtelo de nuevo",
+        });
+      });
+  },
+
+  borrarInstruccion: async (Id: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
+    await axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-Instruccion",
+        {
+          data: {
+            IdInstruccion: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(function (response) {
+        if (response.status === 200) {
+          window.location.reload();
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+          });
+        }
+        return true;
+      })
+      .catch(function () {
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino la instrucción.",
+        });
+      });
+    return false;
   },
 
   editarInstruccion: (
@@ -198,69 +313,29 @@ export const createInstruccionesIrrevocables: StateCreator<
         numeroCuenta: "",
         cuentaCLABE: "",
         banco: { Id: "", Descripcion: "" },
+        mecanismo: "Instrucciones Irrevocables",
+        municipio: { Id: "", Descripcion: "" },
       },
       tablaTipoMovimientoInstrucciones: [],
     }));
   },
 
   getInstruccion: (setState: Function) => {
+    const state = useInstruccionesStore.getState()
     axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-instruccion", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-Instrucciones", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
       })
       .then(({ data }) => {
         let r = data.data;
-        set(() => ({
-          tablaInstrucciones: r,
-        }));
+        state.tablaInstrucciones = r;
         setState(r);
       });
   },
 
-  modificaInstruccion: async () => {
-    const state = useInstruccionesStore.getState();
 
-    await axios
-      .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-instruccion",
-        {
-          Id: state.idInstruccion,
-          NumeroCuenta: state.generalInstrucciones.numeroCuenta,
-          CLABE: state.generalInstrucciones.cuentaCLABE,
-          Banco: state.generalInstrucciones.banco.Id,
-          TipoMovimiento: JSON.stringify(
-            state.tablaTipoMovimientoInstrucciones
-          ),
-          EntePublico: localStorage.getItem("EntePublicoObligado"),
-          CreadoPor: localStorage.getItem("IdUsuario"),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        data.data.ERROR
-          ? Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "error",
-              title: "Error",
-              text: "Instrucción ya existente",
-            })
-          : Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "success",
-              title: "Éxito",
-              text: "La instruccion se ha creado exitosamente",
-            });
-      })
-      .catch((err) => {});
-  },
 
   cleanTipoMovimientoInstruccion: () => {
     set(() => ({
@@ -280,16 +355,16 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  saveFilesInstruccion(idRegistro, ruta, archivo) {},
+  saveFilesInstruccion(idRegistro, ruta, archivo) { },
 
   savePathDocInstruccion(
     idInstruccion,
     Ruta,
     NombreIdentificador,
     NombreArchivo
-  ) {},
+  ) { },
 
   arrDocs: [],
 
-  setArrDocs(arr) {},
+  setArrDocs(arr) { },
 });

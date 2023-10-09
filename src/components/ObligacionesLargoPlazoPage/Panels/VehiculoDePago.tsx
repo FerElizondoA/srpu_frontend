@@ -23,11 +23,13 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import { format } from "date-fns";
-import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { NumeroFideicomiso, NumeroInstruccion } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { NumeroMandato } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { GeneralIntrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 
 interface Head {
   label: string;
@@ -65,11 +67,23 @@ const headFideicomiso: Head[] = [
 
 const headMandato: Head[] = [
   {
-    label: "Columna 1",
+    label: "Tipo ente publico obligado",
   },
   {
-    label: "Columna 2",
+    label: "Mandatario",
   },
+  {
+    label: "Tipo fuente",
+  },
+  {
+    label: "Fondo o ingreso",
+  },
+  // {
+  //   label: "Fecha mandato",
+  // },
+  // {
+  //   label: "Acciones",
+  // },
 ];
 
 export function VehiculoDePago() {
@@ -106,6 +120,7 @@ export function VehiculoDePago() {
   // );
 
   //Mandatos
+
   const getNumeroMandato: Function = useLargoPlazoStore(
     (state) => state.getNumeroMandato
   )
@@ -122,6 +137,26 @@ export function VehiculoDePago() {
     (state) => state.setNumeroMandatoSelect
   )
 
+
+  //Instrucciones Irrevocables
+
+  const getNumeroInstruccion : Function = useInstruccionesStore(
+    (state) => state.getInstruccion
+  )
+
+  const numeroInstruccion: NumeroInstruccion[] = useLargoPlazoStore(
+  (state) => state.numeroInstruccion
+  )
+
+  const numeroInstruccionSelect: NumeroInstruccion[] = useLargoPlazoStore(
+    (state) => state.numeroInstruccionSelect
+  )
+
+  const setNumeroInstruccionSelect: Function = useLargoPlazoStore(
+    (state) => state.setNumeroInstruccionSelect
+  )
+
+
   // const numeroMandato: NumeroMandato[] = 
 
 
@@ -129,6 +164,7 @@ export function VehiculoDePago() {
     getNumeroFideicomiso();
     getFideicomisos();
     getNumeroMandato();
+    getNumeroInstruccion();
   }, []);
 
   useEffect(() => {
@@ -138,7 +174,11 @@ export function VehiculoDePago() {
     if (mecanismo !== "Mandato") {
       setNumeroMandatoSelect([]);
     }
+    if (mecanismo !== "Instrucciones irrevocables") {
+      setNumeroMandatoSelect([]);
+    }
   }, [mecanismo])
+
 
 
   return (
@@ -146,7 +186,7 @@ export function VehiculoDePago() {
       container
       direction={"column"}
       justifyContent={"space-around"}
-      height={"20rem"}
+      height={"32rem"}
     //height={numeroFideicomisoSelect ? "40rem" : asignarFuente ? "68rem" : "68rem"}
     >
       {/* <Grid>
@@ -230,7 +270,7 @@ export function VehiculoDePago() {
               ?
               <Grid xs={3} sm={3} md={3} lg={3} xl={3}>
                 <InputLabel sx={queries.medium_text}>
-                  Numero de Mandato
+                  Número de Mandato
                 </InputLabel>
 
                 <Autocomplete
@@ -275,27 +315,27 @@ export function VehiculoDePago() {
                     Numero de Instrucciones irrevocables
                   </InputLabel>
 
-                  {/* <Autocomplete
+                  <Autocomplete
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
                     openText="Abrir"
                     fullWidth
-                    options={numeroFideicomiso}
-                    getOptionLabel={(option) => `${option.NumeroDeFideicomiso}`}
+                    options={numeroInstruccion}
+                    getOptionLabel={(option) => `${option.NumeroCuenta}`}
                     renderOption={(props, option) => {
                       return (
                         <li {...props} key={option.Id}>
-                          <Typography>{`${option.NumeroDeFideicomiso}`}</Typography>
+                          <Typography>{`${option.NumeroCuenta}`}</Typography>
                         </li>
                       );
                     }}
                     onChange={(event, text) => {
-                      let loc = numeroFideicomiso.filter(
+                      let loc = numeroInstruccion.filter(
                         (_i, index) => _i.Id === text?.Id
                       );
 
-                      setNumerodelFideicomiso(loc!);
+                      setNumeroInstruccionSelect(loc!);
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -305,9 +345,9 @@ export function VehiculoDePago() {
                       />
                     )}
                     isOptionEqualToValue={(option, value) =>
-                      option.Id === value.Id || value.NumeroDeFideicomiso === 0
+                      option.Id === value.Id || value.NumeroCuenta === 0
                     }
-                  /> */}
+                  />
                 </Grid>
                 :
                 null
@@ -445,31 +485,43 @@ export function VehiculoDePago() {
                 width={"100%"}
               >
                 <Grid
-                  xs={10}
-                  sm={10}
-                  md={3.3}
-                  lg={3}
-                  xl={3}
                   container
-                  direction={"column"}
-                  justifyContent={"space-between"}
+                  display={"flex"}
+                  justifyContent={"space-evenly"}
                 >
-                  <InputLabel>Mandatario</InputLabel>
-                  <TextField
-                    value={row.Mandatario}
-                    fullWidth
-                    variant="standard"
-                    sx={queries.medium_text}
-                  />
+                  <Grid xs={10}
+                    sm={10}
+                    md={3.3}
+                    lg={3}
+                    xl={3}
+                  >
+                    <InputLabel>Mandatario</InputLabel>
+                    <TextField
+                      value={row.Mandatario}
+                      fullWidth
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  </Grid>
 
-                  <InputLabel>Fecha del mandato</InputLabel>
-                  <TextField
-                    value={(row.FechaMandato)}
+                  <Grid
+                    xs={10}
+                    sm={10}
+                    md={3.3}
+                    lg={3}
+                    xl={3}
+                  >
+                    <InputLabel>Fecha del mandato</InputLabel>
+                    <TextField
+                      value={(row.FechaMandato)}
 
-                    fullWidth
-                    variant="standard"
-                    sx={queries.medium_text}
-                  />
+                      fullWidth
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  </Grid>
+
+
 
                   {/* <InputLabel>Fiduciario</InputLabel>
                   <TextField
@@ -491,16 +543,29 @@ export function VehiculoDePago() {
                   ></FormControlLabel> */}
                 </Grid>
 
-                <Grid width={"55%"}>
-                  <Paper>
+                <Grid width={"85%"} height={"15rem"} mt={2}>
+                  <Paper sx={{height:"100%",
+                        width: "100%",}}>
                     <TableContainer
                       sx={{
+                        height:"100%",
                         width: "100%",
                         display: "flex",
                         justifyContent: "center",
+                        overflow: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: ".5vw",
+                          height: ".5vh",
+                          mt: 1,
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#AF8C55",
+                          outline: "1px solid slategrey",
+                          borderRadius: 1,
+                        },
                       }}
                     >
-                      <Table>
+                      <Table stickyHeader>
                         <TableHead>
                           <TableRow>
                             {headMandato.map((head, index) => (
@@ -510,27 +575,42 @@ export function VehiculoDePago() {
                             ))}
                           </TableRow>
                         </TableHead>
-                        {/* <TableBody>
-                          {JSON.parse(row.Fideicomisario).lengt !== 0
-                            ? JSON.parse(row.Fideicomisario).map(
+
+                        <TableBody>
+                          {JSON.parse(row.TipoMovimiento).lengt !== 0
+                            ? JSON.parse(row.TipoMovimiento).map(
                               (row: any, index: number) => (
+                        
                                 <StyledTableRow>
-                                  <StyledTableCell>
+                                  <StyledTableCell align="center">
                                     <Typography>
-                                      {row.fideicomisario.Descripcion}
+                                      {row.tipoEntePublicoObligado.Descripcion}
                                     </Typography>
                                   </StyledTableCell>
 
-                                  <StyledTableCell>
+                                  <StyledTableCell align="center">
                                     <Typography>
-                                      {row.ordenFideicomisario.Descripcion}
+                                      {row.tipoFuente.Descripcion}
                                     </Typography>
                                   </StyledTableCell>
-                                </StyledTableRow>
-                              )
-                            )
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.fondoIngreso.Descripcion}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.tipoEntePublicoObligado.Descripcion}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                 </StyledTableRow>
+
+                              ))
                             : null}
-                        </TableBody> */}
+                        </TableBody>
                       </Table>
                     </TableContainer>
                   </Paper>

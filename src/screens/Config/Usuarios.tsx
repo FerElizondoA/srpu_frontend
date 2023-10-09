@@ -321,6 +321,7 @@ export const Usuarios = () => {
                             onClick={() => {
                               changeIdUsuarioModificado(row.Id);
                               navigate(`../Iframe`);
+                       
                             }}
                           >
                             <Edit fontSize="inherit" />
