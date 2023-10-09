@@ -1,4 +1,7 @@
 import axios from "axios";
+import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function getComentariosSolicitudPlazo(
   idSolicitud: string,
@@ -17,7 +20,17 @@ export function getComentariosSolicitudPlazo(
     },
   })
     .then(({ data }) => {
-      setState(data.data);
+      setState(
+        data.data.filter(
+          (_: IComentarios) =>
+            (_.Tipo === "Admin" &&
+              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+            (_.Tipo === "Requerimiento" &&
+              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+            (_.Tipo === "Captura" &&
+              !rolesAdmin.includes(localStorage.getItem("Rol")!))
+        )
+      );
     })
     .catch((error) => {});
 }

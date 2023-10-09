@@ -26,6 +26,8 @@ export interface IUsuariosAsignables {
   Rol: string;
 }
 
+export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
+
 export function DialogSolicitarModificacion({
   handler,
   openState,
@@ -123,8 +125,6 @@ export function DialogSolicitarModificacion({
       handler(false);
     }
   };
-
-  const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 
   return (
     <Dialog

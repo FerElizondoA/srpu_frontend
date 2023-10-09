@@ -18,8 +18,10 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
-import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
-
+import {
+  IUsuariosAsignables,
+  rolesAdmin,
+} from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export function DialogSolicitarModificacion({
   handler,
@@ -120,8 +122,6 @@ export function DialogSolicitarModificacion({
       handler(false);
     }
   };
-
-  const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 
   return (
     <Dialog

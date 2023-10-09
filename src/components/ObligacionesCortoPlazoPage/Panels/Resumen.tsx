@@ -45,6 +45,7 @@ import {
   getPathDocumentos,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
+import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
   label: string;
@@ -97,8 +98,6 @@ const headsCondiciones: Head[] = [
 ];
 
 export function Resumen({ coments }: { coments: boolean }) {
-  const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
-
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   // IdSolicitud
@@ -247,6 +246,10 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
+  const comentariosRegistro: any = useCortoPlazoStore(
+    (state) => state.comentariosRegistro
+  );
+
   useEffect(() => {
     if (IdSolicitud !== "") {
       getPathDocumentos(IdSolicitud, setPathDocumentos);
@@ -288,6 +291,15 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
 
+  const activaAccion =
+    (coments && estatus !== "Autorizado") ||
+    (rolesAdmin.includes(localStorage.getItem("Rol")!) &&
+      ((estatus === "Revision" && localStorage.getItem("Rol") === "Revisor") ||
+        (estatus === "Validacion" &&
+          localStorage.getItem("Rol") === "Validador") ||
+        (estatus === "Autorizacion" &&
+          localStorage.getItem("Rol") === "Autorizador")));
+
   return (
     <Grid
       width={"100%"}
@@ -307,7 +319,7 @@ export function Resumen({ coments }: { coments: boolean }) {
           justifyContent: "center",
         }}
       >
-        <Grid  mt={{xs:1, sm:5, md:5, lg:5, xl:5}}>
+        <Grid mt={{ xs: 1, sm: 5, md: 5, lg: 5, xl: 5 }}>
           <Typography sx={queries.bold_text}>Encabezado</Typography>
           <Grid
             sx={{
@@ -322,32 +334,30 @@ export function Resumen({ coments }: { coments: boolean }) {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {estatus !== "Autorizado" &&
-                  (coments ||
-                    rolesAdmin.includes(localStorage.getItem("Rol")!)) && (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentario[head.label] &&
-                            comentario[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabEncabezado",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )}
+                {activaAccion && (
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentario[head.label] ||
+                        comentariosRegistro[head.label]
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabEncabezado",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )}
 
-                <Typography  sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -373,32 +383,30 @@ export function Resumen({ coments }: { coments: boolean }) {
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {estatus !== "Autorizado" &&
-                  (coments ||
-                    rolesAdmin.includes(localStorage.getItem("Rol")!)) && (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentario[head.label] &&
-                            comentario[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabInformaciónGeneral",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )}
+                {activaAccion && (
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentario[head.label] ||
+                        comentariosRegistro[head.label]
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabInformaciónGeneral",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )}
 
-                <Typography  sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -410,37 +418,35 @@ export function Resumen({ coments }: { coments: boolean }) {
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
-              {estatus !== "Autorizado" &&
-                (coments ||
-                  rolesAdmin.includes(localStorage.getItem("Rol")!)) && (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentario["Tabla Obligado Solidario Aval"] &&
-                          comentario["Tabla Obligado Solidario Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )}
+              {activaAccion && (
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentario["Tabla Obligado Solidario Aval"] ||
+                      comentariosRegistro["Tabla Obligado Solidario Aval"]
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Grid>
 
             <Paper sx={{ width: "96%" }}>
               <TableContainer
                 sx={{
                   maxHeight: "100%",
-                  width:"95%",
+                  width: "95%",
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".5vw",
@@ -526,382 +532,379 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Divider color="lightGrey"></Divider>
           <Grid item width={"100%"} mt={3} display={"flex"} height={350}>
             <Grid mt={4}>
-              {estatus !== "Autorizado" &&
-                (coments ||
-                  rolesAdmin.includes(localStorage.getItem("Rol")!)) && (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentario["Tabla Condiciones Financieras"] &&
-                          comentario["Tabla Condiciones Financieras"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Condiciones Financieras",
-                          tab: "TabCondiciones Financieras",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )}
+              {activaAccion && (
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentario["Tabla Condiciones Financieras"] ||
+                      comentariosRegistro["Tabla Condiciones Financieras"]
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Condiciones Financieras",
+                        tab: "TabCondiciones Financieras",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Grid>
 
             <Paper sx={{ width: "95%" }}>
               {
-                tablaCondicionesFinancieras.length > 0
-                  ? (
-                    <TableContainer
-                      sx={{
-                        height: 350,
-                        maxHeight: "100%",
-                        overflow: "auto",
-                        "&::-webkit-scrollbar": {
-                          width: ".5vw",
-                          height: ".5vh",
-                          mt: 1,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "#AF8C55",
-                          outline: "1px solid slategrey",
-                          borderRadius: 1,
-                        },
-                      }}
-                    >
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            {headsCondiciones.map((head, index) => (
-                              <StyledTableCell key={index}>
-                                <TableSortLabel>{head.label}</TableSortLabel>
-                              </StyledTableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tablaCondicionesFinancieras.map((row, index) => {
-                            return (
-                              <StyledTableRow key={index}>
-                                <StyledTableCell align="center">
-                                  <Button
-                                    onClick={() => {
-                                      setRowDisposicion(row.disposicion);
-                                      setOpenDisposicion(true);
-                                    }}
-                                  >
-                                    <InfoOutlinedIcon />
-                                  </Button>
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {format(
-                                    new Date(row.pagosDeCapital.fechaPrimerPago),
-                                    "dd/MM/yyyy"
-                                  )}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.pagosDeCapital.periodicidadDePago}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {format(
-                                    new Date(row.pagosDeCapital.fechaPrimerPago),
-                                    "dd/MM/yyyy"
-                                  )}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  <Button
-                                    onClick={() => {
-                                      setRowTasa(row.tasaInteres);
-                                      setOpenTasa(true);
-                                    }}
-                                  >
-                                    <InfoOutlinedIcon />
-                                  </Button>
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  <Button
-                                    onClick={() => {
-                                      setRowComision(row.comisiones);
-                                      setOpenComision(true);
-                                    }}
-                                  >
-                                    <InfoOutlinedIcon />
-                                  </Button>
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          })}
-                        </TableBody>
-
-                        <Dialog
-                          open={openTasa}
-                          onClose={() => {
-                            setOpenTasa(false);
-                          }}
-                          maxWidth={"lg"}
-                        >
-                          <DialogTitle sx={{ m: 0, p: 2 }}>
-                            <IconButton
-                              onClick={() => {
-                                setOpenTasa(false);
-                              }}
-                              sx={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                                color: "black",
-                              }}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          </DialogTitle>
-                          <DialogContent
-                            sx={{ display: "flex", flexDirection: "row" }}
-                          >
-                            <TableContainer sx={{ maxHeight: "400px" }}>
-                              <Table>
-                                <TableHead sx={{ maxHeight: "200px" }}>
-                                  <TableRow>
-                                    {headsTasa.map((head, index) => (
-                                      <StyledTableCell key={index}>
-                                        <TableSortLabel>
-                                          {head.label}
-                                        </TableSortLabel>
-                                      </StyledTableCell>
-                                    ))}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {rowTasa.map((row, index) => {
-                                    return (
-                                      <StyledTableRow key={index}>
-                                        <StyledTableCell
-                                          component="th"
-                                          scope="row"
-                                        >
-                                          {lightFormat(
-                                            new Date(row.fechaPrimerPago),
-                                            "dd-MM-yyyy"
-                                          )}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.tasa}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.periocidadPago}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.tasaReferencia}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.sobreTasa}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.diasEjercicio}
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    );
-                                  })}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </DialogContent>
-                        </Dialog>
-
-                        <Dialog
-                          open={openComision}
-                          onClose={() => {
-                            setOpenComision(false);
-                          }}
-                          maxWidth={"lg"}
-                        >
-                          <DialogTitle sx={{ m: 0, p: 2 }}>
-                            <IconButton
-                              onClick={() => {
-                                setOpenComision(false);
-                              }}
-                              sx={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                                color: "black",
-                              }}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          </DialogTitle>
-                          <DialogContent
-                            sx={{ display: "flex", flexDirection: "row" }}
-                          >
-                            <TableContainer sx={{ maxHeight: "400px" }}>
-                              <Table>
-                                <TableHead sx={{ maxHeight: "200px" }}>
-                                  <TableRow>
-                                    {headsComision.map((head, index) => (
-                                      <StyledTableCell key={index}>
-                                        <TableSortLabel>
-                                          {head.label}
-                                        </TableSortLabel>
-                                      </StyledTableCell>
-                                    ))}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {rowComision.map((row, index) => {
-                                    return (
-                                      <StyledTableRow key={index}>
-                                        <StyledTableCell
-                                          component="th"
-                                          scope="row"
-                                        >
-                                          {row.tipoDeComision}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {lightFormat(
-                                            new Date(row.fechaContratacion),
-                                            "dd-MM-yyyy"
-                                          )}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.periodicidadDePago}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.porcentaje}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.monto}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.iva}
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    );
-                                  })}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </DialogContent>
-                        </Dialog>
-
-                        <Dialog
-                          open={openDisposicion}
-                          onClose={() => {
-                            setOpenDisposicion(false);
-                          }}
-                          maxWidth={"lg"}
-                        >
-                          <DialogTitle sx={{ m: 0, p: 2 }}>
-                            <IconButton
-                              onClick={() => {
-                                setOpenDisposicion(false);
-                              }}
-                              sx={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                                color: "black",
-                              }}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          </DialogTitle>
-                          <DialogContent
-                            sx={{ display: "flex", flexDirection: "row" }}
-                          >
-                            <TableContainer>
-                              <Table>
-                                <TableHead>
-                                  <TableRow>
-                                    {headsDisposicion.map((head, index) => (
-                                      <StyledTableCell key={index}>
-                                        <TableSortLabel>
-                                          {head.label}
-                                        </TableSortLabel>
-                                      </StyledTableCell>
-                                    ))}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {rowDisposicion.map((row, index) => {
-                                    return (
-                                      <StyledTableRow key={index}>
-                                        <StyledTableCell align="center">
-                                          {lightFormat(
-                                            new Date(row.fechaDisposicion),
-                                            "dd-MM-yyyy"
-                                          )}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                          {row.importe}
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    );
-                                  })}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </DialogContent>
-                        </Dialog>
-                      </Table>
-                    </TableContainer>
-                  ) : (
-                    //**********CONDICIONAL************
-
-                    <TableContainer
-                      sx={{
-                        maxHeight: "100%",
-                        overflow: "auto",
-                        "&::-webkit-scrollbar": {
-                          width: ".5vw",
-                          height: ".5vh",
-                          mt: 1,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "#AF8C55",
-                          outline: "1px solid slategrey",
-                          borderRadius: 1,
-                        },
-                      }}
-                    >
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            {headsCondiciones.map((head, index) => (
-                              <StyledTableCell key={index}>
-                                <TableSortLabel>{head.label}</TableSortLabel>
-                              </StyledTableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <StyledTableRow>
-                            <StyledTableCell
-                              component="th"
-                              scope="row"
-                            ></StyledTableCell>
-
-                            <StyledTableCell align="center"></StyledTableCell>
-
-                            <StyledTableCell align="center"></StyledTableCell>
-
-                            <StyledTableCell>
-                              <Typography>Sin contenido</Typography>
+                tablaCondicionesFinancieras.length > 0 ? (
+                  <TableContainer
+                    sx={{
+                      height: 350,
+                      maxHeight: "100%",
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".5vw",
+                        height: ".5vh",
+                        mt: 1,
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#AF8C55",
+                        outline: "1px solid slategrey",
+                        borderRadius: 1,
+                      },
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          {headsCondiciones.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
                             </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tablaCondicionesFinancieras.map((row, index) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setRowDisposicion(row.disposicion);
+                                    setOpenDisposicion(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {format(
+                                  new Date(row.pagosDeCapital.fechaPrimerPago),
+                                  "dd/MM/yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.pagosDeCapital.periodicidadDePago}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {format(
+                                  new Date(row.pagosDeCapital.fechaPrimerPago),
+                                  "dd/MM/yyyy"
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setRowTasa(row.tasaInteres);
+                                    setOpenTasa(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setRowComision(row.comisiones);
+                                    setOpenComision(true);
+                                  }}
+                                >
+                                  <InfoOutlinedIcon />
+                                </Button>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
 
-                            <StyledTableCell align="center"></StyledTableCell>
+                      <Dialog
+                        open={openTasa}
+                        onClose={() => {
+                          setOpenTasa(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenTasa(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
+                        >
+                          <TableContainer sx={{ maxHeight: "400px" }}>
+                            <Table>
+                              <TableHead sx={{ maxHeight: "200px" }}>
+                                <TableRow>
+                                  {headsTasa.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
+                                    </StyledTableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowTasa.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                      >
+                                        {lightFormat(
+                                          new Date(row.fechaPrimerPago),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.tasa}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.periocidadPago}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.tasaReferencia}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.sobreTasa}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.diasEjercicio}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
 
-                            <StyledTableCell align="center"></StyledTableCell>
+                      <Dialog
+                        open={openComision}
+                        onClose={() => {
+                          setOpenComision(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenComision(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
+                        >
+                          <TableContainer sx={{ maxHeight: "400px" }}>
+                            <Table>
+                              <TableHead sx={{ maxHeight: "200px" }}>
+                                <TableRow>
+                                  {headsComision.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
+                                    </StyledTableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowComision.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                      >
+                                        {row.tipoDeComision}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {lightFormat(
+                                          new Date(row.fechaContratacion),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.periodicidadDePago}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.porcentaje}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.monto}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.iva}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
 
-                            <StyledTableCell align="center"></StyledTableCell>
-                          </StyledTableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )
+                      <Dialog
+                        open={openDisposicion}
+                        onClose={() => {
+                          setOpenDisposicion(false);
+                        }}
+                        maxWidth={"lg"}
+                      >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                          <IconButton
+                            onClick={() => {
+                              setOpenDisposicion(false);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              right: 8,
+                              top: 8,
+                              color: "black",
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </DialogTitle>
+                        <DialogContent
+                          sx={{ display: "flex", flexDirection: "row" }}
+                        >
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  {headsDisposicion.map((head, index) => (
+                                    <StyledTableCell key={index}>
+                                      <TableSortLabel>
+                                        {head.label}
+                                      </TableSortLabel>
+                                    </StyledTableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rowDisposicion.map((row, index) => {
+                                  return (
+                                    <StyledTableRow key={index}>
+                                      <StyledTableCell align="center">
+                                        {lightFormat(
+                                          new Date(row.fechaDisposicion),
+                                          "dd-MM-yyyy"
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row.importe}
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </DialogContent>
+                      </Dialog>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  //**********CONDICIONAL************
+
+                  <TableContainer
+                    sx={{
+                      maxHeight: "100%",
+                      overflow: "auto",
+                      "&::-webkit-scrollbar": {
+                        width: ".5vw",
+                        height: ".5vh",
+                        mt: 1,
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#AF8C55",
+                        outline: "1px solid slategrey",
+                        borderRadius: 1,
+                      },
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          {headsCondiciones.map((head, index) => (
+                            <StyledTableCell key={index}>
+                              <TableSortLabel>{head.label}</TableSortLabel>
+                            </StyledTableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <StyledTableRow>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                          ></StyledTableCell>
+
+                          <StyledTableCell align="center"></StyledTableCell>
+
+                          <StyledTableCell align="center"></StyledTableCell>
+
+                          <StyledTableCell>
+                            <Typography>Sin contenido</Typography>
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center"></StyledTableCell>
+
+                          <StyledTableCell align="center"></StyledTableCell>
+
+                          <StyledTableCell align="center"></StyledTableCell>
+                        </StyledTableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )
                 //*********FIN TERNARIO ************/
               }
             </Paper>
@@ -935,37 +938,30 @@ export function Resumen({ coments }: { coments: boolean }) {
                   {documentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        {estatus !== "Autorizado" &&
-                          (coments ||
-                            rolesAdmin.includes(
-                              localStorage.getItem("Rol")!
-                            )) && (
-                            <StyledTableCell sx={{ width: "5%" }}>
-                              <Tooltip title="Añadir comentario a este apartado">
-                                <IconButton
-                                  color={
-                                    comentario[row.descripcionTipo] &&
-                                      comentario[row.descripcionTipo] !== ""
-                                      ? "success"
-                                      : "primary"
-                                  }
-                                  size="small"
-                                  onClick={() => {
-                                    setOpenComentarioApartado({
-                                      open: true,
-                                      apartado: row.descripcionTipo,
-                                      tab: "TabDocumentacion",
-                                    });
-                                  }}
-                                >
-                                  <CommentIcon
-                                    fontSize="small"
-                                    sx={{ mr: 2 }}
-                                  />
-                                </IconButton>
-                              </Tooltip>
-                            </StyledTableCell>
-                          )}
+                        {activaAccion && (
+                          <StyledTableCell sx={{ width: "5%" }}>
+                            <Tooltip title="Añadir comentario a este apartado">
+                              <IconButton
+                                color={
+                                  comentario[row.descripcionTipo] ||
+                                  comentariosRegistro[row.descripcionTipo]
+                                    ? "success"
+                                    : "primary"
+                                }
+                                size="small"
+                                onClick={() => {
+                                  setOpenComentarioApartado({
+                                    open: true,
+                                    apartado: row.descripcionTipo,
+                                    tab: "TabDocumentacion",
+                                  });
+                                }}
+                              >
+                                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
+                        )}
 
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
@@ -1007,18 +1003,19 @@ export function Resumen({ coments }: { coments: boolean }) {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.nombre.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].file
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.nombre.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].file
                                         }`
                                       );
                                     });
                                   setShowModalPrevia(true);
                                 }}
                               >
-                                <FileOpenIcon></FileOpenIcon>
+                                <FileOpenIcon />
                               </IconButton>
                             </Tooltip>
                           </StyledTableCell>

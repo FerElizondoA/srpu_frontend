@@ -4,12 +4,15 @@ import {
   Grid,
   Paper,
   Slide,
+  Tab,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableSortLabel,
+  Tabs,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -22,13 +25,14 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
+import { rolesAdmin } from "./DialogSolicitarModificacion";
 
-interface IComentarios {
-  Comentarios: string;
-  CreadoPor: string;
-  FechaCreacion: string;
+export interface IComentarios {
   Id: string;
-  Mensaje: string;
+  IdSolicitud: string;
+  Comentarios: string;
+  Tipo: string;
+  FechaCreacion: string;
   Nombre: string;
 }
 
@@ -55,12 +59,6 @@ const heads: readonly Head[] = [
     label: "Comentarios",
   },
 ];
-
-// const comentarios: IComentario[] = useCortoPlazoStore(
-//   (state) => state.comentarios
-// );
-
-////////////////////////////////////////////////////////////////////////
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -90,11 +88,22 @@ export function VerComentariosSolicitud({
     changeOpenDialogCrear(open);
   };
 
+  const [menu, setMenu] = useState(
+    rolesAdmin.includes(localStorage.getItem("Rol")!)
+      ? "Requerimientos"
+      : "Comentarios"
+  );
+
   useEffect(() => {
     if (IdSolicitud !== "") {
       getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud, openDialogCrear]);
+
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  };
 
   return (
     <Dialog
@@ -107,86 +116,134 @@ export function VerComentariosSolicitud({
         handler(false);
       }}
     >
-      <DialogTitle sx={{ color: "#AF8C55" }}>Comentarios</DialogTitle>
+      <DialogTitle sx={{ color: "#AF8C55" }}>
+        <Tabs
+          value={menu}
+          onChange={() => {
+            menu === "Requerimientos"
+              ? setMenu("Comentarios")
+              : setMenu("Requerimientos");
+          }}
+          centered={query.isScrollable ? false : true}
+          variant={query.isScrollable ? "scrollable" : "standard"}
+          scrollButtons
+          allowScrollButtonsMobile
+          sx={{ width: "100%", fontSize: ".8rem" }}
+        >
+          {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+            <Tab
+              label="Requerimientos"
+              value={"Requerimientos"}
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
+          )}
+
+          <Tab
+            label="Comentarios"
+            value={"Comentarios"}
+            sx={{ ...queries.bold_text_Largo_Plazo }}
+          />
+        </Tabs>
+      </DialogTitle>
       <DialogContent>
-        <Grid item>
-          <TableContainer component={Paper}>
-            <Table
-              sx={{ minWidth: 650 }}
-              size="small"
-              aria-label="a dense table"
-            >
-              <TableHead>
-                <StyledTableRow>
-                  {heads.map((head, index) => (
-                    <StyledTableCell key={index}>
-                      <TableSortLabel sx={{ color: "#AF8C55" }}>
-                        {head.label}{" "}
-                      </TableSortLabel>
-                    </StyledTableCell>
-                  ))}
-                </StyledTableRow>
-              </TableHead>
-              <TableBody>
-                {datosComentario.length !== 0 ? (
-                  datosComentario?.map((row, index) => {
-                    return (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell component="th" scope="row">
-                          {row.Nombre}
-                        </StyledTableCell>
-
-                        <StyledTableCell component="th" scope="row">
-                          {row.FechaCreacion.split("T")[0]}
-                        </StyledTableCell>
-
-                        <StyledTableCell
-                          sx={{
-                            fontSize: "1.5ch",
-                          }}
-                        >
-                          {Object.entries(JSON.parse(row.Comentarios)).length >
-                          0
-                            ? Object.entries(JSON.parse(row.Comentarios)).map(
-                                ([key, val], index) =>
-                                  (val as string) === "" ? null : (
-                                    <Typography key={index}>
-                                      <strong>{key}:</strong>
-                                      {val as string}
-                                    </Typography>
-                                  )
-                              )
-                            : row.Comentarios}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })
-                ) : (
-                  <StyledTableRow
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <StyledTableCell align="center"></StyledTableCell>
-
-                    <StyledTableCell align="center">
-                      <Typography
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "normal",
-                          width: 600,
-                          fontSize: 14,
-                        }}
-                      >
-                        Sin comentarios
-                      </Typography>
-                    </StyledTableCell>
-                    <StyledTableCell align="center"></StyledTableCell>
+        {menu === "Requerimientos" ? (
+          <Grid>
+            {datosComentario.filter((f) => f.Tipo === "Requerimiento")[0] &&
+            Object.entries(
+              JSON.parse(
+                datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                  ?.Comentarios
+              )
+            ).length > 0
+              ? Object.entries(
+                  JSON.parse(
+                    datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                      ?.Comentarios
+                  )
+                ).map(([key, val], index) =>
+                  (val as string) === "" ? null : (
+                    <Typography key={index}>
+                      <strong>{key}:</strong>
+                      {val as string}
+                    </Typography>
+                  )
+                )
+              : ""}
+          </Grid>
+        ) : (
+          <Grid item>
+            <TableContainer component={Paper}>
+              <Table
+                sx={{ minWidth: 650 }}
+                size="small"
+                aria-label="a dense table"
+              >
+                <TableHead>
+                  <StyledTableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        <TableSortLabel sx={{ color: "#AF8C55" }}>
+                          {head.label}{" "}
+                        </TableSortLabel>
+                      </StyledTableCell>
+                    ))}
                   </StyledTableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
+                </TableHead>
+
+                <TableBody>
+                  {datosComentario?.length !== 0 ? (
+                    datosComentario
+                      ?.filter((r) => r.Tipo !== "Requerimiento")
+                      .map((row, index) => {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell component="th" scope="row">
+                              {row.Nombre}
+                            </StyledTableCell>
+
+                            <StyledTableCell component="th" scope="row">
+                              {row.FechaCreacion.split("T")[0]}
+                            </StyledTableCell>
+
+                            <StyledTableCell
+                              sx={{
+                                fontSize: "1.5ch",
+                              }}
+                            >
+                              {Object.entries(JSON.parse(row?.Comentarios))
+                                .length > 0
+                                ? Object.entries(
+                                    JSON.parse(row?.Comentarios)
+                                  ).map(([key, val], index) =>
+                                    (val as string) === "" ? null : (
+                                      <Typography key={index}>
+                                        <strong>{key}:</strong>
+                                        {val as string}
+                                      </Typography>
+                                    )
+                                  )
+                                : row.Comentarios}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })
+                  ) : (
+                    <StyledTableRow
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <StyledTableCell align="center"></StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        Sin comentarios
+                      </StyledTableCell>
+                      <StyledTableCell align="center"></StyledTableCell>
+                    </StyledTableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        )}
       </DialogContent>
 
       <DialogActions>

@@ -1,19 +1,22 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
   Slide,
+  Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
+import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { Resumen } from "../Panels/Resumen";
-import { DialogSolicitarModificacion } from "./DialogSolicitarModificacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
-import Swal from "sweetalert2";
+import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { Resumen } from "../Panels/Resumen";
+import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 
 const Transition = React.forwardRef(function Transition(
@@ -31,13 +34,57 @@ type Props = {
 };
 
 export function VerBorradorDocumento(props: Props) {
-  const [openDialogModificacion, setOpenDialogModificacion] =
+  const [openGuardaComentarios, setOpenGuardaComentarios] =
     React.useState(false);
+
   const [openDialogCancelacion, setOpenDialogCancelacion] =
     React.useState(false);
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
+
+  const [datosComentario, setDatosComentarios] = React.useState<
+    Array<IComentarios>
+  >([]);
+
+  React.useEffect(() => {
+    if (IdSolicitud !== "") {
+      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    }
+  }, [IdSolicitud]);
+
+  const addComentario: Function = useCortoPlazoStore(
+    (state) => state.addComentario
+  );
+
+  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+
+  const tieneComentarios: boolean =
+    Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
+
+  const setComentariosRegistro: Function = useCortoPlazoStore(
+    (state) => state.setComentariosRegistro
+  );
+
+  React.useEffect(() => {
+    let a: any = {};
+    datosComentario?.map((_) => {
+      return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+        return a[v]
+          ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+          : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+      });
+    });
+
+    setComentariosRegistro(a);
+
+    useCortoPlazoStore.setState({
+      idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
+        ?.Id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosComentario]);
+
   return (
     <Dialog
       open={props.openState}
@@ -64,9 +111,14 @@ export function VerBorradorDocumento(props: Props) {
           }}
           onClick={() => {
             props.handler(false);
+            useCortoPlazoStore.setState({
+              comentarios: {},
+              comentariosRegistro: {},
+              idComentario: "",
+            });
           }}
         >
-          Cancelar
+          Volver
         </Button>
         {((estatus === "Revision" &&
           localStorage.getItem("Rol") === "Revisor") ||
@@ -83,11 +135,12 @@ export function VerBorradorDocumento(props: Props) {
                 ...queries.buttonCancelar,
                 fontSize: "70%",
               }}
+              disabled={!tieneComentarios}
               onClick={() => {
-                setOpenDialogModificacion(true);
+                setOpenGuardaComentarios(true);
               }}
             >
-              Solicitar Modificación
+              Guardar Comentarios
             </Button>
             <Button
               sx={{
@@ -96,10 +149,10 @@ export function VerBorradorDocumento(props: Props) {
               }}
               onClick={() => {
                 localStorage.getItem("Rol") === "Revisor"
-                  ? CambiaEstatus("Validacion", idSolicitud)
+                  ? CambiaEstatus("Validacion", IdSolicitud)
                   : localStorage.getItem("Rol") === "Validador"
-                  ? CambiaEstatus("Autorizacion", idSolicitud)
-                  : CambiaEstatus("Autorizado, Por Firmar", idSolicitud);
+                  ? CambiaEstatus("Autorizacion", IdSolicitud)
+                  : CambiaEstatus("Autorizado, Por Firmar", IdSolicitud);
                 props.handler(false);
                 Swal.fire({
                   confirmButtonColor: "#15212f",
@@ -155,10 +208,51 @@ export function VerBorradorDocumento(props: Props) {
       >
         <Resumen coments={false} />
       </DialogContent>
-      <DialogSolicitarModificacion
-        handler={setOpenDialogModificacion}
-        openState={openDialogModificacion}
-      />
+
+      <Dialog open={openGuardaComentarios} fullWidth>
+        <DialogTitle>Guardar comentarios</DialogTitle>
+        <DialogContent>
+          {Object.entries(comentarios).map(([key, val], index) =>
+            (val as string) === "" ? null : (
+              <Typography key={index}>
+                <strong>{key}:</strong>
+                {val as string}
+              </Typography>
+            )
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => setOpenGuardaComentarios(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              addComentario(
+                IdSolicitud,
+                JSON.stringify(comentarios),
+                "Requerimiento"
+              ).then(() => {
+                Swal.fire({
+                  confirmButtonColor: "#15212f",
+                  cancelButtonColor: "rgb(175, 140, 85)",
+                  icon: "success",
+                  title: "Mensaje",
+                  text: "Comentarios guardados con éxito",
+                });
+                setOpenGuardaComentarios(false);
+                props.handler(false);
+              });
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <DialogSolicitarCancelacion
         handler={setOpenDialogCancelacion}

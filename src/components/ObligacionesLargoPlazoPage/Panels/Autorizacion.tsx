@@ -110,11 +110,14 @@ export function Autorizacion() {
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>([]);
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+    []
+  );
 
   const [dialogNumAutorizacion, setDialogNumAutorizacion] = useState("");
 
-  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] = useState(false);
+  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] =
+    useState(false);
 
   const [arrDocs, setArrDocs] = useState<any>([]);
 
@@ -148,12 +151,6 @@ export function Autorizacion() {
       setArrDocs(loc);
     }
   }, [pathDocumentos]);
-
-  // useEffect(() => {
-  //   console.log("autorizacionSelect", autorizacionSelect)
-    
-  // }, [autorizacionSelect])
-  
 
   return (
     <Grid

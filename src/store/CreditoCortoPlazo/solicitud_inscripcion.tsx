@@ -49,7 +49,9 @@ export interface SolicitudInscripcionSlice {
     comentario: string,
     tipo: string
   ) => void;
+
   saveFiles: (idRegistro: string, ruta: string) => void;
+
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
@@ -181,7 +183,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         obligadosSolidarios: state.tablaObligadoSolidarioAval,
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      
+
       documentacion: state.tablaDocumentos.map((v, i) => {
         return {
           nombreArchivo: v.nombreArchivo,
@@ -278,8 +280,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
           {
             IdSolicitud: Id,
             Comentario: comentario,
-            Tipo: "Captura",
+            Tipo: tipo,
             IdUsuario: localStorage.getItem("IdUsuario"),
+            IdComentario: useCortoPlazoStore.getState().idComentario,
           },
           {
             headers: {
@@ -287,7 +290,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
             },
           }
         )
-        .then(({ data }) => {})
+        .then(({ data }) => {
+          useCortoPlazoStore.setState({
+            comentarios: {},
+            comentariosRegistro: {},
+            idComentario: "",
+          });
+        })
         .catch((e) => {});
     }
   },

@@ -48,6 +48,7 @@ import {
   getPdf,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
+import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export interface IData {
   Id: string;
@@ -293,12 +294,6 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.changeGastosCostos
   );
 
-  const GastosCostos: {
-    gastosAdicionales: string;
-    saldoVigente: number;
-    montoGastosAdicionales: number;
-  } = useLargoPlazoStore((state) => state.GastosCostos);
-
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
   );
@@ -308,7 +303,6 @@ export function ConsultaDeSolicitudPage() {
 
     if (TipoDocumento === "Crédito simple a corto plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
-
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
       changeEncabezado(aux?.encabezado);
@@ -325,9 +319,7 @@ export function ConsultaDeSolicitudPage() {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
-
     } else if (TipoDocumento === "Crédito simple a largo plazo") {
-
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
@@ -341,21 +333,21 @@ export function ConsultaDeSolicitudPage() {
         }
       );
 
-       aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
-         return addGeneralGastosCostos(v);
-       });
+      aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+        return addGeneralGastosCostos(v);
+      });
 
-       //aux?.registrarAutorizacion.autorizacionSelect.map((v: any, index: number) => {
-       //  return setAutorizacionSelect(v);
-       //});
+      //aux?.registrarAutorizacion.autorizacionSelect.map((v: any, index: number) => {
+      //  return setAutorizacionSelect(v);
+      //});
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinancieraLP(v);
       });
 
-       aux?.documentacion.map((v: any, index: number) => {
-         return addDocumentoLP(v);
-       });
+      aux?.documentacion.map((v: any, index: number) => {
+        return addDocumentoLP(v);
+      });
     }
   };
 
@@ -409,10 +401,7 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     if (!openEliminar) {
-      if (
-        localStorage.getItem("Rol") === "Capturador" ||
-        localStorage.getItem("Rol") === "Verificador"
-      ) {
+      if (!rolesAdmin.includes(localStorage.getItem("Rol")!)) {
         getSolicitudes(setDatos);
       } else {
         getSolicitudesAdmin("Autorizacion", setDatos);
@@ -833,21 +822,27 @@ export function ConsultaDeSolicitudPage() {
             </Table>
           </TableContainer>
         </Paper>
+      </Grid>
 
+      {openDialogVer && (
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
         />
+      )}
+
+      {openVerComentarios && (
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
         />
-        <DialogEliminar
-          handler={changeOpenEliminar}
-          openState={openEliminar}
-          texto={"Solicitud"}
-        />
-      </Grid>
+      )}
+
+      <DialogEliminar
+        handler={changeOpenEliminar}
+        openState={openEliminar}
+        texto={"Solicitud"}
+      />
     </Grid>
   );
 }

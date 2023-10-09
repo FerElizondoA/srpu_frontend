@@ -10,6 +10,7 @@ import {
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import DialogActions from "@mui/material/DialogActions";
+import { rolesAdmin } from "./DialogSolicitarModificacion";
 
 export function AgregarComentario({
   handler,
@@ -62,7 +63,9 @@ export function AgregarComentario({
         </Button>
         <Button
           onClick={() => {
-            addComentario(IdSolicitud, comentario, "Captura");
+            rolesAdmin.includes(localStorage.getItem("Rol")!)
+              ? addComentario(IdSolicitud, comentario, "Admin")
+              : addComentario(IdSolicitud, comentario, "Captura");
             setComentario("");
             handler(false);
           }}

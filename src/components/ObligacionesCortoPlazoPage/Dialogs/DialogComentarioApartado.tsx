@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Dialog, Button, TextField, Typography } from "@mui/material";
-import { queries } from "../../../queries";
+import { Button, Dialog, TextField, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function ComentarioApartado({
@@ -25,6 +25,20 @@ export function ComentarioApartado({
     (state) => state.removeComentario
   );
 
+  const comentariosRegistro: any = useCortoPlazoStore(
+    (state) => state.comentariosRegistro
+  );
+
+  useEffect(() => {
+    // comentariosRegistro[openState.apartado] &&
+    setComent({
+      Apartado: openState.apartado,
+      Comentario:
+        comentario[openState.apartado] ||
+        comentariosRegistro[openState.apartado],
+    });
+  }, [openState.apartado]);
+
   return (
     <Dialog
       fullWidth
@@ -39,11 +53,25 @@ export function ComentarioApartado({
       </DialogTitle>
 
       <DialogContent>
-        <Typography sx={{ display: "flex", justifyContent: "center" }}>
-          {comentario[openState.apartado] || ""}
-        </Typography>
+        {/* {comentariosRegistro[openState.apartado] && (
+          <Typography sx={{ display: "flex", justifyContent: "center" }}>
+            Comentarios anteriores:{" "}
+            {comentariosRegistro[openState.apartado] || ""}
+          </Typography>
+        )}
+
+        {comentario[openState.apartado] && (
+          <Typography sx={{ display: "flex", justifyContent: "center" }}>
+            Nuevo comentario: {comentario[openState.apartado] || ""}
+          </Typography>
+        )} */}
+
         <TextField
-          label="Nuevo comentario"
+          label={
+            comentariosRegistro[openState.apartado]
+              ? "Editar comentario"
+              : "Nuevo comentario"
+          }
           sx={{ width: "100%", mt: 2 }}
           value={coment.Comentario}
           onChange={(v) => {
