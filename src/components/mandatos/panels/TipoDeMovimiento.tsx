@@ -32,7 +32,6 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
 import {
-  DateInput,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
@@ -153,11 +152,6 @@ export function TipoDeMovimiento() {
     (state) => state.cleanTipoMovimientoMandato
   );
 
-  const numeroMandato: string = useMandatoStore((state) => state.numeroMandato);
-  const changeNumeroMandato: Function = useMandatoStore(
-    (state) => state.changeNumeroMandato
-  );
-
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
     getTipoEntePublicoObligado();
@@ -165,13 +159,6 @@ export function TipoDeMovimiento() {
     getOrganismos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const tablaMandatos: IDatosMandatos[] = useMandatoStore(
-    (state) => state.tablaMandatos
-  );
-  const [error, setError] = useState(false);
-
-  const idMandato: string = useMandatoStore((state) => state.idMandato);
 
   return (
     <>

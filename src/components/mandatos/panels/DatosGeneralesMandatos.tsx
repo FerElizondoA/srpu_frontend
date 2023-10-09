@@ -2,6 +2,7 @@ import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { queries } from "../../../queries";
 import { useState } from "react";
+import { DatosGMandatos } from "../../../store/Mandatos/mandato";
 interface HeadSelect {
   label: string;
 }
@@ -27,10 +28,15 @@ export function DatosGeneralesMandatos() {
     (state) => state.changeNumeroMandato
   );
 
+  const setDatosGMandatos: Function = useMandatoStore(
+    (state) => state.setDatosGMandatos
+  )
 
-  const [mecanismo, setMecanismo] = useState<any>("");
-  const [municipioMandante, setMunicipioMandante] = useState<any>("");
-  const [oranismoMandate, setOrganismoMandante] = useState<any>("");
+  const datosGMandatos: DatosGMandatos = useMandatoStore(
+    (state) => state.datosGMandatos
+  )
+
+
 
   return (
     <Grid container
@@ -48,7 +54,7 @@ export function DatosGeneralesMandatos() {
         <Grid xs={10} sm={4} md={4} lg={4} xl={4}
           height={{ xs: "4rem", sm: "0rem" }}
         >
-           <InputLabel sx={queries.medium_text}>
+          <InputLabel sx={queries.medium_text}>
             Numero de mandato
           </InputLabel>
           <TextField
@@ -70,23 +76,12 @@ export function DatosGeneralesMandatos() {
             Mecanismo o vehículo de pago
           </InputLabel>
 
-          <FormControl fullWidth>
-            <Select
-              value={mecanismo}
-              fullWidth
-              variant="standard"
-              onChange={(e) => {
-                setMecanismo(e.target.value);
-              }}
-            >
-              {CatalogoMecanismo.map((item, index) => (
-                <MenuItem value={item.label} key={index}>
-                  {item.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
+          <TextField
+            value={datosGMandatos.mecanismoPago}
+            fullWidth
+            variant="standard"
+            disabled
+          />
         </Grid>
       </Grid >
 
@@ -97,31 +92,31 @@ export function DatosGeneralesMandatos() {
         width={"100%"}
       >
 
-        <Grid xs={10} sm={4} md={4} lg={4} xl={4}
+        <Grid xs={10} sm={5} md={5} lg={5} xl={5}
           height={{ xs: "4rem", sm: "0rem" }}
         >
           <InputLabel sx={queries.medium_text}>
-            Municipio Mandante
+            Municipio / Organismo Mandante
           </InputLabel>
           <TextField
             fullWidth
             variant="standard"
             // label={"Municipio mandante"}
             // title={"Municipio mandante"}
-            onChange={(v) => {
-              setMunicipioMandante(v.target.value)
-            }}
-            value={municipioMandante}
+            disabled
+            value={datosGMandatos.MunicipioOrganismoMandante}
           />
         </Grid>
 
-        <Grid xs={10} sm={4} md={4} lg={4} xl={4}
+        {/* <Grid xs={10} sm={4} md={4} lg={4} xl={4}
           height={{ xs: "4rem", sm: "0rem" }}
         >
           <InputLabel sx={queries.medium_text}>
             Organismo Mandante
           </InputLabel>
+
           <TextField
+
             fullWidth
             variant="standard"
             // label={"Organismo mandante"}
@@ -131,7 +126,7 @@ export function DatosGeneralesMandatos() {
             }}
             value={oranismoMandate}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
     </Grid>

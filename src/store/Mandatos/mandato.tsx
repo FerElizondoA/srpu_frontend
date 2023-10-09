@@ -21,8 +21,14 @@ export interface SoporteDocumentalMandato {
   fechaArchivo: string;
 }
 
+export interface DatosGMandatos {
+  mecanismoPago: string;
+  MunicipioOrganismoMandante: any;
+}
+
 export interface Mandato {
   Id: string;
+  datosGMandatos: DatosGMandatos;
   TipoMovimiento: TipoMovimientoMandato[];
   SoporteDocumental: SoporteDocumentalMandato[];
 }
@@ -33,6 +39,9 @@ export interface MandatoSlice {
   setMandatoSelect: (mandato: Mandato[]) => void;
 
   numeroMandato: string;
+
+  datosGMandatos: DatosGMandatos;
+
   tipoMovimientoMandato: TipoMovimientoMandato;
   soporteDocumentalMandato: SoporteDocumentalMandato;
 
@@ -40,12 +49,19 @@ export interface MandatoSlice {
   tablaSoporteDocumentalMandato: SoporteDocumentalMandato[];
   tablaMandatos: IDatosMandatos[];
 
+  borrarMandato: (Id: string) => void;
+
   changeIdMandato: (Id: string) => void;
+
   changeNumeroMandato: (Id: string) => void;
 
   editarMandato: (
     tipoMovimientoMandato: TipoMovimientoMandato[],
     soporteDocumentalMandato: SoporteDocumentalMandato[]
+  ) => void;
+
+  setDatosGMandatos: (
+    datosGMandatos: DatosGMandatos
   ) => void;
 
   setTipoMovimientoMandato: (
@@ -104,6 +120,11 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     }));
   },
 
+  datosGMandatos: {
+    mecanismoPago: "Mandato",
+    MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+  },
+
   numeroMandato: "",
 
   tipoMovimientoMandato: {
@@ -160,6 +181,12 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   ) => {
     set(() => ({
       soporteDocumentalMandato: soporteDocumentalMandato,
+    }));
+  },
+
+  setDatosGMandatos: (datosGMandatos: DatosGMandatos) => {
+    set(() => ({
+      datosGMandatos: datosGMandatos
     }));
   },
 
@@ -263,7 +290,6 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
 
   createMandato: async () => {
     const state = useMandatoStore.getState();
-
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
@@ -274,14 +300,12 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
             new Date(state.tipoMovimientoMandato.fechaMandato),
             "dd/MM/yyyy"
           ),
-          Mandatario:
-            state.tablaTipoMovimientoMandato[0].mandatario.Descripcion,
-          MunicipioMandante: localStorage.getItem("EntePublicoObligado"),
-          OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          Mandatario: "Nuevo León",
+          MecanismoPago: state.datosGMandatos.mecanismoPago,
+          MunicipioOrganismoMandante: state.datosGMandatos.MunicipioOrganismoMandante,
+          //OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
-          SoporteDocumental: JSON.stringify(
-            state.tablaSoporteDocumentalMandato
-          ),
+          SoporteDocumental: JSON.stringify(state.tablaSoporteDocumentalMandato),
         },
         {
           headers: {
@@ -306,7 +330,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           title: "Éxito",
           text: "El mandato se ha creado exitosamente",
         });
-      });
+      })
+      .catch(() => {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "error",
+          title: "Mensaje",
+          text: "Ha sucedido un error, inténtelo de nuevo",
+        });
+      })
   },
 
   modificaMandato: async () => {
@@ -321,10 +354,10 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
             new Date(state.tipoMovimientoMandato.fechaMandato),
             "dd/MM/yyyy"
           ),
-          Mandatario:
-            state.tablaTipoMovimientoMandato[0].mandatario.Descripcion,
-          MunicipioMandante: localStorage.getItem("EntePublicoObligado"),
-          OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          Mandatario: "Nuevo León",
+          Mecanismo: "Mandato",
+          MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          //OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalMandato
@@ -362,6 +395,51 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         });
       });
   },
+
+
+  borrarMandato: async (Id: string) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
+    await axios
+      .delete(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-Mandato",
+        {
+          data: {
+            IdMandato: Id,
+            IdUsuario: localStorage.getItem("IdUsuario"),
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(function (response) {
+        if (response.status === 200) {
+          window.location.reload();
+          Toast.fire({
+            icon: "success",
+            title: "Eliminado con exito",
+          });
+        }
+        return true;
+      })
+      .catch(function () {
+        Toast.fire({
+          icon: "error",
+          title: "No se elimino el Mandato.",
+        });
+      });
+    return false;
+  },
+
 
   cleanMandato: () => {
     set(() => ({
@@ -418,7 +496,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
               data.RESPONSE.NOMBREARCHIVO
             );
           })
-          .catch((e) => {});
+          .catch((e) => { });
       } else {
         return null;
       }
@@ -434,7 +512,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/api/create-addPathDocMandato",
+        "/api/create-addPathDocMandato",
         {
           IdMandato: idMandato,
           Ruta: Ruta,
@@ -447,8 +525,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => { })
+      .catch((e) => { });
   },
 
   arrDocs: [],

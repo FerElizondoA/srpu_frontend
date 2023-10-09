@@ -14,23 +14,8 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ICatalogo, IEntePublico } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
-interface HeadSelect {
-  label: string;
-}
-
-const CatalogoMecanismo: HeadSelect[] = [
-  {
-    label: "Fideicomiso",
-  },
-  {
-    label: "Instrucciones irrevocable",
-  },
-  {
-    label: "Mandato",
-  },
-];
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -46,9 +31,13 @@ export function DatosGeneralesIntrucciones() {
     (state) => state.generalInstrucciones.banco
   );
 
-  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoInstituciones
-  );
+  const mecanismo: string = useInstruccionesStore(
+    (state) => state.generalInstrucciones.mecanismo
+  )
+
+  const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
+    (state) => state.generalInstrucciones.municipio
+  )
 
   //GET
   const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
@@ -71,12 +60,18 @@ export function DatosGeneralesIntrucciones() {
     (state) => state.getFondosOIngresos
   );
 
+  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+
   //FUNCTION
   const setGeneralInstruccion: Function = useInstruccionesStore(
     (state) => state.setGeneralInstruccion
   );
-
-  const [mecanismo, setMecanismo] = useState<any>("");
+  //CATALOGOS
+  const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  )
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -138,6 +133,8 @@ export function DatosGeneralesIntrucciones() {
                     numeroCuenta: v.target.value,
                     cuentaCLABE: cuentaCLABE,
                     banco: banco,
+                    mecanismo: "Instrucciones Irrevocables",
+                    municipio: municipio
                   });
                 }
               }}
@@ -161,6 +158,8 @@ export function DatosGeneralesIntrucciones() {
                     numeroCuenta: numeroCuenta,
                     cuentaCLABE: v.target.value,
                     banco: banco,
+                    mecanismo: "Instrucciones Irrevocables",
+                    municipio: municipio
                   });
                 }
               }}
@@ -196,6 +195,8 @@ export function DatosGeneralesIntrucciones() {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
                   },
+                  mecanismo: "Instrucciones Irrevocables",
+                  municipio: municipio
                 })
               }
               renderInput={(params) => (
@@ -229,23 +230,12 @@ export function DatosGeneralesIntrucciones() {
             <InputLabel sx={queries.medium_text}>
               Mecanismo o vehículo de pago
             </InputLabel>
-
-            <FormControl fullWidth>
-              <Select
-                value={mecanismo}
-                fullWidth
-                variant="standard"
-                onChange={(e) => {
-                  setMecanismo(e.target.value);
-                }}
-              >
-                {CatalogoMecanismo.map((item, index) => (
-                  <MenuItem value={item.label} key={index}>
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <TextField
+             value={mecanismo}
+             fullWidth
+             variant="standard"
+              disabled
+            />
           </Grid>
 
           <Grid
@@ -256,13 +246,51 @@ export function DatosGeneralesIntrucciones() {
             xl={4}
             height={{ xs: "4rem", sm: "0rem" }}
           >
+ 
             <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
-            <TextField
+            <Autocomplete
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
               fullWidth
-              variant="standard"
-              // label={"Municipio mandante"}
-              // title={"Municipio mandante"}
-              onChange={(v) => {}}
+              options={catalogoOrganismos}
+              value={{
+                Id: municipio.Id || "",
+                Descripcion: municipio.Descripcion || "",
+              }}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Id}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              onChange={(event, text) =>
+                setGeneralInstruccion({
+                  numeroCuenta: numeroCuenta,
+                  cuentaCLABE: cuentaCLABE,
+                  banco: banco,
+                  mecanismo: "Instrucciones Irrevocables",
+                  municipio: {
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                  },
+                })
+              }
+              disableClearable
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Descripcion === value.Descripcion ||
+                value.Descripcion === ""
+              }
             />
           </Grid>
         </Grid>

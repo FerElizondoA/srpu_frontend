@@ -74,6 +74,7 @@ interface HeadLabels {
 }
 
 export function TipoDeMovimientoIntrucciones() {
+  
   const headsLabels: HeadLabels[] = [
     {
       label: "Alta deudor",
@@ -95,50 +96,9 @@ export function TipoDeMovimientoIntrucciones() {
     },
   ];
 
-  const rowsPrueba: rowsPrueba[] = [
-    {
-      label: "Prueba 1",
-      id: "0",
-    },
-    {
-      label: "Prueba 2",
-      id: "1",
-    },
-    {
-      label: "Prueba 3",
-      id: "2",
-    },
-    {
-      label: "Prueba 4",
-      id: "3",
-    },
-    {
-      label: "Prueba 5",
-      id: "4",
-    },
-    {
-      label: "Prueba 6",
-      id: "5",
-    },
-  ];
-  const [tabIndex, setTabIndex] = useState(0);
-
-  //DATOS GENERALES
-  const numeroCuenta: string = useInstruccionesStore(
-    (state) => state.generalInstrucciones.numeroCuenta
-  );
-
-  const cuentaCLABE: string = useInstruccionesStore(
-    (state) => state.generalInstrucciones.cuentaCLABE
-  );
-
-  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
-    (state) => state.generalInstrucciones.banco
-  );
 
   //TIPO DE MOVIMIENTO
-  const tipoEntePublico: { Id: string; Descripcion: string } =
-    useInstruccionesStore(
+  const tipoEntePublico: { Id: string; Descripcion: string } = useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
     );
 
@@ -178,11 +138,8 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.catalogoTipoEntePublicoObligado
   );
 
-  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoInstituciones
-  );
 
-  const catalogoMunicipiosUOrganismos: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
   );
 
@@ -191,7 +148,7 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.getTiposDeFuente
   );
 
-  const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
+  const getOrganismosInstrucciones: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
 
@@ -208,9 +165,6 @@ export function TipoDeMovimientoIntrucciones() {
   );
 
   //FUNCTION
-  const setGeneralInstruccion: Function = useInstruccionesStore(
-    (state) => state.setGeneralInstruccion
-  );
 
   const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.addTipoMovimientoInstrucciones
@@ -220,25 +174,13 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.removeTipoMovimientoInstrucciones
   );
 
-  const cleanTipoMovimientoInstruccion: Function = useInstruccionesStore(
-    (state) => state.cleanTipoMovimientoInstruccion
-  );
-
-  const editarInstruccion: Function = useInstruccionesStore(
-    (state) => state.editarInstruccion
-  );
-
-  const changeIdInstruccion: Function = useInstruccionesStore(
-    (state) => state.changeIdInstruccion
-  );
-
   const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
     (state) => state.setTipoMovimientoInstrucciones
   );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
-    getMunicipiosUOrganismosInstrucciones();
+    getOrganismosInstrucciones();
     getInstitucionesInstrucciones();
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
@@ -362,7 +304,7 @@ export function TipoDeMovimientoIntrucciones() {
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={catalogoMunicipiosUOrganismos}
+              options={catalogoOrganismos}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (

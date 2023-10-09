@@ -138,8 +138,7 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<Array<IDatosFideicomiso>>(fideicomisos);
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<Array<IDatosFideicomiso>>(fideicomisos);
 
   const fideicomisoSelect: Fideicomiso[] = useFideicomisoStore(
     (state) => state.fideicomisoSelect
@@ -252,7 +251,8 @@ export function Fideicomisos() {
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+      <LateralMenu />
+        {/* {query.isMobile ? <LateralMenuMobile /> : } */}
       </Grid>
 
       <Grid
@@ -280,7 +280,7 @@ export function Fideicomisos() {
         </Typography>
       </Grid>
 
-      <Grid item mb={5} lg={12} display="center" justifyContent="space-between">
+      <Grid item mb={2} lg={12} display="center" justifyContent="space-between" width={"90%"}>
         <Grid width={"80%"} display={"flex"} justifyContent={"end"}>
           <Paper
             component="form"
@@ -328,7 +328,7 @@ export function Fideicomisos() {
         justifyContent={"center"}
         sx={{
           marginBottom: "2rem",
-          height: "32rem",
+          height: "28rem",
           "@media (min-width: 480px)": {
             height: "20rem",
             marginBottom: "0",
@@ -354,10 +354,11 @@ export function Fideicomisos() {
         <Paper sx={{ width: "100%", height: "100%" }}>
           <TableContainer
             sx={{
+              width: "100%",
               height: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
-                width: ".5vw",
+                width: ".7vw",
                 height: "1vh",
                 mt: 1,
               },
