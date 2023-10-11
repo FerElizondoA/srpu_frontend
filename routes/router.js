@@ -115,6 +115,7 @@ const {
   getComentarios,
   cambiaEstatus,
   getSolicitudesAdministrador,
+  eliminaComentario,
 } = require("../controllers/Solicitudes.js");
 const {
   createTipoDeDocumento,
@@ -773,6 +774,10 @@ router.post("/create-comentario", verifyToken.verifyJWT, (req, res) => {
 
 router.get("/get-comentarios", verifyToken.verifyJWT, (req, res) => {
   getComentarios(req, res);
+});
+
+router.post("/delete-comentario", verifyToken.verifyJWT, (req, res) => {
+  eliminaComentario(req, res);
 });
 
 //#endregion
