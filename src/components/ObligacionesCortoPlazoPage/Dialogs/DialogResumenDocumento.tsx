@@ -62,21 +62,25 @@ export function VerBorradorDocumento(props: Props) {
   const tieneComentarios: boolean =
     Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
 
-  const setComentariosRegistro: Function = useCortoPlazoStore(
-    (state) => state.setComentariosRegistro
+  const setComentarios: Function = useCortoPlazoStore(
+    (state) => state.setComentarios
   );
 
   React.useEffect(() => {
     let a: any = {};
-    datosComentario?.map((_) => {
-      return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
-        return a[v]
-          ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
-          : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
-      });
-    });
 
-    setComentariosRegistro(a);
+    datosComentario
+      ?.filter((td) => td.Tipo === "Requerimiento")
+      .map((_) => {
+        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+          return a[v]
+            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+        });
+      });
+
+    setComentarios(a);
+    // setComentariosRegistro(a);
 
     useCortoPlazoStore.setState({
       idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
@@ -113,7 +117,7 @@ export function VerBorradorDocumento(props: Props) {
             props.handler(false);
             useCortoPlazoStore.setState({
               comentarios: {},
-              comentariosRegistro: {},
+              // comentariosRegistro: {},
               idComentario: "",
             });
           }}
@@ -153,6 +157,11 @@ export function VerBorradorDocumento(props: Props) {
                   : localStorage.getItem("Rol") === "Validador"
                   ? CambiaEstatus("Autorizacion", IdSolicitud)
                   : CambiaEstatus("Autorizado, Por Firmar", IdSolicitud);
+                addComentario(
+                  IdSolicitud,
+                  JSON.stringify(comentarios),
+                  "Requerimiento"
+                );
                 props.handler(false);
                 Swal.fire({
                   confirmButtonColor: "#15212f",
@@ -209,7 +218,7 @@ export function VerBorradorDocumento(props: Props) {
         <Resumen coments={false} />
       </DialogContent>
 
-      <Dialog open={openGuardaComentarios} fullWidth>
+      <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>
         <DialogTitle>Guardar comentarios</DialogTitle>
         <DialogContent>
           {Object.entries(comentarios).map(([key, val], index) =>

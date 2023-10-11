@@ -50,6 +50,8 @@ export interface SolicitudInscripcionSlice {
     tipo: string
   ) => void;
 
+  eliminarRequerimientos: (Id: string, setState: Function) => void;
+
   saveFiles: (idRegistro: string, ruta: string) => void;
 
   savePathDoc: (
@@ -293,12 +295,44 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then(({ data }) => {
           useCortoPlazoStore.setState({
             comentarios: {},
-            comentariosRegistro: {},
+            // comentariosRegistro: {},
             idComentario: "",
           });
         })
         .catch((e) => {});
     }
+  },
+  eliminarRequerimientos: async (Id: string, setState: Function) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      showConfirmButton: true,
+      confirmButtonColor: "#15212f",
+      cancelButtonColor: "rgb(175, 140, 85)",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-comentario",
+        {
+          Id: Id,
+          ModificadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        Toast.fire({
+          icon: "success",
+          title: "Comentario eliminado",
+        });
+        setState();
+      })
+      .catch((e) => {});
   },
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();

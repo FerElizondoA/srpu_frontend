@@ -7,7 +7,7 @@ export function getComentariosSolicitudPlazo(
   idSolicitud: string,
   setState: Function
 ) {
-  axios({
+  return axios({
     method: "get",
     params: {
       IdUsuario: localStorage.getItem("IdUsuario"),
@@ -31,6 +31,9 @@ export function getComentariosSolicitudPlazo(
               !rolesAdmin.includes(localStorage.getItem("Rol")!))
         )
       );
+      return data.data;
     })
-    .catch((error) => {});
+    .catch((error) => {
+      return error;
+    });
 }

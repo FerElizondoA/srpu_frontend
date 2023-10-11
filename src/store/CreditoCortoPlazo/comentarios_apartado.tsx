@@ -3,7 +3,7 @@ import { StateCreator } from "zustand";
 export interface ComentarioApartadoSlice {
   idComentario: string;
   comentarios: {};
-  comentariosRegistro: {};
+  // comentariosRegistro: {};
 
   cleanComentario: () => void;
 
@@ -15,7 +15,7 @@ export interface ComentarioApartadoSlice {
   removeComentario: (apartado: string, Tab: string) => void;
 
   setComentarios: (comentario: any) => void;
-  setComentariosRegistro: (comentario: any) => void;
+  // setComentariosRegistro: (comentario: any) => void;
 }
 
 export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
@@ -24,7 +24,7 @@ export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
 ) => ({
   idComentario: "",
   comentarios: {},
-  comentariosRegistro: {},
+  // comentariosRegistro: {},
 
   cleanComentario: () => {
     set((state) => ({
@@ -57,9 +57,9 @@ export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
       comentarios: comentarios,
     }));
   },
-  setComentariosRegistro: (comentarios: any) => {
-    set((state) => ({
-      comentariosRegistro: comentarios,
-    }));
-  },
+  // setComentariosRegistro: (comentarios: any) => {
+  //   set((state) => ({
+  //     comentariosRegistro: comentarios,
+  //   }));
+  // },
 });

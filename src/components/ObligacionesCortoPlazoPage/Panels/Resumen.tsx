@@ -246,9 +246,9 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
-  const comentariosRegistro: any = useCortoPlazoStore(
-    (state) => state.comentariosRegistro
-  );
+  // const comentariosRegistro: any = useCortoPlazoStore(
+  //   (state) => state.comentariosRegistro
+  // );
 
   useEffect(() => {
     if (IdSolicitud !== "") {
@@ -338,9 +338,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label] ||
-                        comentariosRegistro[head.label]
-                          ? "success"
+                        comentario[head.label]
+                          ? // ||
+                            // comentariosRegistro[head.label]
+                            "success"
                           : "primary"
                       }
                       size="small"
@@ -387,9 +388,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label] ||
-                        comentariosRegistro[head.label]
-                          ? "success"
+                        comentario[head.label]
+                          ? // ||
+                            // comentariosRegistro[head.label]
+                            "success"
                           : "primary"
                       }
                       size="small"
@@ -422,9 +424,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Obligado Solidario Aval"] ||
-                      comentariosRegistro["Tabla Obligado Solidario Aval"]
-                        ? "success"
+                      comentario["Tabla Obligado Solidario Aval"]
+                        ? // ||
+                          // comentariosRegistro["Tabla Obligado Solidario Aval"]
+                          "success"
                         : "primary"
                     }
                     size="small"
@@ -536,9 +539,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Condiciones Financieras"] ||
-                      comentariosRegistro["Tabla Condiciones Financieras"]
-                        ? "success"
+                      comentario["Tabla Condiciones Financieras"]
+                        ? // ||
+                          // comentariosRegistro["Tabla Condiciones Financieras"]
+                          "success"
                         : "primary"
                     }
                     size="small"
@@ -943,9 +947,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                             <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
                                 color={
-                                  comentario[row.descripcionTipo] ||
-                                  comentariosRegistro[row.descripcionTipo]
-                                    ? "success"
+                                  comentario[row.descripcionTipo]
+                                    ? // ||
+                                      // comentariosRegistro[row.descripcionTipo]
+                                      "success"
                                     : "primary"
                                 }
                                 size="small"

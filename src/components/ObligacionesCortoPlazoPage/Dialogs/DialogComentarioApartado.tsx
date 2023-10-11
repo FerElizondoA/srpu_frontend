@@ -25,17 +25,17 @@ export function ComentarioApartado({
     (state) => state.removeComentario
   );
 
-  const comentariosRegistro: any = useCortoPlazoStore(
-    (state) => state.comentariosRegistro
-  );
+  // const comentariosRegistro: any = useCortoPlazoStore(
+  //   (state) => state.comentariosRegistro
+  // );
 
   useEffect(() => {
     // comentariosRegistro[openState.apartado] &&
     setComent({
       Apartado: openState.apartado,
-      Comentario:
-        comentario[openState.apartado] ||
-        comentariosRegistro[openState.apartado],
+      Comentario: comentario[openState.apartado],
+      // ||
+      // comentariosRegistro[openState.apartado],
     });
   }, [openState.apartado]);
 
@@ -53,24 +53,14 @@ export function ComentarioApartado({
       </DialogTitle>
 
       <DialogContent>
-        {/* {comentariosRegistro[openState.apartado] && (
-          <Typography sx={{ display: "flex", justifyContent: "center" }}>
-            Comentarios anteriores:{" "}
-            {comentariosRegistro[openState.apartado] || ""}
-          </Typography>
-        )}
-
-        {comentario[openState.apartado] && (
-          <Typography sx={{ display: "flex", justifyContent: "center" }}>
-            Nuevo comentario: {comentario[openState.apartado] || ""}
-          </Typography>
-        )} */}
-
         <TextField
           label={
-            comentariosRegistro[openState.apartado]
+            comentario[openState.apartado]
               ? "Editar comentario"
               : "Nuevo comentario"
+            // comentariosRegistro[openState.apartado]
+            //   ? "Editar comentario"
+            //   : "Nuevo comentario"
           }
           sx={{ width: "100%", mt: 2 }}
           value={coment.Comentario}
@@ -81,7 +71,6 @@ export function ComentarioApartado({
             });
           }}
           multiline
-          rows={2}
         />
       </DialogContent>
 

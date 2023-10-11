@@ -26,6 +26,7 @@ import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolici
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
 import { rolesAdmin } from "./DialogSolicitarModificacion";
+import { format } from "date-fns";
 
 export interface IComentarios {
   Id: string;
@@ -83,15 +84,16 @@ export function VerComentariosSolicitud({
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
-
-  const changeOpenDialogState = (open: boolean) => {
-    changeOpenDialogCrear(open);
-  };
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
   const [menu, setMenu] = useState(
     rolesAdmin.includes(localStorage.getItem("Rol")!)
       ? "Requerimientos"
       : "Comentarios"
+  );
+
+  const eliminarRequerimientos: Function = useCortoPlazoStore(
+    (state) => state.eliminarRequerimientos
   );
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function VerComentariosSolicitud({
   return (
     <Dialog
       fullWidth
-      maxWidth={"md"}
+      maxWidth={"lg"}
       open={openState}
       keepMounted
       TransitionComponent={Transition}
@@ -145,7 +147,7 @@ export function VerComentariosSolicitud({
           />
         </Tabs>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
         {menu === "Requerimientos" ? (
           <Grid>
             {datosComentario.filter((f) => f.Tipo === "Requerimiento")[0] &&
@@ -154,21 +156,25 @@ export function VerComentariosSolicitud({
                 datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
                   ?.Comentarios
               )
-            ).length > 0
-              ? Object.entries(
-                  JSON.parse(
-                    datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
-                      ?.Comentarios
-                  )
-                ).map(([key, val], index) =>
-                  (val as string) === "" ? null : (
-                    <Typography key={index}>
-                      <strong>{key}:</strong>
-                      {val as string}
-                    </Typography>
-                  )
+            ).length > 0 ? (
+              Object.entries(
+                JSON.parse(
+                  datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                    ?.Comentarios
                 )
-              : ""}
+              ).map(([key, val], index) =>
+                (val as string) === "" ? null : (
+                  <Typography key={index} sx={{ mb: 1 }}>
+                    <strong>{key}:</strong>
+                    {val as string}
+                  </Typography>
+                )
+              )
+            ) : (
+              <Typography sx={{ mb: 1 }}>
+                <strong>Sin requerimientos</strong>
+              </Typography>
+            )}
           </Grid>
         ) : (
           <Grid item>
@@ -191,27 +197,41 @@ export function VerComentariosSolicitud({
                 </TableHead>
 
                 <TableBody>
-                  {datosComentario?.length !== 0 ? (
+                  {datosComentario?.filter((r) => r.Tipo !== "Requerimiento")
+                    .length !== 0 ? (
                     datosComentario
                       ?.filter((r) => r.Tipo !== "Requerimiento")
                       .map((row, index) => {
                         return (
                           <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
+                            <StyledTableCell
+                              sx={{
+                                fontSize: "1.5ch",
+                                width: "30%",
+                              }}
+                            >
                               {row.Nombre}
-                            </StyledTableCell>
-
-                            <StyledTableCell component="th" scope="row">
-                              {row.FechaCreacion.split("T")[0]}
                             </StyledTableCell>
 
                             <StyledTableCell
                               sx={{
                                 fontSize: "1.5ch",
+                                width: "20%",
                               }}
                             >
-                              {Object.entries(JSON.parse(row?.Comentarios))
-                                .length > 0
+                              {format(
+                                new Date(row.FechaCreacion),
+                                "dd/MM/yyyy"
+                              )}
+                            </StyledTableCell>
+
+                            <StyledTableCell
+                              sx={{
+                                fontSize: "1.5ch",
+                                width: "50%",
+                              }}
+                            >
+                              {row?.Comentarios.includes("{")
                                 ? Object.entries(
                                     JSON.parse(row?.Comentarios)
                                   ).map(([key, val], index) =>
@@ -232,7 +252,6 @@ export function VerComentariosSolicitud({
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <StyledTableCell align="center"></StyledTableCell>
-
                       <StyledTableCell align="center">
                         Sin comentarios
                       </StyledTableCell>
@@ -255,20 +274,63 @@ export function VerComentariosSolicitud({
         >
           Cerrar
         </Button>
+        {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenDialogEliminar(true);
+            }}
+          >
+            Eliminar Requerimientos
+          </Button>
+        )}
         <Button
           sx={queries.buttonContinuar}
           onClick={() => {
-            changeOpenDialogState(!openDialogCrear);
+            changeOpenDialogCrear(!openDialogCrear);
           }}
         >
-          CREAR NUEVO COMENTARIO
+          Crear nuevo comentario
         </Button>
       </DialogActions>
       <AgregarComentario
-        handler={changeOpenDialogState}
+        handler={changeOpenDialogCrear}
         openState={openDialogCrear}
         IdSolicitud={IdSolicitud}
       />
+      <Dialog
+        open={openDialogEliminar}
+        onClose={() => {
+          setOpenDialogEliminar(false);
+        }}
+      >
+        <DialogTitle>¿Eliminar requerimientos?</DialogTitle>
+        <DialogActions>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenDialogEliminar(false);
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              eliminarRequerimientos(
+                datosComentario?.filter((r) => r.Tipo === "Requerimiento")[0]
+                  .Id,
+                () => {
+                  setOpenDialogEliminar(false);
+                  handler(false);
+                }
+              );
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 }

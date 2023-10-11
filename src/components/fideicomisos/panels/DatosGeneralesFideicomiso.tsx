@@ -18,7 +18,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
@@ -202,7 +206,11 @@ export function DatoGeneralesFideicomiso() {
                   ? setError(true)
                   : setError(false);
                 setGeneralFideicomiso({
-                  numeroFideicomiso: v.target.value,
+                  numeroFideicomiso: /^[a-zA-Z0-9 ()$_,.-]*$/.test(
+                    v.target.value
+                  )
+                    ? v.target.value
+                    : numeroFideicomiso,
                   tipoFideicomiso: tipoFideicomiso,
                   fechaFideicomiso: fechaFideicomiso,
                   fiudiciario: fiudiciario,
@@ -279,9 +287,9 @@ export function DatoGeneralesFideicomiso() {
                     fiudiciario: fiudiciario,
                   })
                 }
-              // slots={{
-              //   textField: DateInput,
-              // }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>

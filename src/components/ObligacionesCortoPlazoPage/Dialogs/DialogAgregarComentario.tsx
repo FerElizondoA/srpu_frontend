@@ -51,7 +51,11 @@ export function AgregarComentario({
           value={comentario}
           onChange={(texto) => {
             if (texto.target.value.length <= 200) {
-              setComentario(texto.target.value);
+              setComentario(
+                /^[a-zA-Z0-9 ()$_,.-]*$/.test(texto.target.value)
+                  ? texto.target.value
+                  : comentario
+              );
             }
           }}
         />

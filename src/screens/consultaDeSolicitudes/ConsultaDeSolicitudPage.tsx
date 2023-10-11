@@ -34,7 +34,10 @@ import {
   getSolicitudesAdmin,
 } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
-import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import {
+  IComentarios,
+  VerComentariosSolicitud,
+} from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
@@ -44,11 +47,14 @@ import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
+  ConsultaConstancia,
+  ConsultaRequerimientos,
   ConsultaSolicitud,
   getPdf,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 export interface IData {
   Id: string;
@@ -351,6 +357,10 @@ export function ConsultaDeSolicitudPage() {
     }
   };
 
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
+    []
+  );
+
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
     changeEncabezado({
@@ -415,6 +425,28 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
+  const requerimientos = (
+    Solicitud: string,
+    noRegistro: string,
+    Requerimiento: any,
+    estatus: string,
+    IdSolicitud: string
+  ) => {
+    let a: any = {};
+
+    Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
+      return a[v]
+        ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
+        : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
+    });
+
+    ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
+
+    changeEstatus(estatus);
+    changeIdSolicitud(IdSolicitud);
+    navigate("../firmaUrl");
+  };
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -686,15 +718,58 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {row.Estatus.includes("Por Firmar") && (
+                          {((!rolesAdmin.includes(
+                            localStorage.getItem("Rol")!
+                          ) &&
+                            row.Estatus.includes("Por Firmar") &&
+                            !row.Estatus.includes("Autorizado")) ||
+                            (localStorage.getItem("Rol") === "Autorizador" &&
+                              row.Estatus.includes("Por Firmar"))) && (
                             <Tooltip title="Firmar documento">
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  ConsultaSolicitud(row.Solicitud, setUrl);
-                                  changeEstatus(row.Estatus);
-                                  changeIdSolicitud(row.Id);
-                                  navigate("../firmaUrl");
+                                  getComentariosSolicitudPlazo(
+                                    row.Id,
+                                    setDatosComentarios
+                                  ).then((data) => {
+                                    if (
+                                      rolesAdmin.includes(
+                                        localStorage.getItem("Rol")!
+                                      )
+                                    ) {
+                                      if (
+                                        data.filter(
+                                          (a: any) => a.Tipo === "Requerimiento"
+                                        ).length > 0
+                                      ) {
+                                        requerimientos(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          data.filter(
+                                            (a: any) =>
+                                              a.Tipo === "Requerimiento"
+                                          )[0],
+                                          row.Estatus,
+                                          row.Id
+                                        );
+                                      } else {
+                                        ConsultaConstancia(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          setUrl
+                                        );
+                                        changeEstatus(row.Estatus);
+                                        changeIdSolicitud(row.Id);
+                                        navigate("../firmaUrl");
+                                      }
+                                    } else {
+                                      ConsultaSolicitud(row.Solicitud, setUrl);
+                                      changeEstatus(row.Estatus);
+                                      changeIdSolicitud(row.Id);
+                                      navigate("../firmaUrl");
+                                    }
+                                  });
                                 }}
                               >
                                 <HistoryEduIcon />

@@ -190,6 +190,119 @@ export async function ConsultaSolicitud(Solicitud: string, setUrl: Function) {
     .catch((err) => {});
 }
 
+export async function ConsultaRequerimientos(
+  Solicitud: string,
+  Requerimientos: {},
+  NoOficio: string,
+  setUrl: Function
+) {
+  const solicitud: any = JSON.parse(Solicitud);
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu_requerimientos",
+      {
+        oficioRequerimiento: 1,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+        organismo: solicitud.encabezado.organismo.Organismo,
+        oficioSolicitud: NoOficio,
+        fechaSolicitud: new Date(),
+        fechaContratacion: solicitud.encabezado.fechaContratacion,
+        entePublicoObligado:
+          solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        institucionFinanciera:
+          solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: solicitud.informacionGeneral.monto,
+        comentarios: Requerimientos,
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral:
+          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => {});
+}
+
+export async function ConsultaConstancia(
+  Solicitud: string,
+  NoOficio: string,
+  setUrl: Function
+) {
+  const solicitud: any = JSON.parse(Solicitud);
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu_constancia",
+      {
+        oficioConstancia: 1,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+        organismo: solicitud.encabezado.organismo.Organismo,
+        oficioSolicitud: NoOficio,
+        fechaSolicitud: new Date(),
+        tipoDocumento: solicitud.encabezado.tipoDocumento,
+        fechaContratacion: solicitud.encabezado.fechaContratacion,
+        claveInscripcion: "claveInscripcion",
+        fechaClave: new Date(),
+        entePublicoObligado:
+          solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        obligadoSolidarioAval:
+          solicitud.informacionGeneral.obligadosSolidarios.length > 0
+            ? solicitud.informacionGeneral.obligadosSolidarios
+            : ["No Aplica"],
+        institucionFinanciera:
+          solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: solicitud.informacionGeneral.monto,
+        destino: solicitud.informacionGeneral.destino.Descripcion,
+        plazo: solicitud.informacionGeneral.plazo,
+        amortizaciones: "amortizaciones",
+        tasaInteres: "tasaInteres",
+        tasaEfectiva: "tasaEfectiva",
+        mecanismoVehiculoDePago: "mecanismoVehiculoDePago",
+        fuentePago: "fuentePago",
+        garantiaDePago: "garantiaDePago",
+        instrumentoDerivado: "instrumentoDerivado",
+        financiamientosARefinanciar: ["financiamientosARefinanciar"],
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral:
+          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => {});
+}
+
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
   axios
     .post(

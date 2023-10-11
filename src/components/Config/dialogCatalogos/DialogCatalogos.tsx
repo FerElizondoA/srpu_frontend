@@ -153,10 +153,9 @@ export function DialogCatalogos({
               value={element || ""}
               onChange={(v) => {
                 setElement(
-                  v.target.value
-                    .replaceAll('"', "")
-                    .replaceAll("'", "")
-                    .replaceAll("\n", "")
+                  /^[a-zA-Z0-9 ()$_,.-]*$/.test(v.target.value)
+                    ? v.target.value
+                    : element
                 );
               }}
             />
