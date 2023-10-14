@@ -249,6 +249,9 @@ const {
 } = require("../controllers/TiposDeGarantiaDePago.js");
 const { createFirmaDetalle } = require("../controllers/FirmaDetalle.js");
 const { createMandato } = require("../controllers/Mandatos.js");
+const { createPreguntaFrecuente, getPreguntasFrecuentes, deletePreguntasFrecuentes } = require("../controllers/Ayudas.js");
+
+
 
 //#region Instituciones Financieras
 router.post(
@@ -1210,5 +1213,19 @@ router.post("/create-mandato", (req, res, express) => {
 //   deleteTipoDeGarantiaDePago(req, res);
 // });
 //#endregion
+
+//#################################Admin Ayudas####################################
+router.post("/ayuda",(req,res)=>{
+  createPreguntaFrecuente(req,res)
+})
+
+router.get("/ayuda",(req,res)=>{
+  getPreguntasFrecuentes(req,res)
+})
+
+router.delete("/ayuda",(req,res)=>{
+  deletePreguntasFrecuentes(req,res)
+  
+})
 
 module.exports = router;
