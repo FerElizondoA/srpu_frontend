@@ -34,6 +34,8 @@ import {
   List,
   ListItemButton,
   ListItemIcon,
+  Menu,
+  MenuItem,
   OutlinedInput,
   Toolbar,
   Tooltip,
@@ -53,6 +55,9 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
+import InfoIcon from '@mui/icons-material/Info';
+import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
+import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -104,11 +109,58 @@ export interface IData {
   TipoSolicitud: string;
 }
 export function LateralMenu() {
-  const menu =
+const menu =
     localStorage.getItem("Menu") !== undefined &&
       localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
+  ////////Administración de Ayudas////////
+  interface MenuObject {
+    Id: string;
+    FechaDeCreacion: string;
+    UltimaModificacion: string;
+    CreadoPor: string;
+    ModificadoPor: string;
+    Deleted: number;
+    Menu: string;
+    Descripcion: string;
+    MenuPadre: string;
+    Icon: string | null;
+    Path: string;
+    Nivel: number;
+    Orden: number;
+    ControlInterno: string | null;
+    IdApp: string;
+    item: MenuObject[]; // Esto es para el arreglo de objetos anidados, si los hay
+  }
+
+  // let aux = localStorage.getItem("Menus") !== undefined &&
+  //   localStorage.getItem("Menus") !== null
+  //   ? JSON.parse(localStorage.getItem("Menus")!)
+  //   : [];
+
+  let idMenu = menu.find((menu: MenuObject) => { if (menu.Menu === "menuActual") { return menu } })
+  const [arrayAyudas, setArrayAyudas] = useState<any[]>([])
+  const [option, setOption] = useState("Videos");
+  const [openVAyudas, setOpenVAyudas] = useState(false);
+
+  function handleCloseVAyudas() {
+    setOpenVAyudas(false)
+  }
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  ////////Administración de Ayudas////////
+
+
+
+
+
+  
   const logout = () => {
     localStorage.clear();
     window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
@@ -495,7 +547,42 @@ export function LateralMenu() {
             width={85}
           >
             <Grid>
+              {/* <Tooltip title="Ayuda"> */}
+              <IconButton
+                    color="inherit"
+                    onClick={handleMenu}
+                    // onClick={() => setIsDrawerNotificationOpen(true)}
+                  >
+                    <InfoIcon />
+                  </IconButton>
+
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")}Ver Tutoriales </MenuItem>}
+                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")}Ver Guías </MenuItem>}
+                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")}Preguntas </MenuItem>}
+
+              </Menu>
+              {/* </Tooltip> */}
+            </Grid>
+            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} /> : null}
+
+            <Grid>
               <Badge badgeContent={cantNoti} color="info">
+
                 <Tooltip title="Notificaciones">
                   <IconButton
                     color="inherit"

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 import "./App.css";
 import "./Fonts.css";
@@ -31,7 +31,8 @@ import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
-
+import Ayuda from "./screens/Ayuda/Ayuda";
+ 
 export const appTheme = createTheme({
   palette: {
     primary: {
@@ -46,6 +47,8 @@ export const getToken = () => {
 };
 
 function App() {
+
+
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const jt = params.get("jwt") || null;
@@ -86,6 +89,8 @@ function App() {
   const idUsuarioModificado: string = useSolicitudUsuarioStore(
     (state) => state.idUsuarioModificado
   );
+
+  
 
   return (
     <ThemeProvider theme={appTheme}>
@@ -137,6 +142,8 @@ function App() {
             path="instruccionesIrrevocables"
             element={<InstruccionesIrrevocables />}
           ></Route>
+          <Route path="AdministracionAyudas" element={<Ayuda />}></Route>
+
         </Routes>
       </CssBaseline>
     </ThemeProvider>
