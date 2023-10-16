@@ -200,7 +200,7 @@ export async function ConsultaRequerimientos(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu_requerimientos",
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-requerimientos",
       {
         oficioRequerimiento: 1,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
@@ -214,7 +214,7 @@ export async function ConsultaRequerimientos(
         institucionFinanciera:
           solicitud.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.monto,
-        comentarios: Requerimientos,
+        comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:
           solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
