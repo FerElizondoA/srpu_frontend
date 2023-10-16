@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <h4
+    style="
+      text-align: right;
+      font-family: Arial;
+      font-size: 12px;
+      font-weight: 100;
+      font-weight: 100;
+      letter-spacing: 1px;
+    "
+    class="header"
+  >
+    Oficio No. {{oficioRequerimiento}}
+    <div id="current_date">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+      <script>
+        moment.locale("es");
+        const formattedDate = moment().format("LL");
+        document.getElementById("current_date").innerHTML =
+          "Monterrey, a " + formattedDate;
+      </script>
+    </div>
+  </h4>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      font-weight: 100;
+      text-align: justify;
+      letter-spacing: 1px;
+    "
+  >
+    {{servidorPublico}} <br />
+    {{cargo}} <br />
+    {{organismo}}
+  </h3>
+
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 100;
+      letter-spacing: 5px;
+    "
+  >
+    PRESENTE
+  </h3>
+
+  <p
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 100;
+      letter-spacing: 1px;
+    "
+  >
+    Me refiero su oficio {{oficioSolicitud}} de fecha {{fechaSolicitud}},
+    recibido a través del Sistema de Gestión de Créditos a Municipios de
+    Financiamientos y Obligaciones de Entidades Federativas y Municipios, el
+    {{fechaSolicitud}}, mediante el cual solicita la inscripción en el Registro
+    Público Único de Financiamientos y Obligaciones de Entidades Federativas y
+    Municipios de un Crédito simple celebrado entre el(la)
+    {{entePublicoObligado}} y(e) {{institucionFinanciera}} el
+    {{fechaContratacion}}, hasta por la cantidad de {{montoOriginalContratado}}.
+    <br /><br />
+    Sobre el particular, me permito informarle que para la inscripción de
+    contratos de Crédito simple el artículo 25 del Reglamento del Registro
+    Público Único de Financiamientos y Obligaciones de Entidades Federativas y
+    Municipios (Reglamento) establece que el Ente Público deberá cumplir con lo
+    establecido en el dicho artículo.
+    <br /><br />
+    En virtud de lo anterior, una vez realizado el análisis al oficio de mérito
+    y a la documentación anexa al mismo, se detectaron las siguientes omisiones
+    y/o inconsistencias:
+  </p>
+
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      letter-spacing: 1px;
+    "
+  >
+    Reglamento del Registro Público Único de Financiamientos y Obligaciones de
+    Entidades Federativas y Municipios
+  </h3>
+
+  {{comentarios}}
+
+  <p
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 100;
+      letter-spacing: 1px;
+    "
+  >
+    En virtud de los argumentos precedentes y de conformidad con lo establecido
+    en los artículos 49, 50 y 51 fracciones l, II, V, VIII, lX y Xl de la Ley de
+    Disciplina Financiera de las Entidades Federativas y los Municipios; 3, 7,
+    16 fracciones ll, lll y lV, y 25 del Reglamento, y 59 Bis, fracciones III y
+    XI del Reglamento Interior de la Secretaría de Hacienda y Crédito Público y
+    Segundo Transitorio del Decreto por el que se reforman, adicionan y derogan
+    diversas disposiciones del Reglamento Interior de la Secretaría de Hacienda
+    y Crédito Público, publicado en el Diario Oficial de la Federación el 27 de
+    septiembre de 2017, se le previene para que subsanen las omisiones y/o
+    inconsistencias señaladas anteriormente, en un término no mayor a 10 días
+    hábiles contados a partir del día siguiente a la notificación del presente
+    oficio.
+    <br />
+
+    Cabe señalar, que si lo anterior no es subsanado en el plazo señalado, no
+    podrá continuarse con el proceso de inscripción
+  </p>
+
+  <h3
+    style="
+      display: flex;
+      justify-content: center;
+      font-family: Arial;
+      font-size: 12px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 1px;
+    "
+    class="atte"
+  >
+    Atentamente <br />
+    {{cargoDirectorGeneral}} <br />
+    <br />
+    {{directorGeneral}} <br />
+  </h3>
+</html>

@@ -1,5 +1,7 @@
 const express = require("express");
 const verifyToken = require("../controllers/auth/verifyToken.js");
+const router = express.Router();
+
 const {
   createClaveDeInscripcion,
   getClavesDeInscripcion,
@@ -49,7 +51,7 @@ const {
   modifyFuenteDePago,
   deleteFuenteDePago,
 } = require("../controllers/FuenteDePago.js");
-const router = express.Router();
+
 const {
   createInstitucionFinanciera,
   modifyInstitucionFinanciera,
@@ -263,6 +265,9 @@ const {
   modifyInstruccion,
   getInstrucciones,
 } = require("../controllers/InstruccionesIrrevocables.js");
+const {
+  createPdfRequerimientos,
+} = require("../controllers/PDF_requerimientos.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1250,6 +1255,13 @@ router.get("/get-instruccion", (req, res, express) => {
 // router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
 //   deleteTipoDeGarantiaDePago(req, res);
 // });
+//#endregion
+
+//#region Mandatos
+router.post("/create-pdf-requerimientos", (req, res) => {
+  createPdfRequerimientos(req, res);
+});
+
 //#endregion
 
 module.exports = router;
