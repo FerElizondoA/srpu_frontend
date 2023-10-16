@@ -114,7 +114,10 @@ module.exports = {
       .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
       .replaceAll("{{comentarios}}", coments);
 
-    const browser = await puppeteer.launch({ headless: "true" });
+    const browser = await puppeteer.launch({
+      ignoreDefaultArgs: ["--disable-extensions"],
+      headless: "true",
+    });
     const page = await browser.newPage();
 
     await page.setContent(html);
