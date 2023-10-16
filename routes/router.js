@@ -267,7 +267,8 @@ const {
 } = require("../controllers/InstruccionesIrrevocables.js");
 const {
   createPdfRequerimientos,
-} = require("../controllers/PDF_requerimientos.js");
+  createPdfConstancia,
+} = require("../controllers/PdfSolicitudes.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1260,6 +1261,9 @@ router.get("/get-instruccion", (req, res, express) => {
 //#region Mandatos
 router.post("/create-pdf-requerimientos", (req, res) => {
   createPdfRequerimientos(req, res);
+});
+router.post("/create-pdf-constancia", (req, res) => {
+  createPdfConstancia(req, res);
 });
 
 //#endregion
