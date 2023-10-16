@@ -16,6 +16,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useEffect, useState } from "react";
@@ -86,6 +87,27 @@ const headMandato: Head[] = [
   // },
 ];
 
+const headInstrucciones: Head[] = [
+  {
+    label: "Alta deudor",
+  },
+  {
+    label: "Tipo ente público",
+  },
+  {
+    label: "Entidad federativa",
+  },
+  {
+    label: "Tipo de fuente",
+  },
+  {
+    label: "Fondo o ingreso",
+  },
+  // {
+  //   label: "Acciones",
+  // },
+];
+
 export function VehiculoDePago() {
   const [mecanismo, setMecanismo] = useState<any>("");
 
@@ -140,12 +162,12 @@ export function VehiculoDePago() {
 
   //Instrucciones Irrevocables
 
-  const getNumeroInstruccion : Function = useInstruccionesStore(
-    (state) => state.getInstruccion
+  const getNumeroInstruccion: Function = useLargoPlazoStore(
+    (state) => state.getNumeroInstruccion
   )
 
   const numeroInstruccion: NumeroInstruccion[] = useLargoPlazoStore(
-  (state) => state.numeroInstruccion
+    (state) => state.numeroInstruccion
   )
 
   const numeroInstruccionSelect: NumeroInstruccion[] = useLargoPlazoStore(
@@ -157,12 +179,13 @@ export function VehiculoDePago() {
   )
 
 
+
   // const numeroMandato: NumeroMandato[] = 
 
 
   useEffect(() => {
     getNumeroFideicomiso();
-    getFideicomisos();
+    // getFideicomisos();
     getNumeroMandato();
     getNumeroInstruccion();
   }, []);
@@ -175,31 +198,62 @@ export function VehiculoDePago() {
       setNumeroMandatoSelect([]);
     }
     if (mecanismo !== "Instrucciones irrevocables") {
-      setNumeroMandatoSelect([]);
+      setNumeroInstruccionSelect([]);
+
     }
   }, [mecanismo])
 
-
+  const query = {
+    movil: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
+    tabletaMini: useMediaQuery("(min-width: 480px) and (max-width: 767px)"),
+    tabletaGrande: useMediaQuery("(min-width: 768px) and (max-width: 1139px)"),
+    monitorLaptop: useMediaQuery("(min-width: 1140px) and (max-width: 1399px)"),
+    MonitorEscritorio: useMediaQuery("(min-width: 1870px) "),
+  }
 
   return (
     <Grid
       container
       direction={"column"}
       justifyContent={"space-around"}
-      height={"32rem"}
-    //height={numeroFideicomisoSelect ? "40rem" : asignarFuente ? "68rem" : "68rem"}
+      //height={"32rem"}
+      //height={numeroFideicomisoSelect ? "40rem" : asignarFuente ? "68rem" : "68rem"}
+
+      height={
+        query.movil // (min-width: 0px) and (max-width: 479px)
+          ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+            ? "50rem"
+            : "10rem"
+          : query.tabletaMini // (min-width: 480px) and (max-width: 767px)
+            ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+              ? "40rem"
+              : "20rem"
+            : query.tabletaGrande //768px a 1139px
+              ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+                ? "36rem"
+                : "10rem"
+              : query.monitorLaptop //1140px a 1399px
+                ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+                  ? "38rem"
+                  : "10rem"
+                : query.MonitorEscritorio
+                  ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+                    ? "40rem"
+                    : "10rem"
+                  : (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
+                  ?"32rem"
+                  :"10rem"
+      }
     >
-      {/* <Grid>
-        <Divider sx={queries.bold_text}>MECANISMO O VEHÍCULO DE PAGO</Divider>
-      </Grid> */}
       <Grid
         container
         flexDirection={"column"}
         justifyContent={"space-between"}
+        width={"100%"}
       >
         {/* Cuerpo */}
-        <Grid display={"flex"} justifyContent={"space-evenly"}>
-          <Grid xs={3} sm={3} md={3} lg={3} xl={3}>
+        <Grid container width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
+          <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Mecanismo o vehículo de pago
             </InputLabel>
@@ -224,7 +278,7 @@ export function VehiculoDePago() {
 
           {mecanismo === "Fideicomiso"
             ?
-            <Grid xs={3} sm={3} md={3} lg={3} xl={3}>
+            <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>
                 Número del fideicomiso
               </InputLabel>
@@ -268,7 +322,7 @@ export function VehiculoDePago() {
 
             mecanismo === "Mandato"
               ?
-              <Grid xs={3} sm={3} md={3} lg={3} xl={3}>
+              <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
                 <InputLabel sx={queries.medium_text}>
                   Número de Mandato
                 </InputLabel>
@@ -310,7 +364,7 @@ export function VehiculoDePago() {
               : //Fin Condicional
               mecanismo === "Instrucciones irrevocables"
                 ?
-                <Grid xs={3} sm={3} md={3} lg={3} xl={3}>
+                <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
                   <InputLabel sx={queries.medium_text}>
                     Numero de Instrucciones irrevocables
                   </InputLabel>
@@ -374,7 +428,7 @@ export function VehiculoDePago() {
                 <Grid
                   xs={10}
                   sm={10}
-                  md={3.3}
+                  md={10}
                   lg={3}
                   xl={3}
                   container
@@ -420,13 +474,50 @@ export function VehiculoDePago() {
                   ></FormControlLabel> */}
                 </Grid>
 
-                <Grid width={"55%"}>
-                  <Paper>
+                <Grid sx={{
+                  height: "25rem",
+                  width: "85%",
+                  display: "flex",
+                  justifyContent: "center",
+                  "@media (min-width: 480px)": {
+                    height: "15rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 768px)": {
+                    height: "15rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    height: "15rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1199px)": {
+                    height: "15rem",
+                    width: "60%"
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    height: "14rem",
+                    width: "60%"
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    height: "18rem",
+                    width: "60%"
+                  },
+                }}>
+                  <Paper sx={{
+                    height: "100%",
+                    width: "100%",
+                  }}>
                     <TableContainer
                       sx={{
                         width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
+                        height: "100%",
+
                       }}
                     >
                       <Table>
@@ -444,13 +535,13 @@ export function VehiculoDePago() {
                             ? JSON.parse(row.Fideicomisario).map(
                               (row: any, index: number) => (
                                 <StyledTableRow>
-                                  <StyledTableCell>
+                                  <StyledTableCell align="center">
                                     <Typography>
                                       {row.fideicomisario.Descripcion}
                                     </Typography>
                                   </StyledTableCell>
 
-                                  <StyledTableCell>
+                                  <StyledTableCell align="center">
                                     <Typography>
                                       {row.ordenFideicomisario.Descripcion}
                                     </Typography>
@@ -473,7 +564,7 @@ export function VehiculoDePago() {
         numeroMandatoSelect.map((row: any, index: number) => {
 
           return (
-            <>
+            <Grid width={"100%"}>
               <Grid>
                 <Divider sx={queries.bold_text}>Mandatos</Divider>
               </Grid>
@@ -485,6 +576,7 @@ export function VehiculoDePago() {
                 width={"100%"}
               >
                 <Grid
+                  width={"100%"}
                   container
                   display={"flex"}
                   justifyContent={"space-evenly"}
@@ -521,37 +613,46 @@ export function VehiculoDePago() {
                     />
                   </Grid>
 
-
-
-                  {/* <InputLabel>Fiduciario</InputLabel>
-                  <TextField
-                    value={row.DescripcionFiudiciario}
-                    fullWidth
-                    variant="standard"
-                    sx={queries.medium_text}
-                  /> */}
-                  {/* <FormControlLabel
-                    value={"start"}
-                    label={"Asignar fuente"}
-                    labelPlacement="start"
-                    control={
-                      <Checkbox
-                        checked={asignarFuente}
-                        onClick={() => setAsignarFuente(!asignarFuente)}
-                      />
-                    }
-                  ></FormControlLabel> */}
                 </Grid>
 
-                <Grid width={"85%"} height={"15rem"} mt={2}>
-                  <Paper sx={{height:"100%",
-                        width: "100%",}}>
+                <Grid width={"100%"} mt={2} sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  height: "25rem",
+                  width: "85%",
+                  "@media (min-width: 480px)": {
+                    height: "20rem",
+                    width: "85%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+                }}>
+                  <Paper sx={{
+                    height: "100%",
+                    width: "100%",
+                  }}>
                     <TableContainer
                       sx={{
-                        height:"100%",
+                        height: "100%",
                         width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
                         overflow: "auto",
                         "&::-webkit-scrollbar": {
                           width: ".5vw",
@@ -580,7 +681,7 @@ export function VehiculoDePago() {
                           {JSON.parse(row.TipoMovimiento).lengt !== 0
                             ? JSON.parse(row.TipoMovimiento).map(
                               (row: any, index: number) => (
-                        
+
                                 <StyledTableRow>
                                   <StyledTableCell align="center">
                                     <Typography>
@@ -606,7 +707,208 @@ export function VehiculoDePago() {
                                     </Typography>
                                   </StyledTableCell>
 
-                                 </StyledTableRow>
+                                </StyledTableRow>
+
+                              ))
+                            : null}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Grid>
+          )
+        })}
+
+      {mecanismo === "Instrucciones irrevocables" && numeroInstruccionSelect &&
+        numeroInstruccionSelect.map((row: any, index: number) => {
+
+          return (
+            <>
+              <Grid>
+                <Divider sx={queries.bold_text}>Instrucciones Irrevocables</Divider>
+              </Grid>
+
+              <Grid
+                container
+                display={"flex"}
+                justifyContent={"space-evenly"}
+                width={"100%"}
+              >
+                <Grid
+                  container
+                  display={"flex"}
+                  justifyContent={"space-evenly"}
+                >
+                  {/* <Grid xs={10}
+                    sm={10}
+                    md={3.3}
+                    lg={3}
+                    xl={3}
+                  >
+                    <InputLabel>Numero de cuenta</InputLabel>
+                    <TextField
+                       value={row.NumeroCuenta}
+                      fullWidth
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  </Grid> */}
+
+                  <Grid xs={10}
+                    sm={10}
+                    md={3.3}
+                    lg={3}
+                    xl={3}
+                  >
+                    <InputLabel>Banco</InputLabel>
+                    <TextField
+                      value={row.DescripcionBanco}
+                      fullWidth
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={10}
+                    sm={10}
+                    md={10}
+                    lg={10}
+                    xl={3}
+                  >
+                    <InputLabel>CLABE</InputLabel>
+                    <TextField
+                      value={(row.CLABE)}
+
+                      fullWidth
+                      variant="standard"
+                      sx={queries.medium_text}
+                    />
+                  </Grid>
+
+
+
+                  {/* <InputLabel>Fiduciario</InputLabel>
+                  <TextField
+                    value={row.DescripcionFiudiciario}
+                    fullWidth
+                    variant="standard"
+                    sx={queries.medium_text}
+                  /> */}
+                  {/* <FormControlLabel
+                    value={"start"}
+                    label={"Asignar fuente"}
+                    labelPlacement="start"
+                    control={
+                      <Checkbox
+                        checked={asignarFuente}
+                        onClick={() => setAsignarFuente(!asignarFuente)}
+                      />
+                    }
+                  ></FormControlLabel> */}
+                </Grid>
+
+                <Grid width={"100%"} mt={2} sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  height: "25rem",
+                  width: "85%",
+                  "@media (min-width: 480px)": {
+                    height: "20rem",
+                    width: "85%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    height: "20rem",
+                    width: "85%"
+                  },
+                }}>
+                  <Paper sx={{
+                    height: "100%",
+                    width: "100%",
+                  }}>
+                    <TableContainer
+                      sx={{
+                        height: "100%",
+                        width: "100%",
+                        overflow: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: ".5vw",
+                          height: ".5vh",
+                          mt: 1,
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#AF8C55",
+                          outline: "1px solid slategrey",
+                          borderRadius: 1,
+                        },
+                      }}
+                    >
+                      <Table stickyHeader>
+                        <TableHead>
+                          <TableRow>
+                            {headInstrucciones.map((head, index) => (
+                              <StyledTableCell align="center" key={index}>
+                                {head.label}
+                              </StyledTableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          {JSON.parse(row.TipoMovimiento).lengt !== 0
+                            ? JSON.parse(row.TipoMovimiento).map(
+                              (row: any, index: number) => (
+
+                                <StyledTableRow>
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.altaDeudor}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.tipoEntePublico}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.entidadFederativa}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.tipoFuente}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                  <StyledTableCell align="center">
+                                    <Typography>
+                                      {row.fondoIngreso}
+                                    </Typography>
+                                  </StyledTableCell>
+
+                                </StyledTableRow>
 
                               ))
                             : null}
@@ -617,14 +919,6 @@ export function VehiculoDePago() {
                 </Grid>
               </Grid>
             </>
-          )
-        })}
-
-      {mecanismo === "Instrucciones irrevocables" && numeroMandatoSelect &&
-        numeroMandatoSelect.map((row: any, index: number) => {
-
-          return (
-            <></>
           )
 
         })}

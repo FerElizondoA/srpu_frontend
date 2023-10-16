@@ -31,19 +31,24 @@ export const queriesSolicitud = {
 
   buscador_solicitudes: {
     overflow: "auto",
+    height: 450,
 
-    "@media (min-width: 513px)": {
-      height: 450,
-    },
-    "@media (min-width: 600px)": {
-      height: 450,
-    },
-    "@media (min-width: 900px)": {
+    "@media (min-width: 480px)": {
       height: 480,
     },
-    "@media (min-width: 1485px)": {
+
+    "@media (min-width: 768px)": {
+      height: 480,
+    },
+
+    "@media (min-width: 1140px)": {
+      height: 480,
+    },
+
+    "@media (min-width: 1400px)": {
       height: 550,
     },
+
     "@media (min-width: 1870px)": {
       height: 770,
     },
@@ -68,7 +73,7 @@ export const queriesSolicitud = {
 
   boxContenedorBuscador: {
     width: "100%",
-    height: "13vh",
+    height: "18vh",
     flexDirection: "column",
     justifyContent: "space-evenly",
     display: "flex",
@@ -93,15 +98,33 @@ export const queriesSolicitud = {
 
   ///// Estilos Formulario
   boxContenidoFormulario: {
-    flexDirection: "column",
-    height: "35rem",
-    display: "flex",
+    height: "50rem",
     width: "100%",
     justifyContent: "space-evenly",
+    display: "flex",
+    flexDirection: "column",
+  
+
+    "@media (min-width: 480px)": {
+      height: "50rem",
+    },
+
+    "@media (min-width: 768px)": {
+      height: "38rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      height: "38rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      height: "38rem",
+    },
 
     "@media (min-width: 1870px)": {
-      height: "42rem",
+      height: "48rem",
     },
+
   },
 
   boxApartadosFormulario: {
