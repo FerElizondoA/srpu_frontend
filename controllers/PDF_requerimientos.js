@@ -115,7 +115,7 @@ module.exports = {
       .replaceAll("{{comentarios}}", coments);
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "false",
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
