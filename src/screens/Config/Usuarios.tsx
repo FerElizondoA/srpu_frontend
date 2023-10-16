@@ -14,6 +14,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -147,6 +148,11 @@ export const Usuarios = () => {
     (state: any) => state.changeIdUsuarioModificado
   );
 
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 768px)"),
+  };
+
   return (
     <Grid
       container
@@ -188,21 +194,54 @@ export const Usuarios = () => {
       </Grid>
 
       {
-        <Grid item width={"100%"} xs={12} lg={12} sm={12}>
-          <Grid item lg={12} display="flex" justifyContent="flex-end">
+        <Grid container width={"100%"} mb={2}  >
+          <Grid container display="flex" width={"100%"} mb={2}>
             <Grid
               item
-              xs={8}
-              lg={8}
-              sm={8}
-              sx={{ display: "flex", justifyContent: "center" }}
+              height={"3.2rem"}
+              sx={{
+                display: "flex", justifyContent: "flex-end",
+                width: "60%",
+                "@media (min-width: 480px)": {
+                  width: "65%",
+                },
+
+                "@media (min-width: 768px)": {
+                  width: "55%",
+                },
+
+                "@media (min-width: 1140px)": {
+                  width: "65%",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "75%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  width: "75%",
+                },
+              }}
             >
               <Paper
                 component="form"
                 sx={{
                   display: "flex",
-                  //alignItems: "center",
-                  width: "80%",
+                  alignItems: "center",
+                  width: "90%",
+                  "@media (min-width: 480px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    width: "70%",
+                  },
+
+
                 }}
               >
                 <InputBase
@@ -236,22 +275,69 @@ export const Usuarios = () => {
             </Grid>
 
             <Grid
+              container
               display={"flex"}
               justifyContent={"space-evenly"}
-              width={"25%"}
+              alignItems={"center"}
+              sx={{
+                width: "40%",
+                "@media (min-width: 480px)": {
+                  width: "35%",
+                },
+
+                "@media (min-width: 768px)": {
+                  width: "45%",
+                },
+
+                "@media (min-width: 1140px)": {
+                  width: "35%",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "25%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  width: "25%",
+                },
+              }}
             >
               <Grid
                 item
-                xs={2}
-                lg={6}
-                sm={2}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                width={"50%"}
               >
                 <Button
                   color="info"
                   variant="contained"
-                  sx={queries.buttonContinuar}
-                  endIcon={<FolderSharedRoundedIcon fontSize="large" />}
+                  sx={{
+                    backgroundColor: "#15212f",
+                    color: "white",
+                    "&&:hover": {
+                      backgroundColor: "rgba(47, 47, 47, 0.4)",
+                      color: "#000",
+                    },
+                    //fontSize: "90%",
+                    borderRadius: "0.8vh",
+                    textTransform: "capitalize",
+                    fontSize: ".7rem",
+                    width: "2rem",
+                    "@media (min-width: 480px)": {
+                      fontSize: ".7rem",
+
+                    },
+
+                    "@media (min-width: 768px)": {
+                      fontSize: "80%",
+                      width: "10rem",
+                    }
+                  }}
+                  endIcon={query.isMobile
+                    ? null
+                    : <FolderSharedRoundedIcon fontSize="large" />
+                  }
                   onClick={() => {
                     navigate("../solicitudes-usuarios");
                   }}
@@ -261,16 +347,41 @@ export const Usuarios = () => {
               </Grid>
               <Grid
                 item
-                xs={2}
-                lg={6}
-                sm={2}
-                sx={{ display: "flex", justifyContent: "center" }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                width={"50%"}
+              //sx={{ display: "flex", justifyContent: "center" }}
               >
                 <Button
                   variant="contained"
                   size="medium"
-                  endIcon={<PersonAddAlt1Icon />}
-                  sx={queries.buttonContinuar}
+                  endIcon={query.isMobile
+                    ? null
+                    : <PersonAddAlt1Icon />
+                  }
+                  sx={{
+                    backgroundColor: "#15212f",
+                    color: "white",
+                    "&&:hover": {
+                      backgroundColor: "rgba(47, 47, 47, 0.4)",
+                      color: "#000",
+                    },
+                    //fontSize: "90%",
+                    borderRadius: "0.8vh",
+                    textTransform: "capitalize",
+                    fontSize: ".7rem",
+                    width: "2rem",
+                    "@media (min-width: 480px)": {
+                      fontSize: "70%",
+                      width: "3rem",
+                    },
+
+                    "@media (min-width: 768px)": {
+                      fontSize: "80%",
+                      width: "10rem",
+                    }
+                  }}
                   onClick={() => {
                     changeIdUsuarioModificado("");
                     navigate("../Iframe");
@@ -287,11 +398,12 @@ export const Usuarios = () => {
               sx={{
                 maxHeight: "100%",
                 "&::-webkit-scrollbar": {
-                  width: ".5vw",
+                  width: ".4vw",
+                  height: ".5vh",
                   mt: 1,
                 },
                 "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "rgba(0,0,0,5)",
+                  backgroundColor: "#AF8C55",
                   outline: "1px solid slategrey",
                   borderRadius: 1,
                 },
@@ -321,7 +433,6 @@ export const Usuarios = () => {
                             onClick={() => {
                               changeIdUsuarioModificado(row.Id);
                               navigate(`../Iframe`);
-                       
                             }}
                           >
                             <Edit fontSize="inherit" />

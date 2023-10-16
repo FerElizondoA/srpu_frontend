@@ -184,8 +184,8 @@ export function DatosGeneralesIntrucciones() {
                 );
               }}
               value={{
-                Id: banco.Id || "",
-                Descripcion: banco.Descripcion || "",
+                Id: banco?.Id || "",
+                Descripcion: banco?.Descripcion || "",
               }}
               onChange={(event, text) =>
                 setGeneralInstruccion({
@@ -246,8 +246,8 @@ export function DatosGeneralesIntrucciones() {
             xl={4}
             height={{ xs: "4rem", sm: "0rem" }}
           >
- 
-            <InputLabel sx={queries.medium_text}>Municipio</InputLabel>
+
+            <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
             <Autocomplete
               clearText="Borrar"
               noOptionsText="Sin opciones"
@@ -255,10 +255,7 @@ export function DatosGeneralesIntrucciones() {
               openText="Abrir"
               fullWidth
               options={catalogoOrganismos}
-              value={{
-                Id: municipio.Id || "",
-                Descripcion: municipio.Descripcion || "",
-              }}
+              value={municipio}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (

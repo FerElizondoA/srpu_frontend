@@ -252,12 +252,12 @@ export const queries = {
   },
 
   tablaUsuarios: {
-    height: 560,
+    height: 545,
     width: "100%",
     maxHeight: "50%",
     overflow: "auto",
     "@media (min-width: 1870px)": {
-      height: 775,
+      height: 760,
     },
   },
 
@@ -765,17 +765,19 @@ export const queries = {
     height: "25rem",
     display: "flex",
     justifyContent: "center",
-
+    width: "95%",
     "@media (min-width: 480px)": {
-      width: "80%",
+      width: "95%",
     },
 
     "@media (min-width: 768px)": {
-      width: "80%",
+      width: "100%",
+      height: "28rem",
     },
 
     "@media (min-width: 1140px)": {
       width: "100%",
+      height: "23rem",
     },
 
     "@media (min-width: 1400px)": {

@@ -85,9 +85,6 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
-  const getOrganismos: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
 
   const createInstruccion: Function = useInstruccionesStore(
     (state) => state.createInstruccion
@@ -129,7 +126,6 @@ export function AgregarInstruccionesIrrevocables({
     getInstitucionesInstrucciones();
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
-    getOrganismos();
   }, []);
 
   const modificaInstruccion: Function = useInstruccionesStore(
