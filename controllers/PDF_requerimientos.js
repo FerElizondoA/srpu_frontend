@@ -20,9 +20,9 @@ module.exports = {
       entePublicoObligado,
       institucionFinanciera,
       montoOriginalContratado,
+      comentarios,
       directorGeneral,
       cargoDirectorGeneral,
-      comentarios,
     } = req.body;
 
     const headerTemplate = fs.readFileSync(headerFolder, "utf8");
@@ -61,6 +61,26 @@ module.exports = {
       "controllers/stylessheet/images/escudo.png"
     );
 
+    const coments = `<table
+        id="data-table"
+        style="
+          border-collapse: collapse;
+          font-family: Arial;
+          font-size: 12px;
+          text-align: justify;
+          font-weight: 100;
+          letter-spacing: 1px;
+        "
+      >
+        <tbody>
+          ${Object.keys(JSON.parse(comentarios)).map((val) => {
+            return `<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">${val}</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle"> ${
+              JSON.parse(comentarios)[val]
+            }</td> </tr>`;
+          })}
+        </tbody>
+      </table>`;
+
     const footerImg = (logoLeon) => {
       const resLogoLeon = fs.readFileSync(logoLeon);
 
@@ -92,7 +112,7 @@ module.exports = {
       .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
       .replaceAll("{{directorGeneral}}", directorGeneral)
       .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
-      .replaceAll("{{comentarios}}", comentarios);
+      .replaceAll("{{comentarios}}", coments);
 
     const browser = await puppeteer.launch({ headless: "true" });
     const page = await browser.newPage();
@@ -105,8 +125,8 @@ module.exports = {
       headerTemplate: header,
       footerTemplate: footer,
       margin: {
-        top: "0.90in",
-        bottom: "0.90in",
+        top: "1in",
+        bottom: "1in",
         right: "0.50in",
         left: "0.50in",
       },

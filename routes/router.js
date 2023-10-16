@@ -1253,7 +1253,7 @@ router.get("/get-instruccion", (req, res, express) => {
 //#endregion
 
 //#region Mandatos
-router.get("/create-pdf-requerimientos", (req, res) => {
+router.post("/create-pdf-requerimientos", (req, res) => {
   createPdfRequerimientos(req, res);
 });
 
