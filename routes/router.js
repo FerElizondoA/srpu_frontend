@@ -268,6 +268,7 @@ const {
 const {
   createPdfRequerimientos,
   createPdfConstancia,
+  createPdfSolicitudCorto,
 } = require("../controllers/PdfSolicitudes.js");
 
 //#region Instituciones Financieras
@@ -1259,6 +1260,9 @@ router.get("/get-instruccion", (req, res, express) => {
 //#endregion
 
 //#region Mandatos
+router.post("/create-pdf-solicitud-corto", (req, res) => {
+  createPdfSolicitudCorto(req, res);
+});
 router.post("/create-pdf-requerimientos", (req, res) => {
   createPdfRequerimientos(req, res);
 });
