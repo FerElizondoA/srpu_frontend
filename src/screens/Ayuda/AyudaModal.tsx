@@ -1,8 +1,37 @@
-import { Autocomplete, Button, Grid, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { AppBar, Autocomplete, Button, CircularProgress, Dialog, Grid, IconButton, Slide, TextField, ThemeProvider, Toolbar, Tooltip, Typography, createTheme } from "@mui/material";
+import { forwardRef, useEffect, useState } from "react";
 import ModalForm from "./ModalForm";
 import { createAyuda, getMenus, saveFile } from "./ServicesAyuda";
+import Swal from "sweetalert2";
+import SliderProgress from "./SliderProgress";
+import { queries } from "../../queries";
+import { TransitionProps } from "@mui/material/transitions";
+import CloseIcon from "@mui/icons-material/Close";
 
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export interface ILista {
     Id: string;
@@ -19,9 +48,12 @@ export interface ILista {
   export const AyudasModal = ({
     TabValue,
     handleClose,
+    openState,
   }: {
     TabValue: string;
     handleClose: Function;
+    openState: boolean;
+
   }) => {
   
     const [menu, setMenu] = useState<ILista>({ Id: "", Label: "" });
@@ -55,7 +87,11 @@ export interface ILista {
   
         setNewVideo(file);
       } else {
-        //alertaError("¡No es un archivo valido!")
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          icon: "error",
+          title: "Error",
+        });
         
       }
     }
@@ -65,10 +101,163 @@ export interface ILista {
   
   
     return (
+      <Dialog fullScreen open={openState} TransitionComponent={Transition}>
+      {/* <ModalForm title="Administración de Ayudas" handleClose={handleClose}>   */}
+            {/* <SliderProgress open={slideropen} texto={"Cargando..."}></SliderProgress> */}
+            <AppBar sx={{ position: "relative" }}>
+        <Toolbar>
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                handleClose();
+                //reset();
+              }}
+              sx={{ color: "white" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Grid container>
+            <Grid item>
+              <Typography sx={queries.bold_text}>
+                Agregar {TabValue}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid item>
+              {TabValue == "Videos" && nombreArchivo !== '' ?(
+                <ThemeProvider theme={theme}>            
+                <Button
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  if (menu.Id !== "") {
+                    setslideropen(true)
+                    saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose);
+                  }
+                  else {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      icon: "error",
+                      title: "Seleccione un menú.",
+                    });
+                  }
+                }
+                }
+                >
+                <Typography
+                  sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
+                  }}
+                >
+                   Gaurdar {TabValue}
+                </Typography>
+              </Button>
+              </ThemeProvider>
+                ):("")
+            }
+
+            {TabValue == "Guias" && nombreArchivo !== '' ? (
+                <ThemeProvider theme={theme}>            
+                <Button
+                  sx={{ ...queries.buttonContinuar }} 
+                  onClick={() => {
+                    if (menu.Id !== "") {
+                      if (pregunta !== "") {
+                        setslideropen(true)
   
-      <ModalForm title="Administración de Ayudas" handleClose={handleClose}>
-        {/* <SliderProgress open={slideropen} texto={"Cargando..."}></SliderProgress> */}
+                        saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose)
+                      }
+                      else {
+                        Swal.fire({
+                          confirmButtonColor: "#15212f",
+                          icon: "error",
+                          title: "Escriba título de guía.",
+                        });
+                      }
+                    }
+                    else {
+                      Swal.fire({
+                        confirmButtonColor: "#15212f",
+                        icon: "error",
+                        title: "Seleccione un menú.",
+                      });
+                    }
+                  }
   
+                  }
+                >
+                  Guardar
+                </Button>
+                </ThemeProvider>
+            ) : (
+              ""
+            )}
+            {TabValue == "Preguntas" ? (
+                <ThemeProvider theme={theme}>            
+
+                <Button
+  
+                  //className="aceptar"
+                  sx={{ ...queries.buttonContinuar }} 
+                  onClick={() => {
+                    if (menu.Id !== "") {
+                      if (pregunta !== "") {
+                        if (respuesta !== "") {
+                          setslideropen(true)
+  
+                          let datos = {
+                            IdMenu: menu.Id,
+                            Pregunta: pregunta,
+                            Texto: respuesta,
+                            RutaGuia: "",
+                            RutaVideo: "",
+                            NombreArchivo: "",
+                            NombreArchivoServidor: "",
+                            IdUsuario: localStorage.getItem("IdUsuario") || ""
+                          }
+                          createAyuda(datos, handleClose)
+                        }
+                        else {
+                          Swal.fire({
+                            confirmButtonColor: "#15212f",
+                            icon: "error",
+                            title: "Escriba una respuesta.",
+                          });
+                        }
+                      }
+                      else {
+                        Swal.fire({
+                          confirmButtonColor: "#15212f",
+                          icon: "error",
+                          title: "Escriba una pregunta.",
+                        });
+                      }
+                    }
+                    else {
+                      Swal.fire({
+                        confirmButtonColor: "#15212f",
+                        icon: "error",
+                        title: "Seleccione un menú.",
+                      });
+                    }
+                  }
+                  }
+                >
+                  Guardar
+                </Button>
+              </ThemeProvider>
+            ) :null}
+              
+          </Grid>
+        </Toolbar>
+      </AppBar>
         <Grid
           container
           direction="row"
@@ -76,7 +265,7 @@ export interface ILista {
           alignItems="center"
         >
           <Grid item xs={12} md={6.5} lg={8.2}>
-            <Typography variant="h6">Menú</Typography>
+            <Typography variant="h6" sx={queries.medium_text}>Menú</Typography>
             <Autocomplete
               noOptionsText="No se encontraron opciones"
               clearText="Borrar"
@@ -90,22 +279,13 @@ export interface ILista {
               onChange={(event, newValue) => {
                 if (newValue != null) {
                   setMenu(newValue);
-                  // setErrores({
-                  //   ...errores,
-                  //   secretaria: {
-                  //     valid: false,
-                  //     text: "Ingresa secretaria valida",
-                  //   },
-                  // });
                 }
               }}
               renderInput={(params) => (
                 <TextField
                   key={params.id}
                   {...params}
-                  variant="outlined"
-                // error={errores.secretaria.valid}
-                />
+                  variant="outlined"                />
               )}
             />
           </Grid>
@@ -126,8 +306,8 @@ export interface ILista {
             {TabValue !== "Preguntas" ? (
   
               <Button
+                
                 variant="contained"
-  
                 className="aceptar"
                 //hidden
                 //disabled={modo == "Editar Nombre Video" || !TabValue}
@@ -148,127 +328,15 @@ export interface ILista {
             ) : (
               ""
             )}
-  
-            {TabValue == "Videos" && nombreArchivo !== '' ? (
-              <>
-                <Button
-  
-                  className="aceptar"
-                  onClick={() => {
-                    if (menu.Id !== "") {
-                      setslideropen(true)
-  
-                      saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose);
-  
-                    }
-                    else {
-                      //alertaError("Seleccione un menú")
-                    }
-                  }
-  
-                  }
-                >
-                  Guardar
-                </Button>
-              </>
-            ) : (
-              ""
-            )}
-  
-            {TabValue == "Guias" && nombreArchivo !== '' ? (
-              <>
-                <Button
-  
-                  className="aceptar"
-                  onClick={() => {
-                    if (menu.Id !== "") {
-                      if (pregunta !== "") {
-                        setslideropen(true)
-  
-                        saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose)
-                      }
-                      else {
-                        //alertaError("Escriba título de guía")
-                      }
-                    }
-                    else {
-                      //alertaError("Seleccione un menú")
-                    }
-                  }
-  
-                  }
-                >
-                  Guardar
-                </Button>
-              </>
-            ) : (
-              ""
-            )}
-  
-            {TabValue == "Preguntas" ? (
-              <>
-                <Button
-  
-                  className="aceptar"
-                  onClick={() => {
-                    if (menu.Id !== "") {
-                      if (pregunta !== "") {
-                        if (respuesta !== "") {
-                          setslideropen(true)
-  
-                          let datos = {
-                            IdMenu: menu.Id,
-                            Pregunta: pregunta,
-                            Texto: respuesta,
-                            RutaGuia: "",
-                            RutaVideo: "",
-                            NombreArchivo: "",
-                            NombreArchivoServidor: "",
-                            IdUsuario: localStorage.getItem("IdUsuario") || ""
-                          }
-                          createAyuda(datos, handleClose)
-                        }
-                        else {
-                          //alertaError("Escriba una respuesta")
-  
-                        }
-                      }
-                      else {
-                        //alertaError("Escriba una pregunta")
-                      }
-                    }
-                    else {
-                      //alertaError("Seleccione un menú")
-                    }
-                  }
-  
-                  }
-                >
-                  Guardar
-                </Button>
-              </>
-            ) :null}
           </Grid>
         </Grid>
   
         {TabValue == "Videos" || TabValue == "Guias" ? (
           <>
-            <Grid
-              container
-              item
-              spacing={1}
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ padding: "1%" }}
-            ></Grid>
+            
             <Grid container>
               <Grid>
-                <Typography variant="h6">Nombre del archivo: </Typography>
+                <Typography variant="h6" sx={queries.medium_text}>Nombre del archivo: </Typography>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -289,7 +357,7 @@ export interface ILista {
             {TabValue == "Guias" ? (
               <Grid container>
                 <Grid>
-                  <Typography variant="h6">
+                  <Typography variant="h6"sx={queries.medium_text}>
                     Pregunta / Titulo de guia:{" "}
                   </Typography>
                 </Grid>
@@ -317,22 +385,10 @@ export interface ILista {
   
         {TabValue == "Preguntas" ? (
           <>
-            <Grid
-              container
-              item
-              spacing={1}
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ padding: "1%" }}
-            ></Grid>
+            
             <Grid container>
               <Grid>
-                <Typography variant="h6">Pregunta</Typography>
+                <Typography variant="h6"sx={queries.medium_text}>Pregunta</Typography>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -351,7 +407,7 @@ export interface ILista {
   
             <Grid container>
               <Grid>
-                <Typography variant="h6">Respuesta</Typography>
+                <Typography variant="h6"sx={queries.medium_text}>Respuesta</Typography>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -397,7 +453,8 @@ export interface ILista {
   
         <Grid>
         </Grid>
-      </ModalForm>
+      {/* </ModalForm> */}
+      </Dialog>
     );
   };
   

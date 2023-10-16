@@ -138,8 +138,10 @@ const menu =
   //   localStorage.getItem("Menus") !== null
   //   ? JSON.parse(localStorage.getItem("Menus")!)
   //   : [];
+ 
 
-  let idMenu = menu.find((menu: MenuObject) => { if (menu.Menu === "menuActual") { return menu } })
+  
+  let idMenu = localStorage.getItem("IdMenuACtual")||""
   const [arrayAyudas, setArrayAyudas] = useState<any[]>([])
   const [option, setOption] = useState("Videos");
   const [openVAyudas, setOpenVAyudas] = useState(false);
@@ -516,7 +518,7 @@ const menu =
     updatecondicionFinancieraTable([]);
     cleanComentario();
   };
-
+  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -571,14 +573,14 @@ const menu =
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")}Ver Tutoriales </MenuItem>}
-                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")}Ver Guías </MenuItem>}
-                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, idMenu?.Id, "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")}Preguntas </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")}Ver Tutoriales </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")}Ver Guías </MenuItem>}
+                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, "1", "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")}Preguntas </MenuItem>}
 
               </Menu>
               {/* </Tooltip> */}
             </Grid>
-            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} /> : null}
+            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} openState /> : null}
 
             <Grid>
               <Badge badgeContent={cantNoti} color="info">
@@ -683,6 +685,7 @@ const menu =
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
+                                localStorage.setItem("IdMenuActual",v.Id)
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {
@@ -718,6 +721,7 @@ const menu =
                                     <ListItemButton
                                       onClick={() => {
                                         if (v.Path !== "#") {
+                                          localStorage.setItem("IdMenuActual",v.Id)
                                           navigate(v.Path);
                                         } else {
                                           if (
@@ -758,6 +762,7 @@ const menu =
                                               <ListItemButton
                                                 onClick={() => {
                                                   if (v.Path !== "#") {
+                                                    localStorage.setItem("IdMenuActual",v.Id)
                                                     navigate(v.Path);
                                                     window.location.reload();
                                                   } else {
@@ -826,6 +831,7 @@ const menu =
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
+                                localStorage.setItem("IdMenuActual",v.Id)
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {

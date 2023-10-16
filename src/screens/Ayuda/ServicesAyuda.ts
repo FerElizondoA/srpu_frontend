@@ -1,3 +1,4 @@
+import { HandymanOutlined } from "@mui/icons-material";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -49,6 +50,7 @@ export const saveFile = (
             );
           } else {
             Swal.fire({
+              confirmButtonColor: "#15212f",
                 icon: "error",
                 title: "Error al cargar archivo.",
               });
@@ -70,6 +72,7 @@ export const saveFile = (
             );
           } else {
             Swal.fire({
+              confirmButtonColor: "#15212f",
                 icon: "error",
                 title: "Error al cargar archivo.",
               });
@@ -78,6 +81,7 @@ export const saveFile = (
       })
       .catch((e) => {
         Swal.fire({
+          confirmButtonColor: "#15212f",
             icon: "error",
             //title: "Error al cargar archivo.",
           });
@@ -103,8 +107,9 @@ export const saveFile = (
       setState(data.RESPONSE.FILE);
     })
     .catch((r) => {Swal.fire({
+      confirmButtonColor: "#15212f",
         icon: "error",
-        title: "No se pudo editar la autorizacion.",
+        title: "Ocurrio un problema al obtener el archivo.",
       });});
     
   };
@@ -128,6 +133,7 @@ export const saveFile = (
       deleteAyuda(Id)
     })
     .catch((r) => {Swal.fire({
+      confirmButtonColor: "#15212f",
         icon: "error",
         title: "Ocurrio un problema al eliminar el archivo.",
       });});
@@ -145,12 +151,15 @@ export const saveFile = (
       })
       .then((r) => {
         console.log(r.data.data);
+        handleClose();
         Swal.fire({
+          confirmButtonColor: "#15212f",
             icon: "success",
             title: "Éxito",
             //text: "El fideicomiso se ha modificado exitosamente",
           });
-      }).catch((r)=>{console.log(r);});
+      }
+      ).catch((r)=>{console.log(r);});
   };
   
   export const getMenus = (setState: Function) => {
@@ -175,7 +184,7 @@ export const saveFile = (
   ) => {
     axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/ayuda", {
-        params: { IdMenu: IdMenu, Opcion: Opcion },
+        params: { IdMenu: IdMenu==="0"?"0":localStorage.getItem("IdMenuActual"), Opcion: Opcion },
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("jwtToken") || "",
@@ -198,15 +207,18 @@ export const saveFile = (
       },
     })
       .then((r) => {
+
         Swal.fire({
+          confirmButtonColor: "#15212f",
             icon: "success",
             title: "Éxito",
-            text: "El fideicomiso se ha modificado exitosamente",
+            text: "El archivo se ha eliminado exitosamente",
           });
       })
       .catch(() => {
         //alertaError();
         Swal.fire({
+          confirmButtonColor: "#15212f",
             icon: "error",
             //title: "No se pudo editar la autorizacion.",
           });

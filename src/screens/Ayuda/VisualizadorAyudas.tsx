@@ -1,11 +1,22 @@
-import { Box, Grid, IconButton, Tooltip } from "@mui/material";
+import { AppBar, Box, Dialog, Grid, IconButton, Slide, Toolbar, Tooltip } from "@mui/material";
 import ModalForm from "./ModalForm";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { GridColDef } from "@mui/x-data-grid";
 import PreviewIcon from '@mui/icons-material/Preview';
 import MUIXDataGrid from "../../components/MUIXDataGrid";
 import { MostrarArchivos } from "./MostrarArchivos";
+import { TransitionProps } from "@mui/material/transitions";
+import CloseIcon from "@mui/icons-material/Close";
 
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export interface IInfoFile {
     nombre: string;
@@ -15,10 +26,14 @@ export interface IInfoFile {
     handleClose,
     arrayAyudas,
     valueTab,
+    openState,
+
   }: {
     handleClose: Function
     arrayAyudas: any[]
     valueTab: string
+    openState: boolean;
+
   }) => {
   
     const [open, setOpen] = useState(false);
@@ -122,8 +137,24 @@ export interface IInfoFile {
     };
   
     return (
-      (<ModalForm
-        title="Visualizar" handleClose={() => { handleClose() }}>
+      (
+        <Dialog fullScreen open={openState} TransitionComponent={Transition}>
+          
+          <Toolbar>
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                handleClose();
+                //reset();
+              }}
+              sx={{ color: "white" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+      {/* <ModalForm
+        title="Visualizar" handleClose={() => { handleClose() }}> */}
         <Grid item sx={{ width: "100vw", height: "90vh", justifyContent:"center",alignItems:"center",displa:"flex" }}>
           {/* cambio a tabla preguntas */}
           {valueTab == "Preguntas" ? (
@@ -147,6 +178,9 @@ export interface IInfoFile {
         />
           : null}
   
-      </ModalForm>)
+      {/* </ModalForm> */}
+      </Toolbar>
+      </Dialog>
+      )
     )
   }

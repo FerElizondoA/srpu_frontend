@@ -1,4 +1,4 @@
-import { Box, Button, Grid, IconButton, Tab, Tabs, Tooltip } from "@mui/material";
+import { Box, Button, Grid, IconButton, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { queries } from "../../queries";
@@ -17,9 +17,9 @@ export interface IAyudaVideo {
     NombreArchivo: string,
     RutaVideo: string,
     UltimaActualizacion: string
-  }
-  
-  export interface IAyudaGuia {
+}
+
+export interface IAyudaGuia {
     Id: string,
     IdMenu: string,
     Menu: string,
@@ -27,16 +27,16 @@ export interface IAyudaVideo {
     RutaGuia: string,
     Pregunta: string,
     UltimaActualizacion: string
-  }
-  
-  export interface IAyudaPregunta {
+}
+
+export interface IAyudaPregunta {
     Id: string,
     IdMenu: string,
     Menu: string,
     Respuesta: string,
     Pregunta: string,
     UltimaActualizacion: string
-  }
+}
 
 const Ayuda = () => {
     const [valueTab, setValueTab] = useState<string>("Guias");
@@ -58,24 +58,26 @@ const Ayuda = () => {
             confirmButtonText: "Eliminar",
             confirmButtonColor: "#15212f",
         }).then((result) => {
-              if (result.isConfirmed) {
-                console.log("valor v",v);
+            if (result.isConfirmed) {
+                console.log("valor v", v);
 
-                deleteFile(v?.row?.RutaGuia,v?.row?.NombreArchivoServidor,v?.row?.Id)
-                  .then((response)=>{
-                    Swal.fire({
-                        icon: "success",
-                        title: "Éxito",
-                        text: "El fideicomiso se ha modificado exitosamente",
-                      });
-                          })
-                  .catch((error)=>{
-                    Swal.fire({
-                        icon: "error",
-                        //title: "Error al cargar archivo.",
-                      });
-                  });
-              }
+                deleteFile(v?.row?.RutaGuia, v?.row?.NombreArchivoServidor, v?.row?.Id)
+                    .then((response) => {
+                        Swal.fire({
+                            confirmButtonColor: "#15212f",
+                            icon: "success",
+                            title: "Éxito",
+                            text: "El archivo se ha eliminado exitosamente",
+                        });
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            confirmButtonColor: "#15212f",
+                            icon: "error",
+                            //title: "Error al cargar archivo.",
+                        });
+                    });
+            }
         });
     }
 
@@ -196,15 +198,15 @@ const Ayuda = () => {
     };
 
     const obtenerDatos = () => {
-        if(valueTab==="Guias"){
-          getAyuda(setGuias, "0", "Guias")
-          }
-        if(valueTab==="Videos"){
-          getAyuda(setVideos, "0", "Videos")
-          }
-        if(valueTab==="Preguntas"){
-          getAyuda(setPreguntas, "0", "Preguntas")
-          }
+        if (valueTab === "Guias") {
+            getAyuda(setGuias, "0", "Guias")
+        }
+        if (valueTab === "Videos") {
+            getAyuda(setVideos, "0", "Videos")
+        }
+        if (valueTab === "Preguntas") {
+            getAyuda(setPreguntas, "0", "Preguntas")
+        }
     }
 
     const handleOpen = () => {
@@ -227,84 +229,97 @@ const Ayuda = () => {
         <>
             <LateralMenu />
             <Grid
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                height={60}
+            >
+                <Typography
+                    sx={{
+                        fontSize: "2.3ch",
+                        fontFamily: "MontserratBold",
+                        color: "#AF8C55",
+                        "@media (max-width: 600px)": {
+                            // XS (extra small) screen
+                            fontSize: "1rem",
+                        },
+                        "@media (min-width: 601px) and (max-width: 900px)": {
+                            // SM (small) screen
+                            fontSize: "1.5ch",
+                        },
+                    }}
+                >
+                    Administración de Ayudas
+                </Typography>
+
+            </Grid>
+            <Grid
 
                 container
                 item
                 xs={12}
                 justifyContent="center"
-                paddingTop={3}
+               
                 sx={{ maxHeight: "90vh", maxWidth: "100vw" }}
             >
-                <Tabs
-                    value={tabIndex}
-                    onChange={handleChange}
-                    //centered={query.isScrollable ? false : true}
-                    //variant={query.isScrollable ? "scrollable" : "standard"}
-                    scrollButtons
-                    allowScrollButtonsMobile
-                >
-                    <Tab
-                        label="Guías"
-                        sx={queries.bold_text}
-                        value="Guias"
-                    ></Tab>
-                    <Tab
-                        label="Videos"
-                        sx={queries.bold_text}
-                        value="Videos"
-                    ></Tab>
-                    <Tab
-                        label="Preguntas"
-                        sx={queries.bold_text}
-                        value="Preguntas"
-                    ></Tab>
-                    <Button sx={{ ...queries.buttonContinuar }} 
-                    onClick={() => {
-                        setOpen(true);
-                        handleOpen()
-                        //agregar = { true}
-                    }}
-                    >
-                        Agregar
-                    </Button>
-                    {open ? (
-                        <AyudasModal
-                            TabValue={valueTab}
-                            handleClose={handleClose}
-                        />
-                    ) : null}
-                </Tabs>
+                <Grid container item sx={{ height: "8vh", width: "100vw", display: "flex", justifyContent: "flex-end" }}>
+                    <Grid container item xl={10} sx={{ height: "100%", display: "flex", justifyContent: "center" }}>
+                        <Tabs
+                            value={tabIndex}
+                            onChange={handleChange}
+                            //centered={query.isScrollable ? false : true}
+                            //variant={query.isScrollable ? "scrollable" : "standard"}
+                            scrollButtons
+                            allowScrollButtonsMobile
+                        >
+                            <Tab
+                                label="Guías"
+                                sx={queries.bold_text}
+                                value="Guias"
+                            ></Tab>
+                            <Tab
+                                label="Videos"
+                                sx={queries.bold_text}
+                                value="Videos"
+                            ></Tab>
+                            <Tab
+                                label="Preguntas"
+                                sx={queries.bold_text}
+                                value="Preguntas"
+                            ></Tab>
 
 
-                {/* {tabIndex === 0 && <DisposicionPagosCapital />}
+                            {open ? (
+                                <AyudasModal
+                                    TabValue={valueTab}
+                                    handleClose={handleClose}
+                                    openState={open}
+                                />
+                            ) : null}
 
-            {tabIndex === 1 && <ComisionesTasaEfectiva />} */}
-
-                {/* <TabContext value={String(valueTab)}>
-            <Grid container sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-              <Grid item xl={8} xs={10} lg={8} md={8} sm={10} sx={{ display: "flex", justifyContent: "space-evenly" }}>
-                <TabList onChange={handleChange} >
-                  <Tab label="Guías" value="Guias" sx={{ fontSize: [30, 30, 30, 30, 30], }} style={{ textTransform: 'none' }} />
-                  <Tab label="Videos" value="Videos" sx={{ fontSize: [30, 30, 30, 30, 30], }} style={{ textTransform: 'none' }} />
-                  <Tab label="Preguntas" value="Preguntas" sx={{ fontSize: [30, 30, 30, 30, 30], }} style={{ textTransform: 'none' }} />
-                </TabList> */}
-
-                {/* {open ? (
-                  <AyudasModal
-                    TabValue={valueTab}
-                    handleClose={handleClose}
-                  />
-                ) :null} */}
-                {/* </Grid>
-              <Grid item xl={2} xs={1.5} lg={2} md={2} sm={1.5} sx={{ display: "flex", justifyContent: "space-evenly" }}> */}
-                {/* <Button sx={{...queries .buttonContinuar}} handleOpen={handleOpen} agregar={true} /> */}
-                {/* </Grid>
-            </Grid>
-          </TabContext>
-   */}
+                        </Tabs>
+                    </Grid>
+                    <Grid container item xl={1} sx={{ height: "100%", display: "flex", justifyContent: "center" }}>
+                        <Button sx={{ ...queries.buttonContinuar,height:"70%" }}
+                            onClick={() => {
+                                setOpen(true);
+                                handleOpen()
+                                //agregar = { true}
+                            }}
+                        >
+                            Agregar
+                        </Button>
+                    </Grid>
+                </Grid>
 
 
-                <Grid item sx={{ width: "100vw", height: "77vh" }}>
+
+
+
+
+
+
+                <Grid item sx={{ width: "100vw", height: "72vh" }}>
                     {/* <MUIXDataGrid  id={(row: any) => row.Id} columns={columnsPreguntas} rows={[]}/> */}
 
                     {/* cambio a tabla preguntas */}
