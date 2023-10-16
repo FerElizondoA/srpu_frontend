@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import Swal from "sweetalert2";
 import { useInstruccionesStore } from "./main";
+import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
 
 export interface GeneralIntrucciones {
   numeroCuenta: string;
@@ -34,7 +35,7 @@ export interface InstruccionesIrrevocablesSlice {
   tipoMovimientoInstrucciones: TipoMovimientoInstrucciones;
 
   tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
-  tablaInstrucciones: Array<any>;
+  tablaInstrucciones: IDatosInstrucciones[];
 
   changeIdInstruccion: (Id: string) => void;
 
@@ -153,7 +154,7 @@ export const createInstruccionesIrrevocables: StateCreator<
           ),
           //Municipio: state.generalInstrucciones.municipio,
           MecanismoPago: "Instrucciones Irrevocables",
-          EntePublico: state.generalInstrucciones.municipio.Descripcion,
+          EntePublico: state.generalInstrucciones.municipio.Id,
           CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
@@ -211,7 +212,7 @@ export const createInstruccionesIrrevocables: StateCreator<
           ),
           //Municipio: state.generalInstrucciones.municipio,
           MecanismoPago: state.generalInstrucciones.mecanismo,
-          EntePublico: state.generalInstrucciones.municipio,
+          EntePublico: state.generalInstrucciones.municipio.Id,
           //EntePublico: localStorage.getItem("EntePublicoObligado"),
           CreadoPor: localStorage.getItem("IdUsuario"),
         },

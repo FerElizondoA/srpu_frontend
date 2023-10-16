@@ -38,11 +38,15 @@ export interface IDatosInstrucciones {
   Id: string,
   NumeroCuenta: string,
   CLABE: string,
-  IdBanco: string,
-  DescripcionBanco: string, //Revisar nombre
+  IdBanco: string, //
+  DescripcionBanco: string, //
   MecanismoPago: string,
   TipoMovimiento: string,
-  EntePublico: string, //REVISAR NOMBRE
+
+  IdEntePublico: string, //
+  DescripcionEntePublico: string,//
+  
+  //EntePublico: string, //REVISAR NOMBRE
   FechaCreacion: string,
   CreadoPor: string,
 }
@@ -89,7 +93,7 @@ const heads: Head[] = [
   //   label: "Banco",
   // },
   {
-    label: "Municipio",
+    label: "Municipio u Organismo",
   },
   {
     label: "Acciones",
@@ -178,7 +182,7 @@ export function InstruccionesIrrevocables() {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
 
-        elemento.EntePublico.toString()
+        elemento.DescripcionEntePublico.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) 
       ) {
@@ -332,7 +336,7 @@ export function InstruccionesIrrevocables() {
           },
 
           "@media (min-width: 1400px)": {
-            height: "32rem",
+            height: "34rem",
           },
 
           "@media (min-width: 1870px)": {
@@ -388,7 +392,7 @@ export function InstruccionesIrrevocables() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.EntePublico}
+                        {row.DescripcionEntePublico}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -402,16 +406,18 @@ export function InstruccionesIrrevocables() {
                               setInstruccionSelect([row]);
 
                               setGeneralInstruccion({
-                                //numeroCuenta: row.NumeroCuenta,
+                                numeroCuenta: row.NumeroCuenta,
                                 cuentaCLABE: row.CLABE,
-                                // banco: {
-                                //   Id: row.Banco,
-                                //   Descripcion: row.Banco.Descripcion,
-                                // },
-                                 mecanismo: row.mecanismo,
-                                //  municipio: row.municipio
+                                banco: {
+                                  Id: row.IdBanco,
+                                  Descripcion: row.DescripcionBanco
+                                },
+                                mecanismo: "Instrucciones Irrevocables",
+                                municipio: {
+                                  Id: row.IdEntePublico,
+                                  Descripcion: row.DescripcionEntePublico
+                                },
                               });
-
                               editarInstruccion(JSON.parse(row.TipoMovimiento));
 
                               setOpenAgregarInstruccion(!openAgregarInstruccion);

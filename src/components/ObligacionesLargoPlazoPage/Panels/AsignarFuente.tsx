@@ -79,37 +79,37 @@ const headsAF: Head[] = [
 
 const headFP: Head[] = [
   {
-    label: "TIPO DE FUENTE DE PAGO",
+    label: "Tipo de fuente de pago",
   },
   {
-    label: "FUENTE DE PAGO",
+    label: "Fuente de pago",
   },
   {
-    label: "% ASIGNADO DEL INGRESO O FONDO al FIDEICOMISO ",
-  },
-  {
-    label:
-      "% ACUMULADO DE AFECTACIÓN DEL GOBIERNO DEL ESTADO A LOS MECANISMOS DE PAGO / 100",
-  },
-  {
-    label: "% DE AFECTACIÓN DEL GOBIERNO DEL ESTADO / 100 DEL INGRESO O FONDO",
-  },
-  {
-    label: "% AFECTADO AL FIDEICOMISO",
-  },
-  {
-    label: "% ACUMULADO DE AFECTACIÓN A LOS MECANISMOS DE PAGO",
+    label: "% Asignado del ingreso o fondo al fideicomiso",
   },
   {
     label:
-      "% ASIGNADO AL FINANCIAMIENTO U OBLIGACIÓN RESPECTO DE LO FIDEICOMITIDO",
+      "% Acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
+  },
+  {
+    label: "% De afectación del gobierno del estado / 100 del ingreso o fondo",
+  },
+  {
+    label: "% Afectado al fideiomiso",
+  },
+  {
+    label: "% Acumulado de afectación a los mecanismos de pago",
   },
   {
     label:
-      "% ASIGNADO AL FINANCIAMIENTO U OBLIGACIÓN RESPECTO DEL INGRESO O FONDO",
+      "% Asignado al financiamiento u obligación respecto de lo fideicomitido",
   },
   {
-    label: "% ACUMULADO DE LA ASIGNACIÓN A LAS OBLIGACIONES",
+    label:
+      "% Asignado al financiamiento u obligaciónes respecto del ingreso o fondo",
+  },
+  {
+    label: "% Acumulado de la asignación a las obligaciones",
   },
   {
     label: "Acciones",
@@ -168,15 +168,16 @@ export function AsignarFuente() {
         <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
       </Grid>
 
-      <Grid
+      <Grid container
         sx={{
-          ...queries.fuentePagoApartados,
+          display:"flex",
+          //...queries.fuentePagoApartados,
           width: "100%",
           // display:"flex",
           justifyContent: "space-evenly",
         }}
       >
-        <Grid item sx={{ width: "100%" }} xs={10} sm={10} md={10} lg={2} xl={2}>
+        <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
           <Select fullWidth variant="standard" value={headsAF}>
             {headsAF.map((item, index) => (
@@ -185,7 +186,7 @@ export function AsignarFuente() {
           </Select>
         </Grid>
 
-        <Grid item sx={{ width: "100%" }} xs={10} sm={10} md={10} lg={2} xl={2}>
+        <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Tipo de fuente</InputLabel>
           <Select fullWidth variant="standard" value={headsAF}>
             {headsAF.map((item, index) => (
@@ -194,7 +195,7 @@ export function AsignarFuente() {
           </Select>
         </Grid>
 
-        <Grid item sx={{ width: "100%" }} xs={10} sm={10} md={10} lg={2} xl={2}>
+        <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fuente de pago</InputLabel>
           <Select fullWidth variant="standard" value={headsAF}>
             {headsAF.map((item, index) => (
@@ -203,7 +204,7 @@ export function AsignarFuente() {
           </Select>
         </Grid>
 
-        <Grid item sx={{ width: "100%" }} xs={10} sm={10} md={10} lg={2} xl={2}>
+        <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Respecto a: </InputLabel>
           <Select fullWidth variant="standard" value={headsAF}>
             {headsAF.map((item, index) => (
@@ -219,7 +220,7 @@ export function AsignarFuente() {
             overflow: "auto",
             "&::-webkit-scrollbar": {
               width: ".5vw",
-              height: "1vh",
+              height: ".5vh",
               mt: 1,
             },
             "&::-webkit-scrollbar-thumb": {

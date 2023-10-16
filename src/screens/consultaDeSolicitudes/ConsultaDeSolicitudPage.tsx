@@ -419,7 +419,8 @@ export function ConsultaDeSolicitudPage() {
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
+        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
+        <LateralMenu />
       </Grid>
       <Grid
         display={"flex"}
@@ -484,7 +485,8 @@ export function ConsultaDeSolicitudPage() {
         <Paper sx={{ width: "100%" }}>
           <TableContainer
             sx={{
-              height: 520,
+              //height: 520,
+
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -496,6 +498,23 @@ export function ConsultaDeSolicitudPage() {
                 outline: "1px solid slategrey",
                 borderRadius: 1,
               },
+              height: "35rem",
+              "@media (min-width: 480px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 768px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1140px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1400px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1870px)": {
+                height: "46.5rem",
+              },
+
             }}
           >
             <Table stickyHeader>
@@ -595,7 +614,7 @@ export function ConsultaDeSolicitudPage() {
                           {row.NumeroRegistro}
                         </StyledTableCell>
                         <StyledTableCell
-                          sx={{ padding: "1px 15px 1px 0" }}
+                          sx={{ padding: "1px 15px 1px 0", width: "300px" }}
                           align="center"
                           component="th"
                           scope="row"
@@ -664,7 +683,8 @@ export function ConsultaDeSolicitudPage() {
                           sx={{
                             flexDirection: "row",
                             display: "grid",
-                            gridTemplateColumns: "repeat(4,1fr)",
+                            height: "7rem",
+                            gridTemplateColumns: "repeat(4,1fr)"
                           }}
                           align="center"
                           component="th"
@@ -795,9 +815,9 @@ export function ConsultaDeSolicitudPage() {
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
-                                        "Capturador" ||
+                                      "Capturador" ||
                                       localStorage.getItem("Rol") ===
-                                        "Verificador"
+                                      "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
                                     } else {
