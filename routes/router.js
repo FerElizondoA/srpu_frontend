@@ -269,6 +269,7 @@ const {
   createPdfRequerimientos,
   createPdfConstancia,
   createPdfSolicitudCorto,
+  firmaPdf,
 } = require("../controllers/PdfSolicitudes.js");
 
 //#region Instituciones Financieras
@@ -1268,6 +1269,9 @@ router.post("/create-pdf-requerimientos", (req, res) => {
 });
 router.post("/create-pdf-constancia", (req, res) => {
   createPdfConstancia(req, res);
+});
+router.post("/wm-pdf", (req, res) => {
+  firmaPdf(req, res);
 });
 
 //#endregion

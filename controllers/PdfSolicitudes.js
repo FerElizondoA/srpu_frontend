@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+// const pdfsig = require("pdfsig");
+const { PDFDocument, rgb } = require("pdf-lib");
 
 const headerFolder = "controllers/templates/header.html";
 const footerFolder = "controllers/templates/footer.html";
@@ -132,6 +134,8 @@ module.exports = {
       .replaceAll("{{reglas}}", declaratorias)
       .replaceAll("{{documentos}}", documentos);
 
+    const watermarkText = `${oficioNum}/SFYTGE/${new Date().getFullYear()}`;
+
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
@@ -139,6 +143,46 @@ module.exports = {
     const page = await browser.newPage();
 
     await page.setContent(html);
+
+    await page.evaluate((watermarkText) => {
+      const div = document.createElement("div");
+      div.style.position = "fixed";
+      div.style.opacity = 0.2;
+      div.style.top = 300;
+      div.style.bottom = 0;
+      div.style.left = 300;
+      div.style.width = "100%";
+      div.style.height = "100%";
+      div.style.textAlign = "center";
+      div.style.fontSize = "48px";
+      div.style.color = "k";
+      div.style.transform = "rotate(-45deg)";
+      div.style.transformOrigin = "50% 50%";
+      div.textContent = `${watermarkText}`;
+      document.body.appendChild(div);
+    }, watermarkText);
+
+    // await page.evaluate(() => {
+    //   function addWatermarkToPage(page, text) {
+    //     const div = document.createElement("div");
+    //     div.style.position = "fixed";
+    //     div.style.bottom = "20px"; // Ajusta la posición vertical
+    //     div.style.right = "20px"; // Ajusta la posición horizontal
+    //     div.style.fontSize = "12px"; // Ajusta el tamaño del texto
+    //     div.style.opacity = 0.5;
+    //     div.style.transform = "rotate(-45deg)";
+    //     div.style.color = "red"; // Ajusta el color del texto
+    //     div.textContent = text;
+    //     page.appendChild(div);
+    //   }
+
+    //   const totalPages = document.querySelectorAll(".page").length;
+    //   const currentPage = document.querySelector(".page:last-child");
+    //   addWatermarkToPage(
+    //     currentPage,
+    //     `Página ${1} de ${totalPages}`
+    //   );
+    // });
 
     const pdfBuffer = await page.pdf({
       format: "A4",
@@ -151,6 +195,7 @@ module.exports = {
         right: "0.50in",
         left: "0.50in",
       },
+      printBackground: true,
     });
 
     await browser.close();
@@ -463,4 +508,30 @@ module.exports = {
     );
     res.send(pdfBuffer);
   },
+
+  // firmaPdf: async (req, res) => {
+  //   const { inputPath, watermarkText } = req.body;
+
+  //   const pdfData = fs.readFileSync("controllers/templates/template.pdf");
+  //   const pdfDoc = await PDFDocument.load(pdfData);
+
+  //   // Crear una nueva página con la marca de agua
+  //   const [page] = pdfDoc.getPages();
+  //   const { width, height } = page.getSize();
+
+  //   // Definir el contenido de la marca de agua
+  //   const fontSize = 30;
+
+  //   page.drawText(watermarkText, {
+  //     x: width / 2 - (watermarkText.length * fontSize) / 3,
+  //     y: height / 2,
+  //     size: fontSize,
+  //     color: rgb(0, 0, 0), // Color de la marca de agua (negro)
+  //   });
+
+  //   // Guardar el PDF modificado con la marca de agua
+  //   const modifiedPdfData = await pdfDoc.save();
+
+  //   await fs.writeFile("controllers/templates/template.pdf", modifiedPdfData);
+  // },
 };
