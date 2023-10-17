@@ -71,6 +71,8 @@ module.exports = {
     footerImg("controllers/stylessheet/images/logoLeon.png");
     //#endregion
 
+    const htmlTemplate = fs.readFileSync(templateSolicitudCorto, "utf8");
+
     const {
       oficioNum,
       directorGeneral,
@@ -95,7 +97,16 @@ module.exports = {
       documentos,
     } = req.body;
 
-    const htmlTemplate = fs.readFileSync(templateSolicitudCorto, "utf8");
+    const declaratorias = JSON.parse(reglas).map((val) => {
+      return `<p
+      style="
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+        text-align: justify;
+        letter-spacing: 1px;
+      ">${val}<p>`;
+    });
 
     const html = htmlTemplate
       .replaceAll("{{oficioNum}}", oficioNum)
@@ -118,7 +129,7 @@ module.exports = {
       .replaceAll("{{mecanismoVehiculoDePago}}", mecanismoVehiculoDePago)
       .replaceAll("{{fuentePago}}", fuentePago)
       .replaceAll("{{garantiaDePago}}", garantiaDePago)
-      .replaceAll("{{reglas}}", reglas)
+      .replaceAll("{{reglas}}", declaratorias)
       .replaceAll("{{documentos}}", documentos);
 
     const browser = await puppeteer.launch({
@@ -213,6 +224,8 @@ module.exports = {
     footerImg("controllers/stylessheet/images/logoLeon.png");
     //#endregion
 
+    const htmlTemplate = fs.readFileSync(templateRequerimientos, "utf8");
+
     const {
       oficioRequerimiento,
       servidorPublico,
@@ -248,8 +261,6 @@ module.exports = {
           })}
         </tbody>
       </table>`;
-
-    const htmlTemplate = fs.readFileSync(templateRequerimientos, "utf8");
 
     const html = htmlTemplate
       .replaceAll("{{oficioRequerimiento}}", oficioRequerimiento)
@@ -360,6 +371,8 @@ module.exports = {
     footerImg("controllers/stylessheet/images/logoLeon.png");
     //#endregion
 
+    const htmlTemplate = fs.readFileSync(templateConstancia, "utf8");
+
     const {
       oficioConstancia,
       servidorPublico,
@@ -388,8 +401,6 @@ module.exports = {
       directorGeneral,
       cargoDirectorGeneral,
     } = req.body;
-
-    const htmlTemplate = fs.readFileSync(templateConstancia, "utf8");
 
     const html = htmlTemplate
       .replaceAll("{{oficioConstancia}}", oficioConstancia)
