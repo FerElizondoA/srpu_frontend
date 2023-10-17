@@ -546,7 +546,6 @@ export function ConsultaDeSolicitudPage() {
               "@media (min-width: 1870px)": {
                 height: "46.5rem",
               },
-
             }}
           >
             <Table stickyHeader>
@@ -716,7 +715,7 @@ export function ConsultaDeSolicitudPage() {
                             flexDirection: "row",
                             display: "grid",
                             height: "7rem",
-                            gridTemplateColumns: "repeat(4,1fr)"
+                            gridTemplateColumns: "repeat(4,1fr)",
                           }}
                           align="center"
                           component="th"
@@ -784,7 +783,11 @@ export function ConsultaDeSolicitudPage() {
                                         navigate("../firmaUrl");
                                       }
                                     } else {
-                                      ConsultaSolicitud(row.Solicitud, setUrl);
+                                      ConsultaSolicitud(
+                                        row.Solicitud,
+                                        row.NumeroRegistro,
+                                        setUrl
+                                      );
                                       changeEstatus(row.Estatus);
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
@@ -820,8 +823,7 @@ export function ConsultaDeSolicitudPage() {
                             )}
 
                           {row.Estatus !== "Captura" &&
-                            row.Estatus !== "Verificacion" &&
-                            !row.Estatus.includes("Por Firmar") && (
+                            row.Estatus !== "Verificacion" && (
                               <Tooltip title="Descargar">
                                 <IconButton
                                   type="button"
@@ -890,9 +892,9 @@ export function ConsultaDeSolicitudPage() {
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
-                                      "Capturador" ||
+                                        "Capturador" ||
                                       localStorage.getItem("Rol") ===
-                                      "Verificador"
+                                        "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
                                     } else {

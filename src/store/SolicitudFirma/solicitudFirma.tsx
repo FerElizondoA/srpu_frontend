@@ -1,6 +1,8 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -73,102 +75,95 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   setUrl: (url: any) => set(() => ({ url: url })),
 });
 
-export async function ConsultaSolicitud(Solicitud: string, setUrl: Function) {
-  const meses = [
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre",
-  ];
-
+export async function ConsultaSolicitud(
+  Solicitud: string,
+  NoOficio: string,
+  setUrl: Function
+) {
   let solicitud: any = JSON.parse(Solicitud);
-  interface DocumentacionItem {
-    descripcionTipo: string;
-    // Otros campos si existen en la estructura de solicitud.documentacion
-  }
 
-  const descripciones: string[] = solicitud.documentacion.map(
-    (item: DocumentacionItem) => item.descripcionTipo
-  );
-
-  const fechaVencimiento = new Date(
-    solicitud.informacionGeneral.fechaVencimiento
-  );
-  const dia = fechaVencimiento.getDate();
-  const mes = meses[fechaVencimiento.getMonth()];
-  const año = fechaVencimiento.getFullYear();
-
-  const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
-
-  const fechaContratacion = new Date(
-    solicitud.informacionGeneral.fechaContratacion
-  );
-  const diaC = fechaContratacion.getDate();
-  const mesC = meses[fechaContratacion.getMonth()];
-  const añoC = fechaContratacion.getFullYear();
-
-  const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
+  console.log(solicitud);
 
   const SolicitudDescarga: any = {
-    Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
-    Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
-    Organismo: solicitud.encabezado.organismo.Organismo,
-    InstitucionBancaria:
+    oficioNum: NoOficio,
+
+    directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+    cargoDirectorGeneral:
+      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+
+    servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
+
+    institucionFinanciera:
       solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-    Monto: solicitud.informacionGeneral.monto,
-    Destino: solicitud.informacionGeneral.destino.Descripcion,
-    PlazoDias: solicitud.informacionGeneral.plazo,
-    TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-    Tipocomisiones:
-      solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
-      "No aplica",
-    TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
-    Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
-    TipoDocumento: solicitud.encabezado.tipoDocumento,
-    PeriodoPago:
-      solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
-    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
-    Reglas: solicitud.inscripcion.declaratorias,
-    TasaInteres:
-      solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
-    Documentos: solicitud.documentacion.descripcionTipo,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    entePublicoObligado:
+      solicitud.informacionGeneral.obligadosSolidarios.length > 0
+        ? solicitud.informacionGeneral.obligadosSolidarios
+        : "No Aplica",
+    destino: solicitud.informacionGeneral.destino.Descripcion,
+    plazo: solicitud.informacionGeneral.plazo,
+
+    tasaInteres:
+      solicitud.condicionesFinancieras[0].tasaInteres[0].tasa +
+      (solicitud.condicionesFinancieras[0].tasaInteres[0].sobreTasa === "N/A"
+        ? " "
+        : " + " + solicitud.condicionesFinancieras[0].tasaInteres[0].sobreTasa),
+    comisiones:
+      solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo !== "N/A"
+        ? solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo +
+          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
+            ? " "
+            : " más IVA")
+        : solicitud.condicionesFinancieras[0].comisiones[0].montoFijo !== "N/A"
+        ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
+          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
+            ? " "
+            : " más IVA")
+        : "N/A",
+    gastosAdicionales: "No Aplica",
+    tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
+    mecanismoVehiculoDePago: "No Aplica",
+    fuentePago: "Falta preguntar",
+    garantiaDePago: "No Aplica",
+    reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
+    documentos: JSON.stringify(solicitud.documentacion),
   };
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
+      process.env.REACT_APP_APPLICATION_BACK +
+        "/api/create-pdf-solicitud-corto",
       {
-        nombre: SolicitudDescarga.Nombre,
-        cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
-        oficionum: "10",
-        cargoServidorPublico: solicitud.cargoSolicitante,
-        organismo: SolicitudDescarga.Organismo,
-        InstitucionBancaria: SolicitudDescarga.InstitucionBancaria,
-        monto: SolicitudDescarga.Monto,
-        destino: SolicitudDescarga.Destino,
-        dias: SolicitudDescarga.PlazoDias,
-        tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico,
-        tasaefectiva: SolicitudDescarga.TasaEfectiva,
-        tasaInteres: SolicitudDescarga.TasaInteres,
-        reglas: SolicitudDescarga.Reglas,
-        tipocomisiones: SolicitudDescarga.Tipocomisiones,
-        servidorpublico: SolicitudDescarga.Servidorpublico,
-        contrato: SolicitudDescarga.TipoDocumento,
-        periodoPago: SolicitudDescarga.PeriodoPago,
-        obligadoSolidarioAval:
-          solicitud.informacionGeneral.obligadosSolidarios[0]
-            ?.obligadoSolidario || "No aplica",
-        fechaContrato: fechaContratacionEspañol,
-        fechaVencimiento: fechaVencimientoEspañol,
-        Documentos: descripciones,
+        oficioNum: SolicitudDescarga.oficioNum,
+        directorGeneral: SolicitudDescarga.directorGeneral,
+        cargoDirectorGeneral: SolicitudDescarga.cargoDirectorGeneral,
+        servidorPublico: SolicitudDescarga.servidorPublico,
+        cargoServidorPublico: SolicitudDescarga.cargoServidorPublico,
+        organismoServidorPublico: SolicitudDescarga.organismoServidorPublico,
+        institucionFinanciera: SolicitudDescarga.institucionFinanciera,
+        fechaContratacion: format(
+          new Date(SolicitudDescarga.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        montoOriginalContratado: SolicitudDescarga.montoOriginalContratado,
+        entePublicoObligado: SolicitudDescarga.entePublicoObligado,
+        destino: SolicitudDescarga.destino,
+        plazo: SolicitudDescarga.plazo,
+        tasaInteres: SolicitudDescarga.tasaInteres,
+        comisiones: SolicitudDescarga.comisiones,
+        gastosAdicionales: SolicitudDescarga.gastosAdicionales,
+        tasaEfectiva: SolicitudDescarga.tasaEfectiva,
+        mecanismoVehiculoDePago: SolicitudDescarga.mecanismoVehiculoDePago,
+        fuentePago: SolicitudDescarga.fuentePago,
+        garantiaDePago: SolicitudDescarga.garantiaDePago,
+        reglas: SolicitudDescarga.reglas,
+        documentos: SolicitudDescarga.documentos,
       },
       {
         headers: {
@@ -207,8 +202,16 @@ export async function ConsultaRequerimientos(
         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
         organismo: solicitud.encabezado.organismo.Organismo,
         oficioSolicitud: NoOficio,
-        fechaSolicitud: new Date(),
-        fechaContratacion: solicitud.encabezado.fechaContratacion,
+        fechaSolicitud: format(new Date(), "PPP", {
+          locale: es,
+        }),
+        fechaContratacion: format(
+          new Date(solicitud.encabezado.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
         entePublicoObligado:
           solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         institucionFinanciera:
@@ -248,18 +251,28 @@ export async function ConsultaConstancia(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_MID + "/documento_srpu_constancia",
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-constancia",
       {
         oficioConstancia: 1,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
         organismo: solicitud.encabezado.organismo.Organismo,
         oficioSolicitud: NoOficio,
-        fechaSolicitud: new Date(),
+        fechaSolicitud: format(new Date(), "PPP", {
+          locale: es,
+        }),
         tipoDocumento: solicitud.encabezado.tipoDocumento,
-        fechaContratacion: solicitud.encabezado.fechaContratacion,
+        fechaContratacion: format(
+          new Date(solicitud.encabezado.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
         claveInscripcion: "claveInscripcion",
-        fechaClave: new Date(),
+        fechaClave: format(new Date(), "PPP", {
+          locale: es,
+        }),
         entePublicoObligado:
           solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         obligadoSolidarioAval:
@@ -271,13 +284,13 @@ export async function ConsultaConstancia(
         montoOriginalContratado: solicitud.informacionGeneral.monto,
         destino: solicitud.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.plazo,
-        amortizaciones: "amortizaciones",
+        amortizaciones: "FALTA PREGUNTAR",
         tasaInteres: "tasaInteres",
         tasaEfectiva: "tasaEfectiva",
-        mecanismoVehiculoDePago: "mecanismoVehiculoDePago",
+        mecanismoVehiculoDePago: "FALTA PREGUNTAR",
         fuentePago: "fuentePago",
-        garantiaDePago: "garantiaDePago",
-        instrumentoDerivado: "instrumentoDerivado",
+        garantiaDePago: "FALTA PREGUNTAR",
+        instrumentoDerivado: "FALTA PREGUNTAR",
         financiamientosARefinanciar: ["financiamientosARefinanciar"],
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:

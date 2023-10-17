@@ -26,7 +26,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -140,7 +144,7 @@ export function SDocumental() {
         container
         display={"flex"}
         justifyContent={"space-evenly"}
-      //height={"10rem"}
+        //height={"10rem"}
       >
         <Grid
           height={"4rem"}
@@ -197,9 +201,9 @@ export function SDocumental() {
                     nombreArchivo: soporteDocumental.nombreArchivo,
                   })
                 }
-              // slots={{
-              //   textField: DateInput,
-              // }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -368,9 +372,10 @@ export function SDocumental() {
                                 })
                                 .catch((err) => {
                                   setFileSelected(
-                                    `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                      td.nombre.includes(row.nombreArchivo)
-                                    )[0].file
+                                    `data:application/pdf;base64,${
+                                      arrDocs.filter((td: any) =>
+                                        td.nombre.includes(row.nombreArchivo)
+                                      )[0].file
                                     }`
                                   );
                                 });
