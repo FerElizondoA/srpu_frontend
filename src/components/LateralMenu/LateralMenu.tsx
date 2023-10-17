@@ -19,6 +19,11 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import HelpIcon from "@mui/icons-material/Help";
+
+
 import {
   AppBar,
   Avatar,
@@ -89,6 +94,14 @@ export const IconsMenu = (icon: string) => {
       return <AssignmentIcon sx={queries.icon} />;
     case "HistoryEduIcon":
       return <HistoryEduIcon sx={queries.icon}></HistoryEduIcon>;
+    case "InfoIcon":
+      return <InfoIcon sx={queries.icon} />;
+    case "OndemandVideoIcon":
+      return <OndemandVideoIcon sx={queries.icon} />;
+    case "MenuBookIcon":
+      return <MenuBookIcon sx={queries.icon} />;
+    case "HelpIcon":
+      return <HelpIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -573,14 +586,14 @@ const menu =
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")}Ver Tutoriales </MenuItem>}
-                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")}Ver Guías </MenuItem>}
-                {<MenuItem onClick={() => { getAyuda(setArrayAyudas, "1", "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")}Preguntas </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")} Ver Tutoriales </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")} Ver Guías </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")} Preguntas </MenuItem>}
 
               </Menu>
               {/* </Tooltip> */}
             </Grid>
-            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} openState /> : null}
+            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} openState  /> : null}
 
             <Grid>
               <Badge badgeContent={cantNoti} color="info">

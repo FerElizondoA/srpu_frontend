@@ -1,6 +1,5 @@
 import { AppBar, Autocomplete, Button, CircularProgress, Dialog, Grid, IconButton, Slide, TextField, ThemeProvider, Toolbar, Tooltip, Typography, createTheme } from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
-import ModalForm from "./ModalForm";
 import { createAyuda, getMenus, saveFile } from "./ServicesAyuda";
 import Swal from "sweetalert2";
 import SliderProgress from "./SliderProgress";
@@ -42,6 +41,12 @@ export interface ILista {
     Opcion: string;
     IdMenu: string;
   }
+
+  export interface MenuItem {
+    Id: string;
+    Label: string;
+    Path: string;
+  }
   
   export interface IFile { archivo: File; nombreArchivo: string }
   
@@ -56,8 +61,8 @@ export interface ILista {
 
   }) => {
   
-    const [menu, setMenu] = useState<ILista>({ Id: "", Label: "" });
-    const [menus, setMenus] = useState<ILista[]>([]);
+    const [menu, setMenu] = useState<MenuItem>({ Id: "", Label: "", Path:"" });
+    const [menus, setMenus] = useState<MenuItem[]>([]);
   
     const [newVideo, setNewVideo] = useState<File>(new File([], ""));
     const [nombreArchivo, setNombreArchivo] = useState("");
@@ -358,7 +363,7 @@ export interface ILista {
               <Grid container>
                 <Grid>
                   <Typography variant="h6"sx={queries.medium_text}>
-                    Pregunta / Titulo de guia:{" "}
+                    Pregunta / Titulo de guía:{" "}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>

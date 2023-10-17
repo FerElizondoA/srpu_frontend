@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { IInfoFile } from "./VisualizadorAyudas";
 import { getFileByName } from "./ServicesAyuda";
-import { Box, Dialog, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { AppBar, Box, Dialog, Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { Transition } from "../fuenteDePago/Mandatos";
+import { queries } from "../../queries";
 
 
 export const MostrarArchivos = ({
@@ -38,42 +40,34 @@ export const MostrarArchivos = ({
             fullScreen
             sx={{ zIndex: 2000 }}
             open={true}
+            TransitionComponent={Transition}
         >
 
 
             <Grid container sx={{ width: "100vw", height: "100vh", display: "flex", justifyContent: "flex-end" }}>
-                <Grid container item xs={12} sm={12} md={12} lg={12} sx={{height:"7vh", display: "flex", justifyContent: "flex-end"}}>
-                <Grid item xs={10} sm={10} md={10} lg={10} sx={{display:"flex",alignItems:"Center", justifyContent: "center"}} >
-                    <Box sx={{ display: "flex", justifyContent: "center",alignItems:"Center" }}>
-                        <Typography
-                            fontFamily={"'Montserrat', sans-serif"}
-                            sx={{
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                textAlign: "center",
-                                fontSize: [30, 30, 30, 30, 40], // Tamaños de fuente para diferentes breakpoints
-                                color: "#AF8C55"
-                            }}>
+            <AppBar sx={{ position: "relative" }}>
+                <Toolbar>
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                handleClose();
+              }}
+              sx={{ color: "white" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+          <Grid container>
+            <Grid item>
+              <Typography sx={queries.bold_text}>
+                Visualizar 
+              </Typography>
+            </Grid>
+          </Grid>
+          </Toolbar>
+                </AppBar>
 
-                            Visualizar
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid item xs={1} paddingBottom={0} >
-                    <Grid container alignItems="flex-end" direction="row" justifyContent="flex-end" paddingRight={1} >
-                        <Tooltip title={"Salir"}>
-                            <IconButton
-                                onClick={() => handleClose()}
-                            >
-                                <CloseIcon sx={{
-                                    fontSize: [30, 30, 30, 40, 40]
-                                }} />
-                            </IconButton>
-                        </Tooltip>
-                    </Grid>
-                </Grid>
-                </Grid>
 
                 <Grid item   container xs={12} sm={12} md={12} lg={12} sx={{height:"90vh", display: "flex", justifyContent: "center",alignItems:"center"}}>
                     {

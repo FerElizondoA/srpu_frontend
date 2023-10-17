@@ -1,6 +1,6 @@
-import { HandymanOutlined } from "@mui/icons-material";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { MenuItem } from "./AyudaModal";
 
 
 
@@ -129,8 +129,9 @@ export const saveFile = (
       }
     )
     .then((r) => {
-      console.log("data",r);
+      
       deleteAyuda(Id)
+      
     })
     .catch((r) => {Swal.fire({
       confirmButtonColor: "#15212f",
@@ -150,16 +151,14 @@ export const saveFile = (
         },
       })
       .then((r) => {
-        console.log(r.data.data);
         handleClose();
         Swal.fire({
           confirmButtonColor: "#15212f",
             icon: "success",
             title: "Éxito",
-            //text: "El fideicomiso se ha modificado exitosamente",
           });
       }
-      ).catch((r)=>{console.log(r);});
+      ).catch((r)=>{});
   };
   
   export const getMenus = (setState: Function) => {
@@ -172,9 +171,12 @@ export const saveFile = (
         },
       })
       .then((r) => {
-        console.log(r.data.data);
-        setState(r.data.data);
-      });
+
+        let menus= r.data.data
+        let menusFiltrados = menus.filter((menu:MenuItem) => menu.Path!=="#")
+
+        setState(menusFiltrados);
+  });
   };
   
   export const getAyuda = (
@@ -207,8 +209,8 @@ export const saveFile = (
       },
     })
       .then((r) => {
-
-        Swal.fire({
+        //handleClose();
+        Swal.fire({ 
           confirmButtonColor: "#15212f",
             icon: "success",
             title: "Éxito",

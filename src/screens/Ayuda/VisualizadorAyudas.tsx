@@ -1,4 +1,4 @@
-import { AppBar, Box, Dialog, Grid, IconButton, Slide, Toolbar, Tooltip } from "@mui/material";
+import { AppBar, Box, Dialog, Grid, IconButton, Slide, Toolbar, Tooltip, Typography } from "@mui/material";
 import ModalForm from "./ModalForm";
 import { forwardRef, useState } from "react";
 import { GridColDef } from "@mui/x-data-grid";
@@ -7,6 +7,7 @@ import MUIXDataGrid from "../../components/MUIXDataGrid";
 import { MostrarArchivos } from "./MostrarArchivos";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
+import { queries } from "../../queries";
 
 
 const Transition = forwardRef(function Transition(
@@ -27,6 +28,7 @@ export interface IInfoFile {
     arrayAyudas,
     valueTab,
     openState,
+    
 
   }: {
     handleClose: Function
@@ -128,7 +130,7 @@ export interface IInfoFile {
         field: "Texto",
         headerName: "Respuesta",
         description: "Respuesta",
-        width: 800,
+        width: 730,
       },
     ];
   
@@ -138,21 +140,31 @@ export interface IInfoFile {
   
     return (
       (
-        <Dialog fullScreen open={openState} TransitionComponent={Transition}>
-          
+        <Dialog fullScreen open={openState} TransitionComponent={Transition}>                      
+          <AppBar sx={{ position: "relative" }}>
           <Toolbar>
           <Tooltip title="Volver">
             <IconButton
               edge="start"
               onClick={() => {
                 handleClose();
-                //reset();
               }}
               sx={{ color: "white" }}
             >
               <CloseIcon />
             </IconButton>
           </Tooltip>
+          
+          <Grid container>
+            <Grid item>
+              <Typography sx={queries.bold_text}>
+              {valueTab} 
+              </Typography>
+            </Grid>
+          </Grid>
+          </Toolbar>
+          </AppBar>
+
       {/* <ModalForm
         title="Visualizar" handleClose={() => { handleClose() }}> */}
         <Grid item sx={{ width: "100vw", height: "90vh", justifyContent:"center",alignItems:"center",displa:"flex" }}>
@@ -179,7 +191,7 @@ export interface IInfoFile {
           : null}
   
       {/* </ModalForm> */}
-      </Toolbar>
+      
       </Dialog>
       )
     )

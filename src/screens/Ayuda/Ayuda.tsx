@@ -60,9 +60,10 @@ const Ayuda = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log("valor v", v);
-
                 deleteFile(v?.row?.RutaGuia, v?.row?.NombreArchivoServidor, v?.row?.Id)
                     .then((response) => {
+                        obtenerDatos()
+                        
                         Swal.fire({
                             confirmButtonColor: "#15212f",
                             icon: "success",
@@ -188,7 +189,7 @@ const Ayuda = () => {
             field: "Texto",
             headerName: "Respuesta",
             description: "Respuesta",
-            width: 800,
+            width: 730,
         },
     ];
 
