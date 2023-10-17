@@ -19,6 +19,11 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import HelpIcon from "@mui/icons-material/Help";
+
+
 import {
   AppBar,
   Avatar,
@@ -34,6 +39,8 @@ import {
   List,
   ListItemButton,
   ListItemIcon,
+  Menu,
+  MenuItem,
   OutlinedInput,
   Toolbar,
   Tooltip,
@@ -53,6 +60,9 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
+import InfoIcon from '@mui/icons-material/Info';
+import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
+import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -84,6 +94,14 @@ export const IconsMenu = (icon: string) => {
       return <AssignmentIcon sx={queries.icon} />;
     case "HistoryEduIcon":
       return <HistoryEduIcon sx={queries.icon}></HistoryEduIcon>;
+    case "InfoIcon":
+      return <InfoIcon sx={queries.icon} />;
+    case "OndemandVideoIcon":
+      return <OndemandVideoIcon sx={queries.icon} />;
+    case "MenuBookIcon":
+      return <MenuBookIcon sx={queries.icon} />;
+    case "HelpIcon":
+      return <HelpIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -104,11 +122,60 @@ export interface IData {
   TipoSolicitud: string;
 }
 export function LateralMenu() {
-  const menu =
+const menu =
     localStorage.getItem("Menu") !== undefined &&
       localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
+  ////////Administración de Ayudas////////
+  interface MenuObject {
+    Id: string;
+    FechaDeCreacion: string;
+    UltimaModificacion: string;
+    CreadoPor: string;
+    ModificadoPor: string;
+    Deleted: number;
+    Menu: string;
+    Descripcion: string;
+    MenuPadre: string;
+    Icon: string | null;
+    Path: string;
+    Nivel: number;
+    Orden: number;
+    ControlInterno: string | null;
+    IdApp: string;
+    item: MenuObject[]; // Esto es para el arreglo de objetos anidados, si los hay
+  }
+
+  // let aux = localStorage.getItem("Menus") !== undefined &&
+  //   localStorage.getItem("Menus") !== null
+  //   ? JSON.parse(localStorage.getItem("Menus")!)
+  //   : [];
+ 
+
+  
+  let idMenu = localStorage.getItem("IdMenuACtual")||""
+  const [arrayAyudas, setArrayAyudas] = useState<any[]>([])
+  const [option, setOption] = useState("Videos");
+  const [openVAyudas, setOpenVAyudas] = useState(false);
+
+  function handleCloseVAyudas() {
+    setOpenVAyudas(false)
+  }
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  ////////Administración de Ayudas////////
+
+
+
+
+
+  
   const logout = () => {
     localStorage.clear();
     window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
@@ -464,7 +531,7 @@ export function LateralMenu() {
     updatecondicionFinancieraTable([]);
     cleanComentario();
   };
-
+  
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -495,7 +562,42 @@ export function LateralMenu() {
             width={85}
           >
             <Grid>
+              {/* <Tooltip title="Ayuda"> */}
+              <IconButton
+                    color="inherit"
+                    onClick={handleMenu}
+                    // onClick={() => setIsDrawerNotificationOpen(true)}
+                  >
+                    <InfoIcon />
+                  </IconButton>
+
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")} Ver Tutoriales </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")} Ver Guías </MenuItem>}
+                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")} Preguntas </MenuItem>}
+
+              </Menu>
+              {/* </Tooltip> */}
+            </Grid>
+            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} openState  /> : null}
+
+            <Grid>
               <Badge badgeContent={cantNoti} color="info">
+
                 <Tooltip title="Notificaciones">
                   <IconButton
                     color="inherit"
@@ -596,6 +698,7 @@ export function LateralMenu() {
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
+                                localStorage.setItem("IdMenuActual",v.Id)
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {
@@ -631,6 +734,7 @@ export function LateralMenu() {
                                     <ListItemButton
                                       onClick={() => {
                                         if (v.Path !== "#") {
+                                          localStorage.setItem("IdMenuActual",v.Id)
                                           navigate(v.Path);
                                         } else {
                                           if (
@@ -671,6 +775,7 @@ export function LateralMenu() {
                                               <ListItemButton
                                                 onClick={() => {
                                                   if (v.Path !== "#") {
+                                                    localStorage.setItem("IdMenuActual",v.Id)
                                                     navigate(v.Path);
                                                     window.location.reload();
                                                   } else {
@@ -739,6 +844,7 @@ export function LateralMenu() {
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
+                                localStorage.setItem("IdMenuActual",v.Id)
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {
