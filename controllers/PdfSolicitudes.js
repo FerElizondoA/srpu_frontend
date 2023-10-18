@@ -107,6 +107,14 @@ module.exports = {
       );
     });
 
+    const docs = JSON.parse(documentos).map((val) => {
+      return (
+        '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+        val.descripcionTipo +
+        "</p>"
+      );
+    });
+
     const html = htmlTemplate
       .replaceAll("{{oficioNum}}", oficioNum)
       .replaceAll("{{directorGeneral}}", directorGeneral)
@@ -129,7 +137,7 @@ module.exports = {
       .replaceAll("{{fuentePago}}", fuentePago)
       .replaceAll("{{garantiaDePago}}", garantiaDePago)
       .replaceAll("{{reglas}}", declaratorias)
-      .replaceAll("{{documentos}}", documentos);
+      .replaceAll("{{documentos}}", docs);
 
     const watermarkText = `${oficioNum}/SFYTGE/${new Date().getFullYear()}`;
 
