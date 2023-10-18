@@ -99,17 +99,12 @@ module.exports = {
       documentos,
     } = req.body;
 
-    const declaratorias = JSON.parse(reglas).map((val) => {
-      if (val !== ",") {
-        return (
-          '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
-          val +
-          "</p>"
-        );
-      } else {
-        return "<p > </p>";
-      }
-    });
+    const declaratorias =
+      '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+      JSON.parse(reglas).map((val) => {
+        return val;
+      }) +
+      "</p>";
 
     const docs = JSON.parse(documentos).map((val) => {
       if (val.descripcionTipo !== ",") {
