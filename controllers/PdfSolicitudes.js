@@ -103,7 +103,7 @@ module.exports = {
       return (
         '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
         val +
-        "<p>"
+        "</p>"
       );
     });
 
@@ -158,28 +158,6 @@ module.exports = {
       div.textContent = `${watermarkText}`;
       document.body.appendChild(div);
     }, watermarkText);
-
-    // await page.evaluate(() => {
-    //   function addWatermarkToPage(page, text) {
-    //     const div = document.createElement("div");
-    //     div.style.position = "fixed";
-    //     div.style.bottom = "20px"; // Ajusta la posición vertical
-    //     div.style.right = "20px"; // Ajusta la posición horizontal
-    //     div.style.fontSize = "12px"; // Ajusta el tamaño del texto
-    //     div.style.opacity = 0.5;
-    //     div.style.transform = "rotate(-45deg)";
-    //     div.style.color = "red"; // Ajusta el color del texto
-    //     div.textContent = text;
-    //     page.appendChild(div);
-    //   }
-
-    //   const totalPages = document.querySelectorAll(".page").length;
-    //   const currentPage = document.querySelector(".page:last-child");
-    //   addWatermarkToPage(
-    //     currentPage,
-    //     `Página ${1} de ${totalPages}`
-    //   );
-    // });
 
     const pdfBuffer = await page.pdf({
       format: "A4",
