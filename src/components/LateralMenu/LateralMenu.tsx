@@ -176,10 +176,7 @@ export function LateralMenu() {
   const nombre = localStorage.getItem("NombreUsuario") || "";
 
   function stringAvatar(name: string) {
-    return (
-      name?.split(" ")[0][0] + name?.split(" ")[1][0] ||
-      localStorage.getItem("Rol")
-    );
+    return name?.split(" ")[0][0] + (name?.split(" ")[1][0] || " ");
   }
 
   const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
