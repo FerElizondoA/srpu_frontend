@@ -137,7 +137,7 @@ module.exports = {
       .replaceAll("{{reglas}}", declaratorias)
       .replaceAll("{{documentos}}", docs);
 
-    const watermarkText = `${oficioNum}/SFYTGE/${new Date().getFullYear()}`;
+    const watermarkText = `DDPYPF-${oficioNum}/${new Date().getFullYear()}`;
 
     const browser = await puppeteer.launch({
       headless: "false",
