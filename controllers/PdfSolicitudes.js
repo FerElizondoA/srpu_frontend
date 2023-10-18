@@ -100,14 +100,11 @@ module.exports = {
     } = req.body;
 
     const declaratorias = JSON.parse(reglas).map((val) => {
-      return `<p
-      style="
-        font-family: Arial;
-        font-size: 12px;
-        font-weight: 100;
-        text-align: justify;
-        letter-spacing: 1px;
-      ">${val}<p>`;
+      return (
+        '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+        val +
+        "<p>"
+      );
     });
 
     const html = htmlTemplate
@@ -287,25 +284,16 @@ module.exports = {
       cargoDirectorGeneral,
     } = req.body;
 
-    const coments = `<table
-        id="data-table"
-        style="
-          border-collapse: collapse;
-          font-family: Arial;
-          font-size: 12px;
-          text-align: justify;
-          font-weight: 100;
-          letter-spacing: 1px;
-        "
-      >
-        <tbody>
-          ${Object.keys(JSON.parse(comentarios)).map((val) => {
-            return `<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">${val}</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle"> ${
-              JSON.parse(comentarios)[val]
-            }</td> </tr>`;
-          })}
-        </tbody>
-      </table>`;
+    const coments =
+      '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 12px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
+      Object.keys(JSON.parse(comentarios)).map((val) => {
+        return (
+          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">${val}</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+          JSON.parse(comentarios)[val] +
+          "</td> </tr>"
+        );
+      }) +
+      "</tbody> </table>;";
 
     const html = htmlTemplate
       .replaceAll("{{oficioRequerimiento}}", oficioRequerimiento)
