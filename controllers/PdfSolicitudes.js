@@ -104,7 +104,7 @@ module.exports = {
         '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
         val +
         "</p>"
-      ).replaceAll(",", "");
+      );
     });
 
     const html = htmlTemplate
