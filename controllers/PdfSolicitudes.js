@@ -266,7 +266,9 @@ module.exports = {
       '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 12px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
       Object.keys(JSON.parse(comentarios)).map((val) => {
         return (
-          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">${val}</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
+          val +
+          '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
           JSON.parse(comentarios)[val] +
           "</td> </tr>"
         );
