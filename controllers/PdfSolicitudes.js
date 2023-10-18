@@ -106,17 +106,12 @@ module.exports = {
       }) +
       "</p>";
 
-    const docs = JSON.parse(documentos).map((val) => {
-      if (val.descripcionTipo !== ",") {
-        return (
-          '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
-          val.descripcionTipo +
-          "</p>"
-        );
-      } else {
-        return "<p > </p>";
-      }
-    });
+    const docs =
+      '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+      JSON.parse(documentos).map((val) => {
+        return "<br />" + val.descripcionTipo;
+      }) +
+      "</p>";
 
     const html = htmlTemplate
       .replaceAll("{{oficioNum}}", oficioNum)
