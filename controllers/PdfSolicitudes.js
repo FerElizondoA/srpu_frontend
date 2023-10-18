@@ -100,7 +100,11 @@ module.exports = {
     } = req.body;
 
     const declaratorias = JSON.parse(reglas).map((val) => {
-      if (val !== ",") {
+      if (
+        val !==
+        `,
+      `
+      ) {
         return (
           '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
           val +
