@@ -100,19 +100,23 @@ module.exports = {
     } = req.body;
 
     const declaratorias = JSON.parse(reglas).map((val) => {
-      return (
-        '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
-        val +
-        "</p>"
-      );
+      if (val !== ",") {
+        return (
+          '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+          val +
+          "</p>"
+        );
+      }
     });
 
     const docs = JSON.parse(documentos).map((val) => {
-      return (
-        '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
-        val.descripcionTipo +
-        "</p>"
-      );
+      if (val.descripcionTipo !== ",") {
+        return (
+          '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
+          val.descripcionTipo +
+          "</p>"
+        );
+      }
     });
 
     const html = htmlTemplate
