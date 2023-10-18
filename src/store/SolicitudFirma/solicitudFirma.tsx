@@ -82,8 +82,6 @@ export async function ConsultaSolicitud(
 ) {
   let solicitud: any = JSON.parse(Solicitud);
 
-  console.log(solicitud);
-
   const SolicitudDescarga: any = {
     oficioNum: NoOficio,
 

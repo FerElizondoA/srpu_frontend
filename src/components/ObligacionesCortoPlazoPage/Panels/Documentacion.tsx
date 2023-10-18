@@ -27,7 +27,7 @@ import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
-import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado"; 
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 
 interface Head {
   label: string;
@@ -122,15 +122,6 @@ export function Documentacion() {
     tab: "Tab",
   });
 
-
-
-  // function cargarArchivo(event: any) {
-  //   let file = event.target.files[0];
-  //   if (file !== undefined) {
-  //     addDocumento(file, file.name);
-  //   }
-  // }
-
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
 
   return (
@@ -138,7 +129,6 @@ export function Documentacion() {
       item
       container
       display="flex"
-      //height={"30rem"}
       width={"100%"}
       sx={{
         height: "27rem",
@@ -164,7 +154,7 @@ export function Documentacion() {
       }}
     >
       <Grid container height={"100%"} width={"100%"}>
-        <Grid item height={"100%"} width={"100%"} >
+        <Grid item height={"100%"} width={"100%"}>
           <TableContainer
             sx={{
               height: "100%",
@@ -212,9 +202,9 @@ export function Documentacion() {
                       <TextField
                         disabled={
                           val.archivo?.name ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         }
                         size="small"
                         multiline
@@ -237,7 +227,7 @@ export function Documentacion() {
                           display: "flex",
                           fontFamily:
                             val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "MontserratBold"
                               : "MontserratMedium",
                           textAlign: "center",
@@ -248,7 +238,7 @@ export function Documentacion() {
                           fontSize: "80%",
                           border:
                             val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "2px dotted #af8c55"
                               : "2px dotted black",
                         }}
@@ -310,13 +300,13 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                        comentario[val.descripcionTipo] !== "" ? (
+                      comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                  comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -339,7 +329,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                              comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -367,98 +357,21 @@ export function Documentacion() {
         </Grid>
       </Grid>
 
-      {/* 
-//apartado seleccion de archivo
       <Grid
-        item
+        mt={1}
         container
-        position="fixed"
-        sx={{
-          height: "6%",
-          display: "flex",
-          justifyContent: "center",
-          bottom: "13rem",
-          "@media (min-width: 480px)": {
-            bottom: "2rem",
-          },
-      
-          "@media (min-width: 768px)": {
-            bottom: "2rem",
-          },
-      
-          "@media (min-width: 1140px)": {
-            bottom: "2rem",
-          },
-      
-          "@media (min-width: 1400px)": {
-            bottom: "2rem",
-          },
-      
-          "@media (min-width: 1870px)": {
-            bottom: "2rem",
-          },
-        }}
+        display={"flex"}
+        justifyContent={"center"}
+        width={"100%"}
       >
-        <Typography
-          position={"absolute"}
-          sx={{
-            display: "flex",
-            border: " 1px solid",
-            borderBlockColor: "#AF8C55",
-            fontFamily: "MontserratMedium",
-            textAlign: "center",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "80%",
-            height: "2.5rem",
-            fontSize:"0.7rem" ,
-            "@media (min-width: 480px)": {
-              width: "100%",
-              fontSize:"0.7rem" 
-            },
-        
-            "@media (min-width: 768px)": {
-              width: "70%",
-              fontSize:"0.8rem" 
-            },
-        
-            "@media (min-width: 1140px)": {
-              width: "50%",
-              fontSize:"0.8rem" 
-            },
-        
-            "@media (min-width: 1400px)": {
-              width: "34%",
-              fontSize:"0.9rem" 
-            },
-        
-            "@media (min-width: 1870px)": {
-              width: "34%",
-              fontSize:"0.9rem" 
-            },
-          }}
+        <Grid
+          item
+          mb={2}
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          sx={{ position: "relative" }}
         >
-          ARRASTRE O DE CLIC AQUÍ PARA AGREGAR UN NUEVO ARCHIVO
-        </Typography>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(v) => {
-            cargarArchivo(v, tablaDocumentos.length);
-            scroll();
-          }}
-          style={{
-            opacity: 0,
-            width: "60%",
-            height: "100%",
-            cursor: "pointer",
-          }}
-        ></input>
-      </Grid> */}
-
-
-      <Grid mt={1} container display={"flex"} justifyContent={"center"} width={"100%"}>
-        <Grid item mb={2} width={"100%"} display={"flex"} justifyContent={"center"} sx={{ position: "relative" }}>
           <Typography
             position={"absolute"}
             sx={{
@@ -473,27 +386,27 @@ export function Documentacion() {
 
               "@media (min-width: 480px)": {
                 width: "100%",
-                fontSize: "0.7rem"
+                fontSize: "0.7rem",
               },
 
               "@media (min-width: 768px)": {
                 width: "70%",
-                fontSize: "0.8rem"
+                fontSize: "0.8rem",
               },
 
               "@media (min-width: 1140px)": {
                 width: "50%",
-                fontSize: "0.8rem"
+                fontSize: "0.8rem",
               },
 
               "@media (min-width: 1400px)": {
                 width: "40%",
-                fontSize: "0.9rem"
+                fontSize: "0.9rem",
               },
 
               "@media (min-width: 1870px)": {
                 width: "34%",
-                fontSize: "0.9rem"
+                fontSize: "0.9rem",
               },
             }}
           >
@@ -503,6 +416,7 @@ export function Documentacion() {
             type="file"
             accept="application/pdf"
             onChange={(v) => {
+              scroll();
               cargarArchivo(v, tablaDocumentos.length);
             }}
             style={{
@@ -513,14 +427,6 @@ export function Documentacion() {
             }}
           />
         </Grid>
-
-        {/* <Grid display={"flex"} justifyContent={"end"}>
-          <Tooltip title={"Remover Archivo"}>
-            <Button onClick={() => removeDocumento()}>
-              <GridCloseIcon />
-            </Button>
-          </Tooltip>
-        </Grid> */}
       </Grid>
 
       <ComentarioApartado

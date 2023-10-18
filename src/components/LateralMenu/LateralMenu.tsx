@@ -19,10 +19,9 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import HelpIcon from "@mui/icons-material/Help";
-
 
 import {
   AppBar,
@@ -60,7 +59,7 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
 import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 
@@ -122,9 +121,9 @@ export interface IData {
   TipoSolicitud: string;
 }
 export function LateralMenu() {
-const menu =
+  const menu =
     localStorage.getItem("Menu") !== undefined &&
-      localStorage.getItem("Menu") !== null
+    localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
   ////////Administración de Ayudas////////
@@ -151,16 +150,14 @@ const menu =
   //   localStorage.getItem("Menus") !== null
   //   ? JSON.parse(localStorage.getItem("Menus")!)
   //   : [];
- 
 
-  
-  let idMenu = localStorage.getItem("IdMenuACtual")||""
-  const [arrayAyudas, setArrayAyudas] = useState<any[]>([])
+  let idMenu = localStorage.getItem("IdMenuACtual") || "";
+  const [arrayAyudas, setArrayAyudas] = useState<any[]>([]);
   const [option, setOption] = useState("Videos");
   const [openVAyudas, setOpenVAyudas] = useState(false);
 
   function handleCloseVAyudas() {
-    setOpenVAyudas(false)
+    setOpenVAyudas(false);
   }
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -171,11 +168,6 @@ const menu =
   };
   ////////Administración de Ayudas////////
 
-
-
-
-
-  
   const logout = () => {
     localStorage.clear();
     window.location.assign(process.env.REACT_APP_APPLICATION_LOGIN_FRONT || "");
@@ -184,7 +176,10 @@ const menu =
   const nombre = localStorage.getItem("NombreUsuario") || "";
 
   function stringAvatar(name: string) {
-    return `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`;
+    return (
+      name?.split(" ")[0][0] + name?.split(" ")[1][0] ||
+      localStorage.getItem("Rol")
+    );
   }
 
   const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
@@ -531,7 +526,7 @@ const menu =
     updatecondicionFinancieraTable([]);
     cleanComentario();
   };
-  
+
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -564,40 +559,77 @@ const menu =
             <Grid>
               {/* <Tooltip title="Ayuda"> */}
               <IconButton
-                    color="inherit"
-                    onClick={handleMenu}
-                    // onClick={() => setIsDrawerNotificationOpen(true)}
-                  >
-                    <InfoIcon />
-                  </IconButton>
+                color="inherit"
+                onClick={handleMenu}
+                // onClick={() => setIsDrawerNotificationOpen(true)}
+              >
+                <InfoIcon />
+              </IconButton>
 
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Videos"); setOpenVAyudas(true); setOption("Videos") }}>{IconsMenu("OndemandVideoIcon")} Ver Tutoriales </MenuItem>}
-                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Guias"); setOpenVAyudas(true); setOption("Guias") }}>{IconsMenu("MenuBookIcon")} Ver Guías </MenuItem>}
-                {<MenuItem onClick={() => {getAyuda(setArrayAyudas, "1", "Preguntas"); setOpenVAyudas(true); setOption("Preguntas") }}>{IconsMenu("HelpIcon")} Preguntas </MenuItem>}
-
+                {
+                  <MenuItem
+                    onClick={() => {
+                      getAyuda(setArrayAyudas, "1", "Videos");
+                      setOpenVAyudas(true);
+                      setOption("Videos");
+                    }}
+                  >
+                    {IconsMenu("OndemandVideoIcon")} Ver Tutoriales{" "}
+                  </MenuItem>
+                }
+                {
+                  <MenuItem
+                    onClick={() => {
+                      getAyuda(setArrayAyudas, "1", "Guias");
+                      setOpenVAyudas(true);
+                      setOption("Guias");
+                    }}
+                  >
+                    {IconsMenu("MenuBookIcon")} Ver Guías{" "}
+                  </MenuItem>
+                }
+                {
+                  <MenuItem
+                    onClick={() => {
+                      getAyuda(setArrayAyudas, "1", "Preguntas");
+                      setOpenVAyudas(true);
+                      setOption("Preguntas");
+                    }}
+                  >
+                    {IconsMenu("HelpIcon")} Preguntas{" "}
+                  </MenuItem>
+                }
               </Menu>
               {/* </Tooltip> */}
             </Grid>
-            {openVAyudas ? <VisualizadorAyudas handleClose={() => { handleCloseVAyudas() }} arrayAyudas={arrayAyudas} valueTab={option} openState  /> : null}
+            {openVAyudas ? (
+              <VisualizadorAyudas
+                handleClose={() => {
+                  handleCloseVAyudas();
+                }}
+                arrayAyudas={arrayAyudas}
+                valueTab={option}
+                openState
+              />
+            ) : null}
 
             <Grid>
               <Badge badgeContent={cantNoti} color="info">
-
                 <Tooltip title="Notificaciones">
                   <IconButton
                     color="inherit"
@@ -620,7 +652,10 @@ const menu =
           sx={{
             width: query.isXs ? "16rem" : "30vw",
             flexShrink: 0,
-            [`& .MuiDrawer-paper`]: { width: query.isXs ? "16rem" : "30vw", boxSizing: 'border-box' },
+            [`& .MuiDrawer-paper`]: {
+              width: query.isXs ? "16rem" : "30vw",
+              boxSizing: "border-box",
+            },
           }}
           onClose={() => setIsDrawerOpen(false)}
         >
@@ -698,7 +733,7 @@ const menu =
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
-                                localStorage.setItem("IdMenuActual",v.Id)
+                                localStorage.setItem("IdMenuActual", v.Id);
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {
@@ -734,7 +769,10 @@ const menu =
                                     <ListItemButton
                                       onClick={() => {
                                         if (v.Path !== "#") {
-                                          localStorage.setItem("IdMenuActual",v.Id)
+                                          localStorage.setItem(
+                                            "IdMenuActual",
+                                            v.Id
+                                          );
                                           navigate(v.Path);
                                         } else {
                                           if (
@@ -775,7 +813,10 @@ const menu =
                                               <ListItemButton
                                                 onClick={() => {
                                                   if (v.Path !== "#") {
-                                                    localStorage.setItem("IdMenuActual",v.Id)
+                                                    localStorage.setItem(
+                                                      "IdMenuActual",
+                                                      v.Id
+                                                    );
                                                     navigate(v.Path);
                                                     window.location.reload();
                                                   } else {
@@ -844,7 +885,7 @@ const menu =
                           <ListItemButton
                             onClick={() => {
                               if (v.Path !== "#") {
-                                localStorage.setItem("IdMenuActual",v.Id)
+                                localStorage.setItem("IdMenuActual", v.Id);
                                 navigate(v.Path);
                               } else {
                                 if (openModulo === v.ControlInterno) {
