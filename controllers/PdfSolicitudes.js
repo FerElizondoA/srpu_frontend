@@ -109,7 +109,7 @@ module.exports = {
     const docs =
       '<p style=" font-family: Arial; font-size: 12px; font-weight: 100; text-align: justify; letter-spacing: 1px; ">' +
       JSON.parse(documentos).map((val) => {
-        return "<br />" + val.descripcionTipo;
+        return val.descripcionTipo;
       }) +
       "</p>";
 
