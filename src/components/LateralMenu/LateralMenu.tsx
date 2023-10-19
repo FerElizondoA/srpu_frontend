@@ -547,21 +547,13 @@ export function LateralMenu() {
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
 
-          <Grid
-            mt={1.5}
-            display={"flex"}
-            justifyContent={"space-between"}
-            width={85}
-          >
+          <Grid mt={1.5} display={"flex"} justifyContent={"space-between"}>
             <Grid>
-              {/* <Tooltip title="Ayuda"> */}
-              <IconButton
-                color="inherit"
-                onClick={handleMenu}
-                // onClick={() => setIsDrawerNotificationOpen(true)}
-              >
-                <InfoIcon />
-              </IconButton>
+              <Tooltip title="Ayudas">
+                <IconButton color="inherit" onClick={handleMenu}>
+                  <InfoIcon />
+                </IconButton>
+              </Tooltip>
 
               <Menu
                 id="menu-appbar"

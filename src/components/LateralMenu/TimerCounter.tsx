@@ -118,13 +118,13 @@ export const TimerCounter = () => {
         justifyContent: "center",
       }}
     >
-      {rest > 0
+      {/* {rest > 0
         ? Math.floor(rest / 1000 / 60).toString() +
           ":" +
           (Math.floor((rest / 1000) % 60) < 10
             ? "0" + Math.floor((rest / 1000) % 60).toString()
             : Math.floor((rest / 1000) % 60))
-        : "44:59"}
+        : "44:59"} */}
     </Box>
   );
 };
