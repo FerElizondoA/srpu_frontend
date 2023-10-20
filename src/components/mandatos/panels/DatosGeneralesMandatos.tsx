@@ -92,7 +92,7 @@ export function DatosGeneralesMandatos() {
         width={"100%"}
       >
 
-        <Grid xs={10} sm={5} md={5} lg={5} xl={5}
+        <Grid xs={10} sm={4} md={4} lg={4} xl={4}
           height={{ xs: "4rem", sm: "0rem" }}
         >
           <InputLabel sx={queries.medium_text}>
@@ -108,25 +108,20 @@ export function DatosGeneralesMandatos() {
           />
         </Grid>
 
-        {/* <Grid xs={10} sm={4} md={4} lg={4} xl={4}
+        <Grid xs={10} sm={4} md={4} lg={4} xl={4}
           height={{ xs: "4rem", sm: "0rem" }}
         >
           <InputLabel sx={queries.medium_text}>
-            Organismo Mandante
+            Tipo ente publico obligado
           </InputLabel>
 
           <TextField
-
             fullWidth
             variant="standard"
-            // label={"Organismo mandante"}
-            // title={"Organismo mandante"}
-            onChange={(v) => {
-              setOrganismoMandante(v.target.value)
-            }}
-            value={oranismoMandate}
+            disabled
+            value={datosGMandatos.TipoEntePublicoObligado}
           />
-        </Grid> */}
+        </Grid>
       </Grid>
 
     </Grid>

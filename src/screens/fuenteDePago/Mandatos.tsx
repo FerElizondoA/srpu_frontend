@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -38,7 +39,7 @@ import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Pan
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
 import { useMandatoStore } from "../../store/Mandatos/main";
-import { Mandato } from "../../store/Mandatos/mandato";
+import { DatosGMandatos, Mandato } from "../../store/Mandatos/mandato";
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -59,6 +60,7 @@ export interface IDatosMandatos {
   Mandatario: string;
   ModificadoPor: string;
   MunicipioMandante: string;
+  TipoEntePublicoObligado:string;
   NumeroMandato: string;
   OrganismoMandante: string;
   SoporteDocumental: string;
@@ -77,6 +79,9 @@ const heads: Head[] = [
   },
   {
     label: "Organismo / Municipio Mandante",
+  },
+  {
+    label: "Tipo ente publico obligado",
   },
   {
     label: "Acciones",
@@ -128,6 +133,9 @@ export function Mandatos() {
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.OrganismoMandante.toString()
           .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+          elemento.TipoEntePublicoObligado.toString()
+          .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
         return elemento;
@@ -173,6 +181,17 @@ export function Mandatos() {
     (state) => state.editarMandato
   );
 
+  const changeNumeroMandato: Function = useMandatoStore(
+    (state) => state.changeNumeroMandato
+  );
+  const datosGMandatos: DatosGMandatos = useMandatoStore(
+    (state) => state.datosGMandatos
+  )
+
+  const setDatosGMandatos: Function = useMandatoStore(
+    (state) => state.setDatosGMandatos
+  )
+
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
     []
   );
@@ -180,30 +199,18 @@ export function Mandatos() {
 
 
   const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
+  
   const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
 
-  // const filtrarDatos = () => {
-  //   // eslint-disable-next-line array-callback-return
-  //   let ResultadoBusqueda = datos.filter((elemento) => {
-  //     if (
-  //       // elemento.NumeroDeFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.FechaDeFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.DescripcionTipoFideicomiso.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase()) ||
-  //       // elemento.DescripcionFiudiciario.toString()
-  //       //   .toLocaleLowerCase()
-  //       //   .includes(busqueda.toLocaleLowerCase())
-  //     ) {
-  //       return elemento;
-  //     }
-  //   });
-  //   setMandatosFiltrados(ResultadoBusqueda);
-  // };
+
+  useEffect(() =>{
+    setDatosGMandatos({
+      mecanismoPago: datosGMandatos.mecanismoPago,
+      MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+      TipoEntePublicoObligado: localStorage.getItem("TipoEntePublicoObligado")
+    })
+
+  }, [])
 
   useEffect(() => {
     setMandatosFiltrados(mandatos);
@@ -237,9 +244,7 @@ export function Mandatos() {
     !openAgregarMandato && cleanMandato();
   }, [openAgregarMandato]);
 
-  const changeNumeroMandato: Function = useMandatoStore(
-    (state) => state.changeNumeroMandato
-  );
+  
 
   return (
     <Grid height={"74vh"}>
@@ -389,6 +394,10 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
+                        {row.TipoEntePublicoObligado}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
                         <Tooltip title="Editar">
                           <IconButton
                             type="button"
@@ -426,6 +435,7 @@ export function Mandatos() {
                           </IconButton>
                         </Tooltip>
                       </StyledTableCell>
+
                     </StyledTableRow>
                   );
                 })}

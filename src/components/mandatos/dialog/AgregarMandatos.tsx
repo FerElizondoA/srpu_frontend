@@ -88,9 +88,15 @@ export function AgregarMandatos({
   const createMandato: Function = useMandatoStore(
     (state) => state.createMandato
   );
+ 
+  const changeNumeroMandato: Function = useMandatoStore(
+    (state) => state.changeNumeroMandato
+  );
 
   const limpiaMandato = () => {
     changeIdMandato("");
+
+    changeNumeroMandato("");
 
     setTipoMovimientoMandato({
       altaDeudor: "",

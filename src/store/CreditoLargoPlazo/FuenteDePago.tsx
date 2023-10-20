@@ -9,18 +9,6 @@ export type Mecanismo = {
   clasificacionBonoCupo: { Id: string; Descripcion: string };
 };
 
-export type garantiaPago = {
-  Id: string;
-  Descripcion: string;
-}
-
-export type AsignarFuente = {
-  clasificacion: { Id: string; Descripcion: string };
-  tipoFuente: { Id: string; Descripcion: string };
-  fuentePago: { Id: string; Descripcion: string };
-  RespectoA: { Id: string; Descripcion: string };
-};
-
 export type NumeroFideicomiso = {
   Id: string;
   DescripcionFiudiciario: string;
@@ -70,13 +58,28 @@ export type NumeroInstruccion = {
   TipoMovimiento: string,
 }
 
+//ASIGNAR FUENTE 
+export type garantiaPago = {
+  Id: string;
+  Descripcion: string;
+}
+
+export type AsignarFuenteV = {
+  clasificacion: { Id: string; Descripcion: string };
+  tipoFuente: { Id: string; Descripcion: string };
+  fuentePago: { Id: string; Descripcion: string };
+  RespectoA: { Id: string; Descripcion: string };
+};
+
+
 export interface FuenteDePagoLargoPlazoSlice {
 
   Mecanismo: Mecanismo;
-  AsignarFuente: AsignarFuente;
+  AsignarFuenteV: AsignarFuenteV;
 
   garantiaPago: { Id: string; Descripcion: string };
   tablaFideicomisarioFP: Fideicomisario[];
+
 
   editFideicomisarioFuentePago: (fideicomisario: Fideicomisario[]) => void;
 
@@ -117,6 +120,16 @@ export interface FuenteDePagoLargoPlazoSlice {
 
   numeroInstruccionSelect: NumeroInstruccion[];
   setNumeroInstruccionSelect: (numeroInstruccionSelect: NumeroInstruccion[]) => void;
+
+  catalogoClasificacion: ICatalogo[];
+  getClasificacion: () =>void;
+
+  catalogoRespecto: ICatalogo[];
+  getRespecto: () => void;
+
+  catalogoFuenteDePago: ICatalogo[];
+  getFuentePago:() => void;
+
 }
 
 
@@ -131,12 +144,16 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     clasificacionBonoCupo: { Id: "", Descripcion: "" },
   },
 
-  AsignarFuente: {
+  AsignarFuenteV: {
     clasificacion: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
     fuentePago: { Id: "", Descripcion: "" },
     RespectoA: { Id: "", Descripcion: "" },
   },
+
+  catalogoClasificacion:[],
+  catalogoRespecto:[],
+  catalogoFuenteDePago: [],
 
   garantiaPago: { Id: "", Descripcion: "" },
   
@@ -169,7 +186,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   changeAsignarFuente: (AsignarFuente: any) =>
     set(() => ({
-      AsignarFuente: AsignarFuente
+      AsignarFuenteV: AsignarFuente
     })),
 
   changeGarantiaPago: (garantiaPago: garantiaPago) =>
@@ -249,6 +266,50 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     }))
   },
 
+  getClasificacion: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-clasificacionAsignarFuentePago", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoClasificacion: r,
+        }));
+      });
+  },
+
+  getRespecto: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-respecto", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoRespecto: r,
+        }));
+      });
+  },
+
+  getFuentePago: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fuenteDePago", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoFuenteDePago: r,
+        }));
+      });
+  },
 
 
 });

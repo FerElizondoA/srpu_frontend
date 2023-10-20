@@ -153,11 +153,11 @@ export function VehiculoDePago() {
 
   const numeroMandatoSelect: NumeroMandato[] = useLargoPlazoStore(
     (state) => state.numeroMandatoSelect
-  )
+  );
 
   const setNumeroMandatoSelect: Function = useLargoPlazoStore(
     (state) => state.setNumeroMandatoSelect
-  )
+  );
 
 
   //Instrucciones Irrevocables
@@ -199,7 +199,6 @@ export function VehiculoDePago() {
     }
     if (mecanismo !== "Instrucciones irrevocables") {
       setNumeroInstruccionSelect([]);
-
     }
   }, [mecanismo])
 
@@ -216,8 +215,6 @@ export function VehiculoDePago() {
       container
       direction={"column"}
       justifyContent={"space-around"}
-      //height={"32rem"}
-      //height={numeroFideicomisoSelect ? "40rem" : asignarFuente ? "68rem" : "68rem"}
 
       height={
         query.movil // (min-width: 0px) and (max-width: 479px)
@@ -238,11 +235,11 @@ export function VehiculoDePago() {
                   : "10rem"
                 : query.MonitorEscritorio
                   ? (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
-                    ? "40rem"
+                    ? "42rem"
                     : "10rem"
                   : (numeroFideicomisoSelect.length > 0 || numeroMandatoSelect.length > 0 || numeroInstruccionSelect.length > 0)
-                  ?"32rem"
-                  :"10rem"
+                    ? "31rem"
+                    : "10rem"
       }
     >
       <Grid
@@ -253,7 +250,7 @@ export function VehiculoDePago() {
       >
         {/* Cuerpo */}
         <Grid container width={"100%"} display={"flex"} justifyContent={"space-evenly"}>
-          <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Mecanismo o vehículo de pago
             </InputLabel>
@@ -278,7 +275,7 @@ export function VehiculoDePago() {
 
           {mecanismo === "Fideicomiso"
             ?
-            <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
               <InputLabel sx={queries.medium_text}>
                 Número del fideicomiso
               </InputLabel>
@@ -290,7 +287,11 @@ export function VehiculoDePago() {
                 openText="Abrir"
                 fullWidth
                 options={numeroFideicomiso}
-                getOptionLabel={(option) => `${option.NumeroDeFideicomiso}`}
+                getOptionLabel={(option) =>
+                  option.NumeroDeFideicomiso === undefined
+                    ? ""
+                    : `${option.NumeroDeFideicomiso}`
+                }
                 renderOption={(props, option) => {
                   return (
                     <li {...props} key={option.Id}>
@@ -322,7 +323,7 @@ export function VehiculoDePago() {
 
             mecanismo === "Mandato"
               ?
-              <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
+              <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
                 <InputLabel sx={queries.medium_text}>
                   Número de Mandato
                 </InputLabel>
@@ -334,7 +335,11 @@ export function VehiculoDePago() {
                   openText="Abrir"
                   fullWidth
                   options={numeroMandato}
-                  getOptionLabel={(option) => `${option.NumeroMandato}`}
+                  getOptionLabel={(option) =>
+                    option.NumeroMandato === undefined
+                      ? ""
+                      : `${option.NumeroMandato}`
+                  }
                   renderOption={(props, option) => {
                     return (
                       <li {...props} key={option.Id}>
@@ -364,7 +369,7 @@ export function VehiculoDePago() {
               : //Fin Condicional
               mecanismo === "Instrucciones irrevocables"
                 ?
-                <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
+                <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
                   <InputLabel sx={queries.medium_text}>
                     Numero de Instrucciones irrevocables
                   </InputLabel>
@@ -376,7 +381,11 @@ export function VehiculoDePago() {
                     openText="Abrir"
                     fullWidth
                     options={numeroInstruccion}
-                    getOptionLabel={(option) => `${option.NumeroCuenta}`}
+                    getOptionLabel={(option) =>
+                      option.NumeroCuenta === undefined
+                        ? ""
+                        : `${option.NumeroCuenta}`
+                    }
                     renderOption={(props, option) => {
                       return (
                         <li {...props} key={option.Id}>
@@ -437,6 +446,7 @@ export function VehiculoDePago() {
                 >
                   <InputLabel>Tipo de fideicomiso</InputLabel>
                   <TextField
+                    disabled
                     value={row.DescripcionTipoFideicomiso}
                     fullWidth
                     variant="standard"
@@ -445,6 +455,7 @@ export function VehiculoDePago() {
 
                   <InputLabel>Fecha del fideicomiso</InputLabel>
                   <TextField
+                    disabled
                     value={format(
                       new Date(row.FechaDeFideicomiso),
                       "dd/MM/yyyy"
@@ -456,6 +467,7 @@ export function VehiculoDePago() {
 
                   <InputLabel>Fiduciario</InputLabel>
                   <TextField
+                    disabled
                     value={row.DescripcionFiudiciario}
                     fullWidth
                     variant="standard"
@@ -581,8 +593,9 @@ export function VehiculoDePago() {
                   display={"flex"}
                   justifyContent={"space-evenly"}
                 >
-                  <Grid xs={10}
-                    sm={10}
+                  <Grid
+                    xs={5}
+                    sm={5}
                     md={3.3}
                     lg={3}
                     xl={3}
@@ -597,8 +610,8 @@ export function VehiculoDePago() {
                   </Grid>
 
                   <Grid
-                    xs={10}
-                    sm={10}
+                    xs={5}
+                    sm={5}
                     md={3.3}
                     lg={3}
                     xl={3}
@@ -756,10 +769,11 @@ export function VehiculoDePago() {
                     />
                   </Grid> */}
 
-                  <Grid xs={10}
-                    sm={10}
-                    md={3.3}
-                    lg={3}
+                  <Grid
+                    xs={10}
+                    sm={6}
+                    md={6}
+                    lg={6}
                     xl={3}
                   >
                     <InputLabel>Banco</InputLabel>
@@ -773,9 +787,9 @@ export function VehiculoDePago() {
 
                   <Grid
                     xs={10}
-                    sm={10}
-                    md={10}
-                    lg={10}
+                    sm={3}
+                    md={3}
+                    lg={3}
                     xl={3}
                   >
                     <InputLabel>CLABE</InputLabel>
@@ -787,8 +801,6 @@ export function VehiculoDePago() {
                       sx={queries.medium_text}
                     />
                   </Grid>
-
-
 
                   {/* <InputLabel>Fiduciario</InputLabel>
                   <TextField
@@ -831,12 +843,12 @@ export function VehiculoDePago() {
                   },
 
                   "@media (min-width: 1400px)": {
-                    height: "20rem",
+                    height: "19rem",
                     width: "85%"
                   },
 
                   "@media (min-width: 1870px)": {
-                    height: "20rem",
+                    height: "24rem",
                     width: "85%"
                   },
                 }}>
@@ -907,9 +919,7 @@ export function VehiculoDePago() {
                                       {row.fondoIngreso}
                                     </Typography>
                                   </StyledTableCell>
-
                                 </StyledTableRow>
-
                               ))
                             : null}
                         </TableBody>

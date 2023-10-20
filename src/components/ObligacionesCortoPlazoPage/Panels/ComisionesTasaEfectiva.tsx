@@ -230,7 +230,7 @@ export function ComisionesTasaEfectiva() {
       flexDirection="column"
       justifyContent={"space-evenly"}
       sx={{
-        height: "60rem",
+        height: "62rem",
         "@media (min-width: 480px)": {
           height: "70rem",
         },
@@ -383,6 +383,7 @@ export function ComisionesTasaEfectiva() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
+            sx={{width:"100%"}}
               disabled={noAplica}
               value={new Date(comisionFechaContratacion)}
               onChange={(date) => {
@@ -670,22 +671,20 @@ export function ComisionesTasaEfectiva() {
         >
           <ThemeProvider theme={theme}>
             <Button
-              sx={{
-                backgroundColor: "#15212f",
-                color: "white",
+              sx={{ ...queries.buttonContinuarSolicitudInscripcion,
+                mt: 2,
+                mb: 2,
+                width: "15vh",
+               
                 "&&:hover": {
                   backgroundColor: "rgba(47, 47, 47, 0.4)",
                   color: "#000",
                 },
-                //fontSize: "90%",
+                
                 borderRadius: "0.8vh",
                 textTransform: "capitalize",
                 fontSize: "100%",
                 "@media (min-width: 480px)": {
-                  fontSize: "90%",
-                },
-
-                "@media (min-width: 768px)": {
                   fontSize: "90%",
                 },
               }}

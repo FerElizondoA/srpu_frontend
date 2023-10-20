@@ -24,6 +24,7 @@ export interface SoporteDocumentalMandato {
 export interface DatosGMandatos {
   mecanismoPago: string;
   MunicipioOrganismoMandante: any;
+  TipoEntePublicoObligado: any;
 }
 
 export interface Mandato {
@@ -123,6 +124,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   datosGMandatos: {
     mecanismoPago: "Mandato",
     MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+    TipoEntePublicoObligado: localStorage.getItem("TipoEntePublicoObligado")
   },
 
   numeroMandato: "",
@@ -303,7 +305,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           Mandatario: "Nuevo León",
           MecanismoPago: state.datosGMandatos.mecanismoPago,
           MunicipioOrganismoMandante: state.datosGMandatos.MunicipioOrganismoMandante,
-          //OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          TipoEntePublicoObligado: state.datosGMandatos.TipoEntePublicoObligado,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
           SoporteDocumental: JSON.stringify(state.tablaSoporteDocumentalMandato),
         },
@@ -357,7 +359,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           Mandatario: "Nuevo León",
           Mecanismo: "Mandato",
           MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
-          //OrganismoMandante: localStorage.getItem("EntePublicoObligado"),
+          TipoEntePublicoObligado: state.datosGMandatos.TipoEntePublicoObligado,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalMandato

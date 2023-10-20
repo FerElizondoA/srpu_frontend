@@ -14,6 +14,7 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
 import {
@@ -156,11 +157,12 @@ export function CondicionesFinancieras() {
     (state) => state.changeTasaInteres
   );
 
+
   return (
     <Grid
       container
       sx={{
-        height: "39rem",
+        height: "30rem",
         "@media (min-width: 480px)": {
           height: "39rem",
         },

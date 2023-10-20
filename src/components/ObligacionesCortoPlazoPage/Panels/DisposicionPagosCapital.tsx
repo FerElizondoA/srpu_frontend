@@ -409,7 +409,7 @@ export function DisposicionPagosCapital() {
           disposicionesParciales === false && tasasParciales === false ? "50rem"
             : disposicionesParciales === true && tasasParciales === false ? "65rem"
               : disposicionesParciales === false && tasasParciales === true ? "65rem"
-                : disposicionesParciales === true && tasasParciales === true ? "80rem"
+                : disposicionesParciales === true && tasasParciales === true ? "85rem"
                   : "52rem"
           : "36rem"}
     >
@@ -665,8 +665,10 @@ export function DisposicionPagosCapital() {
               <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={{
-                    ...queries.buttonContinuar,
-                    marginBottom: 2
+                    ...queries.buttonContinuarSolicitudInscripcion,
+                    mt: 2,
+                    mb: 2,
+                    width: "15vh"
                   }}
                   disabled={
                     disposicionFechaDisposicion === "" ||
@@ -1215,6 +1217,8 @@ export function DisposicionPagosCapital() {
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
+                      mt: 2,
+                      mb: 2,
                       width: "15vh",
                     }}
                     disabled={

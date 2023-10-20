@@ -106,6 +106,14 @@ export const modulos = [
     fnc: "detalleDestinosAutorizados",
   },
   {
+    label: "Clasificación",
+    fnc: "clasificacionAsignarFuentePago",
+  },
+  {
+    label: "Respecto a",
+    fnc: "respecto",
+  },
+  {
     label: "Usuarios",
     fnc: "Usuarios",
   },

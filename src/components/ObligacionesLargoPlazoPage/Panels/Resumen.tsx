@@ -43,7 +43,7 @@ import {
 } from "../../APIS/pathDocSol/APISDocumentos";
 
 import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
-import { AsignarFuente } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { AsignarFuenteV } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import {
   Disposicion,
@@ -345,19 +345,19 @@ export function Resumen() {
 
   //Asignar Fuente
   const clasificacion: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuente.clasificacion
+    (state) => state.AsignarFuenteV.clasificacion
   );
 
   const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuente.tipoFuente
+    (state) => state.AsignarFuenteV.tipoFuente
   );
 
   const fuentePago: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuente.fuentePago
+    (state) => state.AsignarFuenteV.fuentePago
   );
 
   const Respecto: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuente.RespectoA
+    (state) => state.AsignarFuenteV.RespectoA
   );
 
 

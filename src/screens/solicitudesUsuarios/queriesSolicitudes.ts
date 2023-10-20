@@ -101,15 +101,20 @@ export const queriesSolicitud = {
     height: "50rem",
     width: "100%",
     justifyContent: "space-evenly",
-    display: "flex",
     flexDirection: "column",
   
 
     "@media (min-width: 480px)": {
       height: "50rem",
+      justifyContent: "space-evenly",
+      display: "flex",
+      flexDirection: "column",
     },
 
     "@media (min-width: 768px)": {
+      justifyContent: "space-evenly",
+      display: "flex",
+      flexDirection: "column",
       height: "38rem",
     },
 

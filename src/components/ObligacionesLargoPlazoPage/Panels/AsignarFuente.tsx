@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Divider,
   Grid,
   InputLabel,
@@ -12,107 +13,134 @@ import {
   TableHead,
   TableRow,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { VehiculoDePago } from "./VehiculoDePago";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { AsignarFuenteV } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
-interface Head {
-  label: string;
-}
 
 interface HeadSelect {
-  label: string;
+  Id: string;
+  Descripcion: string;
 }
 
 const CatalogoGarantiaPago: HeadSelect[] = [
   {
-    label: "No aplica",
+    Id: "0",
+    Descripcion: "No aplica",
   },
   {
-    label: "Pago 1",
+    Id: "1",
+    Descripcion: "Pago 1",
   },
   {
-    label: "Pago 2",
-  },
-];
-
-const headsAF: Head[] = [
-  {
-    label: "Destino",
-  },
-  {
-    label: "Detalle de la Inversión",
-  },
-  {
-    label: "Inversión Pública Productiva",
-  },
-  {
-    label: "Periodo de Administración",
-  },
-  {
-    label: "Gastos Adicionales",
-  },
-  {
-    label: "Clave de Inscripción del Financiamiento",
-  },
-  {
-    label: "Descripcion",
-  },
-  {
-    label: "Monto",
-  },
-  {
-    label: "Periodo de Financiamiento (Meses)",
-  },
-  {
-    label: "Saldo Vigente",
-  },
-  {
-    label: "Monto Gastos Adicionales",
+    Id: "2",
+    Descripcion: "Pago 2",
   },
 ];
 
-const headFP: Head[] = [
+const headsAF: HeadSelect[] = [
   {
-    label: "Tipo de fuente de pago",
+    Id: "0",
+    Descripcion: "Destino",
   },
   {
-    label: "Fuente de pago",
+    Id: "1",
+    Descripcion: "Detalle de la Inversión",
   },
   {
-    label: "% Asignado del ingreso o fondo al fideicomiso",
+    Id: "2",
+    Descripcion: "Inversión Pública Productiva",
   },
   {
-    label:
+    Id: "3",
+    Descripcion: "Periodo de Administración",
+  },
+  {
+    Id: "4",
+    Descripcion: "Gastos Adicionales",
+  },
+  {
+    Id: "5",
+    Descripcion: "Clave de Inscripción del Financiamiento",
+  },
+  {
+    Id: "6",
+    Descripcion: "Descripcion",
+  },
+  {
+    Id: "7",
+    Descripcion: "Monto",
+  },
+  {
+    Id: "8",
+    Descripcion: "Periodo de Financiamiento (Meses)",
+  },
+  {
+    Id: "9",
+    Descripcion: "Saldo Vigente",
+  },
+  {
+    Id: "10",
+    Descripcion: "Monto Gastos Adicionales",
+  },
+];
+
+const headFP: HeadSelect[] = [
+  {
+    Id: "1",
+    Descripcion: "Tipo de fuente de pago",
+  },
+  {
+    Id: "2",
+    Descripcion: "Fuente de pago",
+  },
+  {
+    Id: "3",
+    Descripcion: "% Asignado del ingreso o fondo al fideicomiso",
+  },
+  {
+    Id: "4",
+    Descripcion:
       "% Acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
   },
   {
-    label: "% De afectación del gobierno del estado / 100 del ingreso o fondo",
+    Id: "5",
+    Descripcion: "% De afectación del gobierno del estado / 100 del ingreso o fondo",
   },
   {
-    label: "% Afectado al fideiomiso",
+    Id: "6",
+    Descripcion: "% Afectado al fideiomiso",
   },
   {
-    label: "% Acumulado de afectación a los mecanismos de pago",
+    Id: "7",
+    Descripcion: "% Acumulado de afectación a los mecanismos de pago",
   },
   {
-    label:
+    Id: "8",
+    Descripcion:
       "% Asignado al financiamiento u obligación respecto de lo fideicomitido",
   },
   {
-    label:
+    Id: "9",
+    Descripcion:
       "% Asignado al financiamiento u obligaciónes respecto del ingreso o fondo",
   },
   {
-    label: "% Acumulado de la asignación a las obligaciones",
+    Id: "10",
+    Descripcion: "% Acumulado de la asignación a las obligaciones",
   },
   {
-    label: "Acciones",
+    Id: "0",
+    Descripcion: "Acciones",
   },
 ];
 
@@ -125,6 +153,68 @@ export function AsignarFuente() {
   const changeGarantiaPago: Function = useLargoPlazoStore(
     (state) => state.changeGarantiaPago
   );
+
+
+  //Asignar Fuente
+  const changeAsignarFuente: Function = useLargoPlazoStore(
+    (state) => state.changeAsignarFuente
+  );
+
+  const clasificacion: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuenteV.clasificacion
+  );
+
+  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuenteV.tipoFuente
+  );
+
+  const fuentePago: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuenteV.fuentePago
+  );
+
+  const Respecto: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.AsignarFuenteV.RespectoA
+  );
+
+  const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
+    (state) => state.catalogoTiposDeFuente
+  );
+
+  const getTiposDeFuente: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
+  );
+  
+  const getClasificacion : Function = useLargoPlazoStore(
+    (state) => state.getClasificacion
+  )
+
+  const catalogoClasificacion : ICatalogo[] =useLargoPlazoStore(
+    (state) => state.catalogoClasificacion
+  )
+
+  const catalogoRespecto : ICatalogo[] = useLargoPlazoStore(
+    (state) => state.catalogoRespecto
+  );
+
+  const getRespecto : Function = useLargoPlazoStore(
+    (state) => state.getRespecto
+  )
+
+  const catalogoFuenteDePago : ICatalogo[] = useLargoPlazoStore(
+    (state) => state.catalogoFuenteDePago
+  )
+
+  const getFuentePago : Function = useLargoPlazoStore(
+    (state) => state.getFuentePago
+  )
+  
+  useEffect(() => {
+    getTiposDeFuente();
+    getClasificacion();
+    getRespecto();
+    getFuentePago();
+  }, [])
+
   return (
     <Grid
       container
@@ -132,7 +222,7 @@ export function AsignarFuente() {
       direction={"column"}
       justifyContent={"space-between"}
     >
-       <Grid>
+      <Grid>
         <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
       </Grid>
 
@@ -147,12 +237,53 @@ export function AsignarFuente() {
           <InputLabel sx={queries.medium_text}>
             Tipo de garantía de pago
           </InputLabel>
-          <Select
+          <Autocomplete
+            //disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={CatalogoGarantiaPago}
+            value={garantiaPago}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) =>
+              changeGarantiaPago({
+                garantiaPago: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
+                }
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+          {/* <Select
             fullWidth
             variant="standard"
             value={garantiaPago}
             onChange={(e, text) => {
-              changeGarantiaPago(e);
+              changeGarantiaPago({
+                AsignarFuenteV:{
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
+                },
+              });
             }}
           >
             {CatalogoGarantiaPago.map((item, index) => (
@@ -160,7 +291,7 @@ export function AsignarFuente() {
                 {item.label}
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
         </Grid>
       </Grid>
 
@@ -170,7 +301,7 @@ export function AsignarFuente() {
 
       <Grid container
         sx={{
-          display:"flex",
+          display: "flex",
           //...queries.fuentePagoApartados,
           width: "100%",
           // display:"flex",
@@ -178,39 +309,185 @@ export function AsignarFuente() {
         }}
       >
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
+
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
-          <Select fullWidth variant="standard" value={headsAF}>
+          <Autocomplete
+            //disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoClasificacion}
+            value={clasificacion.Descripcion === undefined ? null : clasificacion}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) =>
+              changeAsignarFuente({
+                clasificacion: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion
+                },
+                tipoFuente: tipoFuente, 
+                fuentePago: fuentePago,
+                RespectoA: Respecto,
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+
+          {/* <Select fullWidth variant="standard" value={headsAF}>
             {headsAF.map((item, index) => (
-              <MenuItem key={index}>{item.label}</MenuItem>
+              <MenuItem key={index}>{item.Descripcion}</MenuItem>
             ))}
-          </Select>
+
+          </Select> */}
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Tipo de fuente</InputLabel>
-          <Select fullWidth variant="standard" value={headsAF}>
-            {headsAF.map((item, index) => (
-              <MenuItem key={index}>{item.label}</MenuItem>
-            ))}
-          </Select>
+
+          <Autocomplete
+            //disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoTiposDeFuente}
+            value={tipoFuente.Descripcion === undefined ? null : tipoFuente}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) =>
+              changeAsignarFuente({
+                clasificacion: clasificacion,
+                tipoFuente: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion
+                },
+                fuentePago: fuentePago,
+                RespectoA: Respecto,
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fuente de pago</InputLabel>
-          <Select fullWidth variant="standard" value={headsAF}>
-            {headsAF.map((item, index) => (
-              <MenuItem key={index}>{item.label}</MenuItem>
-            ))}
-          </Select>
+          <Autocomplete
+            //disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoFuenteDePago}
+            value={fuentePago.Descripcion === undefined ? null : fuentePago}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) =>
+              changeAsignarFuente({
+                clasificacion: clasificacion,
+                tipoFuente: tipoFuente, 
+                fuentePago: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion
+                },
+                RespectoA: Respecto
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Respecto a: </InputLabel>
-          <Select fullWidth variant="standard" value={headsAF}>
-            {headsAF.map((item, index) => (
-              <MenuItem key={index}>{item.label}</MenuItem>
-            ))}
-          </Select>
+          <Autocomplete
+            //disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoRespecto}
+            value={Respecto.Descripcion === undefined ? null : Respecto}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) =>
+              changeAsignarFuente({
+                clasificacion: clasificacion,
+                tipoFuente: tipoFuente, 
+                fuentePago: fuentePago,
+                RespectoA: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion
+                },
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
         </Grid>
       </Grid>
 
@@ -239,7 +516,7 @@ export function AsignarFuente() {
                           fontSize: ".7rem",
                           fontFamily: "MontserratRegular",
                         }}
-                      >{head.label}</Typography>
+                      >{head.Descripcion}</Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>
