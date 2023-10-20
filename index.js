@@ -9,6 +9,7 @@ dotenv.config();
 const PORT = process.env.SRPU_B_APP_PORT || 8001;
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 // add routes
 const router = require("./routes/router.js");
