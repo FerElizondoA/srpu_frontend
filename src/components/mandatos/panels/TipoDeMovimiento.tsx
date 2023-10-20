@@ -31,10 +31,7 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
   ICatalogo,
   IFondoOIngreso,
@@ -52,22 +49,34 @@ export function TipoDeMovimiento() {
 
   const heads: HeadLabels[] = [
     {
-      label: "Tipo ente publico obligado",
+      label: "Id",
+    },
+    {
+      label: "Tipo de mandante",
     },
     {
       label: "Mandatario",
     },
     {
-      label: "Tipo de fuente",
+      label: "Fuente de pago",
     },
     {
-      label: "Fondo o ingreso",
+      label: "% del ingreso o fondo correspondiente al mandatario",
     },
     {
-      label: "Fecha mandato",
+      label:
+        "% de asignación del fondo o ingreso correspondiente al mandatario",
     },
     {
-      label: "Acciones",
+      label:
+        "% afectado al mandato del ingreso o fondo correspondiente al mandatario",
+    },
+    {
+      label:
+        "% acumulado de afectación del mandatario a los mecanismos de pago/100",
+    },
+    {
+      label: "",
     },
   ];
 

@@ -74,31 +74,42 @@ interface HeadLabels {
 }
 
 export function TipoDeMovimientoIntrucciones() {
-  
   const headsLabels: HeadLabels[] = [
     {
-      label: "Alta deudor",
+      label: "Id",
     },
     {
-      label: "Tipo ente público",
+      label: "Tipo de mandante",
     },
     {
-      label: "Entidad Federativa",
+      label: "Mandatario",
     },
     {
-      label: "Tipo de fuente",
+      label: "Fuente de pago",
     },
     {
-      label: "Fondo o ingreso",
+      label: "% del ingreso o fondo correspondiente al mandatario",
     },
     {
-      label: "Acciones",
+      label:
+        "% de asignación del fondo o ingreso correspondiente al mandatario",
+    },
+    {
+      label:
+        "% afectado al mandato del ingreso o fondo correspondiente al mandatario",
+    },
+    {
+      label:
+        "% acumulado de afectación del mandatario a los mecanismos de pago/100",
+    },
+    {
+      label: "",
     },
   ];
 
-
   //TIPO DE MOVIMIENTO
-  const tipoEntePublico: { Id: string; Descripcion: string } = useInstruccionesStore(
+  const tipoEntePublico: { Id: string; Descripcion: string } =
+    useInstruccionesStore(
       (state) => state.tipoMovimientoInstrucciones.tipoEntePublico
     );
 
@@ -137,7 +148,6 @@ export function TipoDeMovimientoIntrucciones() {
   const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTipoEntePublicoObligado
   );
-
 
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
