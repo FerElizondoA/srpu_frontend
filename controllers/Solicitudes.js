@@ -296,6 +296,7 @@ module.exports = {
     const Comentario = req.body.Comentario;
     const Tipo = req.body.Tipo;
     const IdUsuario = req.body.IdUsuario;
+    const IdComentario = req.body.IdComentario;
 
     if (IdSolicitud == null || /^[\s]*$/.test(IdSolicitud)) {
       return res.status(409).send({
@@ -315,7 +316,7 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_AgregarComentario( '${IdSolicitud}','${Comentario}','${Tipo}','${IdUsuario}')`,
+      `CALL sp_AgregarComentario( '${IdSolicitud}','${Comentario}','${Tipo}','${IdUsuario}','${IdComentario}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -376,6 +377,33 @@ module.exports = {
 
     db.query(
       `CALL sp_CambiaEstatusSolicitud('${Id}','${Estatus}','${ModificadoPor}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: err,
+          });
+        }
+
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
+
+  eliminaComentario: (req, res) => {
+    const Id = req.body.Id;
+    const ModificadoPor = req.body.ModificadoPor;
+
+    db.query(
+      `CALL sp_BajaLogicaComentario('${Id}','${ModificadoPor}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

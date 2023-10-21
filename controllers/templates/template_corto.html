@@ -1,0 +1,501 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<h4
+  style="
+    text-align: right;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 100;
+    font-weight: 100;
+    letter-spacing: 1px;
+  "
+  class="header"
+>
+  Oficio No. {{oficioNum}}/2023
+  <div id="current_date">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+    <script>
+      moment.locale("es");
+      const formattedDate = moment().format("LL");
+      document.getElementById("current_date").innerHTML =
+        "Monterrey, N.L,  a " + formattedDate;
+    </script>
+  </div>
+</h4>
+
+<!-- SERVIDOR PÚBLICO -->
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: justify;
+    letter-spacing: 1px;
+  "
+>
+  {{directorGeneral}} <br />
+  {{cargoDirectorGeneral}} <br />
+</h3>
+
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    text-align: justify;
+    font-weight: 100;
+    letter-spacing: 5px;
+  "
+>
+  PRESENTE
+</h3>
+
+<!-- SOLICITUD -->
+
+<p
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    text-align: justify;
+    font-weight: 100;
+    letter-spacing: 1px;
+  "
+>
+  El/La suscrito(a) {{servidorPublico}} en mi carácter de
+  {{cargoServidorPublico}}, del {{organismoServidorPublico}}, con fundamento en
+  los artículos 25°, 26,30, 31, 32, 48 y 53 de la Ley de Disciplina Financiera
+  de las Entidades Federativas y los Municipios (LDF) y el artículo 15 y 28 del
+  Reglamento del Registro Público Único de Financiamientos y Obligaciones de
+  Entidades Federativas y los Municipios (Reglamento RPU), por este medio
+  solicito la inscripción en el Registro de Obligaciones y Empréstitos del
+  Estado de Nuevo León que se lleva en esta Secretaría, del Contrato de Apertura
+  de Crédito Simple Sin Garantía, celebrado con {{institucionFinanciera}} el
+  pasado {{fechaContratacion}} por la cantidad de hasta
+  {{montoOriginalContratado}} para destinarlo a cubrir necesidades de corto
+  plazo, tales como insuficiencias de liquidez de carácter temporal.
+  <!-- mismo que acredito mediante la presentación de copia
+  certificada de(la) {{documentosIdentificacion}} emitido(a) por el (la)
+  Secretaría de Relaciones Exteriores, por medio de la presente solicito la
+  inscripción de un {{tipoSolicitud}}, en el Registro Público Único de
+  Financiamientos y Obligaciones de Entidades Federativas y Municipios (Registro
+  Público Único), de conformidad con lo dispuesto en los artículos 49 y 50 de la
+  Ley de Disciplina Financiera de las Entidades Federativas y los Municipios
+  (Ley), el artículo 25 del Reglamento del Registro Público Único de
+  Financiamientos y Obligaciones de Entidades Federativas y Municipios
+  (Reglamento). -->
+  <br />
+  <br />
+  Las caracteristicas de la Obligación son las siguientes:
+</p>
+
+<!-- INFORMACIÓN DE LA OBLIGACIÓN -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+
+      margin-bottom: 0;
+    "
+  >
+    INFORMACIÓN DE LA OBLIGACIÓN
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Ente Público Obligado
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{entePublicoObligado}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Monto Original Contratado
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{montoOriginalContratado}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Fecha De Contratación
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{fechaContratacion}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CARACTERÍSTICAS DE LA OBLIGACIÓN -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+
+      margin-bottom: 0;
+    "
+  >
+    CARACTERÍSTICAS DE LA OBLIGACIÓN
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Destino
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{destino}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Plazo
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{plazo}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Tasa de Interés
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{tasaInteres}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Comisiones
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{comisiones}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Gastos Adicionales
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{gastosAdicionales}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Tasa Efectiva
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{tasaEfectiva}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Mecanismo o Vehiculo de Pago
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{mecanismoVehiculoDePago}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Fuente de pago
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{fuentePago}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          Garantía de Pago
+        </td>
+        <td
+          style="
+            width: 60%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{garantiaDePago}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p
+  style="
+    text-align: justify;
+    font-family: Arial;
+    letter-spacing: 1px;
+    font-size: 10px;
+  "
+>
+  Con fundamento en lo dispuesto por el artículo 30 de la LDF, artículos 25 y 28
+  del Regñamento RPU, declaro bajo protesta decir la verdad que:
+</p>
+
+{{reglas}}
+
+<p
+  style="
+    text-align: justify;
+    font-family: Arial;
+    letter-spacing: 1px;
+    font-size: 10px;
+  "
+>
+  En virtud de lo anterior, se adjuntan los siguientes documentos:
+</p>
+
+{{documentos}}
+
+<p
+  style="
+    text-align: justify;
+    font-family: Arial;
+    letter-spacing: 1px;
+    font-size: 10px;
+  "
+>
+  Por lo antes expuesto, atentamente solicito a la Secretaría sirva:
+
+  <br />
+  <br />
+  <strong>PRIMERO:</strong> Tenerme por presentado en términos del presente
+  escrito con la personalidad que ostento. <strong>SEGUNDO:</strong> Recibir y
+  dar cuenta con los documentos que se exhiben y relacionan en apartado especial
+  de esta solicitud. <strong>TERCERO:</strong> Proceder a la inscripción del
+  Contrato de Crédito Simple Sin Garantía celebrado entre el
+  {{organismoServidorPublico}} como acreditado y(e) {{institucionFinanciera}},
+  como acreditante, con fecha {{fechaContratacion}}.
+
+  <br />
+  <br />
+
+  Sin más por el momento, aprovecho para enviarle un cordial saludo.
+</p>
+
+<h3
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+  "
+  class="atte"
+>
+  ATENTAMENTE <br />
+  {{cargoServidorPublico}} <br />
+  <br />
+  {{servidorPublico}} <br />
+</h3>

@@ -5,6 +5,7 @@ module.exports = {
   createFondoOIngreso: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
+    const TipoDeFuente = req.body.TipoDeFuente;
 
     if (
       (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
@@ -23,7 +24,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarFondoOIngreso('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarFondoOIngreso('${IdUsuario}', '${Descripcion}', '${TipoDeFuente}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

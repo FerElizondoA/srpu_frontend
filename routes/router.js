@@ -1,5 +1,7 @@
 const express = require("express");
 const verifyToken = require("../controllers/auth/verifyToken.js");
+const router = express.Router();
+
 const {
   createClaveDeInscripcion,
   getClavesDeInscripcion,
@@ -49,7 +51,7 @@ const {
   modifyFuenteDePago,
   deleteFuenteDePago,
 } = require("../controllers/FuenteDePago.js");
-const router = express.Router();
+
 const {
   createInstitucionFinanciera,
   modifyInstitucionFinanciera,
@@ -115,6 +117,7 @@ const {
   getComentarios,
   cambiaEstatus,
   getSolicitudesAdministrador,
+  eliminaComentario,
 } = require("../controllers/Solicitudes.js");
 const {
   createTipoDeDocumento,
@@ -142,6 +145,10 @@ const {
   getDetailPathDocSol,
   addPathDocAut,
   getDetailPathDocAut,
+  addPathDocFideicomiso,
+  getDetailPathDocFideicomiso,
+  addPathDocMandato,
+  getDetailPathDocMandato,
 } = require("../controllers/PathDocSol.js");
 const {
   getAutorizaciones,
@@ -274,6 +281,11 @@ const {
   modifyRespecto,
   deleteRespecto
 } = require("../controllers/Respecto");
+const {
+  createPdfRequerimientos,
+  createPdfConstancia,
+  createPdfSolicitudCorto,
+} = require("../controllers/PdfSolicitudes.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -787,6 +799,10 @@ router.get("/get-comentarios", verifyToken.verifyJWT, (req, res) => {
   getComentarios(req, res);
 });
 
+router.post("/delete-comentario", verifyToken.verifyJWT, (req, res) => {
+  eliminaComentario(req, res);
+});
+
 //#endregion
 
 //#region  Usuarios
@@ -834,6 +850,22 @@ router.post("/create-addPathDocAut", (req, res) => {
 
 router.get("/get-DetailPathDocAut", (req, res) => {
   getDetailPathDocAut(req, res);
+});
+
+router.post("/create-addPathDocFideicomiso", (req, res) => {
+  addPathDocFideicomiso(req, res);
+});
+
+router.get("/get-DetailPathDocFideicomiso", (req, res) => {
+  getDetailPathDocFideicomiso(req, res);
+});
+
+router.post("/create-addPathDocMandato", (req, res) => {
+  addPathDocMandato(req, res);
+});
+
+router.get("/get-DetailPathDocMandato", (req, res) => {
+  getDetailPathDocMandato(req, res);
 });
 
 //#endregion
@@ -1276,6 +1308,45 @@ router.delete("/delete-respecto", (req, res) => {
 // router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
 //   deleteTipoDeGarantiaDePago(req, res);
 // });
+
+//#endregion
+
+//#region Mandatos
+router.post("/create-instruccion", (req, res, express) => {
+  createInstruccion(req, res);
+});
+
+router.post("/modify-instruccion", (req, res, express) => {
+  modifyInstruccion(req, res);
+});
+
+router.get("/get-instruccion", (req, res, express) => {
+  getInstrucciones(req, res);
+});
+
+// router.get("/get-tiposDeGarantiaDePago", (req, res) => {
+//   getTiposDeGarantiaDePago(req, res);
+// });
+
+// router.put("/modify-mandato", (req, res) => {
+//   modifyMandato(req, res);
+// });
+
+// router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
+//   deleteTipoDeGarantiaDePago(req, res);
+// });
+//#endregion
+
+//#region Mandatos
+router.post("/create-pdf-solicitud-corto", (req, res) => {
+  createPdfSolicitudCorto(req, res);
+});
+router.post("/create-pdf-requerimientos", (req, res) => {
+  createPdfRequerimientos(req, res);
+});
+router.post("/create-pdf-constancia", (req, res) => {
+  createPdfConstancia(req, res);
+});
 
 //#endregion
 
