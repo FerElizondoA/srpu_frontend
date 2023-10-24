@@ -2,7 +2,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
-  Checkbox,
   FormControlLabel,
   Grid,
   IconButton,
@@ -18,104 +17,99 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format } from "date-fns";
-import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { TipoMovimientoMandato } from "../../../store/Mandatos/mandato";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
-import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import { TipoMovimientoMandatoDeudor } from "../../../store/Mandatos/mandato";
 
 interface HeadLabels {
   label: string;
 }
 
+const heads: HeadLabels[] = [
+  {
+    label: "Id",
+  },
+  {
+    label: "Tipo de mandante",
+  },
+  {
+    label: "Mandatario",
+  },
+  {
+    label: "Fuente de pago",
+  },
+  {
+    label: "% del ingreso o fondo correspondiente al gobierno del estado",
+  },
+  {
+    label: "% del ingreso o fondo correspondiente a los municipios",
+  },
+  {
+    label: "% del ingreso correspondiente al organismo",
+  },
+  {
+    label: "% de asignación del fondo o ingreso correspondiente al municipio",
+  },
+  {
+    label:
+      "% afectado al mandato del ingreso o fondo correspondiente al gobierno del estado",
+  },
+  {
+    label: "% de afectacion del gobierno del estado /100 del fondo o ingreso",
+  },
+  {
+    label:
+      "% acumulado de afectacion del gobierno del estado a los mecanismos de pago /100",
+  },
+  {
+    label:
+      "% afectado al mandato del ingreso o fondo correspondiente al municipio",
+  },
+  {
+    label:
+      "% acumulado de afectación del municipio a los mecanismos de pago /% asignado al municipio",
+  },
+  {
+    label: "% afectado al mandato del ingreso correspondiente al organismo",
+  },
+  {
+    label:
+      "% acumulado de afectación del organismo a los mecanismos de pago /100 del ingreso",
+  },
+  {
+    label: "",
+  },
+];
+
 export function TipoDeMovimiento() {
-  //const [altaDeudor, setAltaDeudor] = useState(false);
-
-  const heads: HeadLabels[] = [
-    {
-      label: "Id",
-    },
-    {
-      label: "Tipo de mandante",
-    },
-    {
-      label: "Mandatario",
-    },
-    {
-      label: "Fuente de pago",
-    },
-    {
-      label: "% del ingreso o fondo correspondiente al mandatario",
-    },
-    {
-      label:
-        "% de asignación del fondo o ingreso correspondiente al mandatario",
-    },
-    {
-      label:
-        "% afectado al mandato del ingreso o fondo correspondiente al mandatario",
-    },
-    {
-      label:
-        "% acumulado de afectación del mandatario a los mecanismos de pago/100",
-    },
-    {
-      label: "",
-    },
-  ];
-
-  const altaDeudor: string = useMandatoStore(
-    (state) => state.tipoMovimientoMandato.altaDeudor
+  const tipoMovimientoMandato: TipoMovimientoMandatoDeudor = useMandatoStore(
+    (state) => state.tipoMovimientoMandato
   );
 
-  const tipoEntePublicoObligado: { Id: string; Descripcion: string } =
-    useMandatoStore(
-      (state) => state.tipoMovimientoMandato.tipoEntePublicoObligado
-    );
-
-  const mandatario: { Id: string; Descripcion: string } = useMandatoStore(
-    (state) => state.tipoMovimientoMandato.mandatario
+  const tablaTipoMovimiento: TipoMovimientoMandatoDeudor[] = useMandatoStore(
+    (state) => state.tablaTipoMovimientoMandatoDeudor
   );
 
-  const tipoFuente: { Id: string; Descripcion: string } = useMandatoStore(
-    (state) => state.tipoMovimientoMandato.tipoFuente
-  );
-
-  const fondoIngreso: { Id: string; Descripcion: string } = useMandatoStore(
-    (state) => state.tipoMovimientoMandato.fondoIngreso
-  );
-
-  const fechaMandato: string = useMandatoStore(
-    (state) => state.tipoMovimientoMandato.fechaMandato
-  );
-
-  const tablaTipoMovimientoMandato: TipoMovimientoMandato[] = useMandatoStore(
-    (state) => state.tablaTipoMovimientoMandato
-  );
-
-  // separacion
-
-  const setTipoMovimientoMandato: Function = useMandatoStore(
-    (state) => state.setTipoMovimientoMandato
+  const setTipoMovimiento: Function = useMandatoStore(
+    (state) => state.setTipoMovimiento
   );
 
   //catalogo
+  const catalogoOrganismos: any = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
   const catalogoTipoEntePublicoObligado: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTipoEntePublicoObligado
   );
@@ -128,8 +122,8 @@ export function TipoDeMovimiento() {
     (state) => state.catalogoFondosOIngresos
   );
 
-  const addTipoMovimientoMandato: Function = useMandatoStore(
-    (state) => state.addTipoMovimientoMandato
+  const addTipoMovimiento: Function = useMandatoStore(
+    (state) => state.addTipoMovimiento
   );
 
   //GET
@@ -137,44 +131,36 @@ export function TipoDeMovimiento() {
     (state) => state.getTiposDeFuente
   );
 
-  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
-    (state) => state.getTipoEntePublicoObligado
-  );
-
   const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
     (state) => state.getFondosOIngresos
   );
 
-  const removeTipoMovimientoMandato: Function = useMandatoStore(
-    (state) => state.removeTipoMovimientoMandato
+  const removeTipoMovimiento: Function = useMandatoStore(
+    (state) => state.removeTipoMovimiento
   );
 
-  const getOrganismos: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
-
-  const catalogoOrganismos: any = useCortoPlazoStore(
-    (state) => state.catalogoOrganismos
-  );
-
-  const cleanTipoMovimientoMandato: Function = useMandatoStore(
-    (state) => state.cleanTipoMovimientoMandato
+  const cleanTipoMovimiento: Function = useMandatoStore(
+    (state) => state.cleanTipoMovimiento
   );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
-    getTipoEntePublicoObligado();
     getFondosOIngresosInstrucciones();
-    getOrganismos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [movimiento, setMovimiento] = useState("DEUDOR");
+
+  const addPorcentaje: Function = useMandatoStore(
+    (state) => state.addPorcentaje
+  );
 
   return (
     <>
       <Grid
         container
         flexDirection={"column"}
-        justifyContent={"space-around"}
+        justifyContent={"flex-start"}
         width={"100%"}
         sx={{
           "@media (min-width: 480px)": {
@@ -207,7 +193,6 @@ export function TipoDeMovimiento() {
         >
           <Grid
             item
-            mt={{ xs: "1rem", sm: "0rem" }}
             xs={10}
             sm={3}
             md={3}
@@ -216,24 +201,25 @@ export function TipoDeMovimiento() {
             display={"flex"}
             justifyContent={"center"}
           >
-            <FormControlLabel
-              label="Alta deudor"
-              control={
-                <Checkbox
-                  checked={altaDeudor === "SI"}
-                  onChange={(v) => {
-                    setTipoMovimientoMandato({
-                      altaDeudor: v.target.checked ? "SI" : "NO",
-                      tipoEntePublicoObligado: tipoEntePublicoObligado,
-                      mandatario: mandatario,
-                      tipoFuente: tipoFuente,
-                      fondoIngreso: fondoIngreso,
-                      fechaMandato: fechaMandato,
-                    });
-                  }}
-                />
-              }
-            ></FormControlLabel>
+            <RadioGroup
+              value={movimiento}
+              onChange={(v) => {
+                setMovimiento(v.target.value);
+              }}
+            >
+              <FormControlLabel
+                sx={{ ...queries.medium_text }}
+                value="DEUDOR"
+                control={<Radio />}
+                label="Alta de deudor"
+              />
+              <FormControlLabel
+                sx={{ ...queries.medium_text }}
+                value="BENEFICIARIO"
+                control={<Radio />}
+                label="Alta de beneficiario"
+              />
+            </RadioGroup>
           </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
@@ -252,29 +238,27 @@ export function TipoDeMovimiento() {
               renderOption={(props, option) => {
                 return (
                   <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
+                    <Typography sx={{ ...queries.medium_text }}>
+                      {option.Descripcion}
+                    </Typography>
                   </li>
                 );
               }}
-              value={tipoEntePublicoObligado}
+              value={tipoMovimientoMandato.tipoEntePublicoObligado}
               onChange={(event, text) => {
-                setTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
+                setTipoMovimiento({
+                  ...tipoMovimientoMandato,
                   tipoEntePublicoObligado: {
                     Id: text.Id,
                     Descripcion: text.Descripcion,
                   },
-                  mandatario: { Id: "", Descripcion: "" },
-                  tipoFuente: tipoFuente,
-                  fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato,
                 });
               }}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="standard"
-                  sx={queries.medium_text}
+                  sx={{ ...queries.medium_text }}
                 />
               )}
               isOptionEqualToValue={(option, value) =>
@@ -293,12 +277,17 @@ export function TipoDeMovimiento() {
               closeText="Cerrar"
               openText="Abrir"
               disabled={
-                tipoEntePublicoObligado.Descripcion === "No aplica" ||
-                /^[\s]*$/.test(tipoEntePublicoObligado.Descripcion)
+                tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion ===
+                  "No aplica" ||
+                /^[\s]*$/.test(
+                  tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion
+                )
               }
               fullWidth
               options={catalogoOrganismos.filter(
-                (td: any) => td.IdTipoEntePublico === tipoEntePublicoObligado.Id
+                (td: any) =>
+                  td.IdTipoEntePublico ===
+                  tipoMovimientoMandato.tipoEntePublicoObligado.Id
               )}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
@@ -308,10 +297,16 @@ export function TipoDeMovimiento() {
                   </li>
                 );
               }}
-              value={{
-                Id: mandatario.Id || "",
-                Descripcion: mandatario.Descripcion || "",
+              onChange={(event, text) => {
+                setTipoMovimiento({
+                  ...tipoMovimientoMandato,
+                  mandatario: {
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
+                  },
+                });
               }}
+              value={tipoMovimientoMandato.mandatario}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -322,16 +317,6 @@ export function TipoDeMovimiento() {
               isOptionEqualToValue={(option, value) =>
                 option.Id === value.Id || value.Descripcion === ""
               }
-              onChange={(event, text) => {
-                setTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado,
-                  mandatario: { Id: text.Id, Descripcion: text.Descripcion },
-                  tipoFuente: tipoFuente,
-                  fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato,
-                });
-              }}
             />
           </Grid>
         </Grid>
@@ -353,10 +338,7 @@ export function TipoDeMovimiento() {
               closeText="Cerrar"
               openText="Abrir"
               options={catalogoTiposDeFuente}
-              value={{
-                Id: tipoFuente.Id || "",
-                Descripcion: tipoFuente.Descripcion || "",
-              }}
+              value={tipoMovimientoMandato.tipoFuente}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -365,22 +347,15 @@ export function TipoDeMovimiento() {
                   </li>
                 );
               }}
-              onChange={(event, text) =>
-                setTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado,
-                  mandatario: mandatario,
+              onChange={(event, text) => {
+                setTipoMovimiento({
+                  ...tipoMovimientoMandato,
                   tipoFuente: {
-                    Id: text?.Id,
-                    Descripcion: text?.Descripcion,
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
                   },
-                  fondoIngreso: {
-                    Id: "",
-                    Descripcion: "",
-                  },
-                  fechaMandato: fechaMandato,
-                })
-              }
+                });
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -400,20 +375,16 @@ export function TipoDeMovimiento() {
               Fondo o ingreso
             </InputLabel>
             <Autocomplete
-              disabled={tipoFuente.Id === ""}
+              disabled={tipoMovimientoMandato.tipoFuente?.Id === ""}
               disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              options={catalogoFondosOIngresos.filter(
-                (td) => td.TipoDeFuente === tipoFuente.Id
+              options={catalogoFondosOIngresos?.filter(
+                (td) => td.TipoDeFuente === tipoMovimientoMandato.tipoFuente?.Id
               )}
-              value={{
-                Id: fondoIngreso.Id || "",
-                Descripcion: fondoIngreso.Descripcion || "",
-                TipoDeFuente: tipoFuente.Id,
-              }}
+              value={tipoMovimientoMandato.fondoIngreso}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -422,19 +393,25 @@ export function TipoDeMovimiento() {
                   </li>
                 );
               }}
-              onChange={(event, text) =>
-                setTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado,
-                  mandatario: mandatario,
-                  tipoFuente: tipoFuente,
+              onChange={(event, text) => {
+                setTipoMovimiento({
+                  ...tipoMovimientoMandato,
+                  id: `${
+                    tipoMovimientoMandato.tipoFuente?.Descripcion
+                  }/${text.Descripcion.split(" ")
+                    .map((word) =>
+                      word.charAt(0) === word.charAt(0).toUpperCase()
+                        ? word.charAt(0)
+                        : ""
+                    )
+                    .join("")}/${tablaTipoMovimiento?.length + 1}`,
                   fondoIngreso: {
-                    Id: text?.Id,
-                    Descripcion: text?.Descripcion,
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
+                    TipoDeFuente: text.TipoDeFuente,
                   },
-                  fechaMandato: fechaMandato,
-                })
-              }
+                });
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -447,34 +424,6 @@ export function TipoDeMovimiento() {
                 value.Descripcion === ""
               }
             />
-          </Grid>
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Fecha mandato
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
-            >
-              <DesktopDatePicker
-                sx={{ width: "100%" }}
-                value={new Date(fechaMandato)}
-                onChange={(date) =>
-                  setTipoMovimientoMandato({
-                    altaDeudor: altaDeudor,
-                    tipoEntePublicoObligado: tipoEntePublicoObligado,
-                    mandatario: mandatario,
-                    tipoFuente: tipoFuente,
-                    fondoIngreso: fondoIngreso,
-                    fechaMandato: date,
-                  })
-                }
-                // slots={{
-                //   textField: DateInput,
-                // }}
-              />
-            </LocalizationProvider>
           </Grid>
         </Grid>
 
@@ -491,25 +440,92 @@ export function TipoDeMovimiento() {
           <ThemeProvider theme={ButtonTheme}>
             <Button
               disabled={
-                tipoEntePublicoObligado.Id === "" ||
-                mandatario.Id === "" ||
-                tipoFuente.Id === "" ||
-                fondoIngreso.Id === ""
+                tipoMovimientoMandato.tipoEntePublicoObligado.Id === "" ||
+                tipoMovimientoMandato.mandatario.Id === "" ||
+                tipoMovimientoMandato.tipoFuente.Id === "" ||
+                tipoMovimientoMandato.fondoIngreso.Id === ""
               }
               sx={{
                 ...queries.buttonContinuar,
                 width: "15vh",
               }}
               onClick={() => {
-                addTipoMovimientoMandato({
-                  altaDeudor: altaDeudor,
-                  tipoEntePublicoObligado: tipoEntePublicoObligado,
-                  mandatario: mandatario,
-                  tipoFuente: tipoFuente,
-                  fondoIngreso: fondoIngreso,
-                  fechaMandato: fechaMandato,
+                addTipoMovimiento({
+                  id: tipoMovimientoMandato.id,
+                  tipoEntePublicoObligado:
+                    tipoMovimientoMandato.tipoEntePublicoObligado,
+                  mandatario: tipoMovimientoMandato.mandatario,
+                  tipoFuente: tipoMovimientoMandato.tipoFuente,
+                  fondoIngreso: tipoMovimientoMandato.fondoIngreso,
+                  fondoIngresoGobiernoEstatal:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "gobierno estatal"
+                      ? tipoMovimientoMandato.tipoFuente.Descripcion.toLowerCase() ===
+                        "participaciones"
+                        ? "80.00"
+                        : "100.00"
+                      : "",
+                  fondoIngresoMunicipios:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "municipios"
+                      ? tipoMovimientoMandato.tipoFuente.Descripcion.toLowerCase() ===
+                        "participaciones"
+                        ? "20.00"
+                        : ""
+                      : "",
+                  fondoIngresoAsignadoMunicipio:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "municipios"
+                      ? "5.00"
+                      : "",
+                  ingresoOrganismo:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "municipios" ||
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "gobierno estatal"
+                      ? "0.00"
+                      : "",
+                  fondoIngresoAfectadoXGobiernoEstatal:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "gobierno estatal"
+                      ? ""
+                      : "",
+                  afectacionGobiernoEstatalEntre100:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "gobierno estatal"
+                      ? "0.00"
+                      : "",
+                  acumuladoAfectacionGobiernoEstatalEntre100:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "gobierno estatal"
+                      ? "0.00"
+                      : "",
+                  fondoIngresoAfectadoXMunicipio:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "municipios"
+                      ? ""
+                      : "",
+                  acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                    "municipios"
+                      ? "0.00"
+                      : "",
+                  ingresoAfectadoXOrganismo:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "municipios" ||
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "gobierno estatal"
+                      ? ""
+                      : "",
+                  acumuladoAfectacionOrganismoEntre100:
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "municipios" ||
+                    tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                      "gobierno estatal"
+                      ? "0.00"
+                      : "",
                 });
-                cleanTipoMovimientoMandato();
+                cleanTipoMovimiento();
               }}
             >
               Agregar
@@ -519,7 +535,7 @@ export function TipoDeMovimiento() {
 
         <Grid
           width={"100%"}
-          height={"25rem"}
+          height={"30rem"}
           display={"flex"}
           justifyContent={"center"}
         >
@@ -545,38 +561,160 @@ export function TipoDeMovimiento() {
                   <TableRow>
                     {heads.map((head, index) => (
                       <StyledTableCell align="center" key={index}>
-                        <Typography>{head.label}</Typography>
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {head.label}
+                        </Typography>
                       </StyledTableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {tablaTipoMovimientoMandato.map((row: any, index: number) => {
+                  {tablaTipoMovimiento.map((row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          <Typography>
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.id}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
                             {row?.tipoEntePublicoObligado.Descripcion}
                           </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          <Typography>{row?.mandatario.Descripcion}</Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Typography>{row?.tipoFuente.Descripcion}</Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Typography>
-                            {row?.fondoIngreso.Descripcion}
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.mandatario.Descripcion}
                           </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          <Typography>
-                            {format(new Date(row?.fechaMandato), "dd/MM/yyyy")}
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.tipoFuente.Descripcion}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.fondoIngresoGobiernoEstatal}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.fondoIngresoMunicipios}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.fondoIngresoAsignadoMunicipio}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.ingresoOrganismo}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                            "gobierno estatal" && (
+                            <TextField
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXGobiernoEstatal}
+                              onChange={(v) => {
+                                if (Number(v.target.value) <= 100.0) {
+                                  addPorcentaje(index, row, {
+                                    columna:
+                                      "fondoIngresoAfectadoXGobiernoEstatal",
+                                    porcentaje: v.target.value,
+                                  });
+                                }
+                              }}
+                            />
+                          )}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.afectacionGobiernoEstatalEntre100}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.acumuladoAfectacionGobiernoEstatalEntre100}
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                            "municipios" && (
+                            <TextField
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXMunicipio}
+                              onChange={(v) => {
+                                if (Number(v.target.value) <= 100.0) {
+                                  addPorcentaje(index, row, {
+                                    columna: "fondoIngresoAfectadoXMunicipio",
+                                    porcentaje: v.target.value,
+                                  });
+                                }
+                              }}
+                            />
+                          )}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {
+                              row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                            }
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                            "gobierno estatal" &&
+                            row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                              "municipios" && (
+                              <TextField
+                                inputProps={{
+                                  sx: {
+                                    fontSize: "0.7rem",
+                                  },
+                                }}
+                                size="small"
+                                value={row?.ingresoAfectadoXOrganismo}
+                                onChange={(v) => {
+                                  if (Number(v.target.value) <= 100.0) {
+                                    addPorcentaje(index, row, {
+                                      columna: "ingresoAfectadoXOrganismo",
+                                      porcentaje: v.target.value,
+                                    });
+                                  }
+                                }}
+                              />
+                            )}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {row?.acumuladoAfectacionOrganismoEntre100}
                           </Typography>
                         </StyledTableCell>
 
@@ -584,7 +722,7 @@ export function TipoDeMovimiento() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() => removeTipoMovimientoMandato(index)}
+                              onClick={() => removeTipoMovimiento(index)}
                             >
                               <DeleteIcon />
                             </IconButton>

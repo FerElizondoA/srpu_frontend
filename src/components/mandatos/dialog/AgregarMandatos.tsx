@@ -19,9 +19,9 @@ import { GridCloseIcon } from "@mui/x-data-grid";
 import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
+import { DatosGeneralesMandatos } from "../panels/DatosGeneralesMandatos";
 import { SoporteDocumental } from "../panels/SoporteDocumental";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
-import { DatosGeneralesMandatos } from "../panels/DatosGeneralesMandatos";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -73,8 +73,8 @@ export function AgregarMandatos({
     (state) => state.modificaMandato
   );
 
-  const setTipoMovimientoMandato: Function = useMandatoStore(
-    (state) => state.setTipoMovimientoMandato
+  const setTipoMovimiento: Function = useMandatoStore(
+    (state) => state.setTipoMovimiento
   );
 
   const setSoporteDocumentalMandato: Function = useMandatoStore(
@@ -92,7 +92,7 @@ export function AgregarMandatos({
   const limpiaMandato = () => {
     changeIdMandato("");
 
-    setTipoMovimientoMandato({
+    setTipoMovimiento({
       altaDeudor: "",
       tipoEntePublicoObligado: { Id: "", Descripcion: "" },
       mandatario: { Id: "", Descripcion: "" },

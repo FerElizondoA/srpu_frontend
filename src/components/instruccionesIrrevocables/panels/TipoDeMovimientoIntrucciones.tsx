@@ -1,44 +1,35 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  AppBar,
   Autocomplete,
   Button,
   Checkbox,
-  Dialog,
-  Divider,
   FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
   Paper,
   Slide,
-  Tab,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   ThemeProvider,
-  Toolbar,
   Tooltip,
   Typography,
   createTheme,
-  useMediaQuery,
 } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { queries } from "../../../queries";
-import { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
+import { forwardRef, useEffect } from "react";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
-import DeleteIcon from "@mui/icons-material/Delete";
-import validator from "validator";
-import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

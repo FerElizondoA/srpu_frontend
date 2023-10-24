@@ -19,7 +19,6 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
@@ -33,7 +32,6 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
@@ -84,11 +82,6 @@ const heads: Head[] = [
 ];
 
 export function Mandatos() {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
-
   const [accion, setAccion] = useState("Agregar");
 
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
@@ -131,7 +124,7 @@ export function Mandatos() {
           .includes(busqueda.toLocaleLowerCase())
       ) {
         return elemento;
-      }
+      } else return null;
     });
     setMandatosFiltrados(ResultadoBusqueda);
   };
@@ -177,7 +170,6 @@ export function Mandatos() {
     []
   );
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-
 
   const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
   const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
@@ -236,10 +228,6 @@ export function Mandatos() {
     getMandatos(setMandatos);
     !openAgregarMandato && cleanMandato();
   }, [openAgregarMandato]);
-
-  const changeNumeroMandato: Function = useMandatoStore(
-    (state) => state.changeNumeroMandato
-  );
 
   return (
     <Grid height={"74vh"}>
@@ -395,7 +383,7 @@ export function Mandatos() {
                             onClick={() => {
                               setAccion("Editar");
 
-                              changeNumeroMandato(row.NumeroMandato);
+                              // changeNumeroMandato(row.NumeroMandato);
 
                               changeIdMandato(row?.Id);
 
@@ -440,7 +428,6 @@ export function Mandatos() {
         openState={openAgregarMandato}
         accion={accion}
       />
-
 
       <Dialog
         open={openDialogEliminar}

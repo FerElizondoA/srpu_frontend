@@ -175,32 +175,6 @@ export function SoporteDocumental() {
         </Grid>
 
         <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-          <Grid width={"90%"}>
-            <InputLabel sx={queries.medium_text}>
-              Fecha del documento
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
-            >
-              <DesktopDatePicker
-                sx={{ width: "100%" }}
-                value={new Date(fechaArchivo)}
-                onChange={(date) =>
-                  setSoporteDocumentalMandato({
-                    tipo: tipo,
-                    fechaArchivo: date?.toString(),
-                    archivo: archivo,
-                    nombreArchivo: nombreArchivo,
-                  })
-                }
-                // slots={{
-                //   textField: DateInput,
-                // }}
-              />
-            </LocalizationProvider>
-          </Grid>
-
           <Grid>
             <InputLabel>Archivo</InputLabel>
             <Typography
@@ -260,6 +234,31 @@ export function SoporteDocumental() {
                 cursor: "pointer",
               }}
             />
+          </Grid>
+
+          <Grid>
+            <InputLabel sx={queries.medium_text}>
+              Fecha del documento
+            </InputLabel>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DesktopDatePicker
+                value={new Date(fechaArchivo)}
+                onChange={(date) =>
+                  setSoporteDocumentalMandato({
+                    tipo: tipo,
+                    fechaArchivo: date?.toString(),
+                    archivo: archivo,
+                    nombreArchivo: nombreArchivo,
+                  })
+                }
+                // slots={{
+                //   textField: DateInput,
+                // }}
+              />
+            </LocalizationProvider>
           </Grid>
         </Grid>
 
