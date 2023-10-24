@@ -307,7 +307,37 @@ export function Resumen({ coments }: { coments: boolean }) {
       sx={{
         display: "flex",
         justifyContent: "center",
-        width: "auto",
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          height: ".5vh",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+         height : "40rem",
+        "@media (min-width: 480px)": {
+          height: "40rem",
+        },
+    
+        "@media (min-width: 768px)": {
+          height : "45rem",
+        },
+    
+        "@media (min-width: 1140px)": {
+          height: "35rem",
+        },
+    
+        "@media (min-width: 1400px)": {
+          height: "35rem",
+        },
+    
+        "@media (min-width: 1870px)": {
+          height: "48rem",
+        },
       }}
     >
       <Grid

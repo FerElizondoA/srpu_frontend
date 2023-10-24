@@ -95,7 +95,7 @@ export async function creaDesc(
       }
     )
     .then(({ data }) => {
-      data.data.error
+      !data.data.error
         ? Swal.fire({
             customClass: { container: ".swal2-container" },
             confirmButtonColor: "#15212f",

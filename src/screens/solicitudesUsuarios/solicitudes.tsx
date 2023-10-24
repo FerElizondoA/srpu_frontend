@@ -38,6 +38,8 @@ import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobil
 import { queries } from "../../queries";
 import { queriesSolicitud } from "./queriesSolicitudes";
 import ListIcon from '@mui/icons-material/List';
+import { CompListSolicitudesUsuarios } from "./CompListSolicitudesUsuarios";
+import { useSolicitudUsuarioStore } from "../../store/SolicitudUsuario/main";
 
 export function Solicitudes() {
   const query = {
@@ -110,6 +112,20 @@ export function Solicitudes() {
     }
   };
 
+  // const indexSelect: number = useSolicitudUsuarioStore(
+  //   (state) => state.indexSelect
+  // );
+  // const setIndexSelect: Function = useSolicitudUsuarioStore(
+  //   (state) => state.setIndexSelect
+  // )
+
+  // const openDialog: boolean = useSolicitudUsuarioStore(
+  //   (state) => state.opendialog
+  // );
+  // const setOpenDialog: Function = useSolicitudUsuarioStore(
+  //   (state) => state.setOpenDialog
+  // )
+
   const [indexSelect, setIndexSelect] = useState(-1);
 
   const prevSolicitud = () => {
@@ -138,6 +154,15 @@ export function Solicitudes() {
     setSolicitudesFiltered(solicitudes);
   }, [solicitudes]);
 
+  const limpiaIndex = () => {
+    setIndexSelect(-1)
+    setSolicitudesFiltered([])
+  };
+
+  useEffect(() => {
+    setIndexSelect(-1)
+  }, []);
+
   const navigate = useNavigate();
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -165,11 +190,13 @@ export function Solicitudes() {
               sx={queries.buttonContinuar}
               onClick={() => {
                 navigate("../users");
+                limpiaIndex();
+
               }}
             >
               <KeyboardArrowLeftIcon />
-              {query.buttonMobile ? null :"Volver"}
-           
+              {query.buttonMobile ? null : "Volver"}
+
             </Button>
           </Tooltip>
         </Grid>
@@ -184,6 +211,7 @@ export function Solicitudes() {
               alignItems: "center",
               justifyContent: "start",
               direction: "row",
+              marginRight: 3
             }}
           >
             <Tooltip title="Lista de Solicitudes">
@@ -193,7 +221,6 @@ export function Solicitudes() {
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   setOpenDialog(!openDialog)
-
                 }}
               >
                 <ListIcon />
@@ -212,13 +239,10 @@ export function Solicitudes() {
           alignItems: "center",
           justifyContent: "center",
           direction: "row",
-
         }}
       >
 
         {!query.buttonMobile ?
-
-
           <Grid width={"35%"}
             item
             flexDirection={"column"}
@@ -249,182 +273,202 @@ export function Solicitudes() {
               </FormControl>
             </Grid>
 
-            <Grid
-
-            >
+            <Grid >
+              {/* COMPONENTE LISTA */}
               <List sx={{
-                ...queriesSolicitud.buscador_solicitudes,
-                overflow: "auto",
-                "&::-webkit-scrollbar": {
-                  width: ".3vw",
-                  height: ".5vh",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "rgba(0,0,0,.5)",
-                  outline: "1px solid slategrey",
-                  borderRadius: 10,
-                },
-              }}>
-                {solicitudesFiltered?.map((dato, index) => {
-                  return (
-                    <Grid mb={2} container key={index}>
-                      <ListItem disablePadding >
-                        <ListItemButton
-                          sx={{
-                            border: index === indexSelect ? "2px solid" : null,
-                            ":hover": { backgroundColor: "none" },
-                          }}
-                          onClick={() => {
-                            getDetailSolicitudUsuario(
-                              dato.Id,
-                              setDetailSolicitud
-                            );
-                            setIndexSelect(index);
-                          }}
+        //...queriesSolicitud.buscador_solicitudes,
+
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".3vw",
+          height: ".5vh",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0,0,0,.5)",
+          outline: "1px solid slategrey",
+          borderRadius: 10,
+        },
+        height: "25rem",
+        "@media (min-width: 480px)": {
+          height: "20rem",
+        },
+    
+        "@media (min-width: 768px)": {
+          height: "35rem",
+        },
+        "@media (min-width: 1140px)": {
+          height: "34rem",
+        },
+    
+        "@media (min-width: 1400px)": {
+          height: "34rem",
+        },
+    
+        "@media (min-width: 1870px)": {
+          height: "45rem",
+        },
+      }}>
+        {solicitudesFiltered?.map((dato, index) => {
+          return (
+            <Grid mb={2} container key={index}>
+              <ListItem disablePadding >
+                <ListItemButton
+                  sx={{
+                    border: index === indexSelect ? "2px solid" : null,
+                    ":hover": { backgroundColor: "none" },
+                  }}
+                  onClick={() => {
+                    getDetailSolicitudUsuario(
+                      dato.Id,
+                      setDetailSolicitud
+                    );
+                    setIndexSelect(index);
+                    setOpenDialog(false)
+                  }}
+                >
+
+                  <Grid container sx={{
+                    width: "100%",
+                    height: "18vh",
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                  }}
+                  >
+                    <Grid item width={"100%"}>
+                      <Grid sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}>
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
                         >
-                          {/* boxContenedorBuscador*/}
-                          {/* <Grid container sx={queriesSolicitud.boxContenedorBuscador}> */}
-                          <Grid container sx={{
-                            width: "100%",
-                            height: "18vh",
-                            justifyContent: "space-evenly",
-                            display: "flex",
-                          }}
-                          >
-                            <Grid item width={"100%"}>
-                              <Grid sx={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  USUARIO:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.NombreUsuario.toUpperCase()}
-                                </Typography>
-                              </Grid>
+                          USUARIO:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.NombreUsuario.toUpperCase()}
+                        </Typography>
+                      </Grid>
 
-                              <Grid
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  padding={"1px 4px 1px 0"}
-                                  fontSize={"14px"}
-                                  fontWeight={"bold"}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  FECHA:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.FechaDeCreacion.toUpperCase()}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-
-                            <Grid container width={"100%"}>
-
-                              <Grid item width={"100%"} display={"flex"}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  TIPO :{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.tipoSoli.toUpperCase()}
-                                </Typography>
-                              </Grid>
-
-                              <Grid item width={"100%"} display={"flex"}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  ESTATUS:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {getEstatus(dato.Estatus)}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-
-                            <Grid item width={"100%"} display={"flex"}
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Typography
-                                sx={queriesSolicitud.typograhyCampoBuscador}
-                                color={
-                                  index === indexSelect ? "#af8c55 " : "black"
-                                }
-                              >
-                                SOLICITANTE:{" "}
-                              </Typography>
-
-                              <Typography
-                                sx={queriesSolicitud.typograhyResultadoBuscador}
-                                color={
-                                  index === indexSelect ? "#af8c55 " : "black"
-                                }
-                              >
-                                {dato.NombreSolicitante.toUpperCase()}
-                              </Typography>
-
-                            </Grid>
-                          </Grid>
-                        </ListItemButton>
-                      </ListItem>
-                      <Divider />
+                      <Grid
+                        mt={.7}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          padding={"1px 4px 1px 0"}
+                          fontSize={"14px"}
+                          fontWeight={"bold"}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          FECHA:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.FechaDeCreacion.toUpperCase()}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  );
-                })}
-              </List>
+
+                    <Grid container width={"100%"}>
+
+                      <Grid item width={"100%"} display={"flex"}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          TIPO :{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.tipoSoli.toUpperCase()}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item width={"100%"} display={"flex"}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          ESTATUS:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {getEstatus(dato.Estatus)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid item width={"100%"} display={"flex"}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography
+                        sx={queriesSolicitud.typograhyCampoBuscador}
+                        color={
+                          index === indexSelect ? "#af8c55 " : "black"
+                        }
+                      >
+                        SOLICITANTE:{" "}
+                      </Typography>
+
+                      <Typography
+                        sx={queriesSolicitud.typograhyResultadoBuscador}
+                        color={
+                          index === indexSelect ? "#af8c55 " : "black"
+                        }
+                      >
+                        {dato.NombreSolicitante.toUpperCase()}
+                      </Typography>
+
+                    </Grid>
+                  </Grid>
+                </ListItemButton>
+              </ListItem>
+              <Divider />
+            </Grid>
+          );
+        })}
+      </List>
             </Grid>
           </Grid>
           : null
@@ -447,21 +491,21 @@ export function Solicitudes() {
                 "@media (min-width: 480px)": {
                   height: "76vh",
                 },
-            
+
                 "@media (min-width: 768px)": {
                   height: "84vh",
                 },
-            
+
                 "@media (min-width: 1140px)": {
                   height: "84vh",
                   width: "100%",
                 },
-            
+
                 "@media (min-width: 1400px)": {
                   height: "85vh",
                   width: "100%",
                 },
-            
+
                 "@media (min-width: 1870px)": {
                   height: "85vh",
                   width: "100%",
@@ -474,14 +518,14 @@ export function Solicitudes() {
               ></InfoIcon>
               {query.buttonMobile
                 ? <Typography color={"#AF8C55"} fontWeight={"bold"}>
-                SELECCIONAR BOTON DE "LISTA DE SOLICITUDES" Y ESCOGER UNA
-              </Typography>
-              
-                :<Typography color={"#AF8C55"} fontWeight={"bold"}>
-                SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA
-              </Typography>
+                  SELECCIONAR BOTON DE "LISTA DE SOLICITUDES" Y ESCOGER UNA
+                </Typography>
+
+                : <Typography color={"#AF8C55"} fontWeight={"bold"}>
+                  SELECCIONAR UNA SOLICITUD EN EL APARTADO DE BUSQUEDA
+                </Typography>
               }
-  
+
             </Grid>
           </Grid>
         ) : (
@@ -503,11 +547,11 @@ export function Solicitudes() {
               <Grid >
                 {/* <Grid sx={queriesSolicitud.boxApartadosFormulario}> */}
                 <Grid
-                  
+
                   container
                   justifyContent={"space-around"}
                 >
-                  <Grid item sm={2} xl={3} xs={10} md={3} lg={3}>
+                  <Grid item sm={2} xl={3} xs={4} md={3} lg={3}>
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
@@ -517,7 +561,7 @@ export function Solicitudes() {
                     />
                   </Grid>
 
-                  <Grid item sm={3} xl={3} xs={10} md={4} lg={4}>
+                  <Grid item sm={3} xl={3} xs={4} md={4} lg={4}>
                     <TextField
                       fullWidth
                       InputProps={{ readOnly: true }}
@@ -535,9 +579,10 @@ export function Solicitudes() {
                 display: "flex",
                 width: "100%",
                 justifyContent: "space-evenly",
-              }}>
+              }}
+              >
 
-                <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <Grid item xs={2.7} sm={3} md={3} lg={3} xl={3}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -547,7 +592,7 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <Grid item xs={2.7} sm={3} md={3} lg={3} xl={3}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -557,7 +602,7 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <Grid item xs={2.7} sm={3} md={3} lg={3} xl={3}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -576,7 +621,7 @@ export function Solicitudes() {
               }}>
 
                 {/* grid contenido*/}
-                <Grid item xs={10} sm={2} md={3} lg={3} xl={3}>
+                <Grid item xs={4.5} sm={3} md={3} lg={3} xl={3}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -586,17 +631,7 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={3} lg={3} xl={3}>
-                  <TextField
-                    fullWidth
-                    InputProps={{ readOnly: true }}
-                    label="Correo Electrónico"
-                    variant="standard"
-                    value={detailSolicitud?.CorreoElectronico || ""}
-                  />
-                </Grid>
-
-                <Grid item xs={10} sm={2} md={3} lg={3} xl={3}>
+                <Grid item xs={4.5} sm={3} md={3} lg={3} xl={3}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -606,6 +641,22 @@ export function Solicitudes() {
                   />
                 </Grid>
 
+                <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+                  sx={{
+                    mt: { xs: 4, sm: 0 }
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    InputProps={{ readOnly: true }}
+                    label="Correo Electrónico"
+                    variant="standard"
+                    value={detailSolicitud?.CorreoElectronico || ""}
+                  />
+                </Grid>
+
+
+
               </Grid>
 
               <Grid container sx={{
@@ -614,7 +665,7 @@ export function Solicitudes() {
                 justifyContent: "space-evenly",
               }}>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}  >
+                <Grid item xs={4.5} sm={2} md={2} lg={2} xl={2}  >
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -624,7 +675,7 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={4.5} sm={2} md={2} lg={2} xl={2}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -634,7 +685,11 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={4.5} sm={2} md={2} lg={2} xl={2}
+                  sx={{
+                    mt: { xs: 4, sm: 0 }
+                  }}
+                >
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -644,7 +699,10 @@ export function Solicitudes() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={4.5} sm={2} md={2} lg={2} xl={2}
+                  sx={{
+                    mt: { xs: 4, sm: 0 }
+                  }}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -672,7 +730,10 @@ export function Solicitudes() {
                     value={detailSolicitud?.Entidad || ""}
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
+                  sx={{
+                    mt: { xs: 4, sm: 0 }
+                  }}>
                   <TextField
                     fullWidth
                     InputProps={{ readOnly: true }}
@@ -733,7 +794,7 @@ export function Solicitudes() {
             justifyContent={"space-evenly"}
 
           >
-            <Grid xs={12} sm={12} md={12} lg={12} xl={12}>
+            <Grid xs={12} sm={12} md={12} lg={12} xl={12} mb={2}>
               <FormControl fullWidth>
                 <InputLabel>Filtrado</InputLabel>
                 <Select
@@ -756,185 +817,204 @@ export function Solicitudes() {
               </FormControl>
             </Grid>
 
-            <Grid
-              container
-              sx={{
-              }}
-            >
+            <Grid container >
+
+              {/* aqui va el componente de lista*/}
               <List sx={{
-                //...queriesSolicitud.buscador_solicitudes,
-                overflow: "auto",
-                "&::-webkit-scrollbar": {
-                  width: ".3vw",
-                  height: ".5vh",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "rgba(0,0,0,.5)",
-                  outline: "1px solid slategrey",
-                  borderRadius: 10,
-                },
-              }}>
-                {solicitudesFiltered?.map((dato, index) => {
-                  return (
-                    <Grid mb={2} container key={index}>
-                      <ListItem disablePadding >
-                        <ListItemButton
-                          sx={{
-                            border: index === indexSelect ? "2px solid" : null,
-                            ":hover": { backgroundColor: "none" },
-                          }}
-                          onClick={() => {
-                            getDetailSolicitudUsuario(
-                              dato.Id,
-                              setDetailSolicitud
-                            );
-                            setIndexSelect(index);
-                            setOpenDialog(false)
-                          }}
+        //...queriesSolicitud.buscador_solicitudes,
+
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".3vw",
+          height: ".5vh",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0,0,0,.5)",
+          outline: "1px solid slategrey",
+          borderRadius: 10,
+        },
+        height: "25rem",
+        "@media (min-width: 480px)": {
+          height: "20rem",
+        },
+    
+        "@media (min-width: 768px)": {
+          height: "35rem",
+        },
+        "@media (min-width: 1140px)": {
+          height: "34rem",
+        },
+    
+        "@media (min-width: 1400px)": {
+          height: "34rem",
+        },
+    
+        "@media (min-width: 1870px)": {
+          height: "45rem",
+        },
+      }}>
+        {solicitudesFiltered?.map((dato, index) => {
+          return (
+            <Grid mb={2} container key={index}>
+              <ListItem disablePadding >
+                <ListItemButton
+                  sx={{
+                    border: index === indexSelect ? "2px solid" : null,
+                    ":hover": { backgroundColor: "none" },
+                  }}
+                  onClick={() => {
+                    getDetailSolicitudUsuario(
+                      dato.Id,
+                      setDetailSolicitud
+                    );
+                    setIndexSelect(index);
+                    setOpenDialog(false)
+                  }}
+                >
+
+                  <Grid container sx={{
+                    width: "100%",
+                    height: "18vh",
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                  }}
+                  >
+                    <Grid item width={"100%"}>
+                      <Grid sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}>
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
                         >
-                          {/* boxContenedorBuscador*/}
-                          {/* <Grid container sx={queriesSolicitud.boxContenedorBuscador}> */}
-                          <Grid container sx={{
-                            width: "100%",
-                            height: "18vh",
-                            justifyContent: "space-evenly",
-                            display: "flex",
-                          }}
-                          >
-                            <Grid item width={"100%"}>
-                              <Grid sx={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  USUARIO:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.NombreUsuario.toUpperCase()}
-                                </Typography>
-                              </Grid>
+                          USUARIO:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.NombreUsuario.toUpperCase()}
+                        </Typography>
+                      </Grid>
 
-                              <Grid
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  padding={"1px 4px 1px 0"}
-                                  fontSize={"14px"}
-                                  fontWeight={"bold"}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  FECHA:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.FechaDeCreacion.toUpperCase()}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-
-                            <Grid container width={"100%"}>
-
-                              <Grid item width={"100%"} display={"flex"}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  TIPO :{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {dato.tipoSoli.toUpperCase()}
-                                </Typography>
-                              </Grid>
-
-                              <Grid item width={"100%"} display={"flex"}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  sx={queriesSolicitud.typograhyCampoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  ESTATUS:{" "}
-                                </Typography>
-                                <Typography
-                                  sx={queriesSolicitud.typograhyResultadoBuscador}
-                                  color={
-                                    index === indexSelect ? "#af8c55 " : "black"
-                                  }
-                                >
-                                  {getEstatus(dato.Estatus)}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-
-                            <Grid item width={"100%"} display={"flex"}
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Typography
-                                sx={queriesSolicitud.typograhyCampoBuscador}
-                                color={
-                                  index === indexSelect ? "#af8c55 " : "black"
-                                }
-                              >
-                                SOLICITANTE:{" "}
-                              </Typography>
-
-                              <Typography
-                                sx={queriesSolicitud.typograhyResultadoBuscador}
-                                color={
-                                  index === indexSelect ? "#af8c55 " : "black"
-                                }
-                              >
-                                {dato.NombreSolicitante.toUpperCase()}
-                              </Typography>
-
-                            </Grid>
-                          </Grid>
-                        </ListItemButton>
-                      </ListItem>
-                      <Divider />
+                      <Grid 
+                      
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          padding={"1px 4px 1px 0"}
+                          fontSize={"14px"}
+                          fontWeight={"bold"}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          FECHA:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.FechaDeCreacion.toUpperCase()}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  );
-                })}
-              </List>
+
+                    <Grid container width={"100%"}>
+
+                      <Grid item width={"100%"} display={"flex"}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          TIPO :{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {dato.tipoSoli.toUpperCase()}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item width={"100%"} display={"flex"}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={queriesSolicitud.typograhyCampoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          ESTATUS:{" "}
+                        </Typography>
+                        <Typography
+                          sx={queriesSolicitud.typograhyResultadoBuscador}
+                          color={
+                            index === indexSelect ? "#af8c55 " : "black"
+                          }
+                        >
+                          {getEstatus(dato.Estatus)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid item width={"100%"} display={"flex"}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography
+                        sx={queriesSolicitud.typograhyCampoBuscador}
+                        color={
+                          index === indexSelect ? "#af8c55 " : "black"
+                        }
+                      >
+                        SOLICITANTE:{" "}
+                      </Typography>
+
+                      <Typography
+                        sx={queriesSolicitud.typograhyResultadoBuscador}
+                        color={
+                          index === indexSelect ? "#af8c55 " : "black"
+                        }
+                      >
+                        {dato.NombreSolicitante.toUpperCase()}
+                      </Typography>
+
+                    </Grid>
+                  </Grid>
+                </ListItemButton>
+              </ListItem>
+              <Divider />
+            </Grid>
+          );
+        })}
+      </List>
+
             </Grid>
           </Grid>
         </DialogContent>
@@ -944,7 +1024,7 @@ export function Solicitudes() {
             onClick={() => {
               setOpenDialog(false)
             }}
-            sx={{...queries.buttonCancelar}}
+            sx={{ ...queries.buttonCancelar }}
           >
             Cancelar
           </Button>

@@ -1,4 +1,4 @@
-import { Edit } from "@mui/icons-material";
+import { Edit, WindowSharp } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -340,6 +340,7 @@ export const Usuarios = () => {
                   }
                   onClick={() => {
                     navigate("../solicitudes-usuarios");
+                    //window.location.reload();
                   }}
                 >
                   Ver Solicitudes
