@@ -215,7 +215,7 @@ export const queries = {
     //fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
-    fontSize: "70%",
+    fontSize: "60%",
     "@media (min-width: 480px)": {
       fontSize: "70%",
     },

@@ -47,9 +47,9 @@ export function ObligacionesLargoPlazoPage() {
         <LateralMenu />
       </Grid>
 
-      <Grid item container direction="column">
-        <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Grid width={"91%"} display={"flex"} justifyContent={"center"}>
+      <Grid item container direction="column" width={"100%"}>
+        <Grid mt={2}  display={"flex"} justifyContent={"center"}>
+          <Grid width={"85%"} display={"flex"} justifyContent={"center"}>
             <Typography
               sx={{
                 color: "#AF8C55",
@@ -60,7 +60,17 @@ export function ObligacionesLargoPlazoPage() {
             </Typography>
           </Grid>
 
-          <Grid width={"2%"} display={"flex"} justifyContent={"end"}>
+          <Grid  display={"flex"} justifyContent={"end"} 
+          sx={{
+            width:"10%",
+            "@media (min-width: 480px)": {
+              width:"10%",
+            },
+      
+            "@media (min-width: 768px)": {
+              width:"2%"
+            },
+          }}>
             <Button
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);

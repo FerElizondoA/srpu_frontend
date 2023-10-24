@@ -545,12 +545,42 @@ export function Resumen() {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (
-    <Grid  width={"100%"}
+    <Grid width={"100%"}
       container
       sx={{
         display: "flex",
         justifyContent: "center",
-        width: "auto",
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          height: ".5vh",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+         height : "40rem",
+        "@media (min-width: 480px)": {
+          height: "40rem",
+        },
+    
+        "@media (min-width: 768px)": {
+          height : "45rem",
+        },
+    
+        "@media (min-width: 1140px)": {
+          height: "35rem",
+        },
+    
+        "@media (min-width: 1400px)": {
+          height: "35rem",
+        },
+    
+        "@media (min-width: 1870px)": {
+          height: "48rem",
+        },
       }}
     >
       <Grid
@@ -562,8 +592,8 @@ export function Resumen() {
           justifyContent: "center",
         }}
       >
-        <Grid 
-        mt={{xs:1, sm:5, md:5, lg:5, xl:5}}
+        <Grid
+          mt={{ xs: 1, sm: 5, md: 5, lg: 5, xl: 5 }}
         >
           <Typography sx={queries.bold_text}>Encabezado</Typography>
           <Grid
@@ -597,11 +627,11 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                   </IconButton>
                 </Tooltip>
 
-                <Typography sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -644,12 +674,12 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                   </IconButton>
                 </Tooltip>
                 {/* Revisar */}
 
-                <Typography sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -667,7 +697,7 @@ export function Resumen() {
                 <IconButton
                   color={
                     comentario["Tabla Obligado Solidario Aval"] &&
-                    comentario["Tabla Obligado Solidario Aval"] !== ""
+                      comentario["Tabla Obligado Solidario Aval"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -680,7 +710,7 @@ export function Resumen() {
                     });
                   }}
                 >
-                  <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                 </IconButton>
               </Tooltip>
 
@@ -691,7 +721,7 @@ export function Resumen() {
               <TableContainer
                 sx={{
                   maxHeight: "100%",
-                  width:"95%",
+                  width: "95%",
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".5vw",
@@ -811,10 +841,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong> {head.value}
                 </Typography>
               </Grid>
@@ -829,7 +859,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Gastos y Costos"] &&
-                  comentario["Tabla Gastos y Costos"] !== ""
+                    comentario["Tabla Gastos y Costos"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -842,19 +872,19 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
-          <Paper sx={{ width: "96%"}}>
+          <Paper sx={{ width: "96%" }}>
             <TableContainer
               sx={{
                 height: "18rem",
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
                   width: ".3vw",
-                  height:".5vh",
+                  height: ".5vh",
                   mt: 1,
                 },
                 "&::-webkit-scrollbar-thumb": {
@@ -927,7 +957,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Autorizacion"] &&
-                  comentario["Tabla Autorizacion"] !== ""
+                    comentario["Tabla Autorizacion"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -940,20 +970,20 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
               </IconButton>
             </Tooltip>
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{ 
+            <TableContainer sx={{
               height: "20rem",
               width: "100%",
               maxHeight: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
-                height:".5vh",
+                height: ".5vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -961,7 +991,7 @@ export function Resumen() {
                 outline: "1px solid slategrey",
                 borderRadius: 1,
               },
-           }}>
+            }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1016,10 +1046,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
@@ -1034,7 +1064,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Fuente de Pago"] &&
-                  comentario["Tabla Fuente de Pago"] !== ""
+                    comentario["Tabla Fuente de Pago"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -1047,19 +1077,19 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{ 
-              height: "18rem", 
+            <TableContainer sx={{
+              height: "18rem",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".3vw",
-                height:".5vh",
+                height: ".5vh",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -1067,8 +1097,8 @@ export function Resumen() {
                 outline: "1px solid slategrey",
                 borderRadius: 1,
               },
-          
-          }}>
+
+            }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1125,10 +1155,10 @@ export function Resumen() {
                       });
                     }}
                   >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={{...queries.medium_text, mb:2}}>
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
@@ -1143,7 +1173,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Asignar Fuente"] &&
-                  comentario["Tabla Asignar Fuente"] !== ""
+                    comentario["Tabla Asignar Fuente"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -1156,29 +1186,29 @@ export function Resumen() {
                   });
                 }}
               >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }} />
+                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
               </IconButton>
             </Tooltip>
             {/* Revisar */}
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{ 
+            <TableContainer sx={{
               height: 350,
-               maxHeight: "100%",
-               width:"100%",
-               overflow: "auto",
-               "&::-webkit-scrollbar": {
-                 width: ".5vw",
-                 height: ".5vh",
-                 mt: 1,
-               },
-               "&::-webkit-scrollbar-thumb": {
-                 backgroundColor: "#AF8C55",
-                 outline: "1px solid slategrey",
-                 borderRadius: 1,
-               },
-             }}>
+              maxHeight: "100%",
+              width: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: ".5vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1206,7 +1236,7 @@ export function Resumen() {
                 <IconButton
                   color={
                     comentario["Tabla Condiciones Financieras"] &&
-                    comentario["Tabla Condiciones Financieras"] !== ""
+                      comentario["Tabla Condiciones Financieras"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -1219,7 +1249,7 @@ export function Resumen() {
                     });
                   }}
                 >
-                  <CommentIcon fontSize="small" sx={{ mr: 2, mb:2 }}/>
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
                 </IconButton>
               </Tooltip>
               {/* Revisar */}
@@ -1531,7 +1561,7 @@ export function Resumen() {
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
-                        height:".5vh",
+                        height: ".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {
@@ -1586,7 +1616,7 @@ export function Resumen() {
         <Grid mt={5} mb={4} width={"100%"}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Divider color="lightGrey"></Divider>
-          <Grid  width={"100%"}
+          <Grid width={"100%"}
             sx={{
               flexDirection: "row",
               mt: 1,
@@ -1598,7 +1628,7 @@ export function Resumen() {
             }}
           >
             <TableContainer sx={{
-              width:"100%"
+              width: "100%"
             }}>
               <Table>
                 <TableHead>
@@ -1616,7 +1646,7 @@ export function Resumen() {
                           <IconButton
                             color={
                               comentario[row.descripcionTipo] &&
-                              comentario[row.descripcionTipo] !== ""
+                                comentario[row.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -1672,12 +1702,11 @@ export function Resumen() {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.nombre.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].file
+                                        `data:application/pdf;base64,${arr.filter((td: any) =>
+                                          td.nombre.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].file
                                         }`
                                       );
                                     });
