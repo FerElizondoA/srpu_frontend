@@ -136,12 +136,6 @@ export function Mandatos() {
     setMandatosFiltrados(ResultadoBusqueda);
   };
 
-  // useEffect(() => { PARA DIALOG ELIMINAR
-  //   if (!openDialogEliminar) {
-  //     getFideicomisos(setFideicomisos);
-  //   }
-  // }, [openAgregarFideicomisos]);
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     busqueda.length !== 0 ? setMandatos(mandatos) : null;
@@ -181,15 +175,6 @@ export function Mandatos() {
   const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
 
   const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
-
-  // useEffect(() =>{
-  //   setDatosGMandatos({
-  //     mecanismoPago: datosGMandatos.mecanismoPago,
-  //     MunicipioOrganismoMandante: localStorage.getItem("EntePublicoObligado"),
-  //     TipoEntePublicoObligado: localStorage.getItem("TipoEntePublicoObligado")
-  //   })
-
-  // }, [])
 
   useEffect(() => {
     setMandatosFiltrados(mandatos);

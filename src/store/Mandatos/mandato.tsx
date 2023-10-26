@@ -92,11 +92,7 @@ export interface MandatoSlice {
   ) => void;
 
   removeTipoMovimiento: (index: number) => void;
-  addPorcentaje: (
-    index: number,
-    tipoMovimientoMandato: TipoMovimientoMandatoDeudor,
-    porcentaje: { columna: string; porcentaje: string }
-  ) => void;
+  addPorcentaje: (tipoMovimientoMandato: TipoMovimientoMandatoDeudor) => void;
   removeSoporteDocumentalMandato: (index: number) => void;
 
   cleanTipoMovimiento: () => void;
@@ -209,22 +205,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     }));
   },
 
-  addPorcentaje: (
-    index: number,
-    tipoMovimientoMandato: TipoMovimientoMandatoDeudor,
-    porcentaje: { columna: string; porcentaje: string }
-  ) => {
-    let tabla = useMandatoStore.getState().tablaTipoMovimientoMandatoDeudor;
-
-    tabla[index] = {
-      ...tipoMovimientoMandato,
-      [porcentaje.columna]: porcentaje.porcentaje,
-    };
-
-    set((state) => ({
-      tablaTipoMovimientoMandatoDeudor: tabla,
-    }));
-  },
+  addPorcentaje: (tipoMovimientoMandato: any) =>
+    set(() => ({ tablaTipoMovimientoMandatoDeudor: tipoMovimientoMandato })),
 
   cleanTipoMovimiento: () => {
     set(() => ({

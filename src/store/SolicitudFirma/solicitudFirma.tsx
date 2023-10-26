@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -63,6 +64,13 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
+          createNotificationCortoPlazo(
+            "Solicitud enviada",
+            `La solicitud ha sido enviada para autorización con fecha ${
+              new Date().toLocaleString("es-MX").split(" ")[0]
+            } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+            [localStorage.getItem("IdUsuario")!]
+          );
           CambiaEstatus(
             state.estatus.includes("Autorizado") ? "Autorizado" : "Revision",
             state.idSolicitud
