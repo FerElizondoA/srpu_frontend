@@ -269,7 +269,7 @@ const {
   createPdfRequerimientos,
   createPdfConstancia,
   createPdfSolicitudCorto,
-  firmaPdf,
+  createPdfAcuseEnviado,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -1275,8 +1275,8 @@ router.post("/create-pdf-requerimientos", (req, res) => {
 router.post("/create-pdf-constancia", (req, res) => {
   createPdfConstancia(req, res);
 });
-router.post("/wm-pdf", (req, res) => {
-  firmaPdf(req, res);
+router.post("/create-pdf-acuse-enviado", (req, res) => {
+  createPdfAcuseEnviado(req, res);
 });
 
 //#endregion

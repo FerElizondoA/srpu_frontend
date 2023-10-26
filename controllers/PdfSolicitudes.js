@@ -2,7 +2,6 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 // const pdfsig = require("pdfsig");
-const { PDFDocument, rgb } = require("pdf-lib");
 
 const headerFolder = "controllers/templates/header.html";
 const footerFolder = "controllers/templates/footer.html";
@@ -10,6 +9,8 @@ const templateSolicitudCorto = "controllers/templates/template_corto.html";
 const templateRequerimientos =
   "controllers/templates/template_requerimientos.html";
 const templateConstancia = "controllers/templates/template_constancia.html";
+const templateAcuseEnviado =
+  "controllers/templates/template_acuse_enviado.html";
 
 module.exports = {
   createPdfSolicitudCorto: async (req, res) => {
@@ -483,29 +484,103 @@ module.exports = {
     res.send(pdfBuffer);
   },
 
-  // firmaPdf: async (req, res) => {
-  //   const { inputPath, watermarkText } = req.body;
+  createPdfAcuseEnviado: async (req, res) => {
+    //#region HEADER
+    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
 
-  //   const pdfData = fs.readFileSync("controllers/templates/template.pdf");
-  //   const pdfDoc = await PDFDocument.load(pdfData);
+    var header = headerTemplate;
 
-  //   // Crear una nueva página con la marca de agua
-  //   const [page] = pdfDoc.getPages();
-  //   const { width, height } = page.getSize();
+    const headerImg = (logoTesoreria, escudo) => {
+      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
+      const resEescudo = fs.readFileSync(escudo);
 
-  //   // Definir el contenido de la marca de agua
-  //   const fontSize = 30;
+      header = headerTemplate
+        .replaceAll(
+          "{{logoTesoreria}}",
+          `data:image/${path
+            .extname(logoTesoreria)
+            .split(".")
+            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
+            "base64"
+          )}`
+        )
+        .replaceAll(
+          "{{escudo}}",
+          `data:image/${path
+            .extname(escudo)
+            .split(".")
+            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
+            "base64"
+          )}`
+        );
+    };
 
-  //   page.drawText(watermarkText, {
-  //     x: width / 2 - (watermarkText.length * fontSize) / 3,
-  //     y: height / 2,
-  //     size: fontSize,
-  //     color: rgb(0, 0, 0), // Color de la marca de agua (negro)
-  //   });
+    headerImg(
+      "controllers/stylessheet/images/logoTesoreria.png",
+      "controllers/stylessheet/images/escudo.png"
+    );
 
-  //   // Guardar el PDF modificado con la marca de agua
-  //   const modifiedPdfData = await pdfDoc.save();
+    //#endregion
 
-  //   await fs.writeFile("controllers/templates/template.pdf", modifiedPdfData);
-  // },
+    //#region FOOTER
+
+    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
+
+    var footer = footerTemplate;
+
+    const footerImg = (logoLeon) => {
+      const resLogoLeon = fs.readFileSync(logoLeon);
+
+      footer = footerTemplate.replaceAll(
+        "{{logoLeon}}",
+        `data:image/${path
+          .extname(logoLeon)
+          .split(".")
+          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
+          "base64"
+        )}`
+      );
+    };
+
+    footerImg("controllers/stylessheet/images/logoLeon.png");
+    //#endregion
+
+    const htmlTemplate = fs.readFileSync(templateAcuseEnviado, "utf8");
+
+    const { oficioConstancia } = req.body;
+
+    const html = htmlTemplate
+      .replaceAll("{{fecha}}", new Date().toLocaleString("es-MX").split(" ")[0])
+      .replaceAll("{{hora}}", new Date().toLocaleString("es-MX").split(" ")[1]);
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
 };
