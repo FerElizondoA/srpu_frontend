@@ -14,7 +14,9 @@ export async function getPathDocumentos(
     },
   })
     .then(({ data }) => {
-      setState(data.data);
+      if (!data.data[0].error) {
+        setState(data.data);
+      }
     })
     .catch((error) => {});
 }
@@ -98,6 +100,30 @@ export const getDocumento = async (
     .then(({ data }) => {
       let file = data.RESPONSE.FILE;
       setState(file);
+    })
+    .catch((r) => {});
+};
+
+export const descargaDocumento = async (ROUTE: string, NOMBRE: string) => {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
+      {
+        ROUTE: ROUTE,
+        NOMBRE: NOMBRE,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken") || "",
+          responseType: "application/pdf",
+        },
+      }
+    )
+    .then(({ data }) => {
+      var a = document.createElement("a"); //Create <a>
+      a.href = "data:application/pdf;base64," + data.RESPONSE.FILE; //Image Base64 Goes here
+      a.download = `${NOMBRE}.pdf`; //File name Here
+      a.click();
     })
     .catch((r) => {});
 };

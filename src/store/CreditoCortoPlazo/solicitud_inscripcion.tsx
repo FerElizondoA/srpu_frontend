@@ -54,6 +54,8 @@ export interface SolicitudInscripcionSlice {
 
   saveFiles: (idRegistro: string, ruta: string) => void;
 
+  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
+
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
@@ -295,7 +297,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then(({ data }) => {
           useCortoPlazoStore.setState({
             comentarios: {},
-            // comentariosRegistro: {},
             idComentario: "",
           });
         })
@@ -371,6 +372,39 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       }, 1000);
     });
+  },
+
+  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
+    const state = useCortoPlazoStore.getState();
+
+    let dataArray = new FormData();
+    dataArray.append("ROUTE", `${ruta}`);
+    dataArray.append("ADDROUTE", "true");
+    dataArray.append("FILE", archivo);
+
+    if (archivo.size > 0) {
+      return axios
+        .post(
+          process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+          dataArray,
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        )
+        .then(({ data }) => {
+          state.savePathDoc(
+            idRegistro,
+            data.RESPONSE.RUTA,
+            data.RESPONSE.NOMBREIDENTIFICADOR,
+            data.RESPONSE.NOMBREARCHIVO
+          );
+        })
+        .catch((e) => {});
+    } else {
+      return null;
+    }
   },
   savePathDoc: async (
     idSolicitud: string,

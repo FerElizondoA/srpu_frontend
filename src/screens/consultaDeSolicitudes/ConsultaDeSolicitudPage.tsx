@@ -8,7 +8,6 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
@@ -19,7 +18,7 @@ import {
 
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DownloadIcon from "@mui/icons-material/Download";
+import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -33,7 +32,6 @@ import {
   getSolicitudes,
   getSolicitudesAdmin,
 } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import {
   IComentarios,
   VerComentariosSolicitud,
@@ -44,17 +42,17 @@ import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
+import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
-  getPdf,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
-import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 export interface IData {
   Id: string;
@@ -83,7 +81,7 @@ const heads: readonly Head[] = [
   {
     id: "NumeroRegistro",
     isNumeric: true,
-    label: "Numero de Registro",
+    label: "Número de Solicitud",
   },
   {
     id: "Institucion",
@@ -402,6 +400,10 @@ export function ConsultaDeSolicitudPage() {
 
   const [openEliminar, changeOpenEliminar] = useState(false);
 
+  const [openDescargar, setOpenDescargar] = useState(false);
+
+  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
+
   useEffect(() => {
     if (openDialogVer === false) {
       limpiaSolicitud();
@@ -418,11 +420,6 @@ export function ConsultaDeSolicitudPage() {
       }
     }
   }, [openEliminar]);
-
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
@@ -478,7 +475,6 @@ export function ConsultaDeSolicitudPage() {
           Consulta de Solicitudes
         </Typography>
       </Grid>
-
       <Grid item mb={5} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
@@ -512,7 +508,6 @@ export function ConsultaDeSolicitudPage() {
           </IconButton>
         </Paper>
       </Grid>
-
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
           <TableContainer
@@ -721,7 +716,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          <Tooltip title="Ver">
+                          <Tooltip title="Ver solicitud">
                             <IconButton
                               type="button"
                               onClick={() => {
@@ -737,10 +732,8 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {((!rolesAdmin.includes(
-                            localStorage.getItem("Rol")!
-                          ) &&
-                            row.Estatus.includes("Por Firmar") &&
+                          {((localStorage.getItem("Rol") === "Verificador" &&
+                            row.Estatus.toLowerCase() === "por firmar" &&
                             !row.Estatus.includes("Autorizado")) ||
                             (localStorage.getItem("Rol") === "Autorizador" &&
                               row.Estatus.includes("Por Firmar"))) && (
@@ -824,21 +817,19 @@ export function ConsultaDeSolicitudPage() {
 
                           {row.Estatus !== "Captura" &&
                             row.Estatus !== "Verificacion" && (
-                              <Tooltip title="Descargar">
+                              <Tooltip title="Ver archivos">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    getPdf(
-                                      row.IdPathDoc,
-                                      row.NumeroRegistro,
-                                      format(
-                                        new Date(row.FechaContratacion),
-                                        "dd/MM/yyyy"
-                                      )
-                                    );
+                                    setSolicitud({
+                                      Id: row.Id,
+                                      noSolicitud: row.NumeroRegistro,
+                                    });
+
+                                    setOpenDescargar(true);
                                   }}
                                 >
-                                  <DownloadIcon />
+                                  <BrowserUpdatedIcon />
                                   {row.Acciones}
                                 </IconButton>
                               </Tooltip>
@@ -920,11 +911,18 @@ export function ConsultaDeSolicitudPage() {
           </TableContainer>
         </Paper>
       </Grid>
-
       {openDialogVer && (
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
+        />
+      )}
+      {openDescargar && (
+        <DialogDescargaArchivos
+          open={openDescargar}
+          setOpen={setOpenDescargar}
+          noSolicitud={solicitud.noSolicitud}
+          idSolicitud={solicitud.Id}
         />
       )}
 
@@ -934,7 +932,6 @@ export function ConsultaDeSolicitudPage() {
           openState={openVerComentarios}
         />
       )}
-
       <DialogEliminar
         handler={changeOpenEliminar}
         openState={openEliminar}

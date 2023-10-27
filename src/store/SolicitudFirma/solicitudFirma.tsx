@@ -46,7 +46,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
             IdSolicitud: state.idSolicitud,
-            NumeroOficio: inf.NumeroOficio,
+            NumeroOficio: `DDPYPF-${
+              inf.NumeroOficio
+            }/${new Date().getFullYear()}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
             SerialCertificado: inf.SerialCertificado,
@@ -64,13 +66,23 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          createNotificationCortoPlazo(
-            "Solicitud enviada",
-            `La solicitud ha sido enviada para autorización con fecha ${
-              new Date().toLocaleString("es-MX").split(" ")[0]
-            } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-            [localStorage.getItem("IdUsuario")!]
-          );
+          console.log(state.estatus);
+
+          if (
+            !state.estatus.includes("Autorizado") &&
+            !state.estatus.includes("Revision")
+          ) {
+            createNotificationCortoPlazo(
+              "Solicitud enviada",
+              `La solicitud ha sido enviada para autorización con fecha ${
+                new Date().toLocaleString("es-MX").split(" ")[0]
+              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+              [localStorage.getItem("IdUsuario")!]
+            );
+            GeneraAcuseEnvio(inf.NumeroOficio, state.idSolicitud);
+          } else {
+            GeneraAcuseRespuesta(inf.NumeroOficio, state.idSolicitud);
+          }
           CambiaEstatus(
             state.estatus.includes("Autorizado") ? "Autorizado" : "Revision",
             state.idSolicitud
@@ -318,6 +330,83 @@ export async function ConsultaConstancia(
       );
 
       setUrl(url);
+    })
+    .catch((err) => {});
+}
+
+export async function GeneraAcuseEnvio(noOficio: string, idRegistro: string) {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-acuse-enviado",
+      {
+        oficioConstancia: noOficio,
+        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        hora: new Date().toLocaleString("es-MX").split(" ")[1],
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      const state = useCortoPlazoStore.getState();
+
+      state.guardaDocumentos(
+        idRegistro,
+        "/SRPU/CORTOPLAZO/ACUSE",
+        new File([response.data], `acuse-envio-${noOficio}.pdf`)
+      );
+    })
+    .catch((err) => {});
+}
+
+export async function GeneraAcuseRespuesta(
+  noOficio: string,
+  idRegistro: string
+) {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+        "/api/create-pdf-acuse-respuesta",
+      {
+        tipoSolicitud: "Solicitud de requerimientos",
+        oficioConstancia: noOficio,
+        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        hora: new Date().toLocaleString("es-MX").split(" ")[1],
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      const state = useCortoPlazoStore.getState();
+
+      state.guardaDocumentos(
+        idRegistro,
+        "/SRPU/CORTOPLAZO/ACUSE",
+        new File([response.data], `acuse-respuesta-${noOficio}.pdf`)
+      );
+
+      // setUrl(url);
     })
     .catch((err) => {});
 }
