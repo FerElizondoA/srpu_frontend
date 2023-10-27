@@ -3,17 +3,35 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createMandato: (req, res) => {
+    const IdUsuario = req.body.IdUsuario;
     const NumeroMandato = req.body.NumeroMandato;
     const FechaMandato = req.body.FechaMandato;
     const Mandatario = req.body.Mandatario;
-    const MunicipioMandante = req.body.MunicipioMandante;
-    const OrganismoMandante = req.body.OrganismoMandante;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
+    const MecanismoPago = req.body.MecanismoPago;
     const TipoMovimiento = req.body.TipoMovimiento;
     const SoporteDocumental = req.body.SoporteDocumental;
     const CreadoPor = req.body.IdUsuario;
+    if (
+      (NumeroMandato == null || /^[\s]*$/.test(NumeroMandato)) &&
+      NumeroMandato.length() <= 255
+    ) {
+      return res.status(409).send({
+        error: "Ingrese Descripcion válida.",
+      });
+    }
+    if (
+      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
+      IdUsuario.length() <= 36
+    ) {
+      return res.status(409).send({
+        error: "Ingrese Id usuario válido.",
+      });
+    } else {
 
     db.query(
-      `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioMandante}' , '${OrganismoMandante}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
+      `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioOrganismoMandante}' , '${TipoEntePublicoObligado}' ,  '${MecanismoPago}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -37,6 +55,7 @@ module.exports = {
         }
       }
     );
+  }
   },
 
   //LISTADO COMPLETO
@@ -101,8 +120,9 @@ module.exports = {
     const IdUsuario = req.body.IdUsuario;
     const FechaMandato = req.body.FechaMandato;
     const Mandatario = req.body.Mandatario;
-    const MunicipioMandante = req.body.MunicipioMandante;
-    const OrganismoMandante = req.body.OrganismoMandante;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
+    const MecanismoPago = req.body.MecanismoPago
     const TipoMovimiento = req.body.TipoMovimiento;
     const SoporteDocumental = req.body.SoporteDocumental;
 
@@ -118,8 +138,9 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaMandato('${IdMandato}','${IdUsuario}','${FechaMandato}','${Mandatario}','${MunicipioMandante}','${OrganismoMandante}','${TipoMovimiento}','${SoporteDocumental}')`,
+        `CALL sp_ModificaMandato('${IdMandato}','${IdUsuario}','${FechaMandato}','${Mandatario}','${MunicipioOrganismoMandante}' , '${TipoEntePublicoObligado}' , '${MecanismoPago}','${TipoMovimiento}','${SoporteDocumental}')`,
         (err, result) => {
+          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -147,10 +168,10 @@ module.exports = {
 
   //BORRADO LOGICO
   deleteMandato: (req, res) => {
-    const IdDescripcion = req.query.IdDescripcion;
-    const IdUsuarioModificador = req.query.IdUsuario;
+    const IdMandato = req.body.IdMandato;
+    const IdUsuarioModificador = req.body.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaMandato('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaMandato('${IdMandato}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

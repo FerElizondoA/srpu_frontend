@@ -259,12 +259,28 @@ const {
   createMandato,
   modifyMandato,
   getMandatos,
+  deleteMandato,
 } = require("../controllers/Mandatos.js");
 const {
   createInstruccion,
   modifyInstruccion,
   getInstrucciones,
-} = require("../controllers/InstruccionesIrrevocables.js");
+  deleteInstruccion,
+} = require("../controllers/InstruccionesIrrevocables");
+
+const {
+  createClasificacion,
+  getClasificacion,
+  modifyClasificacion,
+  deleteClasificacion
+} = require("../controllers/ClasificacionAsignarFuente");
+
+const {
+  createRespecto,
+  getRespecto,
+  modifyRespecto,
+  deleteRespecto
+} = require("../controllers/Respecto");
 const {
   createPdfRequerimientos,
   createPdfConstancia,
@@ -905,6 +921,24 @@ router.delete("/delete-fideicomiso", (req, res) => {
 });
 //#endregion
 
+//#region InstruccionesIrrevocables
+router.post("/create-Instruccion", (req, res, express) => {
+  createInstruccion(req, res);
+});
+
+router.get("/get-Instrucciones", (req, res) => {
+  getInstrucciones(req, res);
+});
+
+router.put("/modify-Instruccion", (req, res) => {
+  modifyInstruccion(req, res);
+});
+
+router.delete("/delete-Instruccion", (req, res) => {
+  deleteInstruccion(req, res);
+});
+//#endregion
+
 //#region TiposDeFideicomiso
 router.post("/create-tiposDeFideicomiso", (req, res, express) => {
   createTipoDeFideicomiso(req, res);
@@ -1219,13 +1253,56 @@ router.post("/create-mandato", (req, res, express) => {
   createMandato(req, res);
 });
 
-router.post("/modify-mandato", (req, res, express) => {
+router.put("/modify-mandato", (req, res, express) => {
   modifyMandato(req, res);
 });
 
 router.get("/get-mandato", (req, res, express) => {
   getMandatos(req, res);
 });
+
+router.delete("/delete-mandato", (req, res) => {
+  deleteMandato(req, res);
+});
+
+
+//CLASIFICACION ASIGNAR FUENTE
+router.get("/get-clasificacionAsignarFuentePago", (req, res, express) => {
+  getClasificacion(req, res);
+});
+
+router.post("/create-clasificacionAsignarFuentePago", (req, res, express) => {
+  createClasificacion(req, res);
+});
+
+router.put("/modify-clasificacionAsignarFuentePago", (req, res, express) => {
+  modifyClasificacion(req, res);
+});
+
+
+router.delete("/delete-clasificacionAsignarFuentePago", (req, res) => {
+  deleteClasificacion(req, res);
+});
+
+
+//RespectoA AsignarFuente
+router.get("/get-respecto", (req, res, express) => {
+  getRespecto(req, res);
+});
+
+router.post("/create-respecto", (req, res, express) => {
+  createRespecto(req, res);
+});
+
+router.put("/modify-respecto", (req, res, express) => {
+  modifyRespecto(req, res);
+});
+
+router.delete("/delete-respecto", (req, res) => {
+  deleteRespecto(req, res);
+});
+
+//sp_AgregarClasificacionAsignarFuentePago
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
 //   getTiposDeGarantiaDePago(req, res);
@@ -1238,6 +1315,7 @@ router.get("/get-mandato", (req, res, express) => {
 // router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
 //   deleteTipoDeGarantiaDePago(req, res);
 // });
+
 //#endregion
 
 //#region Mandatos
