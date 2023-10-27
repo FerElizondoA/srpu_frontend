@@ -270,6 +270,7 @@ const {
   createPdfConstancia,
   createPdfSolicitudCorto,
   createPdfAcuseEnviado,
+  createPdfAcuseRespuesta,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -1277,6 +1278,9 @@ router.post("/create-pdf-constancia", (req, res) => {
 });
 router.post("/create-pdf-acuse-enviado", (req, res) => {
   createPdfAcuseEnviado(req, res);
+});
+router.post("/create-pdf-acuse-respuesta", (req, res) => {
+  createPdfAcuseRespuesta(req, res);
 });
 
 //#endregion

@@ -10,7 +10,9 @@ const templateRequerimientos =
   "controllers/templates/template_requerimientos.html";
 const templateConstancia = "controllers/templates/template_constancia.html";
 const templateAcuseEnviado =
-  "controllers/templates/template_acuse_enviado.html";
+  "controllers/templates/template_acuse_envio_solicitud.html";
+const templateAcuseRespuesta =
+  "controllers/templates/template_acuse_envio_respuesta.html";
 
 module.exports = {
   createPdfSolicitudCorto: async (req, res) => {
@@ -547,11 +549,114 @@ module.exports = {
 
     const htmlTemplate = fs.readFileSync(templateAcuseEnviado, "utf8");
 
-    const { oficioConstancia } = req.body;
+    const { oficioConstancia, fecha, hora } = req.body;
 
     const html = htmlTemplate
-      .replaceAll("{{fecha}}", new Date().toLocaleString("es-MX").split(" ")[0])
-      .replaceAll("{{hora}}", new Date().toLocaleString("es-MX").split(" ")[1]);
+      .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
+      .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
+      .replaceAll("{{hora}}", hora || "'hora de entrega'");
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  createPdfAcuseRespuesta: async (req, res) => {
+    //#region HEADER
+    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
+
+    var header = headerTemplate;
+
+    const headerImg = (logoTesoreria, escudo) => {
+      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
+      const resEescudo = fs.readFileSync(escudo);
+
+      header = headerTemplate
+        .replaceAll(
+          "{{logoTesoreria}}",
+          `data:image/${path
+            .extname(logoTesoreria)
+            .split(".")
+            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
+            "base64"
+          )}`
+        )
+        .replaceAll(
+          "{{escudo}}",
+          `data:image/${path
+            .extname(escudo)
+            .split(".")
+            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
+            "base64"
+          )}`
+        );
+    };
+
+    headerImg(
+      "controllers/stylessheet/images/logoTesoreria.png",
+      "controllers/stylessheet/images/escudo.png"
+    );
+
+    //#endregion
+
+    //#region FOOTER
+
+    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
+
+    var footer = footerTemplate;
+
+    const footerImg = (logoLeon) => {
+      const resLogoLeon = fs.readFileSync(logoLeon);
+
+      footer = footerTemplate.replaceAll(
+        "{{logoLeon}}",
+        `data:image/${path
+          .extname(logoLeon)
+          .split(".")
+          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
+          "base64"
+        )}`
+      );
+    };
+
+    footerImg("controllers/stylessheet/images/logoLeon.png");
+    //#endregion
+
+    const htmlTemplate = fs.readFileSync(templateAcuseRespuesta, "utf8");
+
+    const { tipoSolicitud, oficioConstancia, fecha, hora } = req.body;
+
+    const html = htmlTemplate
+      .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
+      .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
+      .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
+      .replaceAll("{{hora}}", hora || "'hora de entrega'");
 
     const browser = await puppeteer.launch({
       headless: "false",
