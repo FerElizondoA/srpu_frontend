@@ -13,7 +13,7 @@ export const queries = {
     },
   },
   medium_text: {
-    fontSize: "0.8rem",
+    fontSize: "0.7rem",
     fontFamily: "MontserratMedium",
 
     "@media (min-width: 480px)": {
@@ -44,7 +44,7 @@ export const queries = {
     },
 
     "@media (min-width: 768px)": {
-      fontSize: ".8rem",
+      fontSize: "1rem",
     },
 
     "@media (min-width: 1140px)": {

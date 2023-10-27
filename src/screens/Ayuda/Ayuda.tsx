@@ -7,6 +7,7 @@ import {
   Tabs,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -47,7 +48,7 @@ export interface IAyudaPregunta {
 }
 
 const Ayuda = () => {
-  const [valueTab, setValueTab] = useState<string>("Guias");
+  const [valueTab, setValueTab] = useState<string>("Guía");
   const [Preguntas, setPreguntas] = useState<IAyudaPregunta[]>([]);
   const [Guias, setGuias] = useState<IAyudaGuia[]>([]);
   const [Videos, setVideos] = useState<IAyudaVideo[]>([]);
@@ -59,6 +60,7 @@ const Ayuda = () => {
       title: "¿Estás seguro de eliminar este registro?",
       icon: "question",
       showCancelButton: true,
+      iconColor:"#15212f",
 
       cancelButtonColor: "#af8c55",
       cancelButtonText: "Cancelar",
@@ -73,15 +75,16 @@ const Ayuda = () => {
             Swal.fire({
               confirmButtonColor: "#15212f",
               icon: "success",
-              title: "Éxito",
-              text: "El archivo se ha eliminado exitosamente",
+              title: "Se ha eliminado exitosamente",
+
+              //text: "El archivo se ha eliminado exitosamente",
             });
           })
           .catch((error) => {
             Swal.fire({
               confirmButtonColor: "#15212f",
               icon: "error",
-              //title: "Error al cargar archivo.",
+              title: "Error al cargar archivo.",
             });
           });
       }
@@ -208,19 +211,22 @@ const Ayuda = () => {
   };
 
   const obtenerDatos = () => {
-    if (valueTab === "Guias") {
-      getAyuda(setGuias, "0", "Guias");
+    if (valueTab === "Guía") {
+      getAyuda(setGuias, "0", "Guía");
     }
-    if (valueTab === "Videos") {
-      getAyuda(setVideos, "0", "Videos");
+    if (valueTab === "Video") {
+      getAyuda(setVideos, "0", "Video");
     }
-    if (valueTab === "Preguntas") {
-      getAyuda(setPreguntas, "0", "Preguntas");
+    if (valueTab === "Pregunta") {
+      getAyuda(setPreguntas, "0", "Pregunta");
     }
   };
 
   const handleOpen = () => {
     setOpen(true);
+  };
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
   };
 
   // const query = {
@@ -242,17 +248,13 @@ const Ayuda = () => {
       >
         <Typography
           sx={{
-            fontSize: "2.3ch",
             fontFamily: "MontserratBold",
             color: "#AF8C55",
-            "@media (max-width: 600px)": {
-              // XS (extra small) screen
-              fontSize: "1rem",
+            fontSize: "1rem",
+            "@media (min-width: 480px)": {
+              fontSize: "1.2rem",
             },
-            "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
-              fontSize: "1.5ch",
-            },
+
           }}
         >
           Administración de Ayudas
@@ -260,43 +262,54 @@ const Ayuda = () => {
       </Grid>
       <Grid
         container
-        item
-        xs={12}
         justifyContent="center"
         sx={{ maxHeight: "90vh", maxWidth: "100vw" }}
+        width={"100%"}
       >
         <Grid
           container
-          item
           sx={{
             height: "8vh",
-            width: "100vw",
+            width: "100%",
             display: "flex",
-            justifyContent: "flex-end",
+
+            //justifyContent: "flex-end",
           }}
         >
           <Grid
-            container
-            item
-            xl={10}
-            sx={{ height: "100%", display: "flex", justifyContent: "center" }}
+           sx={{ height: "100%", display: "flex", justifyContent: "end", 
+           width:"69%",
+           "@media (min-width: 480px)": {
+            width:"58%"
+          },
+      
+          "@media (min-width: 768px)": {
+            width:"66.5%"
+          },
+      
+          "@media (min-width: 1140px)": {
+            width:"62%"
+          },
+      
+          "@media (min-width: 1400px)": {
+            width:"60%"
+          },
+      
+          "@media (min-width: 1870px)": {
+            width:"58%"
+          },}}
           >
             <Tabs
               value={tabIndex}
               onChange={handleChange}
-              //centered={query.isScrollable ? false : true}
-              //variant={query.isScrollable ? "scrollable" : "standard"}
+              centered={query.isScrollable ? false : true}
+              variant={query.isScrollable ? "scrollable" : "standard"}
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Guías" sx={queries.bold_text} value="Guias"></Tab>
-              <Tab label="Videos" sx={queries.bold_text} value="Videos"></Tab>
-              <Tab
-                label="Preguntas"
-                sx={queries.bold_text}
-                value="Preguntas"
-              ></Tab>
-
+              <Tab label="Guías" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Guía"></Tab>
+              <Tab label="Videos" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Video"></Tab>
+              <Tab label="Preguntas" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Pregunta"></Tab>
               {open ? (
                 <AyudasModal
                   TabValue={valueTab}
@@ -307,13 +320,10 @@ const Ayuda = () => {
             </Tabs>
           </Grid>
           <Grid
-            container
-            item
-            xl={1}
-            sx={{ height: "100%", display: "flex", justifyContent: "center" }}
+             sx={{ height: "100%", display: "flex", justifyContent: "end", width:"30%" }}
           >
             <Button
-              sx={{ ...queries.buttonContinuar, height: "70%" }}
+              sx={{ ...queries.buttonContinuar, height: "2.5rem" }}
               onClick={() => {
                 setOpen(true);
                 handleOpen();
@@ -329,7 +339,7 @@ const Ayuda = () => {
           {/* <MUIXDataGrid  id={(row: any) => row.Id} columns={columnsPreguntas} rows={[]}/> */}
 
           {/* cambio a tabla preguntas */}
-          {valueTab == "Preguntas" ? (
+          {valueTab == "Pregunta" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsPreguntas}
@@ -337,7 +347,7 @@ const Ayuda = () => {
             />
           ) : null}
           {/* cambio a tablas videos y guías */}
-          {valueTab == "Videos" ? (
+          {valueTab == "Video" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsVideo}
@@ -345,7 +355,7 @@ const Ayuda = () => {
             />
           ) : null}
 
-          {valueTab == "Guias" ? (
+          {valueTab == "Guía" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsGuia}

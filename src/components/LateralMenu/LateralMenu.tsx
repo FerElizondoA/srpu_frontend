@@ -358,7 +358,7 @@ export function LateralMenu() {
             borderColor: "#ccc",
           }}
         >
-          <Typography sx={{ fontFamily: "MontserratMedium", fontSize: ".8vw" }}>
+          <Typography sx={{...queries.bold_text}}>
             MODIFICAR CONTRASEÑA
           </Typography>
         </Box>
@@ -380,7 +380,7 @@ export function LateralMenu() {
               flexDirection: "column",
             }}
           >
-            <Typography>Nueva contraseña</Typography>
+            <Typography sx={{...queries.medium_text}}>Nueva contraseña</Typography>
             <OutlinedInput
               error={error.show}
               size="small"
@@ -446,9 +446,10 @@ export function LateralMenu() {
               color="error"
               onClick={() => handleClosePasswordChange()}
               variant="outlined"
+              sx={{...queries.buttonCancelar}}
             >
               <Typography
-                sx={{ fontFamily: "MontserratMedium", fontSize: ".7vw" }}
+                sx={{...queries.medium_text, color:"white"}}
               >
                 Cancelar
               </Typography>
@@ -458,9 +459,10 @@ export function LateralMenu() {
               disabled={/^[\s]*$/.test(newPassword)}
               variant="outlined"
               onClick={() => cambiarContrasena()}
+              sx={{...queries.buttonContinuar}}
             >
               <Typography
-                sx={{ fontFamily: "MontserratMedium", fontSize: ".7vw" }}
+                sx={{...queries.medium_text, color:"white"}}
               >
                 Cambiar
               </Typography>{" "}
@@ -584,9 +586,9 @@ export function LateralMenu() {
                 {
                   <MenuItem
                     onClick={() => {
-                      getAyuda(setArrayAyudas, "1", "Guias");
+                      getAyuda(setArrayAyudas, "1", "Guías");
                       setOpenVAyudas(true);
-                      setOption("Guias");
+                      setOption("Guías");
                     }}
                   >
                     {IconsMenu("MenuBookIcon")} Ver Guías{" "}
@@ -912,7 +914,7 @@ export function LateralMenu() {
           <Grid
             container
             sx={{
-              width: query.isXs ? "35vw" : "25vw",
+              width: query.isXs ? "65vw" : "30vw",
               height: "inherit",
               overflow: "auto",
               "&::-webkit-scrollbar": {

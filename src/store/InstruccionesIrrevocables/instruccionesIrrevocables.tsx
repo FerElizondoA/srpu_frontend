@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import { useInstruccionesStore } from "./main";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
 
+import { TipoMovimientoMandatoDeudor } from "../Mandatos/mandato";
+import { useMandatoStore } from "../Mandatos/main";
+
 export interface GeneralIntrucciones {
   numeroCuenta: string;
   cuentaCLABE: string;
@@ -14,16 +17,30 @@ export interface GeneralIntrucciones {
 }
 
 export interface TipoMovimientoInstrucciones {
-  altaDeudor: string;
-  tipoEntePublico: { Id: string; Descripcion: string };
-  entidadFederativa: { Id: string; Descripcion: string };
-  tipoFuente: { Id: string; Descripcion: string };
-  fondoIngreso: { Id: string; Descripcion: string };
+  id: string,
+  tipoEntePublicoObligado: { Id: string, Descripcion: string},
+  entidadFederativa: { Id: string, Descripcion:string },
+  mandatario: { Id: string, Descripcion: string},
+  tipoFuente: { Id: string, Descripcion: string },
+  fondoIngreso: { Id: string, Descripcion: string, TipoDeFuente: string },
+  fondoIngresoGobiernoEstatal: string,
+  fondoIngresoMunicipios: string,
+  fondoIngresoAsignadoMunicipio: string,
+  ingresoOrganismo: string,
+  fondoIngresoAfectadoXGobiernoEstatal: string,
+  afectacionGobiernoEstatalEntre100: string,
+  acumuladoAfectacionGobiernoEstatalEntre100: string,
+  fondoIngresoAfectadoXMunicipio: string,
+  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string,
+  ingresoAfectadoXOrganismo: string,
+  acumuladoAfectacionOrganismoEntre100: string,
+  altaDeudor:string,
 }
 
 export interface Instruccion {
+  Id: string;
   generalInstrucciones: GeneralIntrucciones;
-  tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
+  TipoMovimientoInstruccion: TipoMovimientoInstrucciones[];
 }
 
 export interface InstruccionesIrrevocablesSlice {
@@ -32,30 +49,42 @@ export interface InstruccionesIrrevocablesSlice {
   setInstruccionSelect: (instruccion: Instruccion[]) => void;
 
   generalInstrucciones: GeneralIntrucciones;
-  tipoMovimientoInstrucciones: TipoMovimientoInstrucciones;
+  tipoMovimientoInstruccion: TipoMovimientoInstrucciones;
 
   tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
   tablaInstrucciones: IDatosInstrucciones[];
 
   changeIdInstruccion: (Id: string) => void;
 
+
+
+
   editarInstruccion: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
   ) => void;
+
+
+
 
   setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
 
   setTipoMovimientoInstrucciones: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
   ) => void;
 
   addTipoMovimientoInstrucciones: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
   ) => void;
 
   removeTipoMovimientoInstrucciones: (index: number) => void;
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
+
+  addPorcentaje: (
+    index: number,
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones,
+    porcentaje: { columna: string; porcentaje: string }
+  ) =>  void;
 
   getInstruccion: (setState: Function) => void;
   createInstruccion: () => void;
@@ -102,12 +131,26 @@ export const createInstruccionesIrrevocables: StateCreator<
     municipio: { Id: "", Descripcion: "" },
   },
 
-  tipoMovimientoInstrucciones: {
-    altaDeudor: "NO",
-    tipoEntePublico: { Id: "", Descripcion: "" },
+  tipoMovimientoInstruccion: {
+    id: "",
+    altaDeudor:"",
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" },
     entidadFederativa: { Id: "", Descripcion: "" },
+    mandatario: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
-    fondoIngreso: { Id: "", Descripcion: "" },
+    fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+    fondoIngresoGobiernoEstatal: "",
+    fondoIngresoMunicipios: "",
+    fondoIngresoAsignadoMunicipio: "",
+    ingresoOrganismo: "",
+    fondoIngresoAfectadoXGobiernoEstatal: "",
+    afectacionGobiernoEstatalEntre100: "",
+    acumuladoAfectacionGobiernoEstatalEntre100: "",
+    fondoIngresoAfectadoXMunicipio: "",
+    acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
+    ingresoAfectadoXOrganismo: "",
+    acumuladoAfectacionOrganismoEntre100: "",
+  
   },
 
   tablaTipoMovimientoInstrucciones: [],
@@ -119,11 +162,9 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  setTipoMovimientoInstrucciones: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
-  ) => {
+  setTipoMovimientoInstrucciones: (tipoMovimientoInstrucciones: TipoMovimientoInstrucciones) => {
     set(() => ({
-      tipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
+      tipoMovimientoInstruccion: tipoMovimientoInstrucciones,
     }));
   },
 
@@ -293,9 +334,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     return false;
   },
 
-  editarInstruccion: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
-  ) => {
+  editarInstruccion: (tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]) => {
     set(() => ({
       tablaTipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
     }));
@@ -340,19 +379,50 @@ export const createInstruccionesIrrevocables: StateCreator<
 
   cleanTipoMovimientoInstruccion: () => {
     set(() => ({
-      tipoMovimientoInstrucciones: {
-        altaDeudor: "",
-        tipoEntePublico: { Id: "", Descripcion: "" },
+      tipoMovimientoInstruccion: {
+        id: "",
+        altaDeudor:"",
+        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
         entidadFederativa: { Id: "", Descripcion: "" },
+        mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
-        fondoIngreso: { Id: "", Descripcion: "" },
+        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+        fondoIngresoGobiernoEstatal: "",
+        fondoIngresoMunicipios: "",
+        fondoIngresoAsignadoMunicipio: "",
+        ingresoOrganismo: "",
+        fondoIngresoAfectadoXGobiernoEstatal: "",
+        afectacionGobiernoEstatalEntre100: "",
+        acumuladoAfectacionGobiernoEstatalEntre100: "",
+        fondoIngresoAfectadoXMunicipio: "",
+        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
+        ingresoAfectadoXOrganismo: "",
+        acumuladoAfectacionOrganismoEntre100: "",
       },
     }));
   },
+  
   removeTipoMovimientoInstrucciones: (index: number) => {
     set((state) => ({
       tablaTipoMovimientoInstrucciones:
         state.tablaTipoMovimientoInstrucciones.filter((_, i) => i !== index),
+    }));
+  },
+  
+  addPorcentaje: (
+    index: number,
+    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones,
+    porcentaje: { columna: string; porcentaje: string }
+  ) => {
+    let tabla = useInstruccionesStore.getState().tablaTipoMovimientoInstrucciones;
+
+    tabla[index] = {
+      ...tipoMovimientoInstrucciones,
+      [porcentaje.columna]: porcentaje.porcentaje,
+    };
+
+    set((state) => ({
+      tablaTipoMovimientoInstrucciones: tabla,
     }));
   },
 
