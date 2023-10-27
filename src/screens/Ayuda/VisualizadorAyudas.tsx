@@ -178,7 +178,7 @@ export interface IInfoFile {
             <MUIXDataGrid id={(row: any) => row.Id} columns={columnsVideo} rows={arrayAyudas} />
           ) : null}
           {/* cambio a tabla guías */}
-          {valueTab == "Guias" ? (
+          {valueTab == "Guías" ? (
             <MUIXDataGrid id={(row: any) => row.Id} columns={columnsGuia} rows={arrayAyudas} />
           ) : null}
   
