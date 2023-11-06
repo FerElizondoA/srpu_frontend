@@ -296,7 +296,7 @@ module.exports = {
     const Comentario = req.body.Comentario;
     const Tipo = req.body.Tipo;
     const IdUsuario = req.body.IdUsuario;
-    const IdComentario = req.body.IdComentario;
+    const IdComentario = req.body.IdComentario || null;
 
     if (IdSolicitud == null || /^[\s]*$/.test(IdSolicitud)) {
       return res.status(409).send({

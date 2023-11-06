@@ -29,33 +29,32 @@ module.exports = {
         error: "Ingrese Id usuario válido.",
       });
     } else {
-
-    db.query(
-      `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioOrganismoMandante}' , '${TipoEntePublicoObligado}' ,  '${MecanismoPago}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
-      (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            error: "Error",
-          });
-        }
-        if (result.length) {
-          const data = result[0][0];
-          if (data.error) {
-            return res.status(409).send({
-              result: data,
+      db.query(
+        `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioOrganismoMandante}' , '${TipoEntePublicoObligado}' ,  '${MecanismoPago}' , '${TipoMovimiento}' , '${SoporteDocumental}' , '${CreadoPor}'  )`,
+        (err, result) => {
+          if (err) {
+            return res.status(500).send({
+              error: "Error",
             });
           }
-          return res.status(200).send({
-            data,
-          });
-        } else {
-          return res.status(409).send({
-            error: "¡Sin Información!",
-          });
+          if (result.length) {
+            const data = result[0][0];
+            if (data.error) {
+              return res.status(409).send({
+                result: data,
+              });
+            }
+            return res.status(200).send({
+              data,
+            });
+          } else {
+            return res.status(409).send({
+              error: "¡Sin Información!",
+            });
+          }
         }
-      }
-    );
-  }
+      );
+    }
   },
 
   //LISTADO COMPLETO
@@ -122,7 +121,7 @@ module.exports = {
     const Mandatario = req.body.Mandatario;
     const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
     const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
-    const MecanismoPago = req.body.MecanismoPago
+    const MecanismoPago = req.body.MecanismoPago;
     const TipoMovimiento = req.body.TipoMovimiento;
     const SoporteDocumental = req.body.SoporteDocumental;
 
@@ -140,7 +139,6 @@ module.exports = {
       db.query(
         `CALL sp_ModificaMandato('${IdMandato}','${IdUsuario}','${FechaMandato}','${Mandatario}','${MunicipioOrganismoMandante}' , '${TipoEntePublicoObligado}' , '${MecanismoPago}','${TipoMovimiento}','${SoporteDocumental}')`,
         (err, result) => {
-          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",

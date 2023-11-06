@@ -272,14 +272,14 @@ const {
   createClasificacion,
   getClasificacion,
   modifyClasificacion,
-  deleteClasificacion
+  deleteClasificacion,
 } = require("../controllers/ClasificacionAsignarFuente");
 
 const {
   createRespecto,
   getRespecto,
   modifyRespecto,
-  deleteRespecto
+  deleteRespecto,
 } = require("../controllers/Respecto");
 const {
   createPdfRequerimientos,
@@ -287,12 +287,19 @@ const {
   createPdfSolicitudCorto,
   createPdfAcuseEnviado,
   createPdfAcuseRespuesta,
+  actualizaDescarga,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
   getPreguntasFrecuentes,
   deletePreguntasFrecuentes,
 } = require("../controllers/Ayudas.js");
+const {
+  createConfiguracionOficios,
+  getHeader,
+  getConfiguracionOficios,
+  modifyConfiguracionOficios,
+} = require("../controllers/ConfiguracionOficios.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1265,7 +1272,6 @@ router.delete("/delete-mandato", (req, res) => {
   deleteMandato(req, res);
 });
 
-
 //CLASIFICACION ASIGNAR FUENTE
 router.get("/get-clasificacionAsignarFuentePago", (req, res, express) => {
   getClasificacion(req, res);
@@ -1279,11 +1285,9 @@ router.put("/modify-clasificacionAsignarFuentePago", (req, res, express) => {
   modifyClasificacion(req, res);
 });
 
-
 router.delete("/delete-clasificacionAsignarFuentePago", (req, res) => {
   deleteClasificacion(req, res);
 });
-
 
 //RespectoA AsignarFuente
 router.get("/get-respecto", (req, res, express) => {
@@ -1359,6 +1363,25 @@ router.post("/create-pdf-acuse-enviado", (req, res) => {
 });
 router.post("/create-pdf-acuse-respuesta", (req, res) => {
   createPdfAcuseRespuesta(req, res);
+});
+router.post("/actualiza-descarga", (req, res) => {
+  actualizaDescarga(req, res);
+});
+
+//#endregion
+
+//#region Configuracion Oficios
+router.post("/create-ConfiguracionOficios", (req, res) => {
+  createConfiguracionOficios(req, res);
+});
+router.get("/get-ConfiguracionOficios", (req, res) => {
+  getConfiguracionOficios(req, res);
+});
+router.get("/get-header", (req, res) => {
+  getHeader(req, res);
+});
+router.put("/modify-ConfiguracionOficios", (req, res) => {
+  modifyConfiguracionOficios(req, res);
 });
 
 //#endregion

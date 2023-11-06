@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const db = require("../config/db.js");
 // const pdfsig = require("pdfsig");
 
 const headerFolder = "controllers/templates/header.html";
@@ -14,18 +15,21 @@ const templateAcuseEnviado =
 const templateAcuseRespuesta =
   "controllers/templates/template_acuse_envio_respuesta.html";
 
-module.exports = {
-  createPdfSolicitudCorto: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
+//#region HEADER
 
-    var header = headerTemplate;
+const headerTemplate = fs.readFileSync(headerFolder, "utf8");
+var header = headerTemplate;
+
+function callHeader() {
+  db.query(`CALL sp_DetalleHeader()`, (err, result) => {
+    const data = result[0][0];
 
     const headerImg = (logoTesoreria, escudo) => {
       const resLogoTesoreria = fs.readFileSync(logoTesoreria);
       const resEescudo = fs.readFileSync(escudo);
 
       header = headerTemplate
+        .replaceAll("{{headerText}}", data.Descripcion)
         .replaceAll(
           "{{logoTesoreria}}",
           `data:image/${path
@@ -50,32 +54,34 @@ module.exports = {
       "controllers/stylessheet/images/logoTesoreria.png",
       "controllers/stylessheet/images/escudo.png"
     );
+  });
+}
+//#endregion
 
-    //#endregion
+//#region FOOTER
 
-    //#region FOOTER
+const footerTemplate = fs.readFileSync(footerFolder, "utf8");
 
-    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
+var footer = footerTemplate;
 
-    var footer = footerTemplate;
+const footerImg = (logoLeon) => {
+  const resLogoLeon = fs.readFileSync(logoLeon);
 
-    const footerImg = (logoLeon) => {
-      const resLogoLeon = fs.readFileSync(logoLeon);
+  footer = footerTemplate.replaceAll(
+    "{{logoLeon}}",
+    `data:image/${path.extname(logoLeon).split(".").pop()};base64,${Buffer.from(
+      resLogoLeon,
+      "binary"
+    ).toString("base64")}`
+  );
+};
 
-      footer = footerTemplate.replaceAll(
-        "{{logoLeon}}",
-        `data:image/${path
-          .extname(logoLeon)
-          .split(".")
-          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
-          "base64"
-        )}`
-      );
-    };
+footerImg("controllers/stylessheet/images/logoLeon.png");
+//#endregion
 
-    footerImg("controllers/stylessheet/images/logoLeon.png");
-    //#endregion
-
+module.exports = {
+  createPdfSolicitudCorto: async (req, res) => {
+    callHeader();
     const htmlTemplate = fs.readFileSync(templateSolicitudCorto, "utf8");
 
     const {
@@ -193,66 +199,7 @@ module.exports = {
   },
 
   createPdfRequerimientos: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
-
-    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
-
-    var footer = footerTemplate;
-
-    const footerImg = (logoLeon) => {
-      const resLogoLeon = fs.readFileSync(logoLeon);
-
-      footer = footerTemplate.replaceAll(
-        "{{logoLeon}}",
-        `data:image/${path
-          .extname(logoLeon)
-          .split(".")
-          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
-          "base64"
-        )}`
-      );
-    };
-
-    footerImg("controllers/stylessheet/images/logoLeon.png");
-    //#endregion
-
+    callHeader();
     const htmlTemplate = fs.readFileSync(templateRequerimientos, "utf8");
 
     const {
@@ -282,7 +229,7 @@ module.exports = {
           "</td> </tr>"
         );
       }) +
-      "</tbody> </table>;";
+      "</tbody> </table>";
 
     const html = htmlTemplate
       .replaceAll("{{oficioRequerimiento}}", oficioRequerimiento)
@@ -333,66 +280,7 @@ module.exports = {
   },
 
   createPdfConstancia: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
-
-    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
-
-    var footer = footerTemplate;
-
-    const footerImg = (logoLeon) => {
-      const resLogoLeon = fs.readFileSync(logoLeon);
-
-      footer = footerTemplate.replaceAll(
-        "{{logoLeon}}",
-        `data:image/${path
-          .extname(logoLeon)
-          .split(".")
-          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
-          "base64"
-        )}`
-      );
-    };
-
-    footerImg("controllers/stylessheet/images/logoLeon.png");
-    //#endregion
-
+    callHeader();
     const htmlTemplate = fs.readFileSync(templateConstancia, "utf8");
 
     const {
@@ -487,66 +375,7 @@ module.exports = {
   },
 
   createPdfAcuseEnviado: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
-
-    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
-
-    var footer = footerTemplate;
-
-    const footerImg = (logoLeon) => {
-      const resLogoLeon = fs.readFileSync(logoLeon);
-
-      footer = footerTemplate.replaceAll(
-        "{{logoLeon}}",
-        `data:image/${path
-          .extname(logoLeon)
-          .split(".")
-          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
-          "base64"
-        )}`
-      );
-    };
-
-    footerImg("controllers/stylessheet/images/logoLeon.png");
-    //#endregion
-
+    callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseEnviado, "utf8");
 
     const { oficioConstancia, fecha, hora } = req.body;
@@ -588,66 +417,7 @@ module.exports = {
   },
 
   createPdfAcuseRespuesta: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
-
-    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
-
-    var footer = footerTemplate;
-
-    const footerImg = (logoLeon) => {
-      const resLogoLeon = fs.readFileSync(logoLeon);
-
-      footer = footerTemplate.replaceAll(
-        "{{logoLeon}}",
-        `data:image/${path
-          .extname(logoLeon)
-          .split(".")
-          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
-          "base64"
-        )}`
-      );
-    };
-
-    footerImg("controllers/stylessheet/images/logoLeon.png");
-    //#endregion
-
+    callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseRespuesta, "utf8");
 
     const { tipoSolicitud, oficioConstancia, fecha, hora } = req.body;
@@ -687,5 +457,33 @@ module.exports = {
       `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
+  },
+
+  actualizaDescarga: async (req, res) => {
+    const { IdPath } = req.body;
+
+    db.query(`CALL sp_ActualizaDescarga('${IdPath}' )`, (err, result) => {
+      if (err) {
+        return res.status(500).send({
+          error: "Error",
+        });
+      }
+
+      if (result.length) {
+        const data = result[0][0];
+        if (data.error) {
+          return res.status(409).send({
+            result: data,
+          });
+        }
+        return res.status(200).send({
+          data,
+        });
+      } else {
+        return res.status(409).send({
+          error: "¡Sin Información!",
+        });
+      }
+    });
   },
 };

@@ -30,7 +30,6 @@ module.exports = {
       db.query(
         `CALL sp_AgregarInstruccionIrrevocable('${IdUsuario}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
         (err, result) => {
-          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -66,12 +65,6 @@ module.exports = {
     const TipoMovimiento = req.body.TipoMovimiento;
     const EntePublico = req.body.EntePublico;
 
-    if (IdIntruccion == null || /^[\s]*$/.test(IdIntruccion)) {
-      return res.status(409).send({
-        error: "Ingrese Id",
-      });
-    }
-
     if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Clave de inscripcion",
@@ -80,7 +73,6 @@ module.exports = {
       db.query(
         `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
         (err, result) => {
-          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -112,9 +104,7 @@ module.exports = {
     db.query(
       `CALL sp_BajaLogicaInstruccionesIrrevocables('${IdInstruccion}', '${IdUsuarioModificador}')`,
       (err, result) => {
-        //console.log(req.body)
         if (err) {
-          //console.log(err)
           return res.status(500).send({
             error: "Error",
           });
@@ -139,8 +129,7 @@ module.exports = {
   },
 
   getInstrucciones: (req, res) => {
-    db.query(`CALL sp_ListadoInstruccionesIrrevocables()`,
-     (err, result) => {
+    db.query(`CALL sp_ListadoInstruccionesIrrevocables()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -159,5 +148,4 @@ module.exports = {
       }
     });
   },
-
 };

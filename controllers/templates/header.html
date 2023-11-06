@@ -3,23 +3,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 95%;
+    width: 100%;
   "
 >
   <img src="{{logoTesoreria}}" style="width: 20%" />
 
-  <div
-    style="
-      letter-spacing: 1px;
-      font-family: Arial;
-      font-size: 10px;
-      font-weight: 100;
-      width: 62%;
-      text-align: center;
-    "
-  >
-    2022 AÑO DE LA NUEVA CONSTITUCIÓN <br />
-    DEL ESTADO DE NUEVO LEÓN
+  <div style="width: 50%; display: flex; justify-content: center">
+    <div
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 10px;
+        font-weight: 100;
+        width: 55%;
+        text-align: center;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+      "
+    >
+      {{headerText}}
+    </div>
   </div>
 
   <img src="{{escudo}}" style="width: 8%" />
