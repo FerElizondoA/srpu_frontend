@@ -287,6 +287,7 @@ const {
   createPdfSolicitudCorto,
   createPdfAcuseEnviado,
   createPdfAcuseRespuesta,
+  createPdfSolicitudCancelacion,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -1361,6 +1362,9 @@ router.post("/create-pdf-acuse-respuesta", (req, res) => {
   createPdfAcuseRespuesta(req, res);
 });
 
+router.post("/create-pdf-solicitud-cancelacion",  (req, res) => {
+  createPdfSolicitudCancelacion(req, res)
+}),
 //#endregion
 
 //#################################Admin Ayudas####################################

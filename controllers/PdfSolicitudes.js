@@ -6,13 +6,11 @@ const path = require("path");
 const headerFolder = "controllers/templates/header.html";
 const footerFolder = "controllers/templates/footer.html";
 const templateSolicitudCorto = "controllers/templates/template_corto.html";
-const templateRequerimientos =
-  "controllers/templates/template_requerimientos.html";
+const templateRequerimientos = "controllers/templates/template_requerimientos.html";
 const templateConstancia = "controllers/templates/template_constancia.html";
-const templateAcuseEnviado =
-  "controllers/templates/template_acuse_envio_solicitud.html";
-const templateAcuseRespuesta =
-  "controllers/templates/template_acuse_envio_respuesta.html";
+const templateAcuseEnviado = "controllers/templates/template_acuse_envio_solicitud.html";
+const templateAcuseRespuesta = "controllers/templates/template_acuse_envio_respuesta.html";
+const templateCancelacion = "controllers/templates/template_cancelacion_credito.html";
 
 module.exports = {
   createPdfSolicitudCorto: async (req, res) => {
@@ -179,7 +177,7 @@ module.exports = {
         right: "0.50in",
         left: "0.50in",
       },
-      printBackground: true,
+      l: true,
     });
 
     await browser.close();
@@ -688,4 +686,135 @@ module.exports = {
     );
     res.send(pdfBuffer);
   },
+
+  
+  createPdfSolicitudCancelacion: async (req, res) => {
+    //#region HEADER
+    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
+
+    var header = headerTemplate;
+
+    const headerImg = (logoTesoreria, escudo) => {
+      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
+      const resEescudo = fs.readFileSync(escudo);
+
+      header = headerTemplate
+        .replaceAll(
+          "{{logoTesoreria}}",
+          `data:image/${path
+            .extname(logoTesoreria)
+            .split(".")
+            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
+            "base64"
+          )}`
+        )
+        .replaceAll(
+          "{{escudo}}",
+          `data:image/${path
+            .extname(escudo)
+            .split(".")
+            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
+            "base64"
+          )}`
+        );
+    };
+
+    headerImg(
+      "controllers/stylessheet/images/logoTesoreria.png",
+      "controllers/stylessheet/images/escudo.png"
+    );
+
+    //#endregion
+
+    //#region FOOTER
+
+    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
+
+    var footer = footerTemplate;
+
+    const footerImg = (logoLeon) => {
+      const resLogoLeon = fs.readFileSync(logoLeon);
+
+      footer = footerTemplate.replaceAll(
+        "{{logoLeon}}",
+        `data:image/${path
+          .extname(logoLeon)
+          .split(".")
+          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
+          "base64"
+        )}`
+      );
+    };
+
+    footerImg("controllers/stylessheet/images/logoLeon.png");
+    //#endregion
+
+    const htmlTemplate = fs.readFileSync(templateCancelacion, "utf8");
+
+    const { 
+      numeroSolicitud,
+      UsuarioDestinatario,
+      EntidadDestinatario,
+      UsuarioRemitente,
+      EntidadRemitente,
+      claveInscripcion,
+      fechaInscripcion,
+      fechaLiquidacion,
+      entePublicoObligado,
+      institucionFinanciera,
+      montoOriginalContratado,
+      fechaContratacion,
+      causaCancelacion,
+      documentoAcreditacionCancelacion,
+      documentoBajaCreditoFederal
+      } = req.body;
+
+    const html = htmlTemplate
+    .replaceAll("{{numeroSolicitud}}", numeroSolicitud)
+    .replaceAll("{{UsuarioDestinatario}}", UsuarioDestinatario)
+    .replaceAll("{{EntidadDestinatario}}", EntidadDestinatario)
+    .replaceAll("{{UsuarioRemitente}}", UsuarioRemitente)
+    .replaceAll("{{EntidadRemitente}}", EntidadRemitente)
+    .replaceAll("{{claveInscripcion}}", claveInscripcion)
+    .replaceAll("{{fechaInscripcion}}", fechaInscripcion)
+    .replaceAll("{{fechaLiquidacion}}", fechaLiquidacion)
+    .replaceAll("{{entePublicoObligado}}", entePublicoObligado)
+    .replaceAll("{{institucionFinanciera}}", institucionFinanciera)
+    .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
+    .replaceAll("{{fechaContratacion}}", fechaContratacion)
+    .replaceAll("{{causaCancelacion}}", causaCancelacion)
+    .replaceAll("{{documentoAcreditacionCancelacion}}", documentoAcreditacionCancelacion)
+    .replaceAll("{{documentoBajaCreditoFederal}}", documentoBajaCreditoFederal);
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${numeroSolicitud - new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
 };

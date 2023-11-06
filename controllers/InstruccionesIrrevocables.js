@@ -30,7 +30,6 @@ module.exports = {
       db.query(
         `CALL sp_AgregarInstruccionIrrevocable('${IdUsuario}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
         (err, result) => {
-          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",
@@ -80,7 +79,6 @@ module.exports = {
       db.query(
         `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
         (err, result) => {
-          console.log(err)
           if (err) {
             return res.status(500).send({
               error: "Error",
