@@ -383,7 +383,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
-    console.log(archivo);
 
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
@@ -402,8 +401,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then(({ data }) => {
-          console.log(data);
-
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
