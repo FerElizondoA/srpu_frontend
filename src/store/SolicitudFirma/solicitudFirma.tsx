@@ -45,7 +45,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   idSolicitud: "",
 
   rowSolicitud: {
-    ClaveDeInscripcion: "",
+    IdClaveInscripcion: "",
     CreadoPor: "",
     Estatus: "",
     FechaContratacion: "",
@@ -109,7 +109,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   cleanRowSolicitud: () =>
     set(() => ({
       rowSolicitud: {
-        ClaveDeInscripcion: "",
+        IdClaveInscripcion: "",
         CreadoPor: "",
         Estatus: "",
         FechaContratacion: "",

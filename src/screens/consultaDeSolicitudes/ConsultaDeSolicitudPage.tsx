@@ -61,7 +61,7 @@ export interface IData {
   NumeroRegistro: string;
   Institucion: string;
   TipoEntePublico: string;
-  ClaveDeInscripcion: string;
+  IdClaveInscripcion: string;
   Estatus: string;
   FechaContratacion: Date;
   MontoOriginalContratado: number;
@@ -77,7 +77,7 @@ export interface IData {
 }
 
 export interface IDataPrueba {
-  ClaveDeInscripcion: string;
+  IdClaveInscripcion: string;
   CreadoPor: string;
   Estatus: string;
   FechaContratacion: string;
@@ -124,7 +124,7 @@ const heads: readonly Head[] = [
     label: "Estatus",
   },
   {
-    id: "ClaveDeInscripcion",
+    id: "IdClaveInscripcion",
     isNumeric: true,
     label: "Clave de inscripción",
   },
@@ -172,7 +172,7 @@ export function ConsultaDeSolicitudPage() {
     // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
-        elemento.ClaveDeInscripcion?.toString()
+        elemento.IdClaveInscripcion?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.Estatus?.toString()
@@ -758,7 +758,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.ClaveDeInscripcion?.toString()}
+                          {row.IdClaveInscripcion?.toString()}
                         </StyledTableCell>
 
                         <StyledTableCell
