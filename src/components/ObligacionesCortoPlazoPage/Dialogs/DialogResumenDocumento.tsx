@@ -18,6 +18,7 @@ import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolici
 import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
+import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -31,6 +32,7 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
   handler: Function;
   openState: boolean;
+  rowSolicitud: IDataPrueba;
 };
 
 export function VerBorradorDocumento(props: Props) {
@@ -42,6 +44,8 @@ export function VerBorradorDocumento(props: Props) {
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
+
+
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -266,6 +270,7 @@ export function VerBorradorDocumento(props: Props) {
       <DialogSolicitarCancelacion
         handler={setOpenDialogCancelacion}
         openState={openDialogCancelacion}
+        rowSolicitud={props.rowSolicitud}
       />
     </Dialog>
   );

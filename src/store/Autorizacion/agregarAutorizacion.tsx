@@ -329,7 +329,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
       .then(({ data }) => {
         Swal.fire({
           icon: "success",
-          title: "Éxito",
+          //title: "Éxito",
           text: "El fideicomiso se ha modificado exitosamente",
         });
         state.changeIdAutorizacion(data.result.id);

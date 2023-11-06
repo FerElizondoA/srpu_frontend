@@ -4,6 +4,19 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
+import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { Navigate } from "react-router-dom";
+
+export interface ArchivoCancelacion {
+  archivo: File;
+  nombreArchivo: string;
+  fechaArchivo: string;
+}
+
+export interface ArchivosCancelacion {
+  acreditacionCancelacion: ArchivoCancelacion,
+  bajaCreditoFederal: ArchivoCancelacion
+}
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -14,6 +27,17 @@ export interface SolicitudFirmaSlice {
   changeEstatus: (id: string) => void;
   changeInfoDoc: (info: string) => void;
   setUrl: (url: string) => void;
+
+
+  archivosCancelacion: ArchivosCancelacion
+  setArchivosCancelacion: (ArchivosCancelacion: ArchivosCancelacion) => void;
+  cleanArchivosCancelacion: () => void;
+
+
+  rowSolicitud: IDataPrueba;
+  setRowSolicitud: (rowSolicitud: IDataPrueba) => void,
+  cleanRowSolicitud: () => void,
+
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
@@ -21,6 +45,92 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   get
 ) => ({
   idSolicitud: "",
+
+  rowSolicitud: {
+    ClaveDeInscripcion: "",
+    CreadoPor: "",
+    Estatus: "",
+    FechaContratacion: "",
+    FechaCreacion: "",
+    FechaRequerimientos: "",
+    Id: "",
+    IdEditor: "",
+    IdPathDoc: "",
+    Institucion: "",
+    ModificadoPor: "",
+    MontoOriginalContratado: "",
+    Nombre: "",
+    NumeroRegistro: 0,
+    Solicitud: "",
+    TipoEntePublico: "",
+    TipoSolicitud: "",
+    UltimaModificacion: new Date().toString(),
+  },
+
+  archivosCancelacion: {
+    acreditacionCancelacion: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date().toString(),
+    },
+    
+    bajaCreditoFederal: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date().toString(),
+    },
+  },
+
+  setRowSolicitud: (rowSolicitud: IDataPrueba) =>
+    set(() => ({
+      rowSolicitud: rowSolicitud
+    })),
+
+  setArchivosCancelacion: (archivosCancelacion: ArchivosCancelacion ) =>
+    set(() => ({
+      archivosCancelacion: archivosCancelacion
+    })),
+
+  cleanArchivosCancelacion: () =>
+    set(() => ({
+      archivosCancelacion: {
+        acreditacionCancelacion: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+          fechaArchivo: new Date().toString(),
+        },
+        
+        bajaCreditoFederal: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+          fechaArchivo: new Date().toString(),
+        },
+      },
+    })),
+
+  cleanRowSolicitud: () =>
+    set(() => ({
+      rowSolicitud: {
+        ClaveDeInscripcion: "",
+        CreadoPor: "",
+        Estatus: "",
+        FechaContratacion: "",
+        FechaCreacion: "",
+        FechaRequerimientos: "",
+        Id: "",
+        IdEditor: "",
+        IdPathDoc: "",
+        Institucion: "",
+        ModificadoPor: "",
+        MontoOriginalContratado: "",
+        Nombre: "",
+        NumeroRegistro: 0,
+        Solicitud: "",
+        TipoEntePublico: "",
+        TipoSolicitud: "",
+        UltimaModificacion: new Date().toString(),
+      }
+    })),
 
   estatus: "",
 
@@ -46,9 +156,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
             IdSolicitud: state.idSolicitud,
-            NumeroOficio: `DDPYPF-${
-              inf.NumeroOficio
-            }/${new Date().getFullYear()}`,
+            NumeroOficio: `DDPYPF-${inf.NumeroOficio
+              }/${new Date().getFullYear()}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
             SerialCertificado: inf.SerialCertificado,
@@ -66,16 +175,13 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          console.log(state.estatus);
-
           if (
             !state.estatus.includes("Autorizado") &&
             !state.estatus.includes("Revision")
           ) {
             createNotificationCortoPlazo(
               "Solicitud enviada",
-              `La solicitud ha sido enviada para autorización con fecha ${
-                new Date().toLocaleString("es-MX").split(" ")[0]
+              `La solicitud ha sido enviada para autorización con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
               } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
               [localStorage.getItem("IdUsuario")!]
             );
@@ -88,7 +194,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             state.idSolicitud
           );
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   },
 
@@ -106,11 +212,12 @@ export async function ConsultaSolicitud(
     oficioNum: NoOficio,
 
     directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
-    cargoDirectorGeneral:
-      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
 
     servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
     cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
+
     organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
 
     institucionFinanciera:
@@ -132,15 +239,15 @@ export async function ConsultaSolicitud(
     comisiones:
       solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo !== "N/A"
         ? solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo +
-          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
-            ? " "
-            : " más IVA")
+        (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
+          ? " "
+          : " más IVA")
         : solicitud.condicionesFinancieras[0].comisiones[0].montoFijo !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
+          ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
           (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
             ? " "
             : " más IVA")
-        : "N/A",
+          : "N/A",
     gastosAdicionales: "No Aplica",
     tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
     mecanismoVehiculoDePago: "No Aplica",
@@ -153,7 +260,7 @@ export async function ConsultaSolicitud(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-solicitud-corto",
+      "/api/create-pdf-solicitud-corto",
       {
         oficioNum: SolicitudDescarga.oficioNum,
         directorGeneral: SolicitudDescarga.directorGeneral,
@@ -200,7 +307,7 @@ export async function ConsultaSolicitud(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaRequerimientos(
@@ -257,7 +364,7 @@ export async function ConsultaRequerimientos(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaConstancia(
@@ -331,7 +438,7 @@ export async function ConsultaConstancia(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function GeneraAcuseEnvio(noOficio: string, idRegistro: string) {
@@ -366,7 +473,7 @@ export async function GeneraAcuseEnvio(noOficio: string, idRegistro: string) {
         new File([response.data], `acuse-envio-${noOficio}.pdf`)
       );
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function GeneraAcuseRespuesta(
@@ -376,7 +483,7 @@ export async function GeneraAcuseRespuesta(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-acuse-respuesta",
+      "/api/create-pdf-acuse-respuesta",
       {
         tipoSolicitud: "Solicitud de requerimientos",
         oficioConstancia: noOficio,
@@ -408,7 +515,7 @@ export async function GeneraAcuseRespuesta(
 
       // setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
@@ -431,7 +538,7 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
     .then((response) => {
       return true;
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export const getPdf = (
@@ -465,5 +572,100 @@ export const getPdf = (
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
+
+
+export async function CancelacionSolicitud(
+  Solicitud: string,
+  NumeroRegistro: number,
+  Justificacion: string,
+  archivosCancelacion: ArchivosCancelacion,
+  UltimaModificacion: string,
+  setUrl: Function,
+
+) {
+  let solicitud: any = JSON.parse(Solicitud);
+  const SolicitudCancelacion: any = {
+    numeroSolicitud: NumeroRegistro,
+    UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
+    EntidadDestinatario: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    claveInscripcion: solicitud.ClaveDeInscripcion === undefined ? "Sin Clave de Inscripcion" : solicitud.ClaveDeInscripcion ,
+
+    fechaInscripcion: UltimaModificacion,
+
+    fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+
+    entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios.length > 0
+      ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
+      : "No Aplica",
+    institucionFinanciera: solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    causaCancelacion: Justificacion,
+    documentoAcreditacionCancelacion: JSON.stringify(archivosCancelacion.acreditacionCancelacion.nombreArchivo),
+    documentoBajaCreditoFederal: JSON.stringify(archivosCancelacion.bajaCreditoFederal.nombreArchivo)
+  };  
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+      "/api/create-pdf-solicitud-cancelacion",
+      {
+        numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
+        UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
+        EntidadDestinatario: SolicitudCancelacion.EntidadDestinatario,
+        UsuarioRemitente: SolicitudCancelacion.UsuarioRemitente,
+        EntidadRemitente: SolicitudCancelacion.EntidadRemitente,
+        claveInscripcion: SolicitudCancelacion.claveInscripcion,
+
+        fechaInscripcion: format(
+          new Date( SolicitudCancelacion.fechaInscripcion,),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+       
+        fechaLiquidacion: format(
+          new Date(SolicitudCancelacion.fechaLiquidacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        fechaContratacion: format(
+          new Date(SolicitudCancelacion.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
+        institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
+        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
+        causaCancelacion: SolicitudCancelacion.causaCancelacion,
+        documentoAcreditacionCancelacion: SolicitudCancelacion.documentoAcreditacionCancelacion,
+        documentoBajaCreditoFederal: SolicitudCancelacion.documentoBajaCreditoFederal,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+
+    })
+    .catch((err) => { });
+}

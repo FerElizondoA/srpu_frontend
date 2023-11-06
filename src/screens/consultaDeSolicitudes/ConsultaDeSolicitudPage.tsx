@@ -72,6 +72,27 @@ export interface IData {
   IdPathDoc: string;
 }
 
+export interface IDataPrueba {
+  ClaveDeInscripcion: string,
+  CreadoPor: string,
+  Estatus: string,
+  FechaContratacion: string,
+  FechaCreacion:  string,
+  FechaRequerimientos: string,
+  Id:  string,
+  IdEditor:  string,
+  IdPathDoc:  string,
+  Institucion:  string,
+  ModificadoPor:  string,
+  MontoOriginalContratado:  string,
+  Nombre:  string,
+  NumeroRegistro:  number,
+  Solicitud:  string,
+  TipoEntePublico:  string,
+  TipoSolicitud:  string,
+  UltimaModificacion:  string,
+}
+
 interface Head {
   id: keyof IData;
   isNumeric: boolean;
@@ -301,6 +322,27 @@ export function ConsultaDeSolicitudPage() {
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
   );
+
+
+  //START Row Solicitud
+
+  const rowSolicitud: IDataPrueba = useSolicitudFirmaStore(
+    (state) => state.rowSolicitud
+  );
+
+  const setRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.setRowSolicitud
+  );
+
+  const cleanRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.cleanRowSolicitud
+  )
+
+  //END Row Solicitud
+
+
+
+  //const [rowSolicitud, setRowSolicitud] = useState<Array<IDataPrueba>>([]);
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
@@ -737,36 +779,46 @@ export function ConsultaDeSolicitudPage() {
                             !row.Estatus.includes("Autorizado")) ||
                             (localStorage.getItem("Rol") === "Autorizador" &&
                               row.Estatus.includes("Por Firmar"))) && (
-                            <Tooltip title="Firmar documento">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  getComentariosSolicitudPlazo(
-                                    row.Id,
-                                    setDatosComentarios
-                                  ).then((data) => {
-                                    if (
-                                      rolesAdmin.includes(
-                                        localStorage.getItem("Rol")!
-                                      )
-                                    ) {
+                              <Tooltip title="Firmar documento">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    getComentariosSolicitudPlazo(
+                                      row.Id,
+                                      setDatosComentarios
+                                    ).then((data) => {
                                       if (
-                                        data.filter(
-                                          (a: any) => a.Tipo === "Requerimiento"
-                                        ).length > 0
+                                        rolesAdmin.includes(
+                                          localStorage.getItem("Rol")!
+                                        )
                                       ) {
-                                        requerimientos(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
+                                        if (
                                           data.filter(
-                                            (a: any) =>
-                                              a.Tipo === "Requerimiento"
-                                          )[0],
-                                          row.Estatus,
-                                          row.Id
-                                        );
+                                            (a: any) => a.Tipo === "Requerimiento"
+                                          ).length > 0
+                                        ) {
+                                          requerimientos(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            data.filter(
+                                              (a: any) =>
+                                                a.Tipo === "Requerimiento"
+                                            )[0],
+                                            row.Estatus,
+                                            row.Id
+                                          );
+                                        } else {
+                                          ConsultaConstancia(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            setUrl
+                                          );
+                                          changeEstatus(row.Estatus);
+                                          changeIdSolicitud(row.Id);
+                                          navigate("../firmaUrl");
+                                        }
                                       } else {
-                                        ConsultaConstancia(
+                                        ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
@@ -775,24 +827,14 @@ export function ConsultaDeSolicitudPage() {
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
-                                    } else {
-                                      ConsultaSolicitud(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        setUrl
-                                      );
-                                      changeEstatus(row.Estatus);
-                                      changeIdSolicitud(row.Id);
-                                      navigate("../firmaUrl");
-                                    }
-                                  });
-                                }}
-                              >
-                                <HistoryEduIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                                    });
+                                  }}
+                                >
+                                  <HistoryEduIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {localStorage.getItem("IdUsuario") === row.IdEditor &&
                             localStorage.getItem("Rol") !== "Administrador" &&
@@ -861,6 +903,10 @@ export function ConsultaDeSolicitudPage() {
                                   changeEstatus(row.Estatus);
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
+
+
+                                  setRowSolicitud(row)
+                                  //setRowSolicitud(row)
                                 }}
                               >
                                 <DoDisturbOnIcon />
@@ -883,9 +929,9 @@ export function ConsultaDeSolicitudPage() {
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
-                                        "Capturador" ||
+                                      "Capturador" ||
                                       localStorage.getItem("Rol") ===
-                                        "Verificador"
+                                      "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
                                     } else {
@@ -915,6 +961,7 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
+          rowSolicitud = {rowSolicitud}
         />
       )}
       {openDescargar && (
