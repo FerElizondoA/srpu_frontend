@@ -157,6 +157,14 @@ export function CondicionesFinancieras() {
     (state) => state.changeTasaInteres
   );
 
+  const datosActualizar: Array<string> = useCortoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
+  let disable =
+    datosActualizar.length < 0 &&
+    (!datosActualizar.includes("Tabla Condiciones Financieras") ||
+      !datosActualizar.includes("Monto Original Contratado"));
 
   return (
     <Grid
@@ -228,6 +236,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               changeOpenAgregarState(!openAgregarCondicion);
@@ -273,6 +282,7 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               updatecondicionFinancieraTable(
@@ -579,6 +589,7 @@ export function CondicionesFinancieras() {
         alignItems={"center"}
       >
         <Button
+          disabled={disable}
           sx={queries.buttonContinuar}
           variant="outlined"
           onClick={() => {

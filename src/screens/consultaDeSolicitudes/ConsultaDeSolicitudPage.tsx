@@ -25,7 +25,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
-import { format } from "date-fns";
+import { differenceInDays, format, startOfDay } from "date-fns";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -49,10 +49,12 @@ import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/D
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
+  CambiaEstatus,
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
+import InfoIcon from "@mui/icons-material/Info";
 
 export interface IData {
   Id: string;
@@ -70,6 +72,8 @@ export interface IData {
   IdEditor: string;
   CreadoPor: string;
   IdPathDoc: string;
+  UltimaModificacion: string;
+  FechaRequerimientos: string;
 }
 
 interface Head {
@@ -112,6 +116,11 @@ const heads: readonly Head[] = [
     id: "FechaContratacion",
     isNumeric: true,
     label: "Fecha de contratación",
+  },
+  {
+    id: "FechaRequerimientos",
+    isNumeric: true,
+    label: "Fecha Requerimientos",
   },
   {
     id: "tipoDocumento",
@@ -384,6 +393,11 @@ export function ConsultaDeSolicitudPage() {
     cleanObligadoSolidarioAval([]);
     updatecondicionFinancieraTable([]);
     setTablaDocumentos([]);
+
+    useCortoPlazoStore.setState({
+      comentarios: {},
+      idComentario: "",
+    });
   };
 
   const editarSolicitud = (Tipo: string) => {
@@ -427,7 +441,6 @@ export function ConsultaDeSolicitudPage() {
     Solicitud: string,
     noRegistro: string,
     Requerimiento: any,
-    estatus: string,
     IdSolicitud: string
   ) => {
     let a: any = {};
@@ -440,10 +453,19 @@ export function ConsultaDeSolicitudPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    changeEstatus(estatus);
+    changeEstatus("Actualizacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
+
+  const getDays = (date: any, days: any) => {
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const setDatosActualizar: Function = useCortoPlazoStore(
+    (state) => state.setDatosActualizar
+  );
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -581,9 +603,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    }
-
-                    if (
+                    } else if (
                       row.Estatus === "Verificacion" ||
                       row.Estatus === "Validacion"
                     ) {
@@ -595,9 +615,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    }
-
-                    if (row.Estatus === "Autorizacion") {
+                    } else if (row.Estatus === "Autorizacion") {
                       chip = (
                         <Chip
                           label={"En " + row.Estatus}
@@ -606,9 +624,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    }
-
-                    if (row.Estatus.includes("Por Firmar")) {
+                    } else if (row.Estatus.includes("Por Firmar")) {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -617,13 +633,44 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    }
-                    if (row.Estatus === "Autorizado") {
+                    } else if (row.Estatus === "Autorizado") {
                       chip = (
                         <Chip
                           label={row.Estatus}
                           // icon={<CheckIcon />}
                           color="success"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus === "Actualizacion") {
+                      chip = (
+                        <Tooltip
+                          title={`${differenceInDays(
+                            getDays(new Date(row.FechaRequerimientos), 11),
+                            new Date()
+                          )} días restantes para cancelación automática`}
+                          onClick={() => CambiaEstatus("Cancelado", row.Id)}
+                        >
+                          <Chip
+                            label={row.Estatus}
+                            color={
+                              differenceInDays(
+                                getDays(new Date(row.FechaRequerimientos), 10),
+                                new Date()
+                              ) > 5
+                                ? "warning"
+                                : "error"
+                            }
+                            variant="filled"
+                          />
+                        </Tooltip>
+                      );
+                    } else {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          // icon={<CheckIcon />}
+                          color="default"
                           variant="outlined"
                         />
                       );
@@ -702,6 +749,20 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
+                          {row.Estatus === "Actualizacion"
+                            ? format(
+                                new Date(row.FechaRequerimientos),
+                                "dd/MM/yyyy"
+                              )
+                            : " "}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
                           {row.TipoSolicitud}
                         </StyledTableCell>
 
@@ -762,7 +823,6 @@ export function ConsultaDeSolicitudPage() {
                                             (a: any) =>
                                               a.Tipo === "Requerimiento"
                                           )[0],
-                                          row.Estatus,
                                           row.Id
                                         );
                                       } else {
@@ -771,7 +831,7 @@ export function ConsultaDeSolicitudPage() {
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus(row.Estatus);
+                                        changeEstatus("Autorizado");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
@@ -781,7 +841,7 @@ export function ConsultaDeSolicitudPage() {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus(row.Estatus);
+                                      changeEstatus("Revision");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
@@ -794,10 +854,12 @@ export function ConsultaDeSolicitudPage() {
                             </Tooltip>
                           )}
 
-                          {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                            localStorage.getItem("Rol") !== "Administrador" &&
-                            (row.Estatus === "Captura" ||
-                              row.Estatus === "Verificacion") && (
+                          {((localStorage.getItem("Rol") === "Verificador" &&
+                            (row.Estatus === "Verificacion" ||
+                              row.Estatus === "Actualizacion")) ||
+                            (localStorage.getItem("Rol") === "Capturador" &&
+                              row.Estatus === "Captura")) &&
+                            localStorage.getItem("Rol") !== "Administrador" && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"
@@ -806,6 +868,12 @@ export function ConsultaDeSolicitudPage() {
                                     changeNoRegistro(row.NumeroRegistro);
                                     changeEditCreadoPor(row?.CreadoPor);
                                     llenaSolicitud(row, row.TipoSolicitud);
+                                    if (row.Estatus === "Actualizacion") {
+                                      getComentariosSolicitudPlazo(
+                                        row.Id,
+                                        setDatosActualizar
+                                      );
+                                    }
                                     editarSolicitud(row.TipoSolicitud);
                                   }}
                                 >

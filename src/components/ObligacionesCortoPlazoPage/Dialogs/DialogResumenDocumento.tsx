@@ -132,8 +132,30 @@ export function VerBorradorDocumento(props: Props) {
             localStorage.getItem("Rol") === "Autorizador")) && (
           <Grid
             justifyContent={"space-evenly"}
-            sx={{ width: "20%", display: "flex" }}
+            sx={{ width: "30%", display: "flex" }}
           >
+            {((estatus === "Validacion" &&
+              localStorage.getItem("Rol") === "Validador") ||
+              (estatus === "Autorizacion" &&
+                localStorage.getItem("Rol") === "Autorizador")) && (
+              <Button
+                sx={{
+                  ...queries.buttonCancelar,
+                  fontSize: "70%",
+                }}
+                disabled={!tieneComentarios}
+                onClick={() => {
+                  localStorage.getItem("Rol") === "Validador"
+                    ? CambiaEstatus("Revision", IdSolicitud)
+                    : CambiaEstatus("Validacion", IdSolicitud);
+                  window.location.reload();
+                }}
+              >
+                {`Devolver para ${
+                  estatus === "Validacion" ? "Revision" : "Validación"
+                }`}
+              </Button>
+            )}
             <Button
               sx={{
                 ...queries.buttonCancelar,

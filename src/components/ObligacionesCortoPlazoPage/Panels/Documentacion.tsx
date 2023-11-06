@@ -124,11 +124,15 @@ export function Documentacion() {
   });
 
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
-  
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
   };
+
+  const datosActualizar: Array<string> = useCortoPlazoStore(
+    (state) => state.datosActualizar
+  );
 
   return (
     <Grid
@@ -206,12 +210,14 @@ export function Documentacion() {
 
                     <StyledTableCell scope="row">
                       <TextField
-                        sx={{width:"250px"}}
+                        sx={{ width: "250px" }}
                         disabled={
                           val.archivo?.name ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          (datosActualizar.length > 0 &&
+                            !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
                         multiline={!query.isMobile}
@@ -255,6 +261,10 @@ export function Documentacion() {
                           "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                       </Typography>
                       <input
+                        disabled={
+                          datosActualizar.length > 0 &&
+                          !datosActualizar.includes(val.tipoArchivo)
+                        }
                         type="file"
                         accept="application/pdf"
                         onChange={(v) => {
@@ -268,9 +278,9 @@ export function Documentacion() {
                         }}
                       />
                     </StyledTableCell>
-                    <StyledTableCell >
+                    <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
-                        <Typography width={query.isMobile ? "350px": "100%"}>
+                        <Typography width={query.isMobile ? "350px" : "100%"}>
                           {tablaDocumentos[index]?.descripcionTipo}
                         </Typography>
                       ) : (
@@ -305,7 +315,7 @@ export function Documentacion() {
                         </FormControl>
                       )}
                     </StyledTableCell>
-                    <StyledTableCell >
+                    <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
                       comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">

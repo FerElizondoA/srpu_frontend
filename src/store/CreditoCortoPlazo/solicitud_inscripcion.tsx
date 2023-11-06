@@ -79,8 +79,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   catalogoReglas: [],
 
-  changeInscripcion: (inscripcion: any) =>
-    set(() => ({ inscripcion: inscripcion })),
+  changeInscripcion: (inscripcion: any) => {
+    set(() => ({ inscripcion: inscripcion }));
+  },
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
@@ -109,6 +110,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }));
       });
   },
+
   crearSolicitud: async (
     idCreador: string,
     idEditor: string,
@@ -148,7 +150,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: "1",
+          IdClaveInscripcion: `DDPYPF-${"NumeroOficio"}/${new Date().getFullYear()}`,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -172,6 +174,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         );
       });
   },
+
   modificaSolicitud: async (
     idCreador: string,
     idEditor: string,
@@ -235,6 +238,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         );
       });
   },
+
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -276,6 +280,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       });
     return false;
   },
+
   addComentario: async (Id: string, comentario: any, tipo: string) => {
     if (comentario.length !== 2) {
       await axios
@@ -303,6 +308,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .catch((e) => {});
     }
   },
+
   eliminarRequerimientos: async (Id: string, setState: Function) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -335,6 +341,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       })
       .catch((e) => {});
   },
+
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
 
@@ -376,6 +383,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
+    console.log(archivo);
 
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
@@ -394,6 +402,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then(({ data }) => {
+          console.log(data);
+
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
@@ -406,6 +416,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       return null;
     }
   },
+
   savePathDoc: async (
     idSolicitud: string,
     Ruta: string,
@@ -431,128 +442,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .catch((e) => {});
   },
 });
-
-// export async function DescargarConsultaSolicitud(Solicitud: string) {
-//   const meses = [
-//     "enero",
-//     "febrero",
-//     "marzo",
-//     "abril",
-//     "mayo",
-//     "junio",
-//     "julio",
-//     "agosto",
-//     "septiembre",
-//     "octubre",
-//     "noviembre",
-//     "diciembre",
-//   ];
-
-//   let solicitud: any = JSON.parse(Solicitud);
-//   interface DocumentacionItem {
-//     descripcionTipo: string;
-//     // Otros campos si existen en la estructura de solicitud.documentacion
-//   }
-
-//   const descripciones: string[] = solicitud.documentacion.map(
-//     (item: DocumentacionItem) => item.descripcionTipo
-//   );
-
-//   const fechaVencimiento = new Date(
-//     solicitud.informacionGeneral.fechaVencimiento
-//   );
-//   const dia = fechaVencimiento.getDate();
-//   const mes = meses[fechaVencimiento.getMonth()];
-//   const año = fechaVencimiento.getFullYear();
-
-//   const fechaVencimientoEspañol = `${dia} de ${mes} de ${año}`;
-
-//   const fechaContratacion = new Date(
-//     solicitud.informacionGeneral.fechaContratacion
-//   );
-//   const diaC = fechaContratacion.getDate();
-//   const mesC = meses[fechaContratacion.getMonth()];
-//   const añoC = fechaContratacion.getFullYear();
-
-//   const fechaContratacionEspañol = `${diaC} de ${mesC} de ${añoC}`;
-
-//   const SolicitudDescarga: any = {
-//     Nombre: solicitud.encabezado.solicitanteAutorizado.Nombre,
-//     Cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
-//     Organismo: solicitud.encabezado.organismo.Organismo,
-//     InstitucionBancaria:
-//       solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-//     Monto: solicitud.informacionGeneral.monto,
-//     Destino: solicitud.informacionGeneral.destino.Descripcion,
-//     PlazoDias: solicitud.informacionGeneral.plazo,
-//     TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-//     Tipocomisiones:
-//       solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
-//       "No aplica",
-//     TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
-//     Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
-//     TipoDocumento: solicitud.encabezado.tipoDocumento,
-//     PeriodoPago:
-//       solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
-//     //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
-//     Reglas: solicitud.inscripcion.declaratorias,
-//     TasaInteres:
-//       solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
-//     Documentos: solicitud.documentacion.descripcionTipo,
-//   };
-
-//   await axios
-//     .post(
-//       process.env.REACT_APP_APPLICATION_MID + "/documento_srpu",
-//       {
-//         nombre: SolicitudDescarga.Nombre,
-//         cargoServidorPublicoSolicitante: SolicitudDescarga.Cargo,
-//         oficionum: "10",
-//         cargoServidorPublico: solicitud.cargoSolicitante,
-//         organismo: SolicitudDescarga.Organismo,
-//         InstitucionBancaria: SolicitudDescarga.InstitucionBancaria,
-//         monto: SolicitudDescarga.Monto,
-//         destino: SolicitudDescarga.Destino,
-//         dias: SolicitudDescarga.PlazoDias,
-//         tipoEntePublicoObligado: SolicitudDescarga.TipoEntePublico,
-//         tasaefectiva: SolicitudDescarga.TasaEfectiva,
-//         tasaInteres: SolicitudDescarga.TasaInteres,
-//         reglas: SolicitudDescarga.Reglas,
-//         tipocomisiones: SolicitudDescarga.Tipocomisiones,
-//         servidorpublico: SolicitudDescarga.Servidorpublico,
-//         contrato: SolicitudDescarga.TipoDocumento,
-//         periodoPago: SolicitudDescarga.PeriodoPago,
-//         obligadoSolidarioAval:
-//           solicitud.informacionGeneral.obligadosSolidarios[0]
-//             ?.obligadoSolidario || "No aplica",
-//         fechaContrato: fechaContratacionEspañol,
-//         fechaVencimiento: fechaVencimientoEspañol,
-//         Documentos: descripciones,
-//       },
-//       {
-//         headers: {
-//           Authorization: localStorage.getItem("jwtToken"),
-//           "Access-Control-Allow-Origin": "*",
-//         },
-//         responseType: "arraybuffer",
-//       }
-//     )
-//     .then((response) => {
-//       const a = window.URL || window.webkitURL;
-
-//       const url = a.createObjectURL(
-//         new Blob([response.data], { type: "application/pdf" })
-//       );
-
-//       let link = document.createElement("a");
-
-//       link.setAttribute("download", `contrato.pdf`);
-//       link.setAttribute("href", url);
-//       document.body.appendChild(link);
-//       link.click();
-//     })
-//     .catch((err) => {});
-// }
 
 export const getUsuariosAsignables = async (
   setState: Function,

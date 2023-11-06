@@ -28,7 +28,10 @@ import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo, IFondoOIngreso } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import {
+  ICatalogo,
+  IFondoOIngreso,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
@@ -164,9 +167,7 @@ export function TipoDeMovimientoIntrucciones() {
   // );
 
   const tipoMovimientoInstruccion: TipoMovimientoInstrucciones =
-    useInstruccionesStore(
-      (state) => state.tipoMovimientoInstruccion
-    );
+    useInstruccionesStore((state) => state.tipoMovimientoInstruccion);
 
   // const tipoFuente: { Id: string; Descripcion: string } = useInstruccionesStore(
   //   (state) => state.tipoMovimientoInstruccion.tipoFuente
@@ -234,11 +235,9 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.setTipoMovimientoInstrucciones
   );
 
-
   const addPorcentaje: Function = useInstruccionesStore(
     (state) => state.addPorcentaje
   );
-
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -247,18 +246,6 @@ export function TipoDeMovimientoIntrucciones() {
     getTipoEntePublicoObligadoInstrucciones();
     getFondosOIngresosInstrucciones();
   }, []);
-
-  useEffect(() => {
-    console.log(tablaTipoMovimientoInstrucciones)
-    console.log(JSON.stringify(tablaTipoMovimientoInstrucciones))
-
-  }, [tipoMovimientoInstruccion.fondoIngresoMunicipios]);
-
-  useEffect(() => {
-    console.log("float",parseFloat(tipoMovimientoInstruccion.fondoIngresoMunicipios))
-    
-  }, [tablaTipoMovimientoInstrucciones]);
-
 
   return (
     <Grid>
@@ -337,7 +324,9 @@ export function TipoDeMovimientoIntrucciones() {
               }}
               value={{
                 Id: tipoMovimientoInstruccion.tipoEntePublicoObligado.Id || "",
-                Descripcion: tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion || "",
+                Descripcion:
+                  tipoMovimientoInstruccion.tipoEntePublicoObligado
+                    .Descripcion || "",
               }}
               onChange={(event, text) =>
                 setTipoMovimientoInstrucciones({
@@ -383,7 +372,8 @@ export function TipoDeMovimientoIntrucciones() {
               }}
               value={{
                 Id: tipoMovimientoInstruccion.entidadFederativa.Id || "",
-                Descripcion: tipoMovimientoInstruccion.entidadFederativa.Descripcion || "",
+                Descripcion:
+                  tipoMovimientoInstruccion.entidadFederativa.Descripcion || "",
               }}
               onChange={(event, text) => {
                 setTipoMovimientoInstrucciones({
@@ -392,7 +382,6 @@ export function TipoDeMovimientoIntrucciones() {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
                   },
-
                 });
               }}
               renderInput={(params) => (
@@ -428,7 +417,8 @@ export function TipoDeMovimientoIntrucciones() {
               options={catalogoTiposDeFuente}
               value={{
                 Id: tipoMovimientoInstruccion.tipoFuente.Id || "",
-                Descripcion: tipoMovimientoInstruccion.tipoFuente.Descripcion || "",
+                Descripcion:
+                  tipoMovimientoInstruccion.tipoFuente.Descripcion || "",
               }}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
@@ -444,7 +434,7 @@ export function TipoDeMovimientoIntrucciones() {
                   tipoFuente: {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
-                  }
+                  },
                 })
               }
               renderInput={(params) => (
@@ -473,7 +463,8 @@ export function TipoDeMovimientoIntrucciones() {
               closeText="Cerrar"
               openText="Abrir"
               options={catalogoFondosOIngresos.filter(
-                (td) => td.TipoDeFuente === tipoMovimientoInstruccion.tipoFuente?.Id
+                (td) =>
+                  td.TipoDeFuente === tipoMovimientoInstruccion.tipoFuente?.Id
               )}
               value={tipoMovimientoInstruccion.fondoIngreso}
               getOptionLabel={(option) => option.Descripcion}
@@ -529,22 +520,25 @@ export function TipoDeMovimientoIntrucciones() {
               <Button
                 sx={{ ...queries.buttonContinuar, width: "15vh" }}
                 disabled={
-                  tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion === "" ||
-                  tipoMovimientoInstruccion.entidadFederativa.Descripcion === "" ||
+                  tipoMovimientoInstruccion.tipoEntePublicoObligado
+                    .Descripcion === "" ||
+                  tipoMovimientoInstruccion.entidadFederativa.Descripcion ===
+                    "" ||
                   tipoMovimientoInstruccion.tipoFuente.Descripcion === "" ||
                   tipoMovimientoInstruccion.fondoIngreso.Descripcion === ""
                 }
                 onClick={() => {
                   addTipoMovimientoInstrucciones({
                     id: tipoMovimientoInstruccion.id,
-                    tipoEntePublicoObligado:tipoMovimientoInstruccion.tipoEntePublicoObligado,
+                    tipoEntePublicoObligado:
+                      tipoMovimientoInstruccion.tipoEntePublicoObligado,
                     altaDeudor: tipoMovimientoInstruccion.altaDeudor,
-                    entidadFederativa: tipoMovimientoInstruccion.entidadFederativa,
+                    entidadFederativa:
+                      tipoMovimientoInstruccion.entidadFederativa,
                     mandatario: tipoMovimientoInstruccion.mandatario,
                     tipoFuente: tipoMovimientoInstruccion.tipoFuente,
                     fondoIngreso: tipoMovimientoInstruccion.fondoIngreso,
                     fondoIngresoGobiernoEstatal:
-
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                       "gobierno estatal"
                         ? tipoMovimientoInstruccion.tipoFuente.Descripcion.toLowerCase() ===
@@ -612,34 +606,12 @@ export function TipoDeMovimientoIntrucciones() {
                         ? "0.00"
                         : "",
                   });
-                  console.log(tablaTipoMovimientoInstrucciones)
-                  console.log(JSON.stringify(tablaTipoMovimientoInstrucciones))
-                }}        
+                }}
               >
                 Agregar
               </Button>
             </ThemeProvider>
           </Grid>
-
-          {/* <Grid
-   
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <ThemeProvider theme={ButtonTheme}>
-              <Button
-                sx={{ ...queries.buttonContinuar }}
- 
-                onClick={() => {
-                  console.log(tipoMovimientoInstruccion.fondoIngresoMunicipios)
-                }}        
-              >
-                PRUEBA
-              </Button>
-            </ThemeProvider>
-          </Grid> */}
-
         </Grid>
       </Grid>
 
@@ -665,8 +637,10 @@ export function TipoDeMovimientoIntrucciones() {
               <TableHead>
                 <TableRow>
                   {headsLabels.map((head, index) => (
-                    <StyledTableCell align="center" >
-                      <Typography sx={{ fontSize: "0.7rem", width:"110px" }}>{head.label}</Typography>
+                    <StyledTableCell align="center">
+                      <Typography sx={{ fontSize: "0.7rem", width: "110px" }}>
+                        {head.label}
+                      </Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>
@@ -677,7 +651,7 @@ export function TipoDeMovimientoIntrucciones() {
                   (row: any, index: number) => {
                     return (
                       <StyledTableRow>
-                         <StyledTableCell align="center">
+                        <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
                             {row?.id}
                           </Typography>
@@ -702,7 +676,7 @@ export function TipoDeMovimientoIntrucciones() {
 
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
-                          {row?.tipoFuente.Descripcion}
+                            {row?.tipoFuente.Descripcion}
                           </Typography>
                         </StyledTableCell>
 
@@ -749,22 +723,22 @@ export function TipoDeMovimientoIntrucciones() {
                               size="small"
                               value={row?.fondoIngresoAfectadoXGobiernoEstatal}
                               onChange={(v) => {
-                                
                                 setTipoMovimientoInstrucciones({
-                                   ...tipoMovimientoInstruccion,
-                                   fondoIngresoAfectadoXGobiernoEstatal: v.target.value
-                                 })
+                                  ...tipoMovimientoInstruccion,
+                                  fondoIngresoAfectadoXGobiernoEstatal:
+                                    v.target.value,
+                                });
 
-
-                                if (Number(v.target.value) <= parseFloat(row.fondoIngresoMunicipios)) {
+                                if (
+                                  Number(v.target.value) <=
+                                  parseFloat(row.fondoIngresoMunicipios)
+                                ) {
                                   addPorcentaje(index, row, {
                                     columna:
                                       "fondoIngresoAfectadoXGobiernoEstatal",
                                     porcentaje: v.target.value,
                                   });
                                 }
-
-                                
                               }}
                             />
                           )}
@@ -843,7 +817,6 @@ export function TipoDeMovimientoIntrucciones() {
                             {row?.acumuladoAfectacionOrganismoEntre100}
                           </Typography>
                         </StyledTableCell>
-
 
                         <StyledTableCell align="center">
                           <Tooltip title="Eliminar">

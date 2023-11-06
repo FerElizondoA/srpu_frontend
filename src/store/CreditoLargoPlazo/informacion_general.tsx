@@ -57,16 +57,15 @@ export interface InformacionGeneralLargoPlazoSlice {
     monto: number;
   };
 
-  changeInformacionGeneral: (
-    informacionGeneral: {
-      fechaContratacion: string;
-      fechaVencimiento: string;
-      plazo: number;
-      destino: { Id: string; Descripcion: string };
-      monto: number;
-      denominacion: string;
-      institucionFinanciera: { Id: string; Descripcion: string };
-    }) => void;
+  changeInformacionGeneral: (informacionGeneral: {
+    fechaContratacion: string;
+    fechaVencimiento: string;
+    plazo: number;
+    destino: { Id: string; Descripcion: string };
+    monto: number;
+    denominacion: string;
+    institucionFinanciera: { Id: string; Descripcion: string };
+  }) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: ObligadoSolidarioAval
@@ -82,13 +81,11 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   //campo gastos costos
 
-  changeGastosCostos: (
-    GastosCostos: {
-      gastosAdicionales: "",
-      saldoVigente: 0,
-      montoGastosAdicionales: 0,
-    }
-  ) => void;
+  changeGastosCostos: (GastosCostos: {
+    gastosAdicionales: "";
+    saldoVigente: 0;
+    montoGastosAdicionales: 0;
+  }) => void;
 
   //NUEVA TABLA CREDITO LARGO PLAZO
   addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) => void;
@@ -186,7 +183,10 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
     set((state) => ({
-      tablaObligadoSolidarioAval: [...state.tablaObligadoSolidarioAval, newObligadoSolidarioAval],
+      tablaObligadoSolidarioAval: [
+        ...state.tablaObligadoSolidarioAval,
+        newObligadoSolidarioAval,
+      ],
     })),
 
   removeObligadoSolidarioAval: (index: number) =>
@@ -199,12 +199,11 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-  changeGastosCostos: (
-    GastosCostos: {
-      gastosAdicionales: string,
-      saldoVigente: number,
-      montoGastosAdicionales: number,
-    },) =>
+  changeGastosCostos: (GastosCostos: {
+    gastosAdicionales: string;
+    saldoVigente: number;
+    montoGastosAdicionales: number;
+  }) =>
     set(() => ({
       GastosCostos: GastosCostos,
     })),

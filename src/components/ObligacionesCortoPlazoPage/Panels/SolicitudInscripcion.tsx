@@ -176,9 +176,7 @@ export function SolicitudInscripcion() {
       ) {
         err = 1;
 
-        errores.push(
-          "Sección Información General: Seleccione  el Destino."
-        );
+        errores.push("Sección Información General: Seleccione  el Destino.");
       }
       if (
         solicitud.InstitucionFinanciera === undefined ||
@@ -213,9 +211,7 @@ export function SolicitudInscripcion() {
       if (importe === undefined || importe === 0 || importe === 0) {
         err = 1;
 
-        errores.push(
-          "Sección Condiciones Financieras: Ingrese el Importe."
-        );
+        errores.push("Sección Condiciones Financieras: Ingrese el Importe.");
       }
       if (numeroDePago === undefined || numeroDePago === 0) {
         err = 1;
@@ -301,8 +297,6 @@ export function SolicitudInscripcion() {
         // </div>`,
         // });
       }
-
-
     } else if (filtroValidacion === "Modificacion") {
       errores = [];
 
@@ -334,9 +328,7 @@ export function SolicitudInscripcion() {
       ) {
         err = 1;
 
-        errores.push(
-          "Sección Información General:Seleccione  el Destino."
-        );
+        errores.push("Sección Información General:Seleccione  el Destino.");
       }
       if (
         solicitud.InstitucionFinanciera === undefined ||
@@ -381,8 +373,7 @@ export function SolicitudInscripcion() {
         // });
       }
     }
-
-  }
+  };
 
   const InfoFaltanteModificacion = () => {
     errores = [];
@@ -415,9 +406,7 @@ export function SolicitudInscripcion() {
     ) {
       err = 1;
 
-      errores.push(
-        "Sección Información General: Seleccione  el Destino."
-      );
+      errores.push("Sección Información General: Seleccione  el Destino.");
     }
     if (
       solicitud.InstitucionFinanciera === undefined ||
@@ -465,8 +454,6 @@ export function SolicitudInscripcion() {
 
   const InfoFaltante = () => {
     errores = [];
-
-
   };
 
   let arrReglas: Array<string> = [];
@@ -499,7 +486,7 @@ export function SolicitudInscripcion() {
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
-  }
+  };
 
   return (
     <Grid container>
@@ -584,29 +571,43 @@ export function SolicitudInscripcion() {
         </Grid>
       </Grid>
 
-      <Grid container justifyContent={"center"} alignItems={"flex-start"} width={"100%"}>
-
+      <Grid
+        container
+        justifyContent={"center"}
+        alignItems={"flex-start"}
+        width={"100%"}
+      >
         <Grid item xs={12} sm={10} md={10} lg={10} xl={10}>
-          <Divider sx={{
-            fontWeight: "bold",
-            fontFamily: "MontserratMedium",
-            width: "100%",
-            "@media (max-width: 600px)": {
-              // XS (extra small) screen
-              fontSize: "1.4ch",
-            },
-            "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
-              fontSize: "1.5ch",
-            },
-          }}>
+          <Divider
+            sx={{
+              fontWeight: "bold",
+              fontFamily: "MontserratMedium",
+              width: "100%",
+              "@media (max-width: 600px)": {
+                // XS (extra small) screen
+                fontSize: "1.4ch",
+              },
+              "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
+                fontSize: "1.5ch",
+              },
+            }}
+          >
             Declaratorias aplicables al financiamiento u obligación:
           </Divider>
         </Grid>
 
-        <Grid container xs={10} sm={11} md={10} lg={10} xl={9} display="flex" width={"100%"}>
+        <Grid
+          container
+          xs={10}
+          sm={11}
+          md={10}
+          lg={10}
+          xl={9}
+          display="flex"
+          width={"100%"}
+        >
           <Grid width={"100%"}>
-
             <Typography
               sx={{
                 "@media (max-width: 600px)": {
@@ -626,10 +627,12 @@ export function SolicitudInscripcion() {
 
             <Grid container={query.isMobile} display={"flex"} width={"100%"}>
               <Grid width={"100%"}>
-                <TableContainer sx={{
-                  ...queries.tablaSolicitudInscripcion,
-                  width: "100%"
-                }}>
+                <TableContainer
+                  sx={{
+                    ...queries.tablaSolicitudInscripcion,
+                    width: "100%",
+                  }}
+                >
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
@@ -658,11 +661,14 @@ export function SolicitudInscripcion() {
                                 }
                                 onChange={(v) => {
                                   v.target.checked
-                                    ? setCheckObj({ ...checkObj, [index]: true })
+                                    ? setCheckObj({
+                                        ...checkObj,
+                                        [index]: true,
+                                      })
                                     : setCheckObj({
-                                      ...checkObj,
-                                      [index]: false,
-                                    });
+                                        ...checkObj,
+                                        [index]: false,
+                                      });
 
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
@@ -680,9 +686,7 @@ export function SolicitudInscripcion() {
                 </TableContainer>
               </Grid>
 
-
               {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
-
                 <Grid
                   container
                   //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
@@ -696,7 +700,7 @@ export function SolicitudInscripcion() {
                     "@media (max-width: 974px)": {
                       width: "100%",
                       display: "flex",
-                      justifyContent: "space-evenly"
+                      justifyContent: "space-evenly",
                     },
                     "@media (min-width: 974.1px)": {
                       flexDirection: "column",
@@ -714,7 +718,6 @@ export function SolicitudInscripcion() {
 
                     "@media (min-width: 1400px)": {
                       width: "10%",
-                      
                     },
 
                     "@media (min-width: 1870px)": {
@@ -723,7 +726,12 @@ export function SolicitudInscripcion() {
                     },
                   }}
                 >
-                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
                     <Button
                       onClick={() => {
                         setOpenDialogCancelar(!openDialogCancelar);
@@ -735,7 +743,12 @@ export function SolicitudInscripcion() {
                   </Grid>
 
                   {localStorage.getItem("Rol") === "Verificador" ? (
-                    <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                    <Grid
+                      mb={2}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
@@ -745,7 +758,6 @@ export function SolicitudInscripcion() {
                         Solicitar Modificación
                       </Button>
                     </Grid>
-
                   ) : null}
 
                   {/* <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -759,7 +771,12 @@ export function SolicitudInscripcion() {
                       </Button>
                     </Grid> */}
 
-                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
                     <Button
                       sx={queries.buttonContinuarSolicitudInscripcion}
                       onClick={() => {
@@ -798,7 +815,6 @@ export function SolicitudInscripcion() {
       </Grid>
 
       <Dialog open={openDialogValidacion}>
-
         <DialogTitle>
           <Typography sx={queries.bold_text}>
             Favor de revisar los siguientes apartados:
@@ -819,7 +835,6 @@ export function SolicitudInscripcion() {
           }}
         >
           {errores?.map((item, index) => {
-
             const division = item.indexOf(":");
 
             const markedText =
@@ -830,7 +845,6 @@ export function SolicitudInscripcion() {
 
             return (
               <Typography color={"red"} sx={{ fontSize: ".9rem" }}>
-
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>
@@ -842,7 +856,7 @@ export function SolicitudInscripcion() {
             );
           })}
         </DialogContent>
-        <DialogActions >
+        <DialogActions>
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {

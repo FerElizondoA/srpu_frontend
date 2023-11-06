@@ -292,12 +292,12 @@ export function ConfirmacionDescargaSolicitud({
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Enviar"
                   : "Finalizar"
-              } sin comentarios`
+              } `
             : `${
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Enviar"
                   : "Finalizar"
-              } con comentarios`}
+              } `}
         </Button>
       </DialogActions>
     </Dialog>

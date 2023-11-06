@@ -1,5 +1,5 @@
+import DownloadIcon from "@mui/icons-material/Download";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,7 +16,6 @@ import {
   descargaDocumento,
   getPathDocumentos,
 } from "../APIS/pathDocSol/APISDocumentos";
-import DownloadIcon from "@mui/icons-material/Download";
 
 export interface IDocumentos {
   Id: string;
@@ -26,6 +25,8 @@ export interface IDocumentos {
   NombreIdentificador: string;
   Ruta: string;
   Tipo: string;
+  Descargas: number;
+  FechaDescarga: string;
 }
 
 export function DialogDescargaArchivos({
@@ -70,10 +71,16 @@ export function DialogDescargaArchivos({
                       if (e.Tipo === "oficio") {
                         descargaDocumento(
                           e.Ruta.replaceAll(`${e.NombreIdentificador}`, "/"),
-                          e.NombreIdentificador
+                          e.NombreIdentificador,
+                          e.Descargas === 0 ? e.Id : ""
                         );
                       } else {
-                        getPdf(e.IdPathDoc, noSolicitud, new Date().toString());
+                        getPdf(
+                          e.IdPathDoc,
+                          noSolicitud,
+                          new Date().toString(),
+                          e.Descargas === 0 ? e.Id : ""
+                        );
                       }
                     }}
                   >

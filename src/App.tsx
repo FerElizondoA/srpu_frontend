@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
 import "./App.css";
 import "./Fonts.css";
@@ -28,11 +28,11 @@ import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
 import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
+import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
-import Ayuda from "./screens/Ayuda/Ayuda";
- 
+
 export const appTheme = createTheme({
   palette: {
     primary: {
@@ -47,8 +47,6 @@ export const getToken = () => {
 };
 
 function App() {
-
-
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const jt = params.get("jwt") || null;
@@ -90,8 +88,6 @@ function App() {
     (state) => state.idUsuarioModificado
   );
 
-  
-
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme>
@@ -103,7 +99,9 @@ function App() {
           <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
           <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
           <Route path="home" element={<HomePage />}></Route>
-          <Route path="obligacionesCortoPlazo"element={<ObligacionesCortoPlazoPage />}
+          <Route
+            path="obligacionesCortoPlazo"
+            element={<ObligacionesCortoPlazoPage />}
           ></Route>
           <Route path="config" element={<Configuracion />}></Route>
           <Route
@@ -143,7 +141,6 @@ function App() {
             element={<InstruccionesIrrevocables />}
           ></Route>
           <Route path="AdministracionAyudas" element={<Ayuda />}></Route>
-
         </Routes>
       </CssBaseline>
     </ThemeProvider>

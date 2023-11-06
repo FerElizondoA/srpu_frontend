@@ -104,7 +104,11 @@ export const getDocumento = async (
     .catch((r) => {});
 };
 
-export const descargaDocumento = async (ROUTE: string, NOMBRE: string) => {
+export const descargaDocumento = async (
+  ROUTE: string,
+  NOMBRE: string,
+  IdPath: string
+) => {
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
@@ -124,6 +128,9 @@ export const descargaDocumento = async (ROUTE: string, NOMBRE: string) => {
       a.href = "data:application/pdf;base64," + data.RESPONSE.FILE; //Image Base64 Goes here
       a.download = `${NOMBRE}.pdf`; //File name Here
       a.click();
+      if (IdPath !== "") {
+        ActualizaDescarga(IdPath);
+      }
     })
     .catch((r) => {});
 };
@@ -144,4 +151,23 @@ export const listFile = async (ROUTE: string) => {
     )
     .then(({ data }) => {})
     .catch((r) => {});
+};
+
+export const ActualizaDescarga = (IdPath: string) => {
+  axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/actualiza-descarga",
+      {
+        IdPath: IdPath,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {})
+    .catch((err) => {});
 };

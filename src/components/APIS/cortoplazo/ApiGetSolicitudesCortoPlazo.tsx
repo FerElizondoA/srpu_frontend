@@ -27,6 +27,8 @@ export function getComentariosSolicitudPlazo(
               rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
             (_.Tipo === "Requerimiento" &&
               rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+            (_.Tipo === "Requerimiento" &&
+              !rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
             (_.Tipo === "Captura" &&
               !rolesAdmin.includes(localStorage.getItem("Rol")!))
         )

@@ -20,7 +20,11 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
@@ -246,8 +250,9 @@ export function InformacionGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
- 
-  
+  const datosActualizar: Array<string> = useCortoPlazoStore(
+    (state) => state.datosActualizar
+  );
 
   return (
     <Grid
@@ -296,8 +301,12 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
-            disablePast={false}
-              sx={{width:"100%"}}
+              disabled={
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Contratación")
+              }
+              disablePast={false}
+              sx={{ width: "100%" }}
               value={new Date(contratacion)}
               onChange={(date) => {
                 setContratacion(date?.toString() || "");
@@ -337,6 +346,10 @@ export function InformacionGeneral() {
             Monto Original Contratado
           </InputLabel>
           <TextField
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Monto Original Contratado")
+            }
             fullWidth
             placeholder="0"
             value={monto <= 0 ? "" : monto}
@@ -394,8 +407,11 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
-           
-            sx={{width:"100%"}}
+              disabled={
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento")
+              }
+              sx={{ width: "100%" }}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))} //1
@@ -409,6 +425,9 @@ export function InformacionGeneral() {
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
+            disabled={
+              datosActualizar.length > 0 && !datosActualizar.includes("Destino")
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -457,6 +476,10 @@ export function InformacionGeneral() {
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Denominación")
+            }
             fullWidth
             variant="standard"
             value={denominacion || ""}
@@ -487,6 +510,10 @@ export function InformacionGeneral() {
             Institución Financiera
           </InputLabel>
           <Autocomplete
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Institución Financiera")
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -544,6 +571,10 @@ export function InformacionGeneral() {
             Obligado Solidario / Aval
           </InputLabel>
           <Autocomplete
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tabla Obligado Solidario Aval")
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -611,7 +642,9 @@ export function InformacionGeneral() {
             openText="Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
+              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -666,7 +699,9 @@ export function InformacionGeneral() {
             disabled={
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              /^[\s]*$/.test(generalTipoEntePublico.Descripcion)
+              /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
             }
             fullWidth
             options={catalogoOrganismos.filter(
@@ -716,7 +751,9 @@ export function InformacionGeneral() {
               generalObligadoSolidario.Descripcion === "No aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
-              /^[\s]*$/.test(generalEntePublico.Descripcion)
+              /^[\s]*$/.test(generalEntePublico.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
             }
             variant="outlined"
             onClick={() => {

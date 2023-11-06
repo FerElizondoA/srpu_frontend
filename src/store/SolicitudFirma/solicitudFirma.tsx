@@ -4,6 +4,7 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
+import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -30,7 +31,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
-  changeEstatus: (estatus: any) => set(() => ({ estatus: estatus })),
+  changeEstatus: (estatus: any) => {
+    set(() => ({
+      estatus: estatus,
+    }));
+  },
 
   changeInfoDoc: (info: any) => {
     set(() => ({ infoDoc: info }));
@@ -46,9 +51,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
             IdSolicitud: state.idSolicitud,
-            NumeroOficio: `DDPYPF-${
-              inf.NumeroOficio
-            }/${new Date().getFullYear()}`,
+            NumeroOficio: `${inf.NumeroOficio}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
             SerialCertificado: inf.SerialCertificado,
@@ -66,11 +69,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          console.log(state.estatus);
-
           if (
             !state.estatus.includes("Autorizado") &&
-            !state.estatus.includes("Revision")
+            state.estatus !== "Actualizacion"
           ) {
             createNotificationCortoPlazo(
               "Solicitud enviada",
@@ -79,12 +80,22 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
               [localStorage.getItem("IdUsuario")!]
             );
-            GeneraAcuseEnvio(inf.NumeroOficio, state.idSolicitud);
+            GeneraAcuseEnvio(
+              state.estatus === "Actualizacion"
+                ? "Solicitud de requerimientos"
+                : "Constancia de inscripción",
+              inf.NumeroOficio.replaceAll("/", "-"),
+              state.idSolicitud
+            );
           } else {
             GeneraAcuseRespuesta(inf.NumeroOficio, state.idSolicitud);
           }
           CambiaEstatus(
-            state.estatus.includes("Autorizado") ? "Autorizado" : "Revision",
+            state.estatus.includes("Actualizacion")
+              ? "Actualizacion"
+              : state.estatus.includes("Autorizado")
+              ? "Autorizado"
+              : "Revision",
             state.idSolicitud
           );
         })
@@ -334,11 +345,16 @@ export async function ConsultaConstancia(
     .catch((err) => {});
 }
 
-export async function GeneraAcuseEnvio(noOficio: string, idRegistro: string) {
+export async function GeneraAcuseEnvio(
+  tipoSolicitud: string,
+  noOficio: string,
+  idRegistro: string
+) {
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-acuse-enviado",
       {
+        tipoSolicitud: tipoSolicitud,
         oficioConstancia: noOficio,
         fecha: new Date().toLocaleString("es-MX").split(" ")[0],
         hora: new Date().toLocaleString("es-MX").split(" ")[1],
@@ -363,7 +379,7 @@ export async function GeneraAcuseEnvio(noOficio: string, idRegistro: string) {
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `acuse-envio-${noOficio}.pdf`)
+        new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
     .catch((err) => {});
@@ -403,7 +419,7 @@ export async function GeneraAcuseRespuesta(
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `acuse-respuesta-${noOficio}.pdf`)
+        new File([response.data], `Acuse-respuesta-${noOficio}.pdf`)
       );
 
       // setUrl(url);
@@ -437,7 +453,8 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
 export const getPdf = (
   id: string,
   noRegistro: string,
-  fechaContratacion: string
+  fechaContratacion: string,
+  IdPath: string
 ) => {
   let dataArray = new FormData();
   dataArray.append("id", id);
@@ -464,6 +481,9 @@ export const getPdf = (
       link.setAttribute("href", url);
       document.body.appendChild(link);
       link.click();
+      if (IdPath !== "") {
+        ActualizaDescarga(IdPath);
+      }
     })
     .catch((err) => {});
 };

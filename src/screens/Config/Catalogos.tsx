@@ -1,33 +1,32 @@
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import Button from "@mui/material/Button";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import InfoIcon from "@mui/icons-material/Info";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Grid,
-  Typography,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
   TextField,
+  Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Box } from "@mui/system";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useEffect, useState } from "react";
+import { getCatalogo } from "../../components/APIS/Config/APISCatalogos";
 import {
   DialogCatalogos,
   IDialog,
 } from "../../components/Config/dialogCatalogos/DialogCatalogos";
-import InfoIcon from "@mui/icons-material/Info";
-import { getCatalogo } from "../../components/APIS/Config/APISCatalogos";
-import { modulos } from "./Configuracion";
-import SearchIcon from "@mui/icons-material/Search";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { queries } from "../../queries";
+import { modulos } from "./Configuracion";
 
 export function Catalogos() {
   const params = new URLSearchParams(window.location.search);
@@ -177,7 +176,7 @@ export function Catalogos() {
                 fontFamily: "MontserratMedium",
               }}
             >
-              <Grid xs={10} sm={5}>
+              <Grid item xs={10} sm={5}>
                 <Typography
                   sx={{
                     ...queries.catalogosConfig.modulo,
@@ -189,6 +188,7 @@ export function Catalogos() {
               </Grid>
 
               <Grid
+                item
                 xs={10}
                 sm={5}
                 sx={{
@@ -328,7 +328,9 @@ export function Catalogos() {
                                 fontFamily: "Montserrat",
                               }}
                             >
-                              {item.Descripcion}
+                              {modulo === "Configuración de oficios"
+                                ? item.Tipo + ": " + item.Descripcion
+                                : item.Descripcion}
                             </TableCell>
                             {modulo === "Entes Público Obligados" ? (
                               <TableCell
@@ -355,16 +357,7 @@ export function Catalogos() {
                                   }
                                 >
                                   <IconButton>
-                                    <InfoIcon
-                                      fontSize="small"
-                                      // sx={[
-                                      //   {
-                                      //     "&:hover": {
-                                      //       color: "orange",
-                                      //     },
-                                      //   },
-                                      // ]}
-                                    ></InfoIcon>
+                                    <InfoIcon fontSize="small"></InfoIcon>
                                   </IconButton>
                                 </Tooltip>
                               ) : null}
@@ -382,42 +375,26 @@ export function Catalogos() {
                                     setOpenDialog(true);
                                   }}
                                 >
-                                  <EditIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "blue",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
+                                  <EditIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
-                              <Tooltip title="Eliminar">
-                                <IconButton
-                                  onClick={() => {
-                                    setEdit((edit) => ({
-                                      ...edit,
-                                      ...{ IdDesc: item.Id },
-                                      ...{ Descripcion: item.Descripcion },
-                                      ...{ Crud: "elimina" },
-                                    }));
-                                    setOpenDialog(true);
-                                  }}
-                                >
-                                  <DeleteIcon
-                                    fontSize="small"
-                                    // sx={[
-                                    //   {
-                                    //     "&:hover": {
-                                    //       color: "red",
-                                    //     },
-                                    //   },
-                                    // ]}
-                                  />
-                                </IconButton>
-                              </Tooltip>
+                              {modulo !== "Configuración de oficios" && (
+                                <Tooltip title="Eliminar">
+                                  <IconButton
+                                    onClick={() => {
+                                      setEdit((edit) => ({
+                                        ...edit,
+                                        ...{ IdDesc: item.Id },
+                                        ...{ Descripcion: item.Descripcion },
+                                        ...{ Crud: "elimina" },
+                                      }));
+                                      setOpenDialog(true);
+                                    }}
+                                  >
+                                    <DeleteIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
                             </TableCell>
                           </TableRow>
                         );
@@ -441,31 +418,34 @@ export function Catalogos() {
                 alignItems: "center",
               }}
             >
-              <Grid
-                xs={10}
-                display={"flex"}
-                alignItems={{ xs: "end", sm: "center" }}
-                justifyContent={{ xs: "end", sm: "center" }}
-              >
-                <Tooltip title={"Agregar"}>
-                  <Button
-                    onClick={() => {
-                      setEdit((edit) => ({
-                        ...edit,
-                        ...{ Crud: "crea" },
-                        ...{ Descripcion: "" },
-                        ...{ OCP: 0 },
-                        ...{ OLP: 0 },
-                      }));
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
-                  </Button>
-                </Tooltip>
-              </Grid>
+              {modulo !== "Configuración de oficios" && (
+                <Grid
+                  item
+                  xs={10}
+                  display={"flex"}
+                  alignItems={{ xs: "end", sm: "center" }}
+                  justifyContent={{ xs: "end", sm: "center" }}
+                >
+                  <Tooltip title={"Agregar"}>
+                    <Button
+                      onClick={() => {
+                        setEdit((edit) => ({
+                          ...edit,
+                          ...{ Crud: "crea" },
+                          ...{ Descripcion: "" },
+                          ...{ OCP: 0 },
+                          ...{ OLP: 0 },
+                        }));
+                        setOpenDialog(true);
+                      }}
+                    >
+                      <AddCircleOutlineIcon fontSize="large"></AddCircleOutlineIcon>
+                    </Button>
+                  </Tooltip>
+                </Grid>
+              )}
 
-              <Grid xs={10}>
+              <Grid item xs={10}>
                 <TablePagination
                   rowsPerPageOptions={renglonesPagina}
                   labelRowsPerPage="Registros por página:"

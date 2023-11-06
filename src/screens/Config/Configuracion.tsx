@@ -114,6 +114,10 @@ export const modulos = [
     fnc: "respecto",
   },
   {
+    label: "Configuración de oficios",
+    fnc: "configuracionOficios",
+  },
+  {
     label: "Usuarios",
     fnc: "Usuarios",
   },
