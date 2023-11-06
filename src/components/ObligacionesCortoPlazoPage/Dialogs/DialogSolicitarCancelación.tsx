@@ -14,10 +14,13 @@ import {
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { ArchivosCancelacion, CancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -30,12 +33,57 @@ export interface IUsuariosAsignables {
 export function DialogSolicitarCancelacion({
   handler,
   openState,
+  rowSolicitud,
 }: {
   handler: Function;
   openState: boolean;
+  rowSolicitud: IDataPrueba
 }) {
+
+  const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");
   const [error, setError] = useState(false);
+
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
+
+  const archivosCancelacion: ArchivosCancelacion = useSolicitudFirmaStore(
+    (state) => state.archivosCancelacion
+  );
+  const setArchivosCancelacion: Function = useSolicitudFirmaStore(
+    (state) => state.setArchivosCancelacion
+  );
+  const cleanArchivosCancelacion: Function = useSolicitudFirmaStore(
+    (state) => state.cleanArchivosCancelacion
+  );
+
+  function cargarArchivo(event: any, numero: number) {
+    let file = event.target.files[0];
+
+    if (file !== undefined && numero === 1) {
+
+      setArchivosCancelacion({
+        ...archivosCancelacion,
+        acreditacionCancelacion: {
+          archivo: file,
+          nombreArchivo: file.name,
+          fechaArchivo: new Date().toString(),
+        }
+      })
+
+    } else if (file !== undefined && numero === 2) {
+      setArchivosCancelacion({
+        ...archivosCancelacion,
+        bajaCreditoFederal: {
+          archivo: file,
+          nombreArchivo: file.name,
+          fechaArchivo: new Date().toString(),
+        },
+      })
+    }
+  }
+
+
   return (
     <Dialog
       fullWidth
@@ -69,13 +117,15 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {"ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            {archivosCancelacion.acreditacionCancelacion.nombreArchivo
+              || "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
             type="file"
             accept="application/pdf"
             onChange={(v) => {
-              // cargarArchivo(v);
+              cargarArchivo(v, 1)
+
             }}
             style={{
               opacity: 0,
@@ -96,13 +146,14 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {"ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            {archivosCancelacion.bajaCreditoFederal.nombreArchivo
+              || "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
             type="file"
             accept="application/pdf"
             onChange={(v) => {
-              // cargarArchivo(v);
+              cargarArchivo(v, 2)
             }}
             style={{
               opacity: 0,
@@ -143,7 +194,15 @@ export function DialogSolicitarCancelacion({
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            setError(/^[\s]*$/.test(justificacion));
+            CancelacionSolicitud(
+              rowSolicitud.Solicitud,
+              rowSolicitud.NumeroRegistro,
+              justificacion,
+              archivosCancelacion,
+              rowSolicitud.UltimaModificacion,
+              setUrl)
+            handler(false)
+            navigate("../firmaUrl");
           }}
         >
           Confirmar

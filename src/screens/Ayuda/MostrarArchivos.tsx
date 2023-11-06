@@ -29,7 +29,7 @@ export const MostrarArchivos = ({
     }
 
     useEffect(() => {
-        valueTab == "Videos" ?
+        valueTab == "Video" ?
         getFileByName(process.env.REACT_APP_DOC_ROUTE+'/VIDEOS/TUTORIALES/',infoFile.nombre, saveVideo):
         getFileByName(process.env.REACT_APP_DOC_ROUTE+'/GUIAS/', infoFile.nombre,savePDF)
     }, [])
@@ -71,7 +71,7 @@ export const MostrarArchivos = ({
 
                 <Grid item   container xs={12} sm={12} md={12} lg={12} sx={{height:"90vh", display: "flex", justifyContent: "center",alignItems:"center"}}>
                     {
-                        valueTab == "Videos" ? (
+                        valueTab == "Video" ? (
 
                             <video
                                 //autoFocus

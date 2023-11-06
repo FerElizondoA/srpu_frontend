@@ -76,6 +76,27 @@ export interface IData {
   FechaRequerimientos: string;
 }
 
+export interface IDataPrueba {
+  ClaveDeInscripcion: string;
+  CreadoPor: string;
+  Estatus: string;
+  FechaContratacion: string;
+  FechaCreacion: string;
+  FechaRequerimientos: string;
+  Id: string;
+  IdEditor: string;
+  IdPathDoc: string;
+  Institucion: string;
+  ModificadoPor: string;
+  MontoOriginalContratado: string;
+  Nombre: string;
+  NumeroRegistro: number;
+  Solicitud: string;
+  TipoEntePublico: string;
+  TipoSolicitud: string;
+  UltimaModificacion: string;
+}
+
 interface Head {
   id: keyof IData;
   isNumeric: boolean;
@@ -310,6 +331,24 @@ export function ConsultaDeSolicitudPage() {
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
   );
+
+  //START Row Solicitud
+
+  const rowSolicitud: IDataPrueba = useSolicitudFirmaStore(
+    (state) => state.rowSolicitud
+  );
+
+  const setRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.setRowSolicitud
+  );
+
+  const cleanRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.cleanRowSolicitud
+  );
+
+  //END Row Solicitud
+
+  //const [rowSolicitud, setRowSolicitud] = useState<Array<IDataPrueba>>([]);
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
@@ -831,7 +870,7 @@ export function ConsultaDeSolicitudPage() {
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus("Autorizado");
+                                        changeEstatus(row.Estatus);
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
@@ -841,7 +880,7 @@ export function ConsultaDeSolicitudPage() {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus("Revision");
+                                      changeEstatus("Autorizado");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
@@ -929,6 +968,9 @@ export function ConsultaDeSolicitudPage() {
                                   changeEstatus(row.Estatus);
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
+
+                                  setRowSolicitud(row);
+                                  //setRowSolicitud(row)
                                 }}
                               >
                                 <DoDisturbOnIcon />
@@ -983,6 +1025,7 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
+          rowSolicitud={rowSolicitud}
         />
       )}
       {openDescargar && (

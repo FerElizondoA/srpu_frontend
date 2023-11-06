@@ -34,35 +34,6 @@ import {
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
-
-interface rowsPrueba {
-  label: string;
-  id: string;
-}
-
 interface HeadLabels {
   label: string;
 }
@@ -157,26 +128,9 @@ export function TipoDeMovimientoIntrucciones() {
   ];
 
   //TIPO DE MOVIMIENTO
-  // const tipoEntePublico: { Id: string; Descripcion: string } =
-  //   useInstruccionesStore(
-  //     (state) => state.tipoMovimientoInstruccion.tipoEntePublicoObligado
-  //   );
-
-  // const altaDeudor: string = useInstruccionesStore(
-  //   (state) => state.tipoMovimientoInstruccion.altaDeudor
-  // );
 
   const tipoMovimientoInstruccion: TipoMovimientoInstrucciones =
     useInstruccionesStore((state) => state.tipoMovimientoInstruccion);
-
-  // const tipoFuente: { Id: string; Descripcion: string } = useInstruccionesStore(
-  //   (state) => state.tipoMovimientoInstruccion.tipoFuente
-  // );
-
-  // const fondoIngreso: { Id: string; Descripcion: string } =
-  //   useInstruccionesStore(
-  //     (state) => state.tipoMovimientoInstruccion.fondoIngreso
-  //   );
 
   //TABLA
 
@@ -239,6 +193,15 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.addPorcentaje
   );
 
+  //CLEAN
+
+  const cleanInstruccion: Function = useInstruccionesStore(
+    (state) => state.cleanInstruccion
+  );
+  const cleanTipoMovimientoInstruccion: Function = useInstruccionesStore(
+    (state) => state.cleanTipoMovimientoInstruccion
+  );
+
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
     getOrganismosInstrucciones();
@@ -256,15 +219,15 @@ export function TipoDeMovimientoIntrucciones() {
         sx={{
           height: "20rem",
           "@media (min-width: 480px)": {
-            height: "55rem",
+            height: "22rem",
           },
 
           "@media (min-width: 768px)": {
-            height: "65rem",
+            height: "20rem",
           },
 
           "@media (min-width: 1140px)": {
-            height: "50rem",
+            height: "22rem",
           },
 
           "@media (min-width: 1400px)": {
@@ -308,10 +271,6 @@ export function TipoDeMovimientoIntrucciones() {
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
-              // disabled={
-              //   tipoEntePublico.Descripcion === "No aplica" ||
-              //   /^[\s]*$/.test(tipoEntePublico.Descripcion)
-              // }
               fullWidth
               options={catalogoTipoEntePublicoObligado}
               getOptionLabel={(option) => option.Descripcion}
@@ -322,12 +281,7 @@ export function TipoDeMovimientoIntrucciones() {
                   </li>
                 );
               }}
-              value={{
-                Id: tipoMovimientoInstruccion.tipoEntePublicoObligado.Id || "",
-                Descripcion:
-                  tipoMovimientoInstruccion.tipoEntePublicoObligado
-                    .Descripcion || "",
-              }}
+              value={tipoMovimientoInstruccion.tipoEntePublicoObligado}
               onChange={(event, text) =>
                 setTipoMovimientoInstrucciones({
                   ...tipoMovimientoInstruccion,
@@ -361,7 +315,18 @@ export function TipoDeMovimientoIntrucciones() {
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={catalogoOrganismos}
+              disabled={
+                tipoMovimientoInstruccion.tipoEntePublicoObligado
+                  .Descripcion === "No aplica" ||
+                /^[\s]*$/.test(
+                  tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion
+                )
+              }
+              options={catalogoOrganismos.filter(
+                (td: any) =>
+                  td.IdTipoEntePublico ===
+                  tipoMovimientoInstruccion.tipoEntePublicoObligado.Id
+              )}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -370,11 +335,7 @@ export function TipoDeMovimientoIntrucciones() {
                   </li>
                 );
               }}
-              value={{
-                Id: tipoMovimientoInstruccion.entidadFederativa.Id || "",
-                Descripcion:
-                  tipoMovimientoInstruccion.entidadFederativa.Descripcion || "",
-              }}
+              value={tipoMovimientoInstruccion.entidadFederativa}
               onChange={(event, text) => {
                 setTipoMovimientoInstrucciones({
                   ...tipoMovimientoInstruccion,
@@ -415,11 +376,7 @@ export function TipoDeMovimientoIntrucciones() {
               closeText="Cerrar"
               openText="Abrir"
               options={catalogoTiposDeFuente}
-              value={{
-                Id: tipoMovimientoInstruccion.tipoFuente.Id || "",
-                Descripcion:
-                  tipoMovimientoInstruccion.tipoFuente.Descripcion || "",
-              }}
+              value={tipoMovimientoInstruccion.tipoFuente}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (
@@ -535,17 +492,15 @@ export function TipoDeMovimientoIntrucciones() {
                     altaDeudor: tipoMovimientoInstruccion.altaDeudor,
                     entidadFederativa:
                       tipoMovimientoInstruccion.entidadFederativa,
-                    mandatario: tipoMovimientoInstruccion.mandatario,
+                    //mandatario: tipoMovimientoInstruccion.mandatario,
                     tipoFuente: tipoMovimientoInstruccion.tipoFuente,
                     fondoIngreso: tipoMovimientoInstruccion.fondoIngreso,
                     fondoIngresoGobiernoEstatal:
-                      tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                      "gobierno estatal"
-                        ? tipoMovimientoInstruccion.tipoFuente.Descripcion.toLowerCase() ===
-                          "participaciones"
-                          ? "80.00"
-                          : "100.00"
-                        : "",
+                      tipoMovimientoInstruccion.tipoFuente.Descripcion.toLowerCase() ===
+                      "participaciones"
+                        ? "80.00"
+                        : "100.00",
+
                     fondoIngresoMunicipios:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                       "municipios"
@@ -553,19 +508,20 @@ export function TipoDeMovimientoIntrucciones() {
                           "participaciones"
                           ? "20.00"
                           : "0.00"
-                        : "20.00", //REVISAR PORQUE SE PASA PARA ACA LA CONDICION
+                        : "0.00",
+
                     fondoIngresoAsignadoMunicipio:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                      "municipios"
-                        ? "5.00"
-                        : "",
+                      "municipio"
+                        ? "100.00"
+                        : "0.00",
                     ingresoOrganismo:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                        "municipios" ||
+                        "municipios" &&
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                         "gobierno estatal"
                         ? "0.00"
-                        : "",
+                        : "0.00",
                     fondoIngresoAfectadoXGobiernoEstatal:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                       "gobierno estatal"
@@ -579,18 +535,22 @@ export function TipoDeMovimientoIntrucciones() {
                     acumuladoAfectacionGobiernoEstatalEntre100:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                       "gobierno estatal"
-                        ? "80.00"
+                        ? "0.00"
                         : "",
                     fondoIngresoAfectadoXMunicipio:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                       "municipios"
-                        ? ""
-                        : "",
+                        ? "0"
+                        : "0",
                     acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-                      tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                      "municipios"
-                        ? "0.00"
-                        : "",
+                      tablaTipoMovimientoInstrucciones
+                        .reduce((accumulator, object) => {
+                          return (
+                            accumulator +
+                            Number(object.fondoIngresoAfectadoXMunicipio)
+                          );
+                        }, 0)
+                        .toString(),
                     ingresoAfectadoXOrganismo:
                       tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                         "municipios" ||
@@ -599,13 +559,17 @@ export function TipoDeMovimientoIntrucciones() {
                         ? ""
                         : "",
                     acumuladoAfectacionOrganismoEntre100:
-                      tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                        "municipios" ||
-                      tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                        "gobierno estatal"
-                        ? "0.00"
-                        : "",
+                      tablaTipoMovimientoInstrucciones
+                        .reduce((accumulator, object) => {
+                          return (
+                            (accumulator +
+                              Number(object.ingresoAfectadoXOrganismo)) /
+                            100
+                          );
+                        }, 0)
+                        .toString(),
                   });
+                  cleanTipoMovimientoInstruccion();
                 }}
               >
                 Agregar
@@ -656,11 +620,6 @@ export function TipoDeMovimientoIntrucciones() {
                             {row?.id}
                           </Typography>
                         </StyledTableCell>
-                        {/* <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row.altaDeudor}
-                          </Typography>
-                        </StyledTableCell> */}
 
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
@@ -679,12 +638,6 @@ export function TipoDeMovimientoIntrucciones() {
                             {row?.tipoFuente.Descripcion}
                           </Typography>
                         </StyledTableCell>
-
-                        {/* <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.fondoIngreso}
-                          </Typography>
-                        </StyledTableCell> */}
 
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
@@ -719,25 +672,18 @@ export function TipoDeMovimientoIntrucciones() {
                                   fontSize: "0.7rem",
                                 },
                               }}
-                              label="Asigne porcentaje"
                               size="small"
                               value={row?.fondoIngresoAfectadoXGobiernoEstatal}
                               onChange={(v) => {
-                                setTipoMovimientoInstrucciones({
-                                  ...tipoMovimientoInstruccion,
-                                  fondoIngresoAfectadoXGobiernoEstatal:
-                                    v.target.value,
-                                });
-
-                                if (
-                                  Number(v.target.value) <=
-                                  parseFloat(row.fondoIngresoMunicipios)
-                                ) {
-                                  addPorcentaje(index, row, {
-                                    columna:
-                                      "fondoIngresoAfectadoXGobiernoEstatal",
-                                    porcentaje: v.target.value,
-                                  });
+                                let auxArray = [
+                                  ...tablaTipoMovimientoInstrucciones,
+                                ];
+                                if (Number(v.target.value) <= 100) {
+                                  auxArray[
+                                    index
+                                  ].fondoIngresoAfectadoXGobiernoEstatal =
+                                    v.target.value;
+                                  addPorcentaje(auxArray);
                                 }
                               }}
                             />
@@ -758,8 +704,9 @@ export function TipoDeMovimientoIntrucciones() {
 
                         <StyledTableCell align="center">
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                            "municipios" && (
+                            "municipio" && (
                             <TextField
+                              type="number"
                               inputProps={{
                                 sx: {
                                   fontSize: "0.7rem",
@@ -768,11 +715,34 @@ export function TipoDeMovimientoIntrucciones() {
                               size="small"
                               value={row?.fondoIngresoAfectadoXMunicipio}
                               onChange={(v) => {
-                                if (Number(v.target.value) <= 100.0) {
-                                  addPorcentaje(index, row, {
-                                    columna: "fondoIngresoAfectadoXMunicipio",
-                                    porcentaje: v.target.value,
+                                let auxArray = [
+                                  ...tablaTipoMovimientoInstrucciones,
+                                ];
+                                if (
+                                  Number(v.target.value) <= 100 &&
+                                  Number(row?.fondoIngresoMunicipios) > 0 &&
+                                  Number(row?.fondoIngresoAsignadoMunicipio) > 0
+                                ) {
+                                  auxArray[
+                                    index
+                                  ].fondoIngresoAfectadoXMunicipio =
+                                    v.target.value;
+
+                                  auxArray.forEach((item) => {
+                                    item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      tablaTipoMovimientoInstrucciones
+                                        .reduce((accumulator, object) => {
+                                          return (
+                                            accumulator +
+                                            Number(
+                                              object.fondoIngresoAfectadoXMunicipio
+                                            )
+                                          );
+                                        }, 0)
+                                        .toString();
                                   });
+
+                                  addPorcentaje(auxArray);
                                 }
                               }}
                             />
@@ -780,19 +750,25 @@ export function TipoDeMovimientoIntrucciones() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {
-                              row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                            }
-                          </Typography>
+                          {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                            "municipio" && (
+                            <Typography sx={{ fontSize: "0.7rem" }}>
+                              {(
+                                Number(
+                                  row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                                ) / Number(row?.fondoIngresoAsignadoMunicipio)
+                              ).toFixed(6)}
+                            </Typography>
+                          )}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                             "gobierno estatal" &&
                             row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                              "municipios" && (
+                              "municipio" && (
                               <TextField
+                                type="number"
                                 inputProps={{
                                   sx: {
                                     fontSize: "0.7rem",
@@ -801,11 +777,31 @@ export function TipoDeMovimientoIntrucciones() {
                                 size="small"
                                 value={row?.ingresoAfectadoXOrganismo}
                                 onChange={(v) => {
-                                  if (Number(v.target.value) <= 100.0) {
-                                    addPorcentaje(index, row, {
-                                      columna: "ingresoAfectadoXOrganismo",
-                                      porcentaje: v.target.value,
+                                  let auxArray = [
+                                    ...tablaTipoMovimientoInstrucciones,
+                                  ];
+                                  if (
+                                    Number(v.target.value) <= 100 &&
+                                    Number(row?.ingresoOrganismo) > 0
+                                  ) {
+                                    auxArray[index].ingresoAfectadoXOrganismo =
+                                      v.target.value;
+
+                                    auxArray.forEach((item) => {
+                                      item.acumuladoAfectacionOrganismoEntre100 =
+                                        tablaTipoMovimientoInstrucciones
+                                          .reduce((accumulator, object) => {
+                                            return (
+                                              accumulator +
+                                              Number(
+                                                object.ingresoAfectadoXOrganismo
+                                              )
+                                            );
+                                          }, 0)
+                                          .toString();
                                     });
+
+                                    addPorcentaje(auxArray);
                                   }
                                 }}
                               />
@@ -814,7 +810,11 @@ export function TipoDeMovimientoIntrucciones() {
 
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.acumuladoAfectacionOrganismoEntre100}
+                            {(
+                              Number(
+                                row?.acumuladoAfectacionOrganismoEntre100
+                              ) / 100
+                            ).toFixed(6)}
                           </Typography>
                         </StyledTableCell>
 
@@ -822,9 +822,41 @@ export function TipoDeMovimientoIntrucciones() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
-                                removeTipoMovimientoInstrucciones(index)
-                              }
+                              onClick={() => {
+                                let auxArray = [
+                                  ...tablaTipoMovimientoInstrucciones,
+                                ];
+
+                                auxArray.forEach((item) => {
+                                  item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                    tablaTipoMovimientoInstrucciones
+                                      .reduce((accumulator, object) => {
+                                        return (
+                                          accumulator +
+                                          Number(
+                                            object.fondoIngresoAfectadoXMunicipio
+                                          )
+                                        );
+                                      }, 0)
+                                      .toString();
+                                });
+                                auxArray.forEach((item) => {
+                                  item.acumuladoAfectacionOrganismoEntre100 =
+                                    tablaTipoMovimientoInstrucciones
+                                      .reduce((accumulator, object) => {
+                                        return (
+                                          accumulator +
+                                          Number(
+                                            object.ingresoAfectadoXOrganismo
+                                          )
+                                        );
+                                      }, 0)
+                                      .toString();
+                                });
+
+                                addPorcentaje(auxArray);
+                                removeTipoMovimientoInstrucciones(index);
+                              }}
                             >
                               <DeleteIcon />
                             </IconButton>

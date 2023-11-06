@@ -140,6 +140,10 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.setTipoMovimientoInstrucciones
   );
 
+  const cleanInstruccion : Function = useInstruccionesStore(
+    (state) => state.cleanInstruccion
+  )
+
   const limpiaInstruccion = () => {
     setGeneralInstruccion({
       numeroCuenta: "",
@@ -170,7 +174,7 @@ export function AgregarInstruccionesIrrevocables({
               <IconButton
                 edge="start"
                 onClick={() => {
-                  limpiaInstruccion();
+                  cleanInstruccion();
                   handler(false);
                   //reset();
                 }}

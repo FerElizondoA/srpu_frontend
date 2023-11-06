@@ -48,7 +48,7 @@ export interface IAyudaPregunta {
 }
 
 const Ayuda = () => {
-  const [valueTab, setValueTab] = useState<string>("Guía");
+  const [valueTab, setValueTab] = useState<string>("Guías");
   const [Preguntas, setPreguntas] = useState<IAyudaPregunta[]>([]);
   const [Guias, setGuias] = useState<IAyudaGuia[]>([]);
   const [Videos, setVideos] = useState<IAyudaVideo[]>([]);
@@ -211,14 +211,14 @@ const Ayuda = () => {
   };
 
   const obtenerDatos = () => {
-    if (valueTab === "Guía") {
-      getAyuda(setGuias, "0", "Guía");
+    if (valueTab === "Guías") {
+      getAyuda(setGuias, "0", "Guías");
     }
-    if (valueTab === "Video") {
-      getAyuda(setVideos, "0", "Video");
+    if (valueTab === "Videos") {
+      getAyuda(setVideos, "0", "Videos");
     }
-    if (valueTab === "Pregunta") {
-      getAyuda(setPreguntas, "0", "Pregunta");
+    if (valueTab === "Preguntas") {
+      getAyuda(setPreguntas, "0", "Preguntas");
     }
   };
 
@@ -307,9 +307,9 @@ const Ayuda = () => {
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Guías" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Guía"></Tab>
-              <Tab label="Videos" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Video"></Tab>
-              <Tab label="Preguntas" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Pregunta"></Tab>
+              <Tab label="Guías" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Guías"></Tab>
+              <Tab label="Videos" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Videos"></Tab>
+              <Tab label="Preguntas" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Preguntas"></Tab>
               {open ? (
                 <AyudasModal
                   TabValue={valueTab}
@@ -339,7 +339,7 @@ const Ayuda = () => {
           {/* <MUIXDataGrid  id={(row: any) => row.Id} columns={columnsPreguntas} rows={[]}/> */}
 
           {/* cambio a tabla preguntas */}
-          {valueTab == "Pregunta" ? (
+          {valueTab == "Preguntas" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsPreguntas}
@@ -347,7 +347,7 @@ const Ayuda = () => {
             />
           ) : null}
           {/* cambio a tablas videos y guías */}
-          {valueTab == "Video" ? (
+          {valueTab == "Videos" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsVideo}
@@ -355,7 +355,7 @@ const Ayuda = () => {
             />
           ) : null}
 
-          {valueTab == "Guía" ? (
+          {valueTab == "Guías" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsGuia}

@@ -19,8 +19,9 @@ export interface GeneralIntrucciones {
 export interface TipoMovimientoInstrucciones {
   id: string,
   tipoEntePublicoObligado: { Id: string, Descripcion: string},
+  altaDeudor:string,
   entidadFederativa: { Id: string, Descripcion:string },
-  mandatario: { Id: string, Descripcion: string},
+  //mandatario: { Id: string, Descripcion: string},
   tipoFuente: { Id: string, Descripcion: string },
   fondoIngreso: { Id: string, Descripcion: string, TipoDeFuente: string },
   fondoIngresoGobiernoEstatal: string,
@@ -34,7 +35,7 @@ export interface TipoMovimientoInstrucciones {
   acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string,
   ingresoAfectadoXOrganismo: string,
   acumuladoAfectacionOrganismoEntre100: string,
-  altaDeudor:string,
+  
 }
 
 export interface Instruccion {
@@ -80,11 +81,7 @@ export interface InstruccionesIrrevocablesSlice {
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
 
-  addPorcentaje: (
-    index: number,
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones,
-    porcentaje: { columna: string; porcentaje: string }
-  ) =>  void;
+  addPorcentaje: (tipoMovimientoInstruccion: TipoMovimientoInstrucciones) =>  void;
 
   getInstruccion: (setState: Function) => void;
   createInstruccion: () => void;
@@ -136,7 +133,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     altaDeudor:"",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" },
     entidadFederativa: { Id: "", Descripcion: "" },
-    mandatario: { Id: "", Descripcion: "" },
+    //mandatario: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
     fondoIngresoGobiernoEstatal: "",
@@ -150,7 +147,6 @@ export const createInstruccionesIrrevocables: StateCreator<
     acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
     ingresoAfectadoXOrganismo: "",
     acumuladoAfectacionOrganismoEntre100: "",
-  
   },
 
   tablaTipoMovimientoInstrucciones: [],
@@ -356,7 +352,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         mecanismo: "Instrucciones Irrevocables",
         municipio: { Id: "", Descripcion: "" },
       },
-      tablaTipoMovimientoInstrucciones: [],
+      tablaTipoMovimientoInstrucciones: []
     }));
   },
 
@@ -384,7 +380,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         altaDeudor:"",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },
         entidadFederativa: { Id: "", Descripcion: "" },
-        mandatario: { Id: "", Descripcion: "" },
+        //mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
         fondoIngresoGobiernoEstatal: "",
@@ -409,20 +405,9 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
   
-  addPorcentaje: (
-    index: number,
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones,
-    porcentaje: { columna: string; porcentaje: string }
-  ) => {
-    let tabla = useInstruccionesStore.getState().tablaTipoMovimientoInstrucciones;
-
-    tabla[index] = {
-      ...tipoMovimientoInstrucciones,
-      [porcentaje.columna]: porcentaje.porcentaje,
-    };
-
+  addPorcentaje: (tipoMovimientoInstrucciones: any) => {
     set((state) => ({
-      tablaTipoMovimientoInstrucciones: tabla,
+      tablaTipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
     }));
   },
 

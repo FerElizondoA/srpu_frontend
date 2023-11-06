@@ -397,12 +397,25 @@ export function DisposicionPagosCapital() {
 
   return (
     <Grid container
+      sx={{
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          height: ".5vh",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+      }}
       flexDirection={"column"}
       justifyContent={"space-between"}
       height={query.isMobile === false ?
         disposicionesParciales === false && tasasParciales === false ? "32rem"
-          : disposicionesParciales === true && tasasParciales === false ? "38rem"
-            : disposicionesParciales === false && tasasParciales === true ? "38rem"
+          : disposicionesParciales === true && tasasParciales === false ? "44rem"
+            : disposicionesParciales === false && tasasParciales === true ? "44rem"
               : disposicionesParciales === true && tasasParciales === true ? "60rem"
                 : "36rem"
         : query.isMobile === true ?
@@ -414,43 +427,46 @@ export function DisposicionPagosCapital() {
           : "36rem"}
     >
 
-      <Grid item container mt={2} direction="column">
 
-        <Grid item>
-          <Divider>
-            <Typography color={"#af8c55 "} fontWeight={"bold"}>
-              PAGOS DE CAPITAL
-            </Typography>
-          </Divider>
-        </Grid>
 
-        <Grid container display={"flex"} justifyContent={"space-evenly"}>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
-            <InputLabel sx={queries.medium_text}>
-              Fecha de Primer Pago
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
-            >
-              <DesktopDatePicker
-                sx={{ width: "100%" }}
-                value={new Date(capitalFechaPrimerPago)}
-                onChange={(date) =>
-                  changeCapital(
-                    date?.toString(),
-                    capitalPeriocidadPago,
-                    capitalNumeroPago
-                  )
-                }
-                minDate={new Date(disposicionFechaDisposicion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-               
+        <Grid item container mt={2} direction="column">
+
+          <Grid item>
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                PAGOS DE CAPITAL
+              </Typography>
+            </Divider>
+          </Grid>
+
+          <Grid container display={"flex"} justifyContent={"space-evenly"}>
+
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
+              <InputLabel sx={queries.medium_text}>
+                Fecha de Primer Pago
+              </InputLabel>
+              <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                adapterLocale={enGB}
+              >
+                <DesktopDatePicker
+                  sx={{ width: "100%" }}
+                  value={new Date(capitalFechaPrimerPago)}
+                  onChange={(date) =>
+                    changeCapital(
+                      date?.toString(),
+                      capitalPeriocidadPago,
+                      capitalNumeroPago
+                    )
+                  }
+                  minDate={new Date(disposicionFechaDisposicion)}
+                  maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+
                 //slots={(props: any) => <TextField variant="standard" {...props} />}
-              />
+                />
 
-              {/* <DatePicker
+                {/* <DatePicker
                 value={new Date(capitalFechaPrimerPago)}
                 onChange={(date) =>
                   changeCapital(
@@ -466,184 +482,71 @@ export function DisposicionPagosCapital() {
                 }}
               /> */}
 
-            </LocalizationProvider>
-          </Grid>
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
-            <Autocomplete
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoPeriocidadDePago}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Descripcion}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              value={capitalPeriocidadPago}
-              onChange={(event, text) =>
-                changeCapital(
-                  capitalFechaPrimerPago,
-                  {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  capitalNumeroPago
-                )
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
-            <TextField
-              placeholder="0"
-              value={capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()}
-              onChange={(v) => {
-                if (validator.isNumeric(v.target.value)) {
-                  changeCapital(
-                    capitalFechaPrimerPago,
-                    capitalPeriocidadPago,
-                    v.target.value
-                  );
-                } else if (v.target.value === "") {
-                  changeCapital(
-                    capitalFechaPrimerPago,
-                    capitalPeriocidadPago,
-                    0
-                  );
-                }
-              }}
-              fullWidth
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              variant="standard"
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid container direction="column" width={"100%"}>
-        <Grid item width={"100%"}>
-          <Divider>
-            <Typography color={"#af8c55 "} fontWeight={"bold"}>
-              DISPOSICIÓN
-            </Typography>
-          </Divider>
-
-          <Grid
-            container
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            alignItems={"center"}
-            width={"100%"}
-          >
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-              <FormControlLabel
-                label="Disposiciones parciales"
-                control={
-                  <Checkbox
-                    checked={disposicionesParciales}
-                    onChange={(v) => {
-                      setDisposicionesParciales(!disposicionesParciales);
-                    }}
-                  />
-                }
-              ></FormControlLabel>
-            </Grid>
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-              <InputLabel sx={queries.medium_text}>
-                Fecha de disposición
-              </InputLabel>
-              { }
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={enGB}
-              >
-                <DesktopDatePicker
-                  sx={{ width: "100%" }}
-                  // disabled={!disposicionesParciales}
-                  value={new Date(disposicionFechaDisposicion)}
-                  onChange={(date) => {
-                    changeDisposicion(
-                      date?.toString(),
-                      moneyMask(disposicionImporte.toString())
-                    );
-                  }}
-                  minDate={new Date()}
-                  maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                  slots={(props: any) => <TextField variant="outlined" {...props} />}
-                />
               </LocalizationProvider>
             </Grid>
 
             <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-              <InputLabel sx={queries.medium_text}>Importe</InputLabel>
+              <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
+              <Autocomplete
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                fullWidth
+                options={catalogoPeriocidadDePago}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Descripcion}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                value={capitalPeriocidadPago}
+                onChange={(event, text) =>
+                  changeCapital(
+                    capitalFechaPrimerPago,
+                    {
+                      Id: text?.Id || "",
+                      Descripcion: text?.Descripcion || "",
+                    },
+                    capitalNumeroPago
+                  )
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Descripcion === value.Descripcion ||
+                  value.Descripcion === ""
+                }
+              />
+            </Grid>
 
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+              <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
               <TextField
-                disabled={!disposicionesParciales}
-                helperText={
-                  disposicionesParciales
-                    ? "Monto original contratado: " +
-                    monto +
-                    "; Monto restante: " +
-                    restante.toFixed(2)
-                    : ""
-                }
-                value={
-                  disposicionImporte <= 0
-                    ? ""
-                    : moneyMask(disposicionImporte.toString())
-                }
+                placeholder="0"
+                value={capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()}
                 onChange={(v) => {
-                  if (
-                    validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
-                    disposicionesParciales &&
-                    parseInt(v.target.value.replace(/\D/g, "")) <
-                    9999999999999999 &&
-                    parseInt(v.target.value.replace(/\D/g, "")) <=
-                    restante * 100
-                  ) {
-                    changeDisposicion(
-                      disposicionFechaDisposicion,
-                      moneyMask(v.target.value)
+                  if (validator.isNumeric(v.target.value)) {
+                    changeCapital(
+                      capitalFechaPrimerPago,
+                      capitalPeriocidadPago,
+                      v.target.value
                     );
                   } else if (v.target.value === "") {
-                    changeDisposicion(
-                      disposicionFechaDisposicion,
-                      moneyMask("0")
+                    changeCapital(
+                      capitalFechaPrimerPago,
+                      capitalPeriocidadPago,
+                      0
                     );
                   }
                 }}
-                error={
-                  parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                  parseInt(monto.toString().replace(/\D/g, ""))
-                }
                 fullWidth
                 InputLabelProps={{
                   style: {
@@ -654,602 +557,164 @@ export function DisposicionPagosCapital() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  // startAdornment: <AttachMoneyIcon />,
                 }}
                 variant="standard"
               />
             </Grid>
           </Grid>
-          {disposicionesParciales && (
-            <Grid container flexDirection={"column"} alignItems={"center"} width={"100%"}>
-              <ThemeProvider theme={ButtonTheme}>
-                <Button
-                  sx={{
-                    ...queries.buttonContinuarSolicitudInscripcion,
-                    mt: 2,
-                    mb: 2,
-                    width: "15vh"
-                  }}
-                  disabled={
-                    disposicionFechaDisposicion === "" ||
-                    parseInt(
-                      disposicionImporte.toString().replace(/\D/g, "")
-                    ) === 0 ||
-                    parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                    restante * 100
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    addRowsDisposicion();
-                    changeDisposicion(
-                      disposicionFechaDisposicion,
-                      moneyMask("0")
-                    );
-                  }}
-                >
-                  Agregar
-                </Button>
-              </ThemeProvider>
-
-              <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"12rem"} >
-                <Paper sx={{ width: "88%", height: "100%" }}>
-                  <TableContainer
-                    sx={{
-                      height: "100%",
-                      overflow: "auto",
-                      "&::-webkit-scrollbar": {
-                        width: ".5vw",
-                        height: ".5vh",
-                        mt: 1,
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "#AF8C55",
-                        outline: "1px solid slategrey",
-                        borderRadius: 1,
-                      },
-                    }}
-                  >
-                    <Table stickyHeader aria-label="sticky table">
-                      <TableHead>
-                        <TableRow>
-                          {headsDisposicion.map((head, index) => (
-                            <StyledTableCell align="center" key={index}>
-                              <TableSortLabel>{head.label}</TableSortLabel>
-                            </StyledTableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {tablaDisposicion.map((row: any, index: number) => {
-                          return (
-                            <StyledTableRow key={index}>
-                              <StyledTableCell align="center">
-                                <Tooltip title="Eliminar">
-                                  <IconButton
-                                    type="button"
-                                    onClick={() => {
-                                      removeDisposicion(index);
-                                    }}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </Tooltip>
-                              </StyledTableCell>
-                              <StyledTableCell align="center" component="th">
-                                {lightFormat(
-                                  new Date(row.fechaDisposicion),
-                                  "dd-MM-yyyy"
-                                )}
-                              </StyledTableCell>
-                              <StyledTableCell align="center" component="th">
-                                {row.importe}
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
-
-      <Grid container direction="column">
-        <Grid item>
-          <Divider>
-            <Typography color={"#af8c55 "} fontWeight={"bold"}>
-              TASA DE INTERÉS
-            </Typography>
-          </Divider>
         </Grid>
 
-        <Grid container flexDirection={"column"} justifyContent={"space-evenly"}>
-          <Grid
-            item
-            container
-            sx={{
-              justifyContent: "center",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <FormControl>
-              <RadioGroup
-                defaultValue="Tasa Fija"
-                value={radioValue}
-                onChange={handleChange}
-              >
-                <Grid container>
-                  <Grid item>
-                    <FormControlLabel
-                      value="Tasa Fija"
-                      control={<Radio />}
-                      label="Tasa Fija"
-                    />
-                  </Grid>
-                  <Grid item>
-                    <FormControlLabel
-                      value="Tasa Variable"
-                      control={<Radio />}
-                      label="Tasa Variable"
-                    />
-                  </Grid>
-                </Grid>
-              </RadioGroup>
-            </FormControl>
-            <Grid item>
-              <FormControlLabel
-                label="Agregar tasas"
-                control={
-                  <Checkbox
-                    checked={tasasParciales}
-                    onChange={(v) => {
-                      setTasasParciales(!tasasParciales);
-                    }}
-                  />
-                }
-              ></FormControlLabel>
-            </Grid>
-          </Grid>
+        <Grid container direction="column" width={"100%"}>
+          <Grid item width={"100%"}>
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                DISPOSICIÓN
+              </Typography>
+            </Divider>
 
-          <Grid container display={"flex"} justifyContent={"center"} mb={2}>
-            {radioValue === "Tasa Fija" ? (
-              <Grid item container display="flex" justifyContent="space-evenly">
-
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2} display={"block"}>
-                  <InputLabel sx={queries.medium_text}>
-                    Fecha de Primer Pago
-                  </InputLabel>
-                  <LocalizationProvider
-                    dateAdapter={AdapterDateFns}
-                    adapterLocale={enGB}
-                  >
-                    <DesktopDatePicker
-                      sx={{ width: "100%" }}
-                      value={new Date(tasaInteresFechaPrimerPago)}
-                      onChange={(date) =>
-                        changeTasaInteres({
-                          tasaFija: tasaInteresTasaFija,
-                          tasaVariable: tasaInteresTasaVariable,
-                          tasa: tasaInteresTasa,
-                          fechaPrimerPago: date?.toString(),
-                          diasEjercicio: tasaInteresDiasEjercicio,
-                          periocidadPago: tasaInteresPeriocidadPago,
-                          tasaReferencia: { Id: "", Descripcion: "" },
-                          sobreTasa: "",
-                        })
-                      }
-                      slots={(props: any) => <TextField variant="outlined" {...props} />}
-                    />
-                  </LocalizationProvider>
-                </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
-
-                  <TextField
-                    placeholder="0"
-                    value={
-                      tasaInteresTasa <= 0 ? "" : tasaInteresTasa.toString()
-                    }
-                    onChange={(v) => {
-                      if (validator.isNumeric(v.target.value)) {
-                        changeTasaInteres({
-                          tasaFija: tasaInteresTasaFija,
-                          tasaVariable: tasaInteresTasaVariable,
-                          tasa: v.target.value,
-                          fechaPrimerPago: tasaInteresFechaPrimerPago,
-                          diasEjercicio: tasaInteresDiasEjercicio,
-                          periocidadPago: tasaInteresPeriocidadPago,
-                          tasaReferencia: { Id: "", Descripcion: "" },
-                          sobreTasa: "",
-                        });
-                      } else if (v.target.value === "") {
-                        changeTasaInteres({
-                          tasaFija: 0,
-                          tasaVariable: tasaInteresTasaVariable,
-                          tasa: v.target.value,
-                          fechaPrimerPago: tasaInteresFechaPrimerPago,
-                          diasEjercicio: tasaInteresDiasEjercicio,
-                          periocidadPago: tasaInteresPeriocidadPago,
-                          tasaReferencia: { Id: "", Descripcion: "" },
-                          sobreTasa: "",
-                        });
-                      }
-                    }}
-                    fullWidth
-                    InputLabelProps={{
-                      style: {
-                        fontFamily: "MontserratMedium",
-                      },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontFamily: "MontserratMedium",
-                      },
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Días del Ejercicio
-                  </InputLabel>
-                  <Autocomplete
-                    clearText="Borrar"
-                    noOptionsText="Sin opciones"
-                    closeText="Cerrar"
-                    openText="Abrir"
-                    fullWidth
-                    options={catalogoDiasEjercicio}
-                    getOptionLabel={(option) => option.Descripcion}
-                    renderOption={(props, option) => {
-                      return (
-                        <li {...props} key={option.Descripcion}>
-                          <Typography>{option.Descripcion}</Typography>
-                        </li>
-                      );
-                    }}
-                    value={tasaInteresDiasEjercicio}
-                    onChange={(event, text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: tasaInteresTasa,
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: {
-                          Id: text?.Id || "",
-                          Descripcion: text?.Descripcion || "",
-                        },
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: { Id: "", Descripcion: "" },
-                        sobreTasa: "",
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        sx={queries.medium_text}
-                      />
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.Descripcion === value.Descripcion ||
-                      value.Descripcion === ""
-                    }
-                  />
-                </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Periocidad de Pago
-                  </InputLabel>
-                  <Autocomplete
-                    clearText="Borrar"
-                    noOptionsText="Sin opciones"
-                    closeText="Cerrar"
-                    openText="Abrir"
-                    fullWidth
-                    options={catalogoPeriocidadDePago}
-                    getOptionLabel={(option) => option.Descripcion}
-                    renderOption={(props, option) => {
-                      return (
-                        <li {...props} key={option.Descripcion}>
-                          <Typography>{option.Descripcion}</Typography>
-                        </li>
-                      );
-                    }}
-                    value={tasaInteresPeriocidadPago}
-                    onChange={(event, text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: tasaInteresTasa,
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: {
-                          Id: text?.Id || "",
-                          Descripcion: text?.Descripcion || "",
-                        },
-                        tasaReferencia: { Id: "", Descripcion: "" },
-                        sobreTasa: "",
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        sx={queries.medium_text}
-                      />
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.Descripcion === value.Descripcion ||
-                      value.Descripcion === ""
-                    }
-                  />
-                </Grid>
-              </Grid>
-            ) : (
-              <Grid
-                container
-                sx={{
-                  justifyContent: "space-evenly",
-                  display: "flex",
-                }}
-              >
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Fecha de Primer Pago
-                  </InputLabel>
-                  <LocalizationProvider
-                    dateAdapter={AdapterDateFns}
-                    adapterLocale={enGB}
-                  >
-                    <DatePicker
-                      value={new Date(tasaInteresFechaPrimerPago)}
-                      onChange={(date) =>
-                        changeTasaInteres({
-                          tasaFija: tasaInteresTasaFija,
-                          tasaVariable: tasaInteresTasaVariable,
-                          tasa: "",
-                          fechaPrimerPago: date?.toString(),
-                          diasEjercicio: tasaInteresDiasEjercicio,
-                          periocidadPago: tasaInteresPeriocidadPago,
-                          tasaReferencia: tasaInteresTasaReferencia,
-                          sobreTasa: tasaInteresSobreTasa,
-                        })
-                      }
-                      slots={{
-                        textField: DateInput,
+            <Grid
+              container
+              display={"flex"}
+              justifyContent={"space-evenly"}
+              alignItems={"center"}
+              width={"100%"}
+            >
+              <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <FormControlLabel
+                  label="Disposiciones parciales"
+                  control={
+                    <Checkbox
+                      checked={disposicionesParciales}
+                      onChange={(v) => {
+                        setDisposicionesParciales(!disposicionesParciales);
                       }}
                     />
-                  </LocalizationProvider>
-                </Grid>
-                <Grid xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Periocidad de Pago
-                  </InputLabel>
-                  <Autocomplete
-                    clearText="Borrar"
-                    noOptionsText="Sin opciones"
-                    closeText="Cerrar"
-                    openText="Abrir"
-                    fullWidth
-                    options={catalogoPeriocidadDePago}
-                    getOptionLabel={(option) => option.Descripcion}
-                    renderOption={(props, option) => {
-                      return (
-                        <li {...props} key={option.Descripcion}>
-                          <Typography>{option.Descripcion}</Typography>
-                        </li>
-                      );
-                    }}
-                    value={tasaInteresPeriocidadPago}
-                    onChange={(event, text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: {
-                          Id: text?.Id || "",
-                          Descripcion: text?.Descripcion || "",
-                        },
-                        tasaReferencia: tasaInteresTasaReferencia,
-                        sobreTasa: tasaInteresSobreTasa,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        sx={queries.medium_text}
-                      />
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.Descripcion === value.Descripcion ||
-                      value.Descripcion === ""
-                    }
-                  />
-                </Grid>
-
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Tasa de Referencia
-                  </InputLabel>
-                  <Autocomplete
-                    clearText="Borrar"
-                    noOptionsText="Sin opciones"
-                    closeText="Cerrar"
-                    openText="Abrir"
-                    fullWidth
-                    options={catalogoTasaReferencia}
-                    getOptionLabel={(option) => option.Descripcion}
-                    renderOption={(props, option) => {
-                      return (
-                        <li {...props} key={option.Descripcion}>
-                          <Typography>{option.Descripcion}</Typography>
-                        </li>
-                      );
-                    }}
-                    value={tasaInteresTasaReferencia}
-                    onChange={(event, text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: {
-                          Id: text?.Id || "",
-                          Descripcion: text?.Descripcion || "",
-                        },
-                        sobreTasa: tasaInteresSobreTasa,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        sx={queries.medium_text}
-                      />
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.Descripcion === value.Descripcion ||
-                      value.Descripcion === ""
-                    }
-                  />
-                </Grid>
-
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
-                  <TextField
-                    type="number"
-                    value={tasaInteresSobreTasa}
-                    onChange={(text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: tasaInteresTasaReferencia,
-                        sobreTasa: text.target.value || "",
-                      })
-                    }
-                    fullWidth
-                    InputLabelProps={{
-                      style: {
-                        fontFamily: "MontserratMedium",
-                      },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontFamily: "MontserratMedium",
-                      },
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
-
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-                  <InputLabel sx={queries.medium_text}>
-                    Días del Ejercicio
-                  </InputLabel>
-                  <Autocomplete
-                    clearText="Borrar"
-                    noOptionsText="Sin opciones"
-                    closeText="Cerrar"
-                    openText="Abrir"
-                    fullWidth
-                    options={catalogoDiasEjercicio}
-                    getOptionLabel={(option) => option.Descripcion}
-                    renderOption={(props, option) => {
-                      return (
-                        <li {...props} key={option.Descripcion}>
-                          <Typography>{option.Descripcion}</Typography>
-                        </li>
-                      );
-                    }}
-                    value={tasaInteresDiasEjercicio}
-                    onChange={(event, text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: {
-                          Id: text?.Id || "",
-                          Descripcion: text?.Descripcion || "",
-                        },
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: tasaInteresTasaReferencia,
-                        sobreTasa: tasaInteresSobreTasa,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        sx={queries.medium_text}
-                      />
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.Descripcion === value.Descripcion ||
-                      value.Descripcion === ""
-                    }
-                  />
-                </Grid>
+                  }
+                ></FormControlLabel>
               </Grid>
-            )}
-            {tasasParciales && (
-              <Grid
-                container
-                // sx={queries.tablaDisposicionPagosCapital}
-                flexDirection={"column"}
-                alignItems={"center"}
-              >
+              <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <InputLabel sx={queries.medium_text}>
+                  Fecha de disposición
+                </InputLabel>
+                { }
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  adapterLocale={enGB}
+                >
+                  <DesktopDatePicker
+                    sx={{ width: "100%" }}
+                    // disabled={!disposicionesParciales}
+                    value={new Date(disposicionFechaDisposicion)}
+                    onChange={(date) => {
+                      changeDisposicion(
+                        date?.toString(),
+                        moneyMask(disposicionImporte.toString())
+                      );
+                    }}
+                    minDate={new Date()}
+                    maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                    slots={(props: any) => <TextField variant="outlined" {...props} />}
+                  />
+                </LocalizationProvider>
+              </Grid>
+
+              <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+                <InputLabel sx={queries.medium_text}>Importe</InputLabel>
+
+                <TextField
+                  disabled={!disposicionesParciales}
+                  helperText={
+                    disposicionesParciales
+                      ? "Monto original contratado: " +
+                      monto +
+                      "; Monto restante: " +
+                      restante.toFixed(2)
+                      : ""
+                  }
+                  value={
+                    disposicionImporte <= 0
+                      ? ""
+                      : moneyMask(disposicionImporte.toString())
+                  }
+                  onChange={(v) => {
+                    if (
+                      validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                      disposicionesParciales &&
+                      parseInt(v.target.value.replace(/\D/g, "")) <
+                      9999999999999999 &&
+                      parseInt(v.target.value.replace(/\D/g, "")) <=
+                      restante * 100
+                    ) {
+                      changeDisposicion(
+                        disposicionFechaDisposicion,
+                        moneyMask(v.target.value)
+                      );
+                    } else if (v.target.value === "") {
+                      changeDisposicion(
+                        disposicionFechaDisposicion,
+                        moneyMask("0")
+                      );
+                    }
+                  }}
+                  error={
+                    parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
+                    parseInt(monto.toString().replace(/\D/g, ""))
+                  }
+                  fullWidth
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: "MontserratMedium",
+                    },
+                  }}
+                  InputProps={{
+                    style: {
+                      fontFamily: "MontserratMedium",
+                    },
+                    // startAdornment: <AttachMoneyIcon />,
+                  }}
+                  variant="standard"
+                />
+              </Grid>
+            </Grid>
+            {disposicionesParciales && (
+              <Grid container flexDirection={"column"} alignItems={"center"} width={"100%"}>
                 <ThemeProvider theme={ButtonTheme}>
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
                       mt: 2,
                       mb: 2,
-                      width: "15vh",
+                      width: "15vh"
                     }}
                     disabled={
-                      tasaInteresFechaPrimerPago === "" ||
-                      tasaInteresDiasEjercicio.Descripcion === "" ||
-                      tasaInteresPeriocidadPago.Descripcion === "" ||
-                      (radioValue === "Tasa Fija" &&
-                        tasaInteresTasa.toString() === "") ||
-                      (radioValue === "Tasa Variable" &&
-                        tasaInteresTasaReferencia.toString() === "") ||
-                      (radioValue === "Tasa Variable" &&
-                        tasaInteresSobreTasa === "")
+                      disposicionFechaDisposicion === "" ||
+                      parseInt(
+                        disposicionImporte.toString().replace(/\D/g, "")
+                      ) === 0 ||
+                      parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
+                      restante * 100
                     }
                     variant="outlined"
                     onClick={() => {
-                      addRows();
-                      reset();
+                      addRowsDisposicion();
+                      changeDisposicion(
+                        disposicionFechaDisposicion,
+                        moneyMask("0")
+                      );
                     }}
                   >
                     Agregar
                   </Button>
                 </ThemeProvider>
 
-                <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
+                <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"12rem"} >
                   <Paper sx={{ width: "88%", height: "100%" }}>
                     <TableContainer
                       sx={{
                         height: "100%",
                         overflow: "auto",
                         "&::-webkit-scrollbar": {
-                          width: ".3vw",
+                          width: ".5vw",
                           height: ".5vh",
                           mt: 1,
                         },
@@ -1263,7 +728,7 @@ export function DisposicionPagosCapital() {
                       <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                           <TableRow>
-                            {heads.map((head, index) => (
+                            {headsDisposicion.map((head, index) => (
                               <StyledTableCell align="center" key={index}>
                                 <TableSortLabel>{head.label}</TableSortLabel>
                               </StyledTableCell>
@@ -1271,7 +736,7 @@ export function DisposicionPagosCapital() {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {tablaTasaInteres.map((row: any, index: number) => {
+                          {tablaDisposicion.map((row: any, index: number) => {
                             return (
                               <StyledTableRow key={index}>
                                 <StyledTableCell align="center">
@@ -1279,7 +744,7 @@ export function DisposicionPagosCapital() {
                                     <IconButton
                                       type="button"
                                       onClick={() => {
-                                        removeTasaInteres(index);
+                                        removeDisposicion(index);
                                       }}
                                     >
                                       <DeleteIcon />
@@ -1288,24 +753,12 @@ export function DisposicionPagosCapital() {
                                 </StyledTableCell>
                                 <StyledTableCell align="center" component="th">
                                   {lightFormat(
-                                    new Date(row.fechaPrimerPago),
+                                    new Date(row.fechaDisposicion),
                                     "dd-MM-yyyy"
                                   )}
                                 </StyledTableCell>
                                 <StyledTableCell align="center" component="th">
-                                  {row.tasa}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.periocidadPago}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.tasaReferencia}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.sobreTasa}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.diasEjercicio}
+                                  {row.importe}
                                 </StyledTableCell>
                               </StyledTableRow>
                             );
@@ -1315,12 +768,573 @@ export function DisposicionPagosCapital() {
                     </TableContainer>
                   </Paper>
                 </Grid>
-
               </Grid>
             )}
           </Grid>
         </Grid>
+
+        <Grid container direction="column">
+          <Grid item>
+            <Divider>
+              <Typography color={"#af8c55 "} fontWeight={"bold"}>
+                TASA DE INTERÉS
+              </Typography>
+            </Divider>
+          </Grid>
+
+          <Grid container flexDirection={"column"} justifyContent={"space-evenly"}>
+            <Grid
+              item
+              container
+              sx={{
+                justifyContent: "center",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <FormControl>
+                <RadioGroup
+                  defaultValue="Tasa Fija"
+                  value={radioValue}
+                  onChange={handleChange}
+                >
+                  <Grid container>
+                    <Grid item>
+                      <FormControlLabel
+                        value="Tasa Fija"
+                        control={<Radio />}
+                        label="Tasa Fija"
+                      />
+                    </Grid>
+                    <Grid item>
+                      <FormControlLabel
+                        value="Tasa Variable"
+                        control={<Radio />}
+                        label="Tasa Variable"
+                      />
+                    </Grid>
+                  </Grid>
+                </RadioGroup>
+              </FormControl>
+              <Grid item>
+                <FormControlLabel
+                  label="Agregar tasas"
+                  control={
+                    <Checkbox
+                      checked={tasasParciales}
+                      onChange={(v) => {
+                        setTasasParciales(!tasasParciales);
+                      }}
+                    />
+                  }
+                ></FormControlLabel>
+              </Grid>
+            </Grid>
+
+            <Grid container display={"flex"} justifyContent={"center"} mb={2}>
+              {radioValue === "Tasa Fija" ? (
+                <Grid item container display="flex" justifyContent="space-evenly">
+
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2} display={"block"}>
+                    <InputLabel sx={queries.medium_text}>
+                      Fecha de Primer Pago
+                    </InputLabel>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      adapterLocale={enGB}
+                    >
+                      <DesktopDatePicker
+                        sx={{ width: "100%" }}
+                        value={new Date(tasaInteresFechaPrimerPago)}
+                        onChange={(date) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: tasaInteresTasa,
+                            fechaPrimerPago: date?.toString(),
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          })
+                        }
+                        slots={(props: any) => <TextField variant="outlined" {...props} />}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
+
+                    <TextField
+                      placeholder="0"
+                      value={
+                        tasaInteresTasa <= 0 ? "" : tasaInteresTasa.toString()
+                      }
+                      onChange={(v) => {
+                        if (validator.isNumeric(v.target.value)) {
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: v.target.value,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          });
+                        } else if (v.target.value === "") {
+                          changeTasaInteres({
+                            tasaFija: 0,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: v.target.value,
+                            fechaPrimerPago: tasaInteresFechaPrimerPago,
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: { Id: "", Descripcion: "" },
+                            sobreTasa: "",
+                          });
+                        }
+                      }}
+                      fullWidth
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      variant="standard"
+                    />
+                  </Grid>
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Días del Ejercicio
+                    </InputLabel>
+                    <Autocomplete
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
+                      fullWidth
+                      options={catalogoDiasEjercicio}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresDiasEjercicio}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: tasaInteresTasa,
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: { Id: "", Descripcion: "" },
+                          sobreTasa: "",
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Periocidad de Pago
+                    </InputLabel>
+                    <Autocomplete
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
+                      fullWidth
+                      options={catalogoPeriocidadDePago}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresPeriocidadPago}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: tasaInteresTasa,
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          tasaReferencia: { Id: "", Descripcion: "" },
+                          sobreTasa: "",
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid
+                  container
+                  sx={{
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                  }}
+                >
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Fecha de Primer Pago
+                    </InputLabel>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      adapterLocale={enGB}
+                    >
+                      <DesktopDatePicker
+                        value={new Date(tasaInteresFechaPrimerPago)}
+                        onChange={(date) =>
+                          changeTasaInteres({
+                            tasaFija: tasaInteresTasaFija,
+                            tasaVariable: tasaInteresTasaVariable,
+                            tasa: "",
+                            fechaPrimerPago: date?.toString(),
+                            diasEjercicio: tasaInteresDiasEjercicio,
+                            periocidadPago: tasaInteresPeriocidadPago,
+                            tasaReferencia: tasaInteresTasaReferencia,
+                            sobreTasa: tasaInteresSobreTasa,
+                          })
+                        }
+                          slots={(props: any) => <TextField variant="outlined" {...props} />}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Periocidad de Pago
+                    </InputLabel>
+                    <Autocomplete
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
+                      fullWidth
+                      options={catalogoPeriocidadDePago}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresPeriocidadPago}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Tasa de Referencia
+                    </InputLabel>
+                    <Autocomplete
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
+                      fullWidth
+                      options={catalogoTasaReferencia}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresTasaReferencia}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
+                    <TextField
+                      type="number"
+                      value={tasaInteresSobreTasa}
+                      onChange={(text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: text.target.value || "",
+                        })
+                      }
+                      fullWidth
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontFamily: "MontserratMedium",
+                        },
+                      }}
+                      variant="standard"
+                    />
+                  </Grid>
+
+                  <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                    <InputLabel sx={queries.medium_text}>
+                      Días del Ejercicio
+                    </InputLabel>
+                    <Autocomplete
+                      clearText="Borrar"
+                      noOptionsText="Sin opciones"
+                      closeText="Cerrar"
+                      openText="Abrir"
+                      fullWidth
+                      options={catalogoDiasEjercicio}
+                      getOptionLabel={(option) => option.Descripcion}
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.Descripcion}>
+                            <Typography>{option.Descripcion}</Typography>
+                          </li>
+                        );
+                      }}
+                      value={tasaInteresDiasEjercicio}
+                      onChange={(event, text) =>
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: {
+                            Id: text?.Id || "",
+                            Descripcion: text?.Descripcion || "",
+                          },
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: tasaInteresSobreTasa,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          sx={queries.medium_text}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.Descripcion === value.Descripcion ||
+                        value.Descripcion === ""
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              )}
+              {tasasParciales && (
+                <Grid
+                  container
+                  // sx={queries.tablaDisposicionPagosCapital}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                >
+                  <ThemeProvider theme={ButtonTheme}>
+                    <Button
+                      sx={{
+                        ...queries.buttonContinuarSolicitudInscripcion,
+                        mt: 2,
+                        mb: 2,
+                        width: "15vh",
+                      }}
+                      disabled={
+                        tasaInteresFechaPrimerPago === "" ||
+                        tasaInteresDiasEjercicio.Descripcion === "" ||
+                        tasaInteresPeriocidadPago.Descripcion === "" ||
+                        (radioValue === "Tasa Fija" &&
+                          tasaInteresTasa.toString() === "") ||
+                        (radioValue === "Tasa Variable" &&
+                          tasaInteresTasaReferencia.toString() === "") ||
+                        (radioValue === "Tasa Variable" &&
+                          tasaInteresSobreTasa === "")
+                      }
+                      variant="outlined"
+                      onClick={() => {
+                        addRows();
+                        reset();
+                      }}
+                    >
+                      Agregar
+                    </Button>
+                  </ThemeProvider>
+
+                  <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
+                    <Paper sx={{ width: "88%", height: "100%" }}>
+                      <TableContainer
+                        sx={{
+                          height: "100%",
+                          overflow: "auto",
+                          "&::-webkit-scrollbar": {
+                            width: ".3vw",
+                            height: ".5vh",
+                            mt: 1,
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#AF8C55",
+                            outline: "1px solid slategrey",
+                            borderRadius: 1,
+                          },
+                        }}
+                      >
+                        <Table stickyHeader aria-label="sticky table">
+                          <TableHead>
+                            <TableRow>
+                              {heads.map((head, index) => (
+                                <StyledTableCell align="center" key={index}>
+                                  <TableSortLabel>{head.label}</TableSortLabel>
+                                </StyledTableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {tablaTasaInteres.map((row: any, index: number) => {
+                              return (
+                                <StyledTableRow key={index}>
+                                  <StyledTableCell align="center">
+                                    <Tooltip title="Eliminar">
+                                      <IconButton
+                                        type="button"
+                                        onClick={() => {
+                                          removeTasaInteres(index);
+                                        }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" component="th">
+                                    {lightFormat(
+                                      new Date(row.fechaPrimerPago),
+                                      "dd-MM-yyyy"
+                                    )}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" component="th">
+                                    {row.tasa}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row.periocidadPago}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row.tasaReferencia}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row.sobreTasa}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row.diasEjercicio}
+                                  </StyledTableCell>
+                                </StyledTableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Paper>
+                  </Grid>
+
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
-    </Grid>
   );
 }

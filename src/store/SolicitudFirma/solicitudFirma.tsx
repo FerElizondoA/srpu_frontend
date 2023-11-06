@@ -5,6 +5,19 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { Navigate } from "react-router-dom";
+
+export interface ArchivoCancelacion {
+  archivo: File;
+  nombreArchivo: string;
+  fechaArchivo: string;
+}
+
+export interface ArchivosCancelacion {
+  acreditacionCancelacion: ArchivoCancelacion;
+  bajaCreditoFederal: ArchivoCancelacion;
+}
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
@@ -15,6 +28,14 @@ export interface SolicitudFirmaSlice {
   changeEstatus: (id: string) => void;
   changeInfoDoc: (info: string) => void;
   setUrl: (url: string) => void;
+
+  archivosCancelacion: ArchivosCancelacion;
+  setArchivosCancelacion: (ArchivosCancelacion: ArchivosCancelacion) => void;
+  cleanArchivosCancelacion: () => void;
+
+  rowSolicitud: IDataPrueba;
+  setRowSolicitud: (rowSolicitud: IDataPrueba) => void;
+  cleanRowSolicitud: () => void;
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
@@ -22,6 +43,92 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   get
 ) => ({
   idSolicitud: "",
+
+  rowSolicitud: {
+    ClaveDeInscripcion: "",
+    CreadoPor: "",
+    Estatus: "",
+    FechaContratacion: "",
+    FechaCreacion: "",
+    FechaRequerimientos: "",
+    Id: "",
+    IdEditor: "",
+    IdPathDoc: "",
+    Institucion: "",
+    ModificadoPor: "",
+    MontoOriginalContratado: "",
+    Nombre: "",
+    NumeroRegistro: 0,
+    Solicitud: "",
+    TipoEntePublico: "",
+    TipoSolicitud: "",
+    UltimaModificacion: new Date().toString(),
+  },
+
+  archivosCancelacion: {
+    acreditacionCancelacion: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date().toString(),
+    },
+
+    bajaCreditoFederal: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date().toString(),
+    },
+  },
+
+  setRowSolicitud: (rowSolicitud: IDataPrueba) =>
+    set(() => ({
+      rowSolicitud: rowSolicitud,
+    })),
+
+  setArchivosCancelacion: (archivosCancelacion: ArchivosCancelacion) =>
+    set(() => ({
+      archivosCancelacion: archivosCancelacion,
+    })),
+
+  cleanArchivosCancelacion: () =>
+    set(() => ({
+      archivosCancelacion: {
+        acreditacionCancelacion: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+          fechaArchivo: new Date().toString(),
+        },
+
+        bajaCreditoFederal: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+          fechaArchivo: new Date().toString(),
+        },
+      },
+    })),
+
+  cleanRowSolicitud: () =>
+    set(() => ({
+      rowSolicitud: {
+        ClaveDeInscripcion: "",
+        CreadoPor: "",
+        Estatus: "",
+        FechaContratacion: "",
+        FechaCreacion: "",
+        FechaRequerimientos: "",
+        Id: "",
+        IdEditor: "",
+        IdPathDoc: "",
+        Institucion: "",
+        ModificadoPor: "",
+        MontoOriginalContratado: "",
+        Nombre: "",
+        NumeroRegistro: 0,
+        Solicitud: "",
+        TipoEntePublico: "",
+        TipoSolicitud: "",
+        UltimaModificacion: new Date().toString(),
+      },
+    })),
 
   estatus: "",
 
@@ -122,6 +229,7 @@ export async function ConsultaSolicitud(
 
     servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
     cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
     organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
 
     institucionFinanciera:
@@ -487,3 +595,108 @@ export const getPdf = (
     })
     .catch((err) => {});
 };
+
+export async function CancelacionSolicitud(
+  Solicitud: string,
+  NumeroRegistro: number,
+  Justificacion: string,
+  archivosCancelacion: ArchivosCancelacion,
+  UltimaModificacion: string,
+  setUrl: Function
+) {
+  let solicitud: any = JSON.parse(Solicitud);
+  const SolicitudCancelacion: any = {
+    numeroSolicitud: NumeroRegistro,
+    UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
+    EntidadDestinatario:
+      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    claveInscripcion:
+      solicitud.ClaveDeInscripcion === undefined
+        ? "Sin Clave de Inscripcion"
+        : solicitud.ClaveDeInscripcion,
+
+    fechaInscripcion: UltimaModificacion,
+
+    fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+
+    entePublicoObligado:
+      solicitud.informacionGeneral.obligadosSolidarios.length > 0
+        ? solicitud.informacionGeneral.obligadosSolidarios[0]
+            .entePublicoObligado
+        : "No Aplica",
+    institucionFinanciera:
+      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    causaCancelacion: Justificacion,
+    documentoAcreditacionCancelacion: JSON.stringify(
+      archivosCancelacion.acreditacionCancelacion.nombreArchivo
+    ),
+    documentoBajaCreditoFederal: JSON.stringify(
+      archivosCancelacion.bajaCreditoFederal.nombreArchivo
+    ),
+  };
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+        "/api/create-pdf-solicitud-cancelacion",
+      {
+        numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
+        UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
+        EntidadDestinatario: SolicitudCancelacion.EntidadDestinatario,
+        UsuarioRemitente: SolicitudCancelacion.UsuarioRemitente,
+        EntidadRemitente: SolicitudCancelacion.EntidadRemitente,
+        claveInscripcion: SolicitudCancelacion.claveInscripcion,
+
+        fechaInscripcion: format(
+          new Date(SolicitudCancelacion.fechaInscripcion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+
+        fechaLiquidacion: format(
+          new Date(SolicitudCancelacion.fechaLiquidacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        fechaContratacion: format(
+          new Date(SolicitudCancelacion.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
+        institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
+        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
+        causaCancelacion: SolicitudCancelacion.causaCancelacion,
+        documentoAcreditacionCancelacion:
+          SolicitudCancelacion.documentoAcreditacionCancelacion,
+        documentoBajaCreditoFederal:
+          SolicitudCancelacion.documentoBajaCreditoFederal,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => {});
+}

@@ -14,7 +14,7 @@ export const saveFile = (
 ) => {
   const url = new File([archivo.archivo], archivo.nombreArchivo);
   let ruta = "";
-  TabValue === "Guía" ? (ruta = "/GUIAS/") : (ruta = "/VIDEOS/TUTORIALES/");
+  TabValue === "Guías" ? (ruta = "/GUIAS/") : (ruta = "/VIDEOS/TUTORIALES/");
   ruta = (process.env.REACT_APP_DOC_ROUTE || "") + ruta;
   let dataArray = new FormData();
   dataArray.append("ROUTE", `${ruta}`);
@@ -32,7 +32,7 @@ export const saveFile = (
       }
     )
     .then(({ data }) => {
-      if (TabValue === "Guía") {
+      if (TabValue === "Guías") {
         if (data) {
           createAyuda(
             {
@@ -225,7 +225,7 @@ export const deleteAyuda = async (IdPreguntaFrecuente: string) => {
         confirmButtonColor: "#15212f",
         icon: "success",
         iconColor:"#AF8C55",
-        title: "Éxito",
+        //title: "Éxito",
         text: "El archivo se ha eliminado exitosamente",
       });
     })

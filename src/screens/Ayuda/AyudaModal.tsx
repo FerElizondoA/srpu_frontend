@@ -128,13 +128,20 @@ export const AyudasModal = ({
           <Grid container>
             <Grid item>
               <Typography sx={queries.bold_text}>
-                Agregar {TabValue}
+              {TabValue === "Guías" 
+                ? "Agregar Guía"
+                :TabValue === "Videos"
+                  ? "Agregar Video"
+                  :TabValue === "Preguntas"
+                    ? "Agregar Pregunta"
+                    : null
+                }
               </Typography>
             </Grid>
           </Grid>
 
           <Grid item>
-            {TabValue == "Video" && nombreArchivo !== '' ? (
+            {TabValue == "Videos" && nombreArchivo !== '' ? (
               <ThemeProvider theme={theme}>
                 <Button
                   sx={queries.buttonContinuar}
@@ -154,23 +161,13 @@ export const AyudasModal = ({
                   }
                   }
                 >
-                  <Typography
-                    sx={{
-                      fontSize: "1.3ch",
-                      fontFamily: "MontserratMedium",
-                      "@media (min-width: 480px)": {
-                        fontSize: "1.5ch",
-                      },
-                    }}
-                  >
-                    Guardar 
-                  </Typography>
+                    Guardar                  
                 </Button>
               </ThemeProvider>
             ) : ("")
             }
 
-            {TabValue == "Guía" && nombreArchivo !== '' ? (
+            {TabValue == "Guías" && nombreArchivo !== '' ? (
               <ThemeProvider theme={theme}>
                 <Button
                   sx={{ ...queries.buttonContinuar }}
@@ -208,7 +205,7 @@ export const AyudasModal = ({
             ) : (
               ""
             )}
-            {TabValue == "Pregunta" ? (
+            {TabValue == "Preguntas" ? (
               <ThemeProvider theme={theme}>
 
                 <Button
@@ -356,7 +353,7 @@ export const AyudasModal = ({
         >
 
 
-          {TabValue !== "Pregunta" ? (
+          {TabValue !== "Preguntas" ? (
 
             <Button
               variant="contained"
@@ -366,12 +363,19 @@ export const AyudasModal = ({
               component="label"
             >
               <Typography sx={{...queries.medium_text, textTransform:"none"}}>
-                Seleccionar {TabValue}
+                {TabValue === "Guías" 
+                ? "Seleccionar Guía"
+                :TabValue === "Videos"
+                  ? "Seleccionar Video"
+                  :TabValue === "Preguntas"
+                    ? "Seleccionar Pregunta"
+                    : null
+                }
               </Typography>
 
               <input
                 hidden
-                accept={TabValue == "Video" ? "video/*" : "application/pdf"}
+                accept={TabValue == "Videos" ? "video/*" : "application/pdf"}
                 onChange={(v) => {
                   enCambioFile(v);
                 }}
@@ -385,7 +389,7 @@ export const AyudasModal = ({
         </Grid>
       </Grid>
 
-      {TabValue == "Video" || TabValue == "Guía" ? (
+      {TabValue == "Videos" || TabValue == "Guías" ? (
         <>
 
           <Grid container ml={2} mt={2} direction={"column"} width={"89%"}>
@@ -406,7 +410,7 @@ export const AyudasModal = ({
               />
             </Grid>
           </Grid>
-          {TabValue == "Guía" ? (
+          {TabValue == "Guías" ? (
             <Grid container ml={2} width={"89%"}>
               <Grid >
                 <Typography variant="h6" sx={queries.medium_text}>
@@ -435,7 +439,7 @@ export const AyudasModal = ({
         </>
       ) : null}
 
-      {TabValue == "Pregunta" ? (
+      {TabValue == "Preguntas" ? (
         <>
 
           <Grid container direction={"column"} mt={2}>
@@ -480,11 +484,11 @@ export const AyudasModal = ({
         </>
       ) : null}
 
-      {TabValue == "Video" || TabValue == "Guía" ?
+      {TabValue == "Videos" || TabValue == "Guías" ?
 
         (<Grid container item height={"100vh"} width={"100vw"} sx={{ display: "flex", justifyContent: "Center", alignItems: "center" }}>
 
-          {TabValue == "Video" ? (
+          {TabValue == "Videos" ? (
             <video
               loop
               autoPlay
