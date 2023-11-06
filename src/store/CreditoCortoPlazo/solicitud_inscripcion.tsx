@@ -150,7 +150,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"NumeroOficio"}/${new Date().getFullYear()}`,
+          IdClaveInscripcion: `DDPYPF-${"CSCP"}/${new Date().getFullYear()}`,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
