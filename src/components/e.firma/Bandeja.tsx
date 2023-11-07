@@ -12,6 +12,7 @@ export const Bandeja = () => {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
+
   const navigate = useNavigate();
   const { NombreBandeja, IdTipo } = useParams();
 
