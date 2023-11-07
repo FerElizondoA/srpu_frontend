@@ -880,7 +880,7 @@ export function ConsultaDeSolicitudPage() {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus("Autorizado");
+                                      changeEstatus("Revision");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
