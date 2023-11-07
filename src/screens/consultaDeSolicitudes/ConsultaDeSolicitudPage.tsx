@@ -688,7 +688,7 @@ export function ConsultaDeSolicitudPage() {
                             getDays(new Date(row.FechaRequerimientos), 11),
                             new Date()
                           )} días restantes para cancelación automática`}
-                          onClick={() => CambiaEstatus("Cancelado", row.Id)}
+                          // onClick={() => CambiaEstatus("Cancelado", row.Id)}
                         >
                           <Chip
                             label={row.Estatus}
