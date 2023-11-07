@@ -1,12 +1,11 @@
 import axios from "axios";
-import { StateCreator } from "zustand";
-import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { StateCreator } from "zustand";
 import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { Navigate } from "react-router-dom";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -197,6 +196,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           } else {
             GeneraAcuseRespuesta(inf.NumeroOficio, state.idSolicitud);
           }
+          console.log(state.estatus);
+
           CambiaEstatus(
             state.estatus.includes("Actualizacion")
               ? "Actualizacion"

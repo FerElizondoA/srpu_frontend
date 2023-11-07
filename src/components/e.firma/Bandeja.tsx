@@ -1,17 +1,23 @@
 // import { TablaDocs } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { useEffect } from "react";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 
 export const Bandeja = () => {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
-
+  const navigate = useNavigate();
   const { NombreBandeja, IdTipo } = useParams();
+
+  useEffect(() => {
+    navigate("../ConsultaDeSolicitudes");
+  }, []);
 
   return (
     <Grid container direction="column">

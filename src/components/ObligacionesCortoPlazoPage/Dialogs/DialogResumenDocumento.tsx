@@ -45,8 +45,6 @@ export function VerBorradorDocumento(props: Props) {
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
 
-
-
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
   >([]);
@@ -147,7 +145,6 @@ export function VerBorradorDocumento(props: Props) {
                   ...queries.buttonCancelar,
                   fontSize: "70%",
                 }}
-                disabled={!tieneComentarios}
                 onClick={() => {
                   localStorage.getItem("Rol") === "Validador"
                     ? CambiaEstatus("Revision", IdSolicitud)
