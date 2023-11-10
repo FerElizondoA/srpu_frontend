@@ -456,7 +456,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${fecha}.pdf`
     );
     res.send(pdfBuffer);
   },
