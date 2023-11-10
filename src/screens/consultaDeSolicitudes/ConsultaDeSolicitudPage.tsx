@@ -810,7 +810,7 @@ export function ConsultaDeSolicitudPage() {
                             flexDirection: "row",
                             display: "grid",
                             height: "7rem",
-                            gridTemplateColumns: "repeat(4,1fr)",
+                            gridTemplateColumns: "repeat(3,1fr)",
                           }}
                           align="center"
                           component="th"
