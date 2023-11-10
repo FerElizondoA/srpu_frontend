@@ -7,6 +7,7 @@ import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/A
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Navigate } from "react-router-dom";
+import { useSolicitudFirmaStore } from "./main";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -19,14 +20,40 @@ export interface ArchivosCancelacion {
   bajaCreditoFederal: ArchivoCancelacion;
 }
 
+export interface IDataFirmaDetalle{
+  Id:string, 
+	IdPathDoc:string, 
+	IdFirma: string, 
+	IdSolicitud:string, 
+	NumeroOficio:string, 
+	Asunto:string,
+	Rfc:string,
+	SerialCertificado:string,
+	FechaFirma:string,
+	Descargas:string,
+	FechaDescarga:string,
+	FechaDoc:string,
+	CreadoPor:string,
+	PathDoc:string,
+	FechaCreacion:string,
+	Deleted: number,
+}
+
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
   estatus: string;
   url: string;
   infoDoc: string;
+
+
+  catalogoFirmaDetalle: IDataFirmaDetalle;
+  getCatalogoFirmaDetalle: (IdSolicitud: string) => void;
+
+
   changeIdSolicitud: (id: string) => void;
-  changeEstatus: (id: string) => void;
+  changeEstatus: (estatus: string) => void;
   changeInfoDoc: (info: string) => void;
+  changeInfoDocCncelacion: (info: string, TipoFirma: string) => void;
   setUrl: (url: string) => void;
 
   archivosCancelacion: ArchivosCancelacion;
@@ -36,6 +63,9 @@ export interface SolicitudFirmaSlice {
   rowSolicitud: IDataPrueba;
   setRowSolicitud: (rowSolicitud: IDataPrueba) => void;
   cleanRowSolicitud: () => void;
+
+  fraccionTexto: string;
+  setFraccionTexto: (fraccionTexto: string) => void;
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
@@ -78,6 +108,14 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       fechaArchivo: new Date().toString(),
     },
   },
+
+  fraccionTexto: "",
+
+  setFraccionTexto: (fraccionTexto: string) =>
+    set(() => ({
+      fraccionTexto: fraccionTexto
+    })),
+
 
   setRowSolicitud: (rowSolicitud: IDataPrueba) =>
     set(() => ({
@@ -130,11 +168,51 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       },
     })),
 
+
   estatus: "",
 
   url: "",
 
   infoDoc: "",
+
+  catalogoFirmaDetalle:{
+    Id:"", 
+    IdPathDoc:"", 
+    IdFirma: "", 
+    IdSolicitud:"", 
+    NumeroOficio:"", 
+    Asunto:"", 
+    Rfc:"", 
+    SerialCertificado:"", 
+    FechaFirma:"", 
+    Descargas:"", 
+    FechaDescarga:"", 
+    FechaDoc:"", 
+    CreadoPor:"", 
+    PathDoc:"", 
+    FechaCreacion:"", 
+    Deleted: 0,
+  },
+
+  getCatalogoFirmaDetalle : async (IdSolicitud: string) => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-firmaDetalle", {
+        params:{
+          Id: IdSolicitud,
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let fd = data.data;
+        console.log("fd", fd);
+        set(() => ({
+          catalogoFirmaDetalle: fd,
+          
+        }));
+      })
+    },
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
@@ -150,7 +228,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     if (info) {
       const inf = JSON.parse(info);
 
+      console.log("info", inf)
+
       const state = useCortoPlazoStore.getState();
+
       axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
@@ -176,14 +257,14 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
+
           if (
             !state.estatus.includes("Autorizado") &&
             state.estatus !== "Actualizacion"
           ) {
             createNotificationCortoPlazo(
               "Solicitud enviada",
-              `La solicitud ha sido enviada para autorización con fecha ${
-                new Date().toLocaleString("es-MX").split(" ")[0]
+              `La solicitud ha sido enviada para autorización con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
               } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
               [localStorage.getItem("IdUsuario")!]
             );
@@ -194,24 +275,119 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               inf.NumeroOficio.replaceAll("/", "-"),
               state.idSolicitud
             );
-          } else {
-            GeneraAcuseRespuesta(inf.NumeroOficio, state.idSolicitud);
+          } else  if(state.estatus
+
+          ){
+            GeneraAcuseRespuesta("Solicitud de requerimientos", inf.NumeroOficio, state.idSolicitud, "de respuesta prevención de inscripción");
           }
           CambiaEstatus(
             state.estatus.includes("Actualizacion")
               ? "Actualizacion"
               : state.estatus.includes("Autorizado")
-              ? "Autorizado"
-              : "Revision",
+                ? "Autorizado"
+                : "Revision",
             state.idSolicitud
           );
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   },
 
+  changeInfoDocCncelacion: (info: any) => {
+    set(() => ({ infoDoc: info }));
+
+    if (info) {
+      const inf = JSON.parse(info);
+
+      const state = useCortoPlazoStore.getState();
+        axios
+        .post(
+          process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
+          {
+            IdPathDoc: inf.IdPathDoc,
+            IdFirma: inf.IdFirma,
+            IdSolicitud: state.idSolicitud,
+            NumeroOficio: `${inf.NumeroOficio}`,
+            TipoFirma: state.estatus,
+            Asunto: inf.Asunto,
+            Rfc: inf.Rfc,
+            SerialCertificado: inf.SerialCertificado,
+            FechaFirma: inf.FechaFirma,
+            FechaDoc: inf.Fecha_doc,
+            PathDoc: inf.PathDoc,
+            CreadoPor: inf.IdUsuario,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+              "Access-Control-Allow-Origin": "*",
+            },
+            responseType: "arraybuffer",
+          }
+        )
+        .then((response) => {
+           
+          CambiaEstatus(
+            "En espera cancelación",
+            state.idSolicitud
+          );
+
+        })
+        .catch((err) => { });
+      
+     
+    }
+  },
   setUrl: (url: any) => set(() => ({ url: url })),
 });
+
+export async function GeneraAcuseRespuesta(
+  tipoSolicitud: string,
+  noOficio: string,
+  idRegistro: string,
+  fraccionTexto: string
+) {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+      "/api/create-pdf-acuse-respuesta",
+      {
+        tipoSolicitud: tipoSolicitud,
+        oficioConstancia: noOficio,
+        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        hora: new Date().toLocaleString("es-MX").split(" ")[1],
+        fraccionTexto: fraccionTexto
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      const state = useCortoPlazoStore.getState();
+
+      state.guardaDocumentos(
+        idRegistro,
+        "/SRPU/CORTOPLAZO/ACUSE",
+        new File([response.data], `Acuse-respuesta-${noOficio}.pdf`)
+      );
+      // setUrl(url);
+    })
+    .catch((err) => { });// aqui
+
+
+}
+
+
 
 export async function ConsultaSolicitud(
   Solicitud: string,
@@ -251,15 +427,15 @@ export async function ConsultaSolicitud(
     comisiones:
       solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo !== "N/A"
         ? solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo +
-          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
-            ? " "
-            : " más IVA")
+        (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
+          ? " "
+          : " más IVA")
         : solicitud.condicionesFinancieras[0].comisiones[0].montoFijo !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
+          ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
           (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
             ? " "
             : " más IVA")
-        : "N/A",
+          : "N/A",
     gastosAdicionales: "No Aplica",
     tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
     mecanismoVehiculoDePago: "No Aplica",
@@ -272,7 +448,7 @@ export async function ConsultaSolicitud(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-solicitud-corto",
+      "/api/create-pdf-solicitud-corto",
       {
         oficioNum: SolicitudDescarga.oficioNum,
         directorGeneral: SolicitudDescarga.directorGeneral,
@@ -319,7 +495,7 @@ export async function ConsultaSolicitud(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaRequerimientos(
@@ -376,7 +552,7 @@ export async function ConsultaRequerimientos(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaConstancia(
@@ -450,7 +626,7 @@ export async function ConsultaConstancia(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function GeneraAcuseEnvio(
@@ -490,50 +666,9 @@ export async function GeneraAcuseEnvio(
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
-export async function GeneraAcuseRespuesta(
-  noOficio: string,
-  idRegistro: string
-) {
-  await axios
-    .post(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-acuse-respuesta",
-      {
-        tipoSolicitud: "Solicitud de requerimientos",
-        oficioConstancia: noOficio,
-        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
-        hora: new Date().toLocaleString("es-MX").split(" ")[1],
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-          "Access-Control-Allow-Origin": "*",
-        },
-        responseType: "arraybuffer",
-      }
-    )
-    .then((response) => {
-      const a = window.URL || window.webkitURL;
-
-      const url = a.createObjectURL(
-        new Blob([response.data], { type: "application/pdf" })
-      );
-
-      const state = useCortoPlazoStore.getState();
-
-      state.guardaDocumentos(
-        idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `Acuse-respuesta-${noOficio}.pdf`)
-      );
-
-      // setUrl(url);
-    })
-    .catch((err) => {});
-}
 
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
   axios
@@ -555,7 +690,7 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
     .then((response) => {
       return true;
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export const getPdf = (
@@ -593,7 +728,7 @@ export const getPdf = (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export async function CancelacionSolicitud(
@@ -625,7 +760,7 @@ export async function CancelacionSolicitud(
     entePublicoObligado:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
         ? solicitud.informacionGeneral.obligadosSolidarios[0]
-            .entePublicoObligado
+          .entePublicoObligado
         : "No Aplica",
     institucionFinanciera:
       solicitud.informacionGeneral.institucionFinanciera.Descripcion,
@@ -642,7 +777,7 @@ export async function CancelacionSolicitud(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-solicitud-cancelacion",
+      "/api/create-pdf-solicitud-cancelacion",
       {
         numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
         UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
@@ -697,6 +832,100 @@ export async function CancelacionSolicitud(
       );
 
       setUrl(url);
+
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
+
+export async function AnularCancelacionSolicitud(
+  Solicitud: string,
+  NumeroRegistro: number,
+  causaAnulacion: string,
+  UltimaModificacion: string,
+  setUrl: Function
+) {
+  let solicitud: any = JSON.parse(Solicitud);
+  const SolicitudCancelacion: any = {
+    numeroSolicitud: NumeroRegistro,
+    UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
+    EntidadDestinatario: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    claveInscripcion: solicitud.ClaveDeInscripcion === undefined
+        ? "Sin Clave de Inscripcion"
+        : solicitud.ClaveDeInscripcion,
+
+    fechaInscripcion: UltimaModificacion,
+
+    fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+
+    entePublicoObligado: 
+      solicitud.informacionGeneral.obligadosSolidarios.length > 0
+        ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
+        : "No Aplica",
+
+    institucionFinanciera: solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    causaAnulacion: causaAnulacion,
+  };
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+      "/api/create-pdf-anular-cancelacion",
+      {
+        numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
+        UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
+        EntidadDestinatario: SolicitudCancelacion.EntidadDestinatario,
+        UsuarioRemitente: SolicitudCancelacion.UsuarioRemitente,
+        EntidadRemitente: SolicitudCancelacion.EntidadRemitente,
+        claveInscripcion: SolicitudCancelacion.claveInscripcion,
+
+        fechaInscripcion: format(
+          new Date(SolicitudCancelacion.fechaInscripcion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+
+        fechaLiquidacion: format(
+          new Date(SolicitudCancelacion.fechaLiquidacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        fechaContratacion: format(
+          new Date(SolicitudCancelacion.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
+        institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
+        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
+        causaAnulacion:SolicitudCancelacion.causaAnulacion
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+
+    })
+    .catch((err) => { });
+}
+

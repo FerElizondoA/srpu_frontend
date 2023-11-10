@@ -28,6 +28,7 @@ export function ObligacionesCortoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 467px)"),
   };
 
   const getTiposDocumentos: Function = useCortoPlazoStore(
@@ -42,6 +43,8 @@ export function ObligacionesCortoPlazoPage() {
     (state) => state.NumeroRegistro
   );
 
+ 
+
   return (
     <>
       {/* <Grid item>
@@ -54,9 +57,20 @@ export function ObligacionesCortoPlazoPage() {
 
       <Grid item container direction="column">
 
-        <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Grid width={"91%"} display={"flex"} justifyContent={"center"} alignItems={"center"}
-          >
+        <Grid container mt={2} display={"flex"} width={"100%"} justifyContent={!NumeroRegistro ? "center" : "space-evenly"}>
+
+          {NumeroRegistro && (
+            <Grid  width={query.isTittle ?"20%": "20%"} display={"flex"} justifyContent={"start"} alignItems={"center"}
+            >
+              <Typography sx={{
+                ...queries.bold_text
+              }}>
+                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
+              </Typography>
+
+            </Grid>
+          )}
+          <Grid mr={3} width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"} display={"flex"} justifyContent={ "center" } alignItems={"center"}>
             <Typography
               sx={{
                 color: "#AF8C55",
@@ -65,16 +79,11 @@ export function ObligacionesCortoPlazoPage() {
             >
               Crédito Simple a Corto Plazo
             </Typography>
-            {NumeroRegistro && (
-              <Typography sx={queries.noRegistroAbsolute}>
-                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
-              </Typography>
-            )}
           </Grid>
 
-          <Grid  display={"flex"} justifyContent={"end"} >
+          <Grid width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"} display={"flex"} justifyContent={"end"} alignItems={"center"} >
             <Button
-              sx={{ ...queries.buttonContinuar}}
+              sx={{ ...queries.buttonContinuar }}
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
               }}
@@ -83,8 +92,6 @@ export function ObligacionesCortoPlazoPage() {
             </Button>
           </Grid>
         </Grid>
-
-
 
         <Grid
           sx={{
@@ -101,14 +108,14 @@ export function ObligacionesCortoPlazoPage() {
             variant={query.isScrollable ? "scrollable" : "standard"}
             scrollButtons
             allowScrollButtonsMobile
-            sx={{ width: "100%", fontSize:".8rem" }}
+            sx={{ width: "100%", fontSize: ".8rem" }}
           >
-            <Tab label="Encabezado" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Información General" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Condiciones Financieras" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Documentación" sx={{...queries.bold_text_Largo_Plazo}}/>
-            <Tab label="Resumen"sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Solicitud de Inscripción" sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Encabezado" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab label="Información General" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab label="Condiciones Financieras" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab label="Documentación" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab label="Resumen" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab label="Solicitud de Inscripción" sx={{ ...queries.bold_text_Largo_Plazo }} />
           </Tabs>
         </Grid>
       </Grid>

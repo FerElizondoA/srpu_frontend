@@ -86,7 +86,7 @@ export const queries = {
 
     tituloCredito: {
       fontFamily: "MontserratBold",
-      fontSize: "1rem",
+      fontSize: ".9rem",
       "@media (min-width: 480px)": {
         fontSize: "1.1rem",
       },
@@ -201,9 +201,16 @@ export const queries = {
       backgroundColor: "rgba(175, 140, 85, 0.6)",
       color: "#000",
     },
-    fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
+    fontSize: "60%",
+    "@media (min-width: 480px)": {
+      fontSize: "70%",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "80%",
+    },
   },
   buttonContinuar: {
     backgroundColor: "#15212f",

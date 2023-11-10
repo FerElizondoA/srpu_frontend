@@ -53,6 +53,7 @@ import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
+  IDataFirmaDetalle,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -159,6 +160,7 @@ export function ConsultaDeSolicitudPage() {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+  const [rowId, setRowId] = useState("");
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -506,6 +508,34 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setDatosActualizar
   );
 
+  const setFraccionTexto : Function = useSolicitudFirmaStore(
+    (state) => state.setFraccionTexto
+  )
+  const fraccionTexto : string = useSolicitudFirmaStore(
+    (state) => state.fraccionTexto
+  )
+
+   const getCatalogoFirmaDetalle : Function = useSolicitudFirmaStore(
+     (state) => state.getCatalogoFirmaDetalle
+   )
+   const catalogoFirmaDetalle : IDataFirmaDetalle = useSolicitudFirmaStore(
+     (state) => state.catalogoFirmaDetalle
+   )
+
+
+
+  useEffect(() => {
+    if(fraccionTexto == "Cancelado") {
+      setFraccionTexto("")
+    } else{
+      setFraccionTexto(fraccionTexto)
+    }
+  }, [])
+
+
+  
+  
+
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
@@ -825,6 +855,11 @@ export function ConsultaDeSolicitudPage() {
                                 changeEstatus(row.Estatus);
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
+
+                                
+                                setRowSolicitud(row);
+
+                                getCatalogoFirmaDetalle(row.Id)
                               }}
                             >
                               <VisibilityIcon />
@@ -914,6 +949,8 @@ export function ConsultaDeSolicitudPage() {
                                       );
                                     }
                                     editarSolicitud(row.TipoSolicitud);
+                                    console.log(row);
+                                   
                                   }}
                                 >
                                   <EditIcon />
@@ -966,8 +1003,11 @@ export function ConsultaDeSolicitudPage() {
                                   llenaSolicitud(row, row.TipoSolicitud);
                                   changeIdSolicitud(row.Id);
                                   changeEstatus(row.Estatus);
+                                  console.log("rowSolicitud", row)
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
+
+                                
 
                                   setRowSolicitud(row);
                                   //setRowSolicitud(row)
@@ -1026,6 +1066,7 @@ export function ConsultaDeSolicitudPage() {
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           rowSolicitud={rowSolicitud}
+          rowId={rowId}
         />
       )}
       {openDescargar && (

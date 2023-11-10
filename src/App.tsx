@@ -24,6 +24,7 @@ import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/Consult
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 import { Fideicomisos } from "./screens/fuenteDePago/Fideicomisos";
+import { Cancelaciones } from "./screens/Cancelaciones/Cancelaciones";
 import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
@@ -105,7 +106,7 @@ function App() {
           ></Route>
           <Route path="config" element={<Configuracion />}></Route>
           <Route
-            path="ConsultaDeSolicitudes"
+            path="ConsultaDeSolicitudes" 
             element={<ConsultaDeSolicitudPage />}
           ></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
@@ -117,6 +118,9 @@ function App() {
             element={<ObligacionesLargoPlazoPage />}
           ></Route>
           <Route path="fideicomisos" element={<Fideicomisos />}></Route>
+
+          <Route path="cancelaciones" element={<Cancelaciones />}></Route>
+
 
           <Route
             path="IFrame"
