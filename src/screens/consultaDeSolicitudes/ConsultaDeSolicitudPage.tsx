@@ -16,16 +16,16 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 
+import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
-import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
-import { differenceInDays, format, startOfDay } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -49,12 +49,10 @@ import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/D
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
-  CambiaEstatus,
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import InfoIcon from "@mui/icons-material/Info";
 
 export interface IData {
   Id: string;
@@ -621,7 +619,9 @@ export function ConsultaDeSolicitudPage() {
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
+                    <StyledTableCell />
                     <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
@@ -694,7 +694,7 @@ export function ConsultaDeSolicitudPage() {
                             label={row.Estatus}
                             color={
                               differenceInDays(
-                                getDays(new Date(row.FechaRequerimientos), 10),
+                                getDays(new Date(row.FechaRequerimientos), 11),
                                 new Date()
                               ) > 5
                                 ? "warning"
@@ -923,7 +923,7 @@ export function ConsultaDeSolicitudPage() {
                             )}
 
                           {row.Estatus !== "Captura" &&
-                            row.Estatus !== "Verificacion" && (
+                            row.Estatus === "Verificacion" && (
                               <Tooltip title="Ver archivos">
                                 <IconButton
                                   type="button"

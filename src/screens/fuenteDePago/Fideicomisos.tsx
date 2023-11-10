@@ -27,7 +27,6 @@ import { format } from "date-fns";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
-  getDocumento,
   getPathDocumentosFideicomiso,
   listFile,
 } from "../../components/APIS/pathDocSol/APISDocumentos";
@@ -36,7 +35,6 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { AgregarFideicomisos } from "../../components/fideicomisos/dialog/AgregarFideicomisos";
 import { queries } from "../../queries";
@@ -73,7 +71,7 @@ const heads: Head[] = [
     label: "Tipo de fideicomiso",
   },
   {
-    label: "Fiudiciario",
+    label: "Fiduciario",
   },
   {
     label: "Acción",
@@ -138,7 +136,8 @@ export function Fideicomisos() {
   };
 
   const [busqueda, setBusqueda] = useState("");
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] = useState<Array<IDatosFideicomiso>>(fideicomisos);
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
+    useState<Array<IDatosFideicomiso>>(fideicomisos);
 
   const fideicomisoSelect: Fideicomiso[] = useFideicomisoStore(
     (state) => state.fideicomisoSelect
@@ -156,17 +155,17 @@ export function Fideicomisos() {
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
-      let loc: any = [...arrDocs];
-      pathDocumentos?.map((val: any) => {
-        return getDocumento(
-          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArrDocs(loc);
+      // let loc: any = [...arrDocs];
+      // pathDocumentos?.map((val: any) => {
+      //   return getDocumento(
+      //     val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+      //     val?.NombreIdentificador,
+      //     (res: any, index: number) => {
+      //       loc.push({ file: res, nombre: val.NombreArchivo });
+      //     }
+      //   );
+      // });
+      // setArrDocs(loc);
     }
   }, [pathDocumentos]);
 
@@ -203,7 +202,7 @@ export function Fideicomisos() {
   useEffect(() => {
     if (fideicomisoSelect.length !== 0) {
       getPathDocumentosFideicomiso(fideicomisoSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`);
+      listFile(`/Autorizaciones/${fideicomisoSelect[0]?.Id}`, () => {});
     }
   }, [fideicomisoSelect]);
 
@@ -251,7 +250,7 @@ export function Fideicomisos() {
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item>
-      <LateralMenu />
+        <LateralMenu />
         {/* {query.isMobile ? <LateralMenuMobile /> : } */}
       </Grid>
 
@@ -280,7 +279,14 @@ export function Fideicomisos() {
         </Typography>
       </Grid>
 
-      <Grid item mb={2} lg={12} display="center" justifyContent="space-between" width={"90%"}>
+      <Grid
+        item
+        mb={2}
+        lg={12}
+        display="center"
+        justifyContent="space-between"
+        width={"90%"}
+      >
         <Grid width={"80%"} display={"flex"} justifyContent={"end"}>
           <Paper
             component="form"

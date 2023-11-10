@@ -29,7 +29,11 @@ import {
 import validator from "validator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
@@ -60,7 +64,7 @@ const heads: readonly Head[] = [
     label: "Fecha de Primer Pago",
   },
   {
-    label: "Periocidad de Pago",
+    label: "Periodicidad de Pago",
   },
   {
     label: "Porcentaje",
@@ -260,7 +264,6 @@ export function ComisionesTasaEfectiva() {
         </Divider>
       </Grid>
 
-
       <Grid
         container
         width={"100%"}
@@ -340,7 +343,6 @@ export function ComisionesTasaEfectiva() {
           />
         </Grid>
       </Grid>
-
 
       <Grid item>
         <Divider>
@@ -455,7 +457,7 @@ export function ComisionesTasaEfectiva() {
           />
         </Grid>
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-          <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
+          <InputLabel sx={queries.medium_text}>Periodicidad de Pago</InputLabel>
           <Autocomplete
             disabled={noAplica}
             clearText="Borrar"
@@ -555,8 +557,8 @@ export function ComisionesTasaEfectiva() {
               radioValue === "Porcentaje Fijo"
                 ? comisionPorcentaje
                 : parseFloat(comisionMonto) <= 0
-                  ? ""
-                  : moneyMask(comisionMonto)
+                ? ""
+                : moneyMask(comisionMonto)
             }
             onChange={(v) => {
               if (
@@ -564,7 +566,7 @@ export function ComisionesTasaEfectiva() {
                 (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
                   v.target.value === "") &&
                 parseInt(v.target.value.replace(/\D/g, "")) <
-                9999999999999999 &&
+                  9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
                 changeComision({
@@ -660,16 +662,16 @@ export function ComisionesTasaEfectiva() {
           ></FormControlLabel>
         </Grid>
 
-        <Grid 
-         item
-         xs={10}
-         sm={3}
-         md={3}
-         lg={2}
-         xl={2}
-         display={"flex"}
-         justifyContent={"center"}
-         alignItems={"center"}
+        <Grid
+          item
+          xs={10}
+          sm={3}
+          md={3}
+          lg={2}
+          xl={2}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
         >
           <ThemeProvider theme={theme}>
             <Button

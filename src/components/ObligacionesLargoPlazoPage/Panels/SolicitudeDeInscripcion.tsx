@@ -257,7 +257,7 @@ export function SolicituDeInscripcion() {
         err = 1;
 
         erroresValidacion.push(
-          "Sección Condiciones Financieras: Seleccione la periocidad de pago."
+          "Sección Condiciones Financieras: Seleccione la periodicidad de pago."
         );
       }
       if (
@@ -388,7 +388,7 @@ export function SolicituDeInscripcion() {
   };
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
-  }
+  };
   return (
     <Grid container>
       <Grid
@@ -472,29 +472,18 @@ export function SolicituDeInscripcion() {
         </Grid>
       </Grid>
 
-      <Grid container justifyContent={"center"} alignItems={"flex-start"} width={"100%"}>
+      <Grid
+        container
+        justifyContent={"center"}
+        alignItems={"flex-start"}
+        width={"100%"}
+      >
         <Grid item xs={12} sm={10} md={10} lg={10} xl={10}>
-          <Divider sx={{
-            fontWeight: "bold",
-            fontFamily: "MontserratMedium",
-            width: "100%",
-            "@media (max-width: 600px)": {
-              // XS (extra small) screen
-              fontSize: "1.4ch",
-            },
-            "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
-              fontSize: "1.5ch",
-            },
-          }}>
-            Declaratorias aplicables al financiamiento u obligación:
-          </Divider>
-        </Grid>
-
-        <Grid container xs={10} sm={11} md={10} lg={10} xl={9} display="flex" width={"100%"}>
-
-          <Grid width={"100%"}>
-            <Typography sx={{
+          <Divider
+            sx={{
+              fontWeight: "bold",
+              fontFamily: "MontserratMedium",
+              width: "100%",
               "@media (max-width: 600px)": {
                 // XS (extra small) screen
                 fontSize: "1.4ch",
@@ -503,18 +492,48 @@ export function SolicituDeInscripcion() {
                 // SM (small) screen
                 fontSize: "1.5ch",
               },
-            }}>
+            }}
+          >
+            Declaratorias aplicables al financiamiento u obligación:
+          </Divider>
+        </Grid>
+
+        <Grid
+          container
+          xs={10}
+          sm={11}
+          md={10}
+          lg={10}
+          xl={9}
+          display="flex"
+          width={"100%"}
+        >
+          <Grid width={"100%"}>
+            <Typography
+              sx={{
+                "@media (max-width: 600px)": {
+                  // XS (extra small) screen
+                  fontSize: "1.4ch",
+                },
+                "@media (min-width: 601px) and (max-width: 900px)": {
+                  // SM (small) screen
+                  fontSize: "1.5ch",
+                },
+              }}
+            >
               Al seleccionar alguna de las siguientes secciones, estará
               manifestando bajo protesta de decir verdad que cumple con lo
               señalado en cada apartado
             </Typography>
 
-            <Grid container={query.isMobile} display={"flex"} width={"100%"} >
+            <Grid container={query.isMobile} display={"flex"} width={"100%"}>
               <Grid width={"100%"}>
-                <TableContainer sx={{
-                  ...queries.tablaSolicitudInscripcion,
-                  width: "100%"
-                }}>
+                <TableContainer
+                  sx={{
+                    ...queries.tablaSolicitudInscripcion,
+                    width: "100%",
+                  }}
+                >
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
@@ -543,11 +562,14 @@ export function SolicituDeInscripcion() {
                                 }
                                 onChange={(v) => {
                                   v.target.checked
-                                    ? setCheckObj({ ...checkObj, [index]: true })
+                                    ? setCheckObj({
+                                        ...checkObj,
+                                        [index]: true,
+                                      })
                                     : setCheckObj({
-                                      ...checkObj,
-                                      [index]: false,
-                                    });
+                                        ...checkObj,
+                                        [index]: false,
+                                      });
 
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
@@ -579,7 +601,7 @@ export function SolicituDeInscripcion() {
                     "@media (max-width: 974px)": {
                       width: "100%",
                       display: "flex",
-                      justifyContent: "space-evenly"
+                      justifyContent: "space-evenly",
                     },
                     "@media (min-width: 974.1px)": {
                       flexDirection: "column",
@@ -605,7 +627,12 @@ export function SolicituDeInscripcion() {
                     },
                   }}
                 >
-                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
                     <Button
                       onClick={() => {
                         setOpenDialogCancelar(!openDialogCancelar);
@@ -617,8 +644,12 @@ export function SolicituDeInscripcion() {
                   </Grid>
 
                   {localStorage.getItem("Rol") === "Verificador" ? (
-
-                    <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                    <Grid
+                      mb={2}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
@@ -639,7 +670,12 @@ export function SolicituDeInscripcion() {
                     Guardar Borrador
                   </Button> */}
 
-                  <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
                     <Button
                       sx={queries.buttonContinuarSolicitudInscripcion}
                       onClick={() => {
@@ -672,9 +708,7 @@ export function SolicituDeInscripcion() {
                   )}
                 </Grid>
               ) : null}
-
             </Grid>
-
           </Grid>
         </Grid>
       </Grid>
@@ -699,7 +733,6 @@ export function SolicituDeInscripcion() {
           }}
         >
           {erroresValidacion?.map((item, index) => {
-
             const division = item.indexOf(":");
 
             const markedText =
@@ -710,7 +743,6 @@ export function SolicituDeInscripcion() {
 
             return (
               <Typography color={"red"} sx={{ fontSize: ".9rem" }}>
-
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>

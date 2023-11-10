@@ -196,7 +196,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           } else {
             GeneraAcuseRespuesta(inf.NumeroOficio, state.idSolicitud);
           }
-          console.log(state.estatus);
 
           CambiaEstatus(
             state.estatus.includes("Actualizacion")

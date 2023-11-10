@@ -1,26 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import CloseIcon from "@mui/icons-material/Close";
+import CommentIcon from "@mui/icons-material/Comment";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
-  Grid,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Divider,
-  Typography,
-  TableContainer,
+  Grid,
+  IconButton,
+  Paper,
   Table,
+  TableBody,
+  TableContainer,
   TableHead,
   TableRow,
-  TableBody,
-  IconButton,
   TableSortLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
   Tooltip,
-  Paper,
+  Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { queries } from "../../../queries";
+import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
 import {
   CondicionFinanciera,
   Disposicion,
@@ -28,24 +32,17 @@ import {
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { IFile } from "./Documentacion";
-import CloseIcon from "@mui/icons-material/Close";
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
 } from "./CondicionesFinancieras";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
-import CommentIcon from "@mui/icons-material/Comment";
-import {
-  getDocumento,
-  getPathDocumentos,
-  listFile,
-} from "../../APIS/pathDocSol/APISDocumentos";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
+import { IFile } from "./Documentacion";
 
 interface Head {
   label: string;
@@ -84,7 +81,7 @@ const headsCondiciones: Head[] = [
     label: "Fecha de Primer Pago Capital",
   },
   {
-    label: "Periocidad de Pago Capital",
+    label: "Periodicidad de Pago Capital",
   },
   {
     label: "Fecha de Primer Pago de Interés",
@@ -228,55 +225,23 @@ export function Resumen({ coments }: { coments: boolean }) {
       label: "Institución Financiera",
       value: InstituciónFinanciera,
     },
-    // {
-    //   label: "Tabla Info General",
-    //   value: ""
-    // }
   ];
-
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
-    []
-  );
 
   const [fileSelected, setFileSelected] = useState<any>("");
 
-  const tablaDocumentos: IFile[] = useCortoPlazoStore(
-    (state) => state.tablaDocumentos
-  );
-
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
-
-  // const comentariosRegistro: any = useCortoPlazoStore(
-  //   (state) => state.comentariosRegistro
-  // );
-
-  useEffect(() => {
-    if (IdSolicitud !== "") {
-      getPathDocumentos(IdSolicitud, setPathDocumentos);
-      listFile(`/DOCSOL/${IdSolicitud}`);
-    }
-  }, [IdSolicitud]);
 
   const [arr, setArr] = useState<any>([]);
 
+  const [cargados, setCargados] = useState(true);
+
   useEffect(() => {
-    if (
-      pathDocumentos.length > 0 &&
-      pathDocumentos[0]?.NombreArchivo !== undefined
-    ) {
-      let loc: any = [...arr];
-      pathDocumentos?.map((val: any) => {
-        return getDocumento(
-          val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArr(loc);
-    }
-  }, [pathDocumentos]);
+    getDocumentos(
+      `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+      setArr,
+      setCargados
+    );
+  }, []);
 
   const toBase64 = (file: any) =>
     new Promise((resolve, reject) => {
@@ -318,23 +283,23 @@ export function Resumen({ coments }: { coments: boolean }) {
           outline: "1px solid slategrey",
           borderRadius: 1,
         },
-         height : "40rem",
+        height: "40rem",
         "@media (min-width: 480px)": {
           height: "40rem",
         },
-    
+
         "@media (min-width: 768px)": {
-          height : "45rem",
+          height: "45rem",
         },
-    
+
         "@media (min-width: 1140px)": {
           height: "35rem",
         },
-    
+
         "@media (min-width: 1400px)": {
           height: "35rem",
         },
-    
+
         "@media (min-width: 1870px)": {
           height: "48rem",
         },
@@ -978,9 +943,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                               <IconButton
                                 color={
                                   comentario[row.descripcionTipo]
-                                    ? // ||
-                                      // comentariosRegistro[row.descripcionTipo]
-                                      "success"
+                                    ? "success"
                                     : "primary"
                                 }
                                 size="small"
@@ -1030,28 +993,32 @@ export function Resumen({ coments }: { coments: boolean }) {
                             <Tooltip
                               title={"Mostrar vista previa del documento"}
                             >
-                              <IconButton
-                                onClick={() => {
-                                  toBase64(tablaDocumentos[index].archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.nombre.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].file
-                                        }`
-                                      );
-                                    });
-                                  setShowModalPrevia(true);
-                                }}
-                              >
-                                <FileOpenIcon />
-                              </IconButton>
+                              {cargados ? (
+                                <CircularProgress />
+                              ) : (
+                                <IconButton
+                                  onClick={() => {
+                                    toBase64(documentos[index].archivo)
+                                      .then((data) => {
+                                        setFileSelected(data);
+                                      })
+                                      .catch((err) => {
+                                        setFileSelected(
+                                          `data:application/pdf;base64,${
+                                            arr.filter((td: any) =>
+                                              td.NOMBREFORMATEADO.includes(
+                                                row.nombreArchivo
+                                              )
+                                            )[0].FILE
+                                          }`
+                                        );
+                                      });
+                                    setShowModalPrevia(true);
+                                  }}
+                                >
+                                  <FileOpenIcon />
+                                </IconButton>
+                              )}
                             </Tooltip>
                           </StyledTableCell>
                         )}
@@ -1068,7 +1035,6 @@ export function Resumen({ coments }: { coments: boolean }) {
         open={showModalPrevia}
         onClose={() => {
           setShowModalPrevia(false);
-          setArr([]);
         }}
         fullWidth
         maxWidth={"lg"}

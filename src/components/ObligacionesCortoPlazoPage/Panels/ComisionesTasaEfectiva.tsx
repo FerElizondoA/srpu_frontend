@@ -29,7 +29,11 @@ import {
 import validator from "validator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
@@ -60,7 +64,7 @@ const heads: readonly Head[] = [
     label: "Fecha de Primer Pago",
   },
   {
-    label: "Periocidad de Pago",
+    label: "Periodicidad de Pago",
   },
   {
     label: "Porcentaje",
@@ -306,7 +310,7 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
-        
+
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
           <TextField
@@ -383,7 +387,7 @@ export function ComisionesTasaEfectiva() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
-            sx={{width:"100%"}}
+              sx={{ width: "100%" }}
               disabled={noAplica}
               value={new Date(comisionFechaContratacion)}
               onChange={(date) => {
@@ -453,7 +457,7 @@ export function ComisionesTasaEfectiva() {
           />
         </Grid>
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
-          <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
+          <InputLabel sx={queries.medium_text}>Periodicidad de Pago</InputLabel>
           <Autocomplete
             disabled={noAplica}
             clearText="Borrar"
@@ -671,16 +675,17 @@ export function ComisionesTasaEfectiva() {
         >
           <ThemeProvider theme={theme}>
             <Button
-              sx={{ ...queries.buttonContinuarSolicitudInscripcion,
+              sx={{
+                ...queries.buttonContinuarSolicitudInscripcion,
                 mt: 2,
                 mb: 2,
                 width: "15vh",
-               
+
                 "&&:hover": {
                   backgroundColor: "rgba(47, 47, 47, 0.4)",
                   color: "#000",
                 },
-                
+
                 borderRadius: "0.8vh",
                 textTransform: "capitalize",
                 fontSize: "100%",

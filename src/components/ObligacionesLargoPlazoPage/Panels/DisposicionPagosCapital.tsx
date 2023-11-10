@@ -27,7 +27,11 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { addDays, lightFormat } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
@@ -59,7 +63,7 @@ const heads: readonly Head[] = [
     label: "Tasa Interes",
   },
   {
-    label: "Periocidad de Pago",
+    label: "Periodicidad de Pago",
   },
   {
     label: "Tasa de Referencia",
@@ -381,28 +385,38 @@ export function DisposicionPagosCapital() {
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
-  }
+  };
 
   return (
-    <Grid container
+    <Grid
+      container
       flexDirection={"column"}
       justifyContent={"space-between"}
-      height={query.isMobile === false ?
-        disposicionesParciales === false && tasasParciales === false ? "32rem"
-          : disposicionesParciales === true && tasasParciales === false ? "38rem"
-            : disposicionesParciales === false && tasasParciales === true ? "38rem"
-              : disposicionesParciales === true && tasasParciales === true ? "60rem"
-                : "36rem"
-        : query.isMobile === true ?
-          disposicionesParciales === false && tasasParciales === false ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false ? "65rem"
-              : disposicionesParciales === false && tasasParciales === true ? "65rem"
-                : disposicionesParciales === true && tasasParciales === true ? "80rem"
-                  : "52rem"
-          : "36rem"}
+      height={
+        query.isMobile === false
+          ? disposicionesParciales === false && tasasParciales === false
+            ? "32rem"
+            : disposicionesParciales === true && tasasParciales === false
+            ? "38rem"
+            : disposicionesParciales === false && tasasParciales === true
+            ? "38rem"
+            : disposicionesParciales === true && tasasParciales === true
+            ? "60rem"
+            : "36rem"
+          : query.isMobile === true
+          ? disposicionesParciales === false && tasasParciales === false
+            ? "50rem"
+            : disposicionesParciales === true && tasasParciales === false
+            ? "65rem"
+            : disposicionesParciales === false && tasasParciales === true
+            ? "65rem"
+            : disposicionesParciales === true && tasasParciales === true
+            ? "80rem"
+            : "52rem"
+          : "36rem"
+      }
     >
       <Grid container mt={2} direction="column">
-
         <Grid item>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
@@ -412,7 +426,6 @@ export function DisposicionPagosCapital() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
-
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
@@ -422,7 +435,7 @@ export function DisposicionPagosCapital() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
-              sx={{width:"100%"}}
+                sx={{ width: "100%" }}
                 value={new Date(capitalFechaPrimerPago)}
                 onChange={(date) =>
                   changeCapital(
@@ -441,7 +454,9 @@ export function DisposicionPagosCapital() {
           </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Periocidad de Pago</InputLabel>
+            <InputLabel sx={queries.medium_text}>
+              Periodicidad de Pago
+            </InputLabel>
             <Autocomplete
               clearText="Borrar"
               noOptionsText="Sin opciones"
@@ -557,7 +572,7 @@ export function DisposicionPagosCapital() {
               >
                 <DesktopDatePicker
                   // disabled={!disposicionesParciales}
-                  sx={{width:"100%"}}
+                  sx={{ width: "100%" }}
                   value={new Date(disposicionFechaDisposicion)}
                   onChange={(date) => {
                     changeDisposicion(
@@ -582,9 +597,9 @@ export function DisposicionPagosCapital() {
                 helperText={
                   disposicionesParciales
                     ? "Monto original contratado: " +
-                    monto +
-                    "; Monto restante: " +
-                    restante.toFixed(2)
+                      monto +
+                      "; Monto restante: " +
+                      restante.toFixed(2)
                     : ""
                 }
                 value={
@@ -597,9 +612,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseInt(v.target.value.replace(/\D/g, "")) <
-                    9999999999999999 &&
+                      9999999999999999 &&
                     parseInt(v.target.value.replace(/\D/g, "")) <=
-                    restante * 100
+                      restante * 100
                   ) {
                     changeDisposicion(
                       disposicionFechaDisposicion,
@@ -633,7 +648,12 @@ export function DisposicionPagosCapital() {
             </Grid>
           </Grid>
           {disposicionesParciales && (
-            <Grid container flexDirection={"column"} alignItems={"center"}  width={"100%"}>
+            <Grid
+              container
+              flexDirection={"column"}
+              alignItems={"center"}
+              width={"100%"}
+            >
               <ThemeProvider theme={ButtonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
@@ -643,7 +663,7 @@ export function DisposicionPagosCapital() {
                       disposicionImporte.toString().replace(/\D/g, "")
                     ) === 0 ||
                     parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                    restante * 100
+                      restante * 100
                   }
                   variant="outlined"
                   onClick={() => {
@@ -658,7 +678,12 @@ export function DisposicionPagosCapital() {
                 </Button>
               </ThemeProvider>
 
-              <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"12rem"} >
+              <Grid
+                width={"100%"}
+                display={"flex"}
+                justifyContent={"center"}
+                height={"12rem"}
+              >
                 <Paper sx={{ width: "88%", height: "100%" }}>
                   <TableContainer
                     sx={{
@@ -666,7 +691,7 @@ export function DisposicionPagosCapital() {
                       overflow: "auto",
                       "&::-webkit-scrollbar": {
                         width: ".5vw",
-                        height:".5vh",
+                        height: ".5vh",
                         mt: 1,
                       },
                       "&::-webkit-scrollbar-thumb": {
@@ -725,7 +750,7 @@ export function DisposicionPagosCapital() {
       </Grid>
 
       <Grid container direction="column">
-        <Grid item > 
+        <Grid item>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               TASA DE INTERÉS
@@ -733,7 +758,11 @@ export function DisposicionPagosCapital() {
           </Divider>
         </Grid>
 
-        <Grid container flexDirection={"column"} justifyContent={"space-evenly"}>
+        <Grid
+          container
+          flexDirection={"column"}
+          justifyContent={"space-evenly"}
+        >
           <Grid
             item
             container
@@ -785,8 +814,15 @@ export function DisposicionPagosCapital() {
           <Grid container display={"flex"} justifyContent={"center"} mb={2}>
             {radioValue === "Tasa Fija" ? (
               <Grid item container display="flex" justifyContent="space-evenly">
-
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2} display={"block"}>
+                <Grid
+                  item
+                  xs={10}
+                  sm={2}
+                  md={2}
+                  lg={2}
+                  xl={2}
+                  display={"block"}
+                >
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -795,7 +831,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={enGB}
                   >
                     <DesktopDatePicker
-                    sx={{width:"100%"}}
+                      sx={{ width: "100%" }}
                       value={new Date(tasaInteresFechaPrimerPago)}
                       onChange={(date) =>
                         changeTasaInteres({
@@ -862,7 +898,7 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2} >
+                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -910,10 +946,10 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-                
+
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
-                    Periocidad de Pago
+                    Periodicidad de Pago
                   </InputLabel>
                   <Autocomplete
                     clearText="Borrar"
@@ -998,7 +1034,7 @@ export function DisposicionPagosCapital() {
                 </Grid>
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
-                    Periocidad de Pago
+                    Periodicidad de Pago
                   </InputLabel>
                   <Autocomplete
                     clearText="Borrar"
@@ -1210,7 +1246,12 @@ export function DisposicionPagosCapital() {
                   </Button>
                 </ThemeProvider>
 
-                <Grid width={"100%"} display={"flex"} justifyContent={"center"} height={"14rem"}>
+                <Grid
+                  width={"100%"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  height={"14rem"}
+                >
                   <Paper sx={{ width: "88%", height: "100%" }}>
                     <TableContainer
                       sx={{

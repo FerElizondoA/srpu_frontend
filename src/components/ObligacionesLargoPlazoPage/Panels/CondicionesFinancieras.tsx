@@ -46,7 +46,7 @@ export const headsTasa: readonly Head[] = [
     label: "Tasa Fija",
   },
   {
-    label: "Periocidad de Pago",
+    label: "Periodicidad de Pago",
   },
   {
     label: "Tasa de Referencia",
@@ -67,7 +67,7 @@ export const headsComision: readonly Head[] = [
     label: "Fecha de primer pago",
   },
   {
-    label: "Periocidad de Pago",
+    label: "Periodicidad de Pago",
   },
   {
     label: "Porcentaje",
@@ -103,7 +103,7 @@ const heads: readonly Head[] = [
     label: "Fecha de Primer Pago Capital",
   },
   {
-    label: "Periocidad de Pago Capital",
+    label: "Periodicidad de Pago Capital",
   },
   {
     label: "Fecha de Primer Pago de Interés",

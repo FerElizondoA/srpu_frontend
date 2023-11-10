@@ -26,7 +26,6 @@ type Props = {
 };
 
 export function ConfirmacionBorradorSolicitud(props: Props) {
-
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -67,15 +66,16 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     } else if (isMissingInstitution) {
       setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
     } else if (isMissingOriginalAmount) {
-      setInfo("*En INFORMACIÓN GENERAL: Seleccionar monto original contratado.");
+      setInfo(
+        "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
+      );
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
-
   };
-  
+
   useEffect(() => {
-    notnull( );
+    notnull();
   }, [institucion, montoOriginal]);
 
   const editCreadoPor: string = useCortoPlazoStore(
@@ -142,14 +142,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     cleanComentario();
   };
 
-
   const division = info.indexOf(":");
 
-  const markedText =
-    division !== -1 ? info.substring(0, division + 1) : info;
+  const markedText = division !== -1 ? info.substring(0, division + 1) : info;
 
-  const restText =
-    division !== -1 ? info.substring(division + 1) : "";
+  const restText = division !== -1 ? info.substring(division + 1) : "";
 
   return (
     <Dialog
@@ -167,22 +164,22 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       </DialogTitle>
 
       <DialogContent>
-        <DialogContentText>
-          <Typography color={ (institucion === "" || institucion === null) &&
-           (montoOriginal === null ||  montoOriginal === 0 ||
-            montoOriginal.toString() === "0" ||
-            montoOriginal === undefined ||
-            montoOriginal.toString() === "$ 0.00")
-            ? "red": "black"}>
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {markedText}
-            </span>
+        <Typography
+          color={
+            (institucion === "" || institucion === null) &&
+            (montoOriginal === null ||
+              montoOriginal === 0 ||
+              montoOriginal.toString() === "0" ||
+              montoOriginal === undefined ||
+              montoOriginal.toString() === "$ 0.00")
+              ? "red"
+              : "black"
+          }
+        >
+          <span style={{ color: "red", fontWeight: "bold" }}>{markedText}</span>
 
-            <span style={{ color: "red" }}>
-              {restText} 
-            </span>
-          </Typography>
-        </DialogContentText>
+          <span style={{ color: "red" }}>{restText}</span>
+        </Typography>
       </DialogContent>
 
       <DialogActions>
@@ -269,11 +266,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             ...queries.buttonContinuar,
             pointerEvents:
               institucion === "" ||
-                institucion === null ||
-                tipoEntePublico === "" ||
-                tipoEntePublico === null ||
-                montoOriginal === null ||
-                montoOriginal === 0
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
                 ? "none"
                 : "auto",
           }}
@@ -343,11 +340,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             ...queries.buttonContinuar,
             pointerEvents:
               institucion === "" ||
-                institucion === null ||
-                tipoEntePublico === "" ||
-                tipoEntePublico === null ||
-                montoOriginal === null ||
-                montoOriginal === 0
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
                 ? "none"
                 : "auto",
           }}
