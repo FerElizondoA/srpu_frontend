@@ -24,11 +24,12 @@ import {
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 
 interface Head {
   label: string;
@@ -133,6 +134,18 @@ export function Documentacion() {
   const datosActualizar: Array<string> = useCortoPlazoStore(
     (state) => state.datosActualizar
   );
+
+  // IdSolicitud
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  useEffect(() => {
+    if (IdSolicitud) {
+      getDocumentos(
+        `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+        () => {},
+        () => {}
+      );
+    }
+  }, []);
 
   return (
     <Grid
@@ -286,6 +299,10 @@ export function Documentacion() {
                       ) : (
                         <FormControl required variant="standard" fullWidth>
                           <Select
+                            error={
+                              tablaDocumentos[index]?.tipoArchivo === "" ||
+                              tablaDocumentos[index]?.tipoArchivo === undefined
+                            }
                             value={tablaDocumentos[index]?.tipoArchivo}
                             onChange={(v) => {
                               asignarTpoDoc(
@@ -296,7 +313,16 @@ export function Documentacion() {
                                 )[0].Descripcion
                               );
                             }}
-                            sx={{ display: "flex", pt: 1 }}
+                            sx={{
+                              display: "flex",
+                              pt: 1,
+                              backgroundColor:
+                                tablaDocumentos[index]?.tipoArchivo === "" ||
+                                tablaDocumentos[index]?.tipoArchivo ===
+                                  undefined
+                                  ? "#ff000057"
+                                  : null,
+                            }}
                             inputProps={{
                               readOnly:
                                 index <

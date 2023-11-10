@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export async function getPathDocumentos(
   IdSolicitud: string,
@@ -78,17 +79,43 @@ export async function getPathDocumentosMandato(
     .catch((error) => {});
 }
 
-export const getDocumento = async (
+// export const getDocumento = async (
+//   ROUTE: string,
+//   NOMBRE: string,
+//   setState: Function
+// ) => {
+//   await axios
+//     .post(
+//       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
+//       {
+//         ROUTE: ROUTE,
+//         NOMBRE: NOMBRE,
+//       },
+//       {
+//         headers: {
+//           Authorization: localStorage.getItem("jwtToken") || "",
+//           responseType: "blob",
+//         },
+//       }
+//     )
+//     .then(({ data }) => {
+//       let file = data.RESPONSE.FILE;
+//       setState(file);
+//     })
+//     .catch((r) => {});
+// };
+
+export const getDocumentos = async (
   ROUTE: string,
-  NOMBRE: string,
-  setState: Function
+  setState: Function,
+  setLoad: Function
 ) => {
+  const state = useCortoPlazoStore.getState();
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
+      process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
       {
         ROUTE: ROUTE,
-        NOMBRE: NOMBRE,
       },
       {
         headers: {
@@ -98,8 +125,24 @@ export const getDocumento = async (
       }
     )
     .then(({ data }) => {
-      let file = data.RESPONSE.FILE;
-      setState(file);
+      let files = data.RESPONSE;
+
+      files.map((file: any, index: any) => {
+        let auxArrayArchivos = [...state.tablaDocumentos];
+        auxArrayArchivos[index].archivo =
+          // new File(
+          // [
+          file.FILE;
+        //   ],
+        //   file.NOMBREFORMATEADO,
+        //   { type: "application/pdf" }
+        // );
+        auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
+        state.setTablaDocumentos(auxArrayArchivos);
+      });
+
+      setState(files);
+      setLoad(false);
     })
     .catch((r) => {});
 };
@@ -135,7 +178,7 @@ export const descargaDocumento = async (
     .catch((r) => {});
 };
 
-export const listFile = async (ROUTE: string) => {
+export const listFile = async (ROUTE: string, setWait: Function) => {
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
@@ -149,7 +192,11 @@ export const listFile = async (ROUTE: string) => {
         },
       }
     )
-    .then(({ data }) => {})
+    .then(({ data }) => {
+      setTimeout(() => {
+        setWait(false);
+      }, 1000);
+    })
     .catch((r) => {});
 };
 

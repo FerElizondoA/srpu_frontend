@@ -1,30 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Grid,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Divider,
-  Typography,
-  TableContainer,
+  Grid,
+  IconButton,
+  Paper,
   Table,
+  TableBody,
+  TableContainer,
   TableHead,
   TableRow,
-  TableBody,
-  IconButton,
   TableSortLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
   Tooltip,
-  Paper,
-  InputLabel,
+  Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { queries } from "../../../queries";
 import { format, lightFormat } from "date-fns";
+import { useEffect, useState } from "react";
+import { queries } from "../../../queries";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import CloseIcon from "@mui/icons-material/Close";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   headsComision,
   headsDisposicion,
@@ -34,22 +34,20 @@ import {
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
 //"../Dialogs/DialogComentarioApartado";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
 import CommentIcon from "@mui/icons-material/Comment";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
 import {
-  getDocumento,
   getPathDocumentos,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
 
-import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
-import { AsignarFuenteV } from "../../../store/CreditoLargoPlazo/FuenteDePago";
-import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import {
   Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import { IFile } from "../../ObligacionesCortoPlazoPage/Panels/Documentacion";
 
 interface Head {
@@ -89,7 +87,7 @@ const headsCondiciones: Head[] = [
     label: "Fecha de Primer Pago Capital",
   },
   {
-    label: "Periocidad de Pago Capital",
+    label: "Periodicidad de Pago Capital",
   },
   {
     label: "Fecha de Primer Pago de Interés",
@@ -360,8 +358,6 @@ export function Resumen() {
     (state) => state.AsignarFuenteV.RespectoA
   );
 
-
-
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
 
@@ -493,9 +489,9 @@ export function Resumen() {
     },
   ];
 
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
-    []
-  );
+  // const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
+  //   []
+  // );
 
   const [fileSelected, setFileSelected] = useState<any>("");
 
@@ -505,33 +501,34 @@ export function Resumen() {
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
 
+  const [docsCargados, setDocsCargados] = useState(true);
   useEffect(() => {
     if (IdSolicitud !== "") {
-      getPathDocumentos(IdSolicitud, setPathDocumentos);
-      listFile(`/DOCSOL/${IdSolicitud}`);
+      // getPathDocumentos(IdSolicitud, setPathDocumentos);
+      listFile(`/DOCSOL/${IdSolicitud}`, setDocsCargados);
     }
   }, [IdSolicitud]);
 
   const [arr, setArr] = useState<any>([]);
 
-  useEffect(() => {
-    if (
-      pathDocumentos.length > 0 &&
-      pathDocumentos[0]?.NombreArchivo !== undefined
-    ) {
-      let loc: any = [...arr];
-      pathDocumentos?.map((val: any) => {
-        return getDocumento(
-          val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArr(loc);
-    }
-  }, [pathDocumentos]);
+  // useEffect(() => {
+  //   if (
+  //     pathDocumentos.length > 0 &&
+  //     pathDocumentos[0]?.NombreArchivo !== undefined
+  //   ) {
+  //     // let loc: any = [...arr];
+  //     // pathDocumentos?.map((val: any) => {
+  //     //   return getDocumento(
+  //     //     val?.Ruta.replaceAll(`${val?.NombreIdentificador}`, "/"),
+  //     //     val?.NombreIdentificador,
+  //     //     (res: any, index: number) => {
+  //     //       loc.push({ file: res, nombre: val.NombreArchivo });
+  //     //     }
+  //     //   );
+  //     // });
+  //     // setArr(loc);
+  //   }
+  // }, [pathDocumentos]);
 
   const toBase64 = (file: any) =>
     new Promise((resolve, reject) => {
@@ -545,7 +542,8 @@ export function Resumen() {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (
-    <Grid width={"100%"}
+    <Grid
+      width={"100%"}
       container
       sx={{
         display: "flex",
@@ -561,23 +559,23 @@ export function Resumen() {
           outline: "1px solid slategrey",
           borderRadius: 1,
         },
-         height : "40rem",
+        height: "40rem",
         "@media (min-width: 480px)": {
           height: "40rem",
         },
-    
+
         "@media (min-width: 768px)": {
-          height : "45rem",
+          height: "45rem",
         },
-    
+
         "@media (min-width: 1140px)": {
           height: "35rem",
         },
-    
+
         "@media (min-width: 1400px)": {
           height: "35rem",
         },
-    
+
         "@media (min-width: 1870px)": {
           height: "48rem",
         },
@@ -592,9 +590,7 @@ export function Resumen() {
           justifyContent: "center",
         }}
       >
-        <Grid
-          mt={{ xs: 1, sm: 5, md: 5, lg: 5, xl: 5 }}
-        >
+        <Grid mt={{ xs: 1, sm: 5, md: 5, lg: 5, xl: 5 }}>
           <Typography sx={queries.bold_text}>Encabezado</Typography>
           <Grid
             sx={{
@@ -690,14 +686,14 @@ export function Resumen() {
           </Grid>
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
-            <Grid mt={2} >
+            <Grid mt={2}>
               {/* Revisar */}
 
               <Tooltip title="Añadir comentario a este apartado">
                 <IconButton
                   color={
                     comentario["Tabla Obligado Solidario Aval"] &&
-                      comentario["Tabla Obligado Solidario Aval"] !== ""
+                    comentario["Tabla Obligado Solidario Aval"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -859,7 +855,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Gastos y Costos"] &&
-                    comentario["Tabla Gastos y Costos"] !== ""
+                  comentario["Tabla Gastos y Costos"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -957,7 +953,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Autorizacion"] &&
-                    comentario["Tabla Autorizacion"] !== ""
+                  comentario["Tabla Autorizacion"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -976,22 +972,24 @@ export function Resumen() {
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{
-              height: "20rem",
-              width: "100%",
-              maxHeight: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                height: ".5vh",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}>
+            <TableContainer
+              sx={{
+                height: "20rem",
+                width: "100%",
+                maxHeight: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: ".5vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1064,7 +1062,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Fuente de Pago"] &&
-                    comentario["Tabla Fuente de Pago"] !== ""
+                  comentario["Tabla Fuente de Pago"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -1084,21 +1082,22 @@ export function Resumen() {
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{
-              height: "18rem",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".3vw",
-                height: ".5vh",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-
-            }}>
+            <TableContainer
+              sx={{
+                height: "18rem",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".3vw",
+                  height: ".5vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1112,7 +1111,6 @@ export function Resumen() {
               </Table>
             </TableContainer>
           </Paper>
-
         </Grid>
 
         {/* FIN BRUEBA*************** */}
@@ -1173,7 +1171,7 @@ export function Resumen() {
               <IconButton
                 color={
                   comentario["Tabla Asignar Fuente"] &&
-                    comentario["Tabla Asignar Fuente"] !== ""
+                  comentario["Tabla Asignar Fuente"] !== ""
                     ? "success"
                     : "primary"
                 }
@@ -1193,22 +1191,24 @@ export function Resumen() {
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
-            <TableContainer sx={{
-              height: 350,
-              maxHeight: "100%",
-              width: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                height: ".5vh",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}>
+            <TableContainer
+              sx={{
+                height: 350,
+                maxHeight: "100%",
+                width: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: ".5vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1236,7 +1236,7 @@ export function Resumen() {
                 <IconButton
                   color={
                     comentario["Tabla Condiciones Financieras"] &&
-                      comentario["Tabla Condiciones Financieras"] !== ""
+                    comentario["Tabla Condiciones Financieras"] !== ""
                       ? "success"
                       : "primary"
                   }
@@ -1616,7 +1616,8 @@ export function Resumen() {
         <Grid mt={5} mb={4} width={"100%"}>
           <Typography sx={queries.bold_text}>Documentación</Typography>
           <Divider color="lightGrey"></Divider>
-          <Grid width={"100%"}
+          <Grid
+            width={"100%"}
             sx={{
               flexDirection: "row",
               mt: 1,
@@ -1627,9 +1628,11 @@ export function Resumen() {
               //border: "1px solid"
             }}
           >
-            <TableContainer sx={{
-              width: "100%"
-            }}>
+            <TableContainer
+              sx={{
+                width: "100%",
+              }}
+            >
               <Table>
                 <TableHead>
                   <TableRow>
@@ -1646,7 +1649,7 @@ export function Resumen() {
                           <IconButton
                             color={
                               comentario[row.descripcionTipo] &&
-                                comentario[row.descripcionTipo] !== ""
+                              comentario[row.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -1691,31 +1694,36 @@ export function Resumen() {
 
                         {row.nombreArchivo === undefined ? null : (
                           <StyledTableCell>
-                            <Tooltip
-                              title={"Mostrar vista previa del documento"}
-                            >
-                              <IconButton
-                                onClick={() => {
-                                  toBase64(tablaDocumentos[index].archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.nombre.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].file
-                                        }`
-                                      );
-                                    });
-                                  setShowModalPrevia(true);
-                                }}
+                            {docsCargados ? (
+                              <CircularProgress />
+                            ) : (
+                              <Tooltip
+                                title={"Mostrar vista previa del documento"}
                               >
-                                <FileOpenIcon></FileOpenIcon>
-                              </IconButton>
-                            </Tooltip>
+                                <IconButton
+                                  onClick={() => {
+                                    toBase64(tablaDocumentos[index].archivo)
+                                      .then((data) => {
+                                        setFileSelected(data);
+                                      })
+                                      .catch((err) => {
+                                        setFileSelected(
+                                          `data:application/pdf;base64,${
+                                            arr.filter((td: any) =>
+                                              td.nombre.includes(
+                                                row.nombreArchivo
+                                              )
+                                            )[0].file
+                                          }`
+                                        );
+                                      });
+                                    setShowModalPrevia(true);
+                                  }}
+                                >
+                                  <FileOpenIcon></FileOpenIcon>
+                                </IconButton>
+                              </Tooltip>
+                            )}
                           </StyledTableCell>
                         )}
                       </StyledTableRow>

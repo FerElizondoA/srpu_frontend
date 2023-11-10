@@ -52,6 +52,7 @@ export interface SolicitudInscripcionSlice {
 
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
+  deleteFiles: (ruta: string) => void;
   saveFiles: (idRegistro: string, ruta: string) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
@@ -168,6 +169,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         state.changeNoRegistro(data.data.NumeroRegistro);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario, "Captura");
+        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         state.saveFiles(
           data.data.Id,
           `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
@@ -232,6 +234,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
         state.changeNoRegistro(data.data.NumeroRegistro);
+        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         state.saveFiles(
           data.data.Id,
           `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
@@ -342,6 +345,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .catch((e) => {});
   },
 
+  deleteFiles: async (ruta: string) => {
+    let dataArray = new FormData();
+    dataArray.append("ROUTE", `${ruta}`);
+
+    return axios
+      .post(
+        process.env.REACT_APP_APPLICATION_FILES +
+          "/api/ApiDoc/DeleteDirectorio",
+        dataArray,
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((res) => {})
+      .catch((e) => {});
+  },
+
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
 
@@ -383,7 +405,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
-    console.log(archivo);
 
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);

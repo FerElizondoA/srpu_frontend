@@ -63,7 +63,7 @@ export function ComentarioApartado({
             //   : "Nuevo comentario"
           }
           sx={{ width: "100%", mt: 2 }}
-          value={coment.Comentario}
+          value={coment.Comentario || ""}
           onChange={(v) => {
             setComent({
               Comentario: v.target.value,

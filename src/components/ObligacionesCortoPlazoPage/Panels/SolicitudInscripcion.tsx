@@ -228,7 +228,7 @@ export function SolicitudInscripcion() {
         err = 1;
 
         errores.push(
-          "Sección Condiciones Financieras: Seleccione la periocidad de pago."
+          "Sección Condiciones Financieras: Seleccione la Periodicidad de pago."
         );
       }
       if (

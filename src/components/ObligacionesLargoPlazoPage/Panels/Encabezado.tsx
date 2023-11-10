@@ -1,15 +1,14 @@
 import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { DateInput } from "../../CustomComponents";
-import { IUsuariosCorto } from "../../ObligacionesCortoPlazoPage/Panels/Encabezado";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { IUsuariosCorto } from "../../ObligacionesCortoPlazoPage/Panels/Encabezado";
 
 export function Encabezado() {
   const tipoDocumento: string = useLargoPlazoStore(
@@ -59,7 +58,7 @@ export function Encabezado() {
 
   return (
     <Grid container height={"25rem"}>
-      <Grid
+      {/* <Grid
         item
         container
         mt={{ xs: 2 }}
@@ -233,7 +232,7 @@ export function Encabezado() {
             />
           </LocalizationProvider>
         </Grid>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

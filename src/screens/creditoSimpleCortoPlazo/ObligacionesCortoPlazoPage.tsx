@@ -53,9 +53,12 @@ export function ObligacionesCortoPlazoPage() {
       </Grid>
 
       <Grid item container direction="column">
-
         <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Grid width={"91%"} display={"flex"} justifyContent={"center"} alignItems={"center"}
+          <Grid
+            width={"91%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
           >
             <Typography
               sx={{
@@ -72,9 +75,9 @@ export function ObligacionesCortoPlazoPage() {
             )}
           </Grid>
 
-          <Grid  display={"flex"} justifyContent={"end"} >
+          <Grid display={"flex"} justifyContent={"end"}>
             <Button
-              sx={{ ...queries.buttonContinuar}}
+              sx={{ ...queries.buttonContinuar }}
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
               }}
@@ -83,8 +86,6 @@ export function ObligacionesCortoPlazoPage() {
             </Button>
           </Grid>
         </Grid>
-
-
 
         <Grid
           sx={{
@@ -101,14 +102,26 @@ export function ObligacionesCortoPlazoPage() {
             variant={query.isScrollable ? "scrollable" : "standard"}
             scrollButtons
             allowScrollButtonsMobile
-            sx={{ width: "100%", fontSize:".8rem" }}
+            sx={{ width: "100%", fontSize: ".8rem" }}
           >
-            <Tab label="Encabezado" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Información General" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Condiciones Financieras" sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Documentación" sx={{...queries.bold_text_Largo_Plazo}}/>
-            <Tab label="Resumen"sx={{...queries.bold_text_Largo_Plazo}} />
-            <Tab label="Solicitud de Inscripción" sx={{...queries.bold_text_Largo_Plazo}} />
+            <Tab label="Encabezado" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab
+              label="Información General"
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
+            <Tab
+              label="Condiciones Financieras"
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
+            <Tab
+              label="Documentación"
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
+            <Tab label="Resumen" sx={{ ...queries.bold_text_Largo_Plazo }} />
+            <Tab
+              label="Solicitud de Inscripción"
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
           </Tabs>
         </Grid>
       </Grid>
@@ -123,6 +136,6 @@ export function ObligacionesCortoPlazoPage() {
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
       />
-    </ >
+    </>
   );
 }

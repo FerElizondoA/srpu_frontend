@@ -23,10 +23,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import {
-  getDocumento,
-  getPathDocumentosMandato,
-} from "../../components/APIS/pathDocSol/APISDocumentos";
+import { getPathDocumentosMandato } from "../../components/APIS/pathDocSol/APISDocumentos";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -182,17 +179,17 @@ export function Mandatos() {
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
-      let loc: any = [...arrDocs];
-      pathDocumentos?.map((val: any) => {
-        return getDocumento(
-          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArrDocs(loc);
+      // let loc: any = [...arrDocs];
+      // pathDocumentos?.map((val: any) => {
+      //   return getDocumento(
+      //     val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+      //     val?.NombreIdentificador,
+      //     (res: any, index: number) => {
+      //       loc.push({ file: res, nombre: val.NombreArchivo });
+      //     }
+      //   );
+      // });
+      // setArrDocs(loc);
     }
   }, [pathDocumentos]);
 

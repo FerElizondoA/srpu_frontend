@@ -29,7 +29,6 @@ import { queries } from "../../../queries";
 import { Autorizaciones } from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
-  getDocumento,
   getPathDocumentosAut,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
@@ -132,23 +131,23 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
       getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`);
+      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => {});
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
-      let loc: any = [...arrDocs];
-      pathDocumentos?.map((val: any) => {
-        return getDocumento(
-          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArrDocs(loc);
+      // let loc: any = [...arrDocs];
+      // pathDocumentos?.map((val: any) => {
+      //   return getDocumento(
+      //     val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+      //     val?.NombreIdentificador,
+      //     (res: any, index: number) => {
+      //       loc.push({ file: res, nombre: val.NombreArchivo });
+      //     }
+      //   );
+      // });
+      // setArrDocs(loc);
     }
   }, [pathDocumentos]);
 
