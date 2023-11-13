@@ -11,6 +11,9 @@ import {
   DialogActions,
   Grid,
   InputLabel,
+  Tooltip,
+  ThemeProvider,
+  createTheme,
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -40,6 +43,20 @@ export function DialogSolicitarCancelacion({
   rowSolicitud: IDataPrueba
 }) {
 
+  const theme = createTheme({
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled": {
+              background: "#f3f3f3",
+              color: "#dadada",
+            },
+          },
+        },
+      },
+    },
+  });
   const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");
   const [error, setError] = useState(false);
@@ -83,6 +100,21 @@ export function DialogSolicitarCancelacion({
     }
   }
 
+  const setFraccionTexto: Function = useSolicitudFirmaStore(
+    (state) => state.setFraccionTexto
+  )
+  const fraccionTexto: string = useSolicitudFirmaStore(
+    (state) => state.fraccionTexto
+  )
+
+  useEffect(() => {
+    if (openState === false) {
+      cleanArchivosCancelacion()
+      setJustificacion("")
+      setError(false)
+    }
+  }, [openState])
+
 
   return (
     <Dialog
@@ -110,9 +142,12 @@ export function DialogSolicitarCancelacion({
           <InputLabel>Acreditación de la cancelación</InputLabel>
           <Typography
             position={"absolute"}
+            border={error === true && archivosCancelacion.acreditacionCancelacion.nombreArchivo === ""
+              ? "2px dotted red"
+              : "2px dotted black"}
             sx={{
               fontFamily: "MontserratMedium",
-              border: "2px dotted black",
+              //border: "2px dotted black",
               width: "90%",
               fontSize: "80%",
             }}
@@ -139,9 +174,13 @@ export function DialogSolicitarCancelacion({
           <InputLabel>Baja de crédito federal</InputLabel>
           <Typography
             position={"absolute"}
+            border={error === true && archivosCancelacion.bajaCreditoFederal.nombreArchivo === ""
+              ? "2px dotted red"
+              : "2px dotted black"
+            }
             sx={{
               fontFamily: "MontserratMedium",
-              border: "2px dotted black",
+              //border: "2px dotted black",
               width: "90%",
               fontSize: "80%",
             }}
@@ -165,17 +204,21 @@ export function DialogSolicitarCancelacion({
 
         <Grid>
           <TextField
+          
             sx={{ width: "95%" }}
             label="Justificación Escrita"
             margin="dense"
             variant="outlined"
             multiline
             onChange={(e) => {
-              e.target.value.length <= 200 && setJustificacion(e.target.value);
+              const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+              if (e.target.value.length <= 200 && !format.test(e.target.value)) {
+                setJustificacion(e.target.value)
+              }
             }}
             value={justificacion}
             helperText={200 - justificacion.length + " caracteres restantes"}
-            error={error}
+            error={error && !justificacion ? true : false}
           />
         </Grid>
       </DialogContent>
@@ -186,27 +229,51 @@ export function DialogSolicitarCancelacion({
           variant="text"
           onClick={() => handler(false)}
         >
-          Cancelar
+          <Typography sx={queries.medium_text}>
+            Cancelar
+          </Typography>
         </Button>
 
-        <Button
-          // disabled={idUsuarioAsignado===""}
-          variant="text"
-          sx={queries.buttonContinuar}
-          onClick={() => {
-            CancelacionSolicitud(
-              rowSolicitud.Solicitud,
-              rowSolicitud.NumeroRegistro,
-              justificacion,
-              archivosCancelacion,
-              rowSolicitud.UltimaModificacion,
-              setUrl)
-            handler(false)
-            navigate("../firmaUrl");
-          }}
-        >
-          Confirmar
-        </Button>
+        <ThemeProvider theme={theme}>
+
+          <Tooltip title={
+            archivosCancelacion.bajaCreditoFederal.nombreArchivo === "" ||
+              archivosCancelacion.acreditacionCancelacion.nombreArchivo === "" ||
+              justificacion === ""
+              ? "Favor de llenar todos los campos"
+              : null
+          }>
+            <Button
+              variant="text"
+              sx={{ ...queries.buttonContinuar, cursor: "-moz-initial" }}
+              onClick={() => {
+                if (archivosCancelacion.bajaCreditoFederal.nombreArchivo !== "" &&
+                  archivosCancelacion.acreditacionCancelacion.nombreArchivo !== "" &&
+                  justificacion !== "") {
+                  CancelacionSolicitud(
+                    rowSolicitud.Solicitud,
+                    rowSolicitud.NumeroRegistro,
+                    justificacion,
+                    archivosCancelacion,
+                    rowSolicitud.UltimaModificacion,
+                    setUrl)
+                  handler(false)
+                  setFraccionTexto("Cancelado")
+                  navigate("../firmaUrl");
+                } else {
+                  setError(true)
+                }
+              }}
+            >
+              <Typography sx={queries.medium_text}>
+                Confirmar
+              </Typography>
+            </Button>
+          </Tooltip>
+        </ThemeProvider>
+
+
+
       </DialogActions>
     </Dialog>
   );

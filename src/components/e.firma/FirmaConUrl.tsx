@@ -4,6 +4,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { useEffect } from "react";
+import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -17,6 +19,25 @@ export const FirmaConUrl = () => {
     (state) => state.changeInfoDoc
   );
 
+  const changeInfoDocCncelacion: Function = useSolicitudFirmaStore(
+    (state) => state.changeInfoDocCncelacion
+  );
+
+  const setFraccionTexto : Function = useSolicitudFirmaStore(
+    (state) => state.setFraccionTexto
+  );
+
+  const fraccionTexto : string = useSolicitudFirmaStore(
+    (state) => state.fraccionTexto
+  );
+
+
+
+
+ useEffect(() => {
+   console.log("fraccionTexto:",fraccionTexto)
+ }, [])
+ 
   return (
     <Grid container direction="column" sx={{ overflow: "hidden" }}>
       <Grid item>
@@ -32,7 +53,7 @@ export const FirmaConUrl = () => {
             PathPorEnviar: localStorage.getItem("PathPorEnviar") || "/",
             File: url,
           })}
-          setState={changeInfoDoc}
+          setState={fraccionTexto === "Cancelado" ? changeInfoDocCncelacion : changeInfoDoc}
         />
       </Grid>
     </Grid>
