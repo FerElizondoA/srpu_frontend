@@ -111,6 +111,7 @@ const {
 const {
   createSolicitud,
   getSolicitudes,
+  getSolicitudesCancelaciones,
   modifySolicitud,
   deleteSolicitud,
   createComentario,
@@ -254,7 +255,10 @@ const {
   modifyTipoDeGarantiaDePago,
   deleteTipoDeGarantiaDePago,
 } = require("../controllers/TiposDeGarantiaDePago.js");
-const { createFirmaDetalle } = require("../controllers/FirmaDetalle.js");
+const { 
+  createFirmaDetalle,
+  getFirmaDetalle
+} = require("../controllers/FirmaDetalle.js");
 const {
   createMandato,
   modifyMandato,
@@ -287,8 +291,11 @@ const {
   createPdfSolicitudCorto,
   createPdfAcuseEnviado,
   createPdfAcuseRespuesta,
+  createPdfAcuseCancelacion,
   actualizaDescarga,
   createPdfSolicitudCancelacion,
+  createPdfSolicitudAnulacion,
+
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -788,6 +795,10 @@ router.get("/get-solicitudes", verifyToken.verifyJWT, (req, res) => {
   getSolicitudes(req, res);
 });
 
+router.get("/get-solicitudes-cancelaciones", verifyToken.verifyJWT, (req, res) => {
+  getSolicitudesCancelaciones(req, res);
+});
+
 router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
   modifySolicitud(req, res);
 });
@@ -1254,6 +1265,10 @@ router.post("/create-firmaDetalle", (req, res, express) => {
   createFirmaDetalle(req, res);
 });
 
+router.get("/get-firmaDetalle", (req, res, express) => {
+  getFirmaDetalle(req, res);
+});
+
 //#endregion
 
 //#region Mandatos
@@ -1365,6 +1380,9 @@ router.post("/create-pdf-acuse-enviado", (req, res) => {
 router.post("/create-pdf-acuse-respuesta", (req, res) => {
   createPdfAcuseRespuesta(req, res);
 });
+router.post("/create-pdf-acuse-cancelacion", (req, res) => {
+  createPdfAcuseCancelacion(req, res);
+});
 router.post("/actualiza-descarga", (req, res) => {
   actualizaDescarga(req, res);
 });
@@ -1384,9 +1402,11 @@ router.get("/get-header", (req, res) => {
 router.put("/modify-ConfiguracionOficios", (req, res) => {
   modifyConfiguracionOficios(req, res);
 });
-
 router.post("/create-pdf-solicitud-cancelacion", (req, res) => {
   createPdfSolicitudCancelacion(req, res);
+});
+router.post("/create-pdf-anular-cancelacion", (req, res) => {
+  createPdfSolicitudAnulacion(req, res);
 });
 //#endregion
 
