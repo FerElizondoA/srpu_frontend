@@ -28,6 +28,7 @@ export function ObligacionesCortoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 467px)"),
   };
 
   const getTiposDocumentos: Function = useCortoPlazoStore(
@@ -53,9 +54,32 @@ export function ObligacionesCortoPlazoPage() {
       </Grid>
 
       <Grid item container direction="column">
-        <Grid mt={2} display={"flex"} justifyContent={"center"}>
+        <Grid
+          container
+          mt={2}
+          display={"flex"}
+          width={"100%"}
+          justifyContent={!NumeroRegistro ? "center" : "space-evenly"}
+        >
+          {NumeroRegistro && (
+            <Grid
+              width={query.isTittle ? "20%" : "20%"}
+              display={"flex"}
+              justifyContent={"start"}
+              alignItems={"center"}
+            >
+              <Typography
+                sx={{
+                  ...queries.bold_text,
+                }}
+              >
+                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
+              </Typography>
+            </Grid>
+          )}
           <Grid
-            width={"91%"}
+            mr={3}
+            width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
@@ -68,14 +92,14 @@ export function ObligacionesCortoPlazoPage() {
             >
               Crédito Simple a Corto Plazo
             </Typography>
-            {NumeroRegistro && (
-              <Typography sx={queries.noRegistroAbsolute}>
-                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
-              </Typography>
-            )}
           </Grid>
 
-          <Grid display={"flex"} justifyContent={"end"}>
+          <Grid
+            width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+            display={"flex"}
+            justifyContent={"end"}
+            alignItems={"center"}
+          >
             <Button
               sx={{ ...queries.buttonContinuar }}
               onClick={() => {

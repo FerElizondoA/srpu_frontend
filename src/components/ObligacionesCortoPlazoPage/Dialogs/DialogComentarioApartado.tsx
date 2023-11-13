@@ -58,15 +58,14 @@ export function ComentarioApartado({
             comentario[openState.apartado]
               ? "Editar comentario"
               : "Nuevo comentario"
-            // comentariosRegistro[openState.apartado]
-            //   ? "Editar comentario"
-            //   : "Nuevo comentario"
           }
           sx={{ width: "100%", mt: 2 }}
           value={coment.Comentario || ""}
           onChange={(v) => {
             setComent({
-              Comentario: v.target.value,
+              Comentario: v.target.value
+                .replaceAll(/[^\w\s]/gi, "")
+                .replaceAll("\n", ""),
               Apartado: openState.apartado,
             });
           }}

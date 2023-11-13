@@ -169,7 +169,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         state.changeNoRegistro(data.data.NumeroRegistro);
         state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
         state.addComentario(data.data.Id, comentario, "Captura");
-        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         state.saveFiles(
           data.data.Id,
           `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
