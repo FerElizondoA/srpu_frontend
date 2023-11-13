@@ -16,6 +16,10 @@ const templateAcuseRespuesta =
   "controllers/templates/template_acuse_envio_respuesta.html";
 const templateCancelacion =
   "controllers/templates/template_cancelacion_credito.html";
+const templateAnulacion =
+  "controllers/templates/template_anular_cancelacion.html";
+const templateAcuseCancelacion =
+"controllers/templates/template_acuse_cancelacion.html";
 
 //#region HEADER
 
@@ -422,14 +426,14 @@ module.exports = {
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseRespuesta, "utf8");
 
-    const { tipoSolicitud, oficioConstancia, fecha, hora } = req.body;
+    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } = req.body;
 
     const html = htmlTemplate
       .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
       .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
       .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
-      .replaceAll("{{hora}}", hora || "'hora de entrega'");
-
+      .replaceAll("{{hora}}", hora || "'hora de entrega'") 
+      .replaceAll("{{fraccionTexto}}", fraccionTexto || "")
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
@@ -460,6 +464,51 @@ module.exports = {
     );
     res.send(pdfBuffer);
   },
+
+  createPdfAcuseCancelacion: async (req, res) => {
+    callHeader();
+    const htmlTemplate = fs.readFileSync(templateAcuseCancelacion, "utf8");
+
+    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } = req.body;
+
+    const html = htmlTemplate
+      .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
+      .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
+      .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
+      .replaceAll("{{hora}}", hora || "'hora de entrega'") 
+      .replaceAll("{{fraccionTexto}}", fraccionTexto || "")
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  
 
   actualizaDescarga: async (req, res) => {
     const { IdPath } = req.body;
@@ -592,6 +641,131 @@ module.exports = {
         "{{documentoBajaCreditoFederal}}",
         documentoBajaCreditoFederal
       );
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${numeroSolicitud - new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  createPdfSolicitudAnulacion: async (req, res) => {
+    //#region HEADER
+    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
+
+    var header = headerTemplate;
+
+    const headerImg = (logoTesoreria, escudo) => {
+      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
+      const resEescudo = fs.readFileSync(escudo);
+
+      header = headerTemplate
+        .replaceAll(
+          "{{logoTesoreria}}",
+          `data:image/${path
+            .extname(logoTesoreria)
+            .split(".")
+            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
+            "base64"
+          )}`
+        )
+        .replaceAll(
+          "{{escudo}}",
+          `data:image/${path
+            .extname(escudo)
+            .split(".")
+            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
+            "base64"
+          )}`
+        );
+    };
+
+    headerImg(
+      "controllers/stylessheet/images/logoTesoreria.png",
+      "controllers/stylessheet/images/escudo.png"
+    );
+
+    //#endregion
+
+    //#region FOOTER
+
+    const footerTemplate = fs.readFileSync(footerFolder, "utf8");
+
+    var footer = footerTemplate;
+
+    const footerImg = (logoLeon) => {
+      const resLogoLeon = fs.readFileSync(logoLeon);
+
+      footer = footerTemplate.replaceAll(
+        "{{logoLeon}}",
+        `data:image/${path
+          .extname(logoLeon)
+          .split(".")
+          .pop()};base64,${Buffer.from(resLogoLeon, "binary").toString(
+          "base64"
+        )}`
+      );
+    };
+
+    footerImg("controllers/stylessheet/images/logoLeon.png");
+    //#endregion
+
+    const htmlTemplate = fs.readFileSync(templateAnulacion, "utf8");
+
+    const {
+      numeroSolicitud,
+      UsuarioDestinatario,
+      EntidadDestinatario,
+      UsuarioRemitente,
+      EntidadRemitente,
+      claveInscripcion,
+      fechaInscripcion,
+      fechaLiquidacion,
+      entePublicoObligado,
+      institucionFinanciera,
+      montoOriginalContratado,
+      fechaContratacion,
+      causaAnulacion,
+    } = req.body;
+
+    const html = htmlTemplate
+      .replaceAll("{{numeroSolicitud}}", numeroSolicitud)
+      .replaceAll("{{UsuarioDestinatario}}", UsuarioDestinatario)
+      .replaceAll("{{EntidadDestinatario}}", EntidadDestinatario)
+      .replaceAll("{{UsuarioRemitente}}", UsuarioRemitente)
+      .replaceAll("{{EntidadRemitente}}", EntidadRemitente)
+      .replaceAll("{{claveInscripcion}}", claveInscripcion)
+      .replaceAll("{{fechaInscripcion}}", fechaInscripcion)
+      .replaceAll("{{fechaLiquidacion}}", fechaLiquidacion)
+      .replaceAll("{{entePublicoObligado}}", entePublicoObligado)
+      .replaceAll("{{institucionFinanciera}}", institucionFinanciera)
+      .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
+      .replaceAll("{{fechaContratacion}}", fechaContratacion)
+      .replaceAll("{{causaAnulacion}}", causaAnulacion)
 
     const browser = await puppeteer.launch({
       headless: "false",
