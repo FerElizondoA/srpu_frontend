@@ -1,154 +1,157 @@
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<h4
-  style="
-    text-align: right;
-    font-family: Arial;
-    font-size: 12px;
-    font-weight: 100;
-    font-weight: 100;
-    letter-spacing: 1px;
-  "
-  class="header"
->
-  Solicitud número {{numeroSolicitud}}
-  <div id="current_date">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
-    <script>
-      moment.locale("es");
-      const formattedDate = moment().format("LL");
-      document.getElementById("current_date").innerHTML =
-        "Monterrey, N.L,  a " + formattedDate;
-    </script>
-  </div>
-</h4>
-
-<!-- SERVIDOR PÚBLICO -->
-<h3
-  style="
-    font-family: Arial;
-    font-size: 12px;
-    font-weight: 900;
-    text-align: justify;
-    letter-spacing: 1px;
-  "
->
-  {{UsuarioDestinatario}} <br />
-  {{EntidadDestinatario}} <br />
-</h3>
-
-<h3
-  style="
-    font-family: Arial;
-    font-size: 12px;
-    text-align: justify;
-    font-weight: 100;
-    letter-spacing: 5px;
-  "
->
-  PRESENTE
-</h3>
-
-<!-- SOLICITUD -->
-
-<p
-  style="
-    font-family: Arial;
-    font-size: 12px;
-    text-align: justify;
-    font-weight: 100;
-    letter-spacing: 1px;
-  "
->
-<!--
-    El/La suscrito(a) {{UsuarioRemitente}} en mi carácter de {{EntidadRemitente}}, mismo que acredito mediante la presentación de 
-    copia certificada de(la) nombramiento y pasaporte emitido(a) por el(la) Secretaría de Relaciones Exteriores, por medio de la 
-    presente solicito la cancelación de inscripción de una Obligación de corto plazo, en el Registro Público Único de Financiamientos y 
-    Obligaciones de Entidades Federativas y Municipios (Registro Público Único), de conformidad con lo dispuesto en los artículos 49, 50
-    y 54 de la Ley de Disciplina Financiera de las Entidades Federativas y los Municipios (Ley), y el articulo 47 del Reglamento del Registro 
-    Público Único de Financiamientos y Obligaciones de Entidades Federativas y Municipios (Reglamento).
--->
-  <br />
-  <br />
-  Las caracteristicas de la Obligación son las siguientes:
-</p>
-
-<!-- INFORMACIÓN DE LA OBLIGACIÓN -->
-<div
-  style="
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-  "
->
-  <h3
-    style="
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h4
+      style="
+      text-align: right;
       font-family: Arial;
       font-size: 12px;
-      text-align: justify;
-      font-weight: 900;
+      font-weight: 100;
+      font-weight: 100;
+      letter-spacing: 1px;
+      "
+      class="header">
 
-      margin-bottom: 0;
-    "
-  >
-    INFORMACIÓN DE LA OBLIGACIÓN
-  </h3>
-  <table
-    id="data-table"
-    style="width: 100%; border: 1px solid black; border-collapse: collapse"
-  >
-    <tbody
+      Solicitud número {{numeroSolicitud}}
+      <div id="current_date">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+        <script>
+          moment.locale("es");
+          const formattedDate = moment().format("LL");
+          document.getElementById("current_date").innerHTML =
+            "Monterrey, N.L,  a " + formattedDate;
+        </script>
+      </div>
+    </h4>
+
+    <!-- SERVIDOR PÚBLICO -->
+    <h3
       style="
-        letter-spacing: 1px;
-
         font-family: Arial;
         font-size: 12px;
-        font-weight: 100;
+        font-weight: 900;
+        text-align: justify;
+        letter-spacing: 1px;
       "
     >
-      <tr>
-        <td
-          style="
-            width: 40%;
+      {{UsuarioDestinatario}} <br />
+      {{EntidadDestinatario}} <br />
+    </h3>
 
-            border: 1px solid black;
-            border-collapse: collapse;
-          "
-        >
-          Clave de inscripción
-        </td>
-        <td
-          style="
-            width: 60%;
+    <h3
+      style="
+        font-family: Arial;
+        font-size: 12px;
+        text-align: justify;
+        font-weight: 100;
+        letter-spacing: 5px;
+      "
+    >
+      PRESENTE
+    </h3>
 
-            border: 1px solid black;
-            border-collapse: collapse;
-          "
-        >
-          {{claveInscripcion}}
-        </td>
-      </tr>
-      <tr>
-        <td
-          style="
-            width: 40%;
+    <!-- SOLICITUD -->
 
-            border: 1px solid black;
-            border-collapse: collapse;
-          "
-        >
-          Fecha de inscripción
-        </td>
-        <td
-          style="
-            width: 60%;
+    <p
+      style="
+        font-family: Arial;
+        font-size: 12px;
+        text-align: justify;
+        font-weight: 100;
+        letter-spacing: 1px;
+      "
+    >
+      <!--
+          El/La suscrito(a) {{UsuarioRemitente}} en mi carácter de {{EntidadRemitente}}, mismo que acredito mediante la presentación de 
+          copia certificada de(la) nombramiento y pasaporte emitido(a) por el(la) Secretaría de Relaciones Exteriores, por medio de la 
+          presente solicito la cancelación de inscripción de una Obligación de corto plazo, en el Registro Público Único de Financiamientos y 
+          Obligaciones de Entidades Federativas y Municipios (Registro Público Único), de conformidad con lo dispuesto en los artículos 49, 50
+          y 54 de la Ley de Disciplina Financiera de las Entidades Federativas y los Municipios (Ley), y el articulo 47 del Reglamento del Registro 
+          Público Único de Financiamientos y Obligaciones de Entidades Federativas y Municipios (Reglamento).
+      -->
+      <br />
+      <br />
+      Las caracteristicas de la Obligación son las siguientes:
+    </p>
 
-            border: 1px solid black;
-            border-collapse: collapse;
-          "
-        >
+    <!-- INFORMACIÓN DE LA OBLIGACIÓN -->
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+    <h3
+      style="
+        font-family: Arial;
+        font-size: 12px;
+        text-align: justify;
+        font-weight: 900;
+
+        margin-bottom: 0;
+      "
+    >
+    INFORMACIÓN DE LA OBLIGACIÓN
+  </h3>
+    <table
+      id="data-table"
+      style="width: 100%; border: 1px solid black; border-collapse: collapse"
+    >
+      <tbody
+        style="
+          letter-spacing: 1px;
+
+          font-family: Arial;
+          font-size: 12px;
+          font-weight: 100;
+        "
+      >
+        <tr>
+          <td
+            style="
+              width: 40%;
+
+              border: 1px solid black;
+              border-collapse: collapse;
+            "
+          >
+            Clave de inscripción
+          </td>
+          <td
+            style="
+              width: 60%;
+
+              border: 1px solid black;
+              border-collapse: collapse;
+            "
+          >
+            {{claveInscripcion}}
+          </td>
+        </tr>
+        <tr>
+          <td
+            style="
+              width: 40%;
+
+              border: 1px solid black;
+              border-collapse: collapse;
+            "
+          >
+            Fecha de inscripción
+          </td>
+          <td
+            style="
+              width: 60%;
+              border: 1px solid black;
+              border-collapse: collapse;
+            "
+          >
           {{fechaInscripcion}}
         </td>
       </tr>
@@ -270,17 +273,17 @@
       </tr>
     </tbody>
   </table>
-</div>
+    </div>
 
-<!-- CARACTERÍSTICAS DE LA OBLIGACIÓN -->
-<div
-  style="
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-  "
->
+    <!-- CARACTERÍSTICAS DE LA OBLIGACIÓN -->
+    <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    "
+  >
   <h3
     style="
       font-family: Arial;
@@ -291,75 +294,78 @@
       margin-bottom: 0;
     "
   >
-    Causa de Anulacion
+    Causa de Anulación
   </h3>
   <textarea id="w3review" name="w3review" rows="4" cols="50">
     {{causaAnulacion}}
   </textarea>
-</div>
-<!-- <p
-  style="
-    text-align: justify;
-    font-family: Arial;
-    letter-spacing: 1px;
-    font-size: 12px;
-  "
->
-  En virtud de lo anterior, se adjuntan los siguientes documentos:
-</p>
+    </div>
+    <!-- <p
+    style="
+      text-align: justify;
+      font-family: Arial;
+      letter-spacing: 1px;
+      font-size: 12px;
+    "
+  >
+    En virtud de lo anterior, se adjuntan los siguientes documentos:
+  </p>
 
-<div
-  style="
-    text-align: justify;
-    font-family: Arial;
-    letter-spacing: 1px;
-    font-size: 10px;
-  "
->
-  {{documentoAcreditacionCancelacion}}, <br>
-  {{documentoBajaCreditoFederal}}
-</div> -->
+  <div
+    style="
+      text-align: justify;
+      font-family: Arial;
+      letter-spacing: 1px;
+      font-size: 10px;
+    "
+  >
+    {{documentoAcreditacionCancelacion}}, <br>
+    {{documentoBajaCreditoFederal}}
+  </div> -->
 
-<p
-  style="
-    text-align: justify;
-    font-family: Arial;
-    letter-spacing: 1px;
-    font-size: 12px;
-  "
->
-  <!-- Por lo antes expuesto, atentamente solicito a la Secretaría sirva:
+    <p
+    style="
+      text-align: justify;
+      font-family: Arial;
+      letter-spacing: 1px;
+      font-size: 12px;
+    "
+  >
+    <!-- Por lo antes expuesto, atentamente solicito a la Secretaría sirva:
 
-  <br />
-  <br />
-  <strong>PRIMERO:</strong> Tenerme por presentado en términos del presente
-  escrito con la personalidad que ostento. <br /><strong>SEGUNDO:</strong>
-  Tener por presentados los documentos que se ponen a su consideración, de conformidad 
-  con lo dispuesto en los artículos aplicables del Reglamento.
-  <br /><strong>TERCERO:</strong> Cancelar en el Registro Público Único la Obligación mencionada.
+    <br />
+    <br />
+    <strong>PRIMERO:</strong> Tenerme por presentado en términos del presente
+    escrito con la personalidad que ostento. <br /><strong>SEGUNDO:</strong>
+    Tener por presentados los documentos que se ponen a su consideración, de conformidad 
+    con lo dispuesto en los artículos aplicables del Reglamento.
+    <br /><strong>TERCERO:</strong> Cancelar en el Registro Público Único la Obligación mencionada.
 
-  <br /> -->
-  <br />
+    <br /> -->
+    <br />
 
-  Sin más por el momento, aprovecho para enviarle un cordial saludo.
-</p>
+    Sin más por el momento, aprovecho para enviarle un cordial saludo.
+    </p>
 
 
-<h3
-  style="
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-family: Arial;
-    font-size: 12px;
-    font-weight: 700;
-    text-align: center;
-    letter-spacing: 1px;
-  "
-  class="atte"
->
-  ATENTAMENTE <br />
-  {{UsuarioRemitente}} <br />
-  <br />
-  {{EntidadRemitente}} <br />
-</h3>
+    <h3
+   style="
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     font-family: Arial;
+     font-size: 12px;
+     font-weight: 700;
+     text-align: center;
+     letter-spacing: 1px;
+   "
+    class="atte"
+  >
+    ATENTAMENTE <br />
+    {{UsuarioRemitente}} <br />
+    <br />
+   {{EntidadRemitente}} <br />
+    </h3>
+    </body>
+</html>
+

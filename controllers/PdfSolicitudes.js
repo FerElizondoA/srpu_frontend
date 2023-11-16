@@ -384,13 +384,14 @@ module.exports = {
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseEnviado, "utf8");
 
-    const { oficioConstancia, fecha, hora } = req.body;
+    const { oficioConstancia, fecha, hora, tipoSolicitud } = req.body;
 
     const html = htmlTemplate
       .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
       .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
-      .replaceAll("{{hora}}", hora || "'hora de entrega'");
-
+      .replaceAll("{{hora}}", hora || "'hora de entrega'")
+      .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de Solicitud'");
+      
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
@@ -539,44 +540,7 @@ module.exports = {
   },
 
   createPdfSolicitudCancelacion: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
+    callHeader();
 
     const footerTemplate = fs.readFileSync(footerFolder, "utf8");
 
@@ -674,44 +638,7 @@ module.exports = {
   },
 
   createPdfSolicitudAnulacion: async (req, res) => {
-    //#region HEADER
-    const headerTemplate = fs.readFileSync(headerFolder, "utf8");
-
-    var header = headerTemplate;
-
-    const headerImg = (logoTesoreria, escudo) => {
-      const resLogoTesoreria = fs.readFileSync(logoTesoreria);
-      const resEescudo = fs.readFileSync(escudo);
-
-      header = headerTemplate
-        .replaceAll(
-          "{{logoTesoreria}}",
-          `data:image/${path
-            .extname(logoTesoreria)
-            .split(".")
-            .pop()};base64,${Buffer.from(resLogoTesoreria, "binary").toString(
-            "base64"
-          )}`
-        )
-        .replaceAll(
-          "{{escudo}}",
-          `data:image/${path
-            .extname(escudo)
-            .split(".")
-            .pop()};base64,${Buffer.from(resEescudo, "binary").toString(
-            "base64"
-          )}`
-        );
-    };
-
-    headerImg(
-      "controllers/stylessheet/images/logoTesoreria.png",
-      "controllers/stylessheet/images/escudo.png"
-    );
-
-    //#endregion
-
-    //#region FOOTER
+    callHeader();
 
     const footerTemplate = fs.readFileSync(footerFolder, "utf8");
 
