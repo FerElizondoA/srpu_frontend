@@ -142,7 +142,7 @@ export function VerBorradorDocumento(props: Props) {
         });
       createNotification(
         "Crédito simple a corto plazo",
-        "Una solicitud se le ha asignado para revisión",
+        "Se te ha asignado una solicitud de inscripción para revisión",
         users
       );
     } else if (estatus === "Validacion") {
@@ -157,7 +157,7 @@ export function VerBorradorDocumento(props: Props) {
         });
       createNotification(
         "Crédito simple a corto plazo",
-        "Una solicitud se le ha asignado para validación",
+        "Se te ha asignado una solicitud de inscripción para validación",
         users
       );
     } else if (estatus === "Autorizacion") {
@@ -172,7 +172,7 @@ export function VerBorradorDocumento(props: Props) {
         });
       createNotification(
         "Crédito simple a corto plazo",
-        "Una solicitud ha sido cancelada",
+        "Se te ha asignado una solicitud de inscripción para autorización",
         users
       );
     } else if (estatus === "Cancelado") {

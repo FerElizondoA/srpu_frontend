@@ -4,6 +4,11 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { useEffect, useState } from "react";
+import { IUsuariosAsignables } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { getListadoUsuarioRol } from "../APIS/Config/Solicitudes-Usuarios";
+import { createNotification } from "../LateralMenu/APINotificaciones";
+import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -25,6 +30,74 @@ export const FirmaConUrl = () => {
     (state) => state.fraccionTexto
   );
 
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
+
+  useEffect(() => {
+    getListadoUsuarioRol(setUsuarios);
+  }, []);
+
+  const enviaNotificacion = (estatus: string, id: string) => {
+    let users: string[] = [];
+    if (estatus !== "Actualizacion") {
+      usuarios
+        .filter(
+          (usr: any) =>
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+            usr.Rol.toLowerCase() === "revisor"
+        )
+        .map((usuario: any) => {
+          return users.push(usuario.Id);
+        });
+      createNotification(
+        "Crédito simple a corto plazo",
+        `La solicitud ha sido enviada para autorización con fecha ${
+          new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        [localStorage.getItem("IdUsuario")!]
+      );
+      createNotification(
+        "Crédito simple a corto plazo",
+        `Se te ha asignado una solicitud de inscripción`,
+        users
+      );
+    } else if (estatus.includes("Autorizado")) {
+      usuarios
+        .filter(
+          (usr: any) =>
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+            usr.Rol.toLowerCase() === "validador"
+        )
+        .map((usuario: any) => {
+          return users.push(usuario.Id);
+        });
+      createNotification(
+        "Crédito simple a corto plazo",
+        `La solicitud ha sido autorizada con fecha ${
+          new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        users
+      );
+    } else {
+      usuarios
+        .filter(
+          (usr: any) =>
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+            usr.Rol.toLowerCase() === "revisor"
+        )
+        .map((usuario: any) => {
+          return users.push(usuario.Id);
+        });
+
+      createNotification(
+        "Crédito simple a corto plazo",
+        `Se te ha asignado una solicitud de inscripción`,
+        users
+      );
+    }
+
+    CambiaEstatus(estatus, id);
+  };
+
   return (
     <Grid container direction="column" sx={{ overflow: "hidden" }}>
       <Grid item>
@@ -40,11 +113,13 @@ export const FirmaConUrl = () => {
             PathPorEnviar: localStorage.getItem("PathPorEnviar") || "/",
             File: url,
           })}
-          setState={
-            fraccionTexto === "Cancelado"
-              ? changeInfoDocCncelacion
-              : changeInfoDoc
-          }
+          setState={(v: any) => {
+            if (fraccionTexto === "Cancelado") {
+              changeInfoDocCncelacion(v, fraccionTexto, enviaNotificacion);
+            } else {
+              changeInfoDoc(v, enviaNotificacion);
+            }
+          }}
         />
       </Grid>
     </Grid>

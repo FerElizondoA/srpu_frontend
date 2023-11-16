@@ -48,8 +48,12 @@ export interface SolicitudFirmaSlice {
 
   changeIdSolicitud: (id: string) => void;
   changeEstatus: (estatus: string) => void;
-  changeInfoDoc: (info: string) => void;
-  changeInfoDocCncelacion: (info: string, TipoFirma: string) => void;
+  changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
+  changeInfoDocCncelacion: (
+    info: string,
+    TipoFirma: string,
+    cambiaEstatus: Function
+  ) => void;
   setUrl: (url: string) => void;
 
   archivosCancelacion: ArchivosCancelacion;
@@ -214,7 +218,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     }));
   },
 
-  changeInfoDoc: (info: any) => {
+  changeInfoDoc: (info: any, cambiaEstatus: Function) => {
     set(() => ({ infoDoc: info }));
 
     if (info) {
@@ -251,13 +255,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             !state.estatus.includes("Autorizado") &&
             state.estatus !== "Actualizacion"
           ) {
-            createNotificationCortoPlazo(
-              "Solicitud enviada",
-              `La solicitud ha sido enviada para autorización con fecha ${
-                new Date().toLocaleString("es-MX").split(" ")[0]
-              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-              [localStorage.getItem("IdUsuario")!]
-            );
             GeneraAcuseEnvio(
               state.estatus === "Actualizacion"
                 ? "Solicitud de requerimientos"
@@ -274,7 +271,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             );
           }
 
-          CambiaEstatus(
+          cambiaEstatus(
             state.estatus.includes("Actualizacion")
               ? "Actualizacion"
               : state.estatus.includes("Autorizado")
@@ -287,7 +284,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     }
   },
 
-  changeInfoDocCncelacion: (info: any) => {
+  changeInfoDocCncelacion: (
+    info: any,
+    TipoFirma: string,
+    cambiaEstatus: Function
+  ) => {
     set(() => ({ infoDoc: info }));
 
     if (info) {
@@ -320,7 +321,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          CambiaEstatus("En espera cancelación", state.idSolicitud);
+          cambiaEstatus("En espera cancelación", state.idSolicitud);
         })
         .catch((err) => {});
     }
@@ -354,18 +355,21 @@ export async function GeneraAcuseRespuesta(
       }
     )
     .then((response) => {
-      const a = window.URL || window.webkitURL;
+      // const a = window.URL || window.webkitURL;
 
-      const url = a.createObjectURL(
-        new Blob([response.data], { type: "application/pdf" })
-      );
+      // const url = a.createObjectURL(
+      //   new Blob([response.data], { type: "application/pdf" })
+      // );
 
       const state = useCortoPlazoStore.getState();
 
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `Acuse-respuesta-${noOficio}.pdf`)
+        new File(
+          [response.data],
+          `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
+        )
       );
       // setUrl(url);
     })
@@ -634,11 +638,11 @@ export async function GeneraAcuseEnvio(
       }
     )
     .then((response) => {
-      const a = window.URL || window.webkitURL;
+      // const a = window.URL || window.webkitURL;
 
-      const url = a.createObjectURL(
-        new Blob([response.data], { type: "application/pdf" })
-      );
+      // const url = a.createObjectURL(
+      //   new Blob([response.data], { type: "application/pdf" })
+      // );
 
       const state = useCortoPlazoStore.getState();
 
@@ -648,7 +652,7 @@ export async function GeneraAcuseEnvio(
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
-    .catch((err) => {});
+    .catch(() => {});
 }
 
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
@@ -669,7 +673,7 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
       }
     )
     .then((response) => {
-      window.location.reload();
+      // window.location.reload();
       return true;
     })
     .catch((err) => {});
