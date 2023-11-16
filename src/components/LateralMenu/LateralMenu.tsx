@@ -158,6 +158,7 @@ export function LateralMenu() {
   const [arrayAyudas, setArrayAyudas] = useState<any[]>([]);
   const [option, setOption] = useState("Videos");
   const [openVAyudas, setOpenVAyudas] = useState(false);
+  const [seccionesHover, setSeccionesHover] = useState(false);
 
   function handleCloseVAyudas() {
     setOpenVAyudas(false);
@@ -254,6 +255,25 @@ export function LateralMenu() {
     setTimeout(() => {
       getNotificaciones(setNotificaciones, setCantNoti);
     }, 2000);
+  }, []);
+
+  React.useEffect(() => {
+    
+  if(isDrawerOpen === false){
+    limpiaIndex()
+    setOpenModulo("");
+  }
+     
+  }, [isDrawerOpen]);
+
+  const [indexSelect, setIndexSelect] = useState(-1);
+
+  const limpiaIndex = () => {
+    setIndexSelect(-1)
+  };
+
+  React.useEffect(() => {
+    setIndexSelect(-1)
   }, []);
 
   const [openPasswordChange, setOpenPasswordChange] = useState(false);
@@ -548,7 +568,7 @@ export function LateralMenu() {
               </IconButton>
             </Tooltip>
           </Grid>
-          <Grid item mt={0.5}>
+          <Grid item mt={0.5} ml={3}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
 
@@ -671,13 +691,13 @@ export function LateralMenu() {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              <Grid item sx={{ alignSelf: "center" }}>
+              {/* <Grid item sx={{ alignSelf: "center" }}>
                 <img
                   src={logo2}
                   alt="Logo2"
                   style={{ width: "100%", height: "70%" }}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
@@ -709,7 +729,7 @@ export function LateralMenu() {
 
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
-                  {tipoEnte}: {ente}
+                  {/* {tipoEnte}:  */} {ente}
                 </Typography>
               </Grid>
 
@@ -727,8 +747,22 @@ export function LateralMenu() {
                         "Cerrar sesión",
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
+
+
                           <ListItemButton
+                            sx={{
+                              backgroundColor: i === indexSelect &&  seccionesHover === true ? "#AF8C55" : "#ffff",
+                              //border: i === indexSelect ? "2px solid" : null,
+                              ":hover": { backgroundColor: "#AF8C55" },
+                            }}
+                            //CAMPOS PRINCIPALES
+                            // bg={seccionesHover === true ? "#AF8C55": "#AF8C55"}
+
                             onClick={() => {
+                              setSeccionesHover(seccionesHover ? false : true)
+                              setIndexSelect(i)
+
+
                               if (v.Path !== "#") {
                                 localStorage.setItem("IdMenuActual", v.Id);
                                 navigate(v.Path);
@@ -742,8 +776,12 @@ export function LateralMenu() {
                             }}
                           >
                             <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
-                            <Typography sx={queries.bold_text}>
-                              {v.Menu}
+                            <Typography sx={{
+                              ...queries.bold_text,
+                              ":hover": { backgroundColor: "#AF8C55" },
+                            }}
+                            >
+                              {v.Menu }
                             </Typography>
                             {v.item.length > 0 ? (
                               v.ControlInterno === openModulo ? (
@@ -754,7 +792,6 @@ export function LateralMenu() {
                             ) : null}
                           </ListItemButton>
 
-
                           {v.item.length > 0 && (
                             <Collapse
                               in={openModulo === v.ControlInterno}
@@ -763,9 +800,15 @@ export function LateralMenu() {
                               sx={{ ml: 2 }}
                             >
                               <List>
+                                {/* CAMPOS PRIMER DESGLOSE */}
                                 {v.item.map((v: any, i: number) => (
                                   <Grid key={i}>
+
                                     <ListItemButton
+                                    sx={{
+                                      ...queries.bold_text,
+                                      ":hover": { backgroundColor: "#AF8C55" }
+                                    }}
                                       onClick={() => {
                                         if (v.Path !== "#") {
                                           localStorage.setItem(
@@ -787,8 +830,12 @@ export function LateralMenu() {
                                       <ListItemIcon>
                                         {IconsMenu(v.Icon)}
                                       </ListItemIcon>
-                                      <Typography sx={queries.bold_text}>
-                                        {v.Menu}
+                                      <Typography 
+                                      sx={{
+                                        ...queries.bold_text,
+                                      }}
+                                      >
+                                        {v.Menu }
                                       </Typography>
 
                                       {v.item.length > 0 ? (
@@ -807,9 +854,14 @@ export function LateralMenu() {
                                         sx={{ ml: 2 }}
                                       >
                                         <List>
+                                          {/* CAMPOS SEGUNDO DESGLOSE */}
                                           {v.item.map((v: any, i: number) => (
                                             <Grid key={i}>
                                               <ListItemButton
+                                              sx={{
+
+                                                ":hover": { backgroundColor: "#AF8C55" },
+                                              }}
                                                 onClick={() => {
                                                   if (v.Path !== "#") {
                                                     localStorage.setItem(
@@ -841,6 +893,7 @@ export function LateralMenu() {
                                                   {v.Menu}
                                                 </Typography>
                                               </ListItemButton>
+
                                             </Grid>
                                           ))}
                                         </List>
@@ -867,7 +920,7 @@ export function LateralMenu() {
                   </ListItemButton>
                 )}
 
-                {localStorage.getItem("Rol") === "Autorizador" ||
+                {/* {localStorage.getItem("Rol") === "Autorizador" ||
                   localStorage.getItem("Rol") === "Verificador" && (
                     <Grid>
                       <ListItemButton
@@ -881,7 +934,7 @@ export function LateralMenu() {
                         </Typography>
                       </ListItemButton>
                     </Grid>
-                  )}
+                  )} */}
               </List>
             </Grid>
 

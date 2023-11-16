@@ -64,13 +64,13 @@ const heads: Head[] = [
     label: "Selección",
   },
   {
-    label: "Obligado solidario / aval",
+    label: "Obligado Solidario / Aval",
   },
   {
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
-    label: "Ente público obligado",
+    label: "Ente Público Obligado",
   },
 ];
 
@@ -313,9 +313,9 @@ export function InformacionGeneral() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
+            // slots={{
+            //   textField: DateInput,
+            // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -415,9 +415,9 @@ export function InformacionGeneral() {
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))} //1
-              // slots={{
-              //   textField: DateInput,
-              // }}
+            // slots={{
+            //   textField: DateInput,
+            // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -633,7 +633,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Tipo de ente público obligado
+            Tipo de Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -689,7 +689,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Ente público obligado
+            Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -771,8 +771,8 @@ export function InformacionGeneral() {
               addRows();
             }}
           >
-            <CheckIcon fontSize="small" />
-            AGREGAR
+           {/*  <CheckIcon fontSize="small" /> */}
+            Agregar
           </Button>
         </ThemeProvider>
       </Grid>
@@ -814,7 +814,7 @@ export function InformacionGeneral() {
 
               <TableBody>
                 {generalObligadoSolidario.Descripcion === "No aplica" &&
-                tablaObligados.length === 0 ? (
+                  tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />

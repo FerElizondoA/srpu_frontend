@@ -65,7 +65,7 @@ export function ObligacionesCortoPlazoPage() {
               <Typography sx={{
                 ...queries.bold_text
               }}>
-                <strong>{`Número de registro: ${NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${NumeroRegistro}`}</strong>
               </Typography>
 
             </Grid>

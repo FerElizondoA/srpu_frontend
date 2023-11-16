@@ -26,6 +26,7 @@ import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSo
 import { GeneraAcuseRespuesta } from "../../../store/SolicitudFirma/solicitudFirma";
 import { useNavigate } from "react-router-dom";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
+import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { CancelacionSolicitud, AnularCancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
 
 const Transition = React.forwardRef(function Transition(
@@ -109,10 +110,6 @@ export function VerBorradorDocumento(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datosComentario]);
 
-  React.useEffect(() => {
-    let idSolicitud = JSON.stringify(props.rowSolicitud)
-    console.log("idSolicitud", idSolicitud)
-  }, [])
 
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
@@ -125,62 +122,39 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.changeEstatus
   );
 
+  const AcuseRespuestaCancelacion = (IdSolicitud: string , estatusFirma: string) => {
+    
+    getCatalogoFirmaDetalle(IdSolicitud, estatusFirma)
+    // GeneraAcuseRespuesta("Solicitud de cancelación", catalogoFirmaDetalle.NumeroOficio, props.rowId, "");
+    
+  }
+
   const alertaConfirmacion = (accion: string) => {
-
-    let mensajeAlert = accion
-
-    if (mensajeAlert === "anular") {
-      mensajeAlert = "Se anuló el proceso de cancelacion con exito"
-      AnularCancelacionSolicitud(
-        props.rowSolicitud.Solicitud,
-        props.rowSolicitud.NumeroRegistro,
-        justificacionAnulacion,
-        props.rowSolicitud.UltimaModificacion,
-        setUrl
-      )
-
-    } else if (mensajeAlert === "confirmar") {
-      mensajeAlert = "Se ha cancelado la solicitud con éxito"
-      AcuseRespuestaCancelacion(props.rowId)
+    
+    if (accion === "Cancelado") {
+      AcuseRespuestaCancelacion(props.rowId, "En espera cancelación")
       CambiaEstatus("Cancelado", props.rowId)
+      createNotificationCortoPlazo(
+        "Solicitud enviada",
+        `La solicitud de cancelación ha sido aceptada con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        [localStorage.getItem("IdUsuario")!]
+      )
+      navigate("../cancelaciones")
+      //window.location.reload();
+
+    } else if (accion === "Anulación") {
+      Swal.close()
+      navigate("../firmaUrl")
     }
-
-    Swal.fire({
-      icon: "success",
-      iconColor: "#AF8C55",
-      title: mensajeAlert,
-      showConfirmButton: false,
-      color: "#AF8C55",
-    });
-
-    setTimeout(() => {
-      if (accion === "confirmar") {
-        navigate("../cancelaciones")
-        window.location.reload();
-
-      } else if (accion === "anular") {
-        Swal.close()
-        navigate("../firmaUrl")
-      }
-    }, 2500);
   }
 
   const [justificacionAnulacion, setJustificacionAnulacion] = useState("")
 
-  const AcuseRespuestaCancelacion = (Id: string) => {
-    getCatalogoFirmaDetalle(Id)
-    console.log("catalogoFirmaDetalle1: ", catalogoFirmaDetalle)
-    GeneraAcuseRespuesta("Solicitud de cancelación", catalogoFirmaDetalle.NumeroOficio, props.rowId, "");
-    console.log("Id: ", Id)
-  }
+ 
 
-  // React.useEffect(() => {
-  //   let idSolicitud = JSON.stringify(props.rowSolicitud.Id)
-  //   getCatalogoFirmaDetalle(idSolicitud)
-  //   console.log("catalogoFirmaDetalle2: ", catalogoFirmaDetalle)
-  // }, [openDialogAnularConfirmacion])
+
   const [error, setError] = useState(false);
-  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
   useEffect(() => {
     if (openDialogAnularConfirmacion === false) {
@@ -188,6 +162,7 @@ export function VerBorradorDocumento(props: Props) {
       setError(false)
     }
   }, [openDialogAnularConfirmacion])
+  
 
   return (
     <Dialog
@@ -233,7 +208,7 @@ export function VerBorradorDocumento(props: Props) {
             localStorage.getItem("Rol") === "Autorizador")) && (
             <Grid
               justifyContent={"space-evenly"}
-              sx={{ width: "30%", display: "flex" }}
+              sx={{ width: "40rem", display: "flex" }}
             >
               {((estatus === "Validacion" &&
                 localStorage.getItem("Rol") === "Validador") ||
@@ -242,7 +217,7 @@ export function VerBorradorDocumento(props: Props) {
                   <Button
                     sx={{
                       ...queries.buttonCancelar,
-                      fontSize: "70%",
+                      fontSize: "2rem",
                     }}
                     disabled={!tieneComentarios}
                     onClick={() => {
@@ -255,7 +230,7 @@ export function VerBorradorDocumento(props: Props) {
                     {`Devolver para ${estatus === "Validacion" ? "Revision" : "Validación"
                       }`}
                   </Button>
-                )}
+                 )} 
               <Button
                 sx={{
                   ...queries.buttonCancelar,
@@ -305,12 +280,12 @@ export function VerBorradorDocumento(props: Props) {
                     : "autorización"}
               </Button>
             </Grid>
-          )}
+          )} 
 
-        {estatus === "En espera cancelación" &&
+        {props.rowSolicitud.Estatus === "En espera cancelación" &&
           (localStorage.getItem("Rol") === "Autorizador" ||
             localStorage.getItem("Rol") === "Verificador") && (
-            <Grid display={"flex"} width={"22rem"} justifyContent={"space-between"}>
+            <Grid display={"flex"} width={"23rem"} justifyContent={"space-between"}>
               <Button
                 sx={{
                   ...queries.buttonCancelar,
@@ -318,7 +293,7 @@ export function VerBorradorDocumento(props: Props) {
                 }}
                 onClick={() => {
                   setOpenDialogAnularConfirmacion(true);
-                  setTexto("anular")
+                  //setTexto("anular")
                   changeEstatus("Anulación")
                 }}
               >
@@ -327,13 +302,12 @@ export function VerBorradorDocumento(props: Props) {
 
               <Button
                 sx={{
-                  ...queries.buttonCancelar,
+                  ...queries.buttonContinuar,
                   fontSize: "70%",
                 }}
                 onClick={() => {
                   setOpenDialogAnularConfirmacion(true);
                   changeEstatus("Cancelado")
-                  setTexto("confirmar")
                 }}
               >
                 Confirmar Cancelación
@@ -341,7 +315,7 @@ export function VerBorradorDocumento(props: Props) {
             </Grid>
           )}
 
-        {estatus === "Autorizado" &&
+        {props.rowSolicitud.Estatus === "Autorizado" &&
           localStorage.getItem("Rol") === "Verificador" && (
             <Button
               sx={{
@@ -422,15 +396,15 @@ export function VerBorradorDocumento(props: Props) {
 
       <Dialog
         fullWidth
-        maxWidth={texto === "anular" ? "md" : "sm"}
+        maxWidth={estatus === "Anulación" ? "md" : "sm"}
         open={openDialogAnularConfirmacion}>
         <DialogTitle>
           <Typography sx={queries.bold_text}>
-            ¿Desea {texto} la cancelación de la solicitud?
+            ¿Desea {estatus === "Anulación" ? "anular" : "confirmar"} la cancelación de la solicitud?
           </Typography>
         </DialogTitle>
 
-        {texto === "anular"
+        {estatus === "Anulación"
           ?
           <DialogContent>
             <Grid width={"100%"}>
@@ -474,21 +448,21 @@ export function VerBorradorDocumento(props: Props) {
 
             <Button sx={{ ...queries.buttonContinuar }}
               onClick={() => {
-                if (texto === "anular" && justificacionAnulacion !== "") {
+                if (estatus === "Anulación" && justificacionAnulacion !== "") {
                   //Pasarlo a firmar la anulacion de la solicitud de cancelacion
                   setOpenDialogAnularConfirmacion(false)
                   //CambiaEstatus("Autorizado", props.rowId)
-                  alertaConfirmacion(texto)
+                  alertaConfirmacion(estatus)
 
-                } else if (texto === "confirmar") {
+                } else if (estatus === "Cancelado") {
                   //AcuseRespuestaCancelacion(props.rowId)
                   setOpenDialogAnularConfirmacion(false)
+                 
                   //CambiaEstatus("Cancelado", props.rowId)
-                  alertaConfirmacion(texto)
+                  alertaConfirmacion(estatus)
                 } else {
                   setError(true)
                 }
-
               }}
             >
 

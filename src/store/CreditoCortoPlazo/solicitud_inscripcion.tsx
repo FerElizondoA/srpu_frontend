@@ -96,7 +96,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-reglaDeFinanciamiento",
+        "/api/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -241,11 +241,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
+
       toast: true,
-      position: "center",
-      showConfirmButton: true,
-      confirmButtonColor: "#15212f",
-      cancelButtonColor: "rgb(175, 140, 85)",
+      //position: "center",
+      //showConfirmButton: true,
+      //confirmButtonColor: "#15212f",
+      //cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });
@@ -267,6 +268,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         if (response.status === 200) {
           Toast.fire({
             icon: "success",
+            iconColor: "#AF8C55",
+            showConfirmButton: false,
+            color: "#AF8C55",
             title: "Eliminado con exito",
           });
         }
@@ -276,6 +280,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         Toast.fire({
           icon: "error",
           title: "No se elimino la solicitud.",
+          iconColor: "#AF8C55",
+          showConfirmButton: false,
+          color: "#AF8C55",
         });
       });
     return false;
@@ -305,7 +312,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             idComentario: "",
           });
         })
-        .catch((e) => {});
+        .catch((e) => { });
     }
   },
 
@@ -339,7 +346,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
@@ -373,7 +380,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
                 data.RESPONSE.NOMBREARCHIVO
               );
             })
-            .catch((e) => {});
+            .catch((e) => { });
         } else {
           return null;
         }
@@ -383,7 +390,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
-    console.log(archivo);
+
 
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
@@ -402,7 +409,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then(({ data }) => {
-          console.log(data);
 
           state.savePathDoc(
             idRegistro,
@@ -411,7 +417,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             data.RESPONSE.NOMBREARCHIVO
           );
         })
-        .catch((e) => {});
+        .catch((e) => { });
     } else {
       return null;
     }
@@ -438,8 +444,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => { })
+      .catch((e) => { });
   },
 });
 

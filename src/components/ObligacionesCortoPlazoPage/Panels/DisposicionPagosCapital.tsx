@@ -581,7 +581,7 @@ export function DisposicionPagosCapital() {
             >
               <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
                 <FormControlLabel
-                  label="Disposiciones parciales"
+                  label="Disposiciones Parciales"
                   control={
                     <Checkbox
                       checked={disposicionesParciales}
@@ -594,7 +594,7 @@ export function DisposicionPagosCapital() {
               </Grid>
               <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
                 <InputLabel sx={queries.medium_text}>
-                  Fecha de disposición
+                  Fecha de Disposición
                 </InputLabel>
                 { }
                 <LocalizationProvider
@@ -818,7 +818,7 @@ export function DisposicionPagosCapital() {
               </FormControl>
               <Grid item>
                 <FormControlLabel
-                  label="Agregar tasas"
+                  label="Agregar Tasas"
                   control={
                     <Checkbox
                       checked={tasasParciales}

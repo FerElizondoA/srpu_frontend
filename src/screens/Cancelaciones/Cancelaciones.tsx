@@ -468,20 +468,6 @@ export const Cancelaciones = () => {
     (state) => state.setDatosActualizar
   );
 
-  const setFraccionTexto : Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
-  )
-  const fraccionTexto : string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  )
-
-  useEffect(() => {
-    if(fraccionTexto == "Cancelado") {
-      setFraccionTexto("")
-    } else{
-      setFraccionTexto(fraccionTexto)
-    }
-  }, [])
   
 
   return (
@@ -595,14 +581,16 @@ export const Cancelaciones = () => {
             <TableBody>
               {datosFiltrados.length === 0 ? (
                 <StyledTableRow>
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell>Sin registros</StyledTableCell>
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
+               <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
                 </StyledTableRow>
               ) : (
                 datosFiltrados.map((row, index) => {
@@ -806,7 +794,7 @@ export const Cancelaciones = () => {
 
                               setRowId(row.Id)
                               setRowSolicitud(row);
-                              console.log("rowSolicitud",row)
+                      
                             }}
                           >
                             <VisibilityIcon />
@@ -948,7 +936,6 @@ export const Cancelaciones = () => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
                                 changeEstatus(row.Estatus);
-                                console.log("row.Estatus", row.Estatus)
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 

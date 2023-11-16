@@ -18,25 +18,6 @@ export const FirmaConUrl = () => {
   const changeInfoDoc: Function = useSolicitudFirmaStore(
     (state) => state.changeInfoDoc
   );
-
-  const changeInfoDocCncelacion: Function = useSolicitudFirmaStore(
-    (state) => state.changeInfoDocCncelacion
-  );
-
-  const setFraccionTexto : Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
-  );
-
-  const fraccionTexto : string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  );
-
-
-
-
- useEffect(() => {
-   console.log("fraccionTexto:",fraccionTexto)
- }, [])
  
   return (
     <Grid container direction="column" sx={{ overflow: "hidden" }}>
@@ -53,7 +34,7 @@ export const FirmaConUrl = () => {
             PathPorEnviar: localStorage.getItem("PathPorEnviar") || "/",
             File: url,
           })}
-          setState={fraccionTexto === "Cancelado" ? changeInfoDocCncelacion : changeInfoDoc}
+          setState={changeInfoDoc}
         />
       </Grid>
     </Grid>

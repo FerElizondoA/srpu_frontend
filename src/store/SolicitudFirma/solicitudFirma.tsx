@@ -8,6 +8,7 @@ import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocument
 import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Navigate } from "react-router-dom";
 import { useSolicitudFirmaStore } from "./main";
+import Swal from "sweetalert2";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -20,23 +21,24 @@ export interface ArchivosCancelacion {
   bajaCreditoFederal: ArchivoCancelacion;
 }
 
-export interface IDataFirmaDetalle{
-  Id:string, 
-	IdPathDoc:string, 
-	IdFirma: string, 
-	IdSolicitud:string, 
-	NumeroOficio:string, 
-	Asunto:string,
-	Rfc:string,
-	SerialCertificado:string,
-	FechaFirma:string,
-	Descargas:string,
-	FechaDescarga:string,
-	FechaDoc:string,
-	CreadoPor:string,
-	PathDoc:string,
-	FechaCreacion:string,
-	Deleted: number,
+export interface IDataFirmaDetalle {
+  Id: string,
+  IdPathDoc: string,
+  IdFirma: string,
+  IdSolicitud: string,
+  NumeroOficio: string,
+  TipoFirma: string,
+  Asunto: string,
+  Rfc: string,
+  SerialCertificado: string,
+  FechaFirma: string,
+  Descargas: string,
+  FechaDescarga: string,
+  FechaDoc: string,
+  CreadoPor: string,
+  PathDoc: string,
+  FechaCreacion: string,
+  Deleted: number,
 }
 
 export interface SolicitudFirmaSlice {
@@ -44,16 +46,17 @@ export interface SolicitudFirmaSlice {
   estatus: string;
   url: string;
   infoDoc: string;
+  TipoFirma: string;
 
 
   catalogoFirmaDetalle: IDataFirmaDetalle;
-  getCatalogoFirmaDetalle: (IdSolicitud: string) => void;
+  getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
 
 
   changeIdSolicitud: (id: string) => void;
   changeEstatus: (estatus: string) => void;
   changeInfoDoc: (info: string) => void;
-  changeInfoDocCncelacion: (info: string, TipoFirma: string) => void;
+  //changeInfoDocCncelacion: (info: string, TipoFirma: string) => void;
   setUrl: (url: string) => void;
 
   archivosCancelacion: ArchivosCancelacion;
@@ -64,8 +67,8 @@ export interface SolicitudFirmaSlice {
   setRowSolicitud: (rowSolicitud: IDataPrueba) => void;
   cleanRowSolicitud: () => void;
 
-  fraccionTexto: string;
-  setFraccionTexto: (fraccionTexto: string) => void;
+
+  //borrarFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
@@ -108,13 +111,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       fechaArchivo: new Date().toString(),
     },
   },
-
-  fraccionTexto: "",
-
-  setFraccionTexto: (fraccionTexto: string) =>
-    set(() => ({
-      fraccionTexto: fraccionTexto
-    })),
 
 
   setRowSolicitud: (rowSolicitud: IDataPrueba) =>
@@ -175,30 +171,34 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   infoDoc: "",
 
-  catalogoFirmaDetalle:{
-    Id:"", 
-    IdPathDoc:"", 
-    IdFirma: "", 
-    IdSolicitud:"", 
-    NumeroOficio:"", 
-    Asunto:"", 
-    Rfc:"", 
-    SerialCertificado:"", 
-    FechaFirma:"", 
-    Descargas:"", 
-    FechaDescarga:"", 
-    FechaDoc:"", 
-    CreadoPor:"", 
-    PathDoc:"", 
-    FechaCreacion:"", 
+  TipoFirma: "",
+
+  catalogoFirmaDetalle: {
+    Id: "",
+    IdPathDoc: "",
+    IdFirma: "",
+    IdSolicitud: "",
+    NumeroOficio: "",
+    TipoFirma: "",
+    Asunto: "",
+    Rfc: "",
+    SerialCertificado: "",
+    FechaFirma: "",
+    Descargas: "",
+    FechaDescarga: "",
+    FechaDoc: "",
+    CreadoPor: "",
+    PathDoc: "",
+    FechaCreacion: "",
     Deleted: 0,
   },
 
-  getCatalogoFirmaDetalle : async (IdSolicitud: string) => {
+  getCatalogoFirmaDetalle: async (IdSolicitud: string, TipoFirma: string) => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-firmaDetalle", {
-        params:{
-          Id: IdSolicitud,
+        params: {
+          IdSolicitud: IdSolicitud,
+          TipoFirma: TipoFirma
         },
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
@@ -206,13 +206,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       })
       .then(({ data }) => {
         let fd = data.data;
-        console.log("fd", fd);
         set(() => ({
           catalogoFirmaDetalle: fd,
-          
+
         }));
+
+        GeneraAcuseRespuesta("Solicitud de cancelación", fd.NumeroOficio, IdSolicitud, "");
       })
-    },
+  },
+
+
+
+
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
@@ -228,79 +233,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     if (info) {
       const inf = JSON.parse(info);
 
-      console.log("info", inf)
+    
 
       const state = useCortoPlazoStore.getState();
 
       axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
-          {
-            IdPathDoc: inf.IdPathDoc,
-            IdFirma: inf.IdFirma,
-            IdSolicitud: state.idSolicitud,
-            NumeroOficio: `${inf.NumeroOficio}`,
-            Asunto: inf.Asunto,
-            Rfc: inf.Rfc,
-            SerialCertificado: inf.SerialCertificado,
-            FechaFirma: inf.FechaFirma,
-            FechaDoc: inf.Fecha_doc,
-            PathDoc: inf.PathDoc,
-            CreadoPor: inf.IdUsuario,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-              "Access-Control-Allow-Origin": "*",
-            },
-            responseType: "arraybuffer",
-          }
-        )
-        .then((response) => {
-
-          if (
-            !state.estatus.includes("Autorizado") &&
-            state.estatus !== "Actualizacion"
-          ) {
-            createNotificationCortoPlazo(
-              "Solicitud enviada",
-              `La solicitud ha sido enviada para autorización con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
-              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-              [localStorage.getItem("IdUsuario")!]
-            );
-            GeneraAcuseEnvio(
-              state.estatus === "Actualizacion"
-                ? "Solicitud de requerimientos"
-                : "Constancia de inscripción",
-              inf.NumeroOficio.replaceAll("/", "-"),
-              state.idSolicitud
-            );
-          } else  if(state.estatus
-
-          ){
-            GeneraAcuseRespuesta("Solicitud de requerimientos", inf.NumeroOficio, state.idSolicitud, "de respuesta prevención de inscripción");
-          }
-          CambiaEstatus(
-            state.estatus.includes("Actualizacion")
-              ? "Actualizacion"
-              : state.estatus.includes("Autorizado")
-                ? "Autorizado"
-                : "Revision",
-            state.idSolicitud
-          );
-        })
-        .catch((err) => { });
-    }
-  },
-
-  changeInfoDocCncelacion: (info: any) => {
-    set(() => ({ infoDoc: info }));
-
-    if (info) {
-      const inf = JSON.parse(info);
-
-      const state = useCortoPlazoStore.getState();
-        axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
           {
@@ -326,16 +263,78 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-           
+
+          if (state.estatus === "En espera cancelación") {
+            createNotificationCortoPlazo(
+              "Solicitud enviada",
+              `La solicitud de cancelación ha sido enviada con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
+              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+              [localStorage.getItem("IdUsuario")!]
+            )
+            GeneraAcuseEnvio(
+              "Solicitud de cancelación",
+              inf.NumeroOficio.replaceAll("/", "-"),
+              state.idSolicitud
+              
+            )
+
+          } else if (state.estatus === "Cancelado") {
+            createNotificationCortoPlazo(
+              "Solicitud enviada",
+              `La solicitud de cancelacion ha sido aceptada con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
+              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+              [localStorage.getItem("IdUsuario")!]
+            )
+            
+            state.getCatalogoFirmaDetalle(state.idSolicitud, state.TipoFirma)
+            GeneraAcuseRespuesta("Solicitud de cancelación", state.catalogoFirmaDetalle.NumeroOficio.replaceAll("/", "-"), state.idSolicitud, "");
+
+          } else if (state.estatus === "Anulación") {
+            createNotificationCortoPlazo(
+              "Solicitud enviada",
+              `La solicitud de anulación ha sido enviada con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
+              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+              [localStorage.getItem("IdUsuario")!]
+            )
+            borrarFirmaDetalle(state.idSolicitud, "En espera cancelación")
+
+          } else if (
+            !state.estatus.includes("Autorizado") &&
+            state.estatus !== "Actualizacion"
+          ) {
+            createNotificationCortoPlazo(
+              "Solicitud enviada",
+              `La solicitud ha sido enviada para autorización con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
+              } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+              [localStorage.getItem("IdUsuario")!]
+            );
+            GeneraAcuseEnvio(
+              state.estatus === "Actualizacion"
+                ? "Solicitud de requerimientos"
+                : "Constancia de inscripción",
+              inf.NumeroOficio.replaceAll("/", "-"),
+              state.idSolicitud
+            );
+          }
+          else {
+            GeneraAcuseRespuesta("Solicitud de requerimientos", inf.NumeroOficio.replaceAll("/", "-"), state.idSolicitud, "de respuesta prevención de inscripción");
+          }
           CambiaEstatus(
-            "En espera cancelación",
+            state.estatus.includes("Actualizacion")
+              ? "Actualizacion"
+              : state.estatus.includes("Autorizado")
+                ? "Autorizado"
+                : state.estatus.includes("En espera cancelación")
+                  ? "En espera cancelación"
+                  : state.estatus.includes("Cancelado")
+                    ? "Cancelado"
+                    : state.estatus.includes("Anulación")
+                      ? "Autorizado"
+                      : "Revision",
             state.idSolicitud
           );
-
         })
         .catch((err) => { });
-      
-     
     }
   },
   setUrl: (url: any) => set(() => ({ url: url })),
@@ -378,15 +377,12 @@ export async function GeneraAcuseRespuesta(
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `Acuse-respuesta-${noOficio}.pdf`)
+        new File([response.data], `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`)
       );
       // setUrl(url);
     })
     .catch((err) => { });// aqui
-
-
 }
-
 
 
 export async function ConsultaSolicitud(
@@ -632,7 +628,7 @@ export async function ConsultaConstancia(
 export async function GeneraAcuseEnvio(
   tipoSolicitud: string,
   noOficio: string,
-  idRegistro: string
+  idRegistro: string,
 ) {
   await axios
     .post(
@@ -663,7 +659,7 @@ export async function GeneraAcuseEnvio(
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File([response.data], `Acuse-envio-${noOficio}.pdf`)
+        new File([response.data], `Acuse-envio-${tipoSolicitud}-${noOficio}.pdf`)
       );
     })
     .catch((err) => { });
@@ -837,6 +833,54 @@ export async function CancelacionSolicitud(
     .catch((err) => { });
 }
 
+
+export async function borrarFirmaDetalle  (IdSolicitud: string, TipoFirma: string) {
+  // const Toast = Swal.mixin({
+  //   toast: true,
+  //   timer: 3000,
+  //   timerProgressBar: true,
+  // });
+
+  await axios
+    .delete(
+      process.env.REACT_APP_APPLICATION_BACK + "/api/delete-firma",
+      {
+        data: {
+          IdSolicitud: IdSolicitud,
+          TipoFirma: TipoFirma,
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    )
+    .then(function (response) {
+      if (response.status === 200) {
+        //window.location.reload();
+        Swal.fire({
+          icon: "success",
+          title: "Se anuló la solicitud de cancelación con éxito",
+          iconColor: "#AF8C55",
+          showConfirmButton: false,
+          color: "#AF8C55",
+          timer: 3000,
+        });
+      }
+      return true;
+    })
+    .catch(function () {
+      Swal.fire({
+        icon: "error",
+        title: "Error, favor de intentar más tarde.",
+        iconColor: "#AF8C55",
+        showConfirmButton: false,
+        color: "#AF8C55",
+        timer: 2000,
+      });
+    });
+  return false;
+}
+
 export async function AnularCancelacionSolicitud(
   Solicitud: string,
   NumeroRegistro: number,
@@ -852,15 +896,15 @@ export async function AnularCancelacionSolicitud(
     UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
     EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
     claveInscripcion: solicitud.ClaveDeInscripcion === undefined
-        ? "Sin Clave de Inscripcion"
-        : solicitud.ClaveDeInscripcion,
+      ? "Sin Clave de Inscripcion"
+      : solicitud.ClaveDeInscripcion,
 
     fechaInscripcion: UltimaModificacion,
 
     fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
     fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
 
-    entePublicoObligado: 
+    entePublicoObligado:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
         ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
         : "No Aplica",
@@ -907,7 +951,7 @@ export async function AnularCancelacionSolicitud(
         entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
         institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
         montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
-        causaAnulacion:SolicitudCancelacion.causaAnulacion
+        causaAnulacion: SolicitudCancelacion.causaAnulacion
       },
       {
         headers: {

@@ -508,33 +508,12 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setDatosActualizar
   );
 
-  const setFraccionTexto : Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
+  const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
+    (state) => state.getCatalogoFirmaDetalle
   )
-  const fraccionTexto : string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
+  const catalogoFirmaDetalle: IDataFirmaDetalle = useSolicitudFirmaStore(
+    (state) => state.catalogoFirmaDetalle
   )
-
-   const getCatalogoFirmaDetalle : Function = useSolicitudFirmaStore(
-     (state) => state.getCatalogoFirmaDetalle
-   )
-   const catalogoFirmaDetalle : IDataFirmaDetalle = useSolicitudFirmaStore(
-     (state) => state.catalogoFirmaDetalle
-   )
-
-
-
-  useEffect(() => {
-    if(fraccionTexto == "Cancelado") {
-      setFraccionTexto("")
-    } else{
-      setFraccionTexto(fraccionTexto)
-    }
-  }, [])
-
-
-  
-  
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -651,7 +630,9 @@ export function ConsultaDeSolicitudPage() {
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
+                    <StyledTableCell />
                     <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
@@ -666,7 +647,7 @@ export function ConsultaDeSolicitudPage() {
                     ) {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={row.Estatus === "Revision" ? "En Revisión" : "En " + row.Estatus}
                           // icon={<WarningAmberIcon />}
                           color="default"
                           variant="outlined"
@@ -678,7 +659,12 @@ export function ConsultaDeSolicitudPage() {
                     ) {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={row.Estatus === "Verificacion"
+                            ? "En Verificación"
+                            : row.Estatus === "Validacion"
+                              ? "En Validación"
+                              : "En " + row.Estatus
+                          }
                           // icon={<RateReviewSharpIcon />}
                           color="info"
                           variant="outlined"
@@ -687,7 +673,7 @@ export function ConsultaDeSolicitudPage() {
                     } else if (row.Estatus === "Autorizacion") {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={row.Estatus === "Autorizacion" ? "En Autorización" : "En " + row.Estatus}
                           // icon={<RateReviewSharpIcon />}
                           color="warning"
                           variant="outlined"
@@ -721,7 +707,7 @@ export function ConsultaDeSolicitudPage() {
                           onClick={() => CambiaEstatus("Cancelado", row.Id)}
                         >
                           <Chip
-                            label={row.Estatus}
+                            label={row.Estatus === "Actualizacion" ? "Actualización" : row.Estatus}
                             color={
                               differenceInDays(
                                 getDays(new Date(row.FechaRequerimientos), 10),
@@ -820,9 +806,9 @@ export function ConsultaDeSolicitudPage() {
                         >
                           {row.Estatus === "Actualizacion"
                             ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
+                              new Date(row.FechaRequerimientos),
+                              "dd/MM/yyyy"
+                            )
                             : " "}
                         </StyledTableCell>
 
@@ -856,7 +842,7 @@ export function ConsultaDeSolicitudPage() {
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 
-                                
+
                                 setRowSolicitud(row);
 
                                 getCatalogoFirmaDetalle(row.Id)
@@ -872,61 +858,61 @@ export function ConsultaDeSolicitudPage() {
                             !row.Estatus.includes("Autorizado")) ||
                             (localStorage.getItem("Rol") === "Autorizador" &&
                               row.Estatus.includes("Por Firmar"))) && (
-                            <Tooltip title="Firmar documento">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  getComentariosSolicitudPlazo(
-                                    row.Id,
-                                    setDatosComentarios
-                                  ).then((data) => {
-                                    if (
-                                      rolesAdmin.includes(
-                                        localStorage.getItem("Rol")!
-                                      )
-                                    ) {
+                              <Tooltip title="Firmar documento">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    getComentariosSolicitudPlazo(
+                                      row.Id,
+                                      setDatosComentarios
+                                    ).then((data) => {
                                       if (
-                                        data.filter(
-                                          (a: any) => a.Tipo === "Requerimiento"
-                                        ).length > 0
+                                        rolesAdmin.includes(
+                                          localStorage.getItem("Rol")!
+                                        )
                                       ) {
-                                        requerimientos(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
+                                        if (
                                           data.filter(
-                                            (a: any) =>
-                                              a.Tipo === "Requerimiento"
-                                          )[0],
-                                          row.Id
-                                        );
+                                            (a: any) => a.Tipo === "Requerimiento"
+                                          ).length > 0
+                                        ) {
+                                          requerimientos(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            data.filter(
+                                              (a: any) =>
+                                                a.Tipo === "Requerimiento"
+                                            )[0],
+                                            row.Id
+                                          );
+                                        } else {
+                                          ConsultaConstancia(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            setUrl
+                                          );
+                                          changeEstatus(row.Estatus);
+                                          changeIdSolicitud(row.Id);
+                                          navigate("../firmaUrl");
+                                        }
                                       } else {
-                                        ConsultaConstancia(
+                                        ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus(row.Estatus);
+                                        changeEstatus("Autorizado");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
-                                    } else {
-                                      ConsultaSolicitud(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        setUrl
-                                      );
-                                      changeEstatus("Autorizado");
-                                      changeIdSolicitud(row.Id);
-                                      navigate("../firmaUrl");
-                                    }
-                                  });
-                                }}
-                              >
-                                <HistoryEduIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                                    });
+                                  }}
+                                >
+                                  <HistoryEduIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {((localStorage.getItem("Rol") === "Verificador" &&
                             (row.Estatus === "Verificacion" ||
@@ -949,8 +935,7 @@ export function ConsultaDeSolicitudPage() {
                                       );
                                     }
                                     editarSolicitud(row.TipoSolicitud);
-                                    console.log(row);
-                                   
+
                                   }}
                                 >
                                   <EditIcon />
@@ -1002,13 +987,12 @@ export function ConsultaDeSolicitudPage() {
                                 onClick={() => {
                                   llenaSolicitud(row, row.TipoSolicitud);
                                   changeIdSolicitud(row.Id);
-                                  changeEstatus(row.Estatus);
-                                  console.log("rowSolicitud", row)
+                                 
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
+                                 
 
-                                
-
+                                  changeEstatus(row.Estatus);
                                   setRowSolicitud(row);
                                   //setRowSolicitud(row)
                                 }}
@@ -1033,9 +1017,9 @@ export function ConsultaDeSolicitudPage() {
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
-                                        "Capturador" ||
+                                      "Capturador" ||
                                       localStorage.getItem("Rol") ===
-                                        "Verificador"
+                                      "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
                                     } else {
