@@ -258,6 +258,7 @@ const {
 const {
   createFirmaDetalle,
   getFirmaDetalle,
+  deleteFirmaDetalle,
 } = require("../controllers/FirmaDetalle.js");
 const {
   createMandato,
@@ -1271,6 +1272,10 @@ router.post("/create-firmaDetalle", (req, res, express) => {
 
 router.get("/get-firmaDetalle", (req, res, express) => {
   getFirmaDetalle(req, res);
+});
+
+router.delete("/delete-firma", (req, res) => {
+  deleteFirmaDetalle(req, res);
 });
 
 //#endregion

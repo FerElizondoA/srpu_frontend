@@ -16,7 +16,7 @@ module.exports = {
     const CreadoPor = req.body.CreadoPor;
 
     db.query(
-      `CALL sp_AgregarFirmaDetalle('${IdPathDoc}', '${IdFirma}',  '${IdSolicitud}', '${NumeroOficio}', '${TipoFirma}','${Asunto}', '${Rfc}', '${SerialCertificado}', '${FechaFirma}', '${FechaDoc}', '${PathDoc}', '${CreadoPor}' )`,
+      `CALL sp_AgregarFirmaDetalle('${IdPathDoc}', '${IdFirma}',  '${IdSolicitud}', '${NumeroOficio}', '${TipoFirma}', '${Asunto}', '${Rfc}', '${SerialCertificado}', '${FechaFirma}', '${FechaDoc}', '${PathDoc}', '${CreadoPor}' )`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -44,23 +44,57 @@ module.exports = {
 
   getFirmaDetalle: (req, res) => {
     const IdSolicitud = req.query.IdSolicitud;
-    db.query(`CALL sp_ListadoFirmaDetalle('${IdSolicitud}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
+    const TipoFirma = req.query.TipoFirma;
+    db.query(
+      `CALL sp_ListadoFirmaDetalle('${IdSolicitud}', '${TipoFirma}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
 
-      if (result.length) {
-        const data = result[0];
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
+  },
+
+  deleteFirmaDetalle: (req, res) => {
+    const IdSolicitud = req.body.IdSolicitud;
+    const TipoFirma = req.body.TipoFirma;
+    db.query(
+      `CALL sp_BajaLogicaFirmaDetalle('${IdSolicitud}', '${TipoFirma}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
+        if (result.length) {
+          const data = result[0][0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            result: data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
   },
 };
