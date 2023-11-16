@@ -12,7 +12,6 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import TabInformacionGeneral from "./TabInformacionObligaciones";
 
-
 //import { Box } from "@mui/system";
 
 export default function ModalReestructura({
@@ -113,7 +112,7 @@ export default function ModalReestructura({
             >
               <TextField
                 sx={{ width: "100%" }}
-                label={"Tipo de ente público obligado"}
+                label={"Tipo de Ente Público Obligado"}
               />
             </Grid>
             <Grid

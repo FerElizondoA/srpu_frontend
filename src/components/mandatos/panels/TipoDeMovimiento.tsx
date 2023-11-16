@@ -224,7 +224,7 @@ export function TipoDeMovimiento() {
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
-              Tipo de ente público obligado
+              Tipo de Ente Público Obligado
             </InputLabel>
             <Autocomplete
               disableClearable
@@ -278,7 +278,7 @@ export function TipoDeMovimiento() {
               openText="Abrir"
               disabled={
                 tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion ===
-                  "No aplica" ||
+                  "No Aplica" ||
                 /^[\s]*$/.test(
                   tipoMovimientoMandato.tipoEntePublicoObligado.Descripcion
                 )

@@ -264,7 +264,7 @@ export function TipoDeMovimientoIntrucciones() {
 
           <Grid item xs={10} sm={3}>
             <InputLabel sx={queries.medium_text}>
-              Tipo de ente público obligado
+              Tipo de Ente Público Obligado
             </InputLabel>
             <Autocomplete
               clearText="Borrar"
@@ -317,7 +317,7 @@ export function TipoDeMovimientoIntrucciones() {
               fullWidth
               disabled={
                 tipoMovimientoInstruccion.tipoEntePublicoObligado
-                  .Descripcion === "No aplica" ||
+                  .Descripcion === "No Aplica" ||
                 /^[\s]*$/.test(
                   tipoMovimientoInstruccion.tipoEntePublicoObligado.Descripcion
                 )
@@ -475,7 +475,10 @@ export function TipoDeMovimientoIntrucciones() {
           >
             <ThemeProvider theme={ButtonTheme}>
               <Button
-                sx={{ ...queries.buttonContinuar, width: "15vh" }}
+                sx={{
+                  ...queries.buttonContinuar,
+                  width: "15vh",
+                }}
                 disabled={
                   tipoMovimientoInstruccion.tipoEntePublicoObligado
                     .Descripcion === "" ||

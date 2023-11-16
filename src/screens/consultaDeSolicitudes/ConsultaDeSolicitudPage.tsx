@@ -115,7 +115,7 @@ const heads: readonly Head[] = [
   {
     id: "TipoEntePublico",
     isNumeric: true,
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     id: "Estatus",
@@ -506,33 +506,27 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setDatosActualizar
   );
 
-  const setFraccionTexto : Function = useSolicitudFirmaStore(
+  const setFraccionTexto: Function = useSolicitudFirmaStore(
     (state) => state.setFraccionTexto
-  )
-  const fraccionTexto : string = useSolicitudFirmaStore(
+  );
+  const fraccionTexto: string = useSolicitudFirmaStore(
     (state) => state.fraccionTexto
-  )
+  );
 
-   const getCatalogoFirmaDetalle : Function = useSolicitudFirmaStore(
-     (state) => state.getCatalogoFirmaDetalle
-   )
-   const catalogoFirmaDetalle : IDataFirmaDetalle = useSolicitudFirmaStore(
-     (state) => state.catalogoFirmaDetalle
-   )
-
-
+  const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
+    (state) => state.getCatalogoFirmaDetalle
+  );
+  const catalogoFirmaDetalle: IDataFirmaDetalle = useSolicitudFirmaStore(
+    (state) => state.catalogoFirmaDetalle
+  );
 
   useEffect(() => {
-    if(fraccionTexto == "Cancelado") {
-      setFraccionTexto("")
-    } else{
-      setFraccionTexto(fraccionTexto)
+    if (fraccionTexto == "Cancelado") {
+      setFraccionTexto("");
+    } else {
+      setFraccionTexto(fraccionTexto);
     }
-  }, [])
-
-
-  
-  
+  }, []);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -856,10 +850,9 @@ export function ConsultaDeSolicitudPage() {
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 
-                                
                                 setRowSolicitud(row);
 
-                                getCatalogoFirmaDetalle(row.Id)
+                                getCatalogoFirmaDetalle(row.Id);
                               }}
                             >
                               <VisibilityIcon />
@@ -949,8 +942,6 @@ export function ConsultaDeSolicitudPage() {
                                       );
                                     }
                                     editarSolicitud(row.TipoSolicitud);
-                                    console.log(row);
-                                   
                                   }}
                                 >
                                   <EditIcon />
@@ -995,29 +986,29 @@ export function ConsultaDeSolicitudPage() {
                             </Tooltip>
                           )}
 
-                          {row.Estatus === "Autorizado" && (
-                            <Tooltip title="Solicitar Cancelación">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  llenaSolicitud(row, row.TipoSolicitud);
-                                  changeIdSolicitud(row.Id);
-                                  changeEstatus(row.Estatus);
-                                  console.log("rowSolicitud", row)
-                                  changeNoRegistro(row.NumeroRegistro);
-                                  changeOpenDialogVer(!openDialogVer);
+                          {row.Estatus === "Autorizado" &&
+                            !rolesAdmin.includes(
+                              localStorage.getItem("Rol")!
+                            ) && (
+                              <Tooltip title="Solicitar Cancelación">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    changeIdSolicitud(row.Id);
+                                    changeEstatus(row.Estatus);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    changeOpenDialogVer(!openDialogVer);
 
-                                
-
-                                  setRowSolicitud(row);
-                                  //setRowSolicitud(row)
-                                }}
-                              >
-                                <DoDisturbOnIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                                    setRowSolicitud(row);
+                                    //setRowSolicitud(row)
+                                  }}
+                                >
+                                  <DoDisturbOnIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&

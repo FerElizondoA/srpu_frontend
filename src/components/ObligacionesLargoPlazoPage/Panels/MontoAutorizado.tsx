@@ -107,8 +107,6 @@ export function DestinoAutorizado() {
         justifyContent="space-evenly"
         sx={queries.contenedorAgregarAutorizacion.MontoAutorizado}
       >
-        {/* FALTA CAMBIAR EL VERDADERO CATALGOGO, SOLO ES DE PRUEBA*/}
-
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Destino Autorizado</InputLabel>
@@ -194,7 +192,11 @@ export function DestinoAutorizado() {
           </Grid>
 
           <Grid
-            xs={10} sm={2} md={2} lg={2} xl={2}
+            xs={10}
+            sm={2}
+            md={2}
+            lg={2}
+            xl={2}
             height={"5rem"}
             display={"flex"}
             justifyContent={"center"}
@@ -223,15 +225,19 @@ export function DestinoAutorizado() {
           </Grid>
         </Grid>
 
-        <Grid item width={"100%"} display={"flex"} justifyContent={"center"}
+        <Grid
+          item
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
           mb={{}}
           sx={{
-            ...queries.contenedorAgregarAutorizacion.Tablas
+            ...queries.contenedorAgregarAutorizacion.Tablas,
           }}
         >
           <Paper
             sx={{
-             height:"100",
+              height: "100",
               width: "86%",
             }}
           >

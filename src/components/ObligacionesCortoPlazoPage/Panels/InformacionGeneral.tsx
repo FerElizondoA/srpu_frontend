@@ -64,10 +64,10 @@ const heads: Head[] = [
     label: "Selección",
   },
   {
-    label: "Obligado solidario / aval",
+    label: "Obligado Solidario / Aval",
   },
   {
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     label: "Ente público obligado",
@@ -201,7 +201,7 @@ export function InformacionGeneral() {
   useEffect(() => {
     if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
       let obligado = catalogoObligadoSolidarioAval.find(
-        (obligado) => obligado.Descripcion === "No aplica"
+        (obligado) => obligado.Descripcion === "No Aplica"
       );
       changeObligadoSolidarioAval({
         obligadoSolidario: {
@@ -573,7 +573,7 @@ export function InformacionGeneral() {
           <Autocomplete
             disabled={
               datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tabla Obligado Solidario Aval")
+              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -595,7 +595,7 @@ export function InformacionGeneral() {
             }}
             onChange={(event, text) => {
               if (
-                text?.Descripcion === "No aplica" ||
+                text?.Descripcion === "No Aplica" ||
                 text?.Id === "" ||
                 text === null
               ) {
@@ -604,7 +604,7 @@ export function InformacionGeneral() {
               changeObligadoSolidarioAval({
                 obligadoSolidario: {
                   Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "No aplica",
+                  Descripcion: text?.Descripcion || "No Aplica",
                 },
                 tipoEntePublicoObligado: {
                   Id: "",
@@ -633,7 +633,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Tipo de ente público obligado
+            Tipo de Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -641,10 +641,10 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -697,11 +697,11 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             fullWidth
             options={catalogoOrganismos.filter(
@@ -748,12 +748,12 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
               /^[\s]*$/.test(generalEntePublico.Descripcion) ||
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario Aval"))
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             variant="outlined"
             onClick={() => {
@@ -772,7 +772,7 @@ export function InformacionGeneral() {
             }}
           >
             <CheckIcon fontSize="small" />
-            AGREGAR
+            Agregar
           </Button>
         </ThemeProvider>
       </Grid>
@@ -813,12 +813,12 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No aplica" &&
+                {generalObligadoSolidario.Descripcion === "No Aplica" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />
-                    <StyledTableCell align="center">No aplica</StyledTableCell>
+                    <StyledTableCell align="center">No Aplica</StyledTableCell>
                     <StyledTableCell />
                   </StyledTableRow>
                 ) : (

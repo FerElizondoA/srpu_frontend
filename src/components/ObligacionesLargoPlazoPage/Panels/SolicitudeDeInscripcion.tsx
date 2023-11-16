@@ -494,7 +494,7 @@ export function SolicituDeInscripcion() {
               },
             }}
           >
-            Declaratorias aplicables al financiamiento u obligación:
+            Declaratorias Aplicables al Financiamiento u Obligación:
           </Divider>
         </Grid>
 

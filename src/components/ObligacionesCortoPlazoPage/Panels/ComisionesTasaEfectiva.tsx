@@ -354,7 +354,7 @@ export function ComisionesTasaEfectiva() {
       <Grid container justifyContent={"space-evenly"}>
         <Grid item xs={10} sm={2} md={1} lg={1} xl={1}>
           <FormControlLabel
-            label="No aplica"
+            label="No Aplica"
             control={
               <Checkbox
                 checked={noAplica}

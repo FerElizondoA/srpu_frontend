@@ -117,18 +117,7 @@ export function SolicitudInscripcion() {
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
-      /////////////////// Por definir /////////////////////
-      let entePublicoObligado = "";
-      let obligadoSolidario = "";
-      let tipoEntePublicoObligado = "";
 
-      for (let i = 0; i < state.tablaObligadoSolidarioAval.length; i++) {
-        const item = state.tablaObligadoSolidarioAval[0];
-        entePublicoObligado = item.entePublicoObligado;
-        obligadoSolidario = item.obligadoSolidario;
-        tipoEntePublicoObligado = item.tipoEntePublicoObligado;
-      }
-      ///////////////////   Condiciones Financieras /////////////////////
       let importe = 0;
       let numeroDePago = 0;
       let PeriocidadDePago = "";
@@ -272,30 +261,6 @@ export function SolicitudInscripcion() {
         setOpenDialogEnviar(!openDialogEnviar);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
-        // Toast.fire({
-        //   showConfirmButton: true,
-        //   confirmButtonColor: "#15212f",
-        //   cancelButtonColor: "rgb(175, 140, 85)",
-        //   buttonsStyling: true,
-        //   html: `
-        //   <div>
-        //   <h2  >Se han encontrado los siguientes errores:</h2>
-        //   <div style="text-align: left;   color:red;  overflow:auto;">
-        //     *</strong>${errores.join("<br><br><strong>*</strong>")}
-        //   </div>
-        //   <div  style="text-align: right;">
-        //       <Button style="float:right;
-        //       cursor: pointer;
-        //       background-color:#15212f;
-        //       height:30px;
-        //       color:white;
-        //       border-radius: 0.8vh;
-        //       font-size:100%;
-        //       textTransform:capitalize";
-        //       "  >Cerrar</Button>
-        //     </div>
-        // </div>`,
-        // });
       }
     } else if (filtroValidacion === "Modificacion") {
       errores = [];
@@ -593,7 +558,7 @@ export function SolicitudInscripcion() {
               },
             }}
           >
-            Declaratorias aplicables al financiamiento u obligación:
+            Declaratorias Aplicables al Financiamiento u Obligación:
           </Divider>
         </Grid>
 
@@ -620,9 +585,9 @@ export function SolicitudInscripcion() {
                 },
               }}
             >
-              Al seleccionar alguna de las siguientes secciones, estará
-              manifestando bajo protesta de decir verdad que cumple con lo
-              señalado en cada apartado
+              Al seleccionar alguna de las declaratorias, se estará manifestando
+              bajo protesta en decir verdad que cumplen con lo señalado en cada
+              una de ellas
             </Typography>
 
             <Grid container={query.isMobile} display={"flex"} width={"100%"}>

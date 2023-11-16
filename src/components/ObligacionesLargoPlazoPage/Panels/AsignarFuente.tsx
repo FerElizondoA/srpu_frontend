@@ -26,7 +26,6 @@ import { AsignarFuenteV } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 
-
 interface HeadSelect {
   Id: string;
   Descripcion: string;
@@ -35,7 +34,7 @@ interface HeadSelect {
 const CatalogoGarantiaPago: HeadSelect[] = [
   {
     Id: "0",
-    Descripcion: "No aplica",
+    Descripcion: "No Aplica",
   },
   {
     Id: "1",
@@ -114,7 +113,8 @@ const headFP: HeadSelect[] = [
   },
   {
     Id: "5",
-    Descripcion: "% De afectación del gobierno del estado / 100 del ingreso o fondo",
+    Descripcion:
+      "% De afectación del gobierno del estado / 100 del ingreso o fondo",
   },
   {
     Id: "6",
@@ -145,7 +145,6 @@ const headFP: HeadSelect[] = [
 ];
 
 export function AsignarFuente() {
-
   const garantiaPago: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.garantiaPago
   );
@@ -153,7 +152,6 @@ export function AsignarFuente() {
   const changeGarantiaPago: Function = useLargoPlazoStore(
     (state) => state.changeGarantiaPago
   );
-
 
   //Asignar Fuente
   const changeAsignarFuente: Function = useLargoPlazoStore(
@@ -183,37 +181,37 @@ export function AsignarFuente() {
   const getTiposDeFuente: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
   );
-  
-  const getClasificacion : Function = useLargoPlazoStore(
+
+  const getClasificacion: Function = useLargoPlazoStore(
     (state) => state.getClasificacion
-  )
+  );
 
-  const catalogoClasificacion : ICatalogo[] =useLargoPlazoStore(
+  const catalogoClasificacion: ICatalogo[] = useLargoPlazoStore(
     (state) => state.catalogoClasificacion
-  )
+  );
 
-  const catalogoRespecto : ICatalogo[] = useLargoPlazoStore(
+  const catalogoRespecto: ICatalogo[] = useLargoPlazoStore(
     (state) => state.catalogoRespecto
   );
 
-  const getRespecto : Function = useLargoPlazoStore(
+  const getRespecto: Function = useLargoPlazoStore(
     (state) => state.getRespecto
-  )
+  );
 
-  const catalogoFuenteDePago : ICatalogo[] = useLargoPlazoStore(
+  const catalogoFuenteDePago: ICatalogo[] = useLargoPlazoStore(
     (state) => state.catalogoFuenteDePago
-  )
+  );
 
-  const getFuentePago : Function = useLargoPlazoStore(
+  const getFuentePago: Function = useLargoPlazoStore(
     (state) => state.getFuentePago
-  )
-  
+  );
+
   useEffect(() => {
     getTiposDeFuente();
     getClasificacion();
     getRespecto();
     getFuentePago();
-  }, [])
+  }, []);
 
   return (
     <Grid
@@ -258,7 +256,7 @@ export function AsignarFuente() {
                 garantiaPago: {
                   Id: text?.Id,
                   Descripcion: text?.Descripcion,
-                }
+                },
               })
             }
             renderInput={(params) => (
@@ -299,7 +297,8 @@ export function AsignarFuente() {
         <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
       </Grid>
 
-      <Grid container
+      <Grid
+        container
         sx={{
           display: "flex",
           //...queries.fuentePagoApartados,
@@ -309,7 +308,6 @@ export function AsignarFuente() {
         }}
       >
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
-
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
           <Autocomplete
             //disableClearable
@@ -318,7 +316,9 @@ export function AsignarFuente() {
             closeText="Cerrar"
             openText="Abrir"
             options={catalogoClasificacion}
-            value={clasificacion.Descripcion === undefined ? null : clasificacion}
+            value={
+              clasificacion.Descripcion === undefined ? null : clasificacion
+            }
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -331,9 +331,9 @@ export function AsignarFuente() {
               changeAsignarFuente({
                 clasificacion: {
                   Id: text?.Id,
-                  Descripcion: text?.Descripcion
+                  Descripcion: text?.Descripcion,
                 },
-                tipoFuente: tipoFuente, 
+                tipoFuente: tipoFuente,
                 fuentePago: fuentePago,
                 RespectoA: Respecto,
               })
@@ -383,7 +383,7 @@ export function AsignarFuente() {
                 clasificacion: clasificacion,
                 tipoFuente: {
                   Id: text?.Id,
-                  Descripcion: text?.Descripcion
+                  Descripcion: text?.Descripcion,
                 },
                 fuentePago: fuentePago,
                 RespectoA: Respecto,
@@ -401,7 +401,6 @@ export function AsignarFuente() {
               value.Descripcion === ""
             }
           />
-
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
@@ -425,12 +424,12 @@ export function AsignarFuente() {
             onChange={(event, text) =>
               changeAsignarFuente({
                 clasificacion: clasificacion,
-                tipoFuente: tipoFuente, 
+                tipoFuente: tipoFuente,
                 fuentePago: {
                   Id: text?.Id,
-                  Descripcion: text?.Descripcion
+                  Descripcion: text?.Descripcion,
                 },
-                RespectoA: Respecto
+                RespectoA: Respecto,
               })
             }
             renderInput={(params) => (
@@ -468,11 +467,11 @@ export function AsignarFuente() {
             onChange={(event, text) =>
               changeAsignarFuente({
                 clasificacion: clasificacion,
-                tipoFuente: tipoFuente, 
+                tipoFuente: tipoFuente,
                 fuentePago: fuentePago,
                 RespectoA: {
                   Id: text?.Id,
-                  Descripcion: text?.Descripcion
+                  Descripcion: text?.Descripcion,
                 },
               })
             }
@@ -493,19 +492,21 @@ export function AsignarFuente() {
 
       <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
         <Paper sx={{ ...queries.tablaAsignarFuente }}>
-          <TableContainer sx={{
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              height: ".5vh",
-              mt: 1,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-          }}>
+          <TableContainer
+            sx={{
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: ".5vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
             <Table>
               <TableHead>
                 <TableRow>
@@ -516,7 +517,9 @@ export function AsignarFuente() {
                           fontSize: ".7rem",
                           fontFamily: "MontserratRegular",
                         }}
-                      >{head.Descripcion}</Typography>
+                      >
+                        {head.Descripcion}
+                      </Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>

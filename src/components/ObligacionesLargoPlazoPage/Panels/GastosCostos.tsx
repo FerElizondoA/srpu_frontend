@@ -487,7 +487,7 @@ export function GastoCostos() {
                   ...queries.leyendaArchivoGastosCosto,
                   border:
                     detalleInversion.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                       ? "2px dotted #af8c55"
                       : "2x dotted black",
                 }}
@@ -635,7 +635,7 @@ export function GastoCostos() {
               changeGeneralGastosCostos({
                 destino: {
                   Id: "",
-                  Descripcion: ""
+                  Descripcion: "",
                 },
                 detalleInversion: { Id: "", Descripcion: "" },
                 claveInscripcionFinanciamiento: "",
@@ -647,7 +647,7 @@ export function GastoCostos() {
             }}
           >
             <CheckIcon fontSize="small" />
-            AGREGAR
+            Agregar
           </Button>
         </ThemeProvider>
       </Grid>

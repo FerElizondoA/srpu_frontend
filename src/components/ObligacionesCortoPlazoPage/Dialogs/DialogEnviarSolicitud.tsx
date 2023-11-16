@@ -17,10 +17,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
