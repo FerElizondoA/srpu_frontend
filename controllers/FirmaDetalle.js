@@ -6,6 +6,7 @@ module.exports = {
     const IdFirma = req.body.IdFirma;
     const IdSolicitud = req.body.IdSolicitud;
     const NumeroOficio = req.body.NumeroOficio;
+    const TipoFirma = req.body.TipoFirma;
     const Asunto = req.body.Asunto;
     const Rfc = req.body.Rfc;
     const SerialCertificado = req.body.SerialCertificado;
@@ -15,7 +16,7 @@ module.exports = {
     const CreadoPor = req.body.CreadoPor;
 
     db.query(
-      `CALL sp_AgregarFirmaDetalle('${IdPathDoc}', '${IdFirma}',  '${IdSolicitud}', '${NumeroOficio}', '${Asunto}', '${Rfc}', '${SerialCertificado}', '${FechaFirma}', '${FechaDoc}', '${PathDoc}', '${CreadoPor}' )`,
+      `CALL sp_AgregarFirmaDetalle('${IdPathDoc}', '${IdFirma}',  '${IdSolicitud}', '${NumeroOficio}', '${TipoFirma}','${Asunto}', '${Rfc}', '${SerialCertificado}', '${FechaFirma}', '${FechaDoc}', '${PathDoc}', '${CreadoPor}' )`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -62,5 +63,4 @@ module.exports = {
       }
     });
   },
-
 };
