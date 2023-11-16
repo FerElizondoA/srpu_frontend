@@ -1,4 +1,5 @@
 const db = require("../config/db.js");
+const { sendEmail } = require("./mail/sendMail.js");
 
 module.exports = {
   //Crear
@@ -45,6 +46,12 @@ module.exports = {
               result: data,
             });
           }
+          sendEmail({
+            usuarios: ListadoUsuarios,
+            titulo: Titulo,
+            asunto: Mensaje,
+            plantilla: "sgcm-1",
+          });
           return res.status(200).send({
             data,
           });

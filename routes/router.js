@@ -255,9 +255,9 @@ const {
   modifyTipoDeGarantiaDePago,
   deleteTipoDeGarantiaDePago,
 } = require("../controllers/TiposDeGarantiaDePago.js");
-const { 
+const {
   createFirmaDetalle,
-  getFirmaDetalle
+  getFirmaDetalle,
 } = require("../controllers/FirmaDetalle.js");
 const {
   createMandato,
@@ -295,7 +295,6 @@ const {
   actualizaDescarga,
   createPdfSolicitudCancelacion,
   createPdfSolicitudAnulacion,
-
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -308,6 +307,7 @@ const {
   getConfiguracionOficios,
   modifyConfiguracionOficios,
 } = require("../controllers/ConfiguracionOficios.js");
+const { sendEmail } = require("../controllers/mail/sendMail.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -795,9 +795,13 @@ router.get("/get-solicitudes", verifyToken.verifyJWT, (req, res) => {
   getSolicitudes(req, res);
 });
 
-router.get("/get-solicitudes-cancelaciones", verifyToken.verifyJWT, (req, res) => {
-  getSolicitudesCancelaciones(req, res);
-});
+router.get(
+  "/get-solicitudes-cancelaciones",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getSolicitudesCancelaciones(req, res);
+  }
+);
 
 router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
   modifySolicitud(req, res);
@@ -1421,6 +1425,10 @@ router.get("/ayuda", (req, res) => {
 
 router.delete("/ayuda", (req, res) => {
   deletePreguntasFrecuentes(req, res);
+});
+
+router.post("/sendMail", (req, res) => {
+  sendEmail(req, res);
 });
 
 module.exports = router;

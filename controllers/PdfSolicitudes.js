@@ -19,7 +19,7 @@ const templateCancelacion =
 const templateAnulacion =
   "controllers/templates/template_anular_cancelacion.html";
 const templateAcuseCancelacion =
-"controllers/templates/template_acuse_cancelacion.html";
+  "controllers/templates/template_acuse_cancelacion.html";
 
 //#region HEADER
 
@@ -143,7 +143,7 @@ module.exports = {
       .replaceAll("{{destino}}", destino)
       .replaceAll("{{plazo}}", plazo)
       .replaceAll("{{tasaInteres}}", tasaInteres)
-      .replaceAll("{{comisiones}}", comisiones)
+      .replaceAll("{{comisiones}}", comisiones || "")
       .replaceAll("{{gastosAdicionales}}", gastosAdicionales)
       .replaceAll("{{tasaEfectiva}}", tasaEfectiva)
       .replaceAll("{{mecanismoVehiculoDePago}}", mecanismoVehiculoDePago)
@@ -426,14 +426,15 @@ module.exports = {
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseRespuesta, "utf8");
 
-    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } = req.body;
+    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } =
+      req.body;
 
     const html = htmlTemplate
       .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
       .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
       .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
-      .replaceAll("{{hora}}", hora || "'hora de entrega'") 
-      .replaceAll("{{fraccionTexto}}", fraccionTexto || "")
+      .replaceAll("{{hora}}", hora || "'hora de entrega'")
+      .replaceAll("{{fraccionTexto}}", fraccionTexto || "");
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
@@ -469,14 +470,15 @@ module.exports = {
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseCancelacion, "utf8");
 
-    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } = req.body;
+    const { tipoSolicitud, oficioConstancia, fecha, hora, fraccionTexto } =
+      req.body;
 
     const html = htmlTemplate
       .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
       .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
       .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
-      .replaceAll("{{hora}}", hora || "'hora de entrega'") 
-      .replaceAll("{{fraccionTexto}}", fraccionTexto || "")
+      .replaceAll("{{hora}}", hora || "'hora de entrega'")
+      .replaceAll("{{fraccionTexto}}", fraccionTexto || "");
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
@@ -507,8 +509,6 @@ module.exports = {
     );
     res.send(pdfBuffer);
   },
-
-  
 
   actualizaDescarga: async (req, res) => {
     const { IdPath } = req.body;
@@ -765,7 +765,7 @@ module.exports = {
       .replaceAll("{{institucionFinanciera}}", institucionFinanciera)
       .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
       .replaceAll("{{fechaContratacion}}", fechaContratacion)
-      .replaceAll("{{causaAnulacion}}", causaAnulacion)
+      .replaceAll("{{causaAnulacion}}", causaAnulacion);
 
     const browser = await puppeteer.launch({
       headless: "false",
