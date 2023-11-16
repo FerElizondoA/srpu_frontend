@@ -1,3 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
+import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Chip,
   Grid,
@@ -9,28 +16,21 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import Paper from "@mui/material/Paper";
+import { differenceInDays, format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  getSolicitudesAdmin,
+  getSolicitudesCancelaciones,
+} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-import CommentIcon from "@mui/icons-material/Comment";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
-import EditIcon from "@mui/icons-material/Edit";
-import SearchIcon from "@mui/icons-material/Search";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import InputBase from "@mui/material/InputBase";
-import Paper from "@mui/material/Paper";
-import { differenceInDays, format, startOfDay } from "date-fns";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  getSolicitudes,
-  getSolicitudesAdmin,
-  getSolicitudesCancelaciones,
-} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import {
   IComentarios,
   VerComentariosSolicitud,
@@ -48,16 +48,14 @@ import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/D
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
-  IData,
-  IDataPrueba,
-} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import {
-  CambiaEstatus,
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import InfoIcon from "@mui/icons-material/Info";
+import {
+  IData,
+  IDataPrueba,
+} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 interface Head {
   id: keyof IData;
@@ -239,15 +237,6 @@ export const Cancelaciones = () => {
   );
 
   // Largo plazo
-  const changeIdSolicitudLP: Function = useLargoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const changeNoRegistroLP: Function = useLargoPlazoStore(
-    (state) => state.changeNoRegistro
-  );
-  const changeEditCreadoPorLP: Function = useLargoPlazoStore(
-    (state) => state.changeEditCreadoPor
-  );
   const changeEncabezadoLP: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -260,32 +249,12 @@ export const Cancelaciones = () => {
   const addCondicionFinancieraLP: Function = useLargoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const setTablaDocumentosLP: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosLP
-  );
-
-  const cleanObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-
-  const updatecondicionFinancieraTableLP: Function = useLargoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-
   const addDocumentoLP: Function = useLargoPlazoStore(
     (state) => state.addDocumentoLP
   );
 
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(
     (state) => state.changeReglasAplicables
-  );
-
-  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
-    (state) => state.autorizacionSelect
-  );
-
-  const setAutorizacionSelect: Function = useLargoPlazoStore(
-    (state) => state.setAutorizacionSelect
   );
 
   const changeGastosCostos: Function = useLargoPlazoStore(
@@ -304,10 +273,6 @@ export const Cancelaciones = () => {
 
   const setRowSolicitud: Function = useSolicitudFirmaStore(
     (state) => state.setRowSolicitud
-  );
-
-  const cleanRowSolicitud: Function = useSolicitudFirmaStore(
-    (state) => state.cleanRowSolicitud
   );
 
   //END Row Solicitud
@@ -476,7 +441,7 @@ export const Cancelaciones = () => {
   );
 
   useEffect(() => {
-    if (fraccionTexto == "Cancelado") {
+    if (fraccionTexto === "Cancelado") {
       setFraccionTexto("");
     } else {
       setFraccionTexto(fraccionTexto);
@@ -665,7 +630,6 @@ export const Cancelaciones = () => {
                             getDays(new Date(row.FechaRequerimientos), 11),
                             new Date()
                           )} días restantes para cancelación automática`}
-                          onClick={() => CambiaEstatus("Cancelado", row.Id)}
                         >
                           <Chip
                             label={row.Estatus}
