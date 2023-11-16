@@ -200,7 +200,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       })
       .then(({ data }) => {
         let fd = data.data;
-        console.log("fd", fd);
         set(() => ({
           catalogoFirmaDetalle: fd,
         }));
@@ -220,8 +219,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     if (info) {
       const inf = JSON.parse(info);
-
-      console.log("info", inf);
 
       const state = useCortoPlazoStore.getState();
 
@@ -381,7 +378,6 @@ export async function ConsultaSolicitud(
   setUrl: Function
 ) {
   let solicitud: any = JSON.parse(Solicitud);
-
   const SolicitudDescarga: any = {
     oficioNum: NoOficio,
 
@@ -411,8 +407,8 @@ export async function ConsultaSolicitud(
         ? " "
         : " + " + solicitud.condicionesFinancieras[0].tasaInteres[0].sobreTasa),
     comisiones:
-      solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].porcentajeFijo +
+      solicitud.condicionesFinancieras[0].comisiones[0].porcentaje !== "N/A"
+        ? solicitud.condicionesFinancieras[0].comisiones[0].porcentaje +
           (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
             ? " "
             : " más IVA")
@@ -425,7 +421,7 @@ export async function ConsultaSolicitud(
     gastosAdicionales: "No Aplica",
     tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
     mecanismoVehiculoDePago: "No Aplica",
-    fuentePago: "Falta preguntar",
+    fuentePago: "No Aplica",
     garantiaDePago: "No Aplica",
     reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
     documentos: JSON.stringify(solicitud.documentacion),
@@ -583,13 +579,13 @@ export async function ConsultaConstancia(
         montoOriginalContratado: solicitud.informacionGeneral.monto,
         destino: solicitud.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.plazo,
-        amortizaciones: "FALTA PREGUNTAR",
+        amortizaciones: "No Aplica",
         tasaInteres: "tasaInteres",
         tasaEfectiva: "tasaEfectiva",
-        mecanismoVehiculoDePago: "FALTA PREGUNTAR",
+        mecanismoVehiculoDePago: "No Aplica",
         fuentePago: "fuentePago",
-        garantiaDePago: "FALTA PREGUNTAR",
-        instrumentoDerivado: "FALTA PREGUNTAR",
+        garantiaDePago: "No Aplica",
+        instrumentoDerivado: "No Aplica",
         financiamientosARefinanciar: ["financiamientosARefinanciar"],
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:
@@ -673,6 +669,7 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
       }
     )
     .then((response) => {
+      window.location.reload();
       return true;
     })
     .catch((err) => {});

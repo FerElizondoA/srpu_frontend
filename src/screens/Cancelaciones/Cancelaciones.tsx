@@ -47,7 +47,10 @@ import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/A
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import { IData, IDataPrueba } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import {
+  IData,
+  IDataPrueba,
+} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import {
   CambiaEstatus,
   ConsultaConstancia,
@@ -55,8 +58,6 @@ import {
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import InfoIcon from "@mui/icons-material/Info";
-
-
 
 interface Head {
   id: keyof IData;
@@ -77,7 +78,7 @@ const heads: readonly Head[] = [
   {
     id: "TipoEntePublico",
     isNumeric: true,
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     id: "Estatus",
@@ -85,7 +86,7 @@ const heads: readonly Head[] = [
     label: "Estatus",
   },
   {
-    id: "ClaveDeInscripcion",
+    id: "IdClaveInscripcion",
     isNumeric: true,
     label: "Clave de inscripción",
   },
@@ -116,7 +117,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-
 export const Cancelaciones = () => {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
@@ -136,7 +136,7 @@ export const Cancelaciones = () => {
     // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
       if (
-        elemento.ClaveDeInscripcion?.toString()
+        elemento.IdClaveInscripcion?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.Estatus?.toString()
@@ -468,570 +468,567 @@ export const Cancelaciones = () => {
     (state) => state.setDatosActualizar
   );
 
-  const setFraccionTexto : Function = useSolicitudFirmaStore(
+  const setFraccionTexto: Function = useSolicitudFirmaStore(
     (state) => state.setFraccionTexto
-  )
-  const fraccionTexto : string = useSolicitudFirmaStore(
+  );
+  const fraccionTexto: string = useSolicitudFirmaStore(
     (state) => state.fraccionTexto
-  )
+  );
 
   useEffect(() => {
-    if(fraccionTexto == "Cancelado") {
-      setFraccionTexto("")
-    } else{
-      setFraccionTexto(fraccionTexto)
+    if (fraccionTexto == "Cancelado") {
+      setFraccionTexto("");
+    } else {
+      setFraccionTexto(fraccionTexto);
     }
-  }, [])
-  
+  }, []);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
-    <Grid item width={"100%"}>
-      {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
-      <LateralMenu />
-    </Grid>
-    <Grid
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      height={60}
-    >
-      <Typography
-        sx={{
-          fontSize: "2.3ch",
-          fontFamily: "MontserratBold",
-          color: "#AF8C55",
-          "@media (max-width: 600px)": {
-            // XS (extra small) screen
-            fontSize: "1rem",
-          },
-          "@media (min-width: 601px) and (max-width: 900px)": {
-            // SM (small) screen
-            fontSize: "1.5ch",
-          },
-        }}
+      <Grid item width={"100%"}>
+        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
+        <LateralMenu />
+      </Grid>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        height={60}
       >
-        Cancelaciones
-      </Typography>
-    </Grid>
-    <Grid item mb={5} lg={12} display="center" justifyContent="center">
-      <Paper
-        component="form"
-        sx={{
-          display: "flex",
-          width: "50%",
-        }}
-      >
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Buscar"
-          value={busqueda}
-          onChange={(e) => {
-            handleChange(e.target.value);
-          }}
-          onKeyPress={(ev) => {
-            if (ev.key === "Enter") {
-              handleSearch();
-              ev.preventDefault();
-              return false;
-            }
-          }}
-        />
-        <IconButton
-          type="button"
-          sx={{ p: "10px" }}
-          aria-label="search"
-          onClick={() => handleSearch()}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </Grid>
-    <Grid container display={"flex"} justifyContent={"center"}>
-      <Paper sx={{ width: "100%" }}>
-        <TableContainer
+        <Typography
           sx={{
-            //height: 520,
-
-            overflow: "auto",
-            "&::-webkit-scrollbar": {
-              width: ".5vw",
-              height: "1vh",
-              mt: 1,
+            fontSize: "2.3ch",
+            fontFamily: "MontserratBold",
+            color: "#AF8C55",
+            "@media (max-width: 600px)": {
+              // XS (extra small) screen
+              fontSize: "1rem",
             },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#AF8C55",
-              outline: "1px solid slategrey",
-              borderRadius: 1,
-            },
-            height: "35rem",
-            "@media (min-width: 480px)": {
-              height: "32.5rem",
-            },
-            "@media (min-width: 768px)": {
-              height: "32.5rem",
-            },
-            "@media (min-width: 1140px)": {
-              height: "32.5rem",
-            },
-            "@media (min-width: 1400px)": {
-              height: "32.5rem",
-            },
-            "@media (min-width: 1870px)": {
-              height: "46.5rem",
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              // SM (small) screen
+              fontSize: "1.5ch",
             },
           }}
         >
-          <Table stickyHeader>
-            <TableHead>
-              <StyledTableRow>
-                {heads.map((head, index) => (
-                  <StyledTableCell align="center" key={index}>
-                    <TableSortLabel>{head.label} </TableSortLabel>
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {datosFiltrados.length === 0 ? (
-                <StyledTableRow>
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell>Sin registros</StyledTableCell>
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                </StyledTableRow>
-              ) : (
-                datosFiltrados.map((row, index) => {
-                  let chip = <></>;
+          Cancelaciones
+        </Typography>
+      </Grid>
+      <Grid item mb={5} lg={12} display="center" justifyContent="center">
+        <Paper
+          component="form"
+          sx={{
+            display: "flex",
+            width: "50%",
+          }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Buscar"
+            value={busqueda}
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                handleSearch();
+                ev.preventDefault();
+                return false;
+              }
+            }}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={() => handleSearch()}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+      </Grid>
+      <Grid container display={"flex"} justifyContent={"center"}>
+        <Paper sx={{ width: "100%" }}>
+          <TableContainer
+            sx={{
+              //height: 520,
 
-                  if (
-                    row.Estatus === "Captura" ||
-                    row.Estatus === "Revision"
-                  ) {
-                    chip = (
-                      <Chip
-                        label={"En " + row.Estatus}
-                        // icon={<WarningAmberIcon />}
-                        color="default"
-                        variant="outlined"
-                      />
-                    );
-                  } else if (
-                    row.Estatus === "Verificacion" ||
-                    row.Estatus === "Validacion"
-                  ) {
-                    chip = (
-                      <Chip
-                        label={"En " + row.Estatus}
-                        // icon={<RateReviewSharpIcon />}
-                        color="info"
-                        variant="outlined"
-                      />
-                    );
-                  } else if (row.Estatus === "Autorizacion") {
-                    chip = (
-                      <Chip
-                        label={"En " + row.Estatus}
-                        // icon={<RateReviewSharpIcon />}
-                        color="warning"
-                        variant="outlined"
-                      />
-                    );
-                  } else if (row.Estatus.includes("Por Firmar")) {
-                    chip = (
-                      <Chip
-                        label={row.Estatus}
-                        // icon={<CheckIcon />}
-                        color="secondary"
-                        variant="outlined"
-                      />
-                    );
-                  } else if (row.Estatus === "Autorizado") {
-                    chip = (
-                      <Chip
-                        label={row.Estatus}
-                        // icon={<CheckIcon />}
-                        color="success"
-                        variant="outlined"
-                      />
-                    );
-                  } else if (row.Estatus === "Actualizacion") {
-                    chip = (
-                      <Tooltip
-                        title={`${differenceInDays(
-                          getDays(new Date(row.FechaRequerimientos), 11),
-                          new Date()
-                        )} días restantes para cancelación automática`}
-                        onClick={() => CambiaEstatus("Cancelado", row.Id)}
-                      >
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: "1vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+              height: "35rem",
+              "@media (min-width: 480px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 768px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1140px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1400px)": {
+                height: "32.5rem",
+              },
+              "@media (min-width: 1870px)": {
+                height: "46.5rem",
+              },
+            }}
+          >
+            <Table stickyHeader>
+              <TableHead>
+                <StyledTableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      <TableSortLabel>{head.label} </TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </StyledTableRow>
+              </TableHead>
+              <TableBody>
+                {datosFiltrados.length === 0 ? (
+                  <StyledTableRow>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                  </StyledTableRow>
+                ) : (
+                  datosFiltrados.map((row, index) => {
+                    let chip = <></>;
+
+                    if (
+                      row.Estatus === "Captura" ||
+                      row.Estatus === "Revision"
+                    ) {
+                      chip = (
+                        <Chip
+                          label={"En " + row.Estatus}
+                          // icon={<WarningAmberIcon />}
+                          color="default"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (
+                      row.Estatus === "Verificacion" ||
+                      row.Estatus === "Validacion"
+                    ) {
+                      chip = (
+                        <Chip
+                          label={"En " + row.Estatus}
+                          // icon={<RateReviewSharpIcon />}
+                          color="info"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus === "Autorizacion") {
+                      chip = (
+                        <Chip
+                          label={"En " + row.Estatus}
+                          // icon={<RateReviewSharpIcon />}
+                          color="warning"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus.includes("Por Firmar")) {
+                      chip = (
                         <Chip
                           label={row.Estatus}
-                          color={
-                            differenceInDays(
-                              getDays(new Date(row.FechaRequerimientos), 10),
-                              new Date()
-                            ) > 5
-                              ? "warning"
-                              : "error"
-                          }
-                          variant="filled"
+                          // icon={<CheckIcon />}
+                          color="secondary"
+                          variant="outlined"
                         />
-                      </Tooltip>
-                    );
-                  } else {
-                    chip = (
-                      <Chip
-                        label={row.Estatus}
-                        // icon={<CheckIcon />}
-                        color="default"
-                        variant="outlined"
-                      />
-                    );
-                  }
-
-                  return (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell
-                        sx={{ padding: "1px 15px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.NumeroRegistro}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        sx={{ padding: "1px 15px 1px 0", width: "300px" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.Institucion?.toString()}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 30px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.TipoEntePublico?.toString()}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 20px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {chip}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 25px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.ClaveDeInscripcion?.toString()}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 30px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.MontoOriginalContratado?.toString()}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 25px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {format(
-                          new Date(row.FechaContratacion),
-                          "dd/MM/yyyy"
-                        )}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 25px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.Estatus === "Actualizacion"
-                          ? format(
-                              new Date(row.FechaRequerimientos),
-                              "dd/MM/yyyy"
-                            )
-                          : " "}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{ padding: "1px 25px 1px 0" }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        {row.TipoSolicitud}
-                      </StyledTableCell>
-
-                      <StyledTableCell
-                        sx={{
-                          flexDirection: "row",
-                          display: "grid",
-                          height: "7rem",
-                          gridTemplateColumns: "repeat(4,1fr)",
-                        }}
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        <Tooltip title="Ver solicitud">
-                          <IconButton
-                            type="button"
-                            onClick={() => {
-                              llenaSolicitud(row, row.TipoSolicitud);
-                              changeIdSolicitud(row.Id);
-                              changeEstatus(row.Estatus);
-                              changeNoRegistro(row.NumeroRegistro);
-                              changeOpenDialogVer(!openDialogVer);
-
-                              setRowId(row.Id)
-                              setRowSolicitud(row);
-                              console.log("rowSolicitud",row)
-                            }}
-                          >
-                            <VisibilityIcon />
-                            {row.Acciones}
-                          </IconButton>
+                      );
+                    } else if (row.Estatus === "Autorizado") {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          // icon={<CheckIcon />}
+                          color="success"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus === "Actualizacion") {
+                      chip = (
+                        <Tooltip
+                          title={`${differenceInDays(
+                            getDays(new Date(row.FechaRequerimientos), 11),
+                            new Date()
+                          )} días restantes para cancelación automática`}
+                          onClick={() => CambiaEstatus("Cancelado", row.Id)}
+                        >
+                          <Chip
+                            label={row.Estatus}
+                            color={
+                              differenceInDays(
+                                getDays(new Date(row.FechaRequerimientos), 10),
+                                new Date()
+                              ) > 5
+                                ? "warning"
+                                : "error"
+                            }
+                            variant="filled"
+                          />
                         </Tooltip>
+                      );
+                    } else {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          // icon={<CheckIcon />}
+                          color="default"
+                          variant="outlined"
+                        />
+                      );
+                    }
 
-                        {((localStorage.getItem("Rol") === "Verificador" &&
-                          row.Estatus.toLowerCase() === "por firmar" &&
-                          !row.Estatus.includes("Autorizado")) ||
-                          (localStorage.getItem("Rol") === "Autorizador" &&
-                            row.Estatus.includes("Por Firmar"))) && (
-                          <Tooltip title="Firmar documento">
-                            <IconButton
-                              type="button"
-                              onClick={() => {
-                                getComentariosSolicitudPlazo(
-                                  row.Id,
-                                  setDatosComentarios
-                                ).then((data) => {
-                                  if (
-                                    rolesAdmin.includes(
-                                      localStorage.getItem("Rol")!
-                                    )
-                                  ) {
-                                    if (
-                                      data.filter(
-                                        (a: any) => a.Tipo === "Requerimiento"
-                                      ).length > 0
-                                    ) {
-                                      requerimientos(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        data.filter(
-                                          (a: any) =>
-                                            a.Tipo === "Requerimiento"
-                                        )[0],
-                                        row.Id
-                                      );
-                                    } else {
-                                      ConsultaConstancia(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        setUrl
-                                      );
-                                      changeEstatus(row.Estatus);
-                                      changeIdSolicitud(row.Id);
-                                      navigate("../firmaUrl");
-                                    }
-                                  } else {
-                                    ConsultaSolicitud(
-                                      row.Solicitud,
-                                      row.NumeroRegistro,
-                                      setUrl
-                                    );
-                                    changeEstatus("Autorizado");
-                                    changeIdSolicitud(row.Id);
-                                    navigate("../firmaUrl");
-                                  }
-                                });
-                              }}
-                            >
-                              <HistoryEduIcon />
-                              {row.Acciones}
-                            </IconButton>
-                          </Tooltip>
-                        )}
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell
+                          sx={{ padding: "1px 15px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.NumeroRegistro}
+                        </StyledTableCell>
+                        <StyledTableCell
+                          sx={{ padding: "1px 15px 1px 0", width: "300px" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.Institucion?.toString()}
+                        </StyledTableCell>
 
-                        {((localStorage.getItem("Rol") === "Verificador" &&
-                          (row.Estatus === "Verificacion" ||
-                            row.Estatus === "Actualizacion")) ||
-                          (localStorage.getItem("Rol") === "Capturador" &&
-                            row.Estatus === "Captura")) &&
-                          localStorage.getItem("Rol") !== "Administrador" && (
-                            <Tooltip title="Editar">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  changeIdSolicitud(row?.Id);
-                                  changeNoRegistro(row.NumeroRegistro);
-                                  changeEditCreadoPor(row?.CreadoPor);
-                                  llenaSolicitud(row, row.TipoSolicitud);
-                                  if (row.Estatus === "Actualizacion") {
-                                    getComentariosSolicitudPlazo(
-                                      row.Id,
-                                      setDatosActualizar
-                                    );
-                                  }
-                                  editarSolicitud(row.TipoSolicitud);
-                                }}
-                              >
-                                <EditIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
+                        <StyledTableCell
+                          sx={{ padding: "1px 30px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.TipoEntePublico?.toString()}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 20px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {chip}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.IdClaveInscripcion?.toString()}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 30px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.MontoOriginalContratado?.toString()}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {format(
+                            new Date(row.FechaContratacion),
+                            "dd/MM/yyyy"
                           )}
+                        </StyledTableCell>
 
-                        {row.Estatus !== "Captura" &&
-                          row.Estatus !== "Verificacion" && (
-                            <Tooltip title="Ver archivos">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  setSolicitud({
-                                    Id: row.Id,
-                                    noSolicitud: row.NumeroRegistro,
-                                  });
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.Estatus === "Actualizacion"
+                            ? format(
+                                new Date(row.FechaRequerimientos),
+                                "dd/MM/yyyy"
+                              )
+                            : " "}
+                        </StyledTableCell>
 
-                                  setOpenDescargar(true);
-                                }}
-                              >
-                                <BrowserUpdatedIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.TipoSolicitud}
+                        </StyledTableCell>
 
-                        {localStorage.getItem("Rol") !== "Administrador" && (
-                          <Tooltip title="Comentarios">
-                            <IconButton
-                              type="button"
-                              onClick={() => {
-                                changeIdSolicitud(row?.Id);
-                                changeEditCreadoPor(row?.CreadoPor);
-                                changeOpenVerComentarios(!openVerComentarios);
-                              }}
-                            >
-                              <CommentIcon />
-                              {row.Acciones}
-                            </IconButton>
-                          </Tooltip>
-                        )}
-
-                        {row.Estatus === "Autorizado" && (
-                          <Tooltip title="Solicitar Cancelación">
+                        <StyledTableCell
+                          sx={{
+                            flexDirection: "row",
+                            display: "grid",
+                            height: "7rem",
+                            gridTemplateColumns: "repeat(4,1fr)",
+                          }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          <Tooltip title="Ver solicitud">
                             <IconButton
                               type="button"
                               onClick={() => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
                                 changeEstatus(row.Estatus);
-                                console.log("row.Estatus", row.Estatus)
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 
+                                setRowId(row.Id);
                                 setRowSolicitud(row);
-                                //setRowSolicitud(row)
                               }}
                             >
-                              <DoDisturbOnIcon />
+                              <VisibilityIcon />
                               {row.Acciones}
                             </IconButton>
                           </Tooltip>
-                        )}
 
-                        {localStorage.getItem("IdUsuario") ===
-                          row.CreadoPor &&
-                          localStorage.getItem("Rol") !== "Administrador" &&
-                          (row.Estatus === "Captura" ||
-                            row.Estatus === "Verificacion") && (
-                            <Tooltip title="Borrar">
+                          {((localStorage.getItem("Rol") === "Verificador" &&
+                            row.Estatus.toLowerCase() === "por firmar" &&
+                            !row.Estatus.includes("Autorizado")) ||
+                            (localStorage.getItem("Rol") === "Autorizador" &&
+                              row.Estatus.includes("Por Firmar"))) && (
+                            <Tooltip title="Firmar documento">
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  changeIdSolicitud(row?.Id || "");
-                                  changeEditCreadoPor(row?.CreadoPor);
-                                  changeOpenEliminar(!openEliminar);
-                                  if (
-                                    localStorage.getItem("Rol") ===
-                                      "Capturador" ||
-                                    localStorage.getItem("Rol") ===
-                                      "Verificador"
-                                  ) {
-                                    getSolicitudesCancelaciones(setDatos);
-                                  } else {
-                                    getSolicitudesAdmin(
-                                      "Autorizacion",
-                                      setDatos
-                                    );
-                                  }
+                                  getComentariosSolicitudPlazo(
+                                    row.Id,
+                                    setDatosComentarios
+                                  ).then((data) => {
+                                    if (
+                                      rolesAdmin.includes(
+                                        localStorage.getItem("Rol")!
+                                      )
+                                    ) {
+                                      if (
+                                        data.filter(
+                                          (a: any) => a.Tipo === "Requerimiento"
+                                        ).length > 0
+                                      ) {
+                                        requerimientos(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          data.filter(
+                                            (a: any) =>
+                                              a.Tipo === "Requerimiento"
+                                          )[0],
+                                          row.Id
+                                        );
+                                      } else {
+                                        ConsultaConstancia(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          setUrl
+                                        );
+                                        changeEstatus(row.Estatus);
+                                        changeIdSolicitud(row.Id);
+                                        navigate("../firmaUrl");
+                                      }
+                                    } else {
+                                      ConsultaSolicitud(
+                                        row.Solicitud,
+                                        row.NumeroRegistro,
+                                        setUrl
+                                      );
+                                      changeEstatus("Autorizado");
+                                      changeIdSolicitud(row.Id);
+                                      navigate("../firmaUrl");
+                                    }
+                                  });
                                 }}
                               >
-                                <DeleteIcon />
+                                <HistoryEduIcon />
                                 {row.Acciones}
                               </IconButton>
                             </Tooltip>
                           )}
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Grid>
-    {openDialogVer && (
-      <VerBorradorDocumento
-        handler={changeOpenDialogVer}
-        openState={openDialogVer}
-        rowSolicitud={rowSolicitud}
-        rowId={rowId}
-      />
-    )}
-    {openDescargar && (
-      <DialogDescargaArchivos
-        open={openDescargar}
-        setOpen={setOpenDescargar}
-        noSolicitud={solicitud.noSolicitud}
-        idSolicitud={solicitud.Id}
-      />
-    )}
 
-    {openVerComentarios && (
-      <VerComentariosSolicitud
-        handler={changeOpenVerComentarios}
-        openState={openVerComentarios}
+                          {((localStorage.getItem("Rol") === "Verificador" &&
+                            (row.Estatus === "Verificacion" ||
+                              row.Estatus === "Actualizacion")) ||
+                            (localStorage.getItem("Rol") === "Capturador" &&
+                              row.Estatus === "Captura")) &&
+                            localStorage.getItem("Rol") !== "Administrador" && (
+                              <Tooltip title="Editar">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    changeIdSolicitud(row?.Id);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    changeEditCreadoPor(row?.CreadoPor);
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    if (row.Estatus === "Actualizacion") {
+                                      getComentariosSolicitudPlazo(
+                                        row.Id,
+                                        setDatosActualizar
+                                      );
+                                    }
+                                    editarSolicitud(row.TipoSolicitud);
+                                  }}
+                                >
+                                  <EditIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
+
+                          {row.Estatus !== "Captura" &&
+                            row.Estatus !== "Verificacion" && (
+                              <Tooltip title="Ver archivos">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    setSolicitud({
+                                      Id: row.Id,
+                                      noSolicitud: row.NumeroRegistro,
+                                    });
+
+                                    setOpenDescargar(true);
+                                  }}
+                                >
+                                  <BrowserUpdatedIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
+
+                          {localStorage.getItem("Rol") !== "Administrador" && (
+                            <Tooltip title="Comentarios">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  changeIdSolicitud(row?.Id);
+                                  changeEditCreadoPor(row?.CreadoPor);
+                                  changeOpenVerComentarios(!openVerComentarios);
+                                }}
+                              >
+                                <CommentIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
+                          {row.Estatus === "Autorizado" && (
+                            <Tooltip title="Solicitar Cancelación">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  llenaSolicitud(row, row.TipoSolicitud);
+                                  changeIdSolicitud(row.Id);
+                                  changeEstatus(row.Estatus);
+                                  changeNoRegistro(row.NumeroRegistro);
+                                  changeOpenDialogVer(!openDialogVer);
+
+                                  setRowSolicitud(row);
+                                  //setRowSolicitud(row)
+                                }}
+                              >
+                                <DoDisturbOnIcon />
+                                {row.Acciones}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+
+                          {localStorage.getItem("IdUsuario") ===
+                            row.CreadoPor &&
+                            localStorage.getItem("Rol") !== "Administrador" &&
+                            (row.Estatus === "Captura" ||
+                              row.Estatus === "Verificacion") && (
+                              <Tooltip title="Borrar">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    changeIdSolicitud(row?.Id || "");
+                                    changeEditCreadoPor(row?.CreadoPor);
+                                    changeOpenEliminar(!openEliminar);
+                                    if (
+                                      localStorage.getItem("Rol") ===
+                                        "Capturador" ||
+                                      localStorage.getItem("Rol") ===
+                                        "Verificador"
+                                    ) {
+                                      getSolicitudesCancelaciones(setDatos);
+                                    } else {
+                                      getSolicitudesAdmin(
+                                        "Autorizacion",
+                                        setDatos
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+      {openDialogVer && (
+        <VerBorradorDocumento
+          handler={changeOpenDialogVer}
+          openState={openDialogVer}
+          rowSolicitud={rowSolicitud}
+          rowId={rowId}
+        />
+      )}
+      {openDescargar && (
+        <DialogDescargaArchivos
+          open={openDescargar}
+          setOpen={setOpenDescargar}
+          noSolicitud={solicitud.noSolicitud}
+          idSolicitud={solicitud.Id}
+        />
+      )}
+
+      {openVerComentarios && (
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+        />
+      )}
+      <DialogEliminar
+        handler={changeOpenEliminar}
+        openState={openEliminar}
+        texto={"Solicitud"}
       />
-    )}
-    <DialogEliminar
-      handler={changeOpenEliminar}
-      openState={openEliminar}
-      texto={"Solicitud"}
-    />
-  </Grid>
-);
-}
+    </Grid>
+  );
+};

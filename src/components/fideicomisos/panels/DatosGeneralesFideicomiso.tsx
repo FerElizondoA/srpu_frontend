@@ -217,7 +217,7 @@ export function DatoGeneralesFideicomiso() {
                 });
               }}
               error={error}
-              helperText={error && "Número de registro ya existente"}
+              helperText={error && "Número de Registro ya Existente"}
             />
           </Grid>
           <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>

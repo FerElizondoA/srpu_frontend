@@ -22,7 +22,7 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import HelpIcon from "@mui/icons-material/Help";
-import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
+import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 
 import {
   AppBar,
@@ -103,7 +103,7 @@ export const IconsMenu = (icon: string) => {
     case "HelpIcon":
       return <HelpIcon sx={queries.icon} />;
     case "CancelIcon":
-      return <DoNotDisturbAltIcon sx={queries.icon} />
+      return <DoNotDisturbAltIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -126,10 +126,10 @@ export interface IData {
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-      localStorage.getItem("Menu") !== null
+    localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
-  ////////Administración de Ayudas////////
+
   interface MenuObject {
     Id: string;
     FechaDeCreacion: string;
@@ -383,7 +383,9 @@ export function LateralMenu() {
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ ...queries.medium_text }}>Nueva contraseña</Typography>
+            <Typography sx={{ ...queries.medium_text }}>
+              Nueva contraseña
+            </Typography>
             <OutlinedInput
               error={error.show}
               size="small"
@@ -451,9 +453,7 @@ export function LateralMenu() {
               variant="outlined"
               sx={{ ...queries.buttonCancelar }}
             >
-              <Typography
-                sx={{ ...queries.medium_text, color: "white" }}
-              >
+              <Typography sx={{ ...queries.medium_text, color: "white" }}>
                 Cancelar
               </Typography>
             </Button>
@@ -464,9 +464,7 @@ export function LateralMenu() {
               onClick={() => cambiarContrasena()}
               sx={{ ...queries.buttonContinuar }}
             >
-              <Typography
-                sx={{ ...queries.medium_text, color: "white" }}
-              >
+              <Typography sx={{ ...queries.medium_text, color: "white" }}>
                 Cambiar
               </Typography>{" "}
             </Button>
@@ -488,9 +486,6 @@ export function LateralMenu() {
   const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
     (state) => state.updatecondicionFinancieraTable
   );
-  // const addCondicionFinanciera: Function = useCortoPlazoStore(
-  //   (state) => state.addCondicionFinanciera
-  // );
   const cleanComentario: Function = useCortoPlazoStore(
     (state) => state.cleanComentario
   );
@@ -538,7 +533,7 @@ export function LateralMenu() {
         >
           <ChangePasswordModal />
           <Grid item mt={0.5}>
-            <Tooltip title="Menu Lateral">
+            <Tooltip title="Menú Lateral">
               <IconButton
                 size="large"
                 color="inherit"
@@ -637,7 +632,6 @@ export function LateralMenu() {
                 </Tooltip>
               </Badge>
             </Grid>
-
           </Grid>
         </Grid>
 
@@ -716,8 +710,6 @@ export function LateralMenu() {
               <Divider />
 
               <List>
-
-
                 {menu.length > 0 ? (
                   menu.map(
                     (v: any, i: number) =>
@@ -754,7 +746,6 @@ export function LateralMenu() {
                             ) : null}
                           </ListItemButton>
 
-
                           {v.item.length > 0 && (
                             <Collapse
                               in={openModulo === v.ControlInterno}
@@ -787,7 +778,7 @@ export function LateralMenu() {
                                       <ListItemIcon>
                                         {IconsMenu(v.Icon)}
                                       </ListItemIcon>
-                                      <Typography sx={queries.bold_text}>
+                                      <Typography sx={queries.medium_text}>
                                         {v.Menu}
                                       </Typography>
 
@@ -836,7 +827,7 @@ export function LateralMenu() {
                                                   {IconsMenu(v.Icon)}
                                                 </ListItemIcon>
                                                 <Typography
-                                                  sx={queries.bold_text}
+                                                  sx={queries.medium_text}
                                                 >
                                                   {v.Menu}
                                                 </Typography>
@@ -866,22 +857,6 @@ export function LateralMenu() {
                     </Typography>
                   </ListItemButton>
                 )}
-
-                {localStorage.getItem("Rol") === "Autorizador" ||
-                  localStorage.getItem("Rol") === "Verificador" && (
-                    <Grid>
-                      <ListItemButton
-                        onClick={() => {
-                          navigate("../cancelaciones")
-                        }}
-                      >
-                        <ListItemIcon>{IconsMenu("CancelIcon")}</ListItemIcon>
-                        <Typography sx={queries.bold_text}>
-                          Cancelaciones
-                        </Typography>
-                      </ListItemButton>
-                    </Grid>
-                  )}
               </List>
             </Grid>
 

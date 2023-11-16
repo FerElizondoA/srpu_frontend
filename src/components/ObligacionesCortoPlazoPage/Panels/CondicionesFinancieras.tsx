@@ -84,7 +84,7 @@ export const headsComision: readonly Head[] = [
 
 export const headsDisposicion: readonly Head[] = [
   {
-    label: "Fecha de disposición",
+    label: "Fecha de Disposición",
   },
   {
     label: "Importe",

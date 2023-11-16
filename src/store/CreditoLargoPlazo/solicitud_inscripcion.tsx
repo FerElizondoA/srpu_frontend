@@ -125,22 +125,21 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       //registrarAutorizacion: state.autorizacionSelect,
-      
 
       registrarAutorizacion: {
         registrarAutorizacion: state.autorizacionSelect,
-  
-      //  numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
-    
-      //  fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
-    
-      //  montoAutorizado: state.registrarAutorizacion.montoAutorizado,
-    
-      //  medioPublicacion: state.registrarAutorizacion.medioPublicacion,
-     },
+
+        //  numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
+
+        //  fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
+
+        //  montoAutorizado: state.registrarAutorizacion.montoAutorizado,
+
+        //  medioPublicacion: state.registrarAutorizacion.medioPublicacion,
+      },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      
+
       documentacion: state.tablaDocumentosLP.map((v, i) => {
         return {
           nombreArchivo: v.nombreArchivo,
@@ -163,7 +162,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
@@ -212,7 +212,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       //detalleInversion: {
       //  ...state.archivoDetalleInversion,
       //},
-//
+      //
       //registrarAutorizacion: {
       //  autorizacionSelect: state.autorizacionSelect
       //  // numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
@@ -223,14 +223,14 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-       documentacion: state.tablaDocumentosLP.map((v, i) => {
-         return {
-           nombreArchivo: v.nombreArchivo,
-           tipoArchivo: v.tipoArchivo,
-           descripcionTipo: v.descripcionTipo,
-         };
-       }),
-       
+      documentacion: state.tablaDocumentosLP.map((v, i) => {
+        return {
+          nombreArchivo: v.nombreArchivo,
+          tipoArchivo: v.tipoArchivo,
+          descripcionTipo: v.descripcionTipo,
+        };
+      }),
+
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -246,7 +246,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
@@ -452,13 +453,13 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
     TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
     Tipocomisiones:
       solicitud.condicionesFinancieras[0].comisiones[0]?.tipoDeComision ||
-      "No aplica",
+      "No Aplica",
     TasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
     Servidorpublico: solicitud.inscripcion.servidorPublicoDirigido,
     TipoDocumento: solicitud.encabezado.tipoDocumento,
     PeriodoPago:
       solicitud.condicionesFinancieras[0].comisiones[0].periodicidadDePago,
-    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No aplica',
+    //ObligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios[0]?.obligadoSolidario || 'No Aplica',
     Reglas: solicitud.inscripcion.declaratorias,
     TasaInteres:
       solicitud.condicionesFinancieras[0].tasaInteres[0].tasaReferencia,
@@ -488,7 +489,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
         periodoPago: SolicitudDescarga.PeriodoPago,
         obligadoSolidarioAval:
           solicitud.informacionGeneral.obligadosSolidarios[0]
-            ?.obligadoSolidario || "No aplica",
+            ?.obligadoSolidario || "No Aplica",
         fechaContrato: fechaContratacionEspañol,
         fechaVencimiento: fechaVencimientoEspañol,
         Documentos: descripciones,

@@ -212,7 +212,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>
@@ -236,7 +236,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>
@@ -260,7 +260,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>
@@ -337,7 +337,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>
@@ -361,7 +361,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>
@@ -385,7 +385,7 @@ export function Reestructura() {
                 id="demo-simple-select"
                 label="Institución financiera"
               >
-                <MenuItem value={10}>No aplica</MenuItem>
+                <MenuItem value={10}>No Aplica</MenuItem>
                 <MenuItem value={20}>Aplica</MenuItem>
                 <MenuItem value={30}>Indefinido</MenuItem>
               </Select>

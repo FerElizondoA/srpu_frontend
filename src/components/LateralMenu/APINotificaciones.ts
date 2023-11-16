@@ -37,7 +37,7 @@ export const createNotification = (
       }
     )
     .then((r) => {
-      window.location.reload();
+      // window.location.reload();
       Swal.fire({
         confirmButtonColor: "#15212f",
         cancelButtonColor: "rgb(175, 140, 85)",

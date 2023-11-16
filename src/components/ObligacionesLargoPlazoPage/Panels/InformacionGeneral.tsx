@@ -20,7 +20,11 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DesktopDatePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
@@ -72,7 +76,7 @@ const heads: Head[] = [
     label: "Obligado solidario / aval",
   },
   {
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     label: "Ente público obligado",
@@ -195,7 +199,7 @@ export function InformacionGeneral() {
   useEffect(() => {
     if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
       let obligado = catalogoObligadoSolidarioAval.find(
-        (obligado) => obligado.Descripcion === "No aplica"
+        (obligado) => obligado.Descripcion === "No Aplica"
       );
       changeObligadoSolidarioAval({
         obligadoSolidario: {
@@ -265,7 +269,7 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
-              sx={{width:"100%"}}
+              sx={{ width: "100%" }}
               value={new Date(contratacion)}
               onChange={(date) => {
                 setContratacion(date?.toString() || "");
@@ -356,10 +360,10 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
-              sx={{width:"100%"}}
+              sx={{ width: "100%" }}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
-              minDate={new Date(addDays(new Date(contratacion), 0))}//1
+              minDate={new Date(addDays(new Date(contratacion), 0))} //1
               // slots={{
               //   textField: DateInput,
               // }}
@@ -520,7 +524,7 @@ export function InformacionGeneral() {
             }}
             onChange={(event, text) => {
               if (
-                text?.Descripcion === "No aplica" ||
+                text?.Descripcion === "No Aplica" ||
                 text?.Id === "" ||
                 text === null
               ) {
@@ -529,7 +533,7 @@ export function InformacionGeneral() {
               changeObligadoSolidarioAval({
                 obligadoSolidario: {
                   Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "No aplica",
+                  Descripcion: text?.Descripcion || "No Aplica",
                 },
                 tipoEntePublicoObligado: {
                   Id: "",
@@ -558,7 +562,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Tipo de ente público obligado
+            Tipo de Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -566,7 +570,7 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
             }
             fullWidth
@@ -620,7 +624,7 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               /^[\s]*$/.test(generalTipoEntePublico.Descripcion)
             }
@@ -668,7 +672,7 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario.Descripcion === "No aplica" ||
+              generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
               /^[\s]*$/.test(generalEntePublico.Descripcion)
@@ -690,7 +694,7 @@ export function InformacionGeneral() {
             }}
           >
             <CheckIcon fontSize="small" />
-            AGREGAR
+            Agregar
           </Button>
         </ThemeProvider>
       </Grid>
@@ -731,12 +735,12 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No aplica" &&
+                {generalObligadoSolidario.Descripcion === "No Aplica" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />
-                    <StyledTableCell align="center">No aplica</StyledTableCell>
+                    <StyledTableCell align="center">No Aplica</StyledTableCell>
                     <StyledTableCell />
                   </StyledTableRow>
                 ) : (

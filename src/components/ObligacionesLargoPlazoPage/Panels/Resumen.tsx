@@ -72,7 +72,7 @@ const heads: Head[] = [
     label: "Obligado solidario / aval",
   },
   {
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     label: "Ente público obligado",

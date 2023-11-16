@@ -63,10 +63,10 @@ export interface IPathDocumentos {
 
 const heads: Head[] = [
   {
-    label: "Obligado solidario / aval",
+    label: "Obligado Solidario / Aval",
   },
   {
-    label: "Tipo de ente público obligado",
+    label: "Tipo de Ente Público Obligado",
   },
   {
     label: "Ente público obligado",
@@ -419,9 +419,9 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Obligado Solidario Aval"]
+                      comentario["Tabla Obligado Solidario / Aval"]
                         ? // ||
-                          // comentariosRegistro["Tabla Obligado Solidario Aval"]
+                          // comentariosRegistro["Tabla Obligado Solidario / Aval"]
                           "success"
                         : "primary"
                     }
@@ -429,7 +429,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                     onClick={() => {
                       setOpenComentarioApartado({
                         open: true,
-                        apartado: "Tabla Obligado Solidario Aval",
+                        apartado: "Tabla Obligado Solidario / Aval",
                         tab: "TabInformaciónGeneral",
                       });
                     }}

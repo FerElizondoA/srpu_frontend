@@ -198,7 +198,7 @@ export function DialogCatalogos({
             {edit.Modulo === "Entes Público Obligados" ? (
               <Grid>
                 <InputLabel sx={queries.medium_text}>
-                  Tipo de ente público obligado
+                  Tipo de Ente Público Obligado
                 </InputLabel>
                 <Autocomplete
                   clearText="Borrar"
