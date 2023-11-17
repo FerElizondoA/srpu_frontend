@@ -910,7 +910,7 @@ export function ConsultaDeSolicitudPage() {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus("Autorizado");
+                                      changeEstatus("Por Firmar");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
