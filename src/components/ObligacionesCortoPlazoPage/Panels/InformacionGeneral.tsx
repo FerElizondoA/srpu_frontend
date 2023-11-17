@@ -771,7 +771,6 @@ export function InformacionGeneral() {
               addRows();
             }}
           >
-            <CheckIcon fontSize="small" />
             Agregar
           </Button>
         </ThemeProvider>
