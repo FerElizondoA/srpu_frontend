@@ -896,6 +896,14 @@ export function LateralMenu() {
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
                           <ListItemButton
+                          sx={{
+                            backgroundColor:
+                              i === indexSelect && seccionesHover === true
+                                ? "#AF8C55"
+                                : "#ffff",
+                            //border: i === indexSelect ? "2px solid" : null,
+                            ":hover": { backgroundColor: "#AF8C55" },
+                          }}
                             onClick={() => {
                               if (v.Path !== "#") {
                                 localStorage.setItem("IdMenuActual", v.Id);
@@ -907,6 +915,7 @@ export function LateralMenu() {
                                   v.ControlInterno === "Cambiar contraseña"
                                 ) {
                                   setOpenPasswordChange(true);
+                                  setIsDrawerOpen(false)
                                 } else if (
                                   v.ControlInterno === "Cerrar sesión"
                                 ) {

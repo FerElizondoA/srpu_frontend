@@ -1,4 +1,3 @@
-import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
@@ -20,11 +19,7 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
@@ -32,15 +27,11 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 interface Head {
   label: string;
@@ -693,7 +684,6 @@ export function InformacionGeneral() {
               addRows();
             }}
           >
-            <CheckIcon fontSize="small" />
             Agregar
           </Button>
         </ThemeProvider>
