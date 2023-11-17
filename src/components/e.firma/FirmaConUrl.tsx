@@ -140,24 +140,56 @@ export const FirmaConUrl = () => {
         users
       );
     } else if (!estatus.includes("Autorizado") && estatus !== "Actualizacion") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "verificador"
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        `${
-          estatus === "Actualizacion"
-            ? "Se ha generado una solicitud de requerimientos para un crédito a corto plazo inscrito."
-            : "Se ha autorizado un crédito a corto plazo"
-        }`,
-        users
-      );
+      if (estatus === "Revision") {
+        usuarios
+          .filter(
+            (usr: any) =>
+              usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+              usr.Rol.toLowerCase() === "revisor"
+          )
+          .map((usuario: any) => {
+            return users.push(usuario.Id);
+          });
+        createNotification(
+          "Crédito simple a corto plazo",
+          `${"La solicitud de inscripción se ha enviado a autorización"}`,
+          [localStorage.getItem("IdUsuario")!]
+        );
+        createNotification(
+          "Crédito simple a corto plazo",
+          `${"Se te ha asignado una solicitud de inscripción"}`,
+          users
+        );
+      } else if (estatus === "Actualizacion") {
+        usuarios
+          .filter(
+            (usr: any) =>
+              usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+              usr.Rol.toLowerCase() === "verificador"
+          )
+          .map((usuario: any) => {
+            return users.push(usuario.Id);
+          });
+        createNotification(
+          "Crédito simple a corto plazo",
+          `${"Se ha generado una solicitud de requerimientos para un crédito a corto plazo inscrito."}`,
+          users
+        );
+      } else {
+        usuarios
+          .filter(
+            (usr: any) =>
+              usr.Entidad === localStorage.getItem("EntePublicoObligado")!
+          )
+          .map((usuario: any) => {
+            return users.push(usuario.Id);
+          });
+        createNotification(
+          "Crédito simple a corto plazo",
+          `${"Se ha autorizado un crédito a corto plazo"}`,
+          users
+        );
+      }
     }
 
     CambiaEstatus(estatus, id);
