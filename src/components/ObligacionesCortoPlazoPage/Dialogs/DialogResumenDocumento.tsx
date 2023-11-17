@@ -182,7 +182,9 @@ export function VerBorradorDocumento(props: Props) {
       );
     }
 
-    CambiaEstatus(estatus, props.rowId || IdSolicitud);
+    CambiaEstatus(estatus, props.rowId || IdSolicitud).then(() => {
+      window.location.reload();
+    });
   };
 
   const AcuseRespuestaCancelacion = (

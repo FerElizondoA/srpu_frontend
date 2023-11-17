@@ -657,7 +657,7 @@ export async function GeneraAcuseEnvio(
 }
 
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
-  axios
+  return axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/api/cambiaEstatus",
       {
