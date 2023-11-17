@@ -1,14 +1,14 @@
 import { FirmadoConUrl } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 import { useEffect, useState } from "react";
-import { IUsuariosAsignables } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
 import { getListadoUsuarioRol } from "../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../LateralMenu/APINotificaciones";
-import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { IUsuariosAsignables } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -22,14 +22,6 @@ export const FirmaConUrl = () => {
     (state) => state.changeInfoDoc
   );
 
-  const changeInfoDocCncelacion: Function = useSolicitudFirmaStore(
-    (state) => state.changeInfoDocCncelacion
-  );
-
-  const fraccionTexto: string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  );
-
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
   useEffect(() => {
@@ -38,7 +30,64 @@ export const FirmaConUrl = () => {
 
   const enviaNotificacion = (estatus: string, id: string) => {
     let users: string[] = [];
-    if (estatus !== "Actualizacion") {
+    // if (estatus !== "Actualizacion") {
+    //   usuarios
+    //     .filter(
+    //       (usr: any) =>
+    //         usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+    //         usr.Rol.toLowerCase() === "revisor"
+    //     )
+    //     .map((usuario: any) => {
+    //       return users.push(usuario.Id);
+    //     });
+    //   createNotification(
+    //     "Crédito simple a corto plazo",
+    //     `La solicitud ha sido enviada para autorización con fecha ${
+    //       new Date().toLocaleString("es-MX").split(" ")[0]
+    //     } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+    //     [localStorage.getItem("IdUsuario")!]
+    //   );
+    //   createNotification(
+    //     "Crédito simple a corto plazo",
+    //     `Se te ha asignado una solicitud de inscripción`,
+    //     users
+    //   );
+    // } else if (estatus.includes("Autorizado")) {
+    //   usuarios
+    //     .filter(
+    //       (usr: any) =>
+    //         usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+    //         usr.Rol.toLowerCase() === "validador"
+    //     )
+    //     .map((usuario: any) => {
+    //       return users.push(usuario.Id);
+    //     });
+    //   createNotification(
+    //     "Crédito simple a corto plazo",
+    //     `La solicitud ha sido autorizada con fecha ${
+    //       new Date().toLocaleString("es-MX").split(" ")[0]
+    //     } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+    //     users
+    //   );
+    // } else {
+    //   usuarios
+    //     .filter(
+    //       (usr: any) =>
+    //         usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+    //         usr.Rol.toLowerCase() === "revisor"
+    //     )
+    //     .map((usuario: any) => {
+    //       return users.push(usuario.Id);
+    //     });
+
+    //   createNotification(
+    //     "Crédito simple a corto plazo",
+    //     `Se te ha asignado una solicitud de inscripción`,
+    //     users
+    //   );
+    // }
+
+    if (estatus === "En espera cancelación") {
       usuarios
         .filter(
           (usr: any) =>
@@ -50,47 +99,63 @@ export const FirmaConUrl = () => {
         });
       createNotification(
         "Crédito simple a corto plazo",
-        `La solicitud ha sido enviada para autorización con fecha ${
+        `La solicitud ha sido enviada para autorización de cancelación con fecha ${
           new Date().toLocaleString("es-MX").split(" ")[0]
         } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
         [localStorage.getItem("IdUsuario")!]
       );
       createNotification(
         "Crédito simple a corto plazo",
-        `Se te ha asignado una solicitud de inscripción`,
+        `Se te ha asignado una solicitud de cancelación`,
         users
       );
-    } else if (estatus.includes("Autorizado")) {
+    } else if (estatus === "Cancelado") {
       usuarios
         .filter(
           (usr: any) =>
             usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "validador"
+            usr.Rol.toLowerCase() === "verificador"
         )
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
       createNotification(
         "Crédito simple a corto plazo",
-        `La solicitud ha sido autorizada con fecha ${
-          new Date().toLocaleString("es-MX").split(" ")[0]
-        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        `Se ha aprobado la cancelación de un crédito a corto plazo`,
         users
       );
-    } else {
+    } else if (estatus === "Anulación") {
       usuarios
         .filter(
           (usr: any) =>
             usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "revisor"
+            usr.Rol.toLowerCase() === "verificador"
         )
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
-
       createNotification(
         "Crédito simple a corto plazo",
-        `Se te ha asignado una solicitud de inscripción`,
+        `La cancelación de un crédito a corto plazo que solicitaste ha sido anulada.`,
+        users
+      );
+    } else if (!estatus.includes("Autorizado") && estatus !== "Actualizacion") {
+      usuarios
+        .filter(
+          (usr: any) =>
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
+            usr.Rol.toLowerCase() === "verificador"
+        )
+        .map((usuario: any) => {
+          return users.push(usuario.Id);
+        });
+      createNotification(
+        "Crédito simple a corto plazo",
+        `${
+          estatus === "Actualizacion"
+            ? "Se ha generado una solicitud de requerimientos para un crédito a corto plazo inscrito."
+            : "Se ha autorizado un crédito a corto plazo"
+        }`,
         users
       );
     }
@@ -114,11 +179,7 @@ export const FirmaConUrl = () => {
             File: url,
           })}
           setState={(v: any) => {
-            if (fraccionTexto === "Cancelado") {
-              changeInfoDocCncelacion(v, fraccionTexto, enviaNotificacion);
-            } else {
-              changeInfoDoc(v, enviaNotificacion);
-            }
+            changeInfoDoc(v, enviaNotificacion);
           }}
         />
       </Grid>

@@ -70,7 +70,7 @@ const heads: Head[] = [
     label: "Tipo de Ente Público Obligado",
   },
   {
-    label: "Ente público obligado",
+    label: "Ente Público Obligado",
   },
 ];
 
@@ -689,7 +689,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Ente público obligado
+            Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"

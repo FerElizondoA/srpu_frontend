@@ -11,19 +11,20 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import HandshakeIcon from "@mui/icons-material/Handshake";
+import HelpIcon from "@mui/icons-material/Help";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import HelpIcon from "@mui/icons-material/Help";
-import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 
+import InfoIcon from "@mui/icons-material/Info";
 import {
   AppBar,
   Avatar,
@@ -54,15 +55,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import logo from "../../assets/images/logo.svg";
-import logo2 from "../../assets/images/logo2.svg";
 import { queries } from "../../queries";
+import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
+import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
-import InfoIcon from "@mui/icons-material/Info";
-import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
-import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -130,34 +129,10 @@ export function LateralMenu() {
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
 
-  interface MenuObject {
-    Id: string;
-    FechaDeCreacion: string;
-    UltimaModificacion: string;
-    CreadoPor: string;
-    ModificadoPor: string;
-    Deleted: number;
-    Menu: string;
-    Descripcion: string;
-    MenuPadre: string;
-    Icon: string | null;
-    Path: string;
-    Nivel: number;
-    Orden: number;
-    ControlInterno: string | null;
-    IdApp: string;
-    item: MenuObject[]; // Esto es para el arreglo de objetos anidados, si los hay
-  }
-
-  // let aux = localStorage.getItem("Menus") !== undefined &&
-  //   localStorage.getItem("Menus") !== null
-  //   ? JSON.parse(localStorage.getItem("Menus")!)
-  //   : [];
-
-  let idMenu = localStorage.getItem("IdMenuACtual") || "";
   const [arrayAyudas, setArrayAyudas] = useState<any[]>([]);
   const [option, setOption] = useState("Videos");
   const [openVAyudas, setOpenVAyudas] = useState(false);
+  const [seccionesHover, setSeccionesHover] = useState(false);
 
   function handleCloseVAyudas() {
     setOpenVAyudas(false);
@@ -182,7 +157,6 @@ export function LateralMenu() {
     return name?.split(" ")[0][0] + (name?.split(" ")[1][0] || " ");
   }
 
-  const tipoEnte = localStorage.getItem("TipoEntePublicoObligado");
   const ente = localStorage.getItem("EntePublicoObligado");
 
   const navigate = useNavigate();
@@ -254,6 +228,23 @@ export function LateralMenu() {
     setTimeout(() => {
       getNotificaciones(setNotificaciones, setCantNoti);
     }, 2000);
+  }, []);
+
+  React.useEffect(() => {
+    if (isDrawerOpen === false) {
+      limpiaIndex();
+      setOpenModulo("");
+    }
+  }, [isDrawerOpen]);
+
+  const [indexSelect, setIndexSelect] = useState(-1);
+
+  const limpiaIndex = () => {
+    setIndexSelect(-1);
+  };
+
+  React.useEffect(() => {
+    setIndexSelect(-1);
   }, []);
 
   const [openPasswordChange, setOpenPasswordChange] = useState(false);
@@ -543,7 +534,7 @@ export function LateralMenu() {
               </IconButton>
             </Tooltip>
           </Grid>
-          <Grid item mt={0.5}>
+          <Grid item mt={0.5} ml={3}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
 
@@ -665,13 +656,13 @@ export function LateralMenu() {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              <Grid item sx={{ alignSelf: "center" }}>
+              {/* <Grid item sx={{ alignSelf: "center" }}>
                 <img
                   src={logo2}
                   alt="Logo2"
                   style={{ width: "100%", height: "70%" }}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
@@ -703,7 +694,7 @@ export function LateralMenu() {
 
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
-                  {tipoEnte}: {ente}
+                  {/* {tipoEnte}:  */} {ente}
                 </Typography>
               </Grid>
 
@@ -720,7 +711,21 @@ export function LateralMenu() {
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
                           <ListItemButton
+                            sx={{
+                              backgroundColor:
+                                i === indexSelect && seccionesHover === true
+                                  ? "#AF8C55"
+                                  : "#ffff",
+                              //border: i === indexSelect ? "2px solid" : null,
+                              ":hover": { backgroundColor: "#AF8C55" },
+                            }}
+                            //CAMPOS PRINCIPALES
+                            // bg={seccionesHover === true ? "#AF8C55": "#AF8C55"}
+
                             onClick={() => {
+                              setSeccionesHover(seccionesHover ? false : true);
+                              setIndexSelect(i);
+
                               if (v.Path !== "#") {
                                 localStorage.setItem("IdMenuActual", v.Id);
                                 navigate(v.Path);
@@ -734,7 +739,12 @@ export function LateralMenu() {
                             }}
                           >
                             <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
-                            <Typography sx={queries.bold_text}>
+                            <Typography
+                              sx={{
+                                ...queries.bold_text,
+                                ":hover": { backgroundColor: "#AF8C55" },
+                              }}
+                            >
                               {v.Menu}
                             </Typography>
                             {v.item.length > 0 ? (
@@ -754,9 +764,16 @@ export function LateralMenu() {
                               sx={{ ml: 2 }}
                             >
                               <List>
+                                {/* CAMPOS PRIMER DESGLOSE */}
                                 {v.item.map((v: any, i: number) => (
                                   <Grid key={i}>
                                     <ListItemButton
+                                      sx={{
+                                        ...queries.bold_text,
+                                        ":hover": {
+                                          backgroundColor: "#AF8C55",
+                                        },
+                                      }}
                                       onClick={() => {
                                         if (v.Path !== "#") {
                                           localStorage.setItem(
@@ -798,9 +815,15 @@ export function LateralMenu() {
                                         sx={{ ml: 2 }}
                                       >
                                         <List>
+                                          {/* CAMPOS SEGUNDO DESGLOSE */}
                                           {v.item.map((v: any, i: number) => (
                                             <Grid key={i}>
                                               <ListItemButton
+                                                sx={{
+                                                  ":hover": {
+                                                    backgroundColor: "#AF8C55",
+                                                  },
+                                                }}
                                                 onClick={() => {
                                                   if (v.Path !== "#") {
                                                     localStorage.setItem(

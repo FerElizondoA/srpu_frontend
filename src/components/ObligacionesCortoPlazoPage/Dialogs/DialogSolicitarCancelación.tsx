@@ -100,11 +100,9 @@ export function DialogSolicitarCancelacion({
     }
   }
 
-  const setFraccionTexto: Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
-  )
-  const fraccionTexto: string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
+
+  const estatus : string = useCortoPlazoStore(
+    (state) => state.estatus
   )
 
   useEffect(() => {
@@ -258,7 +256,6 @@ export function DialogSolicitarCancelacion({
                     rowSolicitud.UltimaModificacion,
                     setUrl)
                   handler(false)
-                  setFraccionTexto("Cancelado")
                   navigate("../firmaUrl");
                 } else {
                   setError(true)

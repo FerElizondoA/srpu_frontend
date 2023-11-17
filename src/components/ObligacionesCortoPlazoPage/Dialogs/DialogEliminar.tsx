@@ -41,15 +41,15 @@ export function DialogEliminar({
         handler(false);
       }}
     >
-      <DialogTitle>
+      {/* <DialogTitle>
         <Typography align="center" sx={queries.medium_text} mb={2}>
           Confirmacion de Borrado
         </Typography>
-      </DialogTitle>
+      </DialogTitle> */}
 
       <DialogContent>
-        <DialogContentText sx={{ textalign: "center" }}>
-          Deseas Eliminar la {texto}
+        <DialogContentText sx={{...queries.bold_text, textalign: "center" }}>
+        ¿Deseas Eliminar la {texto}?
         </DialogContentText>
       </DialogContent>
 
