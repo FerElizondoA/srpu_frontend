@@ -26,10 +26,6 @@ export const FirmaConUrl = () => {
     (state) => state.changeInfoDocCncelacion
   );
 
-  const fraccionTexto: string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  );
-
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
   useEffect(() => {
@@ -114,11 +110,7 @@ export const FirmaConUrl = () => {
             File: url,
           })}
           setState={(v: any) => {
-            if (fraccionTexto === "Cancelado") {
-              changeInfoDocCncelacion(v, fraccionTexto, enviaNotificacion);
-            } else {
-              changeInfoDoc(v, enviaNotificacion);
-            }
+            changeInfoDoc(v, enviaNotificacion);
           }}
         />
       </Grid>

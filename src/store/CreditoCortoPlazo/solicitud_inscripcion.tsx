@@ -244,10 +244,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      position: "center",
-      showConfirmButton: true,
-      confirmButtonColor: "#15212f",
-      cancelButtonColor: "rgb(175, 140, 85)",
+      //position: "center",
+      //showConfirmButton: true,
+      //confirmButtonColor: "#15212f",
+      //cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });
@@ -269,6 +269,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         if (response.status === 200) {
           Toast.fire({
             icon: "success",
+            iconColor: "#AF8C55",
+            showConfirmButton: false,
+            color: "#AF8C55",
             title: "Eliminado con exito",
           });
         }
@@ -278,6 +281,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         Toast.fire({
           icon: "error",
           title: "No se elimino la solicitud.",
+          iconColor: "#AF8C55",
+          showConfirmButton: false,
+          color: "#AF8C55",
         });
       });
     return false;

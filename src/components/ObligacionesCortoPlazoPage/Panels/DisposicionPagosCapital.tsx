@@ -27,28 +27,18 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
-import {
-  DatePicker,
-  LocalizationProvider,
-  MobileDatePicker,
-} from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { addDays, lightFormat } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "./InformacionGeneral";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import esLocale from "date-fns/locale/es";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 interface Head {
@@ -389,15 +379,6 @@ export function DisposicionPagosCapital() {
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
   };
-  const condicionalDataPicker = useMediaQuery(
-    "(min-width: 0px) and (max-width: 1369px)"
-  );
-  const plataformas = {
-    isWindows: window.navigator.platform.startsWith("Win"),
-    isMacOS: window.navigator.platform.toUpperCase().includes("MAC"),
-    isAndroid: /Android/.test(navigator.userAgent),
-    isiOS: /iPhone|iPad|iPod/i.test(navigator.userAgent),
-  };
 
   return (
     <Grid
@@ -637,7 +618,7 @@ export function DisposicionPagosCapital() {
                 disabled={!disposicionesParciales}
                 helperText={
                   disposicionesParciales
-                    ? "Monto original contratado: " +
+                    ? "Monto Original Contratado: " +
                       monto +
                       "; Monto restante: " +
                       restante.toFixed(2)

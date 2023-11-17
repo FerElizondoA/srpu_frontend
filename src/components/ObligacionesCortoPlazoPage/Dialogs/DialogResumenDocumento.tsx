@@ -19,18 +19,14 @@ import { queries } from "../../../queries";
 import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
-import {
-  AnularCancelacionSolicitud,
-  CambiaEstatus,
-  GeneraAcuseRespuesta,
-  IDataFirmaDetalle,
-} from "../../../store/SolicitudFirma/solicitudFirma";
+import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
-import { createNotification } from "../../LateralMenu/APINotificaciones";
-import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
 
 const Transition = React.forwardRef(function Transition(
@@ -58,8 +54,6 @@ export function VerBorradorDocumento(props: Props) {
 
   const [openDialogAnularConfirmacion, setOpenDialogAnularConfirmacion] =
     React.useState(false);
-
-  const [texto, setTexto] = React.useState("");
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
@@ -113,9 +107,6 @@ export function VerBorradorDocumento(props: Props) {
 
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
-  );
-  const catalogoFirmaDetalle: IDataFirmaDetalle = useSolicitudFirmaStore(
-    (state) => state.catalogoFirmaDetalle
   );
 
   const changeEstatus: Function = useCortoPlazoStore(
@@ -194,56 +185,36 @@ export function VerBorradorDocumento(props: Props) {
     CambiaEstatus(estatus, props.rowId || IdSolicitud);
   };
 
+  const AcuseRespuestaCancelacion = (
+    IdSolicitud: string,
+    estatusFirma: string
+  ) => {
+    getCatalogoFirmaDetalle(IdSolicitud, estatusFirma);
+    // GeneraAcuseRespuesta("Solicitud de cancelación", catalogoFirmaDetalle.NumeroOficio, props.rowId, "");
+  };
+
   const alertaConfirmacion = (accion: string) => {
-    let mensajeAlert = accion;
-
-    if (mensajeAlert === "anular") {
-      mensajeAlert = "Se anuló el proceso de cancelacion con exito";
-      AnularCancelacionSolicitud(
-        props.rowSolicitud.Solicitud,
-        props.rowSolicitud.NumeroRegistro,
-        justificacionAnulacion,
-        props.rowSolicitud.UltimaModificacion,
-        setUrl
+    if (accion === "Cancelado") {
+      AcuseRespuestaCancelacion(props.rowId, "En espera cancelación");
+      CambiaEstatus("Cancelado", props.rowId);
+      createNotificationCortoPlazo(
+        "Solicitud enviada",
+        `La solicitud de cancelación ha sido aceptada con fecha ${
+          new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        [localStorage.getItem("IdUsuario")!]
       );
-    } else if (mensajeAlert === "confirmar") {
-      mensajeAlert = "Se ha cancelado la solicitud con éxito";
-      AcuseRespuestaCancelacion(props.rowId);
+      navigate("../cancelaciones");
+      //window.location.reload();
+    } else if (accion === "Anulación") {
+      Swal.close();
+      navigate("../firmaUrl");
     }
-
-    Swal.fire({
-      icon: "success",
-      iconColor: "#AF8C55",
-      title: mensajeAlert,
-      showConfirmButton: false,
-      color: "#AF8C55",
-    });
-
-    setTimeout(() => {
-      if (accion === "confirmar") {
-        navigate("../cancelaciones");
-        window.location.reload();
-      } else if (accion === "anular") {
-        Swal.close();
-        navigate("../firmaUrl");
-      }
-    }, 2500);
   };
 
   const [justificacionAnulacion, setJustificacionAnulacion] = useState("");
 
-  const AcuseRespuestaCancelacion = (Id: string) => {
-    getCatalogoFirmaDetalle(Id);
-    GeneraAcuseRespuesta(
-      "Solicitud de cancelación",
-      catalogoFirmaDetalle.NumeroOficio,
-      props.rowId,
-      ""
-    );
-  };
-
   const [error, setError] = useState(false);
-  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
   useEffect(() => {
     if (openDialogAnularConfirmacion === false) {
@@ -295,7 +266,7 @@ export function VerBorradorDocumento(props: Props) {
             localStorage.getItem("Rol") === "Autorizador")) && (
           <Grid
             justifyContent={"space-evenly"}
-            sx={{ width: "30%", display: "flex" }}
+            sx={{ width: "40rem", display: "flex" }}
           >
             {((estatus === "Validacion" &&
               localStorage.getItem("Rol") === "Validador") ||
@@ -321,6 +292,7 @@ export function VerBorradorDocumento(props: Props) {
                 }`}
               </Button>
             )}
+
             <Button
               sx={{
                 ...queries.buttonCancelar,
@@ -371,12 +343,12 @@ export function VerBorradorDocumento(props: Props) {
           </Grid>
         )}
 
-        {estatus === "En espera cancelación" &&
+        {props.rowSolicitud.Estatus === "En espera cancelación" &&
           (localStorage.getItem("Rol") === "Autorizador" ||
             localStorage.getItem("Rol") === "Verificador") && (
             <Grid
               display={"flex"}
-              width={"22rem"}
+              width={"23rem"}
               justifyContent={"space-between"}
             >
               <Button
@@ -386,7 +358,7 @@ export function VerBorradorDocumento(props: Props) {
                 }}
                 onClick={() => {
                   setOpenDialogAnularConfirmacion(true);
-                  setTexto("anular");
+                  //setTexto("anular")
                   changeEstatus("Anulación");
                 }}
               >
@@ -395,13 +367,12 @@ export function VerBorradorDocumento(props: Props) {
 
               <Button
                 sx={{
-                  ...queries.buttonCancelar,
+                  ...queries.buttonContinuar,
                   fontSize: "70%",
                 }}
                 onClick={() => {
                   setOpenDialogAnularConfirmacion(true);
                   changeEstatus("Cancelado");
-                  setTexto("confirmar");
                 }}
               >
                 Confirmar Cancelación
@@ -409,7 +380,7 @@ export function VerBorradorDocumento(props: Props) {
             </Grid>
           )}
 
-        {estatus === "Autorizado" &&
+        {props.rowSolicitud.Estatus === "Autorizado" &&
           localStorage.getItem("Rol") === "Verificador" && (
             <Button
               sx={{
@@ -490,16 +461,17 @@ export function VerBorradorDocumento(props: Props) {
 
       <Dialog
         fullWidth
-        maxWidth={texto === "anular" ? "md" : "sm"}
+        maxWidth={estatus === "Anulación" ? "md" : "sm"}
         open={openDialogAnularConfirmacion}
       >
         <DialogTitle>
           <Typography sx={queries.bold_text}>
-            ¿Desea {texto} la cancelación de la solicitud?
+            ¿Desea {estatus === "Anulación" ? "anular" : "confirmar"} la
+            cancelación de la solicitud?
           </Typography>
         </DialogTitle>
 
-        {texto === "anular" ? (
+        {estatus === "Anulación" ? (
           <DialogContent>
             <Grid width={"100%"}>
               <TextField
@@ -547,12 +519,17 @@ export function VerBorradorDocumento(props: Props) {
             <Button
               sx={{ ...queries.buttonContinuar }}
               onClick={() => {
-                if (texto === "anular" && justificacionAnulacion !== "") {
+                if (estatus === "Anulación" && justificacionAnulacion !== "") {
+                  //Pasarlo a firmar la anulacion de la solicitud de cancelacion
                   setOpenDialogAnularConfirmacion(false);
-                  alertaConfirmacion(texto);
-                } else if (texto === "confirmar") {
+                  //CambiaEstatus("Autorizado", props.rowId)
+                  alertaConfirmacion(estatus);
+                } else if (estatus === "Cancelado") {
+                  //AcuseRespuestaCancelacion(props.rowId)
                   setOpenDialogAnularConfirmacion(false);
-                  alertaConfirmacion(texto);
+
+                  //CambiaEstatus("Cancelado", props.rowId)
+                  alertaConfirmacion(estatus);
                 } else {
                   setError(true);
                 }

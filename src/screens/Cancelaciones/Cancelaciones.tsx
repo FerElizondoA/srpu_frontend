@@ -316,10 +316,6 @@ export const Cancelaciones = () => {
         return addGeneralGastosCostos(v);
       });
 
-      //aux?.registrarAutorizacion.autorizacionSelect.map((v: any, index: number) => {
-      //  return setAutorizacionSelect(v);
-      //});
-
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinancieraLP(v);
       });
@@ -432,21 +428,6 @@ export const Cancelaciones = () => {
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
   );
-
-  const setFraccionTexto: Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
-  );
-  const fraccionTexto: string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  );
-
-  useEffect(() => {
-    if (fraccionTexto === "Cancelado") {
-      setFraccionTexto("");
-    } else {
-      setFraccionTexto(fraccionTexto);
-    }
-  }, []);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>

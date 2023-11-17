@@ -506,27 +506,12 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setDatosActualizar
   );
 
-  const setFraccionTexto: Function = useSolicitudFirmaStore(
-    (state) => state.setFraccionTexto
-  );
-  const fraccionTexto: string = useSolicitudFirmaStore(
-    (state) => state.fraccionTexto
-  );
-
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
   );
   const catalogoFirmaDetalle: IDataFirmaDetalle = useSolicitudFirmaStore(
     (state) => state.catalogoFirmaDetalle
   );
-
-  useEffect(() => {
-    if (fraccionTexto == "Cancelado") {
-      setFraccionTexto("");
-    } else {
-      setFraccionTexto(fraccionTexto);
-    }
-  }, []);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -660,7 +645,11 @@ export function ConsultaDeSolicitudPage() {
                     ) {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={
+                            row.Estatus === "Revision"
+                              ? "En Revisión"
+                              : "En " + row.Estatus
+                          }
                           // icon={<WarningAmberIcon />}
                           color="default"
                           variant="outlined"
@@ -672,7 +661,13 @@ export function ConsultaDeSolicitudPage() {
                     ) {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={
+                            row.Estatus === "Verificacion"
+                              ? "En Verificación"
+                              : row.Estatus === "Validacion"
+                              ? "En Validación"
+                              : "En " + row.Estatus
+                          }
                           // icon={<RateReviewSharpIcon />}
                           color="info"
                           variant="outlined"
@@ -681,7 +676,11 @@ export function ConsultaDeSolicitudPage() {
                     } else if (row.Estatus === "Autorizacion") {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
+                          label={
+                            row.Estatus === "Autorizacion"
+                              ? "En Autorización"
+                              : "En " + row.Estatus
+                          }
                           // icon={<RateReviewSharpIcon />}
                           color="warning"
                           variant="outlined"
@@ -714,7 +713,11 @@ export function ConsultaDeSolicitudPage() {
                           )} días restantes para cancelación automática`}
                         >
                           <Chip
-                            label={row.Estatus}
+                            label={
+                              row.Estatus === "Actualizacion"
+                                ? "Actualización"
+                                : row.Estatus
+                            }
                             color={
                               differenceInDays(
                                 getDays(new Date(row.FechaRequerimientos), 11),
@@ -907,7 +910,7 @@ export function ConsultaDeSolicitudPage() {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus("Revision");
+                                      changeEstatus("Autorizado");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
