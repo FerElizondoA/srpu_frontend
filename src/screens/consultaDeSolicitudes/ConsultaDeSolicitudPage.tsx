@@ -690,7 +690,6 @@ export function ConsultaDeSolicitudPage() {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="secondary"
                           variant="outlined"
                         />
@@ -699,7 +698,6 @@ export function ConsultaDeSolicitudPage() {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="success"
                           variant="outlined"
                         />
@@ -734,7 +732,6 @@ export function ConsultaDeSolicitudPage() {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="default"
                           variant="outlined"
                         />

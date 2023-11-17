@@ -590,7 +590,6 @@ export const Cancelaciones = () => {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="secondary"
                           variant="outlined"
                         />
@@ -599,7 +598,6 @@ export const Cancelaciones = () => {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="success"
                           variant="outlined"
                         />
@@ -630,7 +628,6 @@ export const Cancelaciones = () => {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          // icon={<CheckIcon />}
                           color="default"
                           variant="outlined"
                         />
