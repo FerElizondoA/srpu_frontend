@@ -290,7 +290,7 @@ export function VerBorradorDocumento(props: Props) {
                 }}
               >
                 {`Devolver para ${
-                  estatus === "Validacion" ? "Revision" : "Validación"
+                  estatus === "Validacion" ? "Revisión" : "Validación"
                 }`}
               </Button>
             )}
