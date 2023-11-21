@@ -845,7 +845,7 @@ router.post("/create-notificacion", verifyToken.verifyJWT, (req, res) => {
   createNotificacion(req, res);
 });
 
-router.post("/leer-notificacion", (req, res) => {
+router.post("/leer-notificacion", verifyToken.verifyJWT, (req, res) => {
   leerNotificacion(req, res);
 });
 
@@ -861,114 +861,143 @@ router.get("/get-info-notificacion", verifyToken.verifyJWT, (req, res) => {
   getInfoNotificacion(req, res);
 });
 
-router.get("/get-usuarios-asignables", (req, res) => {
+router.get("/get-usuarios-asignables", verifyToken.verifyJWT, (req, res) => {
   getUsuariosAsignables(req, res);
 });
 //#endregion
 
 //#region PathDoc
-router.post("/create-addPathDocSol", (req, res) => {
+router.post("/create-addPathDocSol", verifyToken.verifyJWT, (req, res) => {
   addPathDocSol(req, res);
 });
 
-router.get("/get-DetailPathDocSol", (req, res) => {
+router.get("/get-DetailPathDocSol", verifyToken.verifyJWT, (req, res) => {
   getDetailPathDocSol(req, res);
 });
 
-router.post("/create-addPathDocAut", (req, res) => {
+router.post("/create-addPathDocAut", verifyToken.verifyJWT, (req, res) => {
   addPathDocAut(req, res);
 });
 
-router.get("/get-DetailPathDocAut", (req, res) => {
+router.get("/get-DetailPathDocAut", verifyToken.verifyJWT, (req, res) => {
   getDetailPathDocAut(req, res);
 });
 
-router.post("/create-addPathDocFideicomiso", (req, res) => {
-  addPathDocFideicomiso(req, res);
-});
+router.post(
+  "/create-addPathDocFideicomiso",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    addPathDocFideicomiso(req, res);
+  }
+);
 
-router.get("/get-DetailPathDocFideicomiso", (req, res) => {
-  getDetailPathDocFideicomiso(req, res);
-});
+router.get(
+  "/get-DetailPathDocFideicomiso",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetailPathDocFideicomiso(req, res);
+  }
+);
 
-router.post("/create-addPathDocMandato", (req, res) => {
+router.post("/create-addPathDocMandato", verifyToken.verifyJWT, (req, res) => {
   addPathDocMandato(req, res);
 });
 
-router.get("/get-DetailPathDocMandato", (req, res) => {
+router.get("/get-DetailPathDocMandato", verifyToken.verifyJWT, (req, res) => {
   getDetailPathDocMandato(req, res);
 });
 
 //#endregion
 
 //#region Autorizacion
-router.post("/create-autorizacion", (req, res, express) => {
-  createAutorizacion(req, res);
-});
+router.post(
+  "/create-autorizacion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createAutorizacion(req, res);
+  }
+);
 
-router.get("/get-autorizaciones", (req, res) => {
+router.get("/get-autorizaciones", verifyToken.verifyJWT, (req, res) => {
   getAutorizaciones(req, res);
 });
 
-router.get("/detail-autorizacion", (req, res) => {
+router.get("/detail-autorizacion", verifyToken.verifyJWT, (req, res) => {
   getDetailAutorizacion(req, res);
 });
 
-router.put("/modify-autorizacion", (req, res) => {
+router.put("/modify-autorizacion", verifyToken.verifyJWT, (req, res) => {
   modifyAutorizacion(req, res);
 });
 
-router.delete("/delete-autorizacion", (req, res) => {
+router.delete("/delete-autorizacion", verifyToken.verifyJWT, (req, res) => {
   deleteAutorizacion(req, res);
 });
 //#endregion
 
 //#region Fideicomiso
-router.post("/create-fideicomiso", (req, res, express) => {
-  createFideicomiso(req, res);
-});
+router.post(
+  "/create-fideicomiso",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createFideicomiso(req, res);
+  }
+);
 
-router.get("/get-fideicomiso", (req, res) => {
+router.get("/get-fideicomiso", verifyToken.verifyJWT, (req, res) => {
   getFideicomisos(req, res);
 });
 
-router.get("/detail-fideicomiso", verifyToken.verifyJWT, (req, res) => {
-  getDetailFideicomiso(req, res);
-});
+router.get(
+  "/detail-fideicomiso",
+  verifyToken.verifyJWT,
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetailFideicomiso(req, res);
+  }
+);
 
-router.put("/modify-fideicomiso", (req, res) => {
+router.put("/modify-fideicomiso", verifyToken.verifyJWT, (req, res) => {
   modifyFideicomiso(req, res);
 });
 
-router.delete("/delete-fideicomiso", (req, res) => {
+router.delete("/delete-fideicomiso", verifyToken.verifyJWT, (req, res) => {
   deleteFideicomiso(req, res);
 });
 //#endregion
 
 //#region InstruccionesIrrevocables
-router.post("/create-Instruccion", (req, res, express) => {
-  createInstruccion(req, res);
-});
+router.post(
+  "/create-Instruccion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createInstruccion(req, res);
+  }
+);
 
-router.get("/get-Instrucciones", (req, res) => {
+router.get("/get-Instrucciones", verifyToken.verifyJWT, (req, res) => {
   getInstrucciones(req, res);
 });
 
-router.put("/modify-Instruccion", (req, res) => {
+router.put("/modify-Instruccion", verifyToken.verifyJWT, (req, res) => {
   modifyInstruccion(req, res);
 });
 
-router.delete("/delete-Instruccion", (req, res) => {
+router.delete("/delete-Instruccion", verifyToken.verifyJWT, (req, res) => {
   deleteInstruccion(req, res);
 });
 //#endregion
 
 //#region TiposDeFideicomiso
-router.post("/create-tiposDeFideicomiso", (req, res, express) => {
-  createTipoDeFideicomiso(req, res);
-});
+router.post(
+  "/create-tiposDeFideicomiso",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoDeFideicomiso(req, res);
+  }
+);
 
-router.get("/get-tiposDeFideicomiso", (req, res) => {
+router.get("/get-tiposDeFideicomiso", verifyToken.verifyJWT, (req, res) => {
   getTiposDeFideicomiso(req, res);
 });
 
@@ -976,21 +1005,29 @@ router.get("/detail-tiposDeFideicomiso", verifyToken.verifyJWT, (req, res) => {
   getDetailTipoDeFideicomiso(req, res);
 });
 
-router.put("/modify-tiposDeFideicomiso", (req, res) => {
+router.put("/modify-tiposDeFideicomiso", verifyToken.verifyJWT, (req, res) => {
   modifyTipoDeFideicomiso(req, res);
 });
 
-router.delete("/delete-tiposDeFideicomiso", (req, res) => {
-  deleteTipoDeFideicomiso(req, res);
-});
+router.delete(
+  "/delete-tiposDeFideicomiso",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteTipoDeFideicomiso(req, res);
+  }
+);
 //#endregion
 
 //#region Fiudiciarios
-router.post("/create-fiudiciarios", (req, res, express) => {
-  createFiudiciario(req, res);
-});
+router.post(
+  "/create-fiudiciarios",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createFiudiciario(req, res);
+  }
+);
 
-router.get("/get-fiudiciarios", (req, res) => {
+router.get("/get-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
   getFiudiciarios(req, res);
 });
 
@@ -998,21 +1035,25 @@ router.get("/detail-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
   getDetailFiudiciario(req, res);
 });
 
-router.put("/modify-fiudiciarios", (req, res) => {
+router.put("/modify-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
   modifyFiudiciario(req, res);
 });
 
-router.delete("/delete-fiudiciarios", (req, res) => {
+router.delete("/delete-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
   deleteFiudiciario(req, res);
 });
 //#endregion
 
 //#region Fideicomisario
-router.post("/create-fideicomisarios", (req, res, express) => {
-  createFideicomisario(req, res);
-});
+router.post(
+  "/create-fideicomisarios",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createFideicomisario(req, res);
+  }
+);
 
-router.get("/get-fideicomisarios", (req, res) => {
+router.get("/get-fideicomisarios", verifyToken.verifyJWT, (req, res) => {
   getFideicomisarios(req, res);
 });
 
@@ -1020,21 +1061,25 @@ router.get("/detail-fideicomisarios", verifyToken.verifyJWT, (req, res) => {
   getDetailFideicomisario(req, res);
 });
 
-router.put("/modify-fideicomisarios", (req, res) => {
+router.put("/modify-fideicomisarios", verifyToken.verifyJWT, (req, res) => {
   modifyFideicomisario(req, res);
 });
 
-router.delete("/delete-fideicomisarios", (req, res) => {
+router.delete("/delete-fideicomisarios", verifyToken.verifyJWT, (req, res) => {
   deleteFideicomisario(req, res);
 });
 //#endregion
 
 //#region Ordenes Fideicomisario
-router.post("/create-ordenesFideicomisario", (req, res, express) => {
-  createOrdenFideicomisario(req, res);
-});
+router.post(
+  "/create-ordenesFideicomisario",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createOrdenFideicomisario(req, res);
+  }
+);
 
-router.get("/get-ordenesFideicomisario", (req, res) => {
+router.get("/get-ordenesFideicomisario", verifyToken.verifyJWT, (req, res) => {
   getOrdenesFideicomisario(req, res);
 });
 
@@ -1046,21 +1091,33 @@ router.get(
   }
 );
 
-router.put("/modify-ordenesFideicomisario", (req, res) => {
-  modifyOrdenFideicomisario(req, res);
-});
+router.put(
+  "/modify-ordenesFideicomisario",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    modifyOrdenFideicomisario(req, res);
+  }
+);
 
-router.delete("/delete-ordenesFideicomisario", (req, res) => {
-  deleteOrdenFideicomisario(req, res);
-});
+router.delete(
+  "/delete-ordenesFideicomisario",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteOrdenFideicomisario(req, res);
+  }
+);
 //#endregion
 
 //#region Tipos De Fideicomitente
-router.post("/create-tiposDeFideicomitente", (req, res, express) => {
-  createTipoDeFideicomitente(req, res);
-});
+router.post(
+  "/create-tiposDeFideicomitente",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoDeFideicomitente(req, res);
+  }
+);
 
-router.get("/get-tiposDeFideicomitente", (req, res) => {
+router.get("/get-tiposDeFideicomitente", verifyToken.verifyJWT, (req, res) => {
   getTiposDeFideicomitente(req, res);
 });
 
@@ -1072,21 +1129,33 @@ router.get(
   }
 );
 
-router.put("/modify-tiposDeFideicomitente", (req, res) => {
-  modifyTipoDeFideicomitente(req, res);
-});
+router.put(
+  "/modify-tiposDeFideicomitente",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    modifyTipoDeFideicomitente(req, res);
+  }
+);
 
-router.delete("/delete-tiposDeFideicomitente", (req, res) => {
-  deleteTipoDeFideicomitente(req, res);
-});
+router.delete(
+  "/delete-tiposDeFideicomitente",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteTipoDeFideicomitente(req, res);
+  }
+);
 //#endregion
 
 //#region Tipos De Fuente
-router.post("/create-tiposDeFuente", (req, res, express) => {
-  createTipoDeFuente(req, res);
-});
+router.post(
+  "/create-tiposDeFuente",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoDeFuente(req, res);
+  }
+);
 
-router.get("/get-tiposDeFuente", (req, res) => {
+router.get("/get-tiposDeFuente", verifyToken.verifyJWT, (req, res) => {
   getTiposDeFuente(req, res);
 });
 
@@ -1094,21 +1163,25 @@ router.get("/get-tiposDeFuente", (req, res) => {
 //   getDetailTiposDeFuente(req, res);
 // });
 
-router.put("/modify-tiposDeFuente", (req, res) => {
+router.put("/modify-tiposDeFuente", verifyToken.verifyJWT, (req, res) => {
   modifyTipoDeFuente(req, res);
 });
 
-router.delete("/delete-tiposDeFuente", (req, res) => {
+router.delete("/delete-tiposDeFuente", verifyToken.verifyJWT, (req, res) => {
   deleteTipoDeFuente(req, res);
 });
 //#endregion
 
 //#region Fondos O Ingresos
-router.post("/create-fondosOIngresos", (req, res, express) => {
-  createFondoOIngreso(req, res);
-});
+router.post(
+  "/create-fondosOIngresos",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createFondoOIngreso(req, res);
+  }
+);
 
-router.get("/get-fondosOIngresos", (req, res) => {
+router.get("/get-fondosOIngresos", verifyToken.verifyJWT, (req, res) => {
   getFondosOIngresos(req, res);
 });
 
@@ -1116,21 +1189,25 @@ router.get("/detail-fondosOIngresos", verifyToken.verifyJWT, (req, res) => {
   getDetailFondoOIngreso(req, res);
 });
 
-router.put("/modify-fondosOIngresos", (req, res) => {
+router.put("/modify-fondosOIngresos", verifyToken.verifyJWT, (req, res) => {
   modifyFondoOIngreso(req, res);
 });
 
-router.delete("/delete-fondosOIngresos", (req, res) => {
+router.delete("/delete-fondosOIngresos", verifyToken.verifyJWT, (req, res) => {
   deleteFondoOIngreso(req, res);
 });
 //#endregion
 
 //#region Medios de Publicacion
-router.post("/create-mediosDePublicacion", (req, res, express) => {
-  createMedioDePublicacion(req, res);
-});
+router.post(
+  "/create-mediosDePublicacion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createMedioDePublicacion(req, res);
+  }
+);
 
-router.get("/get-mediosDePublicacion", (req, res) => {
+router.get("/get-mediosDePublicacion", verifyToken.verifyJWT, (req, res) => {
   getMediosDePublicacion(req, res);
 });
 
@@ -1138,21 +1215,29 @@ router.get("/detail-mediosDePublicacion", verifyToken.verifyJWT, (req, res) => {
   getDetailMedioDePublicacion(req, res);
 });
 
-router.put("/modify-mediosDePublicacion", (req, res) => {
+router.put("/modify-mediosDePublicacion", verifyToken.verifyJWT, (req, res) => {
   modifyMedioDePublicacion(req, res);
 });
 
-router.delete("/delete-mediosDePublicacion", (req, res) => {
-  deleteMedioDePublicacion(req, res);
-});
+router.delete(
+  "/delete-mediosDePublicacion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteMedioDePublicacion(req, res);
+  }
+);
 //#endregion
 
 //#region Destinos Autorizados
-router.post("/create-destinosAutorizado", (req, res, express) => {
-  createDestinoAutorizado(req, res);
-});
+router.post(
+  "/create-destinosAutorizado",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createDestinoAutorizado(req, res);
+  }
+);
 
-router.get("/get-destinosAutorizados", (req, res) => {
+router.get("/get-destinosAutorizados", verifyToken.verifyJWT, (req, res) => {
   getDestinosAutorizados(req, res);
 });
 
@@ -1160,23 +1245,35 @@ router.get("/detail-destinosAutorizado", verifyToken.verifyJWT, (req, res) => {
   getDetailDestinoAutorizado(req, res);
 });
 
-router.put("/modify-destinosAutorizado", (req, res) => {
+router.put("/modify-destinosAutorizado", verifyToken.verifyJWT, (req, res) => {
   modifyDestinoAutorizado(req, res);
 });
 
-router.delete("/delete-destinosAutorizado", (req, res) => {
-  deleteDestinoAutorizado(req, res);
-});
+router.delete(
+  "/delete-destinosAutorizado",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteDestinoAutorizado(req, res);
+  }
+);
 //#endregion
 
 //#region Detalle Destinos Autorizados
-router.post("/create-detallesDestinosAutorizados", (req, res, express) => {
-  createDetalleDestinoAutorizado(req, res);
-});
+router.post(
+  "/create-detallesDestinosAutorizados",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createDetalleDestinoAutorizado(req, res);
+  }
+);
 
-router.get("/get-detalleDestinosAutorizados", (req, res) => {
-  getDetalleDestinosAutorizados(req, res);
-});
+router.get(
+  "/get-detalleDestinosAutorizados",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetalleDestinosAutorizados(req, res);
+  }
+);
 
 router.get(
   "/detail-detallesDestinosAutorizados",
@@ -1186,21 +1283,33 @@ router.get(
   }
 );
 
-router.put("/modify-detallesDestinosAutorizados", (req, res) => {
-  modifyDetalleDestinoAutorizado(req, res);
-});
+router.put(
+  "/modify-detallesDestinosAutorizados",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    modifyDetalleDestinoAutorizado(req, res);
+  }
+);
 
-router.delete("/delete-detallesDestinosAutorizados", (req, res) => {
-  deleteDetalleDestinoAutorizado(req, res);
-});
+router.delete(
+  "/delete-detallesDestinosAutorizados",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteDetalleDestinoAutorizado(req, res);
+  }
+);
 //#endregion
 
 //#region Detalle Inversion
-router.post("/create-detalleInversion", (req, res, express) => {
-  createDetalleInversion(req, res);
-});
+router.post(
+  "/create-detalleInversion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createDetalleInversion(req, res);
+  }
+);
 
-router.get("/get-detalleInversion", (req, res) => {
+router.get("/get-detalleInversion", verifyToken.verifyJWT, (req, res) => {
   getDetallesInversion(req, res);
 });
 
@@ -1208,21 +1317,25 @@ router.get("/detail-detalleInversion", verifyToken.verifyJWT, (req, res) => {
   getDetailDetalleInversion(req, res);
 });
 
-router.put("/modify-detalleInversion", (req, res) => {
+router.put("/modify-detalleInversion", verifyToken.verifyJWT, (req, res) => {
   modifyDetalleInversion(req, res);
 });
 
-router.delete("/delete-detalleInversion", (req, res) => {
+router.delete("/delete-detalleInversion", verifyToken.verifyJWT, (req, res) => {
   deleteDetalleInversion(req, res);
 });
 //#endregion
 
 //#region Mandatarios
-router.post("/create-mandatario", (req, res, express) => {
-  createMandatario(req, res);
-});
+router.post(
+  "/create-mandatario",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createMandatario(req, res);
+  }
+);
 
-router.get("/get-mandatario", (req, res) => {
+router.get("/get-mandatario", verifyToken.verifyJWT, (req, res) => {
   getMandatarios(req, res);
 });
 
@@ -1230,21 +1343,25 @@ router.get("/detail-mandatario", verifyToken.verifyJWT, (req, res) => {
   getDetailMandatario(req, res);
 });
 
-router.put("/modify-mandatario", (req, res) => {
+router.put("/modify-mandatario", verifyToken.verifyJWT, (req, res) => {
   modifyMandatario(req, res);
 });
 
-router.delete("/delete-mandatario", (req, res) => {
+router.delete("/delete-mandatario", verifyToken.verifyJWT, (req, res) => {
   deleteMandatario(req, res);
 });
 //#endregion
 
 //#region TiposDeGarantiaDePago
-router.post("/create-tiposDeGarantiaDePago", (req, res, express) => {
-  createTipoDeGarantiaDePago(req, res);
-});
+router.post(
+  "/create-tiposDeGarantiaDePago",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoDeGarantiaDePago(req, res);
+  }
+);
 
-router.get("/get-tiposDeGarantiaDePago", (req, res) => {
+router.get("/get-tiposDeGarantiaDePago", verifyToken.verifyJWT, (req, res) => {
   getTiposDeGarantiaDePago(req, res);
 });
 
@@ -1256,78 +1373,106 @@ router.get(
   }
 );
 
-router.put("/modify-tiposDeGarantiaDePago", (req, res) => {
-  modifyTipoDeGarantiaDePago(req, res);
-});
+router.put(
+  "/modify-tiposDeGarantiaDePago",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    modifyTipoDeGarantiaDePago(req, res);
+  }
+);
 
-router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
-  deleteTipoDeGarantiaDePago(req, res);
-});
+router.delete(
+  "/delete-tiposDeGarantiaDePago",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteTipoDeGarantiaDePago(req, res);
+  }
+);
 //#endregion
 
 //#region Firma Detalle
-router.post("/create-firmaDetalle", (req, res, express) => {
-  createFirmaDetalle(req, res);
-});
+router.post(
+  "/create-firmaDetalle",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createFirmaDetalle(req, res);
+  }
+);
 
-router.get("/get-firmaDetalle", (req, res, express) => {
+router.get("/get-firmaDetalle", verifyToken.verifyJWT, (req, res, express) => {
   getFirmaDetalle(req, res);
 });
 
-router.delete("/delete-firma", (req, res) => {
+router.delete("/delete-firma", verifyToken.verifyJWT, (req, res) => {
   deleteFirmaDetalle(req, res);
 });
 
 //#endregion
 
 //#region Mandatos
-router.post("/create-mandato", (req, res, express) => {
+router.post("/create-mandato", verifyToken.verifyJWT, (req, res, express) => {
   createMandato(req, res);
 });
 
-router.put("/modify-mandato", (req, res, express) => {
+router.put("/modify-mandato", verifyToken.verifyJWT, (req, res, express) => {
   modifyMandato(req, res);
 });
 
-router.get("/get-mandato", (req, res, express) => {
+router.get("/get-mandato", verifyToken.verifyJWT, (req, res, express) => {
   getMandatos(req, res);
 });
 
-router.delete("/delete-mandato", (req, res) => {
+router.delete("/delete-mandato", verifyToken.verifyJWT, (req, res) => {
   deleteMandato(req, res);
 });
 
 //CLASIFICACION ASIGNAR FUENTE
-router.get("/get-clasificacionAsignarFuentePago", (req, res, express) => {
-  getClasificacion(req, res);
-});
+router.get(
+  "/get-clasificacionAsignarFuentePago",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    getClasificacion(req, res);
+  }
+);
 
-router.post("/create-clasificacionAsignarFuentePago", (req, res, express) => {
-  createClasificacion(req, res);
-});
+router.post(
+  "/create-clasificacionAsignarFuentePago",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createClasificacion(req, res);
+  }
+);
 
-router.put("/modify-clasificacionAsignarFuentePago", (req, res, express) => {
-  modifyClasificacion(req, res);
-});
+router.put(
+  "/modify-clasificacionAsignarFuentePago",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    modifyClasificacion(req, res);
+  }
+);
 
-router.delete("/delete-clasificacionAsignarFuentePago", (req, res) => {
-  deleteClasificacion(req, res);
-});
+router.delete(
+  "/delete-clasificacionAsignarFuentePago",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    deleteClasificacion(req, res);
+  }
+);
 
 //RespectoA AsignarFuente
-router.get("/get-respecto", (req, res, express) => {
+router.get("/get-respecto", verifyToken.verifyJWT, (req, res, express) => {
   getRespecto(req, res);
 });
 
-router.post("/create-respecto", (req, res, express) => {
+router.post("/create-respecto", verifyToken.verifyJWT, (req, res, express) => {
   createRespecto(req, res);
 });
 
-router.put("/modify-respecto", (req, res, express) => {
+router.put("/modify-respecto", verifyToken.verifyJWT, (req, res, express) => {
   modifyRespecto(req, res);
 });
 
-router.delete("/delete-respecto", (req, res) => {
+router.delete("/delete-respecto", verifyToken.verifyJWT, (req, res) => {
   deleteRespecto(req, res);
 });
 
@@ -1348,15 +1493,23 @@ router.delete("/delete-respecto", (req, res) => {
 //#endregion
 
 //#region Mandatos
-router.post("/create-instruccion", (req, res, express) => {
-  createInstruccion(req, res);
-});
+router.post(
+  "/create-instruccion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createInstruccion(req, res);
+  }
+);
 
-router.post("/modify-instruccion", (req, res, express) => {
-  modifyInstruccion(req, res);
-});
+router.post(
+  "/modify-instruccion",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    modifyInstruccion(req, res);
+  }
+);
 
-router.get("/get-instruccion", (req, res, express) => {
+router.get("/get-instruccion", verifyToken.verifyJWT, (req, res, express) => {
   getInstrucciones(req, res);
 });
 
@@ -1374,65 +1527,93 @@ router.get("/get-instruccion", (req, res, express) => {
 //#endregion
 
 //#region Mandatos
-router.post("/create-pdf-solicitud-corto", (req, res) => {
-  createPdfSolicitudCorto(req, res);
-});
-router.post("/create-pdf-requerimientos", (req, res) => {
+router.post(
+  "/create-pdf-solicitud-corto",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfSolicitudCorto(req, res);
+  }
+);
+router.post("/create-pdf-requerimientos", verifyToken.verifyJWT, (req, res) => {
   createPdfRequerimientos(req, res);
 });
-router.post("/create-pdf-constancia", (req, res) => {
+router.post("/create-pdf-constancia", verifyToken.verifyJWT, (req, res) => {
   createPdfConstancia(req, res);
 });
-router.post("/create-pdf-acuse-enviado", (req, res) => {
+router.post("/create-pdf-acuse-enviado", verifyToken.verifyJWT, (req, res) => {
   createPdfAcuseEnviado(req, res);
 });
-router.post("/create-pdf-acuse-respuesta", (req, res) => {
-  createPdfAcuseRespuesta(req, res);
-});
-router.post("/create-pdf-acuse-cancelacion", (req, res) => {
-  createPdfAcuseCancelacion(req, res);
-});
-router.post("/actualiza-descarga", (req, res) => {
+router.post(
+  "/create-pdf-acuse-respuesta",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfAcuseRespuesta(req, res);
+  }
+);
+router.post(
+  "/create-pdf-acuse-cancelacion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfAcuseCancelacion(req, res);
+  }
+);
+router.post("/actualiza-descarga", verifyToken.verifyJWT, (req, res) => {
   actualizaDescarga(req, res);
 });
 
 //#endregion
 
 //#region Configuracion Oficios
-router.post("/create-ConfiguracionOficios", (req, res) => {
-  createConfiguracionOficios(req, res);
-});
-router.get("/get-ConfiguracionOficios", (req, res) => {
+router.post(
+  "/create-ConfiguracionOficios",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createConfiguracionOficios(req, res);
+  }
+);
+router.get("/get-ConfiguracionOficios", verifyToken.verifyJWT, (req, res) => {
   getConfiguracionOficios(req, res);
 });
-router.get("/get-header", (req, res) => {
+router.get("/get-header", verifyToken.verifyJWT, (req, res) => {
   getHeader(req, res);
 });
-router.put("/modify-ConfiguracionOficios", (req, res) => {
-  modifyConfiguracionOficios(req, res);
-});
-router.post("/create-pdf-solicitud-cancelacion", (req, res) => {
-  createPdfSolicitudCancelacion(req, res);
-});
-router.post("/create-pdf-anular-cancelacion", (req, res) => {
-  createPdfSolicitudAnulacion(req, res);
-});
+router.put(
+  "/modify-ConfiguracionOficios",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    modifyConfiguracionOficios(req, res);
+  }
+);
+router.post(
+  "/create-pdf-solicitud-cancelacion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfSolicitudCancelacion(req, res);
+  }
+);
+router.post(
+  "/create-pdf-anular-cancelacion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfSolicitudAnulacion(req, res);
+  }
+);
 //#endregion
 
 //#################################Admin Ayudas####################################
-router.post("/ayuda", (req, res) => {
+router.post("/ayuda", verifyToken.verifyJWT, (req, res) => {
   createPreguntaFrecuente(req, res);
 });
 
-router.get("/ayuda", (req, res) => {
+router.get("/ayuda", verifyToken.verifyJWT, (req, res) => {
   getPreguntasFrecuentes(req, res);
 });
 
-router.delete("/ayuda", (req, res) => {
+router.delete("/ayuda", verifyToken.verifyJWT, (req, res) => {
   deletePreguntasFrecuentes(req, res);
 });
 
-router.post("/sendMail", (req, res) => {
+router.post("/sendMail", verifyToken.verifyJWT, (req, res) => {
   sendEmail(req, res);
 });
 
