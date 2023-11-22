@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 // add routes
 const router = require("./routes/router.js");
-app.use("/api", router);
+app.use("/api/srpu", router);
 
 // run server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
