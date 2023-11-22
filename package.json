@@ -2,8 +2,8 @@
   "name": "srpu_frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/",
   "dependencies": {
-    "homepage": "/",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@jbcecapmex/pakfirma": "^1.7.1",
