@@ -1,16 +1,14 @@
 import { StateCreator } from "zustand";
-import { ISolicitudes } from "../../components/Interfaces/InterfacesUsuario/ISoliciudes";
 
 export interface SolicitudUsuarioSlice {
   idSolicitud: string;
   idUsuarioModificado: string;
 
-
   changeIdSolicitud: (id: string) => void;
   changeIdUsuarioModificado: (id: string) => void;
 
   indexSelect: number;
-  setIndexSelect: (indexSelect:number) => void
+  setIndexSelect: (indexSelect: number) => void;
 
   opendialog: boolean;
   setOpenDialog: (oepndialog: boolean) => void;
@@ -27,15 +25,15 @@ export const createSolicitudUsuarioSlice: StateCreator<
   indexSelect: -1,
   setIndexSelect(indexSelect: number) {
     set(() => ({
-      indexSelect: indexSelect
-    }))
+      indexSelect: indexSelect,
+    }));
   },
 
-  opendialog:false,
-  setOpenDialog(opendialog: boolean){
-    set(() =>({
-      opendialog: opendialog
-    }))
+  opendialog: false,
+  setOpenDialog(opendialog: boolean) {
+    set(() => ({
+      opendialog: opendialog,
+    }));
   },
 
   // solicitudesFiltered:[],
@@ -44,7 +42,6 @@ export const createSolicitudUsuarioSlice: StateCreator<
   //     solicitudesFiltered: solicitudesFiltered
   //   }))
   // },
-
 
   idUsuarioModificado: "",
 

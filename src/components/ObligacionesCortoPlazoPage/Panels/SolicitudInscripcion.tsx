@@ -1,34 +1,33 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
 import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
   Grid,
   InputLabel,
-  TextField,
-  Divider,
-  Checkbox,
   Table,
   TableBody,
-  TableSortLabel,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
+  TableSortLabel,
+  TextField,
   Typography,
   useMediaQuery,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
-import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
-import Swal from "sweetalert2";
 
 interface Head {
   label: string;
@@ -48,7 +47,6 @@ export function SolicitudInscripcion() {
   const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
 
   // eslint-disable-next-line @typescript-eslint/no-array-constructor
-  let [reglasSeleccionadas] = React.useState(new Array());
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
 
@@ -79,8 +77,6 @@ export function SolicitudInscripcion() {
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
-  let erroresValidacion: string[] = [];
-
   // const [comentario, setComentario] = useState("");
 
   useEffect(() => {
@@ -89,19 +85,6 @@ export function SolicitudInscripcion() {
   }, []);
   const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
   let err = 0;
-
-  const Toast = Swal.mixin({
-    width: "690px",
-    toast: true,
-    showConfirmButton: true,
-    confirmButtonColor: "#15212f",
-    cancelButtonColor: "rgb(175, 140, 85)",
-    confirmButtonText: "De acuerdo",
-    didOpen: (toast) => {
-      toast.addEventListener("mouseenter", Swal.stopTimer);
-      toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-  });
 
   const infoValidaciones = (filtroValidacion: string) => {
     if (filtroValidacion === "Enviar") {
@@ -340,86 +323,86 @@ export function SolicitudInscripcion() {
     }
   };
 
-  const InfoFaltanteModificacion = () => {
-    errores = [];
+  // const InfoFaltanteModificacion = () => {
+  //   errores = [];
 
-    const state = useCortoPlazoStore.getState();
-    const solicitud: any = {
-      encabezado: state.encabezado,
-      MontoOriginalContratado: state.informacionGeneral.monto,
-      PlazoDias: state.informacionGeneral.plazo,
-      Destino: state.informacionGeneral.destino.Descripcion,
-      Denominacion: state.informacionGeneral.denominacion,
-      InstitucionFinanciera:
-        state.informacionGeneral.institucionFinanciera.Descripcion,
-    };
-    if (
-      solicitud.MontoOriginalContratado === undefined ||
-      solicitud.MontoOriginalContratado === 0 ||
-      /^[\s]*$/.test(solicitud.MontoOriginalContratado)
-    ) {
-      err = 1;
+  //   const state = useCortoPlazoStore.getState();
+  //   const solicitud: any = {
+  //     encabezado: state.encabezado,
+  //     MontoOriginalContratado: state.informacionGeneral.monto,
+  //     PlazoDias: state.informacionGeneral.plazo,
+  //     Destino: state.informacionGeneral.destino.Descripcion,
+  //     Denominacion: state.informacionGeneral.denominacion,
+  //     InstitucionFinanciera:
+  //       state.informacionGeneral.institucionFinanciera.Descripcion,
+  //   };
+  //   if (
+  //     solicitud.MontoOriginalContratado === undefined ||
+  //     solicitud.MontoOriginalContratado === 0 ||
+  //     /^[\s]*$/.test(solicitud.MontoOriginalContratado)
+  //   ) {
+  //     err = 1;
 
-      errores.push(
-        "Sección Información General: Ingrese un Monto original contratado valido."
-      );
-    }
-    if (
-      solicitud.Destino === undefined ||
-      solicitud.Destino === "" ||
-      /^[\s]*$/.test(solicitud.Destino)
-    ) {
-      err = 1;
+  //     errores.push(
+  //       "Sección Información General: Ingrese un Monto original contratado valido."
+  //     );
+  //   }
+  //   if (
+  //     solicitud.Destino === undefined ||
+  //     solicitud.Destino === "" ||
+  //     /^[\s]*$/.test(solicitud.Destino)
+  //   ) {
+  //     err = 1;
 
-      errores.push("Sección Información General: Seleccione  el Destino.");
-    }
-    if (
-      solicitud.InstitucionFinanciera === undefined ||
-      solicitud.InstitucionFinanciera === "" ||
-      /^[\s]*$/.test(solicitud.InstitucionFinanciera)
-    ) {
-      err = 1;
+  //     errores.push("Sección Información General: Seleccione  el Destino.");
+  //   }
+  //   if (
+  //     solicitud.InstitucionFinanciera === undefined ||
+  //     solicitud.InstitucionFinanciera === "" ||
+  //     /^[\s]*$/.test(solicitud.InstitucionFinanciera)
+  //   ) {
+  //     err = 1;
 
-      errores.push(
-        "Sección Información General: Seleccione la Institución Financiera."
-      );
-    }
-    if (err === 0) {
-      setOpenDialogModificacion(!openDialogModificacion);
-    } else {
-      setOpenDialogValidacion(!openDialogValidacion);
-      // Toast.fire({
-      //   showConfirmButton: true,
-      //   confirmButtonColor: "#15212f",
-      //   cancelButtonColor: "rgb(175, 140, 85)",
-      //   buttonsStyling: true,
-      //   html: `
-      //   <div>
-      //     <h2  >Se han encontrado los siguientes errores:</h2>
-      //     <div style="text-align: left;   color:red;  overflow:auto;">
-      //       *</strong>${errores.join("<br><br><strong>*</strong>")}
-      //     </div>
-      //     <div  style="text-align: right;">
+  //     errores.push(
+  //       "Sección Información General: Seleccione la Institución Financiera."
+  //     );
+  //   }
+  //   if (err === 0) {
+  //     setOpenDialogModificacion(!openDialogModificacion);
+  //   } else {
+  //     setOpenDialogValidacion(!openDialogValidacion);
+  //     // Toast.fire({
+  //     //   showConfirmButton: true,
+  //     //   confirmButtonColor: "#15212f",
+  //     //   cancelButtonColor: "rgb(175, 140, 85)",
+  //     //   buttonsStyling: true,
+  //     //   html: `
+  //     //   <div>
+  //     //     <h2  >Se han encontrado los siguientes errores:</h2>
+  //     //     <div style="text-align: left;   color:red;  overflow:auto;">
+  //     //       *</strong>${errores.join("<br><br><strong>*</strong>")}
+  //     //     </div>
+  //     //     <div  style="text-align: right;">
 
-      //       <Button style="float:right;
-      //       cursor: pointer;
-      //       background-color:#15212f;
-      //       height:30px;
-      //       color:white;
-      //       border-radius: 0.8vh;
-      //       font-size:100%;
-      //       textTransform:capitalize";
-      //       "  >Cerrar</Button>
+  //     //       <Button style="float:right;
+  //     //       cursor: pointer;
+  //     //       background-color:#15212f;
+  //     //       height:30px;
+  //     //       color:white;
+  //     //       border-radius: 0.8vh;
+  //     //       font-size:100%;
+  //     //       textTransform:capitalize";
+  //     //       "  >Cerrar</Button>
 
-      //     </div>
-      //   </div>`,
-      // });
-    }
-  };
+  //     //     </div>
+  //     //   </div>`,
+  //     // });
+  //   }
+  // };
 
-  const InfoFaltante = () => {
-    errores = [];
-  };
+  // const InfoFaltante = () => {
+  //   errores = [];
+  // };
 
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
@@ -428,7 +411,9 @@ export function SolicitudInscripcion() {
     let aux: Array<string> = [];
     arrReglas.map((regla, index) => {
       if (regla !== descripcion) {
-        aux.push(regla);
+        return aux.push(regla);
+      } else {
+        return null;
       }
     });
     arrReglas = aux;

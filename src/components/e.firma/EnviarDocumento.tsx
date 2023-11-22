@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 //import { ModalEnviar } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
 import axios from "axios";
 import { useParams } from "react-router";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
 
 export const EnviarDocumento = () => {
   const query = {
@@ -15,7 +15,6 @@ export const EnviarDocumento = () => {
 
   const { IdDoc } = useParams();
   // const [loadingPage, setLoadingPage] = useState(false);
-  const [docs, setDocs] = useState({});
 
   useEffect(() => {
     // setLoadingPage(true)
@@ -28,7 +27,6 @@ export const EnviarDocumento = () => {
         dataArray
       )
       .then((r) => {
-        setDocs(r.data);
         // setLoadingPage(false)
       })
       .catch((err) => {});

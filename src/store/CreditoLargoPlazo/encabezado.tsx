@@ -1,9 +1,4 @@
 import { StateCreator } from "zustand";
-import axios from "axios";
-import {
-  ICatalogo,
-  IEntePublico,
-} from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export interface EncabezadoLargoPlazoSlice {
   encabezado: {

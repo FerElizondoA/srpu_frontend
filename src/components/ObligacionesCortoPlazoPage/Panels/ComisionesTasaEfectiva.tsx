@@ -2,7 +2,6 @@ import * as React from "react";
 
 import {
   Autocomplete,
-  Box,
   Button,
   Checkbox,
   Divider,
@@ -29,15 +28,10 @@ import {
 import validator from "validator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { queries } from "../../../queries";
-import { DateInput } from "../../CustomComponents";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 

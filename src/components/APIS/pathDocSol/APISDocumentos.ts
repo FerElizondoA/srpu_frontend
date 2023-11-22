@@ -136,7 +136,7 @@ export const getDocumentos = async (
         //   { type: "application/pdf" }
         // );
         auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
-        state.setTablaDocumentos(auxArrayArchivos);
+        return state.setTablaDocumentos(auxArrayArchivos);
       });
 
       setState(files);

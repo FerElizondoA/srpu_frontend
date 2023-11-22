@@ -22,7 +22,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
@@ -71,11 +70,6 @@ const heads: Head[] = [
 export function Autorizacion() {
   const [openDialogNuevaAutorizacion, setOpenNuevaAutorizacion] =
     useState(false);
-
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
 
   const autorizaciones: Autorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizaciones

@@ -1,20 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const Toast = Swal.mixin({
-  toast: true,
-  position: "center",
-  showConfirmButton: true,
-  confirmButtonColor: "#15212f",
-  cancelButtonColor: "rgb(175, 140, 85)",
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener("mouseenter", Swal.stopTimer);
-    toast.addEventListener("mouseleave", Swal.resumeTimer);
-  },
-});
-
 export const createNotification = (
   Titulo: string,
   mensaje: string,

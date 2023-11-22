@@ -1,24 +1,7 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogTitle, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getListadoUsuarios } from "../../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
-import {
-  IDestinatarios,
-  INotificaciones,
-} from "../../../components/Interfaces/Notificaciones/INotificaciones";
-import { createNotification } from "../../../components/LateralMenu/APINotificaciones";
 
 export const AñadirNotificaciones = ({
   open,
@@ -31,38 +14,38 @@ export const AñadirNotificaciones = ({
   // const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
   const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
 
-  const [registroNotificaciones, setRegistroNotificaciones] =
-    useState<INotificaciones>({
-      Id: "",
-      Titulo: "",
-      Mensaje: "",
-      FechaDeCreacion: "",
-      Creador: "",
-      Cargo: "",
-    });
+  // const [registroNotificaciones, setRegistroNotificaciones] =
+  //   useState<INotificaciones>({
+  //     Id: "",
+  //     Titulo: "",
+  //     Mensaje: "",
+  //     FechaDeCreacion: "",
+  //     Creador: "",
+  //     Cargo: "",
+  //   });
 
   //Validaciones
-  const validaMensaje = (dato: string) => {
-    const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
-    if (dato.length < 201 && !format.test(dato)) {
-      setRegistroNotificaciones({ ...registroNotificaciones, Mensaje: dato });
-    }
-  };
-  const validaTitulo = (dato: string) => {
-    const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
-    if (dato.length < 31 && !format.test(dato)) {
-      setRegistroNotificaciones({ ...registroNotificaciones, Titulo: dato });
-    }
-  };
+  // const validaMensaje = (dato: string) => {
+  //   const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  //   if (dato.length < 201 && !format.test(dato)) {
+  //     setRegistroNotificaciones({ ...registroNotificaciones, Mensaje: dato });
+  //   }
+  // };
+  // const validaTitulo = (dato: string) => {
+  //   const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  //   if (dato.length < 31 && !format.test(dato)) {
+  //     setRegistroNotificaciones({ ...registroNotificaciones, Titulo: dato });
+  //   }
+  // };
 
   //useEffect
   useEffect(() => {
     getListadoUsuarios(setUsuarios);
   }, []);
 
-  const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
+  // const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
 
-  const [idDestinatarios, setIdDestinatarios] = useState([]);
+  // const [idDestinatarios, setIdDestinatarios] = useState([]);
 
   return usuarios.length > 0 ? (
     <Dialog fullWidth maxWidth={"sm"} open={open} onClose={() => handleClose()}>

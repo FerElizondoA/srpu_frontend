@@ -5,7 +5,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";

@@ -58,7 +58,6 @@ import logo from "../../assets/images/logo.svg";
 import { queries } from "../../queries";
 import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
 import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
@@ -465,56 +464,6 @@ export function LateralMenu() {
     );
   };
 
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
-  );
-
-  const reset = () => {
-    changeEncabezado({
-      tipoDocumento: "Crédito simple a corto plazo",
-      solicitanteAutorizado: {
-        Solicitante: localStorage.getItem("IdUsuario") || "",
-        Cargo: localStorage.getItem("Puesto") || "",
-        Nombre: localStorage.getItem("NombreUsuario") || "",
-      },
-      tipoEntePublico: {
-        Id: "",
-        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
-      },
-      organismo: {
-        Id: "",
-        Organismo: localStorage.getItem("EntePublicoObligado") || "",
-      },
-      fechaContratacion: new Date().toString(),
-    });
-
-    changeInformacionGeneral({
-      fechaContratacion: new Date().toString(),
-      fechaVencimiento: new Date().toString(),
-      plazo: 1,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "Pesos",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-
-    cleanObligadoSolidarioAval();
-    updatecondicionFinancieraTable([]);
-    cleanComentario();
-  };
-
   return (
     <AppBar position="static">
       <Toolbar variant="dense">
@@ -896,14 +845,14 @@ export function LateralMenu() {
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
                           <ListItemButton
-                          sx={{
-                            backgroundColor:
-                              i === indexSelect && seccionesHover === true
-                                ? "#AF8C55"
-                                : "#ffff",
-                            //border: i === indexSelect ? "2px solid" : null,
-                            ":hover": { backgroundColor: "#AF8C55" },
-                          }}
+                            sx={{
+                              backgroundColor:
+                                i === indexSelect && seccionesHover === true
+                                  ? "#AF8C55"
+                                  : "#ffff",
+                              //border: i === indexSelect ? "2px solid" : null,
+                              ":hover": { backgroundColor: "#AF8C55" },
+                            }}
                             onClick={() => {
                               if (v.Path !== "#") {
                                 localStorage.setItem("IdMenuActual", v.Id);
@@ -915,7 +864,7 @@ export function LateralMenu() {
                                   v.ControlInterno === "Cambiar contraseña"
                                 ) {
                                   setOpenPasswordChange(true);
-                                  setIsDrawerOpen(false)
+                                  setIsDrawerOpen(false);
                                 } else if (
                                   v.ControlInterno === "Cerrar sesión"
                                 ) {

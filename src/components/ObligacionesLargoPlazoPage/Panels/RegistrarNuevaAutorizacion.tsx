@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
   Button,
@@ -8,14 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import { GridCloseIcon } from "@mui/x-data-grid";
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { enGB } from "date-fns/locale";
 import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { DateInput } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
@@ -281,7 +281,7 @@ export function RegistrarNuevaAutorizacion() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
-              sx={{width:"100%"}}
+                sx={{ width: "100%" }}
                 value={new Date(fechaPublicacion)}
                 onChange={(date) =>
                   changeAutorizacion({

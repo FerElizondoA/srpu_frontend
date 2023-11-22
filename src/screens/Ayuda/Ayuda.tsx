@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
   Box,
   Button,
@@ -11,13 +13,12 @@ import {
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { queries } from "../../queries";
-import MUIXDataGrid from "../../components/MUIXDataGrid";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import AyudasModal, { ILista, Tabla } from "./AyudaModal";
-import { deleteFile, getAyuda } from "./ServicesAyuda";
 import Swal from "sweetalert2";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import MUIXDataGrid from "../../components/MUIXDataGrid";
+import { queries } from "../../queries";
+import AyudasModal from "./AyudaModal";
+import { deleteFile, getAyuda } from "./ServicesAyuda";
 
 export interface IAyudaVideo {
   Id: string;
@@ -53,14 +54,13 @@ const Ayuda = () => {
   const [Guias, setGuias] = useState<IAyudaGuia[]>([]);
   const [Videos, setVideos] = useState<IAyudaVideo[]>([]);
   const [open, setOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
 
   function eliminar(v: any) {
     Swal.fire({
       title: "¿Estás seguro de eliminar este registro?",
       icon: "question",
       showCancelButton: true,
-      iconColor:"#15212f",
+      iconColor: "#15212f",
 
       cancelButtonColor: "#af8c55",
       cancelButtonText: "Cancelar",
@@ -254,7 +254,6 @@ const Ayuda = () => {
             "@media (min-width: 480px)": {
               fontSize: "1.2rem",
             },
-
           }}
         >
           Administración de Ayudas
@@ -277,39 +276,55 @@ const Ayuda = () => {
           }}
         >
           <Grid
-           sx={{ height: "100%", display: "flex", justifyContent: "end", 
-           width:"69%",
-           "@media (min-width: 480px)": {
-            width:"58%"
-          },
-      
-          "@media (min-width: 768px)": {
-            width:"66.5%"
-          },
-      
-          "@media (min-width: 1140px)": {
-            width:"62%"
-          },
-      
-          "@media (min-width: 1400px)": {
-            width:"60%"
-          },
-      
-          "@media (min-width: 1870px)": {
-            width:"58%"
-          },}}
+            sx={{
+              height: "100%",
+              display: "flex",
+              justifyContent: "end",
+              width: "69%",
+              "@media (min-width: 480px)": {
+                width: "58%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "66.5%",
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "62%",
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "60%",
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "58%",
+              },
+            }}
           >
             <Tabs
-              value={tabIndex}
+              value={0}
               onChange={handleChange}
               centered={query.isScrollable ? false : true}
               variant={query.isScrollable ? "scrollable" : "standard"}
               scrollButtons
               allowScrollButtonsMobile
             >
-              <Tab label="Guías" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Guías"></Tab>
-              <Tab label="Videos" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Videos"></Tab>
-              <Tab label="Preguntas" sx={{...queries.bold_text , textTransform:"capitalize"}} value="Preguntas"></Tab>
+              <Tab
+                label="Guías"
+                sx={{ ...queries.bold_text, textTransform: "capitalize" }}
+                value="Guías"
+              ></Tab>
+              <Tab
+                label="Videos"
+                sx={{ ...queries.bold_text, textTransform: "capitalize" }}
+                value="Videos"
+              ></Tab>
+              <Tab
+                label="Preguntas"
+                sx={{ ...queries.bold_text, textTransform: "capitalize" }}
+                value="Preguntas"
+              ></Tab>
               {open ? (
                 <AyudasModal
                   TabValue={valueTab}
@@ -320,7 +335,12 @@ const Ayuda = () => {
             </Tabs>
           </Grid>
           <Grid
-             sx={{ height: "100%", display: "flex", justifyContent: "end", width:"30%" }}
+            sx={{
+              height: "100%",
+              display: "flex",
+              justifyContent: "end",
+              width: "30%",
+            }}
           >
             <Button
               sx={{ ...queries.buttonContinuar, height: "2.5rem" }}
@@ -339,7 +359,7 @@ const Ayuda = () => {
           {/* <MUIXDataGrid  id={(row: any) => row.Id} columns={columnsPreguntas} rows={[]}/> */}
 
           {/* cambio a tabla preguntas */}
-          {valueTab == "Preguntas" ? (
+          {valueTab === "Preguntas" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsPreguntas}
@@ -347,7 +367,7 @@ const Ayuda = () => {
             />
           ) : null}
           {/* cambio a tablas videos y guías */}
-          {valueTab == "Videos" ? (
+          {valueTab === "Videos" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsVideo}
@@ -355,7 +375,7 @@ const Ayuda = () => {
             />
           ) : null}
 
-          {valueTab == "Guías" ? (
+          {valueTab === "Guías" ? (
             <MUIXDataGrid
               id={(row: any) => row.Id}
               columns={columnsGuia}

@@ -152,6 +152,8 @@ export function Catalogos() {
                     {item.label}
                   </Button>
                 );
+              } else {
+                return null;
               }
             })}
           </Grid>

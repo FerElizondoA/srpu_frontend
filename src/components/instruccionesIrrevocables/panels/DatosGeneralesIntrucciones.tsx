@@ -1,23 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
-  FormControl,
   Grid,
   InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import {
-  ICatalogo,
-  IEntePublico,
-} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES

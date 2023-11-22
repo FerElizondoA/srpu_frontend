@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import { TablaDocs } from "@jbcecapmex/pakfirma";
 import { Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect } from "react";
-import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
@@ -14,7 +14,6 @@ export const Bandeja = () => {
   };
 
   const navigate = useNavigate();
-  const { NombreBandeja, IdTipo } = useParams();
 
   useEffect(() => {
     navigate("../ConsultaDeSolicitudes");

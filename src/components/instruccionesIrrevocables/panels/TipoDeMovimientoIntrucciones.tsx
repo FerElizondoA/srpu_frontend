@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
@@ -8,7 +9,6 @@ import {
   IconButton,
   InputLabel,
   Paper,
-  Slide,
   Table,
   TableBody,
   TableContainer,
@@ -18,10 +18,8 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { forwardRef, useEffect } from "react";
+import { useEffect } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
@@ -195,9 +193,6 @@ export function TipoDeMovimientoIntrucciones() {
 
   //CLEAN
 
-  const cleanInstruccion: Function = useInstruccionesStore(
-    (state) => state.cleanInstruccion
-  );
   const cleanTipoMovimientoInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanTipoMovimientoInstruccion
   );

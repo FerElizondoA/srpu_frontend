@@ -1,14 +1,11 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
-import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import { Navigate } from "react-router-dom";
-import { useSolicitudFirmaStore } from "./main";
-import Swal from "sweetalert2";
 
 export interface ArchivoCancelacion {
   archivo: File;

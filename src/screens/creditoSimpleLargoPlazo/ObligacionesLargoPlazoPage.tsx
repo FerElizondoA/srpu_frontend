@@ -3,7 +3,6 @@ import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { Autorizacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Autorizacion";
 import { CondicionesFinancieras } from "../../components/ObligacionesLargoPlazoPage/Panels/CondicionesFinancieras";
 import { Documentacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
@@ -12,10 +11,10 @@ import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resu
 import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
 //import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
 import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
+import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage/Panels/FuentePagoSecciones";
 import { InfoGeneralGastoCosto } from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto";
 import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage/Panels/FuentePagoSecciones"; 
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
@@ -48,7 +47,7 @@ export function ObligacionesLargoPlazoPage() {
       </Grid>
 
       <Grid item container direction="column" width={"100%"}>
-        <Grid mt={2}  display={"flex"} justifyContent={"center"}>
+        <Grid mt={2} display={"flex"} justifyContent={"center"}>
           <Grid width={"85%"} display={"flex"} justifyContent={"center"}>
             <Typography
               sx={{
@@ -60,17 +59,20 @@ export function ObligacionesLargoPlazoPage() {
             </Typography>
           </Grid>
 
-          <Grid  display={"flex"} justifyContent={"end"} 
-          sx={{
-            width:"10%",
-            "@media (min-width: 480px)": {
-              width:"10%",
-            },
-      
-            "@media (min-width: 768px)": {
-              width:"2%"
-            },
-          }}>
+          <Grid
+            display={"flex"}
+            justifyContent={"end"}
+            sx={{
+              width: "10%",
+              "@media (min-width: 480px)": {
+                width: "10%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "2%",
+              },
+            }}
+          >
             <Button
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);

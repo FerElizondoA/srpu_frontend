@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Dialog, Button, TextField, Typography } from "@mui/material";
-import { queries } from "../../../queries";
+import { Button, Dialog, TextField, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useState } from "react";
+import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function ComentarioApartado({

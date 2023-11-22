@@ -108,13 +108,6 @@ export function Documentacion() {
     setTablaDocumentosLP(aux);
   };
 
-  const scroll = () => {
-    const element = document.getElementById("divider");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
     open: false,
@@ -203,9 +196,9 @@ export function Documentacion() {
                       <TextField
                         disabled={
                           val.archivo?.name ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         }
                         size="small"
                         multiline
@@ -216,7 +209,7 @@ export function Documentacion() {
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
-                            setTablaDocumentosLP(auxArrayArchivos);
+                          setTablaDocumentosLP(auxArrayArchivos);
                         }}
                       ></TextField>
                     </StyledTableCell>
@@ -228,7 +221,7 @@ export function Documentacion() {
                           display: "flex",
                           fontFamily:
                             val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "MontserratBold"
                               : "MontserratMedium",
                           textAlign: "center",
@@ -239,7 +232,7 @@ export function Documentacion() {
                           fontSize: "80%",
                           border:
                             val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "2px dotted #af8c55"
                               : "2px dotted black",
                         }}
@@ -301,13 +294,13 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                        comentario[val.descripcionTipo] !== "" ? (
+                      comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                  comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -330,7 +323,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                              comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -401,8 +394,21 @@ export function Documentacion() {
         ></input>
       </Grid> */}
 
-      <Grid mt={1} container display={"flex"} justifyContent={"center"} width={"100%"}>
-        <Grid item mb={2} width={"100%"} display={"flex"} justifyContent={"center"} sx={{ position: "relative" }}>
+      <Grid
+        mt={1}
+        container
+        display={"flex"}
+        justifyContent={"center"}
+        width={"100%"}
+      >
+        <Grid
+          item
+          mb={2}
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          sx={{ position: "relative" }}
+        >
           <Typography
             position={"absolute"}
             sx={{
@@ -417,27 +423,27 @@ export function Documentacion() {
 
               "@media (min-width: 480px)": {
                 width: "100%",
-                fontSize: "0.7rem"
+                fontSize: "0.7rem",
               },
 
               "@media (min-width: 768px)": {
                 width: "70%",
-                fontSize: "0.8rem"
+                fontSize: "0.8rem",
               },
 
               "@media (min-width: 1140px)": {
                 width: "50%",
-                fontSize: "0.8rem"
+                fontSize: "0.8rem",
               },
 
               "@media (min-width: 1400px)": {
                 width: "40%",
-                fontSize: "0.9rem"
+                fontSize: "0.9rem",
               },
 
               "@media (min-width: 1870px)": {
                 width: "34%",
-                fontSize: "0.9rem"
+                fontSize: "0.9rem",
               },
             }}
           >

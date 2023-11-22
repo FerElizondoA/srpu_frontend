@@ -1,14 +1,15 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { Typography, Dialog, Slide, Button } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, Dialog, Slide, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { TransitionProps } from "@mui/material/transitions";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 const Transition = React.forwardRef(function Transition(
@@ -26,13 +27,12 @@ type Props = {
 };
 
 export function ConfirmacionBorradorSolicitud(props: Props) {
-  
-   const crearSolicitud: Function = useLargoPlazoStore(
-     (state) => state.crearSolicitud
-   )
-   const modificaSolicitud: Function = useLargoPlazoStore(
-     (state) => state.modificaSolicitud
-   );
+  const crearSolicitud: Function = useLargoPlazoStore(
+    (state) => state.crearSolicitud
+  );
+  const modificaSolicitud: Function = useLargoPlazoStore(
+    (state) => state.modificaSolicitud
+  );
 
   const institucion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
@@ -40,9 +40,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   const montoOriginal: number = useLargoPlazoStore(
     (state) => state.informacionGeneral.monto
-  );
-  const destino: string = useLargoPlazoStore(
-    (state) => state.informacionGeneral.destino.Id
   );
 
   const tipoEntePublico: string = useLargoPlazoStore(
@@ -57,7 +54,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     "En este apartado se guardara un borrador de la informacion quepodras visualizar en un futuro"
   );
 
-    const  notnull = () => {
+  const notnull = () => {
     const isMissingInstitution = institucion === "" || institucion === null;
     const isMissingOriginalAmount =
       montoOriginal === null ||
@@ -65,14 +62,16 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       montoOriginal === undefined ||
       montoOriginal.toString() === "$ 0.00";
 
-    if (isMissingInstitution && isMissingOriginalAmount ) {
+    if (isMissingInstitution && isMissingOriginalAmount) {
       setInfo(
         "*En INFORMACIÓN GENERAL: Seleccionar institución financiera y monto original contratado."
       );
     } else if (isMissingInstitution) {
       setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
     } else if (isMissingOriginalAmount) {
-      setInfo("*En INFORMACIÓN GENERAL: Seleccionar monto original contratado.");
+      setInfo(
+        "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
+      );
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
@@ -148,11 +147,9 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   const division = info.indexOf(":");
 
-  const markedText =
-    division !== -1 ? info.substring(0, division + 1) : info;
+  const markedText = division !== -1 ? info.substring(0, division + 1) : info;
 
-  const restText =
-    division !== -1 ? info.substring(division + 1) : "";
+  const restText = division !== -1 ? info.substring(division + 1) : "";
 
   return (
     <Dialog
@@ -170,20 +167,24 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       </DialogTitle>
 
       <DialogContent>
-      <DialogContentText>
-          <Typography color={ (institucion === "" || institucion === null) &&
-           (montoOriginal === null ||  montoOriginal === 0 ||
-            montoOriginal.toString() === "0" ||
-            montoOriginal === undefined ||
-            montoOriginal.toString() === "$ 0.00")
-            ? "red": "black"}>
+        <DialogContentText>
+          <Typography
+            color={
+              (institucion === "" || institucion === null) &&
+              (montoOriginal === null ||
+                montoOriginal === 0 ||
+                montoOriginal.toString() === "0" ||
+                montoOriginal === undefined ||
+                montoOriginal.toString() === "$ 0.00")
+                ? "red"
+                : "black"
+            }
+          >
             <span style={{ color: "red", fontWeight: "bold" }}>
               {markedText}
             </span>
 
-            <span style={{ color: "red" }}>
-              {restText} 
-            </span>
+            <span style={{ color: "red" }}>{restText}</span>
           </Typography>
         </DialogContentText>
       </DialogContent>
@@ -272,11 +273,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             ...queries.buttonContinuar,
             pointerEvents:
               institucion === "" ||
-                institucion === null ||
-                tipoEntePublico === "" ||
-                tipoEntePublico === null ||
-                montoOriginal === null ||
-                montoOriginal === 0
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
                 ? "none"
                 : "auto",
           }}
@@ -346,11 +347,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             ...queries.buttonContinuar,
             pointerEvents:
               institucion === "" ||
-                institucion === null ||
-                tipoEntePublico === "" ||
-                tipoEntePublico === null ||
-                montoOriginal === null ||
-                montoOriginal === 0
+              institucion === null ||
+              tipoEntePublico === "" ||
+              tipoEntePublico === null ||
+              montoOriginal === null ||
+              montoOriginal === 0
                 ? "none"
                 : "auto",
           }}

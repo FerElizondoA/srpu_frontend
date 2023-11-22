@@ -1,7 +1,7 @@
-import * as React from "react";
-import { DataGrid, GridToolbar, esES as gridEsES } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider, Grid } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material";
 import { esES as coreEsES } from "@mui/material/locale";
+import { DataGrid, GridToolbar, esES as gridEsES } from "@mui/x-data-grid";
+import * as React from "react";
 
 const theme = createTheme(coreEsES, gridEsES);
 
@@ -16,11 +16,10 @@ export default function MUIXDataGrid(props: any) {
     <>
       <ThemeProvider theme={theme}>
         <DataGrid
-        sx={{
-        fontFamily: "MontserratMedium",
-        }}
-        getRowHeight={() => "auto"}
-
+          sx={{
+            fontFamily: "MontserratMedium",
+          }}
+          getRowHeight={() => "auto"}
           components={{ Toolbar: GridToolbar }}
           componentsProps={{
             toolbar: {
@@ -31,7 +30,6 @@ export default function MUIXDataGrid(props: any) {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-      
           localeText={{
             noRowsLabel: "Sin filas",
             noResultsOverlayLabel: "Resultados no encontrados",
@@ -185,7 +183,6 @@ export default function MUIXDataGrid(props: any) {
           pageSize={pageSize}
           rowsPerPageOptions={[25, 50, 100]}
           onPageSizeChange={(v) => changePageSize(v)}
-          
         />
       </ThemeProvider>
     </>

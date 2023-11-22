@@ -32,13 +32,9 @@ import {
   getSolicitudes,
   getSolicitudesAdmin,
 } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import {
-  IComentarios,
-  VerComentariosSolicitud,
-} from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
-import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
@@ -52,7 +48,6 @@ import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
-  IDataFirmaDetalle,
 } from "../../store/SolicitudFirma/solicitudFirma";
 
 export interface IData {
@@ -158,7 +153,7 @@ export function ConsultaDeSolicitudPage() {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
-  const [rowId, setRowId] = useState("");
+  const [rowId] = useState("");
 
   const handleChange = (dato: string) => {
     setBusqueda(dato);
@@ -275,15 +270,6 @@ export function ConsultaDeSolicitudPage() {
   );
 
   // Largo plazo
-  const changeIdSolicitudLP: Function = useLargoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const changeNoRegistroLP: Function = useLargoPlazoStore(
-    (state) => state.changeNoRegistro
-  );
-  const changeEditCreadoPorLP: Function = useLargoPlazoStore(
-    (state) => state.changeEditCreadoPor
-  );
   const changeEncabezadoLP: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -296,32 +282,12 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinancieraLP: Function = useLargoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const setTablaDocumentosLP: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosLP
-  );
-
-  const cleanObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-
-  const updatecondicionFinancieraTableLP: Function = useLargoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-
   const addDocumentoLP: Function = useLargoPlazoStore(
     (state) => state.addDocumentoLP
   );
 
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(
     (state) => state.changeReglasAplicables
-  );
-
-  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
-    (state) => state.autorizacionSelect
-  );
-
-  const setAutorizacionSelect: Function = useLargoPlazoStore(
-    (state) => state.setAutorizacionSelect
   );
 
   const changeGastosCostos: Function = useLargoPlazoStore(
@@ -342,13 +308,7 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setRowSolicitud
   );
 
-  const cleanRowSolicitud: Function = useSolicitudFirmaStore(
-    (state) => state.cleanRowSolicitud
-  );
-
   //END Row Solicitud
-
-  //const [rowSolicitud, setRowSolicitud] = useState<Array<IDataPrueba>>([]);
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
@@ -402,10 +362,6 @@ export function ConsultaDeSolicitudPage() {
       });
     }
   };
-
-  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
-    []
-  );
 
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
@@ -508,9 +464,6 @@ export function ConsultaDeSolicitudPage() {
 
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
-  );
-  const catalogoFirmaDetalle: IDataFirmaDetalle = useSolicitudFirmaStore(
-    (state) => state.catalogoFirmaDetalle
   );
 
   return (
@@ -870,7 +823,7 @@ export function ConsultaDeSolicitudPage() {
                                 onClick={() => {
                                   getComentariosSolicitudPlazo(
                                     row.Id,
-                                    setDatosComentarios
+                                    () => {}
                                   ).then((data) => {
                                     if (
                                       rolesAdmin.includes(

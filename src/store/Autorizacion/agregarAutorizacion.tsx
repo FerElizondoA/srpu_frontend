@@ -1,9 +1,8 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import Swal from "sweetalert2";
 
 export type GeneralAutorizado = {
   entidad: { Id: string; Organismo: string };

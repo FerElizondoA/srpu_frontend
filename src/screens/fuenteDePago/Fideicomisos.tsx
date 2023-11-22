@@ -20,7 +20,6 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { format } from "date-fns";
@@ -88,11 +87,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export function Fideicomisos() {
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
-
   const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
 
   const [accion, setAccion] = useState("Agregar");
@@ -150,8 +144,8 @@ export function Fideicomisos() {
     []
   );
 
-  const arrDocs: any[] = useFideicomisoStore((state) => state.arrDocs);
-  const setArrDocs: Function = useFideicomisoStore((state) => state.setArrDocs);
+  // const arrDocs: any[] = useFideicomisoStore((state) => state.arrDocs);
+  // const setArrDocs: Function = useFideicomisoStore((state) => state.setArrDocs);
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {

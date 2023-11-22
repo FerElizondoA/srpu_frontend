@@ -18,26 +18,17 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
-import {
-  DateInput,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../CustomComponents";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { queries } from "../../../queries";
-import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
-import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
+import { Fideicomisario } from "../../../store/Fideicomiso/fideicomiso";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
 interface HeadLabels {
   label: string;

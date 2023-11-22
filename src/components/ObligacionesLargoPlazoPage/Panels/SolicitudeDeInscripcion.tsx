@@ -8,7 +8,6 @@ import {
   Divider,
   Grid,
   InputLabel,
-  Paper,
   Table,
   TableBody,
   TableContainer,
@@ -49,7 +48,6 @@ export function SolicituDeInscripcion() {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   // eslint-disable-next-line @typescript-eslint/no-array-constructor
-  let [reglasSeleccionadas] = useState(new Array());
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
 
@@ -102,18 +100,7 @@ export function SolicituDeInscripcion() {
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
       /////////////////// Por definir /////////////////////
-      let entePublicoObligado = "";
-      let obligadoSolidario = "";
-      let tipoEntePublicoObligado = "";
-
-      for (let i = 0; i < state.tablaObligadoSolidarioAval.length; i++) {
-        const item = state.tablaObligadoSolidarioAval[0];
-        entePublicoObligado = item.entePublicoObligado;
-        obligadoSolidario = item.obligadoSolidario;
-        tipoEntePublicoObligado = item.tipoEntePublicoObligado;
-      }
       ///////////////////   Condiciones Financieras /////////////////////
-      let importe = 0;
       let numeroDePago = 0;
       let PeriocidadDePago = "";
       let diasEjercicio = "";
@@ -136,16 +123,7 @@ export function SolicituDeInscripcion() {
         montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
       };
 
-      let destinoCG = "";
-      let detalleInversion = "";
-      //let periodoAdministracion = "";
-      let gastosAdicionales = "";
-      let claveInscripcionFinanciamiento = "";
-      let descripcion = "";
-      let monto = 0;
       //let periodoFinanciamiento = "";
-      let saldoVigente = 0;
-      let montoGastosAdicionales = 0;
 
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
         const item = state.tablaCondicionesFinancieras[0];
@@ -156,20 +134,6 @@ export function SolicituDeInscripcion() {
         diasEjercicio = item.diasEjercicio;
         tasaEfectiva = item.tasaEfectiva;
         comisiones = item.comisiones;
-      }
-
-      for (let i = 0; i < state.tablaGastosCostos.length; i++) {
-        const item = state.tablaGastosCostos[0];
-        destinoCG = item.destino;
-        detalleInversion = item.detalleInversion;
-        //periodoAdministracion = item.periodoAdministracion;
-        // gastosAdicionales = item.gastosAdicionales;
-        claveInscripcionFinanciamiento = item.claveInscripcionFinanciamiento;
-        descripcion = item.descripcion;
-        monto = item.monto;
-        //periodoFinanciamiento = item.periodoFinanciamiento;
-        //saldoVigente = item.saldoVigente;
-        //montoGastosAdicionales = item.montoGastosAdicionales;
       }
 
       if (
@@ -380,7 +344,9 @@ export function SolicituDeInscripcion() {
     let aux: Array<string> = [];
     arrReglas.map((regla, index) => {
       if (regla !== descripcion) {
-        aux.push(regla);
+        return aux.push(regla);
+      } else {
+        return null;
       }
     });
     arrReglas = aux;

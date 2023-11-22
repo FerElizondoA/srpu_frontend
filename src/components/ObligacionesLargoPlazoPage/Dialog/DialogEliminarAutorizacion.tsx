@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { forwardRef, useEffect } from "react";
+import { forwardRef } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
@@ -34,10 +34,9 @@ export function DialogEliminarAutorizacion(props: Props) {
     (state) => state.borrarAutorizacion
   );
 
-  
-  const removeAutorizacionesSelect : Function = useLargoPlazoStore(
+  const removeAutorizacionesSelect: Function = useLargoPlazoStore(
     (state) => state.removeAutorizacionesSelect
-  )
+  );
 
   return (
     <Dialog keepMounted open={props.openState} TransitionComponent={Transition}>
@@ -56,7 +55,7 @@ export function DialogEliminarAutorizacion(props: Props) {
           onClick={() => {
             props.handler(false);
             borrarAutorizacion(props.idAutorizacion);
-            removeAutorizacionesSelect(props.index)
+            removeAutorizacionesSelect(props.index);
           }}
         >
           Aceptar
@@ -70,7 +69,6 @@ export function DialogEliminarAutorizacion(props: Props) {
         >
           Cerrar
         </Button>
-
       </DialogActions>
     </Dialog>
   );

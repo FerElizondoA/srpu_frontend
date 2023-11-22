@@ -6,9 +6,23 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { IUsuariosCorto } from "../../ObligacionesCortoPlazoPage/Panels/Encabezado";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+
+export interface IUsuariosCorto {
+  Id: string;
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  IdEntidad: string;
+  IdRol: string;
+  Puesto: string;
+}
+
+export interface IRoles {
+  Id: string;
+  Descripcion: string;
+}
 
 export function Encabezado() {
   const tipoDocumento: string = useLargoPlazoStore(
@@ -18,8 +32,7 @@ export function Encabezado() {
     (state) => state.getTiposEntesPublicos
   );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
-    useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
-
+    useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -53,12 +66,16 @@ export function Encabezado() {
   const selectedValue =
     usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)
       ?.Id || "";
-  // Verificar si el valor seleccionado existe en la lista de opciones
+
   const isValueValid = usuarios.some((usuario) => usuario.Id === selectedValue);
+
+  const datosActualizar: Array<string> = useCortoPlazoStore(
+    (state) => state.datosActualizar
+  );
 
   return (
     <Grid container height={"25rem"}>
-      {/* <Grid
+      <Grid
         item
         container
         mt={{ xs: 2 }}
@@ -70,6 +87,10 @@ export function Encabezado() {
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Documento")
+            }
             fullWidth
             value={tipoDocumento}
             variant="standard"
@@ -93,6 +114,10 @@ export function Encabezado() {
             Solicitante Autorizado
           </InputLabel>
           <Select
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Solicitante Autorizado")
+            }
             sx={queries.medium_text}
             fullWidth
             value={isValueValid ? selectedValue : ""}
@@ -126,6 +151,10 @@ export function Encabezado() {
           </InputLabel>
 
           <TextField
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Cargo del Solicitante")
+            }
             fullWidth
             value={solicitanteAutorizado.Cargo}
             variant="standard"
@@ -159,6 +188,10 @@ export function Encabezado() {
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
           <TextField
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Ente Público")
+            }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
             variant="standard"
@@ -183,6 +216,10 @@ export function Encabezado() {
           </InputLabel>
 
           <TextField
+            disabled={
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Municipio u Organismo")
+            }
             fullWidth
             value={organismo.Organismo}
             variant="standard"
@@ -210,6 +247,11 @@ export function Encabezado() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
+              disabled={
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Contratación")
+              }
+              sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
               onChange={(date) => {
                 changeEncabezado({
@@ -232,7 +274,7 @@ export function Encabezado() {
             />
           </LocalizationProvider>
         </Grid>
-      </Grid> */}
+      </Grid>
     </Grid>
   );
 }

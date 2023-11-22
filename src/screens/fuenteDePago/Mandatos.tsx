@@ -169,9 +169,9 @@ export function Mandatos() {
   );
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
-  const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
+  // const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
 
-  const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
+  // const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
 
   useEffect(() => {
     setMandatosFiltrados(mandatos);

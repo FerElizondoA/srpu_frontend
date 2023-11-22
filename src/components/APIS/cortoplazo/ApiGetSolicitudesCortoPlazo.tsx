@@ -1,7 +1,6 @@
 import axios from "axios";
-import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { IComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export function getComentariosSolicitudPlazo(
   idSolicitud: string,

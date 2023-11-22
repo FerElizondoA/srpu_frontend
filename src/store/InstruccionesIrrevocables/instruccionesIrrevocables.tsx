@@ -1,12 +1,8 @@
 import axios from "axios";
-import { StateCreator } from "zustand";
-import { ICatalogo } from "../../screens/Config/Catalogos";
 import Swal from "sweetalert2";
-import { useInstruccionesStore } from "./main";
+import { StateCreator } from "zustand";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
-
-import { TipoMovimientoMandatoDeudor } from "../Mandatos/mandato";
-import { useMandatoStore } from "../Mandatos/main";
+import { useInstruccionesStore } from "./main";
 
 export interface GeneralIntrucciones {
   numeroCuenta: string;

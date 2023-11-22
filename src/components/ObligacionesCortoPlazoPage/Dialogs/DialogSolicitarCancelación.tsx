@@ -1,29 +1,27 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Typography,
-  Dialog,
   Button,
-  TextField,
-  DialogTitle,
-  DialogContent,
-  FormControl,
-  MenuItem,
+  Dialog,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   InputLabel,
-  Tooltip,
+  TextField,
   ThemeProvider,
+  Tooltip,
+  Typography,
   createTheme,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { Navigate, useNavigate } from "react-router-dom";
-import { createNotification } from "../../LateralMenu/APINotificaciones";
-import Swal from "sweetalert2";
-import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { ArchivosCancelacion, CancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
+import {
+  ArchivosCancelacion,
+  CancelacionSolicitud,
+} from "../../../store/SolicitudFirma/solicitudFirma";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -40,9 +38,8 @@ export function DialogSolicitarCancelacion({
 }: {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IDataPrueba
+  rowSolicitud: IDataPrueba;
 }) {
-
   const theme = createTheme({
     components: {
       MuiButton: {
@@ -63,7 +60,6 @@ export function DialogSolicitarCancelacion({
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
-
   const archivosCancelacion: ArchivosCancelacion = useSolicitudFirmaStore(
     (state) => state.archivosCancelacion
   );
@@ -78,16 +74,14 @@ export function DialogSolicitarCancelacion({
     let file = event.target.files[0];
 
     if (file !== undefined && numero === 1) {
-
       setArchivosCancelacion({
         ...archivosCancelacion,
         acreditacionCancelacion: {
           archivo: file,
           nombreArchivo: file.name,
           fechaArchivo: new Date().toString(),
-        }
-      })
-
+        },
+      });
     } else if (file !== undefined && numero === 2) {
       setArchivosCancelacion({
         ...archivosCancelacion,
@@ -96,23 +90,17 @@ export function DialogSolicitarCancelacion({
           nombreArchivo: file.name,
           fechaArchivo: new Date().toString(),
         },
-      })
+      });
     }
   }
 
-
-  const estatus : string = useCortoPlazoStore(
-    (state) => state.estatus
-  )
-
   useEffect(() => {
     if (openState === false) {
-      cleanArchivosCancelacion()
-      setJustificacion("")
-      setError(false)
+      cleanArchivosCancelacion();
+      setJustificacion("");
+      setError(false);
     }
-  }, [openState])
-
+  }, [openState]);
 
   return (
     <Dialog
@@ -140,9 +128,12 @@ export function DialogSolicitarCancelacion({
           <InputLabel>Acreditación de la cancelación</InputLabel>
           <Typography
             position={"absolute"}
-            border={error === true && archivosCancelacion.acreditacionCancelacion.nombreArchivo === ""
-              ? "2px dotted red"
-              : "2px dotted black"}
+            border={
+              error === true &&
+              archivosCancelacion.acreditacionCancelacion.nombreArchivo === ""
+                ? "2px dotted red"
+                : "2px dotted black"
+            }
             sx={{
               fontFamily: "MontserratMedium",
               //border: "2px dotted black",
@@ -150,15 +141,14 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {archivosCancelacion.acreditacionCancelacion.nombreArchivo
-              || "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            {archivosCancelacion.acreditacionCancelacion.nombreArchivo ||
+              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
             type="file"
             accept="application/pdf"
             onChange={(v) => {
-              cargarArchivo(v, 1)
-
+              cargarArchivo(v, 1);
             }}
             style={{
               opacity: 0,
@@ -172,9 +162,11 @@ export function DialogSolicitarCancelacion({
           <InputLabel>Baja de crédito federal</InputLabel>
           <Typography
             position={"absolute"}
-            border={error === true && archivosCancelacion.bajaCreditoFederal.nombreArchivo === ""
-              ? "2px dotted red"
-              : "2px dotted black"
+            border={
+              error === true &&
+              archivosCancelacion.bajaCreditoFederal.nombreArchivo === ""
+                ? "2px dotted red"
+                : "2px dotted black"
             }
             sx={{
               fontFamily: "MontserratMedium",
@@ -183,14 +175,14 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {archivosCancelacion.bajaCreditoFederal.nombreArchivo
-              || "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            {archivosCancelacion.bajaCreditoFederal.nombreArchivo ||
+              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
             type="file"
             accept="application/pdf"
             onChange={(v) => {
-              cargarArchivo(v, 2)
+              cargarArchivo(v, 2);
             }}
             style={{
               opacity: 0,
@@ -202,7 +194,6 @@ export function DialogSolicitarCancelacion({
 
         <Grid>
           <TextField
-          
             sx={{ width: "95%" }}
             label="Justificación Escrita"
             margin="dense"
@@ -210,8 +201,11 @@ export function DialogSolicitarCancelacion({
             multiline
             onChange={(e) => {
               const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
-              if (e.target.value.length <= 200 && !format.test(e.target.value)) {
-                setJustificacion(e.target.value)
+              if (
+                e.target.value.length <= 200 &&
+                !format.test(e.target.value)
+              ) {
+                setJustificacion(e.target.value);
               }
             }}
             value={justificacion}
@@ -227,50 +221,49 @@ export function DialogSolicitarCancelacion({
           variant="text"
           onClick={() => handler(false)}
         >
-          <Typography sx={queries.medium_text}>
-            Cancelar
-          </Typography>
+          <Typography sx={queries.medium_text}>Cancelar</Typography>
         </Button>
 
         <ThemeProvider theme={theme}>
-
-          <Tooltip title={
-            archivosCancelacion.bajaCreditoFederal.nombreArchivo === "" ||
-              archivosCancelacion.acreditacionCancelacion.nombreArchivo === "" ||
+          <Tooltip
+            title={
+              archivosCancelacion.bajaCreditoFederal.nombreArchivo === "" ||
+              archivosCancelacion.acreditacionCancelacion.nombreArchivo ===
+                "" ||
               justificacion === ""
-              ? "Favor de llenar todos los campos"
-              : null
-          }>
+                ? "Favor de llenar todos los campos"
+                : null
+            }
+          >
             <Button
               variant="text"
               sx={{ ...queries.buttonContinuar, cursor: "-moz-initial" }}
               onClick={() => {
-                if (archivosCancelacion.bajaCreditoFederal.nombreArchivo !== "" &&
-                  archivosCancelacion.acreditacionCancelacion.nombreArchivo !== "" &&
-                  justificacion !== "") {
+                if (
+                  archivosCancelacion.bajaCreditoFederal.nombreArchivo !== "" &&
+                  archivosCancelacion.acreditacionCancelacion.nombreArchivo !==
+                    "" &&
+                  justificacion !== ""
+                ) {
                   CancelacionSolicitud(
                     rowSolicitud.Solicitud,
                     rowSolicitud.NumeroRegistro,
                     justificacion,
                     archivosCancelacion,
                     rowSolicitud.UltimaModificacion,
-                    setUrl)
-                  handler(false)
+                    setUrl
+                  );
+                  handler(false);
                   navigate("../firmaUrl");
                 } else {
-                  setError(true)
+                  setError(true);
                 }
               }}
             >
-              <Typography sx={queries.medium_text}>
-                Confirmar
-              </Typography>
+              <Typography sx={queries.medium_text}>Confirmar</Typography>
             </Button>
           </Tooltip>
         </ThemeProvider>
-
-
-
       </DialogActions>
     </Dialog>
   );

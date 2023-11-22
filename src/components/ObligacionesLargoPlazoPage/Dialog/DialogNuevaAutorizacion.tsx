@@ -16,19 +16,18 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { DestalleDestino } from "../Panels/DetalleDestino";
-import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
 import {
-  Autorizaciones,
   DestinoA,
   DetalleDestino,
   GeneralAutorizado,
 } from "../../../store/Autorizacion/agregarAutorizacion";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { DestalleDestino } from "../Panels/DetalleDestino";
 import { DestinoAutorizado } from "../Panels/MontoAutorizado";
-import Swal from "sweetalert2";
+import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -91,15 +90,6 @@ export function DialogNuevaAutorizacion(props: Props) {
   const modificarAutorizacion: Function = useLargoPlazoStore(
     (state) => state.modificarAutorizacion
   );
-
-  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
-    (state) => state.autorizacionSelect
-  );
-  const setAutorizacionSelect: Function = useLargoPlazoStore(
-    (state) => state.setAutorizacionSelect
-  );
-
-  let tableRef = useRef();
 
   const cleanAutorizacion = () => {
     setAutorizacion(

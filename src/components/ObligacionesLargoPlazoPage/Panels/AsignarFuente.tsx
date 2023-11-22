@@ -1,30 +1,24 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
   Divider,
   Grid,
   InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  Tab,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { queries } from "../../../queries";
-import { VehiculoDePago } from "./VehiculoDePago";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { AsignarFuenteV } from "../../../store/CreditoLargoPlazo/FuenteDePago";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 interface HeadSelect {
   Id: string;
@@ -43,53 +37,6 @@ const CatalogoGarantiaPago: HeadSelect[] = [
   {
     Id: "2",
     Descripcion: "Pago 2",
-  },
-];
-
-const headsAF: HeadSelect[] = [
-  {
-    Id: "0",
-    Descripcion: "Destino",
-  },
-  {
-    Id: "1",
-    Descripcion: "Detalle de la Inversión",
-  },
-  {
-    Id: "2",
-    Descripcion: "Inversión Pública Productiva",
-  },
-  {
-    Id: "3",
-    Descripcion: "Periodo de Administración",
-  },
-  {
-    Id: "4",
-    Descripcion: "Gastos Adicionales",
-  },
-  {
-    Id: "5",
-    Descripcion: "Clave de Inscripción del Financiamiento",
-  },
-  {
-    Id: "6",
-    Descripcion: "Descripcion",
-  },
-  {
-    Id: "7",
-    Descripcion: "Monto",
-  },
-  {
-    Id: "8",
-    Descripcion: "Periodo de Financiamiento (Meses)",
-  },
-  {
-    Id: "9",
-    Descripcion: "Saldo Vigente",
-  },
-  {
-    Id: "10",
-    Descripcion: "Monto Gastos Adicionales",
   },
 ];
 

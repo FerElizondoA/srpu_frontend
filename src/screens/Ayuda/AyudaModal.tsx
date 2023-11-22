@@ -1,12 +1,24 @@
-import { AppBar, Autocomplete, Button, CircularProgress, Dialog, Grid, IconButton, Slide, TextField, ThemeProvider, Toolbar, Tooltip, Typography, createTheme } from "@mui/material";
-import { forwardRef, useEffect, useState } from "react";
-import { createAyuda, getMenus, saveFile } from "./ServicesAyuda";
-import Swal from "sweetalert2";
-import SliderProgress from "./SliderProgress";
-import { queries } from "../../queries";
-import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
-
+import {
+  AppBar,
+  Autocomplete,
+  Button,
+  Dialog,
+  Grid,
+  IconButton,
+  Slide,
+  TextField,
+  ThemeProvider,
+  Toolbar,
+  Tooltip,
+  Typography,
+  createTheme,
+} from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
+import { forwardRef, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { queries } from "../../queries";
+import { createAyuda, getMenus, saveFile } from "./ServicesAyuda";
 
 const theme = createTheme({
   components: {
@@ -48,7 +60,10 @@ export interface MenuItem {
   Path: string;
 }
 
-export interface IFile { archivo: File; nombreArchivo: string }
+export interface IFile {
+  archivo: File;
+  nombreArchivo: string;
+}
 
 export const AyudasModal = ({
   TabValue,
@@ -58,9 +73,7 @@ export const AyudasModal = ({
   TabValue: string;
   handleClose: Function;
   openState: boolean;
-
 }) => {
-
   const [menu, setMenu] = useState<MenuItem>({ Id: "", Label: "", Path: "" });
   const [menus, setMenus] = useState<MenuItem[]>([]);
 
@@ -70,21 +83,19 @@ export const AyudasModal = ({
   const [respuesta, setRespuesta] = useState("");
 
   const [videoPreview, setVideoPreview] = useState("");
-  const [slideropen, setslideropen] = useState(false);
 
   function enCambioFile(event: any) {
     if (
       event?.target?.files[0] &&
-      event.target.files[0].type.split("/")[0] == "video"
+      event.target.files[0].type.split("/")[0] === "video"
     ) {
       setNombreArchivo(event?.target?.value?.split("\\")[2]);
       let file = event?.target!?.files[0]!;
       setNewVideo(file);
       setVideoPreview(URL.createObjectURL(event.target.files[0]));
-
     } else if (
       event?.target?.files[0] &&
-      event.target.files[0].type == "application/pdf"
+      event.target.files[0].type === "application/pdf"
     ) {
       setNombreArchivo(event?.target?.value?.split("\\")[2]);
       let file = event?.target!?.files[0]!;
@@ -94,17 +105,16 @@ export const AyudasModal = ({
     } else {
       Swal.fire({
         confirmButtonColor: "#15212f",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         icon: "error",
         title: "Error al cargar",
       });
-
     }
   }
 
-
-  useEffect(() => { getMenus(setMenus) }, [])
-
+  useEffect(() => {
+    getMenus(setMenus);
+  }, []);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -128,76 +138,41 @@ export const AyudasModal = ({
           <Grid container>
             <Grid item>
               <Typography sx={queries.bold_text}>
-              {TabValue === "Guías" 
-                ? "Agregar Guía"
-                :TabValue === "Videos"
+                {TabValue === "Guías"
+                  ? "Agregar Guía"
+                  : TabValue === "Videos"
                   ? "Agregar Video"
-                  :TabValue === "Preguntas"
-                    ? "Agregar Pregunta"
-                    : null
-                }
+                  : TabValue === "Preguntas"
+                  ? "Agregar Pregunta"
+                  : null}
               </Typography>
             </Grid>
           </Grid>
 
           <Grid item>
-            {TabValue == "Videos" && nombreArchivo !== '' ? (
+            {TabValue === "Videos" && nombreArchivo !== "" ? (
               <ThemeProvider theme={theme}>
                 <Button
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (menu.Id !== "") {
-                      setslideropen(true)
-                      saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose);
-                    }
-                    else {
+                      saveFile(
+                        TabValue,
+                        { nombreArchivo: nombreArchivo, archivo: newVideo },
+                        menu.Id,
+                        pregunta,
+                        respuesta,
+                        handleClose
+                      );
+                    } else {
                       Swal.fire({
                         confirmButtonColor: "#15212f",
-                        iconColor:"#AF8C55",
+                        iconColor: "#AF8C55",
                         icon: "error",
                         title: "Seleccione un menú.",
                       });
                     }
-                  }
-                  }
-                >
-                    Guardar                  
-                </Button>
-              </ThemeProvider>
-            ) : ("")
-            }
-
-            {TabValue == "Guías" && nombreArchivo !== '' ? (
-              <ThemeProvider theme={theme}>
-                <Button
-                  sx={{ ...queries.buttonContinuar }}
-                  onClick={() => {
-                    if (menu.Id !== "") {
-                      if (pregunta !== "") {
-                        setslideropen(true)
-
-                        saveFile(TabValue, { nombreArchivo: nombreArchivo, archivo: newVideo }, menu.Id, pregunta, respuesta, handleClose)
-                      }
-                      else {
-                        Swal.fire({
-                          confirmButtonColor: "#15212f",
-                          iconColor:"#AF8C55",
-                          icon: "error",
-                          title: "Escriba título de guía.",
-                        });
-                      }
-                    }
-                    else {
-                      Swal.fire({
-                        confirmButtonColor: "#15212f",
-                        iconColor:"#AF8C55",
-                        icon: "error",
-                        title: "Seleccione un menú.",
-                      });
-                    }
-                  }
-
-                  }
+                  }}
                 >
                   Guardar
                 </Button>
@@ -205,19 +180,55 @@ export const AyudasModal = ({
             ) : (
               ""
             )}
-            {TabValue == "Preguntas" ? (
+
+            {TabValue === "Guías" && nombreArchivo !== "" ? (
               <ThemeProvider theme={theme}>
-
                 <Button
-
+                  sx={{ ...queries.buttonContinuar }}
+                  onClick={() => {
+                    if (menu.Id !== "") {
+                      if (pregunta !== "") {
+                        saveFile(
+                          TabValue,
+                          { nombreArchivo: nombreArchivo, archivo: newVideo },
+                          menu.Id,
+                          pregunta,
+                          respuesta,
+                          handleClose
+                        );
+                      } else {
+                        Swal.fire({
+                          confirmButtonColor: "#15212f",
+                          iconColor: "#AF8C55",
+                          icon: "error",
+                          title: "Escriba título de guía.",
+                        });
+                      }
+                    } else {
+                      Swal.fire({
+                        confirmButtonColor: "#15212f",
+                        iconColor: "#AF8C55",
+                        icon: "error",
+                        title: "Seleccione un menú.",
+                      });
+                    }
+                  }}
+                >
+                  Guardar
+                </Button>
+              </ThemeProvider>
+            ) : (
+              ""
+            )}
+            {TabValue === "Preguntas" ? (
+              <ThemeProvider theme={theme}>
+                <Button
                   //className="aceptar"
                   sx={{ ...queries.buttonContinuar }}
                   onClick={() => {
                     if (menu.Id !== "") {
                       if (pregunta !== "") {
                         if (respuesta !== "") {
-                          setslideropen(true)
-
                           let datos = {
                             IdMenu: menu.Id,
                             Pregunta: pregunta,
@@ -226,44 +237,39 @@ export const AyudasModal = ({
                             RutaVideo: "",
                             NombreArchivo: "",
                             NombreArchivoServidor: "",
-                            IdUsuario: localStorage.getItem("IdUsuario") || ""
-                          }
-                          createAyuda(datos, handleClose)
-                        }
-                        else {
+                            IdUsuario: localStorage.getItem("IdUsuario") || "",
+                          };
+                          createAyuda(datos, handleClose);
+                        } else {
                           Swal.fire({
                             confirmButtonColor: "#15212f",
-                            iconColor:"#AF8C55",
+                            iconColor: "#AF8C55",
                             icon: "error",
                             title: "Escriba una respuesta.",
                           });
                         }
-                      }
-                      else {
+                      } else {
                         Swal.fire({
                           confirmButtonColor: "#15212f",
-                          iconColor:"#AF8C55",
+                          iconColor: "#AF8C55",
                           icon: "error",
                           title: "Escriba una pregunta.",
                         });
                       }
-                    }
-                    else {
+                    } else {
                       Swal.fire({
                         confirmButtonColor: "#15212f",
-                        iconColor:"#AF8C55",
+                        iconColor: "#AF8C55",
                         icon: "error",
                         title: "Seleccione un menú.",
                       });
                     }
-                  }
-                  }
+                  }}
                 >
                   Guardar
                 </Button>
               </ThemeProvider>
             ) : null}
-
           </Grid>
         </Toolbar>
       </AppBar>
@@ -273,40 +279,44 @@ export const AyudasModal = ({
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item ml={2} mt={2} width={"60%"}
+        <Grid
+          item
+          ml={2}
+          mt={2}
+          width={"60%"}
           sx={{
             width: "52%",
             "@media (min-width: 480px)": {
-              width: "50%"
+              width: "50%",
             },
 
             "@media (min-width: 768px)": {
-              width: "60%"
+              width: "60%",
             },
 
             "@media (min-width: 1140px)": {
-              width: "60%"
+              width: "60%",
             },
 
             "@media (min-width: 1400px)": {
-              width: "60%"
+              width: "60%",
             },
 
             "@media (min-width: 1870px)": {
-              width: "60%"
+              width: "60%",
             },
           }}
         >
-          <Typography variant="h6" sx={queries.medium_text}>Menú</Typography>
+          <Typography variant="h6" sx={queries.medium_text}>
+            Menú
+          </Typography>
           <Autocomplete
             noOptionsText="No se encontraron opciones"
             clearText="Borrar"
             closeText="Cerrar"
             openText="Abrir"
             options={menus}
-            getOptionLabel={(menu) =>
-              menu.Label || "Seleccione Menú"
-            }
+            getOptionLabel={(menu) => menu.Label || "Seleccione Menú"}
             value={menu}
             onChange={(event, newValue) => {
               if (newValue != null) {
@@ -314,10 +324,7 @@ export const AyudasModal = ({
               }
             }}
             renderInput={(params) => (
-              <TextField
-                key={params.id}
-                {...params}
-                variant="outlined" />
+              <TextField key={params.id} {...params} variant="outlined" />
             )}
           />
         </Grid>
@@ -331,30 +338,27 @@ export const AyudasModal = ({
           sx={{
             width: "40%",
             "@media (min-width: 480px)": {
-              width: "40%"
+              width: "40%",
             },
 
             "@media (min-width: 768px)": {
-              width: "30%"
+              width: "30%",
             },
 
             "@media (min-width: 1140px)": {
-              width: "22%"
+              width: "22%",
             },
 
             "@media (min-width: 1400px)": {
-              width: "22%"
+              width: "22%",
             },
 
             "@media (min-width: 1870px)": {
-              width: "22%"
+              width: "22%",
             },
           }}
         >
-
-
           {TabValue !== "Preguntas" ? (
-
             <Button
               variant="contained"
               className="aceptar"
@@ -362,39 +366,40 @@ export const AyudasModal = ({
               //disabled={modo == "Editar Nombre Video" || !TabValue}
               component="label"
             >
-              <Typography sx={{...queries.medium_text, textTransform:"none"}}>
-                {TabValue === "Guías" 
-                ? "Seleccionar Guía"
-                :TabValue === "Videos"
+              <Typography
+                sx={{ ...queries.medium_text, textTransform: "none" }}
+              >
+                {TabValue === "Guías"
+                  ? "Seleccionar Guía"
+                  : TabValue === "Videos"
                   ? "Seleccionar Video"
-                  :TabValue === "Preguntas"
-                    ? "Seleccionar Pregunta"
-                    : null
-                }
+                  : TabValue === "Preguntas"
+                  ? "Seleccionar Pregunta"
+                  : null}
               </Typography>
 
               <input
                 hidden
-                accept={TabValue == "Videos" ? "video/*" : "application/pdf"}
+                accept={TabValue === "Videos" ? "video/*" : "application/pdf"}
                 onChange={(v) => {
                   enCambioFile(v);
                 }}
                 type="file"
               />
             </Button>
-
           ) : (
             ""
           )}
         </Grid>
       </Grid>
 
-      {TabValue == "Videos" || TabValue == "Guías" ? (
+      {TabValue === "Videos" || TabValue === "Guías" ? (
         <>
-
           <Grid container ml={2} mt={2} direction={"column"} width={"89%"}>
-            <Grid >
-              <Typography sx={queries.medium_text}>Nombre del archivo: </Typography>
+            <Grid>
+              <Typography sx={queries.medium_text}>
+                Nombre del archivo:{" "}
+              </Typography>
             </Grid>
             <Grid item width={"100%"}>
               <TextField
@@ -410,9 +415,9 @@ export const AyudasModal = ({
               />
             </Grid>
           </Grid>
-          {TabValue == "Guías" ? (
+          {TabValue === "Guías" ? (
             <Grid container ml={2} width={"89%"}>
-              <Grid >
+              <Grid>
                 <Typography variant="h6" sx={queries.medium_text}>
                   Pregunta / Título de guía:{" "}
                 </Typography>
@@ -426,8 +431,6 @@ export const AyudasModal = ({
                   variant="outlined"
                   size="small"
                   inputProps={{ maxLength: 300 }}
-
-
                   onChange={(v) => setPregunta(v.target.value)}
                   sx={{ paddingBottom: "10px" }}
                 />
@@ -439,14 +442,15 @@ export const AyudasModal = ({
         </>
       ) : null}
 
-      {TabValue == "Preguntas" ? (
+      {TabValue === "Preguntas" ? (
         <>
-
           <Grid container direction={"column"} mt={2}>
             <Grid ml={2}>
-              <Typography variant="h6" sx={queries.medium_text}>Pregunta</Typography>
+              <Typography variant="h6" sx={queries.medium_text}>
+                Pregunta
+              </Typography>
             </Grid>
-            <Grid container  ml={2} width={"89%"}>
+            <Grid container ml={2} width={"89%"}>
               <TextField
                 inputProps={{ maxLength: 300 }}
                 margin="dense"
@@ -463,7 +467,9 @@ export const AyudasModal = ({
 
           <Grid container direction={"column"} mt={2}>
             <Grid ml={2}>
-              <Typography variant="h6" sx={queries.medium_text}>Respuesta</Typography>
+              <Typography variant="h6" sx={queries.medium_text}>
+                Respuesta
+              </Typography>
             </Grid>
             <Grid container ml={2} width={"89%"}>
               <TextField
@@ -484,11 +490,19 @@ export const AyudasModal = ({
         </>
       ) : null}
 
-      {TabValue == "Videos" || TabValue == "Guías" ?
-
-        (<Grid container item height={"100vh"} width={"100vw"} sx={{ display: "flex", justifyContent: "Center", alignItems: "center" }}>
-
-          {TabValue == "Videos" ? (
+      {TabValue === "Videos" || TabValue === "Guías" ? (
+        <Grid
+          container
+          item
+          height={"100vh"}
+          width={"100vw"}
+          sx={{
+            display: "flex",
+            justifyContent: "Center",
+            alignItems: "center",
+          }}
+        >
+          {TabValue === "Videos" ? (
             <video
               loop
               autoPlay
@@ -506,11 +520,10 @@ export const AyudasModal = ({
               title="PDF Viewer"
             ></iframe>
           )}
-        </Grid>) :
-        null}
+        </Grid>
+      ) : null}
 
-      <Grid>
-      </Grid>
+      <Grid></Grid>
       {/* </ModalForm> */}
     </Dialog>
   );

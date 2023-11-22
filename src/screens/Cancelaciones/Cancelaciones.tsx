@@ -31,13 +31,9 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import {
-  IComentarios,
-  VerComentariosSolicitud,
-} from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
-import { Autorizaciones } from "../../store/Autorizacion/agregarAutorizacion";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
@@ -325,10 +321,6 @@ export const Cancelaciones = () => {
       });
     }
   };
-
-  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
-    []
-  );
 
   const limpiaSolicitud = () => {
     changeIdSolicitud("");
@@ -765,7 +757,7 @@ export const Cancelaciones = () => {
                                 onClick={() => {
                                   getComentariosSolicitudPlazo(
                                     row.Id,
-                                    setDatosComentarios
+                                    () => {}
                                   ).then((data) => {
                                     if (
                                       rolesAdmin.includes(

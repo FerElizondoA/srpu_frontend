@@ -1,14 +1,8 @@
 import { Grid } from "@mui/material";
-import { LateralMenu } from "../LateralMenu/LateralMenu";
 import escudo from "../../assets/logo/escudo.png";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
+import { LateralMenu } from "../LateralMenu/LateralMenu";
 
 export function HomePage() {
-  const query = {
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
-
   return (
     <Grid container direction="column">
       <Grid item>
@@ -27,6 +21,5 @@ export function HomePage() {
         <img src={escudo} alt="Escudo" style={{ width: "25vw" }} />
       </Grid>
     </Grid>
-
   );
 }

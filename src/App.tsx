@@ -94,6 +94,7 @@ function App() {
       <CssBaseline enableColorScheme>
         <Routes>
           <Route index element={<Init />} />
+          <Route path="guardando" element={<Init />} />
           <Route path="/" element={<HomePage />}></Route>
           <Route path="firmar" element={<Firma />} />
           <Route path="firmaUrl" element={<FirmaConUrl />} />
@@ -106,7 +107,7 @@ function App() {
           ></Route>
           <Route path="config" element={<Configuracion />}></Route>
           <Route
-            path="ConsultaDeSolicitudes" 
+            path="ConsultaDeSolicitudes"
             element={<ConsultaDeSolicitudPage />}
           ></Route>
           <Route path="catalogos" element={<Catalogos />}></Route>
@@ -120,7 +121,6 @@ function App() {
           <Route path="fideicomisos" element={<Fideicomisos />}></Route>
 
           <Route path="cancelaciones" element={<Cancelaciones />}></Route>
-
 
           <Route
             path="IFrame"

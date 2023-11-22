@@ -99,14 +99,6 @@ export function GastoCostos() {
   const generalGCMonto: number = useLargoPlazoStore(
     (state) => state.generalGastosCostos.monto
   );
-  const generalGastosCostos: {
-    destino: { Id: string; Descripcion: string };
-    detalleInversion: { Id: string; Descripcion: string };
-    descripcion: string;
-    claveInscripcionFinanciamiento: string;
-    monto: number;
-  } = useLargoPlazoStore((state) => state.generalGastosCostos);
-
   //TABLA GASTOS Y COSTOS
 
   const changeGeneralGastosCostos: Function = useLargoPlazoStore(

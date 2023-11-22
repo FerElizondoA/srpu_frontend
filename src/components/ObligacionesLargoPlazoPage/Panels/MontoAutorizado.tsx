@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,

@@ -28,8 +28,14 @@ export function InfoGeneralGastoCosto() {
           allowScrollButtonsMobile
           sx={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
-          <Tab label="Información General" sx={queries.bold_text_InfoGeneralGastoCosto} />
-          <Tab label="DESTINO / GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACIÓN" sx={queries.bold_text_InfoGeneralGastoCosto}/>
+          <Tab
+            label="Información General"
+            sx={queries.bold_text_InfoGeneralGastoCosto}
+          />
+          <Tab
+            label="DESTINO / GASTOS Y COSTOS RELACIONADOS CON LA CONTRATACIÓN"
+            sx={queries.bold_text_InfoGeneralGastoCosto}
+          />
         </Tabs>
       </Grid>
 

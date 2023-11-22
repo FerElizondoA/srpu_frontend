@@ -18,13 +18,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import CircularProgress from "@mui/material/CircularProgress";
 import {
   headsComision,
   headsDisposicion,
@@ -36,17 +36,13 @@ import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
 //"../Dialogs/DialogComentarioApartado";
 import CommentIcon from "@mui/icons-material/Comment";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
-import {
-  getPathDocumentos,
-  listFile,
-} from "../../APIS/pathDocSol/APISDocumentos";
+import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 
 import {
   Disposicion,
   IComisiones,
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { NumeroFideicomiso } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
 import { IFile } from "../../ObligacionesCortoPlazoPage/Panels/Documentacion";
 
@@ -57,14 +53,6 @@ interface Head {
 interface HeadLabels {
   label: string;
   value: string;
-}
-
-interface IPathDocumentos {
-  Id: string;
-  IdSolicitud: string;
-  Ruta: string;
-  NombreIdentificador: string;
-  NombreArchivo: string;
 }
 
 const heads: Head[] = [
@@ -190,38 +178,6 @@ const headsAF: Head[] = [
   },
 ];
 
-const headFP: Head[] = [
-  {
-    label: "Tipo de fuente de pago",
-  },
-  {
-    label: "Fuente de pago",
-  },
-  {
-    label: "% asignado del ingreso fondo ",
-  },
-  {
-    label:
-      "% acumulado de afectacion del fobierno del estado a los mecanismos de pago/100",
-  },
-  {
-    label: "% de afectacion del gobierno del estado/100 del ingreso o fondo",
-  },
-  {
-    label: "% afectado al fideicomiso",
-  },
-  {
-    label: "% acumulado de afectación a los mecanismos de pago",
-  },
-  {
-    label:
-      "% asignado al financiemieno u obligación respecto del ingreso o fondo",
-  },
-  {
-    label: "% acumulado de la asignacion a las obligaciones",
-  },
-];
-
 export function Resumen() {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -277,27 +233,8 @@ export function Resumen() {
 
   //Destino / Gastos y Costos
 
-  const destinoGC: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.destino.Descripcion
-  );
-
-  const detalleInversion: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.detalleInversion.Descripcion
-  );
-
   const gastosAdicionales: string = useLargoPlazoStore(
     (state) => state.GastosCostos.gastosAdicionales
-  );
-
-  const claveInscripcionFinanciamiento: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.claveInscripcionFinanciamiento
-  );
-  const descripcion: string = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.descripcion
-  );
-
-  const montoGC: number = useLargoPlazoStore(
-    (state) => state.generalGastosCostos.monto
   );
 
   const saldoVigente: number = useLargoPlazoStore(
@@ -319,19 +256,10 @@ export function Resumen() {
   const tablaCondicionesFinancieras: CondicionFinancieraLP[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
 
-  // Documentación
-  const documentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLP
-  );
-
   //Mecanismo o vehiculo de pago
 
   const mecanismo: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.Mecanismo.mecanismo
-  );
-
-  const numeroFideicomiso: NumeroFideicomiso[] = useLargoPlazoStore(
-    (state) => state.numeroFideicomiso
   );
 
   const bonoCuponCero: { Id: string; Descripcion: string } = useLargoPlazoStore(

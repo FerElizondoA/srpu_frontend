@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AppBar,
   Button,
@@ -24,7 +25,6 @@ import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
-
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -85,15 +85,13 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
-
   const createInstruccion: Function = useInstruccionesStore(
     (state) => state.createInstruccion
   );
 
   //TIPO DE MOVIMIENTO
-  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] = useInstruccionesStore(
-    (state) => state.tablaTipoMovimientoInstrucciones
-  )
+  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
+    useInstruccionesStore((state) => state.tablaTipoMovimientoInstrucciones);
 
   //DATOS GENERALES
   const numeroCuenta: string = useInstruccionesStore(
@@ -110,11 +108,11 @@ export function AgregarInstruccionesIrrevocables({
 
   const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.generalInstrucciones.municipio
-  )
-
-  const setGeneralInstruccion: Function = useInstruccionesStore(
-    (state) => state.setGeneralInstruccion
   );
+
+  // const setGeneralInstruccion: Function = useInstruccionesStore(
+  //   (state) => state.setGeneralInstruccion
+  // );
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -132,38 +130,38 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.modificaInstruccion
   );
 
-  const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
-    (state) => state.addTipoMovimientoInstrucciones
-  );
+  // const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
+  //   (state) => state.addTipoMovimientoInstrucciones
+  // );
 
-  const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
-    (state) => state.setTipoMovimientoInstrucciones
-  );
+  // const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
+  //   (state) => state.setTipoMovimientoInstrucciones
+  // );
 
-  const cleanInstruccion : Function = useInstruccionesStore(
+  const cleanInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanInstruccion
-  )
+  );
 
-  const limpiaInstruccion = () => {
-    setGeneralInstruccion({
-      numeroCuenta: "",
-      cuentaCLABE: "",
-      banco: { Id: "", Descripcion: "" },
-      mecanismo: "",
-      municipio: { Id: "", Descripcion: "" },
-    })
+  // const limpiaInstruccion = () => {
+  //   setGeneralInstruccion({
+  //     numeroCuenta: "",
+  //     cuentaCLABE: "",
+  //     banco: { Id: "", Descripcion: "" },
+  //     mecanismo: "",
+  //     municipio: { Id: "", Descripcion: "" },
+  //   })
 
-    addTipoMovimientoInstrucciones([])
+  //   addTipoMovimientoInstrucciones([])
 
-    setTipoMovimientoInstrucciones({
-      altaDeudor: "NO",
-      tipoEntePublico: { Id: "", Descripcion: "" },
-      entidadFederativa: { Id: "", Descripcion: "" },
-      tipoFuente: { Id: "", Descripcion: "" },
-      fondoIngreso: { Id: "", Descripcion: "" },
-    });
+  //   setTipoMovimientoInstrucciones({
+  //     altaDeudor: "NO",
+  //     tipoEntePublico: { Id: "", Descripcion: "" },
+  //     entidadFederativa: { Id: "", Descripcion: "" },
+  //     tipoFuente: { Id: "", Descripcion: "" },
+  //     fondoIngreso: { Id: "", Descripcion: "" },
+  //   });
 
-  }
+  // }
 
   return (
     <>
@@ -195,10 +193,14 @@ export function AgregarInstruccionesIrrevocables({
             <Grid item>
               <ThemeProvider theme={theme}>
                 <Button
-                  disabled={tablaTipoMovimientoInstrucciones.length <= 0 ||
-                    (numeroCuenta === "" || parseInt(numeroCuenta) === 0) ||
-                    (cuentaCLABE === "" || parseInt(cuentaCLABE) === 0) ||
-                    banco === null || municipio === null
+                  disabled={
+                    tablaTipoMovimientoInstrucciones.length <= 0 ||
+                    numeroCuenta === "" ||
+                    parseInt(numeroCuenta) === 0 ||
+                    cuentaCLABE === "" ||
+                    parseInt(cuentaCLABE) === 0 ||
+                    banco === null ||
+                    municipio === null
                   }
                   sx={queries.buttonContinuar}
                   onClick={() => {
