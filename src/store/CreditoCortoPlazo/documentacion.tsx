@@ -47,7 +47,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-tiposDocumentosCortoPlazo",
+        "/get-tiposDocumentosCortoPlazo",
       data: {},
       headers: {
         "Content-Type": "application/json",

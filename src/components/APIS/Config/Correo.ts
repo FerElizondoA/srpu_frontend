@@ -15,7 +15,7 @@ export const sendMail = (v: string, mensaje: string, documentType: string) => {
 
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/serviciocorreo",
+      process.env.REACT_APP_APPLICATION_BACK + "/serviciocorreo",
       dataArray,
 
       {

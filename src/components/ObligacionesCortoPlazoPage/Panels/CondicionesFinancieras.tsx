@@ -581,6 +581,7 @@ export function CondicionesFinancieras() {
 
       <Grid
         container
+        item
         md={12}
         lg={12}
         height={"4rem"}

@@ -13,29 +13,28 @@ export interface GeneralIntrucciones {
   cuentaCLABE: string;
   banco: { Id: string; Descripcion: string };
   mecanismo: string;
-  municipio: { Id: string, Descripcion: string },
+  municipio: { Id: string; Descripcion: string };
 }
 
 export interface TipoMovimientoInstrucciones {
-  id: string,
-  tipoEntePublicoObligado: { Id: string, Descripcion: string},
-  altaDeudor:string,
-  entidadFederativa: { Id: string, Descripcion:string },
+  id: string;
+  tipoEntePublicoObligado: { Id: string; Descripcion: string };
+  altaDeudor: string;
+  entidadFederativa: { Id: string; Descripcion: string };
   //mandatario: { Id: string, Descripcion: string},
-  tipoFuente: { Id: string, Descripcion: string },
-  fondoIngreso: { Id: string, Descripcion: string, TipoDeFuente: string },
-  fondoIngresoGobiernoEstatal: string,
-  fondoIngresoMunicipios: string,
-  fondoIngresoAsignadoMunicipio: string,
-  ingresoOrganismo: string,
-  fondoIngresoAfectadoXGobiernoEstatal: string,
-  afectacionGobiernoEstatalEntre100: string,
-  acumuladoAfectacionGobiernoEstatalEntre100: string,
-  fondoIngresoAfectadoXMunicipio: string,
-  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string,
-  ingresoAfectadoXOrganismo: string,
-  acumuladoAfectacionOrganismoEntre100: string,
-  
+  tipoFuente: { Id: string; Descripcion: string };
+  fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
+  fondoIngresoGobiernoEstatal: string;
+  fondoIngresoMunicipios: string;
+  fondoIngresoAsignadoMunicipio: string;
+  ingresoOrganismo: string;
+  fondoIngresoAfectadoXGobiernoEstatal: string;
+  afectacionGobiernoEstatalEntre100: string;
+  acumuladoAfectacionGobiernoEstatalEntre100: string;
+  fondoIngresoAfectadoXMunicipio: string;
+  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
+  ingresoAfectadoXOrganismo: string;
+  acumuladoAfectacionOrganismoEntre100: string;
 }
 
 export interface Instruccion {
@@ -57,15 +56,9 @@ export interface InstruccionesIrrevocablesSlice {
 
   changeIdInstruccion: (Id: string) => void;
 
-
-
-
   editarInstruccion: (
     tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
   ) => void;
-
-
-
 
   setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
 
@@ -81,13 +74,14 @@ export interface InstruccionesIrrevocablesSlice {
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
 
-  addPorcentaje: (tipoMovimientoInstruccion: TipoMovimientoInstrucciones) =>  void;
+  addPorcentaje: (
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
+  ) => void;
 
   getInstruccion: (setState: Function) => void;
   createInstruccion: () => void;
   modificaInstruccion: () => void;
-  borrarInstruccion:(Id: string) => void;
-
+  borrarInstruccion: (Id: string) => void;
 
   cleanInstruccion: () => void;
 
@@ -130,7 +124,7 @@ export const createInstruccionesIrrevocables: StateCreator<
 
   tipoMovimientoInstruccion: {
     id: "",
-    altaDeudor:"",
+    altaDeudor: "",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" },
     entidadFederativa: { Id: "", Descripcion: "" },
     //mandatario: { Id: "", Descripcion: "" },
@@ -158,7 +152,9 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  setTipoMovimientoInstrucciones: (tipoMovimientoInstrucciones: TipoMovimientoInstrucciones) => {
+  setTipoMovimientoInstrucciones: (
+    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
+  ) => {
     set(() => ({
       tipoMovimientoInstruccion: tipoMovimientoInstrucciones,
     }));
@@ -180,7 +176,7 @@ export const createInstruccionesIrrevocables: StateCreator<
 
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-instruccion",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-instruccion",
         {
           IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
@@ -237,7 +233,7 @@ export const createInstruccionesIrrevocables: StateCreator<
 
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-Instruccion",
+        process.env.REACT_APP_APPLICATION_BACK + "/modify-Instruccion",
         {
           Id: state.idInstruccion,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -262,19 +258,19 @@ export const createInstruccionesIrrevocables: StateCreator<
       .then(({ data }) => {
         data.data.ERROR
           ? Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Error",
-            text: "Instrucción ya existente",
-          })
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "error",
+              title: "Error",
+              text: "Instrucción ya existente",
+            })
           : Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "success",
-            title: "Éxito",
-            text: "La instruccion se ha creado exitosamente",
-          });
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "success",
+              title: "Éxito",
+              text: "La instruccion se ha creado exitosamente",
+            });
       })
       .catch((error) => {
         Swal.fire({
@@ -299,18 +295,15 @@ export const createInstruccionesIrrevocables: StateCreator<
     });
 
     await axios
-      .delete(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-Instruccion",
-        {
-          data: {
-            IdInstruccion: Id,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-Instruccion", {
+        data: {
+          IdInstruccion: Id,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(function (response) {
         if (response.status === 200) {
           window.location.reload();
@@ -330,7 +323,9 @@ export const createInstruccionesIrrevocables: StateCreator<
     return false;
   },
 
-  editarInstruccion: (tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]) => {
+  editarInstruccion: (
+    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
+  ) => {
     set(() => ({
       tablaTipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
     }));
@@ -352,14 +347,14 @@ export const createInstruccionesIrrevocables: StateCreator<
         mecanismo: "Instrucciones Irrevocables",
         municipio: { Id: "", Descripcion: "" },
       },
-      tablaTipoMovimientoInstrucciones: []
+      tablaTipoMovimientoInstrucciones: [],
     }));
   },
 
   getInstruccion: (setState: Function) => {
-    const state = useInstruccionesStore.getState()
+    const state = useInstruccionesStore.getState();
     axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-Instrucciones", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-Instrucciones", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -371,13 +366,11 @@ export const createInstruccionesIrrevocables: StateCreator<
       });
   },
 
-
-
   cleanTipoMovimientoInstruccion: () => {
     set(() => ({
       tipoMovimientoInstruccion: {
         id: "",
-        altaDeudor:"",
+        altaDeudor: "",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },
         entidadFederativa: { Id: "", Descripcion: "" },
         //mandatario: { Id: "", Descripcion: "" },
@@ -397,30 +390,30 @@ export const createInstruccionesIrrevocables: StateCreator<
       },
     }));
   },
-  
+
   removeTipoMovimientoInstrucciones: (index: number) => {
     set((state) => ({
       tablaTipoMovimientoInstrucciones:
         state.tablaTipoMovimientoInstrucciones.filter((_, i) => i !== index),
     }));
   },
-  
+
   addPorcentaje: (tipoMovimientoInstrucciones: any) => {
     set((state) => ({
       tablaTipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
     }));
   },
 
-  saveFilesInstruccion(idRegistro, ruta, archivo) { },
+  saveFilesInstruccion(idRegistro, ruta, archivo) {},
 
   savePathDocInstruccion(
     idInstruccion,
     Ruta,
     NombreIdentificador,
     NombreArchivo
-  ) { },
+  ) {},
 
   arrDocs: [],
 
-  setArrDocs(arr) { },
+  setArrDocs(arr) {},
 });

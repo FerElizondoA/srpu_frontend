@@ -294,7 +294,7 @@ export function Documentacion() {
                     <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography width={query.isMobile ? "350px" : "100%"}>
-                          {tablaDocumentos[index]?.descripcionTipo}
+                          {tablaDocumentos[index]?.descripcionTipo || ""}
                         </Typography>
                       ) : (
                         <FormControl required variant="standard" fullWidth>
@@ -303,7 +303,7 @@ export function Documentacion() {
                               tablaDocumentos[index]?.tipoArchivo === "" ||
                               tablaDocumentos[index]?.tipoArchivo === undefined
                             }
-                            value={tablaDocumentos[index]?.tipoArchivo}
+                            value={tablaDocumentos[index]?.tipoArchivo || ""}
                             onChange={(v) => {
                               asignarTpoDoc(
                                 index,

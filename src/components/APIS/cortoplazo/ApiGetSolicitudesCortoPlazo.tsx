@@ -13,7 +13,7 @@ export function getComentariosSolicitudPlazo(
       IdUsuario: localStorage.getItem("IdUsuario"),
       IdSolicitud: idSolicitud,
     },
-    url: process.env.REACT_APP_APPLICATION_BACK + `/api/get-comentarios`,
+    url: process.env.REACT_APP_APPLICATION_BACK + `/get-comentarios`,
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("jwtToken") || "",

@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export async function getCatalogo(setState: Function, getState: string) {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + `/api/get-${getState}`,
+    url: process.env.REACT_APP_APPLICATION_BACK + `/get-${getState}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("jwtToken") || "",
@@ -34,7 +34,7 @@ export async function modDesc(
 ) {
   await axios
     .put(
-      process.env.REACT_APP_APPLICATION_BACK + `/api/modify-${modDesc}`,
+      process.env.REACT_APP_APPLICATION_BACK + `/modify-${modDesc}`,
       {
         IdDescripcion: idDesc,
         Descripcion: desc,
@@ -79,7 +79,7 @@ export async function creaDesc(
 ) {
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + `/api/create-${creaDesc}`,
+      process.env.REACT_APP_APPLICATION_BACK + `/create-${creaDesc}`,
       {
         IdUsuario: localStorage.getItem("IdUsuario"),
         Descripcion: desc,
@@ -135,7 +135,7 @@ export async function creaDesc(
 
 export async function delDesc(delDesc: string, desc: string) {
   await axios
-    .delete(process.env.REACT_APP_APPLICATION_BACK + `/api/delete-${delDesc}`, {
+    .delete(process.env.REACT_APP_APPLICATION_BACK + `/delete-${delDesc}`, {
       params: {
         IdDescripcion: desc,
         IdUsuario: localStorage.getItem("IdUsuario"),

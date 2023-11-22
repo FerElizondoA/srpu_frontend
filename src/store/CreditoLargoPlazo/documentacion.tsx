@@ -45,7 +45,7 @@ export const createDocumentoLargoPlazoSlice: StateCreator<
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-tiposDocumentosLargoPlazo",
+        "/get-tiposDocumentosLargoPlazo",
       data: {},
       headers: {
         "Content-Type": "application/json",

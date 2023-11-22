@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getListadoUsuarioRol = (setState: Function) => {
   axios
-    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/lista-usuarios", {
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/lista-usuarios", {
       params: {
         IdApp: localStorage.getItem("IdApp"),
       },

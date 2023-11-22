@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export async function getTiposFideicomiso(setState: Function) {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposDeFideicomiso",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-tiposDeFideicomiso",
     data: {},
     headers: {
       "Content-Type": "application/json",

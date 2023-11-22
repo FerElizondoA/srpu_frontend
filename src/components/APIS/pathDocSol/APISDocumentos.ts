@@ -7,7 +7,7 @@ export async function getPathDocumentos(
 ) {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-DetailPathDocSol",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocSol",
     params: { IdSolicitud: IdSolicitud },
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +25,7 @@ export async function getPathDocumentos(
 export async function getPathDocumentosAut(IdAut: string, setState: Function) {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-DetailPathDocAut",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocAut",
     params: { IdAutorizacion: IdAut },
     headers: {
       "Content-Type": "application/json",
@@ -45,8 +45,7 @@ export async function getPathDocumentosFideicomiso(
   await axios({
     method: "get",
     url:
-      process.env.REACT_APP_APPLICATION_BACK +
-      "/api/get-DetailPathDocFideicomiso",
+      process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocFideicomiso",
     params: { IdFideicomiso: IdFideicomiso },
     headers: {
       "Content-Type": "application/json",
@@ -65,8 +64,7 @@ export async function getPathDocumentosMandato(
 ) {
   await axios({
     method: "get",
-    url:
-      process.env.REACT_APP_APPLICATION_BACK + "/api/get-DetailPathDocMandato",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocMandato",
     params: { IdMandato: IdMandato },
     headers: {
       "Content-Type": "application/json",
@@ -203,7 +201,7 @@ export const listFile = async (ROUTE: string, setWait: Function) => {
 export const ActualizaDescarga = (IdPath: string) => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/actualiza-descarga",
+      process.env.REACT_APP_APPLICATION_BACK + "/actualiza-descarga",
       {
         IdPath: IdPath,
       },

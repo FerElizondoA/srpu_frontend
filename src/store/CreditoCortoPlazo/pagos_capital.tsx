@@ -183,14 +183,11 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
 
   getPeriocidadPago: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-periodicidadDePago",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-periodicidadDePago", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         set((state) => ({
           catalogoPeriocidadDePago: data.data,
@@ -200,14 +197,11 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
 
   getTasaReferencia: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tasaDeReferencia",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tasaDeReferencia", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         set((state) => ({
           catalogoTasaReferencia: data.data,
@@ -216,14 +210,11 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   },
   getDiasEjercicio: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-diasDelEjercicio",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-diasDelEjercicio", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         set((state) => ({
           catalogoDiasEjercicio: data.data,

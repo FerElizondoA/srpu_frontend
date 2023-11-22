@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export async function getDestinos() {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-destinos",
     data: {},
     headers: {
       "Content-Type": "application/json",
@@ -28,8 +28,7 @@ export async function getDestinos() {
 export function getObligadoSolidarioAval(setState: Function) {
   axios({
     method: "get",
-    url:
-      process.env.REACT_APP_APPLICATION_BACK + "/api/get-obligadoSolidarioAval",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-obligadoSolidarioAval",
     data: {},
     headers: {
       "Content-Type": "application/json",
@@ -54,7 +53,7 @@ export function getObligadoSolidarioAval(setState: Function) {
 export function getSolicitudes(setState: Function) {
   axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-solicitudes",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudes",
     params: { IdUsuario: localStorage.getItem("IdUsuario") },
     headers: {
       "Content-Type": "application/json",
@@ -75,11 +74,11 @@ export function getSolicitudes(setState: Function) {
     });
 }
 
-
 export function getSolicitudesCancelaciones(setState: Function) {
   axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-solicitudes-cancelaciones",
+    url:
+      process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudes-cancelaciones",
     params: { IdUsuario: localStorage.getItem("IdUsuario") },
     headers: {
       "Content-Type": "application/json",
@@ -103,7 +102,7 @@ export function getSolicitudesCancelaciones(setState: Function) {
 export async function getSolicitudesAdmin(Estado: string, setState: Function) {
   await axios({
     method: "get",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-solicitudesAdmin",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudesAdmin",
     params: { Estado: Estado },
     headers: {
       "Content-Type": "application/json",

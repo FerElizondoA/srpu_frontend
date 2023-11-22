@@ -96,8 +96,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   getReglas: async () => {
     await axios
       .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-reglaDeFinanciamiento",
+        process.env.REACT_APP_APPLICATION_BACK + "/get-reglaDeFinanciamiento",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -143,7 +142,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-solicitud",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-solicitud",
         {
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
@@ -208,7 +207,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     await axios
       .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-solicitud",
+        process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
           IdSolicitud: state.idSolicitud,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
@@ -253,18 +252,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
     });
 
     await axios
-      .delete(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-solicitud",
-        {
-          data: {
-            IdSolicitud: Id,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-solicitud", {
+        data: {
+          IdSolicitud: Id,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(function (response) {
         if (response.status === 200) {
           Toast.fire({
@@ -293,7 +289,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     if (comentario.length !== 2) {
       await axios
         .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/create-comentario",
+          process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
           {
             IdSolicitud: Id,
             Comentario: comentario,
@@ -329,7 +325,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     });
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-comentario",
+        process.env.REACT_APP_APPLICATION_BACK + "/delete-comentario",
         {
           Id: Id,
           ModificadoPor: localStorage.getItem("IdUsuario"),
@@ -449,7 +445,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   ) => {
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-addPathDocSol",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
         {
           IdSolicitud: idSolicitud,
           Ruta: Ruta,
@@ -472,19 +468,16 @@ export const getUsuariosAsignables = async (
   numero: number
 ) => {
   await axios
-    .get(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/get-usuarios-asignables",
-      {
-        params: {
-          IdUsuario: localStorage.getItem("IdUsuario"),
-          Rol: localStorage.getItem("Rol"),
-        },
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/get-usuarios-asignables", {
+      params: {
+        IdUsuario: localStorage.getItem("IdUsuario"),
+        Rol: localStorage.getItem("Rol"),
+      },
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Content-Type": "application/json",
+      },
+    })
     .then(({ data }) => {
       if (data.data[0].ERROR !== "Permisos Denegados") {
         setState(data.data);

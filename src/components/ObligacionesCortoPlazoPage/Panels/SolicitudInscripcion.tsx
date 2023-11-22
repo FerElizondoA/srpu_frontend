@@ -563,6 +563,7 @@ export function SolicitudInscripcion() {
         </Grid>
 
         <Grid
+          item
           container
           xs={10}
           sm={11}
@@ -809,7 +810,7 @@ export function SolicitudInscripcion() {
               division !== -1 ? item.substring(division + 1) : "";
 
             return (
-              <Typography color={"red"} sx={{ fontSize: ".9rem" }}>
+              <Typography color={"red"} sx={{ fontSize: ".9rem" }} key={index}>
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>

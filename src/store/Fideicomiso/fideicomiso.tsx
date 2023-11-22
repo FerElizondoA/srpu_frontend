@@ -307,14 +307,11 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   getTiposFideicomiso: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposDeFideicomiso",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tiposDeFideicomiso", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({
@@ -324,7 +321,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
   getFiudiciarios: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fiudiciarios", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fiudiciarios", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -338,14 +335,11 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
   getFideicomisarios: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomisarios",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fideicomisarios", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({
@@ -356,8 +350,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   getOrdenesFideicomisario: async () => {
     await axios
       .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-ordenesFideicomisario",
+        process.env.REACT_APP_APPLICATION_BACK + "/get-ordenesFideicomisario",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -374,8 +367,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   getTiposDeFideicomitente: async () => {
     await axios
       .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-tiposDeFideicomitente",
+        process.env.REACT_APP_APPLICATION_BACK + "/get-tiposDeFideicomitente",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -391,7 +383,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
   getTiposDeFuente: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposDeFuente", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tiposDeFuente", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -405,14 +397,11 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
   getFondosOIngresos: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-fondosOIngresos",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fondosOIngresos", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({
@@ -426,7 +415,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-fideicomiso",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-fideicomiso",
         {
           IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroFideicomiso: state.generalFideicomiso.numeroFideicomiso,
@@ -468,7 +457,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     const state = useFideicomisoStore.getState();
     await axios
       .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-fideicomiso",
+        process.env.REACT_APP_APPLICATION_BACK + "/modify-fideicomiso",
         {
           IdFideicomiso: state.idFideicomiso,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -525,18 +514,15 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     });
 
     await axios
-      .delete(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-fideicomiso",
-        {
-          data: {
-            IdFideicomiso: Id,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-fideicomiso", {
+        data: {
+          IdFideicomiso: Id,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(function (response) {
         if (response.status === 200) {
           window.location.reload();
@@ -559,7 +545,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   getFideicomisos: async (setState: any) => {
     const state = useFideicomisoStore.getState();
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomiso", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fideicomiso", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -621,7 +607,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/api/create-addPathDocFideicomiso",
+          "/create-addPathDocFideicomiso",
         {
           IdFideicomiso: idFideicomiso,
           Ruta: Ruta,

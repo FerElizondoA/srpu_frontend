@@ -135,7 +135,7 @@ const signUp = (
 ) => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-usuario",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-usuario",
       {
         IdUsuarioCentral: IdUsuarioCentral,
         Cargo: datosAdicionales.cargo,

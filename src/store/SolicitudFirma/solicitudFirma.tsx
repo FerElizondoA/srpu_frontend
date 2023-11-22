@@ -190,7 +190,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   getCatalogoFirmaDetalle: async (IdSolicitud: string, TipoFirma: string) => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-firmaDetalle", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-firmaDetalle", {
         params: {
           IdSolicitud: IdSolicitud,
           TipoFirma: TipoFirma,
@@ -232,7 +232,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
       axios
         .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/api/create-firmaDetalle",
+          process.env.REACT_APP_APPLICATION_BACK + "/create-firmaDetalle",
           {
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
@@ -341,8 +341,7 @@ export async function GeneraAcuseRespuesta(
 ) {
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-acuse-respuesta",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse-respuesta",
       {
         tipoSolicitud: tipoSolicitud,
         oficioConstancia: noOficio,
@@ -431,8 +430,7 @@ export async function ConsultaSolicitud(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-solicitud-corto",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
       {
         oficioNum: SolicitudDescarga.oficioNum,
         directorGeneral: SolicitudDescarga.directorGeneral,
@@ -492,7 +490,7 @@ export async function ConsultaRequerimientos(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-requerimientos",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-requerimientos",
       {
         oficioRequerimiento: 1,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
@@ -548,7 +546,7 @@ export async function ConsultaConstancia(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-constancia",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-constancia",
       {
         oficioConstancia: 1,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
@@ -620,7 +618,7 @@ export async function GeneraAcuseEnvio(
 ) {
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-pdf-acuse-enviado",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse-enviado",
       {
         tipoSolicitud: tipoSolicitud,
         oficioConstancia: noOficio,
@@ -659,7 +657,7 @@ export async function GeneraAcuseEnvio(
 export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
   return axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/cambiaEstatus",
+      process.env.REACT_APP_APPLICATION_BACK + "/cambiaEstatus",
       {
         Id: IdSolicitud,
         Estatus: Estatus,
@@ -764,7 +762,7 @@ export async function CancelacionSolicitud(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-solicitud-cancelacion",
+        "/create-pdf-solicitud-cancelacion",
       {
         numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
         UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
@@ -834,7 +832,7 @@ export async function borrarFirmaDetalle(
   // });
 
   await axios
-    .delete(process.env.REACT_APP_APPLICATION_BACK + "/api/delete-firma", {
+    .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-firma", {
       data: {
         IdSolicitud: IdSolicitud,
         TipoFirma: TipoFirma,
@@ -909,8 +907,7 @@ export async function AnularCancelacionSolicitud(
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/api/create-pdf-anular-cancelacion",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-anular-cancelacion",
       {
         numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
         UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,

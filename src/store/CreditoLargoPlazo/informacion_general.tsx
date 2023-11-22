@@ -249,14 +249,11 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   getDetallesInversion: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-detalleInversion",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-detalleInversion", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({

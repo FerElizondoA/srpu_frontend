@@ -16,7 +16,7 @@
         "REACT_APP_APPLICATION_FIRMADOC": "http://10.200.4.105:9091",
         "REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO": "/SRPU/CORTOPLAZO",
         "REACT_APP_DOC_ROUTE": "/SRPU_DEV",
-        "REACT_APP_APPLICATION_ENVIRONMENT": "LOCAL",
+        "REACT_APP_APPLICATION_ENVIRONMENT": "DEV",
         "REACT_APP_APPLICATION_VERSION": "1.0.0"
       },
       "env_qa": {
@@ -30,8 +30,23 @@
         "REACT_APP_APPLICATION_FIEL": "http://10.200.4.164:8081",
         "REACT_APP_APPLICATION_FIRMADOC": "http://10.200.4.164:9091",
         "REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO": "/SRPU/CORTOPLAZO",
-        "REACT_APP_DOC_ROUTE": "/SRPU_DEV",
-        "REACT_APP_APPLICATION_ENVIRONMENT": "LOCAL",
+        "REACT_APP_DOC_ROUTE": "/SRPU_QA",
+        "REACT_APP_APPLICATION_ENVIRONMENT": "QA",
+        "REACT_APP_APPLICATION_VERSION": "1.0.0"
+      },
+      "env_prod": {
+        "REACT_APP_APPLICATION_BACK": "https://tesoreria-virtual-servicios.nl.gob.mx/api/srpu",
+        "REACT_APP_APPLICATION_LOGIN": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_LOGIN_FRONT": "https://tesoreria-virtual.nl.gob.mx/",
+        "REACT_APP_APPLICATION_MID": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_FILES": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_FIRMA": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_CORREO": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_FIEL": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_FIRMADOC": "http://tesoreria-virtual-servicios.nl.gob.mx",
+        "REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO": "/SRPU/CORTOPLAZO",
+        "REACT_APP_DOC_ROUTE": "/SRPU_PROD",
+        "REACT_APP_APPLICATION_ENVIRONMENT": "PROD",
         "REACT_APP_APPLICATION_VERSION": "1.0.0"
       }
     }

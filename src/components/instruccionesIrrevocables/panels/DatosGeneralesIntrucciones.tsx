@@ -14,8 +14,10 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { ICatalogo, IEntePublico } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-
+import {
+  ICatalogo,
+  IEntePublico,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -33,11 +35,11 @@ export function DatosGeneralesIntrucciones() {
 
   const mecanismo: string = useInstruccionesStore(
     (state) => state.generalInstrucciones.mecanismo
-  )
+  );
 
   const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
     (state) => state.generalInstrucciones.municipio
-  )
+  );
 
   //GET
   const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
@@ -71,7 +73,7 @@ export function DatosGeneralesIntrucciones() {
   //CATALOGOS
   const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
-  )
+  );
 
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
@@ -134,7 +136,7 @@ export function DatosGeneralesIntrucciones() {
                     cuentaCLABE: cuentaCLABE,
                     banco: banco,
                     mecanismo: "Instrucciones Irrevocables",
-                    municipio: municipio
+                    municipio: municipio,
                   });
                 }
               }}
@@ -159,7 +161,7 @@ export function DatosGeneralesIntrucciones() {
                     cuentaCLABE: v.target.value,
                     banco: banco,
                     mecanismo: "Instrucciones Irrevocables",
-                    municipio: municipio
+                    municipio: municipio,
                   });
                 }
               }}
@@ -196,7 +198,7 @@ export function DatosGeneralesIntrucciones() {
                     Descripcion: text?.Descripcion || "",
                   },
                   mecanismo: "Instrucciones Irrevocables",
-                  municipio: municipio
+                  municipio: municipio,
                 })
               }
               renderInput={(params) => (
@@ -220,6 +222,7 @@ export function DatosGeneralesIntrucciones() {
           alignItems={"center"}
         >
           <Grid
+            item
             xs={10}
             sm={4}
             md={4}
@@ -231,14 +234,15 @@ export function DatosGeneralesIntrucciones() {
               Mecanismo o vehículo de pago
             </InputLabel>
             <TextField
-             value={mecanismo}
-             fullWidth
-             variant="standard"
+              value={mecanismo}
+              fullWidth
+              variant="standard"
               disabled
             />
           </Grid>
 
           <Grid
+            item
             xs={10}
             sm={4}
             md={4}
@@ -246,8 +250,9 @@ export function DatosGeneralesIntrucciones() {
             xl={4}
             height={{ xs: "4rem", sm: "0rem" }}
           >
-
-            <InputLabel sx={queries.medium_text}>Municipio u Organismo</InputLabel>
+            <InputLabel sx={queries.medium_text}>
+              Municipio u Organismo
+            </InputLabel>
             <Autocomplete
               clearText="Borrar"
               noOptionsText="Sin opciones"

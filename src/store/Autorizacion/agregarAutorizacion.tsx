@@ -208,8 +208,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
   getMediosDePublicacion: async () => {
     return await axios({
       method: "get",
-      url:
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-mediosDePublicacion",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/get-mediosDePublicacion",
       data: {},
       headers: {
         "Content-Type": "application/json",
@@ -224,8 +223,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
   getDestinosAutorizados: async () => {
     return await axios({
       method: "get",
-      url:
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinosAutorizados",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/get-destinosAutorizados",
       data: {},
       headers: {
         "Content-Type": "application/json",
@@ -242,7 +240,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-detalleDestinosAutorizados",
+        "/get-detalleDestinosAutorizados",
       data: {},
       headers: {
         "Content-Type": "application/json",
@@ -260,7 +258,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
 
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-autorizacion",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-autorizacion",
         {
           IdUsuario: localStorage.getItem("IdUsuario"),
           Entidad: state.registrarAutorizacion.entidad.Id,
@@ -302,7 +300,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
     const state = useLargoPlazoStore.getState();
     await axios
       .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-autorizacion",
+        process.env.REACT_APP_APPLICATION_BACK + "/modify-autorizacion",
         {
           IdAutorizacion: state.idAutorizacion,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -363,18 +361,15 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
     });
 
     await axios
-      .delete(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/delete-autorizacion",
-        {
-          data: {
-            IdDescripcion: Id,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-autorizacion", {
+        data: {
+          IdDescripcion: Id,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+        },
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(function (response) {
         if (response.status === 200) {
           // window.location.reload()
@@ -402,7 +397,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
   ) => {
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-addPathDocAut",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocAut",
         {
           IdAutorizacion: idAut,
           Ruta: Ruta,
@@ -464,7 +459,7 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
   getAutorizaciones: async () => {
     return await axios({
       method: "get",
-      url: process.env.REACT_APP_APPLICATION_BACK + "/api/get-autorizaciones",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/get-autorizaciones",
       data: {},
       headers: {
         "Content-Type": "application/json",

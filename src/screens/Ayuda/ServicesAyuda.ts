@@ -2,8 +2,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { MenuItem } from "./AyudaModal";
 
-
-
 export const saveFile = (
   TabValue: string,
   archivo: { archivo: File; nombreArchivo: string },
@@ -46,7 +44,6 @@ export const saveFile = (
               IdUsuario: localStorage.getItem("IdUsuario"),
             },
             handleClose
-
           );
         } else {
           Swal.fire({
@@ -73,7 +70,7 @@ export const saveFile = (
         } else {
           Swal.fire({
             confirmButtonColor: "#15212f",
-            iconColor:"#AF8C55",
+            iconColor: "#AF8C55",
             icon: "error",
             title: "Error al cargar archivo.",
           });
@@ -83,14 +80,18 @@ export const saveFile = (
     .catch((e) => {
       Swal.fire({
         confirmButtonColor: "#15212f",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         icon: "error",
         title: "Error al cargar archivo.",
       });
     });
 };
 
-export const getFileByName = async (ROUTE: string, NOMBRE: string, setState: Function) => {
+export const getFileByName = async (
+  ROUTE: string,
+  NOMBRE: string,
+  setState: Function
+) => {
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
@@ -111,12 +112,11 @@ export const getFileByName = async (ROUTE: string, NOMBRE: string, setState: Fun
     .catch((r) => {
       Swal.fire({
         confirmButtonColor: "#15212f",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         icon: "error",
         title: "Ocurrio un problema al obtener el archivo.",
       });
     });
-
 };
 
 export const deleteFile = async (ROUTE: string, NOMBRE: string, Id: string) => {
@@ -134,24 +134,21 @@ export const deleteFile = async (ROUTE: string, NOMBRE: string, Id: string) => {
       }
     )
     .then((r) => {
-
-      deleteAyuda(Id)
-
+      deleteAyuda(Id);
     })
     .catch((r) => {
       Swal.fire({
         confirmButtonColor: "#15212f",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         icon: "error",
         title: "Ocurrio un problema al eliminar el archivo.",
       });
     });
-
 };
 
 export const createAyuda = (data: any, handleClose: Function) => {
   axios
-    .post(process.env.REACT_APP_APPLICATION_BACK + "/api/ayuda", data, {
+    .post(process.env.REACT_APP_APPLICATION_BACK + "/ayuda", data, {
       params: { Tabla: "Menus", ValorCondicion: localStorage.getItem("IdApp") },
       headers: {
         "Content-Type": "application/json",
@@ -162,12 +159,12 @@ export const createAyuda = (data: any, handleClose: Function) => {
       handleClose();
       Swal.fire({
         confirmButtonColor: "#15212f",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         icon: "success",
         title: "Se ha guardado con éxito",
       });
-    }
-    ).catch((r) => { });
+    })
+    .catch((r) => {});
 };
 
 export const getMenus = (setState: Function) => {
@@ -180,9 +177,8 @@ export const getMenus = (setState: Function) => {
       },
     })
     .then((r) => {
-
-      let menus = r.data.data
-      let menusFiltrados = menus.filter((menu: MenuItem) => menu.Path !== "#")
+      let menus = r.data.data;
+      let menusFiltrados = menus.filter((menu: MenuItem) => menu.Path !== "#");
 
       setState(menusFiltrados);
     });
@@ -194,8 +190,11 @@ export const getAyuda = (
   Opcion: string
 ) => {
   axios
-    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/ayuda", {
-      params: { IdMenu: IdMenu === "0" ? "0" : localStorage.getItem("IdMenuActual"), Opcion: Opcion },
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/ayuda", {
+      params: {
+        IdMenu: IdMenu === "0" ? "0" : localStorage.getItem("IdMenuActual"),
+        Opcion: Opcion,
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("jwtToken") || "",
@@ -209,10 +208,10 @@ export const getAyuda = (
 export const deleteAyuda = async (IdPreguntaFrecuente: string) => {
   await axios({
     method: "delete",
-    url: process.env.REACT_APP_APPLICATION_BACK + "/api/ayuda",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/ayuda",
     data: {
       IdPreguntaFrecuente: IdPreguntaFrecuente,
-      IdUsuario: localStorage.getItem("IdUsuario") || ""
+      IdUsuario: localStorage.getItem("IdUsuario") || "",
     },
     headers: {
       "Content-Type": "application/json",
@@ -224,7 +223,7 @@ export const deleteAyuda = async (IdPreguntaFrecuente: string) => {
       Swal.fire({
         confirmButtonColor: "#15212f",
         icon: "success",
-        iconColor:"#AF8C55",
+        iconColor: "#AF8C55",
         //title: "Éxito",
         text: "El archivo se ha eliminado exitosamente",
       });

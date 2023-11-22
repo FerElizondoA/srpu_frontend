@@ -40,7 +40,7 @@ export const getListadoUsuarios = (setState: Function) => {
 
 export const getRoles = (setState: Function) => {
   axios
-    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-roles", {
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/get-roles", {
       headers: {
         Authorization: localStorage.getItem("jwtToken"),
         "Content-Type": "application/json",

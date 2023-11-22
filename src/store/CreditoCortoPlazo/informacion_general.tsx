@@ -116,7 +116,7 @@ export const createInformacionGeneralSlice: StateCreator<
 
   getDestinos: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-destinos", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-destinos", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -132,7 +132,7 @@ export const createInformacionGeneralSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-institucionesFinancieras",
+          "/get-institucionesFinancieras",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
@@ -148,14 +148,11 @@ export const createInformacionGeneralSlice: StateCreator<
   },
   getTipoEntePublicoObligado: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tiposEntePublico", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({
@@ -166,8 +163,7 @@ export const createInformacionGeneralSlice: StateCreator<
   getObligadoSolidarioAval: async () => {
     await axios
       .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/get-obligadoSolidarioAval",
+        process.env.REACT_APP_APPLICATION_BACK + "/get-obligadoSolidarioAval",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),

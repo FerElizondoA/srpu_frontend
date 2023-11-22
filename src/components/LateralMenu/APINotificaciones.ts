@@ -22,7 +22,7 @@ export const createNotification = (
 ) => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/create-notificacion",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-notificacion",
       {
         Titulo: Titulo,
         Mensaje: mensaje,
@@ -54,7 +54,7 @@ export const getNotificaciones = (
   cantidadNotificaciones: Function
 ) => {
   axios
-    .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-notificaciones", {
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/get-notificaciones", {
       params: {
         IdUsuario: localStorage.getItem("IdUsuario"),
       },
@@ -77,8 +77,7 @@ export const getNotificaciones = (
 export const getHistorialNotificaciones = (setState: Function) => {
   axios
     .get(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/api/get-notificaciones-creadas",
+      process.env.REACT_APP_APPLICATION_BACK + "/get-notificaciones-creadas",
       {
         params: {
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -102,18 +101,15 @@ export const getHistorialNotificaciones = (setState: Function) => {
 
 export const getEstatus = (setState: Function, IdNotificacion: string) => {
   axios
-    .get(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/get-info-notificacion",
-      {
-        params: {
-          IdNotificacion: IdNotificacion,
-        },
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    .get(process.env.REACT_APP_APPLICATION_BACK + "/get-info-notificacion", {
+      params: {
+        IdNotificacion: IdNotificacion,
+      },
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Content-Type": "application/json",
+      },
+    })
     .then(({ data }) => {
       setState(data.data);
     })
@@ -126,7 +122,7 @@ export const getEstatus = (setState: Function, IdNotificacion: string) => {
 export const leerMensaje = (IdNotificacion: string) => {
   axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/api/leer-notificacion",
+      process.env.REACT_APP_APPLICATION_BACK + "/leer-notificacion",
       {
         IdNotificacion: IdNotificacion,
       },

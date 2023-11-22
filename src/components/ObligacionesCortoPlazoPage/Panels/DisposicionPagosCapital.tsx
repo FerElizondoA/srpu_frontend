@@ -36,7 +36,11 @@ import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import {
+  DateInput,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "./InformacionGeneral";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
@@ -604,9 +608,9 @@ export function DisposicionPagosCapital() {
                   }}
                   minDate={new Date()}
                   maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                  slots={(props: any) => (
-                    <TextField variant="outlined" {...props} />
-                  )}
+                  slots={{
+                    textField: DateInput,
+                  }}
                 />
               </LocalizationProvider>
             </Grid>
@@ -872,9 +876,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: "",
                         })
                       }
-                      slots={(props: any) => (
-                        <TextField variant="outlined" {...props} />
-                      )}
+                      slots={{
+                        textField: DateInput,
+                      }}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -1052,9 +1056,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: tasaInteresSobreTasa,
                         })
                       }
-                      slots={(props: any) => (
-                        <TextField variant="outlined" {...props} />
-                      )}
+                      slots={{
+                        textField: DateInput,
+                      }}
                     />
                   </LocalizationProvider>
                 </Grid>

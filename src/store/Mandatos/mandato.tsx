@@ -275,7 +275,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
 
   getMandato: (setState: Function) => {
     axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandato", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-mandato", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -294,7 +294,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     const state = useMandatoStore.getState();
     await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/create-mandato",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-mandato",
         {
           NumeroMandato: state.datosGenerales.numeroMandato,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -349,7 +349,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     const state = useMandatoStore.getState();
     await axios
       .put(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/modify-mandato",
+        process.env.REACT_APP_APPLICATION_BACK + "/modify-mandato",
         {
           IdMandato: state.idMandato,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -412,7 +412,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     });
 
     await axios
-      .delete(process.env.REACT_APP_APPLICATION_BACK + "/api/delete-Mandato", {
+      .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-Mandato", {
         data: {
           IdMandato: Id,
           IdUsuario: localStorage.getItem("IdUsuario"),
@@ -520,8 +520,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   ) => {
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/api/create-addPathDocMandato",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocMandato",
         {
           IdMandato: idMandato,
           Ruta: Ruta,

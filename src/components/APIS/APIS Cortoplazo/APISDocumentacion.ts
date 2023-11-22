@@ -5,8 +5,7 @@ export async function getTiposDocumentos(setState: Function) {
   await axios({
     method: "get",
     url:
-      process.env.REACT_APP_APPLICATION_BACK +
-      "/api/get-tiposDocumentosCortoPlazo",
+      process.env.REACT_APP_APPLICATION_BACK + "/get-tiposDocumentosCortoPlazo",
     data: {},
     headers: {
       "Content-Type": "application/json",

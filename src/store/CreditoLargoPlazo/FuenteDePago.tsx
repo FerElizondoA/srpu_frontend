@@ -26,7 +26,7 @@ export type NumeroFideicomiso = {
   CreadoPor: string;
   ModificadoPor: string;
   UltimaModificacion: string;
-}
+};
 
 export type NumeroMandato = {
   CreadoPor: string;
@@ -42,27 +42,27 @@ export type NumeroMandato = {
   SoporteDocumental: string;
   TipoMovimiento: string;
   UltimaModificacion: string;
-}
+};
 
 export type NumeroInstruccion = {
-  CLABE: string,
-  CreadoPor: string,
-  Deleted: string,
-  DescripcionBanco: string,
-  EntePublico: string,
-  FechaCreacion: string,
-  Id: string,
-  IdBanco: string,
-  MecanismoPago: string,
-  NumeroCuenta: number,
-  TipoMovimiento: string,
-}
+  CLABE: string;
+  CreadoPor: string;
+  Deleted: string;
+  DescripcionBanco: string;
+  EntePublico: string;
+  FechaCreacion: string;
+  Id: string;
+  IdBanco: string;
+  MecanismoPago: string;
+  NumeroCuenta: number;
+  TipoMovimiento: string;
+};
 
-//ASIGNAR FUENTE 
+//ASIGNAR FUENTE
 export type garantiaPago = {
   Id: string;
   Descripcion: string;
-}
+};
 
 export type AsignarFuenteV = {
   clasificacion: { Id: string; Descripcion: string };
@@ -71,41 +71,41 @@ export type AsignarFuenteV = {
   RespectoA: { Id: string; Descripcion: string };
 };
 
-
 export interface FuenteDePagoLargoPlazoSlice {
-
   Mecanismo: Mecanismo;
   AsignarFuenteV: AsignarFuenteV;
 
   garantiaPago: { Id: string; Descripcion: string };
   tablaFideicomisarioFP: Fideicomisario[];
 
-
   editFideicomisarioFuentePago: (fideicomisario: Fideicomisario[]) => void;
 
   changeMecanismo: (
     mecanismo: { Id: string; Descripcion: string },
     bonoCuponCero: { Id: string; Descripcion: string },
-    clasificacionBonoCupo: { Id: string; Descripcion: string },
+    clasificacionBonoCupo: { Id: string; Descripcion: string }
   ) => void;
 
   changeAsignarFuente: (
     clasificacion: { Id: string; Descripcion: string },
     tipoFuente: { Id: string; Descripcion: string },
     fuentePago: { Id: string; Descripcion: string },
-    RespectoA: { Id: string; Descripcion: string },
+    RespectoA: { Id: string; Descripcion: string }
   ) => void;
 
-  changeGarantiaPago: (
-    garantiaPago: { Id: string; Descripcion: string },
-  ) => void;
+  changeGarantiaPago: (garantiaPago: {
+    Id: string;
+    Descripcion: string;
+  }) => void;
 
   //Fideicomiso
   numeroFideicomiso: NumeroFideicomiso[];
   getNumeroFideicomiso: () => void;
 
   numeroFideicomisoSelect: NumeroFideicomiso[];
-  setNumeroFideicomisoSelect: (numeroFideicomisoSelect: NumeroFideicomiso[]) => void;
+  setNumeroFideicomisoSelect: (
+    numeroFideicomisoSelect: NumeroFideicomiso[]
+  ) => void;
 
   //Mandato
   numeroMandato: NumeroMandato[];
@@ -119,20 +119,19 @@ export interface FuenteDePagoLargoPlazoSlice {
   getNumeroInstruccion: () => void;
 
   numeroInstruccionSelect: NumeroInstruccion[];
-  setNumeroInstruccionSelect: (numeroInstruccionSelect: NumeroInstruccion[]) => void;
+  setNumeroInstruccionSelect: (
+    numeroInstruccionSelect: NumeroInstruccion[]
+  ) => void;
 
   catalogoClasificacion: ICatalogo[];
-  getClasificacion: () =>void;
+  getClasificacion: () => void;
 
   catalogoRespecto: ICatalogo[];
   getRespecto: () => void;
 
   catalogoFuenteDePago: ICatalogo[];
-  getFuentePago:() => void;
-
+  getFuentePago: () => void;
 }
-
-
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
@@ -151,12 +150,12 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     RespectoA: { Id: "", Descripcion: "" },
   },
 
-  catalogoClasificacion:[],
-  catalogoRespecto:[],
+  catalogoClasificacion: [],
+  catalogoRespecto: [],
   catalogoFuenteDePago: [],
 
   garantiaPago: { Id: "", Descripcion: "" },
-  
+
   //Fideicomiso
   numeroFideicomisoSelect: [],
   numeroFideicomiso: [],
@@ -166,13 +165,10 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
   numeroMandatoSelect: [],
 
   //Instruccion Irrevocable
-  numeroInstruccion:[],
-  numeroInstruccionSelect:[],
-
-
+  numeroInstruccion: [],
+  numeroInstruccionSelect: [],
 
   tablaFideicomisarioFP: [],
-
 
   editFideicomisarioFuentePago: (fideicomisarios: Fideicomisario[]) =>
     set((state) => ({
@@ -181,24 +177,22 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   changeMecanismo: (Mecanismo: any) =>
     set(() => ({
-      Mecanismo: Mecanismo
+      Mecanismo: Mecanismo,
     })),
 
   changeAsignarFuente: (AsignarFuente: any) =>
     set(() => ({
-      AsignarFuenteV: AsignarFuente
+      AsignarFuenteV: AsignarFuente,
     })),
 
-  changeGarantiaPago: (garantiaPago: garantiaPago) =>
-  (() => ({
-    garantiaPago: garantiaPago
-  })),
-
+  changeGarantiaPago: (garantiaPago: garantiaPago) => () => ({
+    garantiaPago: garantiaPago,
+  }),
 
   //Fideicomisos
   getNumeroFideicomiso: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fideicomiso", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fideicomiso", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -211,10 +205,11 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       });
   },
 
-
-  setNumeroFideicomisoSelect: (numeroFideicomisoSelect: NumeroFideicomiso[]) => {
+  setNumeroFideicomisoSelect: (
+    numeroFideicomisoSelect: NumeroFideicomiso[]
+  ) => {
     set(() => ({
-      numeroFideicomisoSelect: numeroFideicomisoSelect
+      numeroFideicomisoSelect: numeroFideicomisoSelect,
     }));
   },
 
@@ -222,7 +217,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   getNumeroMandato: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-mandato", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-mandato", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -233,21 +228,19 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
           numeroMandato: r,
         }));
       });
-
   },
-
 
   setNumeroMandatoSelect(numeroMandatoSelect: NumeroMandato[]) {
     set(() => ({
-      numeroMandatoSelect: numeroMandatoSelect
-    }))
+      numeroMandatoSelect: numeroMandatoSelect,
+    }));
   },
 
   //Intrucciones Irrevocables
 
   getNumeroInstruccion: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-Instrucciones", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-Instrucciones", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -262,17 +255,21 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   setNumeroInstruccionSelect(numeroInstruccionSelect: NumeroInstruccion[]) {
     set(() => ({
-      numeroInstruccionSelect: numeroInstruccionSelect
-    }))
+      numeroInstruccionSelect: numeroInstruccionSelect,
+    }));
   },
 
   getClasificacion: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-clasificacionAsignarFuentePago", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/get-clasificacionAsignarFuentePago",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
       .then(({ data }) => {
         let r = data.data;
         set((state) => ({
@@ -283,7 +280,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   getRespecto: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-respecto", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-respecto", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -298,7 +295,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   getFuentePago: async () => {
     await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/api/get-fuenteDePago", {
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fuenteDePago", {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
@@ -310,6 +307,4 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
         }));
       });
   },
-
-
 });

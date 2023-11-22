@@ -73,14 +73,11 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
 
   getTiposEntesPublicos: async () => {
     await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-tiposEntePublico",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tiposEntePublico", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then(({ data }) => {
         set((state) => ({
           catalogoTiposEntePublico: data.data,
@@ -90,7 +87,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   getOrganismos: async () => {
     await axios
       .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/api/get-entePublicoObligado",
+        process.env.REACT_APP_APPLICATION_BACK + "/get-entePublicoObligado",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
