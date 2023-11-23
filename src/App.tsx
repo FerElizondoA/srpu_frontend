@@ -3,10 +3,8 @@ import { useEffect, useLayoutEffect } from "react";
 import "./App.css";
 import "./Fonts.css";
 
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { createTheme } from "@mui/material/styles";
 import {
   continueSession,
   sessionValid,
@@ -15,6 +13,7 @@ import { HomePage } from "./components/HomePage/HomePage";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { Firma } from "./components/e.firma/Firma";
+import { Cancelaciones } from "./screens/Cancelaciones/Cancelaciones";
 import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Configuracion } from "./screens/Config/Configuracion";
@@ -24,8 +23,6 @@ import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/Consult
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
 import { ObligacionesLargoPlazoPage } from "./screens/creditoSimpleLargoPlazo/ObligacionesLargoPlazoPage";
 import { Fideicomisos } from "./screens/fuenteDePago/Fideicomisos";
-import { Cancelaciones } from "./screens/Cancelaciones/Cancelaciones";
-import { Init } from "./screens/int/Init";
 import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
 import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
@@ -34,21 +31,13 @@ import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesI
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
 
-export const appTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#AF8C55",
-    },
-  },
-});
-
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
   return token;
 };
 
 function App() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const jt = params.get("jwt") || null;
   const IdApp = params.get("IdApp");
@@ -63,7 +52,10 @@ function App() {
         } else if ((r as boolean) === true) {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
-            navigate("../home");
+            // navigate("../home");
+            window.location.assign(
+              process.env.REACT_APP_APPLICATION_LOGIN_FRONT! + "srpu/"
+            );
           }, 1000);
         }
       });
@@ -90,64 +82,62 @@ function App() {
   );
 
   return (
-    <ThemeProvider theme={appTheme}>
-      <CssBaseline enableColorScheme>
-        <Routes>
-          <Route index element={<Init />} />
-          <Route path="guardando" element={<Init />} />
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="firmar" element={<Firma />} />
-          <Route path="firmaUrl" element={<FirmaConUrl />} />
-          <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
-          <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
-          <Route path="home" element={<HomePage />}></Route>
-          <Route
-            path="obligacionesCortoPlazo"
-            element={<ObligacionesCortoPlazoPage />}
-          ></Route>
-          <Route path="config" element={<Configuracion />}></Route>
-          <Route
-            path="ConsultaDeSolicitudes"
-            element={<ConsultaDeSolicitudPage />}
-          ></Route>
-          <Route path="catalogos" element={<Catalogos />}></Route>
-          <Route path="users" element={<Usuarios />}></Route>
-          <Route path="solicitudes-usuarios" element={<Solicitudes />}></Route>
-          <Route path="notificaciones" element={<Notificaciones />}></Route>
-          <Route
-            path="obligacionesLargoPlazo"
-            element={<ObligacionesLargoPlazoPage />}
-          ></Route>
-          <Route path="fideicomisos" element={<Fideicomisos />}></Route>
+    <HashRouter>
+      <Routes>
+        {/* <Route index element={<Init />} /> */}
+        <Route index element={<HomePage />} />
+        <Route path="/" element={<HomePage />}></Route>
+        <Route path="firmar" element={<Firma />} />
+        <Route path="firmaUrl" element={<FirmaConUrl />} />
+        <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
+        <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
+        <Route path="home" element={<HomePage />}></Route>
+        <Route
+          path="obligacionesCortoPlazo"
+          element={<ObligacionesCortoPlazoPage />}
+        ></Route>
+        <Route path="config" element={<Configuracion />}></Route>
+        <Route
+          path="ConsultaDeSolicitudes"
+          element={<ConsultaDeSolicitudPage />}
+        ></Route>
+        <Route path="catalogos" element={<Catalogos />}></Route>
+        <Route path="users" element={<Usuarios />}></Route>
+        <Route path="solicitudes-usuarios" element={<Solicitudes />}></Route>
+        <Route path="notificaciones" element={<Notificaciones />}></Route>
+        <Route
+          path="obligacionesLargoPlazo"
+          element={<ObligacionesLargoPlazoPage />}
+        ></Route>
+        <Route path="fideicomisos" element={<Fideicomisos />}></Route>
 
-          <Route path="cancelaciones" element={<Cancelaciones />}></Route>
+        <Route path="cancelaciones" element={<Cancelaciones />}></Route>
 
-          <Route
-            path="IFrame"
-            element={
-              <IFrame
-                source={
-                  "?jwt=" +
-                  getToken() +
-                  "&IdApp=" +
-                  localStorage.getItem("IdApp") +
-                  "&idUsuarioModificado=" +
-                  idUsuarioModificado
-                }
-                baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
-              />
-            }
-          ></Route>
+        <Route
+          path="IFrame"
+          element={
+            <IFrame
+              source={
+                "?jwt=" +
+                getToken() +
+                "&IdApp=" +
+                localStorage.getItem("IdApp") +
+                "&idUsuarioModificado=" +
+                idUsuarioModificado
+              }
+              baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
+            />
+          }
+        ></Route>
 
-          <Route path="mandatos" element={<Mandatos />}></Route>
-          <Route
-            path="instruccionesIrrevocables"
-            element={<InstruccionesIrrevocables />}
-          ></Route>
-          <Route path="AdministracionAyudas" element={<Ayuda />}></Route>
-        </Routes>
-      </CssBaseline>
-    </ThemeProvider>
+        <Route path="mandatos" element={<Mandatos />}></Route>
+        <Route
+          path="instruccionesIrrevocables"
+          element={<InstruccionesIrrevocables />}
+        ></Route>
+        <Route path="AdministracionAyudas" element={<Ayuda />}></Route>
+      </Routes>
+    </HashRouter>
   );
 }
 
