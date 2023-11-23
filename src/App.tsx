@@ -52,9 +52,8 @@ function App() {
         } else if ((r as boolean) === true) {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
-            // navigate("../home");
             window.location.assign(
-              process.env.REACT_APP_APPLICATION_LOGIN_FRONT! + "srpu/"
+              process.env.REACT_APP_APPLICATION_FRONT + "srpu/"
             );
           }, 1000);
         }
