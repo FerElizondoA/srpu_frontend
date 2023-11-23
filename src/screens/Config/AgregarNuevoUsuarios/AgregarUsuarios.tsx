@@ -35,25 +35,27 @@ export const IFrame = ({
         height={"5vh"}
       >
         <Grid width={"100%"} display={"flex"}>
-          <Grid width={"35%"} ml={2}
+          <Grid
+            width={"35%"}
+            ml={2}
             sx={{
               width: "28%",
               "@media (min-width: 480px)": {
                 width: "32%",
               },
-          
+
               "@media (min-width: 768px)": {
                 width: "40%",
               },
-          
+
               "@media (min-width: 1140px)": {
                 width: "40%",
               },
-          
+
               "@media (min-width: 1400px)": {
                 width: "42%",
               },
-          
+
               "@media (min-width: 1870px)": {
                 width: "44.5%",
               },
@@ -85,7 +87,7 @@ export const IFrame = ({
             </Button>
           </Grid>
 
-          <Grid >
+          <Grid>
             <Typography
               sx={{
                 fontSize: "2.3ch",
@@ -103,10 +105,7 @@ export const IFrame = ({
             >
               Agregar Usuario
             </Typography>
-
           </Grid>
-
-
         </Grid>
       </Grid>
 

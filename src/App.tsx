@@ -30,6 +30,7 @@ import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
+import { Init } from "./screens/int/Init";
 
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
@@ -53,7 +54,7 @@ function App() {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
             window.location.assign(
-              process.env.REACT_APP_APPLICATION_FRONT || "/sgcm/"
+              process.env.REACT_APP_APPLICATION_FRONT || "/"
             );
           }, 1000);
         }
@@ -84,7 +85,6 @@ function App() {
     <HashRouter>
       <Routes>
         {/* <Route index element={<Init />} /> */}
-        <Route index element={<HomePage />} />
         <Route path="/" element={<HomePage />}></Route>
         <Route path="firmar" element={<Firma />} />
         <Route path="firmaUrl" element={<FirmaConUrl />} />
