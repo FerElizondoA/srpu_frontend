@@ -61,7 +61,7 @@ function App() {
             localStorage.setItem("IdApp", IdApp as string);
             // navigate("../home");
             window.location.assign(
-              process.env.REACT_APP_APPLICATION_LOGIN_FRONT! + "sgcm/"
+              process.env.REACT_APP_APPLICATION_LOGIN_FRONT! + "srpu/"
             );
           }, 1000);
         }
