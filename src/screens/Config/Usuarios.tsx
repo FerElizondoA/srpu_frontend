@@ -1,4 +1,4 @@
-import { Edit, WindowSharp } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FolderSharedRoundedIcon from "@mui/icons-material/FolderSharedRounded";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -29,6 +29,7 @@ import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuari
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { queries } from "../../queries";
 import { useSolicitudUsuarioStore } from "../../store/SolicitudUsuario/main";
+import IFrame from "./AgregarNuevoUsuarios/AgregarUsuarios";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
@@ -148,10 +149,16 @@ export const Usuarios = () => {
     (state: any) => state.changeIdUsuarioModificado
   );
 
+  const [openAgregar, setOpenAgregar] = useState(0);
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 768px)"),
   };
+
+  const idUsuarioModificado: string = useSolicitudUsuarioStore(
+    (state) => state.idUsuarioModificado
+  );
 
   return (
     <Grid
@@ -194,13 +201,14 @@ export const Usuarios = () => {
       </Grid>
 
       {
-        <Grid container width={"100%"} mb={2}  >
+        <Grid container width={"100%"} mb={2}>
           <Grid container display="flex" width={"100%"} mb={2}>
             <Grid
               item
               height={"3.2rem"}
               sx={{
-                display: "flex", justifyContent: "flex-end",
+                display: "flex",
+                justifyContent: "flex-end",
                 width: "60%",
                 "@media (min-width: 480px)": {
                   width: "65%",
@@ -240,8 +248,6 @@ export const Usuarios = () => {
                   "@media (min-width: 1140px)": {
                     width: "70%",
                   },
-
-
                 }}
               >
                 <InputBase
@@ -326,17 +332,17 @@ export const Usuarios = () => {
                     width: "2rem",
                     "@media (min-width: 480px)": {
                       fontSize: ".7rem",
-
                     },
 
                     "@media (min-width: 768px)": {
                       fontSize: "80%",
                       width: "10rem",
-                    }
+                    },
                   }}
-                  endIcon={query.isMobile
-                    ? null
-                    : <FolderSharedRoundedIcon fontSize="large" />
+                  endIcon={
+                    query.isMobile ? null : (
+                      <FolderSharedRoundedIcon fontSize="large" />
+                    )
                   }
                   onClick={() => {
                     navigate("../solicitudes-usuarios");
@@ -352,15 +358,12 @@ export const Usuarios = () => {
                 justifyContent={"center"}
                 alignItems={"center"}
                 width={"50%"}
-              //sx={{ display: "flex", justifyContent: "center" }}
+                //sx={{ display: "flex", justifyContent: "center" }}
               >
                 <Button
                   variant="contained"
                   size="medium"
-                  endIcon={query.isMobile
-                    ? null
-                    : <PersonAddAlt1Icon />
-                  }
+                  endIcon={query.isMobile ? null : <PersonAddAlt1Icon />}
                   sx={{
                     backgroundColor: "#15212f",
                     color: "white",
@@ -381,11 +384,11 @@ export const Usuarios = () => {
                     "@media (min-width: 768px)": {
                       fontSize: "80%",
                       width: "10rem",
-                    }
+                    },
                   }}
                   onClick={() => {
                     changeIdUsuarioModificado("");
-                    navigate("../Iframe");
+                    setOpenAgregar(1);
                   }}
                 >
                   Añadir Usuario
@@ -433,7 +436,7 @@ export const Usuarios = () => {
                             size="medium"
                             onClick={() => {
                               changeIdUsuarioModificado(row.Id);
-                              navigate(`../Iframe`);
+                              setOpenAgregar(2);
                             }}
                           >
                             <Edit fontSize="inherit" />
@@ -519,13 +522,19 @@ export const Usuarios = () => {
           </Paper>
         </Grid>
       }
-      {/* <DialogUsuarios
-        ActionButton={butonLabel}
-        open={openDialog}
-        title={title}
-        handleClose={openDialogUser}
-        UserObject={usuarioEdit}
-      /> */}
+      <IFrame
+        source={
+          "?jwt=" +
+          localStorage.getItem("jwtToken")! +
+          "&IdApp=" +
+          localStorage.getItem("IdApp") +
+          "&idUsuarioModificado=" +
+          idUsuarioModificado
+        }
+        baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
+        open={openAgregar}
+        setOpen={setOpenAgregar}
+      />
     </Grid>
   );
 };

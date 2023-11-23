@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 
 import "./App.css";
 import "./Fonts.css";
@@ -14,7 +14,6 @@ import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { Firma } from "./components/e.firma/Firma";
 import { Cancelaciones } from "./screens/Cancelaciones/Cancelaciones";
-import { IFrame } from "./screens/Config/AgregarNuevoUsuarios/AgregarUsuarios";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Configuracion } from "./screens/Config/Configuracion";
 import { Usuarios } from "./screens/Config/Usuarios";
@@ -29,8 +28,6 @@ import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
-import { useSolicitudUsuarioStore } from "./store/SolicitudUsuario/main";
-import { Init } from "./screens/int/Init";
 
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
@@ -73,14 +70,6 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    getToken();
-  }, []);
-
-  const idUsuarioModificado: string = useSolicitudUsuarioStore(
-    (state) => state.idUsuarioModificado
-  );
-
   return (
     <HashRouter>
       <Routes>
@@ -111,23 +100,6 @@ function App() {
         <Route path="fideicomisos" element={<Fideicomisos />}></Route>
 
         <Route path="cancelaciones" element={<Cancelaciones />}></Route>
-
-        <Route
-          path="IFrame"
-          element={
-            <IFrame
-              source={
-                "?jwt=" +
-                getToken() +
-                "&IdApp=" +
-                localStorage.getItem("IdApp") +
-                "&idUsuarioModificado=" +
-                idUsuarioModificado
-              }
-              baseURL={String(process.env.REACT_APP_APPLICATION_LOGIN_FRONT)}
-            />
-          }
-        ></Route>
 
         <Route path="mandatos" element={<Mandatos />}></Route>
         <Route
