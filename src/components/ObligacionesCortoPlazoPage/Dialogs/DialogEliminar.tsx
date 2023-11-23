@@ -1,13 +1,12 @@
 import * as React from "react";
 
-import { Typography, Dialog, Slide, Button } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { Button, Dialog, Slide } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import { TransitionProps } from "@mui/material/transitions";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,8 +47,8 @@ export function DialogEliminar({
       </DialogTitle> */}
 
       <DialogContent>
-        <DialogContentText sx={{...queries.bold_text, textalign: "center" }}>
-        ¿Deseas Eliminar la {texto}?
+        <DialogContentText sx={{ ...queries.bold_text, textalign: "center" }}>
+          ¿Deseas Eliminar la {texto}?
         </DialogContentText>
       </DialogContent>
 

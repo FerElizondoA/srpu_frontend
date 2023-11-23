@@ -53,7 +53,7 @@ function App() {
           setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
             window.location.assign(
-              process.env.REACT_APP_APPLICATION_FRONT + "srpu/"
+              process.env.REACT_APP_APPLICATION_FRONT || "/sgcm/"
             );
           }, 1000);
         }

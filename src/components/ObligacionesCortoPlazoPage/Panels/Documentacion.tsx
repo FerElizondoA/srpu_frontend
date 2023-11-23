@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CommentIcon from "@mui/icons-material/Comment";
 import {
   Badge,
