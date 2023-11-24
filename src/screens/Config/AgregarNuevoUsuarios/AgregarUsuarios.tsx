@@ -53,14 +53,12 @@ export const IFrame = ({
       </AppBar>
 
       <DialogContent>
-        <Grid width={"100%"} height={"85vh"}>
-          <object
-            style={{ width: "100%", height: "100%" }}
-            data={String(baseURL) + String(source)}
-            type="text/html"
-            aria-label="Agregar Usuario"
-          ></object>
-        </Grid>
+        <iframe
+          style={{ width: "100%", height: "100%", border: 0 }}
+          className="iframe"
+          src={String(baseURL) + String(source)}
+          title="Agregar Usuario"
+        ></iframe>
       </DialogContent>
     </Dialog>
   );
