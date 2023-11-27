@@ -185,12 +185,13 @@ export function LateralMenu() {
     hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = "#";
+  // let color = "#";
+  let color = "#56636a";
 
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 5)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
+  // for (i = 0; i < 3; i += 1) {
+  //   const value = (hash >> (i * 5)) & 0xff;
+  //   color += `${value.toString(16)}`.slice(-2);
+  // }
   /* eslint-enable no-bitwise */
 
   const [show, setShow] = useState(false);
