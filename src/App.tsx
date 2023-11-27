@@ -74,39 +74,39 @@ function App() {
     <HashRouter>
       <Routes>
         {/* <Route index element={<Init />} /> */}
-        <Route path="/" element={<HomePage />}></Route>
+        <Route path="/" element={<HomePage />} />
         <Route path="firmar" element={<Firma />} />
         <Route path="firmaUrl" element={<FirmaConUrl />} />
         <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
         <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
-        <Route path="home" element={<HomePage />}></Route>
+        <Route path="home" element={<HomePage />} />
         <Route
           path="obligacionesCortoPlazo"
           element={<ObligacionesCortoPlazoPage />}
-        ></Route>
-        <Route path="config" element={<Configuracion />}></Route>
+        />
+        <Route path="config" element={<Configuracion />} />
         <Route
           path="ConsultaDeSolicitudes"
           element={<ConsultaDeSolicitudPage />}
-        ></Route>
-        <Route path="catalogos" element={<Catalogos />}></Route>
-        <Route path="users" element={<Usuarios />}></Route>
-        <Route path="solicitudes-usuarios" element={<Solicitudes />}></Route>
-        <Route path="notificaciones" element={<Notificaciones />}></Route>
+        />
+        <Route path="catalogos" element={<Catalogos />} />
+        <Route path="users" element={<Usuarios />} />
+        <Route path="solicitudes-usuarios" element={<Solicitudes />} />
+        <Route path="notificaciones" element={<Notificaciones />} />
         <Route
           path="obligacionesLargoPlazo"
           element={<ObligacionesLargoPlazoPage />}
-        ></Route>
-        <Route path="fideicomisos" element={<Fideicomisos />}></Route>
+        />
+        <Route path="fideicomisos" element={<Fideicomisos />} />
 
-        <Route path="cancelaciones" element={<Cancelaciones />}></Route>
+        <Route path="cancelaciones" element={<Cancelaciones />} />
 
-        <Route path="mandatos" element={<Mandatos />}></Route>
+        <Route path="mandatos" element={<Mandatos />} />
         <Route
           path="instruccionesIrrevocables"
           element={<InstruccionesIrrevocables />}
-        ></Route>
-        <Route path="AdministracionAyudas" element={<Ayuda />}></Route>
+        />
+        <Route path="AdministracionAyudas" element={<Ayuda />} />
       </Routes>
     </HashRouter>
   );
