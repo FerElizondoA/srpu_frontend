@@ -3,14 +3,17 @@ const db = require("../config/db.js");
 module.exports = {
   //CREAR
   createFideicomiso: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
     const NumeroFideicomiso = req.body.NumeroFideicomiso;
-    const TipoFideicomiso = req.body.TipoFideicomiso;
     const FechaFideicomiso = req.body.FechaFideicomiso;
-    const Fiudiciario = req.body.Fiudiciario;
+    const TipoFideicomiso = req.body.TipoFideicomiso;
+    const Fiduciario = req.body.Fiduciario;
     const Fideicomisario = req.body.Fideicomisario;
     const TipoMovimiento = req.body.TipoMovimiento;
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
     const SoporteDocumental = req.body.SoporteDocumental;
+    const CreadoPor = req.body.CreadoPor;
 
     if (
       (NumeroFideicomiso == null || /^[\s]*$/.test(NumeroFideicomiso)) &&
@@ -20,16 +23,17 @@ module.exports = {
         error: "Ingrese Descripcion válido.",
       });
     }
+
     if (
-      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
-      IdUsuario.length() <= 36
+      (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) &&
+      CreadoPor.length() <= 36
     ) {
       return res.status(409).send({
         error: "Ingrese Id usuario válido.",
       });
     } else {
       db.query(
-        `CALL sp_AgregarFideicomiso('${IdUsuario}', '${NumeroFideicomiso}' , '${TipoFideicomiso}', '${FechaFideicomiso}', '${Fiudiciario}', '${Fideicomisario}', '${TipoMovimiento}', '${SoporteDocumental}')`,
+        `CALL sp_AgregarFideicomiso('${NumeroFideicomiso}', '${FechaFideicomiso}', '${TipoFideicomiso}', '${Fiduciario}', '${Fideicomisario}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}','${CreadoPor}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -117,14 +121,16 @@ module.exports = {
   //MODIFICA POR ID
   modifyFideicomiso: (req, res) => {
     const IdFideicomiso = req.body.IdFideicomiso;
-    const IdUsuario = req.body.IdUsuario;
-    const NumeroFideicomiso = req.body.NumeroFideicomiso;
-    const TipoFideicomiso = req.body.TipoFideicomiso;
     const FechaFideicomiso = req.body.FechaFideicomiso;
-    const Fiudiciario = req.body.Fiudiciario;
+    const TipoFideicomiso = req.body.TipoFideicomiso;
+    const Fiduciario = req.body.Fiduciario;
     const Fideicomisario = req.body.Fideicomisario;
     const TipoMovimiento = req.body.TipoMovimiento;
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
     const SoporteDocumental = req.body.SoporteDocumental;
+    const CreadoPor = req.body.CreadoPor;
 
     if (IdFideicomiso == null || /^[\s]*$/.test(IdFideicomiso)) {
       return res.status(409).send({
@@ -132,19 +138,13 @@ module.exports = {
       });
     }
 
-    if (NumeroFideicomiso == null || /^[\s]*$/.test(NumeroFideicomiso)) {
-      return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
-      });
-    }
-
-    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
+    if (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) {
       return res.status(409).send({
         error: "Ingrese Id usuario modificador",
       });
     } else {
       db.query(
-        `CALL sp_ModificaFideicomiso('${IdFideicomiso}', '${IdUsuario}', '${NumeroFideicomiso}' , '${TipoFideicomiso}', '${FechaFideicomiso}', '${Fiudiciario}', '${Fideicomisario}', '${TipoMovimiento}', '${SoporteDocumental}')`,
+        `CALL sp_ModificaFideicomiso('${IdFideicomiso}', '${FechaFideicomiso}', '${TipoFideicomiso}', '${Fiduciario}', '${Fideicomisario}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}','${CreadoPor}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

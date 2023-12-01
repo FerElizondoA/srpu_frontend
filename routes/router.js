@@ -173,12 +173,12 @@ const {
   deleteTipoDeFideicomiso,
 } = require("../controllers/TiposDeFideicomiso.js");
 const {
-  createFiudiciario,
-  getFiudiciarios,
-  getDetailFiudiciario,
-  modifyFiudiciario,
-  deleteFiudiciario,
-} = require("../controllers/Fiudiciarios.js");
+  createFiduciario,
+  getFiduciarios,
+  getDetailFiduciario,
+  modifyFiduciario,
+  deleteFiduciario,
+} = require("../controllers/Fiduciarios.js");
 const {
   createFideicomisario,
   getFideicomisarios,
@@ -1018,29 +1018,29 @@ router.delete(
 );
 //#endregion
 
-//#region Fiudiciarios
+//#region Fiduciarios
 router.post(
-  "/create-fiudiciarios",
+  "/create-fiduciarios",
   verifyToken.verifyJWT,
   (req, res, express) => {
-    createFiudiciario(req, res);
+    createFiduciario(req, res);
   }
 );
 
-router.get("/get-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  getFiudiciarios(req, res);
+router.get("/get-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  getFiduciarios(req, res);
 });
 
-router.get("/detail-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  getDetailFiudiciario(req, res);
+router.get("/detail-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  getDetailFiduciario(req, res);
 });
 
-router.put("/modify-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  modifyFiudiciario(req, res);
+router.put("/modify-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  modifyFiduciario(req, res);
 });
 
-router.delete("/delete-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  deleteFiudiciario(req, res);
+router.delete("/delete-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  deleteFiduciario(req, res);
 });
 //#endregion
 

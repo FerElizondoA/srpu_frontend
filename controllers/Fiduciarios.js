@@ -2,7 +2,7 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createFiudiciario: (req, res) => {
+  createFiduciario: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
 
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarFiudiciario('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarFiduciario('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -51,8 +51,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getFiudiciarios: (req, res) => {
-    db.query(`CALL sp_ListadoFiudiciarios()`, (err, result) => {
+  getFiduciarios: (req, res) => {
+    db.query(`CALL sp_ListadoFiduciarios()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -73,7 +73,7 @@ module.exports = {
   },
 
   // DETALLE POR ID
-  getDetailFiudiciario: (req, res) => {
+  getDetailFiduciario: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -81,35 +81,32 @@ module.exports = {
       });
     }
 
-    db.query(
-      `CALL sp_DetalleFiudiciario('${IdDescripcion}')`,
-      (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            error: "Error",
-          });
-        }
-        if (result.length) {
-          const data = result[0][0];
-          if (data.error) {
-            return res.status(409).send({
-              result: data,
-            });
-          }
-          return res.status(200).send({
-            data,
-          });
-        } else {
-          return res.status(409).send({
-            error: "¡Sin Información!",
-          });
-        }
+    db.query(`CALL sp_DetalleFiduciario('${IdDescripcion}')`, (err, result) => {
+      if (err) {
+        return res.status(500).send({
+          error: "Error",
+        });
       }
-    );
+      if (result.length) {
+        const data = result[0][0];
+        if (data.error) {
+          return res.status(409).send({
+            result: data,
+          });
+        }
+        return res.status(200).send({
+          data,
+        });
+      } else {
+        return res.status(409).send({
+          error: "¡Sin Información!",
+        });
+      }
+    });
   },
 
   //MODIFICA POR ID
-  modifyFiudiciario: (req, res) => {
+  modifyFiduciario: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
@@ -132,7 +129,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaFiudiciario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaFiduciario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -160,11 +157,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteFiudiciario: (req, res) => {
+  deleteFiduciario: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFiudiciario('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaFiduciario('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
