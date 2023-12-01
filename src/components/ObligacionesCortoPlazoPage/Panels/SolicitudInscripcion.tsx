@@ -711,17 +711,6 @@ export function SolicitudInscripcion() {
                     </Grid>
                   ) : null}
 
-                  {/* <Grid mb={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                      <Button
-                        sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {
-                          setOpenDialogBorrador(!openDialogBorrador);
-                        }}
-                      >
-                        Guardar Borrador
-                      </Button>
-                    </Grid> */}
-
                   <Grid
                     mb={2}
                     display={"flex"}

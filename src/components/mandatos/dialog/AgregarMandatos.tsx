@@ -183,7 +183,7 @@ export function AgregarMandatos({
               <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
             </Tabs>
 
-            {tabIndex === 0 && <DatosGeneralesMandatos />}
+            {tabIndex === 0 && <DatosGeneralesMandatos accion={accion} />}
 
             {tabIndex === 1 && <TipoDeMovimiento />}
 

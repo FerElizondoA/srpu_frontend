@@ -11,7 +11,7 @@ import { DatosGeneralesMandato } from "../../../store/Mandatos/mandato";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
 
-export function DatosGeneralesMandatos() {
+export function DatosGeneralesMandatos({ accion }: { accion: string }) {
   const setDatosGenerales: Function = useMandatoStore(
     (state) => state.setDatosGenerales
   );
@@ -75,22 +75,22 @@ export function DatosGeneralesMandatos() {
           error={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
+            ).length > 0 && accion === ""
           }
           sx={queries.medium_text}
         >
-          Numero de mandato
+          Número de Mandato
         </InputLabel>
         <TextField
           error={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
+            ).length > 0 && accion === ""
           }
           helperText={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
+            ).length > 0 && accion === ""
               ? "Número de mandato ya existente"
               : ""
           }
@@ -112,7 +112,7 @@ export function DatosGeneralesMandatos() {
         }}
       >
         <InputLabel sx={{ ...queries.medium_text }}>
-          Fecha del mandato
+          Fecha del Mandato
         </InputLabel>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
           <DesktopDatePicker

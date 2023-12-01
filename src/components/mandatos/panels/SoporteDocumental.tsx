@@ -32,11 +32,11 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
+import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
 
-const heads: HeadLabels[] = [
+const heads = [
   {
     label: " ",
   },
@@ -131,7 +131,15 @@ export function SoporteDocumental() {
 
   const [radioValue, setRadioValue] = useState("");
 
-  const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
+  const idMandato: string = useMandatoStore((state) => state.idMandato);
+
+  const [arr, setArr] = useState<any>([]);
+
+  useEffect(() => {
+    if (idMandato !== "") {
+      listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr);
+    }
+  }, []);
 
   return (
     <Grid
@@ -168,7 +176,7 @@ export function SoporteDocumental() {
               <FormControlLabel
                 value="Convenio modificatorio"
                 control={<Radio />}
-                label="Convenio modificatorio"
+                label="Convenio Modificatorio"
               />
             </RadioGroup>
           </FormControl>
@@ -238,7 +246,7 @@ export function SoporteDocumental() {
 
           <Grid>
             <InputLabel sx={queries.medium_text}>
-              Fecha del documento
+              Fecha del Documento
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
@@ -367,9 +375,11 @@ export function SoporteDocumental() {
                                   .catch((err) => {
                                     setFileSelected(
                                       `data:application/pdf;base64,${
-                                        arrDocs.filter((td: any) =>
-                                          td.nombre.includes(row.nombreArchivo)
-                                        )[0].file
+                                        arr.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].FILE
                                       }`
                                     );
                                   });

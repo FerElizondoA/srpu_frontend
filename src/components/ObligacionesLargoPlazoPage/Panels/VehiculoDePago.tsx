@@ -458,7 +458,7 @@ export function VehiculoDePago() {
                   <InputLabel>Fiduciario</InputLabel>
                   <TextField
                     disabled
-                    value={row.DescripcionFiudiciario}
+                    value={row.DescripcionFiduciario}
                     fullWidth
                     variant="standard"
                     sx={queries.medium_text}
@@ -782,7 +782,7 @@ export function VehiculoDePago() {
 
                   {/* <InputLabel>Fiduciario</InputLabel>
                   <TextField
-                    value={row.DescripcionFiudiciario}
+                    value={row.DescripcionFiduciario}
                     fullWidth
                     variant="standard"
                     sx={queries.medium_text}

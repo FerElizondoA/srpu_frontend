@@ -41,51 +41,51 @@ const heads: HeadLabels[] = [
     label: "Id",
   },
   {
-    label: "Tipo de mandante",
+    label: "Tipo de Mandante",
   },
   {
     label: "Mandatario",
   },
   {
-    label: "Fuente de pago",
+    label: "Fuente de Pago",
   },
   {
-    label: "% del ingreso o fondo correspondiente al gobierno del estado",
+    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
   },
   {
-    label: "% del ingreso o fondo correspondiente a los municipios",
+    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
   },
   {
-    label: "% de asignación del fondo o ingreso correspondiente al municipio",
+    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
   },
   {
-    label: "% del ingreso correspondiente al organismo",
-  },
-  {
-    label:
-      "% afectado al mandato del ingreso o fondo correspondiente al gobierno del estado",
-  },
-  {
-    label: "% de afectacion del gobierno del estado /100 del fondo o ingreso",
+    label: "% del Ingreso Correspondiente al Organismo",
   },
   {
     label:
-      "% acumulado de afectacion del gobierno del estado a los mecanismos de pago /100",
+      "% Afectado al Mandato del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+  },
+  {
+    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
   },
   {
     label:
-      "% afectado al mandato del ingreso o fondo correspondiente al municipio",
+      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
   },
   {
     label:
-      "% acumulado de afectación del municipio a los mecanismos de pago /% asignado al municipio",
-  },
-  {
-    label: "% afectado al mandato del ingreso correspondiente al organismo",
+      "% Afectado al Mandato del Ingreso o Fondo Correspondiente al Municipio",
   },
   {
     label:
-      "% acumulado de afectación del organismo a los mecanismos de pago /100 del ingreso",
+      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
+  },
+  {
+    label: "% Afectado al Mandato del Ingreso Correspondiente al Organismo",
+  },
+  {
+    label:
+      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
   },
   {
     label: "",
@@ -329,7 +329,7 @@ export function TipoDeMovimiento() {
         >
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
-              Tipo de fuente
+              Tipo de Fuente
             </InputLabel>
             <Autocomplete
               disableClearable
@@ -372,7 +372,7 @@ export function TipoDeMovimiento() {
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
-              Fondo o ingreso
+              Fondo o Ingreso
             </InputLabel>
             <Autocomplete
               disabled={tipoMovimientoMandato.tipoFuente?.Id === ""}
@@ -539,7 +539,7 @@ export function TipoDeMovimiento() {
 
         <Grid
           width={"100%"}
-          height={"30rem"}
+          height={"35rem"}
           display={"flex"}
           justifyContent={"center"}
         >

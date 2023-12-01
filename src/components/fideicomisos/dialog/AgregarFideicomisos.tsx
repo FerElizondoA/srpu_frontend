@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
@@ -18,12 +19,6 @@ import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { forwardRef, useState } from "react";
 import { queries } from "../../../queries";
-import {
-  Fideicomisario,
-  GeneralFideicomiso,
-  SoporteDocumental,
-  TipoMovimiento,
-} from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { SDocumental } from "../panels/SoporteDocumental";
@@ -56,13 +51,12 @@ const theme = createTheme({
 export function AgregarFideicomisos({
   handler,
   openState,
-  accion,
 }: {
   handler: Function;
   openState: boolean;
-  accion: string;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
+
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
@@ -71,54 +65,17 @@ export function AgregarFideicomisos({
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
   };
 
+  const IdFideicomiso: string = useFideicomisoStore(
+    (state) => state.idFideicomiso
+  );
+
   const createFideicomiso: Function = useFideicomisoStore(
     (state) => state.createFideicomiso
   );
 
   const modificarFideicomiso: Function = useFideicomisoStore(
-    (state) => state.modificarFideicomiso
+    (state) => state.modificaFideicomiso
   );
-
-  const setGeneralFideicomiso: Function = useFideicomisoStore(
-    (state) => state.setGeneralFideicomiso
-  );
-
-  const editarSolicitud: Function = useFideicomisoStore(
-    (state) => state.editarFideicomiso
-  );
-
-  const changeIdFideicomiso: Function = useFideicomisoStore(
-    (state) => state.changeIdFideicomiso
-  );
-
-  const generalFideicomiso: GeneralFideicomiso = useFideicomisoStore(
-    (state) => state.generalFideicomiso
-  );
-
-  const tablaFideicomisario: Fideicomisario[] = useFideicomisoStore(
-    (state) => state.tablaFideicomisario
-  );
-
-  const tablaTipoMovimiento: TipoMovimiento[] = useFideicomisoStore(
-    (state) => state.tablaTipoMovimiento
-  );
-
-  const tablaSoporteDocumental: SoporteDocumental[] = useFideicomisoStore(
-    (state) => state.tablaSoporteDocumental
-  );
-
-  const limpiaFideicomiso = () => {
-    changeIdFideicomiso("");
-
-    setGeneralFideicomiso({
-      numeroFideicomiso: "",
-      tipoFideicomiso: { Id: "", Descripcion: "" },
-      fechaFideicomiso: "",
-      fiudiciario: { Id: "", Descripcion: "" },
-    });
-
-    editarSolicitud([], [], []);
-  };
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -128,9 +85,7 @@ export function AgregarFideicomisos({
             <IconButton
               edge="start"
               onClick={() => {
-                limpiaFideicomiso();
                 handler(false);
-                //reset();
               }}
               sx={{ color: "white" }}
             >
@@ -141,7 +96,7 @@ export function AgregarFideicomisos({
           <Grid container>
             <Grid item>
               <Typography sx={queries.bold_text}>
-                {accion} Fideicomiso
+                {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
               </Typography>
             </Grid>
           </Grid>
@@ -149,21 +104,21 @@ export function AgregarFideicomisos({
           <Grid item>
             <ThemeProvider theme={theme}>
               <Button
-                disabled={
-                  generalFideicomiso.fiudiciario.Id === "" ||
-                  generalFideicomiso.numeroFideicomiso === "" ||
-                  generalFideicomiso.tipoFideicomiso.Id === "" ||
-                  generalFideicomiso.fechaFideicomiso === "" ||
-                  tablaFideicomisario.length < 0 ||
-                  tablaTipoMovimiento.length < 0 ||
-                  tablaSoporteDocumental.length < 0
-                }
+                // disabled={
+                //   generalFideicomiso.numeroFideicomiso === "" ||
+                //   generalFideicomiso.fechaFideicomiso === "" ||
+                //   tablaFideicomisario.length < 0 ||
+                //   tablaTipoMovimiento.length < 0 ||
+                //   tablaSoporteDocumental.length < 0
+                // }
                 sx={queries.buttonContinuar}
                 onClick={() => {
-                  if (accion === "Agregar") {
+                  console.log("falta restricciones");
+
+                  if (IdFideicomiso === "") {
                     createFideicomiso();
                     handler(false);
-                  } else if (accion === "Editar") {
+                  } else if (IdFideicomiso !== "") {
                     modificarFideicomiso();
                     handler(false);
                   }
@@ -180,7 +135,7 @@ export function AgregarFideicomisos({
                     },
                   }}
                 >
-                  {accion} fideicomiso
+                  {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
                 </Typography>
               </Button>
             </ThemeProvider>

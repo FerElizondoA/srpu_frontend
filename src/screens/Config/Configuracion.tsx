@@ -69,7 +69,7 @@ export const modulos = [
   },
   {
     label: "Fiduciarios",
-    fnc: "fiudiciarios",
+    fnc: "fiduciarios",
   },
   {
     label: "Fideicomisarios",

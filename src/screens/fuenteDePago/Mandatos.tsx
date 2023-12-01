@@ -22,18 +22,19 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
-import { getPathDocumentosMandato } from "../../components/APIS/pathDocSol/APISDocumentos";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { IPathDocumentos } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
 import { useMandatoStore } from "../../store/Mandatos/main";
-import { Mandato } from "../../store/Mandatos/mandato";
+import { DatosGeneralesMandato } from "../../store/Mandatos/mandato";
+
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -48,17 +49,23 @@ interface Head {
 }
 
 export interface IDatosMandatos {
+  AcumuladoEstado: string;
+  AcumuladoMunicipios: string;
+  AcumuladoOrganismos: string;
+  CreadoPor: string;
+  Deleted: string;
   FechaCreacion: string;
   FechaMandato: string;
   Id: string;
   Mandatario: string;
+  MecanismoPago: string;
   ModificadoPor: string;
-  MunicipioMandante: string;
-  TipoEntePublicoObligado: string;
+  MunicipioOrganismoMandante: string;
   NumeroMandato: string;
-  OrganismoMandante: string;
   SoporteDocumental: string;
+  TipoEntePublicoObligado: string;
   TipoMovimiento: string;
+  UltimaModificacion: string;
 }
 
 const heads: Head[] = [
@@ -117,10 +124,7 @@ export function Mandatos() {
         elemento.Mandatario.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.MunicipioMandante.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.OrganismoMandante.toString()
+        elemento.MunicipioOrganismoMandante.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.TipoEntePublicoObligado.toString()
@@ -134,8 +138,9 @@ export function Mandatos() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length !== 0 ? setMandatos(mandatos) : null;
+    if (busqueda.length !== 0) {
+      setMandatos(mandatos);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
@@ -153,9 +158,6 @@ export function Mandatos() {
     (state) => state.changeIdMandato
   );
 
-  const mandatoSelect: Mandato[] = useMandatoStore(
-    (state) => state.mandatoSelect
-  );
   const setMandatoSelect: Function = useMandatoStore(
     (state) => state.setMandatoSelect
   );
@@ -164,41 +166,19 @@ export function Mandatos() {
     (state) => state.editarMandato
   );
 
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
-    []
+  const setDatosGenerales: Function = useMandatoStore(
+    (state) => state.setDatosGenerales
   );
+
+  const datosGenerales: DatosGeneralesMandato = useMandatoStore(
+    (state) => state.datosGenerales
+  );
+
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-
-  // const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
-
-  // const setArrDocs: Function = useMandatoStore((state) => state.setArrDocs);
 
   useEffect(() => {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
-
-  useEffect(() => {
-    if (pathDocumentos.length > 0) {
-      // let loc: any = [...arrDocs];
-      // pathDocumentos?.map((val: any) => {
-      //   return getDocumento(
-      //     val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-      //     val?.NombreIdentificador,
-      //     (res: any, index: number) => {
-      //       loc.push({ file: res, nombre: val.NombreArchivo });
-      //     }
-      //   );
-      // });
-      // setArrDocs(loc);
-    }
-  }, [pathDocumentos]);
-
-  useEffect(() => {
-    if (mandatoSelect.length !== 0) {
-      getPathDocumentosMandato(idMandato, setPathDocumentos);
-      // listFile(`/Autorizaciones/${idMandato}`);
-    }
-  }, [mandatoSelect]);
 
   useEffect(() => {
     getMandatos(setMandatos);
@@ -287,6 +267,12 @@ export function Mandatos() {
               height: "75%",
             }}
             onClick={() => {
+              setDatosGenerales({
+                ...datosGenerales,
+                numeroMandato: "",
+                fechaMandato: new Date(),
+              });
+              editarMandato([], []);
               setAccion("Agregar");
               setOpenAgregarMandato(!openAgregarMandato);
             }}
@@ -341,7 +327,9 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.FechaMandato}
+                        {format(new Date(row.FechaMandato), "PPP", {
+                          locale: es,
+                        })}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -363,12 +351,14 @@ export function Mandatos() {
                             onClick={() => {
                               setAccion("Editar");
 
-                              // changeNumeroMandato(row.NumeroMandato);
-
                               changeIdMandato(row?.Id);
 
                               setMandatoSelect(row);
-
+                              setDatosGenerales({
+                                ...datosGenerales,
+                                numeroMandato: row.NumeroMandato,
+                                fechaMandato: new Date(row.FechaMandato),
+                              });
                               editarMandato(
                                 JSON.parse(row.TipoMovimiento),
                                 JSON.parse(row.SoporteDocumental)
@@ -387,7 +377,6 @@ export function Mandatos() {
                             onClick={() => {
                               changeIdMandato(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
-                              // getFideicomisos(setDatos);
                             }}
                           >
                             <DeleteIcon />
@@ -403,11 +392,13 @@ export function Mandatos() {
         </Paper>
       </Grid>
 
-      <AgregarMandatos
-        handler={setOpenAgregarMandato}
-        openState={openAgregarMandato}
-        accion={accion}
-      />
+      {openAgregarMandato && (
+        <AgregarMandatos
+          handler={setOpenAgregarMandato}
+          openState={openAgregarMandato}
+          accion={accion}
+        />
+      )}
 
       <Dialog
         open={openDialogEliminar}

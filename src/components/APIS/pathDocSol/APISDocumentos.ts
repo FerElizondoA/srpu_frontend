@@ -77,32 +77,6 @@ export async function getPathDocumentosMandato(
     .catch((error) => {});
 }
 
-// export const getDocumento = async (
-//   ROUTE: string,
-//   NOMBRE: string,
-//   setState: Function
-// ) => {
-//   await axios
-//     .post(
-//       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/GetByName",
-//       {
-//         ROUTE: ROUTE,
-//         NOMBRE: NOMBRE,
-//       },
-//       {
-//         headers: {
-//           Authorization: localStorage.getItem("jwtToken") || "",
-//           responseType: "blob",
-//         },
-//       }
-//     )
-//     .then(({ data }) => {
-//       let file = data.RESPONSE.FILE;
-//       setState(file);
-//     })
-//     .catch((r) => {});
-// };
-
 export const getDocumentos = async (
   ROUTE: string,
   setState: Function,
@@ -127,14 +101,7 @@ export const getDocumentos = async (
 
       files.map((file: any, index: any) => {
         let auxArrayArchivos = [...state.tablaDocumentos];
-        auxArrayArchivos[index].archivo =
-          // new File(
-          // [
-          file.FILE;
-        //   ],
-        //   file.NOMBREFORMATEADO,
-        //   { type: "application/pdf" }
-        // );
+        auxArrayArchivos[index].archivo = file.FILE;
         auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
         return state.setTablaDocumentos(auxArrayArchivos);
       });
@@ -176,13 +143,12 @@ export const descargaDocumento = async (
     .catch((r) => {});
 };
 
-export const listFile = async (ROUTE: string, setWait: Function) => {
+export const listFile = async (ROUTE: string, setState: Function) => {
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
       {
-        ROUTE:
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO + ROUTE, // /SRPU/CORTOPLAZO
+        ROUTE: ROUTE, // /SRPU/CORTOPLAZO
       },
       {
         headers: {
@@ -191,9 +157,16 @@ export const listFile = async (ROUTE: string, setWait: Function) => {
       }
     )
     .then(({ data }) => {
-      setTimeout(() => {
-        setWait(false);
-      }, 1000);
+      let files = data.RESPONSE;
+
+      // files.map((file: any, index: any) => {
+      //   let auxArrayArchivos = [...state.tablaDocumentos];
+      //   auxArrayArchivos[index].archivo = file.FILE;
+      //   auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
+      //   return state.setTablaDocumentos(auxArrayArchivos);
+      // });
+
+      setState(files);
     })
     .catch((r) => {});
 };

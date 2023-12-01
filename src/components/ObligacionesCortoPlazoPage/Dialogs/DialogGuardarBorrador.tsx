@@ -96,9 +96,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
     (state) => state.updatecondicionFinancieraTable
   );
-  // const addCondicionFinanciera: Function = useCortoPlazoStore(
-  //   (state) => state.addCondicionFinanciera
-  // );
+
   const cleanComentario: Function = useCortoPlazoStore(
     (state) => state.cleanComentario
   );

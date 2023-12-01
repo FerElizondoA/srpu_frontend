@@ -11,14 +11,14 @@ export type Mecanismo = {
 
 export type NumeroFideicomiso = {
   Id: string;
-  DescripcionFiudiciario: string;
+  DescripcionFiduciario: string;
   DescripcionTipoFideicomiso: string;
-  IdFiudiciario: string;
+  IdFiduciario: string;
   IdTipoFideicomiso: string;
   NumeroDeFideicomiso: number;
   TipoDeFideicomiso: string;
   FechaDeFideicomiso: string;
-  Fiudiciario: string;
+  Fiduciario: string;
   Fideicomisario: string;
   TipoDeMovimiento: string;
   SoporteDocumental: string;

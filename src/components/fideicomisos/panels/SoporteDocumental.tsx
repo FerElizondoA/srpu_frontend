@@ -1,7 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-
-import { ThemeProvider } from "@emotion/react";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
@@ -23,6 +20,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  ThemeProvider,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -30,89 +28,35 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { SoporteDocumental } from "../../../store/Fideicomiso/fideicomiso";
-import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { HeadLabels } from "./TipoDeMovimiento";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { SoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+
+const heads = [
+  {
+    label: " ",
+  },
+  {
+    label: "Tipo de documento",
+  },
+  {
+    label: "Fecha del documento",
+  },
+  {
+    label: "Archivo",
+  },
+  {
+    label: " ",
+  },
+];
 
 export function SDocumental() {
-  const heads: HeadLabels[] = [
-    {
-      label: "Accion",
-    },
-    {
-      label: "Tipo de documento",
-    },
-    {
-      label: "Fecha del documento",
-    },
-    {
-      label: "Archivo",
-    },
-    {
-      label: "Ver Archivo",
-    },
-  ];
-
-  const [showModalPrevia, setShowModalPrevia] = useState(false);
-
-  const soporteDocumental: SoporteDocumental = useFideicomisoStore(
-    (state) => state.soporteDocumental
-  );
-
-  const setSoporteDocumental: Function = useFideicomisoStore(
-    (state) => state.setSoporteDocumental
-  );
-
-  const addSoporteDocumental: Function = useFideicomisoStore(
-    (state) => state.addSoporteDocumental
-  );
-
-  const tablaSoporteDocumental: SoporteDocumental[] = useFideicomisoStore(
-    (state) => state.tablaSoporteDocumental
-  );
-
-  const removeSoporteDocumental: Function = useFideicomisoStore(
-    (state) => state.removeSoporteDocumental
-  );
-
-  const cleanSoporteDocumental: Function = useFideicomisoStore(
-    (state) => state.cleanSoporteDocumental
-  );
-
-  const [radioValue, setRadioValue] = useState("");
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadioValue((event.target as HTMLInputElement).value);
-    setSoporteDocumental({
-      tipo: (event.target as HTMLInputElement).value,
-      fechaArchivo: soporteDocumental.fechaArchivo,
-      archivo: soporteDocumental.archivo,
-      nombreArchivo: soporteDocumental.nombreArchivo,
-    });
-  };
-
-  function cargarArchivo(event: any) {
-    let file = event.target.files[0];
-
-    if (file !== undefined) {
-      setSoporteDocumental({
-        tipo: soporteDocumental.tipo,
-        fechaArchivo: soporteDocumental.fechaArchivo,
-        archivo: file,
-        nombreArchivo: file.name,
-      });
-    }
-  }
-
-  useEffect(() => {
-    cleanSoporteDocumental();
-  }, [tablaSoporteDocumental]);
-
   const [fileSelected, setFileSelected] = useState<any>("");
+  const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const toBase64 = (file: any) =>
     new Promise((resolve, reject) => {
@@ -122,26 +66,94 @@ export function SDocumental() {
       reader.onerror = reject;
     });
 
-  const arrDocs: any[] = useFideicomisoStore((state) => state.arrDocs);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRadioValue((event.target as HTMLInputElement).value);
+
+    setSoporteDocumentalFideicomiso({
+      tipo: (event.target as HTMLInputElement).value,
+      fechaArchivo: fechaArchivo,
+      archivo: archivo,
+      nombreArchivo: nombreArchivo,
+    });
+  };
+
+  const tipo: string = useFideicomisoStore(
+    (state) => state.soporteDocumentalFideicomiso.tipo
+  );
+
+  const archivo: File = useFideicomisoStore(
+    (state) => state.soporteDocumentalFideicomiso.archivo
+  );
+
+  const nombreArchivo: string = useFideicomisoStore(
+    (state) => state.soporteDocumentalFideicomiso.nombreArchivo
+  );
+
+  const fechaArchivo: Date = useFideicomisoStore(
+    (state) => state.soporteDocumentalFideicomiso.fechaArchivo
+  );
+
+  const setSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setSoporteDocumental
+  );
+
+  const addSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
+    (state) => state.addSoporteDocumental
+  );
+
+  const removeSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
+    (state) => state.removeSoporteDocumental
+  );
+
+  const tablaSoporteDocumentalFideicomiso: SoporteDocumentalFideicomiso[] =
+    useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
+
+  const cleanSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
+    (state) => state.cleanSoporteDocumental
+  );
+
+  function cargarArchivo(event: any) {
+    let file = event.target.files[0];
+
+    if (file !== undefined) {
+      setSoporteDocumentalFideicomiso({
+        tipo: tipo,
+        fechaArchivo: fechaArchivo,
+        archivo: file,
+        nombreArchivo: file.name,
+      });
+    }
+  }
+
+  useEffect(() => {
+    cleanSoporteDocumentalFideicomiso();
+  }, [tablaSoporteDocumentalFideicomiso]);
+
+  const [radioValue, setRadioValue] = useState("");
+
+  const idFideicomiso: string = useFideicomisoStore(
+    (state) => state.idFideicomiso
+  );
+
+  const [arr, setArr] = useState<any>([]);
+
+  useEffect(() => {
+    if (idFideicomiso !== "") {
+      listFile(`/SRPU/FIDEICOMISOS/${idFideicomiso}/`, setArr);
+    }
+  }, []);
+
   return (
     <Grid
       container
       flexDirection={"column"}
       justifyContent={"space-evenly"}
-      //gridTemplateColumns={"repeat(3,1fr)"}
-      //justifyItems={"center"}
-      mt={3}
+      mt={1}
     >
-      <Grid
-        container
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        //height={"10rem"}
-      >
+      <Grid container display={"flex"} justifyContent={"space-evenly"} mt={4}>
         <Grid
-          height={"4rem"}
-          width={"40%"}
           sx={{
+            display: "flex",
             width: "40%",
             "@media (min-width: 480px)": {
               width: "40%",
@@ -153,16 +165,20 @@ export function SDocumental() {
           }}
         >
           <FormControl>
-            <RadioGroup value={radioValue} onChange={handleChange}>
+            <RadioGroup
+              sx={{ marginLeft: 3 }}
+              value={radioValue}
+              onChange={handleChange}
+            >
               <FormControlLabel
                 value="Fideicomiso"
                 control={<Radio />}
                 label="Fideicomiso"
               />
               <FormControlLabel
-                value="Convenio de adhesión"
+                value="Convenio de Adhesión"
                 control={<Radio />}
-                label="Convenio de adhesión"
+                label="Convenio de Adhesión"
               />
               <FormControlLabel
                 value="Convenio Modificatorio"
@@ -174,32 +190,6 @@ export function SDocumental() {
         </Grid>
 
         <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-          <Grid width={"90%"}>
-            <InputLabel sx={queries.medium_text}>
-              Fecha del documento
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
-            >
-              <DesktopDatePicker
-                sx={{ width: "100%" }}
-                value={new Date(soporteDocumental.fechaArchivo)}
-                onChange={(date) =>
-                  setSoporteDocumental({
-                    tipo: soporteDocumental.tipo,
-                    fechaArchivo: date,
-                    archivo: soporteDocumental.archivo,
-                    nombreArchivo: soporteDocumental.nombreArchivo,
-                  })
-                }
-                // slots={{
-                //   textField: DateInput,
-                // }}
-              />
-            </LocalizationProvider>
-          </Grid>
-
           <Grid>
             <InputLabel>Archivo</InputLabel>
             <Typography
@@ -213,7 +203,7 @@ export function SDocumental() {
                 fontSize: "60%",
                 "@media (min-width: 480px)": {
                   fontSize: "60%",
-                  width: "30%",
+                  width: "45%",
                 },
 
                 "@media (min-width: 768px)": {
@@ -235,17 +225,15 @@ export function SDocumental() {
                   width: "30%",
                 },
                 fontFamily:
-                  soporteDocumental.nombreArchivo !== ""
-                    ? "MontserratBold"
-                    : "MontserratMedium",
+                  nombreArchivo !== "" ? "MontserratBold" : "MontserratMedium",
 
                 border:
-                  soporteDocumental.nombreArchivo !== ""
+                  nombreArchivo !== ""
                     ? "2px dotted #af8c55"
                     : "2px dotted black",
               }}
             >
-              {soporteDocumental.nombreArchivo ||
+              {nombreArchivo ||
                 "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
             </Typography>
             <input
@@ -262,7 +250,33 @@ export function SDocumental() {
               }}
             />
           </Grid>
+
+          <Grid>
+            <InputLabel sx={queries.medium_text}>
+              Fecha del Documento
+            </InputLabel>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DesktopDatePicker
+                value={new Date(fechaArchivo)}
+                onChange={(date) =>
+                  setSoporteDocumentalFideicomiso({
+                    tipo: tipo,
+                    fechaArchivo: date?.toString(),
+                    archivo: archivo,
+                    nombreArchivo: nombreArchivo,
+                  })
+                }
+                // slots={{
+                //   textField: DateInput,
+                // }}
+              />
+            </LocalizationProvider>
+          </Grid>
         </Grid>
+
         <Grid
           display={"flex"}
           justifyContent={"center"}
@@ -275,17 +289,13 @@ export function SDocumental() {
                 ...queries.buttonContinuarSolicitudInscripcion,
                 width: "15vh",
               }}
-              disabled={
-                soporteDocumental.tipo === "" ||
-                soporteDocumental.fechaArchivo === "" ||
-                soporteDocumental.nombreArchivo === ""
-              }
+              disabled={tipo === "" || nombreArchivo === ""}
               onClick={() => {
-                addSoporteDocumental({
-                  tipo: soporteDocumental.tipo,
-                  fechaArchivo: soporteDocumental.fechaArchivo,
-                  archivo: soporteDocumental.archivo,
-                  nombreArchivo: soporteDocumental.nombreArchivo,
+                addSoporteDocumentalFideicomiso({
+                  tipo: tipo,
+                  fechaArchivo: fechaArchivo,
+                  archivo: archivo,
+                  nombreArchivo: nombreArchivo,
                 });
               }}
             >
@@ -302,7 +312,7 @@ export function SDocumental() {
         gridColumn={"1/4"}
         mt={4}
       >
-        <Paper sx={{ width: "88%", height: "50vh" }}>
+        <Paper sx={{ width: "91%", height: "50vh" }}>
           <TableContainer
             sx={{
               height: "100%",
@@ -332,61 +342,68 @@ export function SDocumental() {
               </TableHead>
 
               <TableBody>
-                {tablaSoporteDocumental.map((row: any, index: number) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        <Tooltip title="Eliminar">
-                          <IconButton
-                            type="button"
-                            onClick={() => removeSoporteDocumental(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.tipo}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {format(new Date(row.fechaArchivo), "dd/MM/yyyy")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.nombreArchivo}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <Tooltip title={"Mostrar vista previa del documento"}>
-                          <IconButton
-                            onClick={() => {
-                              toBase64(row.archivo)
-                                .then((data) => {
-                                  setFileSelected(data);
-                                })
-                                .catch((err) => {
-                                  setFileSelected(
-                                    `data:application/pdf;base64,${
-                                      arrDocs.filter((td: any) =>
-                                        td.nombre.includes(row.nombreArchivo)
-                                      )[0].file
-                                    }`
-                                  );
-                                });
-                              setShowModalPrevia(true);
-                            }}
-                          >
-                            <FileOpenIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
+                {tablaSoporteDocumentalFideicomiso.map(
+                  (row: any, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center">
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() =>
+                                removeSoporteDocumentalFideicomiso(index)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.tipo}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {format(new Date(row.fechaArchivo), "dd/MM/yyyy")}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row.nombreArchivo}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Tooltip title={"Mostrar vista previa del documento"}>
+                            <IconButton
+                              onClick={() => {
+                                toBase64(row.archivo)
+                                  .then((data) => {
+                                    setFileSelected(data);
+                                  })
+                                  .catch((err) => {
+                                    setFileSelected(
+                                      `data:application/pdf;base64,${
+                                        arr.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].FILE
+                                      }`
+                                    );
+                                  });
+                                setShowModalPrevia(true);
+                              }}
+                            >
+                              <FileOpenIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  }
+                )}
               </TableBody>
             </Table>
           </TableContainer>
         </Paper>
       </Grid>
-
       <Dialog
         open={showModalPrevia}
         onClose={() => {
