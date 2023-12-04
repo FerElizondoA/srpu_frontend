@@ -14,6 +14,7 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { forwardRef, useState } from "react";
@@ -23,7 +24,7 @@ import { DatosGeneralesMandatos } from "../panels/DatosGeneralesMandatos";
 import { SoporteDocumental } from "../panels/SoporteDocumental";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
 
-const Transition = forwardRef(function Transition(
+export const DialogTransition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
   },
@@ -57,6 +58,7 @@ export function AgregarMandatos({
   accion: string;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
+
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
@@ -111,11 +113,13 @@ export function AgregarMandatos({
     editarMandato([], []);
   };
 
+  const [loading, setLoading] = useState(false);
+
   return (
-    <>
-      <Dialog fullScreen open={openState} TransitionComponent={Transition}>
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
+    <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
+      <AppBar sx={{ position: "relative" }}>
+        <Toolbar>
+          {!loading && (
             <Tooltip title="Volver">
               <IconButton
                 edge="start"
@@ -128,22 +132,32 @@ export function AgregarMandatos({
                 <GridCloseIcon />
               </IconButton>
             </Tooltip>
+          )}
 
-            <Grid container>
-              <Typography sx={queries.bold_text}>{accion} Mandato</Typography>
-            </Grid>
+          <Grid container>
+            <Typography sx={queries.bold_text}>{accion} Mandato</Typography>
+          </Grid>
 
-            <Grid item>
-              <ThemeProvider theme={theme}>
+          <Grid item>
+            <ThemeProvider theme={theme}>
+              {loading ? (
+                <CircularProgress />
+              ) : (
                 <Button
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
-                      createMandato();
-                      handler(false);
+                      createMandato(() => {
+                        setLoading(true);
+                        setLoading(false);
+                        handler(false);
+                      });
                     } else if (accion === "Editar") {
-                      modificaMandato();
-                      handler(false);
+                      setLoading(true);
+                      modificaMandato(() => {
+                        setLoading(false);
+                        handler(false);
+                      });
                     }
                     setTabIndex(0);
                   }}
@@ -160,37 +174,34 @@ export function AgregarMandatos({
                     {accion} mandato
                   </Typography>
                 </Button>
-              </ThemeProvider>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-
-        <Grid item container direction="column">
-          <Grid item width={"100%"}>
-            <Tabs
-              value={tabIndex}
-              onChange={handleChange}
-              centered={query.isScrollable ? false : true}
-              variant={query.isScrollable ? "scrollable" : "standard"}
-              scrollButtons
-              allowScrollButtonsMobile
-            >
-              <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
-              <Tab
-                label="Tipo de Movimiento"
-                sx={{ ...queries.bold_text }}
-              ></Tab>
-              <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
-            </Tabs>
-
-            {tabIndex === 0 && <DatosGeneralesMandatos accion={accion} />}
-
-            {tabIndex === 1 && <TipoDeMovimiento />}
-
-            {tabIndex === 2 && <SoporteDocumental />}
+              )}
+            </ThemeProvider>
           </Grid>
+        </Toolbar>
+      </AppBar>
+
+      <Grid item container direction="column">
+        <Grid item width={"100%"}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleChange}
+            centered={query.isScrollable ? false : true}
+            variant={query.isScrollable ? "scrollable" : "standard"}
+            scrollButtons
+            allowScrollButtonsMobile
+          >
+            <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
+            <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
+            <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
+          </Tabs>
+
+          {tabIndex === 0 && <DatosGeneralesMandatos accion={accion} />}
+
+          {tabIndex === 1 && <TipoDeMovimiento />}
+
+          {tabIndex === 2 && <SoporteDocumental />}
         </Grid>
-      </Dialog>
-    </>
+      </Grid>
+    </Dialog>
   );
 }

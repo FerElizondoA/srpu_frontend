@@ -94,18 +94,23 @@ export interface MandatoSlice {
   cleanSoporteDocumentalMandato: () => void;
 
   getMandato: (setState: Function) => void;
-  createMandato: () => void;
-  modificaMandato: () => void;
+  createMandato: (setLoading: Function) => void;
+  modificaMandato: (setLoading: Function) => void;
 
   cleanMandato: () => void;
 
-  saveFilesMandato: (idRegistro: string, ruta: string) => void;
+  saveFilesMandato: (
+    idRegistro: string,
+    ruta: string,
+    setLoading: Function
+  ) => void;
 
   savePathDocMandato: (
     idMandato: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    setLoading: Function
   ) => void;
 }
 
@@ -279,7 +284,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       });
   },
 
-  createMandato: async () => {
+  createMandato: async (setLoading: Function) => {
     const state = useMandatoStore.getState();
 
     let acumuladoEstado = 0;
@@ -325,7 +330,11 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       )
       .then(({ data }) => {
         state.changeIdMandato(data.data.Id);
-        state.saveFilesMandato(data.data.Id, `/SRPU/MANDATOS/${data.data.Id}`);
+        state.saveFilesMandato(
+          data.data.Id,
+          `/SRPU/MANDATOS/${data.data.Id}`,
+          setLoading
+        );
 
         Swal.fire({
           confirmButtonColor: "#15212f",
@@ -346,7 +355,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       });
   },
 
-  modificaMandato: async () => {
+  modificaMandato: async (setLoading: Function) => {
     const state = useMandatoStore.getState();
     const cpState = useCortoPlazoStore.getState();
 
@@ -393,7 +402,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
         state.saveFilesMandato(
           data.result.Id,
-          `/SRPU/MANDATOS/${data.result.Id}`
+          `/SRPU/MANDATOS/${data.result.Id}`,
+          setLoading
         );
         Swal.fire({
           confirmButtonColor: "#15212f",
@@ -484,7 +494,11 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     }));
   },
 
-  saveFilesMandato: async (idRegistro: string, ruta: string) => {
+  saveFilesMandato: async (
+    idRegistro: string,
+    ruta: string,
+    setLoading: Function
+  ) => {
     const state = useMandatoStore.getState();
 
     return await state.tablaSoporteDocumentalMandato.map((dato, index) => {
@@ -512,7 +526,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
+                data.RESPONSE.NOMBREARCHIVO,
+                setLoading
               );
             })
             .catch((e) => {});
@@ -527,7 +542,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     idMandato: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    setLoading: Function
   ) => {
     return await axios
       .post(
@@ -544,7 +560,9 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           },
         }
       )
-      .then((r) => {})
+      .then((r) => {
+        setLoading(false);
+      })
       .catch((e) => {});
   },
 });

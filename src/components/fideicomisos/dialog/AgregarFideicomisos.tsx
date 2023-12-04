@@ -6,7 +6,6 @@ import {
   Dialog,
   Grid,
   IconButton,
-  Slide,
   Tab,
   Tabs,
   ThemeProvider,
@@ -15,23 +14,15 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
+import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import { queries } from "../../../queries";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { DialogTransition } from "../../mandatos/dialog/AgregarMandatos";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { SDocumental } from "../panels/SoporteDocumental";
 import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const theme = createTheme({
   components: {
@@ -77,21 +68,25 @@ export function AgregarFideicomisos({
     (state) => state.modificaFideicomiso
   );
 
+  const [loading, setLoading] = useState(false);
+
   return (
-    <Dialog fullScreen open={openState} TransitionComponent={Transition}>
+    <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
-          <Tooltip title="Volver">
-            <IconButton
-              edge="start"
-              onClick={() => {
-                handler(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Tooltip>
+          {!loading && (
+            <Tooltip title="Volver">
+              <IconButton
+                edge="start"
+                onClick={() => {
+                  handler(false);
+                }}
+                sx={{ color: "white" }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
+          )}
 
           <Grid container>
             <Grid item>
@@ -103,41 +98,51 @@ export function AgregarFideicomisos({
 
           <Grid item>
             <ThemeProvider theme={theme}>
-              <Button
-                // disabled={
-                //   generalFideicomiso.numeroFideicomiso === "" ||
-                //   generalFideicomiso.fechaFideicomiso === "" ||
-                //   tablaFideicomisario.length < 0 ||
-                //   tablaTipoMovimiento.length < 0 ||
-                //   tablaSoporteDocumental.length < 0
-                // }
-                sx={queries.buttonContinuar}
-                onClick={() => {
-                  console.log("falta restricciones");
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Button
+                  // disabled={
+                  //   generalFideicomiso.numeroFideicomiso === "" ||
+                  //   generalFideicomiso.fechaFideicomiso === "" ||
+                  //   tablaFideicomisario.length < 0 ||
+                  //   tablaTipoMovimiento.length < 0 ||
+                  //   tablaSoporteDocumental.length < 0
+                  // }
+                  sx={queries.buttonContinuar}
+                  onClick={() => {
+                    console.log("falta restricciones");
 
-                  if (IdFideicomiso === "") {
-                    createFideicomiso();
-                    handler(false);
-                  } else if (IdFideicomiso !== "") {
-                    modificarFideicomiso();
-                    handler(false);
-                  }
+                    if (IdFideicomiso === "") {
+                      setLoading(true);
+                      createFideicomiso(() => {
+                        setLoading(false);
+                        handler(false);
+                      });
+                    } else if (IdFideicomiso !== "") {
+                      setLoading(true);
+                      modificarFideicomiso(() => {
+                        setLoading(false);
+                        handler(false);
+                      });
+                    }
 
-                  setTabIndex(0);
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "1.3ch",
-                    fontFamily: "MontserratMedium",
-                    "@media (min-width: 480px)": {
-                      fontSize: "1.5ch",
-                    },
+                    setTabIndex(0);
                   }}
                 >
-                  {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
-                </Typography>
-              </Button>
+                  <Typography
+                    sx={{
+                      fontSize: "1.3ch",
+                      fontFamily: "MontserratMedium",
+                      "@media (min-width: 480px)": {
+                        fontSize: "1.5ch",
+                      },
+                    }}
+                  >
+                    {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
+                  </Typography>
+                </Button>
+              )}
             </ThemeProvider>
           </Grid>
         </Toolbar>
