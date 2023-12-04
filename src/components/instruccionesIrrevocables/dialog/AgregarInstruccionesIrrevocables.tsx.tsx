@@ -25,6 +25,7 @@ import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -115,7 +116,7 @@ export function AgregarInstruccionesIrrevocables({
   // );
 
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
   useEffect(() => {
@@ -242,15 +243,15 @@ export function AgregarInstruccionesIrrevocables({
               allowScrollButtonsMobile
             >
               <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
-              <Tab
-                label="Tipo de Movimiento"
-                sx={{ ...queries.bold_text }}
-              ></Tab>
+              <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
+              <Tab label="Soporte Documental" sx={{...queries.bold_text}}></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DatosGeneralesIntrucciones />}
 
             {tabIndex === 1 && <TipoDeMovimientoIntrucciones />}
+            
+            {tabIndex === 2 && <SoporteDocumentalInstrucciones/>}
           </Grid>
         </Grid>
       </Dialog>

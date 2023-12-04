@@ -32,6 +32,9 @@ import {
   Button,
   Collapse,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Drawer,
   Grid,
@@ -124,7 +127,7 @@ export interface IData {
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-    localStorage.getItem("Menu") !== null
+      localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
 
@@ -340,32 +343,18 @@ export function LateralMenu() {
         open={openPasswordChange}
         maxWidth={"lg"}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderBottom: 1,
-            height: "5vh",
-            boxShadow: 1,
-            borderColor: "#ccc",
-          }}
-        >
-          <Typography sx={{ ...queries.bold_text }}>
-            MODIFICAR CONTRASEÑA
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            height: "20vh",
-            width: "20vw",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-            flexDirection: "column",
-          }}
-        >
-          <Box
+        <DialogTitle>
+          <Grid display={"flex"} justifyContent={"center"}>
+            <Typography sx={{ ...queries.bold_text }}>
+              MODIFICAR CONTRASEÑA
+            </Typography>
+          </Grid>
+
+        </DialogTitle>
+
+
+        <DialogContent>
+          <Grid
             sx={{
               display: "flex",
               alignItems: "center",
@@ -428,38 +417,33 @@ export function LateralMenu() {
                 {error.label}
               </Typography>
             ) : null}
-          </Box>
+          </Grid>
 
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              width: "100%",
-            }}
+        </DialogContent>
+
+
+        <DialogActions>
+          <Button
+            onClick={() => handleClosePasswordChange()}
+            variant="outlined"
+            sx={{ ...queries.buttonCancelar }}
           >
-            <Button
-              color="error"
-              onClick={() => handleClosePasswordChange()}
-              variant="outlined"
-              sx={{ ...queries.buttonCancelar }}
-            >
-              <Typography sx={{ ...queries.medium_text, color: "white" }}>
-                Cancelar
-              </Typography>
-            </Button>
+            <Typography sx={{ ...queries.medium_text, color: "white" }}>
+              Cancelar
+            </Typography>
+          </Button>
 
-            <Button
-              disabled={/^[\s]*$/.test(newPassword)}
-              variant="outlined"
-              onClick={() => cambiarContrasena()}
-              sx={{ ...queries.buttonContinuar }}
-            >
-              <Typography sx={{ ...queries.medium_text, color: "white" }}>
-                Cambiar
-              </Typography>{" "}
-            </Button>
-          </Box>
-        </Box>
+          <Button
+            disabled={/^[\s]*$/.test(newPassword)}
+            variant="outlined"
+            onClick={() => cambiarContrasena()}
+            sx={{ ...queries.buttonContinuar }}
+          >
+            <Typography sx={{ ...queries.medium_text, color: "white" }}>
+              Cambiar
+            </Typography>{" "}
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   };

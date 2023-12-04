@@ -44,6 +44,8 @@ export interface SolicitudFirmaSlice {
   url: string;
   infoDoc: string;
   TipoFirma: string;
+  justificacionAnulacion: string;
+  setJustificacionAnulacion:( justificacionAnulacion: string) => void;
 
   catalogoFirmaDetalle: IDataFirmaDetalle;
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
@@ -105,6 +107,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       fechaArchivo: new Date().toString(),
     },
   },
+  justificacionAnulacion: "",
+  setJustificacionAnulacion : (justificacionAnulacion: string) => 
+  set(() => ({
+    justificacionAnulacion: justificacionAnulacion
+  })),
 
   setRowSolicitud: (rowSolicitud: IDataPrueba) =>
     set(() => ({
@@ -288,6 +295,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             );
           } else if (state.estatus === "Anulación") {
             borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
+            //AnularCancelacionSolicitud(state.idSolicitud, state.NumeroRegistro, state.justificacionAnulacion, state.rowSolicitud.UltimaModificacion, state.url)
           } else if (
             !state.estatus.includes("Autorizado") &&
             state.estatus !== "Actualizacion"

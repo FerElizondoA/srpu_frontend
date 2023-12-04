@@ -115,7 +115,9 @@ export function DatosGeneralesMandatos() {
           Fecha del mandato
         </InputLabel>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-          <DesktopDatePicker
+          <DesktopDatePicker sx={{
+            width:"100%"
+          }}
             value={datosGenerales.fechaMandato}
             onChange={(v) => {
               setDatosGenerales({

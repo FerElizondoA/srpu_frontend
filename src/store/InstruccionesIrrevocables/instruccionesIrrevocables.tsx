@@ -3,6 +3,13 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
 import { useInstruccionesStore } from "./main";
+import { ICatalogo } from "../../screens/Config/Catalogos";
+
+export interface Beneficiario{
+  tipoBeneficiario: {Id: string, Descripcion: string};
+  entidadFederativa: { Id: string; Descripcion: string };
+  organismoMunicipioMandate: {Id: string, Descripcion: string};
+}
 
 export interface GeneralIntrucciones {
   numeroCuenta: string;
@@ -33,24 +40,49 @@ export interface TipoMovimientoInstrucciones {
   acumuladoAfectacionOrganismoEntre100: string;
 }
 
+export interface CamposSoporteDocumentalInstrucciones {
+  archivo: File;
+  nombreArchivo: string;
+  fechaArchivo: string;
+}
+
 export interface Instruccion {
   Id: string;
   generalInstrucciones: GeneralIntrucciones;
   TipoMovimientoInstruccion: TipoMovimientoInstrucciones[];
+  SoporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[];
 }
 
+
 export interface InstruccionesIrrevocablesSlice {
+  IdRegistroTabla: TipoMovimientoInstrucciones;
+  setIdResgistroTabla: ( IdRegistroTabla:TipoMovimientoInstrucciones ) => void;
+
+  CamposBeneficiario: Beneficiario;
+  setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => void;
+
   idInstruccion: string;
   instruccionSelect: Instruccion[];
   setInstruccionSelect: (instruccion: Instruccion[]) => void;
 
   generalInstrucciones: GeneralIntrucciones;
   tipoMovimientoInstruccion: TipoMovimientoInstrucciones;
+  soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones;
 
+  catalogoTiposBeneficiarios: ICatalogo[];
+  getTiposBeneficiarios: () => void;
+
+  setSoporteDocumentalInstruccion:(soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => void;
+  addSoporteDocumentalInstrucciones: (
+    tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones
+  ) => void;
+
+  tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[];
   tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
   tablaInstrucciones: IDatosInstrucciones[];
 
   changeIdInstruccion: (Id: string) => void;
+  removeSoporteDocumentalInstruccion: ( index: number) => void;
 
   editarInstruccion: (
     tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
@@ -69,6 +101,7 @@ export interface InstruccionesIrrevocablesSlice {
   removeTipoMovimientoInstrucciones: (index: number) => void;
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
+  cleanSoporteDocumentalInstruccion:() => void;
 
   addPorcentaje: (
     tipoMovimientoInstruccion: TipoMovimientoInstrucciones
@@ -96,11 +129,83 @@ export interface InstruccionesIrrevocablesSlice {
   arrDocs: any[];
 
   setArrDocs: (arr: any) => void;
+
+  //catalogo tabla tipo movimiento
+  //catalogoTablaTipoMovimiento:  TipoMovimientoInstrucciones[]
+  
+
+
 }
 
 export const createInstruccionesIrrevocables: StateCreator<
   InstruccionesIrrevocablesSlice
 > = (set, get) => ({
+
+  catalogoTiposBeneficiarios: [],
+  getTiposBeneficiarios: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tipoBeneficiario", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoTiposBeneficiarios: r,
+        }));
+      });
+  },
+
+
+  removeSoporteDocumentalInstruccion: (index: number) => {
+    set((state) => ({
+      tablaSoporteDocumentalInstrucciones: state.tablaSoporteDocumentalInstrucciones.filter(
+        (_, i) => i !== index
+      ),
+    }));
+  },
+
+  IdRegistroTabla:{
+    id: "",
+    altaDeudor: "",
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+    entidadFederativa: { Id: "", Descripcion: "" },
+    //mandatario: { Id: "", Descripcion: "" },
+    tipoFuente: { Id: "", Descripcion: "" },
+    fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+    fondoIngresoGobiernoEstatal: "",
+    fondoIngresoMunicipios: "",
+    fondoIngresoAsignadoMunicipio: "",
+    ingresoOrganismo: "",
+    fondoIngresoAfectadoXGobiernoEstatal: "",
+    afectacionGobiernoEstatalEntre100: "",
+    acumuladoAfectacionGobiernoEstatalEntre100: "",
+    fondoIngresoAfectadoXMunicipio: "",
+    acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
+    ingresoAfectadoXOrganismo: "",
+    acumuladoAfectacionOrganismoEntre100: "",
+  },
+
+  setIdResgistroTabla: (IdRegistroTabla: TipoMovimientoInstrucciones
+    ) => {
+    set(() => ({
+      IdRegistroTabla: IdRegistroTabla
+    }))
+  },
+
+  CamposBeneficiario:{
+    tipoBeneficiario: {Id: "", Descripcion: ""},
+    entidadFederativa: { Id: "", Descripcion: "" },
+    organismoMunicipioMandate: {Id: "", Descripcion:""},
+  },
+
+  setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => {
+    set(() => ({
+      CamposBeneficiario: CamposBeneficiario
+    }))
+  },
+
   idInstruccion: "",
   instruccionSelect: [],
 
@@ -138,9 +243,21 @@ export const createInstruccionesIrrevocables: StateCreator<
     ingresoAfectadoXOrganismo: "",
     acumuladoAfectacionOrganismoEntre100: "",
   },
+  soporteDocumentalInstruccion: {
+    archivo: new File([], ""),
+    nombreArchivo: "",
+    fechaArchivo: new Date().toString(),
+  },
 
+  tablaSoporteDocumentalInstrucciones: [],
   tablaTipoMovimientoInstrucciones: [],
   tablaInstrucciones: [],
+
+  setSoporteDocumentalInstruccion: (soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => {
+    set(() => ({
+      soporteDocumentalInstruccion: soporteDocumentalInstruccion,
+    }));
+  },
 
   setGeneralInstruccion: (generalInstrucciones: GeneralIntrucciones) => {
     set(() => ({
@@ -153,6 +270,17 @@ export const createInstruccionesIrrevocables: StateCreator<
   ) => {
     set(() => ({
       tipoMovimientoInstruccion: tipoMovimientoInstrucciones,
+    }));
+  },
+
+  addSoporteDocumentalInstrucciones: (
+    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones
+  ) => {
+    set((state) => ({
+      tablaSoporteDocumentalInstrucciones: [
+        ...state.tablaSoporteDocumentalInstrucciones,
+        soporteDocumentalInstruccion,
+      ],
     }));
   },
 
@@ -185,6 +313,9 @@ export const createInstruccionesIrrevocables: StateCreator<
           MecanismoPago: "Instrucciones Irrevocables",
           EntePublico: state.generalInstrucciones.municipio.Id,
           CreadoPor: localStorage.getItem("IdUsuario"),
+          SoporteDocumentalInstruccion: JSON.stringify(
+            state.tablaSoporteDocumentalInstrucciones
+          )
         },
         {
           headers: {
@@ -343,11 +474,25 @@ export const createInstruccionesIrrevocables: StateCreator<
         mecanismo: "Instrucciones Irrevocables",
         municipio: { Id: "", Descripcion: "" },
       },
+      soporteDocumentalInstruccion:{
+        archivo: new File([], ""),
+        nombreArchivo: "",
+        fechaArchivo: new Date().toString(),
+    },
       tablaTipoMovimientoInstrucciones: [],
     }));
   },
+  cleanSoporteDocumentalInstruccion: () => {
+    set(() => ({
+      soporteDocumentalInstruccion:{
+        archivo: new File([], ""),
+        nombreArchivo: "",
+        fechaArchivo: new Date().toString(),
+    },
+    }))
+  },
 
-  getInstruccion: (setState: Function) => {
+   getInstruccion: (setState: Function) => {
     const state = useInstruccionesStore.getState();
     axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-Instrucciones", {
@@ -365,6 +510,26 @@ export const createInstruccionesIrrevocables: StateCreator<
   cleanTipoMovimientoInstruccion: () => {
     set(() => ({
       tipoMovimientoInstruccion: {
+        id: "",
+        altaDeudor: "",
+        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+        entidadFederativa: { Id: "", Descripcion: "" },
+        //mandatario: { Id: "", Descripcion: "" },
+        tipoFuente: { Id: "", Descripcion: "" },
+        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+        fondoIngresoGobiernoEstatal: "",
+        fondoIngresoMunicipios: "",
+        fondoIngresoAsignadoMunicipio: "",
+        ingresoOrganismo: "",
+        fondoIngresoAfectadoXGobiernoEstatal: "",
+        afectacionGobiernoEstatalEntre100: "",
+        acumuladoAfectacionGobiernoEstatalEntre100: "",
+        fondoIngresoAfectadoXMunicipio: "",
+        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
+        ingresoAfectadoXOrganismo: "",
+        acumuladoAfectacionOrganismoEntre100: "",
+      },
+      IdRegistroTabla:{
         id: "",
         altaDeudor: "",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },

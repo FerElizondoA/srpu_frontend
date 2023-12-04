@@ -118,9 +118,14 @@ export const modulos = [
     fnc: "configuracionOficios",
   },
   {
+    label: "Tipos de Beneficiarios",
+    fnc: "tipoBeneficiario",
+  },
+  {
     label: "Usuarios",
     fnc: "Usuarios",
   },
+
 ];
 
 export function Configuracion() {

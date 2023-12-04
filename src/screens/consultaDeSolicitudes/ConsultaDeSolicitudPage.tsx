@@ -84,7 +84,7 @@ export interface IDataPrueba {
   ModificadoPor: string;
   MontoOriginalContratado: string;
   Nombre: string;
-  NumeroRegistro: number;
+  NumeroRegistro: number; //number
   Solicitud: string;
   TipoEntePublico: string;
   TipoSolicitud: string;

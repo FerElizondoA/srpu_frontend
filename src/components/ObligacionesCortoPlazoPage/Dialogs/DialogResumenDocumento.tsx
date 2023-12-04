@@ -28,6 +28,8 @@ import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import { AnularCancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
+import { stringify } from "querystring";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -57,6 +59,12 @@ export function VerBorradorDocumento(props: Props) {
 
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
+
+  const justificacionAnulacion: string = useCortoPlazoStore(
+    (state) => state.justificacionAnulacion);
+
+    const setJustificacionAnulacion: Function = useCortoPlazoStore(
+      (state) => state.setJustificacionAnulacion);
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -187,6 +195,8 @@ export function VerBorradorDocumento(props: Props) {
     });
   };
 
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
   const AcuseRespuestaCancelacion = (
     IdSolicitud: string,
     estatusFirma: string
@@ -207,14 +217,22 @@ export function VerBorradorDocumento(props: Props) {
         [localStorage.getItem("IdUsuario")!]
       );
       navigate("../cancelaciones");
-      //window.location.reload();
+      window.location.reload();
     } else if (accion === "Anulación") {
+      
       Swal.close();
+      AnularCancelacionSolicitud(
+        props.rowSolicitud.Solicitud,
+        props.rowSolicitud.NumeroRegistro,
+        justificacionAnulacion,
+        props.rowSolicitud.UltimaModificacion,
+        setUrl
+      ) 
       navigate("../firmaUrl");
     }
   };
 
-  const [justificacionAnulacion, setJustificacionAnulacion] = useState("");
+  //const [justificacionAnulacion, setJustificacionAnulacion] = useState("");
 
   const [error, setError] = useState(false);
 
