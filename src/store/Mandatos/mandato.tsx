@@ -232,6 +232,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     fechaArchivo: new Date().toString(),
   },
   tablaSoporteDocumentalMandato: [],
+
   setSoporteDocumentalMandato: (
     soporteDocumentalMandato: SoporteDocumentalMandato
   ) => {
@@ -239,6 +240,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       soporteDocumentalMandato: soporteDocumentalMandato,
     }));
   },
+  
   addSoporteDocumentalMandato: (
     soporteDocumentalMandato: SoporteDocumentalMandato
   ) => {

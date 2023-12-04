@@ -153,12 +153,13 @@ export function SoporteDocumental() {
           sx={{
             display: "flex",
             width: "40%",
+            alignItems:"center",
             "@media (min-width: 480px)": {
               width: "40%",
             },
 
             "@media (min-width: 768px)": {
-              width: "15%",
+              width: "25%",
             },
           }}
         >
@@ -182,8 +183,8 @@ export function SoporteDocumental() {
           </FormControl>
         </Grid>
 
-        <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-          <Grid>
+        <Grid item xs={6} sm={6} md={4} lg={4} xl={4}>
+          <Grid mb={2}>
             <InputLabel>Archivo</InputLabel>
             <Typography
               position={"absolute"}
@@ -244,7 +245,7 @@ export function SoporteDocumental() {
             />
           </Grid>
 
-          <Grid>
+          <Grid container>
             <InputLabel sx={queries.medium_text}>
               Fecha del Documento
             </InputLabel>
@@ -253,6 +254,30 @@ export function SoporteDocumental() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
+              sx={{
+                width:"90%",
+              "@media (min-width: 480px)": {
+                width: "90%",
+              },
+
+              "@media (min-width: 768px)": {
+      
+                width: "90%",
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "90%",
+              },
+
+              "@media (min-width: 1400px)": {
+     
+                width: "90%",
+              },
+
+              "@media (min-width: 1870px)": {
+       
+                width: "90%",
+              },}}
                 value={new Date(fechaArchivo)}
                 onChange={(date) =>
                   setSoporteDocumentalMandato({
@@ -274,7 +299,7 @@ export function SoporteDocumental() {
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
-          mt={1}
+          mt={2}
         >
           <ThemeProvider theme={ButtonTheme}>
             <Button

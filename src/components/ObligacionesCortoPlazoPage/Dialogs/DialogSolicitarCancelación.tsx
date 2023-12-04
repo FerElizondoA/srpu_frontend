@@ -247,7 +247,7 @@ export function DialogSolicitarCancelacion({
                 ) {
                   CancelacionSolicitud(
                     rowSolicitud.Solicitud,
-                    rowSolicitud.NumeroRegistro,
+                    rowSolicitud.NumeroRegistro, 
                     justificacion,
                     archivosCancelacion,
                     rowSolicitud.UltimaModificacion,
