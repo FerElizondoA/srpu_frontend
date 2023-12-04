@@ -309,6 +309,12 @@ const {
   modifyConfiguracionOficios,
 } = require("../controllers/ConfiguracionOficios.js");
 const { sendEmail } = require("../controllers/mail/sendMail.js");
+const {
+  createTipoBeneficiario,
+  getTipoBeneficiario,
+  modifyTipoBeneficiario,
+  deleteTipoBeneficiario,
+} = require("../controllers/TipoBeneficiario.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -571,6 +577,26 @@ router.delete("/delete-destinos", verifyToken.verifyJWT, (req, res) => {
   deleteDestino(req, res);
 });
 //#endregion
+
+//#region Beneficiario
+router.post("/create-tipoBeneficiario", verifyToken.verifyJWT, (req, res, express) => {
+  createTipoBeneficiario(req, res);
+});
+
+router.get("/get-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  getTipoBeneficiario(req, res);
+});
+
+router.put("/modify-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoBeneficiario(req, res);
+});
+
+router.delete("/delete-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  deleteTipoBeneficiario(req, res);
+});
+//#endregion
+
+
 
 //#region Roles
 router.post("/create-roles", verifyToken.verifyJWT, (req, res, express) => {
@@ -1512,6 +1538,8 @@ router.post(
 router.get("/get-instruccion", verifyToken.verifyJWT, (req, res, express) => {
   getInstrucciones(req, res);
 });
+
+
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
 //   getTiposDeGarantiaDePago(req, res);
