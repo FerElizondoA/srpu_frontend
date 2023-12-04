@@ -7,14 +7,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
-  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Table,
   TableBody,
   TableContainer,
@@ -30,15 +26,13 @@ import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { CamposSoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import { HeadLabels } from "../../fideicomisos/panels/TipoDeMovimiento";
-import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { CamposSoporteDocumentalInstrucciones, TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 
-const heads: HeadLabels[] = [
+const heads = [
   {
     label: "Eliminar",
   },
@@ -98,7 +92,6 @@ export function SoporteDocumentalInstrucciones() {
 
   useEffect(() => {
     cleanSoporteDocumentalInstruccion();
-
   }, [tablaSoporteDocumentalInstrucciones]);
 
   function cargarArchivo(event: any) {
@@ -113,10 +106,6 @@ export function SoporteDocumentalInstrucciones() {
     }
   }
 
-
-
-  const arrDocs: any[] = useMandatoStore((state) => state.arrDocs);
-
   return (
     <Grid
       container
@@ -125,9 +114,7 @@ export function SoporteDocumentalInstrucciones() {
       mt={1}
     >
       <Grid container display={"flex"} justifyContent={"space-evenly"} mt={4}>
-
-
-        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2} >
+        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2}>
           <InputLabel>Archivo</InputLabel>
           <Typography
             position={"absolute"}
@@ -194,10 +181,8 @@ export function SoporteDocumentalInstrucciones() {
           />
         </Grid>
 
-        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2} >
-          <InputLabel sx={queries.medium_text}>
-            Fecha del documento
-          </InputLabel>
+        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2}>
+          <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={enGB}
@@ -237,8 +222,13 @@ export function SoporteDocumentalInstrucciones() {
           </LocalizationProvider>
         </Grid>
 
-
-        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2}
+        <Grid
+          xs={10}
+          sm={10}
+          md={3}
+          lg={3}
+          xl={3}
+          mb={2}
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
@@ -250,9 +240,7 @@ export function SoporteDocumentalInstrucciones() {
                 ...queries.buttonContinuarSolicitudInscripcion,
                 width: "15vh",
               }}
-              disabled={
-                fechaArchivo === "" || nombreArchivo === ""
-              }
+              disabled={fechaArchivo === "" || nombreArchivo === ""}
               onClick={() => {
                 addSoporteDocumentalInstrucciones({
                   fechaArchivo: fechaArchivo,
@@ -330,7 +318,9 @@ export function SoporteDocumentalInstrucciones() {
                         </StyledTableCell>
                         <StyledTableCell>
                           <Grid display={"flex"} justifyContent={"center"}>
-                            <Tooltip title={"Mostrar vista previa del documento"}>
+                            <Tooltip
+                              title={"Mostrar vista previa del documento"}
+                            >
                               <IconButton
                                 onClick={() => {
                                   toBase64(row.archivo)
@@ -338,12 +328,12 @@ export function SoporteDocumentalInstrucciones() {
                                       setFileSelected(data);
                                     })
                                     .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                          td.nombre.includes(row.nombreArchivo)
-                                        )[0].file
-                                        }`
-                                      );
+                                      // setFileSelected(
+                                      //   `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                      //     td.nombre.includes(row.nombreArchivo)
+                                      //   )[0].file
+                                      //   }`
+                                      // );
                                     });
                                   setShowModalPrevia(true);
                                 }}
