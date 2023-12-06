@@ -2,6 +2,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
+  Backdrop,
   Button,
   Dialog,
   Grid,
@@ -12,32 +13,20 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
-import { DialogTransition } from "../../mandatos/dialog/AgregarMandatos";
+import {
+  DialogTransition,
+  buttonTheme,
+} from "../../mandatos/dialog/AgregarMandatos";
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
-import { SDocumental } from "../panels/SoporteDocumental";
-import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
+import { SoporteDocumentalFideicomiso } from "../panels/SoporteDocumental";
+import { TipoDeMovimientoFideicomiso } from "../panels/TipoDeMovimiento";
 
 export function AgregarFideicomisos({
   handler,
@@ -70,23 +59,45 @@ export function AgregarFideicomisos({
 
   const [loading, setLoading] = useState(false);
 
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
+  );
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
+  );
+  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
+  );
+  const getOrdenesFideicomisario: Function = useFideicomisoStore(
+    (state) => state.getOrdenesFideicomisario
+  );
+
+  useEffect(() => {
+    getOrganismos();
+    getTipoEntePublicoObligado();
+    getOrdenesFideicomisario();
+    getTiposDeFuenteInstrucciones();
+    getFondosOIngresosInstrucciones();
+  }, []);
+
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
-          {!loading && (
-            <Tooltip title="Volver">
-              <IconButton
-                edge="start"
-                onClick={() => {
-                  handler(false);
-                }}
-                sx={{ color: "white" }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Tooltip>
-          )}
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                handler(false);
+              }}
+              sx={{ color: "white" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
 
           <Grid container>
             <Grid item>
@@ -97,52 +108,48 @@ export function AgregarFideicomisos({
           </Grid>
 
           <Grid item>
-            <ThemeProvider theme={theme}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <Button
-                  // disabled={
-                  //   generalFideicomiso.numeroFideicomiso === "" ||
-                  //   generalFideicomiso.fechaFideicomiso === "" ||
-                  //   tablaFideicomisario.length < 0 ||
-                  //   tablaTipoMovimiento.length < 0 ||
-                  //   tablaSoporteDocumental.length < 0
-                  // }
-                  sx={queries.buttonContinuar}
-                  onClick={() => {
-                    console.log("falta restricciones");
+            <ThemeProvider theme={buttonTheme}>
+              <Button
+                // disabled={
+                //   generalFideicomiso.numeroFideicomiso === "" ||
+                //   generalFideicomiso.fechaFideicomiso === "" ||
+                //   tablaFideicomisario.length < 0 ||
+                //   tablaTipoMovimiento.length < 0 ||
+                //   tablaSoporteDocumental.length < 0
+                // }
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  console.log("falta restricciones");
 
-                    if (IdFideicomiso === "") {
-                      setLoading(true);
-                      createFideicomiso(() => {
-                        setLoading(false);
-                        handler(false);
-                      });
-                    } else if (IdFideicomiso !== "") {
-                      setLoading(true);
-                      modificarFideicomiso(() => {
-                        setLoading(false);
-                        handler(false);
-                      });
-                    }
+                  if (IdFideicomiso === "") {
+                    setLoading(true);
+                    createFideicomiso(() => {
+                      setLoading(false);
+                      handler(false);
+                    });
+                  } else if (IdFideicomiso !== "") {
+                    setLoading(true);
+                    modificarFideicomiso(() => {
+                      setLoading(false);
+                      handler(false);
+                    });
+                  }
 
-                    setTabIndex(0);
+                  setTabIndex(0);
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontSize: "1.3ch",
-                      fontFamily: "MontserratMedium",
-                      "@media (min-width: 480px)": {
-                        fontSize: "1.5ch",
-                      },
-                    }}
-                  >
-                    {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
-                  </Typography>
-                </Button>
-              )}
+                  {IdFideicomiso === "" ? "Agregar" : "Editar"} Fideicomiso
+                </Typography>
+              </Button>
             </ThemeProvider>
           </Grid>
         </Toolbar>
@@ -164,10 +171,22 @@ export function AgregarFideicomisos({
 
         {tabIndex === 0 && <DatoGeneralesFideicomiso />}
 
-        {tabIndex === 1 && <TipoDeMovimiento />}
+        {tabIndex === 1 && <TipoDeMovimientoFideicomiso />}
 
-        {tabIndex === 2 && <SDocumental />}
+        {tabIndex === 2 && <SoporteDocumentalFideicomiso />}
       </Grid>
+
+      <ThemeProvider theme={buttonTheme}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+          // onClick={() => {
+          //   setLoading(false);
+          // }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </ThemeProvider>
     </Dialog>
   );
 }

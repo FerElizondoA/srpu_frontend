@@ -27,8 +27,8 @@ import { ICatalogo } from "../../../screens/Config/Catalogos";
 import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import {
-  DatosGeneralesFideicomiso,
-  Fideicomisario,
+  IDatosGeneralesFideicomiso,
+  IFideicomisario,
 } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -40,7 +40,7 @@ interface HeadLabels {
 
 export function DatoGeneralesFideicomiso() {
   // DATOS GENERALES
-  const datosGenerales: DatosGeneralesFideicomiso = useFideicomisoStore(
+  const datosGenerales: IDatosGeneralesFideicomiso = useFideicomisoStore(
     (state) => state.datosGenerales
   );
   const setDatosGenerales: Function = useFideicomisoStore(
@@ -54,7 +54,7 @@ export function DatoGeneralesFideicomiso() {
   const ordenFideicomisario: { Id: string; Descripcion: string } =
     useFideicomisoStore((state) => state.fideicomisario.ordenFideicomisario);
 
-  const tablaFideicomisario: Fideicomisario[] = useFideicomisoStore(
+  const tablaFideicomisario: IFideicomisario[] = useFideicomisoStore(
     (state) => state.tablaFideicomisario
   );
 

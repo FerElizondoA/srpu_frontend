@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Dialog,
@@ -19,7 +20,10 @@ import { queries } from "../../../queries";
 import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
-import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import {
+  AnularCancelacionSolicitud,
+  CambiaEstatus,
+} from "../../../store/SolicitudFirma/solicitudFirma";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
@@ -28,8 +32,6 @@ import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-import { AnularCancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
-import { stringify } from "querystring";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -61,10 +63,12 @@ export function VerBorradorDocumento(props: Props) {
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
 
   const justificacionAnulacion: string = useCortoPlazoStore(
-    (state) => state.justificacionAnulacion);
+    (state) => state.justificacionAnulacion
+  );
 
-    const setJustificacionAnulacion: Function = useCortoPlazoStore(
-      (state) => state.setJustificacionAnulacion);
+  const setJustificacionAnulacion: Function = useCortoPlazoStore(
+    (state) => state.setJustificacionAnulacion
+  );
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -219,7 +223,6 @@ export function VerBorradorDocumento(props: Props) {
       navigate("../cancelaciones");
       window.location.reload();
     } else if (accion === "Anulación") {
-      
       Swal.close();
       AnularCancelacionSolicitud(
         props.rowSolicitud.Solicitud,
@@ -227,7 +230,7 @@ export function VerBorradorDocumento(props: Props) {
         justificacionAnulacion,
         props.rowSolicitud.UltimaModificacion,
         setUrl
-      ) 
+      );
       navigate("../firmaUrl");
     }
   };

@@ -40,11 +40,8 @@ export interface IDatosInstrucciones {
   DescripcionBanco: string; //
   MecanismoPago: string;
   TipoMovimiento: string;
-
   IdEntePublico: string; //
   DescripcionEntePublico: string; //
-
-  //EntePublico: string, //REVISAR NOMBRE
   FechaCreacion: string;
   CreadoPor: string;
 }
@@ -67,29 +64,14 @@ const heads: Head[] = [
     label: "Tipo de mecanismo de pago",
   },
   {
-    label: "Numero de cuenta",
+    label: "Número de Cuenta",
   },
   {
     label: "Cuenta CLABE",
   },
   {
-    label: "Banco",
+    label: "Fecha",
   },
-  // {
-  //   label: "Ente Publico",
-  // },
-  // {
-  //   label: "Fecha",
-  // },
-  // {
-  //   label: "Entidad Federativa",
-  // },
-  // {
-  //   label: "Fondo o ingreso",
-  //},
-  // {
-  //   label: "Banco",
-  // },
   {
     label: "Municipio u Organismo",
   },

@@ -28,7 +28,6 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { CamposSoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { useMandatoStore } from "../../../store/Mandatos/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
@@ -77,10 +76,6 @@ export function SoporteDocumentalInstrucciones() {
 
   const addSoporteDocumentalInstrucciones: Function = useInstruccionesStore(
     (state) => state.addSoporteDocumentalInstrucciones
-  );
-
-  const removeSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.removeSoporteDocumentalMandato
   );
 
   const tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[] =
@@ -300,9 +295,9 @@ export function SoporteDocumentalInstrucciones() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
-                                removeSoporteDocumentalMandato(index)
-                              }
+                              onClick={() => {
+                                // removeSoporteDocumentalMandato(index)
+                              }}
                             >
                               <DeleteIcon />
                             </IconButton>

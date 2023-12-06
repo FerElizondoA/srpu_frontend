@@ -29,24 +29,12 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../store/Mandatos/main";
-import { DatosGeneralesMandato } from "../../store/Mandatos/mandato";
-
-export const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-interface Head {
-  label: string;
-}
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -68,12 +56,25 @@ export interface IDatosMandatos {
   UltimaModificacion: string;
 }
 
+export const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+interface Head {
+  label: string;
+}
+
 const heads: Head[] = [
   {
-    label: "Número de mandato",
+    label: "Número de Mandato",
   },
   {
-    label: "Fecha del mandato",
+    label: "Fecha del Mandato",
   },
   {
     label: "Mandatario",
@@ -82,34 +83,33 @@ const heads: Head[] = [
     label: "Organismo / Municipio Mandante",
   },
   {
-    label: "Tipo ente publico obligado",
+    label: "Tipo Ente Público Obligado",
   },
   {
-    label: "Acciones",
+    label: "Acción",
   },
 ];
 
 export function Mandatos() {
-  const [accion, setAccion] = useState("Agregar");
-
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
-
-  const getMandatos: Function = useMandatoStore((state) => state.getMandato);
-
-  const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
-
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  const handleSearch = () => {
-    filtrarDatos();
-  };
-
-  const [busqueda, setBusqueda] = useState("");
   const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
   const [mandatosFiltrados, setMandatosFiltrados] = useState<IDatosMandatos[]>(
     []
+  );
+  const [busqueda, setBusqueda] = useState("");
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+
+  const idMandato: string = useMandatoStore((state) => state.idMandato);
+
+  const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+  const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
+  const deleteMandato: Function = useMandatoStore(
+    (state) => state.deleteMandato
+  );
+
+  const setIdMandato: Function = useMandatoStore((state) => state.setIdMandato);
+  const editarMandato: Function = useMandatoStore(
+    (state) => state.editarMandato
   );
 
   const filtrarDatos = () => {
@@ -137,6 +137,18 @@ export function Mandatos() {
     setMandatosFiltrados(ResultadoBusqueda);
   };
 
+  const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+
+  useEffect(() => {
+    getMandatos(setMandatos);
+    getOrganismos();
+  }, []);
+
   useEffect(() => {
     if (busqueda.length !== 0) {
       setMandatos(mandatos);
@@ -145,50 +157,21 @@ export function Mandatos() {
   }, [busqueda]);
 
   useEffect(() => {
-    getMandatos(setMandatos);
-  }, []);
-
-  const borrarMandato: Function = useMandatoStore(
-    (state) => state.borrarMandato
-  );
-
-  const idMandato: string = useMandatoStore((state) => state.idMandato);
-
-  const changeIdMandato: Function = useMandatoStore(
-    (state) => state.changeIdMandato
-  );
-
-  const setMandatoSelect: Function = useMandatoStore(
-    (state) => state.setMandatoSelect
-  );
-
-  const editarMandato: Function = useMandatoStore(
-    (state) => state.editarMandato
-  );
-
-  const setDatosGenerales: Function = useMandatoStore(
-    (state) => state.setDatosGenerales
-  );
-
-  const datosGenerales: DatosGeneralesMandato = useMandatoStore(
-    (state) => state.datosGenerales
-  );
-
-  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-
-  useEffect(() => {
     setMandatosFiltrados(mandatos);
   }, [mandatos]);
 
   useEffect(() => {
-    getMandatos(setMandatos);
-    !openAgregarMandato && cleanMandato();
+    if (openAgregarMandato === false) {
+      cleanMandato();
+    }
+    if (!openDialogEliminar) {
+      getMandatos(setMandatos);
+    }
   }, [openAgregarMandato]);
 
   return (
     <Grid height={"74vh"}>
       <Grid item>
-        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
         <LateralMenu />
       </Grid>
 
@@ -236,24 +219,16 @@ export function Mandatos() {
               value={busqueda}
               onChange={(e) => {
                 if (e.target.value === "") {
-                  handleSearch();
+                  filtrarDatos();
                 }
-                handleChange(e.target.value);
-              }}
-              onKeyPress={(ev) => {
-                //cuando se presiona Enter
-                if (ev.key === "Enter") {
-                  handleSearch();
-                  ev.preventDefault();
-                  return false;
-                }
+                setBusqueda(e.target.value);
               }}
             />
             <IconButton
               type="button"
               sx={{ p: "10px" }}
               aria-label="search"
-              onClick={() => handleSearch()}
+              onClick={() => filtrarDatos()}
             >
               <GridSearchIcon />
             </IconButton>
@@ -267,13 +242,6 @@ export function Mandatos() {
               height: "75%",
             }}
             onClick={() => {
-              setDatosGenerales({
-                ...datosGenerales,
-                numeroMandato: "",
-                fechaMandato: new Date(),
-              });
-              editarMandato([], []);
-              setAccion("Agregar");
               setOpenAgregarMandato(!openAgregarMandato);
             }}
           >
@@ -281,6 +249,7 @@ export function Mandatos() {
           </Button>
         </Grid>
       </Grid>
+
       <Grid
         container
         sx={{
@@ -308,7 +277,7 @@ export function Mandatos() {
               },
             }}
           >
-            <Table>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
@@ -319,7 +288,7 @@ export function Mandatos() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mandatosFiltrados.map((row: any, index: number) => {
+                {mandatosFiltrados.map((row: IDatosMandatos, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
@@ -349,17 +318,21 @@ export function Mandatos() {
                           <IconButton
                             type="button"
                             onClick={() => {
-                              setAccion("Editar");
-
-                              changeIdMandato(row?.Id);
-
-                              setMandatoSelect(row);
-                              setDatosGenerales({
-                                ...datosGenerales,
-                                numeroMandato: row.NumeroMandato,
-                                fechaMandato: new Date(row.FechaMandato),
-                              });
                               editarMandato(
+                                row.Id,
+                                {
+                                  numeroMandato: row.NumeroMandato,
+                                  fechaMandato: new Date(row.FechaMandato),
+                                  mandatario: catalogoOrganismos.filter(
+                                    (v, index) =>
+                                      v.Descripcion === row.Mandatario
+                                  )[0],
+                                  mandante: catalogoOrganismos.filter(
+                                    (v, index) =>
+                                      v.Descripcion ===
+                                      row.MunicipioOrganismoMandante
+                                  )[0],
+                                },
                                 JSON.parse(row.TipoMovimiento),
                                 JSON.parse(row.SoporteDocumental)
                               );
@@ -375,7 +348,7 @@ export function Mandatos() {
                           <IconButton
                             type="button"
                             onClick={() => {
-                              changeIdMandato(row?.Id || "");
+                              setIdMandato(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
                             }}
                           >
@@ -396,7 +369,6 @@ export function Mandatos() {
         <AgregarMandatos
           handler={setOpenAgregarMandato}
           openState={openAgregarMandato}
-          accion={accion}
         />
       )}
 
@@ -407,7 +379,7 @@ export function Mandatos() {
       >
         <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
         <DialogContent>
-          <Typography>¿Seguro que desea eliminar este fideicomiso?</Typography>
+          <Typography>¿Seguro que desea eliminar este mandato?</Typography>
         </DialogContent>
 
         <DialogActions>
@@ -415,7 +387,7 @@ export function Mandatos() {
             sx={queries.buttonContinuar}
             onClick={() => {
               setOpenDialogEliminar(!openDialogEliminar);
-              borrarMandato(idMandato);
+              deleteMandato(idMandato);
             }}
           >
             Aceptar

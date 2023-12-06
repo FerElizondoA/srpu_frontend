@@ -31,10 +31,11 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { SoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import CircularProgress from "@mui/material/CircularProgress";
+import { ISoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
 
 const heads = [
   {
@@ -54,7 +55,7 @@ const heads = [
   },
 ];
 
-export function SoporteDocumental() {
+export function SoporteDocumentalMandato() {
   const [fileSelected, setFileSelected] = useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -69,7 +70,7 @@ export function SoporteDocumental() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
 
-    setSoporteDocumentalMandato({
+    setSoporteDocumental({
       tipo: (event.target as HTMLInputElement).value,
       fechaArchivo: fechaArchivo,
       archivo: archivo,
@@ -77,46 +78,44 @@ export function SoporteDocumental() {
     });
   };
 
-  const tipo: string = useMandatoStore(
-    (state) => state.soporteDocumentalMandato.tipo
-  );
+  const tipo: string = useMandatoStore((state) => state.soporteDocumental.tipo);
 
   const archivo: File = useMandatoStore(
-    (state) => state.soporteDocumentalMandato.archivo
+    (state) => state.soporteDocumental.archivo
   );
 
   const nombreArchivo: string = useMandatoStore(
-    (state) => state.soporteDocumentalMandato.nombreArchivo
+    (state) => state.soporteDocumental.nombreArchivo
   );
 
   const fechaArchivo: string = useMandatoStore(
-    (state) => state.soporteDocumentalMandato.fechaArchivo
+    (state) => state.soporteDocumental.fechaArchivo
   );
 
-  const setSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.setSoporteDocumentalMandato
+  const setSoporteDocumental: Function = useMandatoStore(
+    (state) => state.setSoporteDocumental
   );
 
-  const addSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.addSoporteDocumentalMandato
+  const addSoporteDocumental: Function = useMandatoStore(
+    (state) => state.addSoporteDocumental
   );
 
-  const removeSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.removeSoporteDocumentalMandato
+  const removeSoporteDocumental: Function = useMandatoStore(
+    (state) => state.removeSoporteDocumental
   );
 
-  const tablaSoporteDocumentalMandato: SoporteDocumentalMandato[] =
+  const tablaSoporteDocumentalMandato: ISoporteDocumentalMandato[] =
     useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
-  const cleanSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.cleanSoporteDocumentalMandato
+  const cleanSoporteDocumental: Function = useMandatoStore(
+    (state) => state.cleanSoporteDocumental
   );
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
 
     if (file !== undefined) {
-      setSoporteDocumentalMandato({
+      setSoporteDocumental({
         tipo: tipo,
         fechaArchivo: fechaArchivo,
         archivo: file,
@@ -126,7 +125,7 @@ export function SoporteDocumental() {
   }
 
   useEffect(() => {
-    cleanSoporteDocumentalMandato();
+    cleanSoporteDocumental();
   }, [tablaSoporteDocumentalMandato]);
 
   const [radioValue, setRadioValue] = useState("");
@@ -137,10 +136,13 @@ export function SoporteDocumental() {
 
   useEffect(() => {
     if (idMandato !== "") {
-      listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr);
+      listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr).then(() => {
+        setLoading(false);
+      });
     }
   }, []);
 
+  const [loading, setLoading] = useState(true);
   return (
     <Grid
       container
@@ -153,13 +155,13 @@ export function SoporteDocumental() {
           sx={{
             display: "flex",
             width: "40%",
-            alignItems:"center",
+            alignItems: "center",
             "@media (min-width: 480px)": {
               width: "40%",
             },
 
             "@media (min-width: 768px)": {
-              width: "25%",
+              width: "15%",
             },
           }}
         >
@@ -254,42 +256,37 @@ export function SoporteDocumental() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
-              sx={{
-                width:"90%",
-              "@media (min-width: 480px)": {
-                width: "90%",
-              },
+                sx={{
+                  width: "90%",
+                  "@media (min-width: 480px)": {
+                    width: "90%",
+                  },
 
-              "@media (min-width: 768px)": {
-      
-                width: "90%",
-              },
+                  "@media (min-width: 768px)": {
+                    width: "90%",
+                  },
 
-              "@media (min-width: 1140px)": {
-                width: "90%",
-              },
+                  "@media (min-width: 1140px)": {
+                    width: "90%",
+                  },
 
-              "@media (min-width: 1400px)": {
-     
-                width: "90%",
-              },
+                  "@media (min-width: 1400px)": {
+                    width: "90%",
+                  },
 
-              "@media (min-width: 1870px)": {
-       
-                width: "90%",
-              },}}
+                  "@media (min-width: 1870px)": {
+                    width: "90%",
+                  },
+                }}
                 value={new Date(fechaArchivo)}
                 onChange={(date) =>
-                  setSoporteDocumentalMandato({
+                  setSoporteDocumental({
                     tipo: tipo,
                     fechaArchivo: date?.toString(),
                     archivo: archivo,
                     nombreArchivo: nombreArchivo,
                   })
                 }
-                // slots={{
-                //   textField: DateInput,
-                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -311,7 +308,7 @@ export function SoporteDocumental() {
                 tipo === "" || fechaArchivo === "" || nombreArchivo === ""
               }
               onClick={() => {
-                addSoporteDocumentalMandato({
+                addSoporteDocumental({
                   tipo: tipo,
                   fechaArchivo: fechaArchivo,
                   archivo: archivo,
@@ -370,9 +367,7 @@ export function SoporteDocumental() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
-                                removeSoporteDocumentalMandato(index)
-                              }
+                              onClick={() => removeSoporteDocumental(index)}
                             >
                               <DeleteIcon />
                             </IconButton>
@@ -389,31 +384,38 @@ export function SoporteDocumental() {
                         <StyledTableCell align="center">
                           {row.nombreArchivo}
                         </StyledTableCell>
+
                         <StyledTableCell>
-                          <Tooltip title={"Mostrar vista previa del documento"}>
-                            <IconButton
-                              onClick={() => {
-                                toBase64(row.archivo)
-                                  .then((data) => {
-                                    setFileSelected(data);
-                                  })
-                                  .catch((err) => {
-                                    setFileSelected(
-                                      `data:application/pdf;base64,${
-                                        arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
-                                      }`
-                                    );
-                                  });
-                                setShowModalPrevia(true);
-                              }}
+                          {loading && !row.archivo ? (
+                            <CircularProgress />
+                          ) : (
+                            <Tooltip
+                              title={"Mostrar vista previa del documento"}
                             >
-                              <FileOpenIcon />
-                            </IconButton>
-                          </Tooltip>
+                              <IconButton
+                                onClick={() => {
+                                  toBase64(row.archivo)
+                                    .then((data) => {
+                                      setFileSelected(data);
+                                    })
+                                    .catch((err) => {
+                                      setFileSelected(
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.NOMBREFORMATEADO.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].FILE
+                                        }`
+                                      );
+                                    });
+                                  setShowModalPrevia(true);
+                                }}
+                              >
+                                <FileOpenIcon />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </StyledTableCell>
                       </StyledTableRow>
                     );

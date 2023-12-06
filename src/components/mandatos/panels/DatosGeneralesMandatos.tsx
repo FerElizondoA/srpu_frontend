@@ -7,39 +7,26 @@ import { useEffect } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { DatosGeneralesMandato } from "../../../store/Mandatos/mandato";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
+import { IDatosGeneralesMandato } from "../../../store/Mandatos/mandato";
 
-export function DatosGeneralesMandatos({ accion }: { accion: string }) {
+export function DatosGeneralesMandato() {
   const setDatosGenerales: Function = useMandatoStore(
     (state) => state.setDatosGenerales
   );
 
-  const datosGenerales: DatosGeneralesMandato = useMandatoStore(
+  const datosGenerales: IDatosGeneralesMandato = useMandatoStore(
     (state) => state.datosGenerales
-  );
-
-  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
-    (state) => state.getTipoEntePublicoObligado
   );
 
   const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
   );
 
-  const getOrganismos: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
-
   const tablaMandatos: IDatosMandatos[] = useMandatoStore(
     (state) => state.tablaMandatos
   );
-
-  useEffect(() => {
-    getTipoEntePublicoObligado();
-    getOrganismos();
-  }, []);
 
   useEffect(() => {
     if (catalogoOrganismos.length > 0) {
@@ -75,7 +62,7 @@ export function DatosGeneralesMandatos({ accion }: { accion: string }) {
           error={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0 && accion === ""
+            ).length > 0
           }
           sx={queries.medium_text}
         >
@@ -85,12 +72,12 @@ export function DatosGeneralesMandatos({ accion }: { accion: string }) {
           error={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0 && accion === ""
+            ).length > 0
           }
           helperText={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0 && accion === ""
+            ).length > 0
               ? "Número de mandato ya existente"
               : ""
           }
@@ -115,9 +102,10 @@ export function DatosGeneralesMandatos({ accion }: { accion: string }) {
           Fecha del Mandato
         </InputLabel>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-          <DesktopDatePicker sx={{
-            width:"100%"
-          }}
+          <DesktopDatePicker
+            sx={{
+              width: "100%",
+            }}
             value={datosGenerales.fechaMandato}
             onChange={(v) => {
               setDatosGenerales({

@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import axios from "axios";
-import { Fideicomisario } from "../Fideicomiso/fideicomiso";
+import { IFideicomisario } from "../Fideicomiso/fideicomiso";
 
 export type Mecanismo = {
   mecanismo: { Id: string; Descripcion: string };
@@ -76,9 +76,9 @@ export interface FuenteDePagoLargoPlazoSlice {
   AsignarFuenteV: AsignarFuenteV;
 
   garantiaPago: { Id: string; Descripcion: string };
-  tablaFideicomisarioFP: Fideicomisario[];
+  tablaFideicomisarioFP: IFideicomisario[];
 
-  editFideicomisarioFuentePago: (fideicomisario: Fideicomisario[]) => void;
+  editFideicomisarioFuentePago: (fideicomisario: IFideicomisario[]) => void;
 
   changeMecanismo: (
     mecanismo: { Id: string; Descripcion: string },
@@ -170,7 +170,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   tablaFideicomisarioFP: [],
 
-  editFideicomisarioFuentePago: (fideicomisarios: Fideicomisario[]) =>
+  editFideicomisarioFuentePago: (fideicomisarios: IFideicomisario[]) =>
     set((state) => ({
       tablaFideicomisarioFP: fideicomisarios,
     })),

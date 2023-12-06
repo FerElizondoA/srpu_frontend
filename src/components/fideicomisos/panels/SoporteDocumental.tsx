@@ -34,7 +34,8 @@ import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
-import { SoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const heads = [
   {
@@ -54,7 +55,7 @@ const heads = [
   },
 ];
 
-export function SDocumental() {
+export function SoporteDocumentalFideicomiso() {
   const [fileSelected, setFileSelected] = useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -105,7 +106,7 @@ export function SDocumental() {
     (state) => state.removeSoporteDocumental
   );
 
-  const tablaSoporteDocumentalFideicomiso: SoporteDocumentalFideicomiso[] =
+  const tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[] =
     useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
 
   const cleanSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
@@ -139,9 +140,13 @@ export function SDocumental() {
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(`/SRPU/FIDEICOMISOS/${idFideicomiso}/`, setArr);
+      listFile(`/SRPU/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+        setLoading(false);
+      });
     }
   }, []);
+
+  const [loading, setLoading] = useState(true);
 
   return (
     <Grid
@@ -189,8 +194,8 @@ export function SDocumental() {
           </FormControl>
         </Grid>
 
-        <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-          <Grid>
+        <Grid item xs={6} sm={6} md={4} lg={4} xl={4}>
+          <Grid mb={2}>
             <InputLabel>Archivo</InputLabel>
             <Typography
               position={"absolute"}
@@ -260,6 +265,28 @@ export function SDocumental() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
+                sx={{
+                  width: "90%",
+                  "@media (min-width: 480px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    width: "90%",
+                  },
+                }}
                 value={new Date(fechaArchivo)}
                 onChange={(date) =>
                   setSoporteDocumentalFideicomiso({
@@ -269,9 +296,6 @@ export function SDocumental() {
                     nombreArchivo: nombreArchivo,
                   })
                 }
-                // slots={{
-                //   textField: DateInput,
-                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -369,31 +393,38 @@ export function SDocumental() {
                         <StyledTableCell align="center">
                           {row.nombreArchivo}
                         </StyledTableCell>
+
                         <StyledTableCell>
-                          <Tooltip title={"Mostrar vista previa del documento"}>
-                            <IconButton
-                              onClick={() => {
-                                toBase64(row.archivo)
-                                  .then((data) => {
-                                    setFileSelected(data);
-                                  })
-                                  .catch((err) => {
-                                    setFileSelected(
-                                      `data:application/pdf;base64,${
-                                        arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
-                                      }`
-                                    );
-                                  });
-                                setShowModalPrevia(true);
-                              }}
+                          {loading && !row.archivo ? (
+                            <CircularProgress />
+                          ) : (
+                            <Tooltip
+                              title={"Mostrar vista previa del documento"}
                             >
-                              <FileOpenIcon />
-                            </IconButton>
-                          </Tooltip>
+                              <IconButton
+                                onClick={() => {
+                                  toBase64(row.archivo)
+                                    .then((data) => {
+                                      setFileSelected(data);
+                                    })
+                                    .catch((err) => {
+                                      setFileSelected(
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.NOMBREFORMATEADO.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].FILE
+                                        }`
+                                      );
+                                    });
+                                  setShowModalPrevia(true);
+                                }}
+                              >
+                                <FileOpenIcon />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </StyledTableCell>
                       </StyledTableRow>
                     );

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AppBar,
   Button,
@@ -17,12 +18,13 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { TransitionProps } from "@mui/material/transitions";
 import { GridCloseIcon } from "@mui/x-data-grid";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { DatosGeneralesMandatos } from "../panels/DatosGeneralesMandatos";
-import { SoporteDocumental } from "../panels/SoporteDocumental";
-import { TipoDeMovimiento } from "../panels/TipoDeMovimiento";
+import { DatosGeneralesMandato } from "../panels/DatosGeneralesMandatos";
+import { SoporteDocumentalMandato } from "../panels/SoporteDocumental";
+import { TipoDeMovimientoMandato } from "../panels/TipoDeMovimiento";
 
 export const DialogTransition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -33,7 +35,7 @@ export const DialogTransition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const theme = createTheme({
+export const buttonTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
@@ -51,11 +53,9 @@ const theme = createTheme({
 export function AgregarMandatos({
   handler,
   openState,
-  accion,
 }: {
   handler: Function;
   openState: boolean;
-  accion: string;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -63,57 +63,29 @@ export function AgregarMandatos({
     setTabIndex(newTabIndex);
   };
 
-  const changeIdMandato: Function = useMandatoStore(
-    (state) => state.changeIdMandato
-  );
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
+  };
 
-  const editarMandato: Function = useMandatoStore(
-    (state) => state.editarMandato
+  const IdMandato: string = useMandatoStore((state) => state.idMandato);
+
+  const createMandato: Function = useMandatoStore(
+    (state) => state.createMandato
   );
 
   const modificaMandato: Function = useMandatoStore(
     (state) => state.modificaMandato
   );
 
-  const setTipoMovimiento: Function = useMandatoStore(
-    (state) => state.setTipoMovimiento
-  );
-
-  const setSoporteDocumentalMandato: Function = useMandatoStore(
-    (state) => state.setSoporteDocumentalMandato
-  );
-
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
-  };
-
-  const createMandato: Function = useMandatoStore(
-    (state) => state.createMandato
-  );
-
-  const limpiaMandato = () => {
-    changeIdMandato("");
-
-    setTipoMovimiento({
-      altaDeudor: "",
-      tipoEntePublicoObligado: { Id: "", Descripcion: "" },
-      mandatario: { Id: "", Descripcion: "" },
-      tipoFuente: { Id: "", Descripcion: "" },
-      fondoIngreso: { Id: "", Descripcion: "" },
-      fechaMandato: new Date().toString(),
-    });
-
-    setSoporteDocumentalMandato({
-      tipo: "",
-      fechaArchivo: new Date().toString(),
-      archivo: new File([], ""),
-      nombreArchivo: "",
-    });
-
-    editarMandato([], []);
-  };
-
   const [loading, setLoading] = useState(false);
+
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
+    (state) => state.getTipoEntePublicoObligado
+  );
+
+  useEffect(() => {
+    getTipoEntePublicoObligado();
+  }, []);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
@@ -124,7 +96,6 @@ export function AgregarMandatos({
               <IconButton
                 edge="start"
                 onClick={() => {
-                  limpiaMandato();
                   handler(false);
                 }}
                 sx={{ color: "white" }}
@@ -135,24 +106,26 @@ export function AgregarMandatos({
           )}
 
           <Grid container>
-            <Typography sx={queries.bold_text}>{accion} Mandato</Typography>
+            <Typography sx={queries.bold_text}>
+              {IdMandato === "" ? "Agregar" : "Editar"} Mandato
+            </Typography>
           </Grid>
 
           <Grid item>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={buttonTheme}>
               {loading ? (
                 <CircularProgress />
               ) : (
                 <Button
                   sx={queries.buttonContinuar}
                   onClick={() => {
-                    if (accion === "Agregar") {
+                    if (IdMandato === "") {
                       createMandato(() => {
                         setLoading(true);
                         setLoading(false);
                         handler(false);
                       });
-                    } else if (accion === "Editar") {
+                    } else if (IdMandato !== "") {
                       setLoading(true);
                       modificaMandato(() => {
                         setLoading(false);
@@ -171,7 +144,7 @@ export function AgregarMandatos({
                       },
                     }}
                   >
-                    {accion} mandato
+                    {IdMandato === "" ? "Agregar" : "Editar"} mandato
                   </Typography>
                 </Button>
               )}
@@ -195,11 +168,11 @@ export function AgregarMandatos({
             <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
           </Tabs>
 
-          {tabIndex === 0 && <DatosGeneralesMandatos accion={accion} />}
+          {tabIndex === 0 && <DatosGeneralesMandato />}
 
-          {tabIndex === 1 && <TipoDeMovimiento />}
+          {tabIndex === 1 && <TipoDeMovimientoMandato />}
 
-          {tabIndex === 2 && <SoporteDocumental />}
+          {tabIndex === 2 && <SoporteDocumentalMandato />}
         </Grid>
       </Grid>
     </Dialog>

@@ -121,7 +121,7 @@ export function VehiculoDePago() {
   );
 
   // const getMandatos: Function = useMandatoStore(
-  //   (state) => state.getMandato
+  //   (state) => state.getMandatos
   // );
 
   //Mandatos

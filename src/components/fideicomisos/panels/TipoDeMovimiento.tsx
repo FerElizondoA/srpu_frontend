@@ -2,6 +2,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
+  Divider,
   FormControlLabel,
   Grid,
   IconButton,
@@ -22,7 +23,10 @@ import RadioGroup from "@mui/material/RadioGroup";
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { TipoMovimientoFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import {
+  IBeneficiarioFideicomiso,
+  IDeudorFideicomiso,
+} from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
@@ -30,6 +34,9 @@ import {
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import enGB from "date-fns/locale/en-GB";
 
 interface HeadLabels {
   label: string;
@@ -91,16 +98,25 @@ const heads: HeadLabels[] = [
   },
 ];
 
-export function TipoDeMovimiento() {
-  const tipoMovimientoFideicomiso: TipoMovimientoFideicomiso =
-    useFideicomisoStore((state) => state.tipoMovimientoFideicomiso);
+export function TipoDeMovimientoFideicomiso() {
+  const tipoMovimientoFideicomiso: IDeudorFideicomiso = useFideicomisoStore(
+    (state) => state.tipoMovimientoFideicomiso
+  );
 
-  const tablaTipoMovimiento: TipoMovimientoFideicomiso[] = useFideicomisoStore(
+  const beneficiario: IBeneficiarioFideicomiso = useFideicomisoStore(
+    (state) => state.beneficiario
+  );
+
+  const tablaTipoMovimiento: IDeudorFideicomiso[] = useFideicomisoStore(
     (state) => state.tablaTipoMovimientoFideicomiso
   );
 
   const setTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.setTipoMovimiento
+  );
+
+  const setBeneficiario: Function = useFideicomisoStore(
+    (state) => state.setBeneficiario
   );
 
   //catalogo
@@ -138,76 +154,533 @@ export function TipoDeMovimiento() {
     (state) => state.addPorcentaje
   );
 
+  const idTipoMovimientoSelect: string = useFideicomisoStore(
+    (state) => state.idTipoMovimientoSelect
+  );
+
+  const setIdTipoMovimientoSelect: Function = useFideicomisoStore(
+    (state) => state.setIdTipoMovimientoSelect
+  );
+
+  const ids: string[] = tablaTipoMovimiento.map((row) => {
+    return row.id;
+  });
+
+  const buttonAgregar = () => {
+    return (
+      <ThemeProvider theme={ButtonTheme}>
+        <Button
+          disabled={
+            tipoMovimientoFideicomiso.tipoFideicomitente.Id === "" ||
+            tipoMovimientoFideicomiso.fideicomitente.Id === "" ||
+            tipoMovimientoFideicomiso.tipoFuente.Id === "" ||
+            tipoMovimientoFideicomiso.fondoIngreso.Id === ""
+          }
+          sx={{
+            ...queries.buttonContinuar,
+            width: "15vh",
+          }}
+          onClick={() => {
+            addTipoMovimiento({
+              id: tipoMovimientoFideicomiso.id,
+              tipoFideicomitente: tipoMovimientoFideicomiso.tipoFideicomitente,
+              fideicomitente: tipoMovimientoFideicomiso.fideicomitente,
+              tipoFuente: tipoMovimientoFideicomiso.tipoFuente,
+              fondoIngreso: tipoMovimientoFideicomiso.fondoIngreso,
+              fondoIngresoGobiernoEstatal:
+                tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
+                "participaciones"
+                  ? "80.00"
+                  : "100.00",
+              fondoIngresoMunicipios:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "municipio"
+                  ? tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
+                    "participaciones"
+                    ? "20.00"
+                    : "0.00"
+                  : "0.00",
+              fondoIngresoAsignadoMunicipio:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "municipio"
+                  ? "100.00"
+                  : "0.00",
+              ingresoOrganismo:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  "municipio" &&
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  "gobierno estatal"
+                  ? "0.00"
+                  : "0.00",
+              fondoIngresoAfectadoXGobiernoEstatal:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "gobierno estatal"
+                  ? ""
+                  : "",
+              afectacionGobiernoEstatalEntre100:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "gobierno estatal"
+                  ? "0.00"
+                  : "",
+              acumuladoAfectacionGobiernoEstatalEntre100:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "gobierno estatal"
+                  ? "0.00"
+                  : "",
+              fondoIngresoAfectadoXMunicipio:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+                "municipio"
+                  ? "0"
+                  : "0",
+              acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
+                tablaTipoMovimiento
+                  .reduce((accumulator, object) => {
+                    return (
+                      accumulator +
+                      Number(object.fondoIngresoAfectadoXMunicipio)
+                    );
+                  }, 0)
+                  .toString(),
+              ingresoAfectadoXOrganismo:
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  "municipio" &&
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  "gobierno estatal"
+                  ? ""
+                  : "",
+              acumuladoAfectacionOrganismoEntre100: tablaTipoMovimiento
+                .reduce((accumulator, object) => {
+                  return (
+                    (accumulator + Number(object.ingresoAfectadoXOrganismo)) /
+                    100
+                  );
+                }, 0)
+                .toString(),
+            });
+            cleanTipoMovimiento();
+          }}
+        >
+          Agregar
+        </Button>
+      </ThemeProvider>
+    );
+  };
+
   return (
-    <>
+    <Grid
+      container
+      flexDirection={"column"}
+      justifyContent={"flex-start"}
+      width={"100%"}
+      sx={{
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          height: "1vh",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+      }}
+    >
+      <Grid
+        item
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <RadioGroup
+          value={movimiento}
+          onChange={(v) => {
+            setMovimiento(v.target.value);
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <FormControlLabel
+            sx={{ ...queries.medium_text }}
+            value="DEUDOR"
+            control={<Radio />}
+            label="Alta de Deudor"
+          />
+          {tablaTipoMovimiento.length > 0 && (
+            <FormControlLabel
+              sx={{ ...queries.medium_text }}
+              value="BENEFICIARIO"
+              control={<Radio />}
+              label="Alta de Beneficiario"
+            />
+          )}
+        </RadioGroup>
+      </Grid>
+
+      <Divider>
+        <Typography
+          sx={{
+            ...queries.bold_text,
+            color: "#af8c55 ",
+          }}
+        >
+          Mandante
+        </Typography>
+      </Divider>
+
       <Grid
         container
-        flexDirection={"column"}
-        justifyContent={"flex-start"}
-        width={"100%"}
-        sx={{
-          "@media (min-width: 480px)": {
-            height: "50rem",
-          },
-
-          "@media (min-width: 768px)": {
-            height: "38rem",
-          },
-
-          "@media (min-width: 1140px)": {
-            height: "38rem",
-          },
-
-          "@media (min-width: 1400px)": {
-            height: "38rem",
-          },
-
-          "@media (min-width: 1870px)": {
-            height: "50rem",
-          },
-        }}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+        sx={{ height: "10vh" }}
       >
+        {movimiento === "BENEFICIARIO" ? (
+          <Grid
+            item
+            xs={10}
+            sm={5}
+            md={5}
+            lg={2}
+            xl={2}
+            mb={
+              movimiento === "BENEFICIARIO"
+                ? { xs: 2, sm: 4, md: 4, lg: 2 }
+                : { xs: 0, sm: 0 }
+            }
+          >
+            <InputLabel sx={queries.medium_text}>Id</InputLabel>
+            <Autocomplete
+              disableClearable
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={ids}
+              getOptionLabel={(option) => option}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option}>
+                    <Typography>{option}</Typography>
+                  </li>
+                );
+              }}
+              value={idTipoMovimientoSelect}
+              onChange={(event, text) => {
+                let row = tablaTipoMovimiento.filter((_) => _.id === text)[0];
+
+                setIdTipoMovimientoSelect(text);
+                setTipoMovimiento(row);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option === value || value === ""
+              }
+            />
+          </Grid>
+        ) : null}
+
+        <Grid
+          item
+          xs={10}
+          sm={movimiento === "DEUDOR" ? 3 : 5}
+          md={movimiento === "DEUDOR" ? 3 : 5}
+          lg={movimiento === "DEUDOR" ? 3 : 2}
+          xl={movimiento === "DEUDOR" ? 3 : 2}
+          mb={
+            movimiento === "BENEFICIARIO"
+              ? { xs: 2, sm: 0, md: 0 }
+              : { xs: 4, sm: 0 }
+          }
+        >
+          <InputLabel sx={queries.medium_text}>
+            Tipo de Fideicomitente
+          </InputLabel>
+
+          <Autocomplete
+            disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogotipoFideicomitente}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography sx={{ ...queries.medium_text }}>
+                    {option.Descripcion}
+                  </Typography>
+                </li>
+              );
+            }}
+            value={tipoMovimientoFideicomiso.tipoFideicomitente}
+            onChange={(event, text) => {
+              setTipoMovimiento({
+                ...tipoMovimientoFideicomiso,
+                tipoFideicomitente: {
+                  Id: text.Id,
+                  Descripcion: text.Descripcion,
+                },
+                fideicomitente: {
+                  Id: "",
+                  Descripcion: "",
+                },
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={{ ...queries.medium_text }}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+        </Grid>
+
+        <Grid
+          item
+          xs={10}
+          sm={movimiento === "DEUDOR" ? 3 : 5}
+          md={movimiento === "DEUDOR" ? 3 : 5}
+          lg={movimiento === "DEUDOR" ? 3 : 2}
+          xl={movimiento === "DEUDOR" ? 3 : 3}
+          mb={
+            movimiento === "BENEFICIARIO" ? { xs: 0, sm: 0, md: 0 } : { xs: 0 }
+          }
+        >
+          <InputLabel sx={queries.medium_text}>Fideicomitente</InputLabel>
+          <Autocomplete
+            disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            disabled={
+              tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion ===
+                "No Aplica" ||
+              /^[\s]*$/.test(
+                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion
+              )
+            }
+            fullWidth
+            options={catalogoOrganismos.filter(
+              (td: any) =>
+                td.IdTipoEntePublico ===
+                tipoMovimientoFideicomiso.tipoFideicomitente.Id
+            )}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) => {
+              setTipoMovimiento({
+                ...tipoMovimientoFideicomiso,
+                fideicomitente: {
+                  Id: text.Id,
+                  Descripcion: text.Descripcion,
+                },
+              });
+            }}
+            value={tipoMovimientoFideicomiso.fideicomitente}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
+          />
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+      >
+        <Grid
+          item
+          xs={10}
+          sm={movimiento === "DEUDOR" ? 3 : 5}
+          md={movimiento === "DEUDOR" ? 3 : 5}
+          lg={movimiento === "DEUDOR" ? 3 : 3}
+          xl={movimiento === "DEUDOR" ? 3 : 3}
+          mb={
+            movimiento === "BENEFICIARIO" ? { xs: 3, sm: 0 } : { xs: 4, sm: 0 }
+          }
+        >
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Tipo de Fuente
+          </InputLabel>
+          <Autocomplete
+            disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoTiposDeFuente}
+            value={tipoMovimientoFideicomiso.tipoFuente}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) => {
+              setTipoMovimiento({
+                ...tipoMovimientoFideicomiso,
+                tipoFuente: {
+                  Id: text.Id,
+                  Descripcion: text.Descripcion,
+                },
+                fondoIngreso: {
+                  Id: "",
+                  Descripcion: "",
+                  TipoDeFuente: "",
+                },
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+        </Grid>
+
+        <Grid
+          item
+          xs={10}
+          sm={movimiento === "DEUDOR" ? 3 : 5}
+          md={movimiento === "DEUDOR" ? 3 : 5}
+          lg={movimiento === "DEUDOR" ? 3 : 3}
+          xl={movimiento === "DEUDOR" ? 3 : 3}
+        >
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Fondo o Ingreso
+          </InputLabel>
+          <Autocomplete
+            disabled={tipoMovimientoFideicomiso.tipoFuente?.Id === ""}
+            disableClearable
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={catalogoFondosOIngresos?.filter(
+              (td) =>
+                td.TipoDeFuente === tipoMovimientoFideicomiso.tipoFuente?.Id
+            )}
+            value={tipoMovimientoFideicomiso.fondoIngreso}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) => {
+              setTipoMovimiento({
+                ...tipoMovimientoFideicomiso,
+                id: `${
+                  tipoMovimientoFideicomiso.tipoFuente?.Descripcion
+                }/${text.Descripcion.split(" ")
+                  .map((word) =>
+                    word.charAt(0) === word.charAt(0).toUpperCase()
+                      ? word.charAt(0)
+                      : ""
+                  )
+                  .join("")}/${tablaTipoMovimiento?.length + 1}`,
+                fondoIngreso: {
+                  Id: text.Id,
+                  Descripcion: text.Descripcion,
+                  TipoDeFuente: text.TipoDeFuente,
+                },
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+        </Grid>
+      </Grid>
+
+      {movimiento === "DEUDOR" && (
+        <Grid
+          item
+          mt={2}
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          {buttonAgregar()}
+        </Grid>
+      )}
+
+      {movimiento === "BENEFICIARIO" && (
+        <Divider>
+          <Typography
+            sx={{
+              ...queries.bold_text,
+              color: "#af8c55 ",
+            }}
+          >
+            Beneficiario
+          </Typography>
+        </Divider>
+      )}
+
+      {movimiento === "BENEFICIARIO" && (
         <Grid
           container
           display={"flex"}
           justifyContent={"space-evenly"}
-          width={"100%"}
           alignItems={"center"}
         >
-          <Grid
-            item
-            xs={10}
-            sm={3}
-            md={3}
-            lg={3}
-            xl={3}
-            display={"flex"}
-            justifyContent={"center"}
-          >
-            <RadioGroup
-              value={movimiento}
-              onChange={(v) => {
-                setMovimiento(v.target.value);
-              }}
-            >
-              <FormControlLabel
-                sx={{ ...queries.medium_text }}
-                value="DEUDOR"
-                control={<Radio />}
-                label="Alta de deudor"
-              />
-              <FormControlLabel
-                sx={{ ...queries.medium_text }}
-                value="BENEFICIARIO"
-                control={<Radio />}
-                label="Alta de beneficiario"
-              />
-            </RadioGroup>
-          </Grid>
-
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
             <InputLabel sx={queries.medium_text}>
-              Tipo de Fideicomitente
+              Tipo de Beneficiario
             </InputLabel>
 
             <Autocomplete
@@ -228,13 +701,17 @@ export function TipoDeMovimiento() {
                   </li>
                 );
               }}
-              value={tipoMovimientoFideicomiso.tipoFideicomitente}
+              value={beneficiario.tipoBeneficiario}
               onChange={(event, text) => {
-                setTipoMovimiento({
-                  ...tipoMovimientoFideicomiso,
-                  tipoFideicomitente: {
+                setBeneficiario({
+                  ...beneficiario,
+                  tipoBeneficiario: {
                     Id: text.Id,
                     Descripcion: text.Descripcion,
+                  },
+                  fideicomitente: {
+                    Id: "",
+                    Descripcion: "",
                   },
                 });
               }}
@@ -252,8 +729,8 @@ export function TipoDeMovimiento() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Fideicomitente</InputLabel>
+          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
+            <InputLabel sx={queries.medium_text}>Beneficiario</InputLabel>
             <Autocomplete
               disableClearable
               clearText="Borrar"
@@ -261,17 +738,13 @@ export function TipoDeMovimiento() {
               closeText="Cerrar"
               openText="Abrir"
               disabled={
-                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion ===
-                  "No Aplica" ||
-                /^[\s]*$/.test(
-                  tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion
-                )
+                beneficiario.tipoBeneficiario.Descripcion === "No Aplica" ||
+                /^[\s]*$/.test(beneficiario.tipoBeneficiario.Descripcion)
               }
               fullWidth
               options={catalogoOrganismos.filter(
                 (td: any) =>
-                  td.IdTipoEntePublico ===
-                  tipoMovimientoFideicomiso.tipoFideicomitente.Id
+                  td.IdTipoEntePublico === beneficiario.tipoBeneficiario.Id
               )}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
@@ -282,15 +755,15 @@ export function TipoDeMovimiento() {
                 );
               }}
               onChange={(event, text) => {
-                setTipoMovimiento({
-                  ...tipoMovimientoFideicomiso,
-                  fideicomitente: {
+                setBeneficiario({
+                  ...beneficiario,
+                  beneficiario: {
                     Id: text.Id,
                     Descripcion: text.Descripcion,
                   },
                 });
               }}
-              value={tipoMovimientoFideicomiso.fideicomitente}
+              value={beneficiario.beneficiario}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -303,483 +776,193 @@ export function TipoDeMovimiento() {
               }
             />
           </Grid>
-        </Grid>
 
-        <Grid
-          container
-          display={"flex"}
-          justifyContent={"space-evenly"}
-          width={"100%"}
-        >
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
             <InputLabel sx={{ ...queries.medium_text }}>
-              Tipo de Fuente
+              Fecha de Alta
             </InputLabel>
-            <Autocomplete
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoTiposDeFuente}
-              value={tipoMovimientoFideicomiso.tipoFuente}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) => {
-                setTipoMovimiento({
-                  ...tipoMovimientoFideicomiso,
-                  tipoFuente: {
-                    Id: text.Id,
-                    Descripcion: text.Descripcion,
-                  },
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DesktopDatePicker
+                value={beneficiario.fechaAlta}
+                onChange={(v) => {
+                  setBeneficiario({
+                    ...beneficiario,
+                    fechaAlta: v,
+                  });
+                }}
+              />
+            </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Fondo o Ingreso
-            </InputLabel>
-            <Autocomplete
-              disabled={tipoMovimientoFideicomiso.tipoFuente?.Id === ""}
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              options={catalogoFondosOIngresos?.filter(
-                (td) =>
-                  td.TipoDeFuente === tipoMovimientoFideicomiso.tipoFuente?.Id
-              )}
-              value={tipoMovimientoFideicomiso.fondoIngreso}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) => {
-                setTipoMovimiento({
-                  ...tipoMovimientoFideicomiso,
-                  id: `${
-                    tipoMovimientoFideicomiso.tipoFuente?.Descripcion
-                  }/${text.Descripcion.split(" ")
-                    .map((word) =>
-                      word.charAt(0) === word.charAt(0).toUpperCase()
-                        ? word.charAt(0)
-                        : ""
-                    )
-                    .join("")}/${tablaTipoMovimiento?.length + 1}`,
-                  fondoIngreso: {
-                    Id: text.Id,
-                    Descripcion: text.Descripcion,
-                    TipoDeFuente: text.TipoDeFuente,
-                  },
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
+          <Grid
+            item
+            mt={2}
+            width={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            {buttonAgregar()}
           </Grid>
         </Grid>
+      )}
 
-        <Grid
-          height={"4rem"}
-          display={"flex"}
-          justifyContent={"center"}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ThemeProvider theme={ButtonTheme}>
-            <Button
-              disabled={
-                tipoMovimientoFideicomiso.tipoFideicomitente.Id === "" ||
-                tipoMovimientoFideicomiso.fideicomitente.Id === "" ||
-                tipoMovimientoFideicomiso.tipoFuente.Id === "" ||
-                tipoMovimientoFideicomiso.fondoIngreso.Id === ""
-              }
-              sx={{
-                ...queries.buttonContinuar,
-                width: "15vh",
-              }}
-              onClick={() => {
-                addTipoMovimiento({
-                  id: tipoMovimientoFideicomiso.id,
-                  tipoFideicomitente:
-                    tipoMovimientoFideicomiso.tipoFideicomitente,
-                  fideicomitente: tipoMovimientoFideicomiso.fideicomitente,
-                  tipoFuente: tipoMovimientoFideicomiso.tipoFuente,
-                  fondoIngreso: tipoMovimientoFideicomiso.fondoIngreso,
-                  fondoIngresoGobiernoEstatal:
-                    tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
-                    "participaciones"
-                      ? "80.00"
-                      : "100.00",
-                  fondoIngresoMunicipios:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "municipio"
-                      ? tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
-                        "participaciones"
-                        ? "20.00"
-                        : "0.00"
-                      : "0.00",
-                  fondoIngresoAsignadoMunicipio:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "municipio"
-                      ? "100.00"
-                      : "0.00",
-                  ingresoOrganismo:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-                      "municipio" &&
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-                      "gobierno estatal"
-                      ? "0.00"
-                      : "0.00",
-                  fondoIngresoAfectadoXGobiernoEstatal:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "gobierno estatal"
-                      ? ""
-                      : "",
-                  afectacionGobiernoEstatalEntre100:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "gobierno estatal"
-                      ? "0.00"
-                      : "",
-                  acumuladoAfectacionGobiernoEstatalEntre100:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "gobierno estatal"
-                      ? "0.00"
-                      : "",
-                  fondoIngresoAfectadoXMunicipio:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                    "municipio"
-                      ? "0"
-                      : "0",
-                  acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-                    tablaTipoMovimiento
-                      .reduce((accumulator, object) => {
-                        return (
-                          accumulator +
-                          Number(object.fondoIngresoAfectadoXMunicipio)
-                        );
-                      }, 0)
-                      .toString(),
-
-                  ingresoAfectadoXOrganismo:
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-                      "municipio" &&
-                    tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-                      "gobierno estatal"
-                      ? ""
-                      : "",
-                  acumuladoAfectacionOrganismoEntre100: tablaTipoMovimiento
-                    .reduce((accumulator, object) => {
-                      return (
-                        (accumulator +
-                          Number(object.ingresoAfectadoXOrganismo)) /
-                        100
-                      );
-                    }, 0)
-                    .toString(),
-                });
-                cleanTipoMovimiento();
-              }}
-            >
-              Agregar
-            </Button>
-          </ThemeProvider>
-        </Grid>
-
-        <Grid
-          width={"100%"}
-          height={"35rem"}
-          display={"flex"}
-          justifyContent={"center"}
-        >
-          <Paper sx={{ width: "95%", height: "100%" }}>
-            <TableContainer
-              sx={{
-                height: "100%",
-                overflow: "auto",
-                "&::-webkit-scrollbar": {
-                  width: ".5vw",
-                  height: "1vh",
-                  mt: 1,
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "#AF8C55",
-                  outline: "1px solid slategrey",
-                  borderRadius: 1,
-                },
-              }}
-            >
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    {heads.map((head, index) => (
-                      <StyledTableCell align="center" key={index}>
+      <Grid container mt={3} mb={2} display={"flex"} justifyContent={"center"}>
+        <Paper sx={{ width: "100%" }}>
+          <TableContainer
+            sx={{
+              height: "100%",
+              overflow: "auto",
+              "&::-webkit-scrollbar": {
+                width: ".5vw",
+                height: "1vh",
+                mt: 1,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#AF8C55",
+                outline: "1px solid slategrey",
+                borderRadius: 1,
+              },
+            }}
+          >
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {heads.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      <Typography sx={{ fontSize: "0.7rem" }}>
+                        {head.label}
+                      </Typography>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tablaTipoMovimiento.map((row: any, index: number) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      {/* ID */}
+                      <StyledTableCell align="center">
                         <Typography sx={{ fontSize: "0.7rem" }}>
-                          {head.label}
+                          {row?.id}
                         </Typography>
                       </StyledTableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tablaTipoMovimiento.map((row: any, index: number) => {
-                    return (
-                      <StyledTableRow key={index}>
-                        {/* ID */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.id}
-                          </Typography>
-                        </StyledTableCell>
 
-                        {/* TIPO MANDANTE */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.tipoFideicomitente.Descripcion}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* TIPO MANDANTE */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.tipoFideicomitente.Descripcion}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* fideicomitente */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.fideicomitente.Descripcion}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* fideicomitente */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.fideicomitente.Descripcion}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* FUENTE DE PAGO */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.tipoFuente.Descripcion}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* FUENTE DE PAGO */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.tipoFuente.Descripcion}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* FONDO INGRESO GOBIERNO ESTATAL */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.fondoIngresoGobiernoEstatal}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* FONDO INGRESO GOBIERNO ESTATAL */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.fondoIngresoGobiernoEstatal}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* FONDO INGRESO MUNICIPIOS */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.fondoIngresoMunicipios}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* FONDO INGRESO MUNICIPIOS */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.fondoIngresoMunicipios}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* FONDO INGRESO MUNICIPIO */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.fondoIngresoAsignadoMunicipio}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* FONDO INGRESO MUNICIPIO */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.fondoIngresoAsignadoMunicipio}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* INGRESO ORGANISMO */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.ingresoOrganismo}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* INGRESO ORGANISMO */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.ingresoOrganismo}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* AFECTADO POR GOBIERNO ESTATAL */}
-                        <StyledTableCell align="center">
-                          {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
-                            "gobierno estatal" && (
-                            <TextField
-                              type="number"
-                              inputProps={{
-                                sx: {
-                                  fontSize: "0.7rem",
-                                },
-                              }}
-                              size="small"
-                              value={row?.fondoIngresoAfectadoXGobiernoEstatal}
-                              onChange={(v) => {
-                                let auxArray = [...tablaTipoMovimiento];
-                                if (Number(v.target.value) <= 100) {
-                                  auxArray[
-                                    index
-                                  ].fondoIngresoAfectadoXGobiernoEstatal =
-                                    v.target.value;
-                                  addPorcentaje(auxArray);
-                                }
-                              }}
-                            />
-                          )}
-                        </StyledTableCell>
+                      {/* AFECTADO POR GOBIERNO ESTATAL */}
+                      <StyledTableCell align="center">
+                        {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
+                          "gobierno estatal" && (
+                          <TextField
+                            type="number"
+                            inputProps={{
+                              sx: {
+                                fontSize: "0.7rem",
+                              },
+                            }}
+                            size="small"
+                            value={row?.fondoIngresoAfectadoXGobiernoEstatal}
+                            onChange={(v) => {
+                              let auxArray = [...tablaTipoMovimiento];
+                              if (Number(v.target.value) <= 100) {
+                                auxArray[
+                                  index
+                                ].fondoIngresoAfectadoXGobiernoEstatal =
+                                  v.target.value;
+                                addPorcentaje(auxArray);
+                              }
+                            }}
+                          />
+                        )}
+                      </StyledTableCell>
 
-                        {/* AFECTACION GOBIERNO ESTATAL / 100 */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.afectacionGobiernoEstatalEntre100}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* AFECTACION GOBIERNO ESTATAL / 100 */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.afectacionGobiernoEstatalEntre100}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {row?.acumuladoAfectacionGobiernoEstatalEntre100}
-                          </Typography>
-                        </StyledTableCell>
+                      {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {row?.acumuladoAfectacionGobiernoEstatalEntre100}
+                        </Typography>
+                      </StyledTableCell>
 
-                        {/* AFECTADO POR MUNICIPIO */}
-                        <StyledTableCell align="center">
-                          {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
-                            "municipio" && (
-                            <TextField
-                              type="number"
-                              inputProps={{
-                                sx: {
-                                  fontSize: "0.7rem",
-                                },
-                              }}
-                              size="small"
-                              value={row?.fondoIngresoAfectadoXMunicipio}
-                              onChange={(v) => {
-                                let auxArray = [...tablaTipoMovimiento];
-                                if (
-                                  Number(v.target.value) <= 100 &&
-                                  Number(row?.fondoIngresoMunicipios) > 0 &&
-                                  Number(row?.fondoIngresoAsignadoMunicipio) > 0
-                                ) {
-                                  auxArray[
-                                    index
-                                  ].fondoIngresoAfectadoXMunicipio =
-                                    v.target.value;
-
-                                  auxArray.forEach((item) => {
-                                    item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                      tablaTipoMovimiento
-                                        .reduce((accumulator, object) => {
-                                          return (
-                                            accumulator +
-                                            Number(
-                                              object.fondoIngresoAfectadoXMunicipio
-                                            )
-                                          );
-                                        }, 0)
-                                        .toString();
-                                  });
-
-                                  addPorcentaje(auxArray);
-                                }
-                              }}
-                            />
-                          )}
-                        </StyledTableCell>
-
-                        {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
-                        <StyledTableCell align="center">
-                          {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
-                            "municipio" && (
-                            <Typography sx={{ fontSize: "0.7rem" }}>
-                              {(
-                                Number(
-                                  row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                                ) / Number(row?.fondoIngresoAsignadoMunicipio)
-                              ).toFixed(6)}
-                            </Typography>
-                          )}
-                        </StyledTableCell>
-
-                        {/* AFECTADO POR ORGANISMO */}
-                        <StyledTableCell align="center">
-                          {row?.tipoFideicomitente.Descripcion.toLowerCase() !==
-                            "gobierno estatal" &&
-                            row?.tipoFideicomitente.Descripcion.toLowerCase() !==
-                              "municipio" && (
-                              <TextField
-                                type="number"
-                                inputProps={{
-                                  sx: {
-                                    fontSize: "0.7rem",
-                                  },
-                                }}
-                                size="small"
-                                value={row?.ingresoAfectadoXOrganismo}
-                                onChange={(v) => {
-                                  let auxArray = [...tablaTipoMovimiento];
-                                  if (
-                                    Number(v.target.value) <= 100 &&
-                                    Number(row?.ingresoOrganismo) > 0
-                                  ) {
-                                    auxArray[index].ingresoAfectadoXOrganismo =
-                                      v.target.value;
-
-                                    auxArray.forEach((item) => {
-                                      item.acumuladoAfectacionOrganismoEntre100 =
-                                        tablaTipoMovimiento
-                                          .reduce((accumulator, object) => {
-                                            return (
-                                              accumulator +
-                                              Number(
-                                                object.ingresoAfectadoXOrganismo
-                                              )
-                                            );
-                                          }, 0)
-                                          .toString();
-                                    });
-
-                                    addPorcentaje(auxArray);
-                                  }
-                                }}
-                              />
-                            )}
-                        </StyledTableCell>
-
-                        {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
-                        <StyledTableCell align="center">
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {(
-                              Number(
-                                row?.acumuladoAfectacionOrganismoEntre100
-                              ) / 100
-                            ).toFixed(6)}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Tooltip title="Eliminar">
-                            <IconButton
-                              type="button"
-                              onClick={() => {
-                                let auxArray = [...tablaTipoMovimiento];
+                      {/* AFECTADO POR MUNICIPIO */}
+                      <StyledTableCell align="center">
+                        {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
+                          "municipio" && (
+                          <TextField
+                            type="number"
+                            inputProps={{
+                              sx: {
+                                fontSize: "0.7rem",
+                              },
+                            }}
+                            size="small"
+                            value={row?.fondoIngresoAfectadoXMunicipio}
+                            onChange={(v) => {
+                              let auxArray = [...tablaTipoMovimiento];
+                              if (
+                                Number(v.target.value) <= 100 &&
+                                Number(row?.fondoIngresoMunicipios) > 0 &&
+                                Number(row?.fondoIngresoAsignadoMunicipio) > 0
+                              ) {
+                                auxArray[index].fondoIngresoAfectadoXMunicipio =
+                                  v.target.value;
 
                                 auxArray.forEach((item) => {
                                   item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
@@ -794,37 +977,131 @@ export function TipoDeMovimiento() {
                                       }, 0)
                                       .toString();
                                 });
-                                auxArray.forEach((item) => {
-                                  item.acumuladoAfectacionOrganismoEntre100 =
-                                    tablaTipoMovimiento
-                                      .reduce((accumulator, object) => {
-                                        return (
-                                          accumulator +
-                                          Number(
-                                            object.ingresoAfectadoXOrganismo
-                                          )
-                                        );
-                                      }, 0)
-                                      .toString();
-                                });
 
                                 addPorcentaje(auxArray);
-                                removeTipoMovimiento(index);
+                              }
+                            }}
+                          />
+                        )}
+                      </StyledTableCell>
+
+                      {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
+                      <StyledTableCell align="center">
+                        {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
+                          "municipio" && (
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {(
+                              Number(
+                                row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                              ) / Number(row?.fondoIngresoAsignadoMunicipio)
+                            ).toFixed(6)}
+                          </Typography>
+                        )}
+                      </StyledTableCell>
+
+                      {/* AFECTADO POR ORGANISMO */}
+                      <StyledTableCell align="center">
+                        {row?.tipoFideicomitente.Descripcion.toLowerCase() !==
+                          "gobierno estatal" &&
+                          row?.tipoFideicomitente.Descripcion.toLowerCase() !==
+                            "municipio" && (
+                            <TextField
+                              type="number"
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
                               }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
+                              size="small"
+                              value={row?.ingresoAfectadoXOrganismo}
+                              onChange={(v) => {
+                                let auxArray = [...tablaTipoMovimiento];
+                                if (
+                                  Number(v.target.value) <= 100 &&
+                                  Number(row?.ingresoOrganismo) > 0
+                                ) {
+                                  auxArray[index].ingresoAfectadoXOrganismo =
+                                    v.target.value;
+
+                                  auxArray.forEach((item) => {
+                                    item.acumuladoAfectacionOrganismoEntre100 =
+                                      tablaTipoMovimiento
+                                        .reduce((accumulator, object) => {
+                                          return (
+                                            accumulator +
+                                            Number(
+                                              object.ingresoAfectadoXOrganismo
+                                            )
+                                          );
+                                        }, 0)
+                                        .toString();
+                                  });
+
+                                  addPorcentaje(auxArray);
+                                }
+                              }}
+                            />
+                          )}
+                      </StyledTableCell>
+
+                      {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
+                      <StyledTableCell align="center">
+                        <Typography sx={{ fontSize: "0.7rem" }}>
+                          {(
+                            Number(row?.acumuladoAfectacionOrganismoEntre100) /
+                            100
+                          ).toFixed(6)}
+                        </Typography>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              let auxArray = [...tablaTipoMovimiento];
+
+                              auxArray.forEach((item) => {
+                                item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                  tablaTipoMovimiento
+                                    .reduce((accumulator, object) => {
+                                      return (
+                                        accumulator +
+                                        Number(
+                                          object.fondoIngresoAfectadoXMunicipio
+                                        )
+                                      );
+                                    }, 0)
+                                    .toString();
+                              });
+                              auxArray.forEach((item) => {
+                                item.acumuladoAfectacionOrganismoEntre100 =
+                                  tablaTipoMovimiento
+                                    .reduce((accumulator, object) => {
+                                      return (
+                                        accumulator +
+                                        Number(object.ingresoAfectadoXOrganismo)
+                                      );
+                                    }, 0)
+                                    .toString();
+                              });
+
+                              addPorcentaje(auxArray);
+                              removeTipoMovimiento(index);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       </Grid>
-    </>
+    </Grid>
   );
 }

@@ -7,19 +7,19 @@ import { useFideicomisoStore } from "./main";
 import Swal from "sweetalert2";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
-export interface Fideicomisario {
+export interface IFideicomisario {
   fideicomisario: { Id: string; Descripcion: string };
   ordenFideicomisario: { Id: string; Descripcion: string };
 }
 
-export interface DatosGeneralesFideicomiso {
+export interface IDatosGeneralesFideicomiso {
   numeroFideicomiso: string;
   fechaFideicomiso: Date;
   tipoFideicomiso: { Id: string; Descripcion: string };
   fiduciario: { Id: string; Descripcion: string };
 }
 
-export interface TipoMovimientoFideicomiso {
+export interface IDeudorFideicomiso {
   id: string;
   tipoFideicomitente: { Id: string; Descripcion: string };
   fideicomitente: { Id: string; Descripcion: string };
@@ -38,18 +38,24 @@ export interface TipoMovimientoFideicomiso {
   acumuladoAfectacionOrganismoEntre100: string;
 }
 
-export interface SoporteDocumentalFideicomiso {
+export interface IBeneficiarioFideicomiso {
+  tipoBeneficiario: { Id: string; Descripcion: string };
+  beneficiario: { Id: string; Descripcion: string };
+  fechaAlta: Date;
+}
+
+export interface ISoporteDocumentalFideicomiso {
   tipo: string;
   archivo: File;
   nombreArchivo: string;
   fechaArchivo: Date;
 }
 
-export type Fideicomiso = {
+export type IFideicomiso = {
   id: string;
-  datosGenerales: DatosGeneralesFideicomiso;
-  tipoMovimientoFideicomiso: TipoMovimientoFideicomiso[];
-  soporteDocumental: SoporteDocumentalFideicomiso;
+  datosGenerales: IDatosGeneralesFideicomiso;
+  tipoMovimientoFideicomiso: IDeudorFideicomiso[];
+  soporteDocumental: ISoporteDocumentalFideicomiso;
 };
 
 export interface FideicomisoSlice {
@@ -58,48 +64,51 @@ export interface FideicomisoSlice {
   idFideicomiso: string;
   setIdFideicomiso: (Id: string) => void;
 
-  fideicomisoSelect: Fideicomiso[];
-  setFideicomisoSelect: (fideicomiso: Fideicomiso[]) => void;
+  datosGenerales: IDatosGeneralesFideicomiso;
 
-  datosGenerales: DatosGeneralesFideicomiso;
+  fideicomisario: IFideicomisario;
+  tablaFideicomisario: IFideicomisario[];
 
-  fideicomisario: Fideicomisario;
-  tablaFideicomisario: Fideicomisario[];
+  tipoMovimientoFideicomiso: IDeudorFideicomiso;
+  tablaTipoMovimientoFideicomiso: IDeudorFideicomiso[];
 
-  tipoMovimientoFideicomiso: TipoMovimientoFideicomiso;
-  tablaTipoMovimientoFideicomiso: TipoMovimientoFideicomiso[];
+  beneficiario: IBeneficiarioFideicomiso;
 
-  soporteDocumentalFideicomiso: SoporteDocumentalFideicomiso;
-  tablaSoporteDocumentalFideicomiso: SoporteDocumentalFideicomiso[];
+  idTipoMovimientoSelect: string;
+  setIdTipoMovimientoSelect: (id: string) => void;
+
+  soporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso;
+  tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[];
 
   cleanFideicomiso: () => void;
 
   editarFideicomiso: (
     id: string,
-    datosGenerales: DatosGeneralesFideicomiso,
-    fideicomisario: Fideicomisario[],
-    tipoMovimiento: TipoMovimientoFideicomiso[],
-    soporteDocumental: SoporteDocumentalFideicomiso[]
+    datosGenerales: IDatosGeneralesFideicomiso,
+    fideicomisario: IFideicomisario[],
+    tipoMovimiento: IDeudorFideicomiso[],
+    soporteDocumental: ISoporteDocumentalFideicomiso[]
   ) => void;
 
-  setDatosGenerales: (datosGenerales: DatosGeneralesFideicomiso) => void;
-  setFideicomisario: (fideicomisario: Fideicomisario) => void;
-  setTipoMovimiento: (tipoMovimiento: TipoMovimientoFideicomiso) => void;
+  setDatosGenerales: (datosGenerales: IDatosGeneralesFideicomiso) => void;
+  setFideicomisario: (fideicomisario: IFideicomisario) => void;
+  setTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => void;
+  setBeneficiario: (beneficiario: IBeneficiarioFideicomiso) => void;
   setSoporteDocumental: (
-    soporteDocumental: SoporteDocumentalFideicomiso
+    soporteDocumental: ISoporteDocumentalFideicomiso
   ) => void;
 
-  addFideicomisario: (fideicomisario: Fideicomisario) => void;
-  addTipoMovimiento: (tipoMovimiento: TipoMovimientoFideicomiso) => void;
+  addFideicomisario: (fideicomisario: IFideicomisario) => void;
+  addTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => void;
   addSoporteDocumental: (
-    soporteDocumental: SoporteDocumentalFideicomiso
+    soporteDocumental: ISoporteDocumentalFideicomiso
   ) => void;
 
   removeFideicomisario: (index: number) => void;
   removeTipoMovimiento: (index: number) => void;
   removeSoporteDocumental: (index: number) => void;
 
-  addPorcentaje: (tipoMovimiento: TipoMovimientoFideicomiso) => void;
+  addPorcentaje: (tipoMovimiento: IDeudorFideicomiso) => void;
 
   cleanFideicomisario: () => void;
   cleanTipoMovimiento: () => void;
@@ -154,13 +163,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     }));
   },
 
-  fideicomisoSelect: [],
-  setFideicomisoSelect: (fideicomiso: Fideicomiso[]) => {
-    set(() => ({
-      fideicomisoSelect: fideicomiso,
-    }));
-  },
-
   datosGenerales: {
     numeroFideicomiso: "",
     fechaFideicomiso: new Date(),
@@ -193,6 +195,19 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     acumuladoAfectacionOrganismoEntre100: "",
   },
   tablaTipoMovimientoFideicomiso: [],
+
+  beneficiario: {
+    tipoBeneficiario: { Id: "", Descripcion: "" },
+    beneficiario: { Id: "", Descripcion: "" },
+    fechaAlta: new Date(),
+  },
+
+  idTipoMovimientoSelect: "",
+  setIdTipoMovimientoSelect: (id: string) => {
+    set(() => ({
+      idTipoMovimientoSelect: id,
+    }));
+  },
 
   soporteDocumentalFideicomiso: {
     tipo: "",
@@ -251,10 +266,10 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   editarFideicomiso: (
     id: string,
-    datosGenerales: DatosGeneralesFideicomiso,
-    fideicomisario: Fideicomisario[],
-    tipoMovimiento: TipoMovimientoFideicomiso[],
-    soporteDocumental: SoporteDocumentalFideicomiso[]
+    datosGenerales: IDatosGeneralesFideicomiso,
+    fideicomisario: IFideicomisario[],
+    tipoMovimiento: IDeudorFideicomiso[],
+    soporteDocumental: ISoporteDocumentalFideicomiso[]
   ) => {
     set(() => ({
       idFideicomiso: id,
@@ -265,33 +280,38 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     }));
   },
 
-  setDatosGenerales: (datosGenerales: DatosGeneralesFideicomiso) => {
+  setDatosGenerales: (datosGenerales: IDatosGeneralesFideicomiso) => {
     set(() => ({
       datosGenerales: datosGenerales,
     }));
   },
-  setFideicomisario: (fideicomisario: Fideicomisario) => {
+  setFideicomisario: (fideicomisario: IFideicomisario) => {
     set(() => ({
       fideicomisario: fideicomisario,
     }));
   },
-  setTipoMovimiento: (tipoMovimiento: TipoMovimientoFideicomiso) => {
+  setTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => {
     set(() => ({
       tipoMovimientoFideicomiso: tipoMovimiento,
     }));
   },
-  setSoporteDocumental: (soporteDocumental: SoporteDocumentalFideicomiso) => {
+  setBeneficiario: (beneficiario: IBeneficiarioFideicomiso) => {
+    set(() => ({
+      beneficiario: beneficiario,
+    }));
+  },
+  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalFideicomiso) => {
     set(() => ({
       soporteDocumentalFideicomiso: soporteDocumental,
     }));
   },
 
-  addFideicomisario: (fideicomisario: Fideicomisario) => {
+  addFideicomisario: (fideicomisario: IFideicomisario) => {
     set((state) => ({
       tablaFideicomisario: [...state.tablaFideicomisario, fideicomisario],
     }));
   },
-  addTipoMovimiento: (tipoMovimiento: TipoMovimientoFideicomiso) => {
+  addTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => {
     set((state) => ({
       tablaTipoMovimientoFideicomiso: [
         ...state.tablaTipoMovimientoFideicomiso,
@@ -299,7 +319,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       ],
     }));
   },
-  addSoporteDocumental: (soporteDocumental: SoporteDocumentalFideicomiso) => {
+  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFideicomiso) => {
     set((state) => ({
       tablaSoporteDocumentalFideicomiso: [
         ...state.tablaSoporteDocumentalFideicomiso,
