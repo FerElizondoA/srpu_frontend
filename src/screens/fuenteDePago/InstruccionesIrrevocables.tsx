@@ -38,13 +38,14 @@ export interface IDatosInstrucciones {
   CLABE: string;
   IdBanco: string; //
   DescripcionBanco: string; //
+  MunicipioOrganismoMandante: string
+  TipoEntePublicoObligado: string;
   MecanismoPago: string;
   TipoMovimiento: string;
-
-  IdEntePublico: string; //
-  DescripcionEntePublico: string; //
-
-  //EntePublico: string, //REVISAR NOMBRE
+  AcumuladoEstado: number;
+  AcumuladoMunicipios: number;
+  AcumuladoOrganismos: number;
+  SoporteDocumental: string;
   FechaCreacion: string;
   CreadoPor: string;
 }
@@ -75,23 +76,11 @@ const heads: Head[] = [
   {
     label: "Banco",
   },
-  // {
-  //   label: "Ente Publico",
-  // },
-  // {
-  //   label: "Fecha",
-  // },
-  // {
-  //   label: "Entidad Federativa",
-  // },
-  // {
-  //   label: "Fondo o ingreso",
-  //},
-  // {
-  //   label: "Banco",
-  // },
   {
     label: "Municipio u Organismo",
+  },
+  {
+    label: "Tipo ente público",
   },
   {
     label: "Acciones",
@@ -111,8 +100,12 @@ export function InstruccionesIrrevocables() {
     (state) => state.setGeneralInstruccion
   );
 
-  const editarInstruccion: Function = useInstruccionesStore(
-    (state) => state.editarInstruccion
+  const setTablaSoporteDocumentalInstrucciones: Function = useInstruccionesStore(
+    (state) => state.setTablaSoporteDocumentalInstrucciones
+  );
+
+  const setTablaTipoMovimientoInstrucciones: Function = useInstruccionesStore(
+    (state) => state.setTablaTipoMovimientoInstrucciones
   );
 
   const getInstruccion: Function = useInstruccionesStore(
@@ -145,13 +138,8 @@ export function InstruccionesIrrevocables() {
   };
 
   const [busqueda, setBusqueda] = useState("");
-  const [instruccionesIrrevocables, setInstruccionesIrrevocables] = useState<
-    IDatosInstrucciones[]
-  >([]);
-  const [
-    instruccionesIrrevocablesFiltrado,
-    setInstruccionesIrrevocablesFiltrado,
-  ] = useState<IDatosInstrucciones[]>([]);
+  const [instruccionesIrrevocables, setInstruccionesIrrevocables] = useState<IDatosInstrucciones[]>([]);
+  const [instruccionesIrrevocablesFiltrado, setInstruccionesIrrevocablesFiltrado] = useState<IDatosInstrucciones[]>([]);
 
   // const [instrucciones, setInstrucciones] = useState([]);
   // const [instruccionesFiltrados, setInstruccionesFiltrados] = useState([]);
@@ -171,7 +159,7 @@ export function InstruccionesIrrevocables() {
         elemento.DescripcionBanco.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.DescripcionEntePublico.toString()
+        elemento.TipoEntePublicoObligado.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
@@ -385,7 +373,11 @@ export function InstruccionesIrrevocables() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {row.DescripcionEntePublico}
+                          {row.MunicipioOrganismoMandante}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row.TipoEntePublicoObligado}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
@@ -405,15 +397,13 @@ export function InstruccionesIrrevocables() {
                                     Id: row.IdBanco,
                                     Descripcion: row.DescripcionBanco,
                                   },
-                                  mecanismo: "Instrucciones Irrevocables",
-                                  municipio: {
-                                    Id: row.IdEntePublico,
-                                    Descripcion: row.DescripcionEntePublico,
-                                  },
                                 });
-                                editarInstruccion(
+                                setTablaTipoMovimientoInstrucciones(
                                   JSON.parse(row.TipoMovimiento)
                                 );
+                                setTablaSoporteDocumentalInstrucciones(
+                                  JSON.parse(row.SoporteDocumental)
+                                )
 
                                 setOpenAgregarInstruccion(
                                   !openAgregarInstruccion

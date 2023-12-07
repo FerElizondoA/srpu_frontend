@@ -2,6 +2,7 @@
 import {
   AppBar,
   Button,
+  CircularProgress,
   Dialog,
   Grid,
   IconButton,
@@ -24,7 +25,7 @@ import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
-import { TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { CamposSoporteDocumentalInstrucciones, TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
 
 const Transition = forwardRef(function Transition(
@@ -107,12 +108,12 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.generalInstrucciones.banco
   );
 
-  const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
-    (state) => state.generalInstrucciones.municipio
-  );
+  //SOPORTE DOCUMENTAL
+  const tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[] =
+  useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
 
-  // const setGeneralInstruccion: Function = useInstruccionesStore(
-  //   (state) => state.setGeneralInstruccion
+  // const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
+  //   (state) => state.generalInstrucciones.municipio
   // );
 
   const query = {
@@ -130,14 +131,6 @@ export function AgregarInstruccionesIrrevocables({
   const modificaInstruccion: Function = useInstruccionesStore(
     (state) => state.modificaInstruccion
   );
-
-  // const addTipoMovimientoInstrucciones: Function = useInstruccionesStore(
-  //   (state) => state.addTipoMovimientoInstrucciones
-  // );
-
-  // const setTipoMovimientoInstrucciones: Function = useInstruccionesStore(
-  //   (state) => state.setTipoMovimientoInstrucciones
-  // );
 
   const cleanInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanInstruccion
@@ -164,6 +157,7 @@ export function AgregarInstruccionesIrrevocables({
 
   // }
 
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Dialog fullScreen open={openState} TransitionComponent={Transition}>
@@ -193,24 +187,33 @@ export function AgregarInstruccionesIrrevocables({
 
             <Grid item>
               <ThemeProvider theme={theme}>
-                <Button
+                {loading ? (
+                  <CircularProgress />
+                ) :(
+                  <Button
                   disabled={
                     tablaTipoMovimientoInstrucciones.length <= 0 ||
                     numeroCuenta === "" ||
                     parseInt(numeroCuenta) === 0 ||
                     cuentaCLABE === "" ||
                     parseInt(cuentaCLABE) === 0 ||
-                    banco === null ||
-                    municipio === null
+                    banco.Descripcion === ""  || 
+                    tablaSoporteDocumentalInstrucciones.length <= 0 
+                   // municipio === null
                   }
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (accion === "Agregar") {
-                      createInstruccion();
-                      handler(false);
+                      createInstruccion(() => {
+                        setLoading(true);
+                        setLoading(false);
+                        handler(false);
+                      });
                     } else if (accion === "Editar") {
-                      modificaInstruccion();
-                      handler(false);
+                      modificaInstruccion(() => {
+                        setLoading(false);
+                        handler(false);
+                      });
                     }
                     setTabIndex(0);
                   }}
@@ -227,6 +230,8 @@ export function AgregarInstruccionesIrrevocables({
                     {accion} Instrucción
                   </Typography>
                 </Button>
+                )}
+              
               </ThemeProvider>
             </Grid>
           </Toolbar>

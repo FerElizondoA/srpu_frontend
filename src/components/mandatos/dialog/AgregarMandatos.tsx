@@ -150,14 +150,14 @@ export function AgregarMandatos({
                       createMandato(() => {
                         setLoading(true);
                         setLoading(false);
-                        handler(false);
                       });
+                      handler(false);
                     } else if (accion === "Editar") {
                       setLoading(true);
                       modificaMandato(() => {
                         setLoading(false);
-                        handler(false);
                       });
+                      handler(false);
                     }
                     setTabIndex(0);
                   }}
