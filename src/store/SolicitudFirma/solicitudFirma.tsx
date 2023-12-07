@@ -45,7 +45,7 @@ export interface SolicitudFirmaSlice {
   infoDoc: string;
   TipoFirma: string;
   justificacionAnulacion: string;
-  setJustificacionAnulacion:( justificacionAnulacion: string) => void;
+  setJustificacionAnulacion: (justificacionAnulacion: string) => void;
 
   catalogoFirmaDetalle: IDataFirmaDetalle;
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
@@ -108,10 +108,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     },
   },
   justificacionAnulacion: "",
-  setJustificacionAnulacion : (justificacionAnulacion: string) => 
-  set(() => ({
-    justificacionAnulacion: justificacionAnulacion
-  })),
+  setJustificacionAnulacion: (justificacionAnulacion: string) =>
+    set(() => ({
+      justificacionAnulacion: justificacionAnulacion,
+    })),
 
   setRowSolicitud: (rowSolicitud: IDataPrueba) =>
     set(() => ({
@@ -208,13 +208,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         set(() => ({
           catalogoFirmaDetalle: fd,
         }));
-
-        GeneraAcuseRespuesta(
-          "Solicitud de cancelación",
-          fd.NumeroOficio,
-          IdSolicitud,
-          ""
-        );
       });
   },
 
@@ -259,26 +252,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          // if (
-          //   !state.estatus.includes("Autorizado") &&
-          //   state.estatus !== "Actualizacion"
-          // ) {
-          //   GeneraAcuseEnvio(
-          //     state.estatus === "Actualizacion"
-          //       ? "Solicitud de requerimientos"
-          //       : "Constancia de inscripción",
-          //     inf.NumeroOficio.replaceAll("/", "-"),
-          //     state.idSolicitud
-          //   );
-          // } else if (state.estatus) {
-          //   GeneraAcuseRespuesta(
-          //     "Solicitud de requerimientos",
-          //     inf.NumeroOficio,
-          //     state.idSolicitud,
-          //     "de respuesta prevención de inscripción"
-          //   );
-          // }
-
           if (state.estatus === "En espera cancelación") {
             GeneraAcuseEnvio(
               "Solicitud de cancelación",

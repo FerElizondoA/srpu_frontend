@@ -206,7 +206,6 @@ export function VerBorradorDocumento(props: Props) {
     estatusFirma: string
   ) => {
     getCatalogoFirmaDetalle(IdSolicitud, estatusFirma);
-    // GeneraAcuseRespuesta("Solicitud de cancelación", catalogoFirmaDetalle.NumeroOficio, props.rowId, "");
   };
 
   const alertaConfirmacion = (accion: string) => {

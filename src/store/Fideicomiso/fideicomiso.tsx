@@ -7,16 +7,16 @@ import { useFideicomisoStore } from "./main";
 import Swal from "sweetalert2";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
-export interface IFideicomisario {
-  fideicomisario: { Id: string; Descripcion: string };
-  ordenFideicomisario: { Id: string; Descripcion: string };
-}
-
 export interface IDatosGeneralesFideicomiso {
   numeroFideicomiso: string;
   fechaFideicomiso: Date;
   tipoFideicomiso: { Id: string; Descripcion: string };
   fiduciario: { Id: string; Descripcion: string };
+}
+
+export interface IFideicomisario {
+  fideicomisario: { Id: string; Descripcion: string };
+  ordenFideicomisario: { Id: string; Descripcion: string };
 }
 
 export interface IDeudorFideicomiso {
