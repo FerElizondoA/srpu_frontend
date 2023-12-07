@@ -3,14 +3,18 @@ const db = require("../config/db.js");
 module.exports = {
   //CAMBIA VARIABLES
   createInstruccion: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
     const NumeroCuenta = req.body.NumeroCuenta;
     const CLABE = req.body.CLABE;
     const Banco = req.body.Banco;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
     const MecanismoPago = req.body.MecanismoPago;
     const TipoMovimiento = req.body.TipoMovimiento;
-    const EntePublico = req.body.EntePublico;
-
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
+    const SoporteDocumental = req.body.SoporteDocumental;
+    const CreadoPor = req.body.CreadoPor;
     if (
       (NumeroCuenta == null || /^[\s]*$/.test(NumeroCuenta)) &&
       NumeroCuenta.length() <= 255
@@ -20,19 +24,21 @@ module.exports = {
       });
     }
     if (
-      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
-      IdUsuario.length() <= 36
+      (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) &&
+      CreadoPor.length() <= 36
     ) {
       return res.status(409).send({
         error: "Ingrese Id usuario válido.",
       });
     } else {
       db.query(
-        `CALL sp_AgregarInstruccionIrrevocable('${IdUsuario}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
+        `CALL sp_AgregarInstruccionIrrevocable('${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MunicipioOrganismoMandante}', '${TipoEntePublicoObligado}' ,'${MecanismoPago}', '${TipoMovimiento}',   '${AcumuladoEstado}' , '${AcumuladoMunicipios}' , '${AcumuladoOrganismos}' , '${SoporteDocumental}','${CreadoPor}')`,
         (err, result) => {
           if (err) {
+            console.log(err)
             return res.status(500).send({
               error: "Error",
+              
             });
           }
           if (result.length) {
@@ -61,9 +67,14 @@ module.exports = {
     const NumeroCuenta = req.body.NumeroCuenta;
     const CLABE = req.body.CLABE;
     const Banco = req.body.Banco;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
     const MecanismoPago = req.body.MecanismoPago;
     const TipoMovimiento = req.body.TipoMovimiento;
-    const EntePublico = req.body.EntePublico;
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
+    const SoporteDocumental = req.body.SoporteDocumental;
 
     if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
@@ -71,7 +82,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
+        `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MunicipioOrganismoMandante}', '${TipoEntePublicoObligado}', '${MecanismoPago}', '${TipoMovimiento}', '${AcumuladoEstado}','${AcumuladoMunicipios}','${AcumuladoOrganismos}', '${SoporteDocumental}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -130,7 +141,9 @@ module.exports = {
 
   getInstrucciones: (req, res) => {
     db.query(`CALL sp_ListadoInstruccionesIrrevocables()`, (err, result) => {
+     
       if (err) {
+        console.log(err)
         return res.status(500).send({
           error: "Error",
         });
