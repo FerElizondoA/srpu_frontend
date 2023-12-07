@@ -28,13 +28,13 @@ export function DatosGeneralesIntrucciones() {
     (state) => state.generalInstrucciones.banco
   );
 
-  const mecanismo: string = useInstruccionesStore(
-    (state) => state.generalInstrucciones.mecanismo
-  );
+  // const mecanismo: string = useInstruccionesStore(
+  //   (state) => state.generalInstrucciones.mecanismo
+  // );
 
-  const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
-    (state) => state.generalInstrucciones.municipio
-  );
+  // const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
+  //   (state) => state.generalInstrucciones.municipio
+  // );
 
   //GET
   const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
@@ -130,8 +130,8 @@ export function DatosGeneralesIntrucciones() {
                     numeroCuenta: v.target.value,
                     cuentaCLABE: cuentaCLABE,
                     banco: banco,
-                    mecanismo: "Instrucciones Irrevocables",
-                    municipio: municipio,
+                    //mecanismo: "Instrucciones Irrevocables",
+                    //municipio: municipio,
                   });
                 }
               }}
@@ -155,8 +155,8 @@ export function DatosGeneralesIntrucciones() {
                     numeroCuenta: numeroCuenta,
                     cuentaCLABE: v.target.value,
                     banco: banco,
-                    mecanismo: "Instrucciones Irrevocables",
-                    municipio: municipio,
+                    //mecanismo: "Instrucciones Irrevocables",
+                    //municipio: municipio,
                   });
                 }
               }}
@@ -192,8 +192,8 @@ export function DatosGeneralesIntrucciones() {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
                   },
-                  mecanismo: "Instrucciones Irrevocables",
-                  municipio: municipio,
+                  //mecanismo: "Instrucciones Irrevocables",
+                  //municipio: municipio,
                 })
               }
               renderInput={(params) => (
@@ -210,7 +210,7 @@ export function DatosGeneralesIntrucciones() {
           </Grid>
         </Grid>
 
-        <Grid
+        {/* <Grid
           container
           display={"flex"}
           justifyContent={"space-evenly"}
@@ -289,9 +289,10 @@ export function DatosGeneralesIntrucciones() {
                 value.Descripcion === ""
               }
             />
-          </Grid>
+          </Grid> */}
+        
         </Grid>
-      </Grid>
+    
     </>
   );
 }

@@ -4,19 +4,20 @@ import { StateCreator } from "zustand";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
 import { useInstruccionesStore } from "./main";
 import { ICatalogo } from "../../screens/Config/Catalogos";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
-export interface Beneficiario{
-  tipoBeneficiario: {Id: string, Descripcion: string};
+export interface Beneficiario {
+  tipoBeneficiario: { Id: string, Descripcion: string };
   entidadFederativa: { Id: string; Descripcion: string };
-  organismoMunicipioMandate: {Id: string, Descripcion: string};
+  organismoMunicipioMandate: { Id: string, Descripcion: string };
 }
 
 export interface GeneralIntrucciones {
   numeroCuenta: string;
   cuentaCLABE: string;
   banco: { Id: string; Descripcion: string };
-  mecanismo: string;
-  municipio: { Id: string; Descripcion: string };
+  // mecanismo: string;
+  // municipio: { Id: string; Descripcion: string };
 }
 
 export interface TipoMovimientoInstrucciones {
@@ -56,7 +57,7 @@ export interface Instruccion {
 
 export interface InstruccionesIrrevocablesSlice {
   IdRegistroTabla: TipoMovimientoInstrucciones;
-  setIdResgistroTabla: ( IdRegistroTabla:TipoMovimientoInstrucciones ) => void;
+  setIdResgistroTabla: (IdRegistroTabla: TipoMovimientoInstrucciones) => void;
 
   CamposBeneficiario: Beneficiario;
   setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => void;
@@ -72,7 +73,6 @@ export interface InstruccionesIrrevocablesSlice {
   catalogoTiposBeneficiarios: ICatalogo[];
   getTiposBeneficiarios: () => void;
 
-  setSoporteDocumentalInstruccion:(soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => void;
   addSoporteDocumentalInstrucciones: (
     tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones
   ) => void;
@@ -82,17 +82,24 @@ export interface InstruccionesIrrevocablesSlice {
   tablaInstrucciones: IDatosInstrucciones[];
 
   changeIdInstruccion: (Id: string) => void;
-  removeSoporteDocumentalInstruccion: ( index: number) => void;
+  removeSoporteDocumentalInstruccion: (index: number) => void;
 
-  editarInstruccion: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
-  ) => void;
-
-  setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
-
+  setSoporteDocumentalInstruccion: (soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => void;
   setTipoMovimientoInstrucciones: (
     tipoMovimientoInstruccion: TipoMovimientoInstrucciones
   ) => void;
+
+  setTablaTipoMovimientoInstrucciones: (
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
+  ) => void;
+  setTablaSoporteDocumentalInstrucciones: (
+    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[]
+  ) => void;
+
+
+  setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
+
+
 
   addTipoMovimientoInstrucciones: (
     tipoMovimientoInstruccion: TipoMovimientoInstrucciones
@@ -101,15 +108,14 @@ export interface InstruccionesIrrevocablesSlice {
   removeTipoMovimientoInstrucciones: (index: number) => void;
 
   cleanTipoMovimientoInstruccion: (index: number) => void;
-  cleanSoporteDocumentalInstruccion:() => void;
+  cleanSoporteDocumentalInstruccion: () => void;
 
-  addPorcentaje: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
-  ) => void;
+
+  addPorcentaje: (tipoMovimientoInstruccion: TipoMovimientoInstrucciones) => void;
 
   getInstruccion: (setState: Function) => void;
-  createInstruccion: () => void;
-  modificaInstruccion: () => void;
+  createInstruccion: (setLoading: Function) => void;
+  modificaInstruccion: (setLoading: Function) => void;
   borrarInstruccion: (Id: string) => void;
 
   cleanInstruccion: () => void;
@@ -117,7 +123,7 @@ export interface InstruccionesIrrevocablesSlice {
   saveFilesInstruccion: (
     idRegistro: string,
     ruta: string,
-    archivo: { archivo: File; nombreArchivo: string }
+    setLoading: Function
   ) => void;
   savePathDocInstruccion: (
     idInstruccion: string,
@@ -129,12 +135,6 @@ export interface InstruccionesIrrevocablesSlice {
   arrDocs: any[];
 
   setArrDocs: (arr: any) => void;
-
-  //catalogo tabla tipo movimiento
-  //catalogoTablaTipoMovimiento:  TipoMovimientoInstrucciones[]
-  
-
-
 }
 
 export const createInstruccionesIrrevocables: StateCreator<
@@ -166,7 +166,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  IdRegistroTabla:{
+  IdRegistroTabla: {
     id: "",
     altaDeudor: "",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" },
@@ -188,16 +188,16 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   setIdResgistroTabla: (IdRegistroTabla: TipoMovimientoInstrucciones
-    ) => {
+  ) => {
     set(() => ({
       IdRegistroTabla: IdRegistroTabla
     }))
   },
 
-  CamposBeneficiario:{
-    tipoBeneficiario: {Id: "", Descripcion: ""},
+  CamposBeneficiario: {
+    tipoBeneficiario: { Id: "", Descripcion: "" },
     entidadFederativa: { Id: "", Descripcion: "" },
-    organismoMunicipioMandate: {Id: "", Descripcion:""},
+    organismoMunicipioMandate: { Id: "", Descripcion: "" },
   },
 
   setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => {
@@ -266,10 +266,26 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   setTipoMovimientoInstrucciones: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
   ) => {
     set(() => ({
-      tipoMovimientoInstruccion: tipoMovimientoInstrucciones,
+      tipoMovimientoInstruccion: tipoMovimientoInstruccion,
+    }));
+  },
+
+  setTablaTipoMovimientoInstrucciones: (
+    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
+  ) => {
+    set(() => ({
+      tablaTipoMovimientoInstrucciones: tipoMovimientoInstruccion,
+    }));
+  },
+
+  setTablaSoporteDocumentalInstrucciones: (
+    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[]
+  ) => {
+    set(() => ({
+      tablaSoporteDocumentalInstrucciones: soporteDocumentalInstruccion,
     }));
   },
 
@@ -295,27 +311,42 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  createInstruccion: async () => {
+  createInstruccion: async (setLoading: Function) => {
     const state = useInstruccionesStore.getState();
+
+    let acumuladoEstado = 0;
+    let acumuladoMunicipio = 0;
+    let acumuladoOrganismo = 0;
+
+    state.tablaTipoMovimientoInstrucciones.map((v: any, index: number) => {
+      acumuladoEstado += parseFloat(
+        v.fondoIngresoAfectadoXGobiernoEstatal || 0
+      );
+      acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
+      acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
+    });
 
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-instruccion",
         {
-          IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
           CLABE: state.generalInstrucciones.cuentaCLABE,
           Banco: state.generalInstrucciones.banco.Id,
+          MunicipioOrganismoMandante: state.tablaTipoMovimientoInstrucciones[0].entidadFederativa.Descripcion,//// revisar
+          TipoEntePublicoObligado: state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado.Descripcion,
+          MecanismoPago: "Instrucciones Irrevocables",
           TipoMovimiento: JSON.stringify(
             state.tablaTipoMovimientoInstrucciones
           ),
+          AcumuladoEstado: acumuladoEstado,
+          AcumuladoMunicipios: acumuladoMunicipio,
+          AcumuladoOrganismos: acumuladoOrganismo,
           //Municipio: state.generalInstrucciones.municipio,
-          MecanismoPago: "Instrucciones Irrevocables",
-          EntePublico: state.generalInstrucciones.municipio.Id,
-          CreadoPor: localStorage.getItem("IdUsuario"),
-          SoporteDocumentalInstruccion: JSON.stringify(
+          SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalInstrucciones
-          )
+          ),
+          CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -324,25 +355,21 @@ export const createInstruccionesIrrevocables: StateCreator<
         }
       )
       .then(({ data }) => {
-        if (data.data.ERROR) {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Error",
-            text: "Instrucción ya existente",
-          });
-        } else {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "success",
-            title: "Éxito",
-            text: "La instruccion se ha creado exitosamente",
-          });
-          state.cleanInstruccion();
-          state.changeIdInstruccion(data.data.Id);
-        }
+        state.changeIdInstruccion(data.data.Id);
+        state.saveFilesInstruccion(
+          data.data.Id,
+          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.data.Id}`,
+          setLoading
+        );
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Éxito",
+          text: "La instruccion se ha creado exitosamente",
+        });
+        state.cleanInstruccion();
+        state.changeIdInstruccion(data.data.Id);
       })
       .catch((error) => {
         Swal.fire({
@@ -355,8 +382,12 @@ export const createInstruccionesIrrevocables: StateCreator<
       });
   },
 
-  modificaInstruccion: async () => {
+  modificaInstruccion: async (setLoading: Function) => {
     const state = useInstruccionesStore.getState();
+    const cpState = useCortoPlazoStore.getState();
+    let acumuladoEstado = 0;
+    let acumuladoMunicipio = 0;
+    let acumuladoOrganismo = 0;
 
     await axios
       .post(
@@ -366,14 +397,19 @@ export const createInstruccionesIrrevocables: StateCreator<
           IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
           CLABE: state.generalInstrucciones.cuentaCLABE,
-          Banco: state.generalInstrucciones.banco.Id,
+          MunicipioOrganismoMandante: state.tablaTipoMovimientoInstrucciones[0].entidadFederativa.Descripcion,
+          TipoEntePublicoObligado: state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado.Descripcion,
+          MecanismoPago: "Instrucciones Irrevocables",
           TipoMovimiento: JSON.stringify(
             state.tablaTipoMovimientoInstrucciones
           ),
+          AcumuladoEstado: acumuladoEstado,
+          AcumuladoMunicipios: acumuladoMunicipio,
+          AcumuladoOrganismos: acumuladoOrganismo,
           //Municipio: state.generalInstrucciones.municipio,
-          MecanismoPago: state.generalInstrucciones.mecanismo,
-          EntePublico: state.generalInstrucciones.municipio.Id,
-          //EntePublico: localStorage.getItem("EntePublicoObligado"),
+          SoporteDocumental: JSON.stringify(
+            state.tablaSoporteDocumentalInstrucciones
+          ),
           CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
@@ -383,21 +419,20 @@ export const createInstruccionesIrrevocables: StateCreator<
         }
       )
       .then(({ data }) => {
-        data.data.ERROR
-          ? Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "error",
-              title: "Error",
-              text: "Instrucción ya existente",
-            })
-          : Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "success",
-              title: "Éxito",
-              text: "La instruccion se ha creado exitosamente",
-            });
+        state.changeIdInstruccion(data.result.Id);
+        cpState.deleteFiles(`/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`);
+        state.saveFilesInstruccion(
+          data.result.Id,
+          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
+          setLoading
+        );
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Éxito",
+          text: "La instruccion se ha creado exitosamente",
+        });
       })
       .catch((error) => {
         Swal.fire({
@@ -450,13 +485,6 @@ export const createInstruccionesIrrevocables: StateCreator<
     return false;
   },
 
-  editarInstruccion: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones[]
-  ) => {
-    set(() => ({
-      tablaTipoMovimientoInstrucciones: tipoMovimientoInstrucciones,
-    }));
-  },
 
   changeIdInstruccion: (Id: any) => {
     set(() => ({
@@ -474,25 +502,26 @@ export const createInstruccionesIrrevocables: StateCreator<
         mecanismo: "Instrucciones Irrevocables",
         municipio: { Id: "", Descripcion: "" },
       },
-      soporteDocumentalInstruccion:{
+      soporteDocumentalInstruccion: {
         archivo: new File([], ""),
         nombreArchivo: "",
         fechaArchivo: new Date().toString(),
-    },
-      tablaTipoMovimientoInstrucciones: [],
+      },
+      tablaSoporteDocumentalInstrucciones: []
     }));
+
   },
   cleanSoporteDocumentalInstruccion: () => {
     set(() => ({
-      soporteDocumentalInstruccion:{
+      soporteDocumentalInstruccion: {
         archivo: new File([], ""),
         nombreArchivo: "",
         fechaArchivo: new Date().toString(),
-    },
+      },
     }))
   },
 
-   getInstruccion: (setState: Function) => {
+  getInstruccion: (setState: Function) => {
     const state = useInstruccionesStore.getState();
     axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-Instrucciones", {
@@ -529,7 +558,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         ingresoAfectadoXOrganismo: "",
         acumuladoAfectacionOrganismoEntre100: "",
       },
-      IdRegistroTabla:{
+      IdRegistroTabla: {
         id: "",
         altaDeudor: "",
         tipoEntePublicoObligado: { Id: "", Descripcion: "" },
@@ -565,16 +594,16 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  saveFilesInstruccion(idRegistro, ruta, archivo) {},
+  saveFilesInstruccion(idRegistro, ruta, archivo) { },
 
   savePathDocInstruccion(
     idInstruccion,
     Ruta,
     NombreIdentificador,
     NombreArchivo
-  ) {},
+  ) { },
 
   arrDocs: [],
 
-  setArrDocs(arr) {},
+  setArrDocs(arr) { },
 });
