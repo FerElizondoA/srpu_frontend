@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
@@ -6,10 +7,14 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
   Paper,
+  Radio,
+  RadioGroup,
   Table,
   TableBody,
   TableContainer,
@@ -19,6 +24,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
@@ -27,21 +33,25 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 
 const heads = [
   {
-    label: "Eliminar",
+    label: " ",
   },
   {
-    label: "Fecha",
+    label: "Tipo de documento",
   },
   {
-    label: "Nombre",
+    label: "Fecha del documento",
   },
   {
     label: "Archivo",
+  },
+  {
+    label: " ",
   },
 ];
 
@@ -57,6 +67,21 @@ export function SoporteDocumentalInstrucciones() {
       reader.onerror = reject;
     });
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRadioValue((event.target as HTMLInputElement).value);
+
+    setSoporteDocumentalInstruccion({
+      tipo: (event.target as HTMLInputElement).value,
+      fechaArchivo: fechaArchivo,
+      archivo: archivo,
+      nombreArchivo: nombreArchivo,
+    });
+  };
+
+  const tipo: string = useInstruccionesStore(
+    (state) => state.soporteDocumentalInstruccion.tipo
+  );
+
   const archivo: File = useInstruccionesStore(
     (state) => state.soporteDocumentalInstruccion.archivo
   );
@@ -65,28 +90,28 @@ export function SoporteDocumentalInstrucciones() {
     (state) => state.soporteDocumentalInstruccion.nombreArchivo
   );
 
-  const fechaArchivo: string = useInstruccionesStore(
+  const fechaArchivo: Date = useInstruccionesStore(
     (state) => state.soporteDocumentalInstruccion.fechaArchivo
   );
 
   const setSoporteDocumentalInstruccion: Function = useInstruccionesStore(
-    (state) => state.setSoporteDocumentalInstruccion
+    (state) => state.setSoporteDocumental
   );
 
   const addSoporteDocumentalInstrucciones: Function = useInstruccionesStore(
-    (state) => state.addSoporteDocumentalInstrucciones
+    (state) => state.addSoporteDocumental
   );
 
   const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
-    useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
+    useInstruccionesStore((state) => state.tablaSoporteDocumentalInstruccion);
 
   const cleanSoporteDocumentalInstruccion: Function = useInstruccionesStore(
-    (state) => state.cleanSoporteDocumentalInstruccion
+    (state) => state.cleanSoporteDocumental
   );
 
-  useEffect(() => {
-    cleanSoporteDocumentalInstruccion();
-  }, [tablaSoporteDocumentalInstrucciones]);
+  const removeSoporteDocumental: Function = useInstruccionesStore(
+    (state) => state.removeSoporteDocumental
+  );
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
@@ -100,6 +125,31 @@ export function SoporteDocumentalInstrucciones() {
     }
   }
 
+  useEffect(() => {
+    cleanSoporteDocumentalInstruccion();
+  }, [tablaSoporteDocumentalInstrucciones]);
+
+  const [radioValue, setRadioValue] = useState("");
+
+  const idInstruccion: string = useInstruccionesStore(
+    (state) => state.idInstruccion
+  );
+
+  const [arr, setArr] = useState<any>([]);
+
+  useEffect(() => {
+    if (idInstruccion !== "") {
+      listFile(
+        `/SRPU/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
+        setArr
+      ).then(() => {
+        setLoading(false);
+      });
+    }
+  }, []);
+
+  const [loading, setLoading] = useState(true);
+
   return (
     <Grid
       container
@@ -108,125 +158,142 @@ export function SoporteDocumentalInstrucciones() {
       mt={1}
     >
       <Grid container display={"flex"} justifyContent={"space-evenly"} mt={4}>
-        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2}>
-          <InputLabel>Archivo</InputLabel>
-          <Typography
-            position={"absolute"}
-            sx={{
-              display: "flex",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "75%",
-              fontSize: "90%",
-              "@media (min-width: 480px)": {
-                fontSize: "90%",
-                width: "75%",
-              },
+        <Grid
+          sx={{
+            display: "flex",
+            width: "40%",
+            "@media (min-width: 480px)": {
+              width: "40%",
+            },
 
-              "@media (min-width: 768px)": {
-                fontSize: "90%",
-                width: "83%",
-              },
-
-              "@media (min-width: 900px)": {
-                fontSize: "90%",
-                width: "25%",
-              },
-
-              "@media (min-width: 1140px)": {
-                fontSize: "90%",
-                width: "20%",
-              },
-
-              "@media (min-width: 1400px)": {
-                fontSize: "90%",
-                width: "20%",
-              },
-
-              "@media (min-width: 1870px)": {
-                fontSize: "90%",
-                width: "20%",
-              },
-              fontFamily:
-                nombreArchivo !== "" ? "MontserratBold" : "MontserratMedium",
-
-              border:
-                nombreArchivo !== ""
-                  ? "2px dotted #af8c55"
-                  : "2px dotted black",
-            }}
-          >
-            {nombreArchivo ||
-              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-          </Typography>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(v) => {
-              cargarArchivo(v);
-            }}
-            style={{
-              opacity: 0,
-              width: "80%",
-              height: "5vh",
-              cursor: "pointer",
-            }}
-          />
+            "@media (min-width: 768px)": {
+              width: "15%",
+            },
+          }}
+        >
+          <FormControl>
+            <RadioGroup
+              sx={{ marginLeft: 3 }}
+              value={radioValue}
+              onChange={handleChange}
+            >
+              <FormControlLabel value="Otro" control={<Radio />} label="Otro" />
+            </RadioGroup>
+          </FormControl>
         </Grid>
 
-        <Grid xs={10} sm={10} md={3} lg={3} xl={3} mb={2}>
-          <InputLabel sx={queries.medium_text}>Fecha del documento</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
-            <DesktopDatePicker
+        <Grid item xs={6} sm={6} md={4} lg={4} xl={4}>
+          <Grid mb={2}>
+            <InputLabel>Archivo</InputLabel>
+            <Typography
+              position={"absolute"}
               sx={{
-                width: "90%",
+                display: "flex",
+                textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "45%",
+                fontSize: "60%",
                 "@media (min-width: 480px)": {
-                  width: "90%",
+                  fontSize: "60%",
+                  width: "45%",
                 },
 
                 "@media (min-width: 768px)": {
-                  width: "100%",
+                  fontSize: "60%",
+                  width: "30%",
                 },
 
                 "@media (min-width: 1140px)": {
-                  width: "90%",
+                  fontSize: "90%",
                 },
 
                 "@media (min-width: 1400px)": {
-                  width: "90%",
+                  fontSize: "90%",
+                  width: "30%",
                 },
 
                 "@media (min-width: 1870px)": {
-                  width: "90%",
+                  fontSize: "90%",
+                  width: "30%",
                 },
+                fontFamily:
+                  nombreArchivo !== "" ? "MontserratBold" : "MontserratMedium",
+
+                border:
+                  nombreArchivo !== ""
+                    ? "2px dotted #af8c55"
+                    : "2px dotted black",
               }}
-              value={new Date(fechaArchivo)}
-              onChange={(date) =>
-                setSoporteDocumentalInstruccion({
-                  fechaArchivo: date?.toString(),
-                  archivo: archivo,
-                  nombreArchivo: nombreArchivo,
-                })
-              }
+            >
+              {nombreArchivo ||
+                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+            </Typography>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(v) => {
+                cargarArchivo(v);
+              }}
+              style={{
+                opacity: 0,
+                width: "100%",
+                height: "5vh",
+                cursor: "pointer",
+              }}
             />
-          </LocalizationProvider>
+          </Grid>
+
+          <Grid>
+            <InputLabel sx={queries.medium_text}>
+              Fecha del documento
+            </InputLabel>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
+              <DesktopDatePicker
+                sx={{
+                  width: "90%",
+                  "@media (min-width: 480px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    width: "90%",
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    width: "90%",
+                  },
+                }}
+                value={new Date(fechaArchivo)}
+                onChange={(date) =>
+                  setSoporteDocumentalInstruccion({
+                    tipo: tipo,
+                    fechaArchivo: date?.toString(),
+                    archivo: archivo,
+                    nombreArchivo: nombreArchivo,
+                  })
+                }
+              />
+            </LocalizationProvider>
+          </Grid>
         </Grid>
 
         <Grid
-          xs={10}
-          sm={10}
-          md={3}
-          lg={3}
-          xl={3}
-          mb={2}
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
-          mt={2}
+          mt={1}
         >
           <ThemeProvider theme={ButtonTheme}>
             <Button
@@ -234,9 +301,10 @@ export function SoporteDocumentalInstrucciones() {
                 ...queries.buttonContinuarSolicitudInscripcion,
                 width: "15vh",
               }}
-              disabled={fechaArchivo === "" || nombreArchivo === ""}
+              disabled={tipo === "" || nombreArchivo === ""}
               onClick={() => {
                 addSoporteDocumentalInstrucciones({
+                  tipo: tipo,
                   fechaArchivo: fechaArchivo,
                   archivo: archivo,
                   nombreArchivo: nombreArchivo,
@@ -295,12 +363,15 @@ export function SoporteDocumentalInstrucciones() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                // removeSoporteDocumentalMandato(index)
+                                removeSoporteDocumental(index);
                               }}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.tipo}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
@@ -310,8 +381,11 @@ export function SoporteDocumentalInstrucciones() {
                         <StyledTableCell align="center">
                           {row.nombreArchivo}
                         </StyledTableCell>
+
                         <StyledTableCell>
-                          <Grid display={"flex"} justifyContent={"center"}>
+                          {loading && !row.archivo ? (
+                            <CircularProgress />
+                          ) : (
                             <Tooltip
                               title={"Mostrar vista previa del documento"}
                             >
@@ -322,12 +396,15 @@ export function SoporteDocumentalInstrucciones() {
                                       setFileSelected(data);
                                     })
                                     .catch((err) => {
-                                      // setFileSelected(
-                                      //   `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                      //     td.nombre.includes(row.nombreArchivo)
-                                      //   )[0].file
-                                      //   }`
-                                      // );
+                                      setFileSelected(
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.NOMBREFORMATEADO.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].FILE
+                                        }`
+                                      );
                                     });
                                   setShowModalPrevia(true);
                                 }}
@@ -335,7 +412,7 @@ export function SoporteDocumentalInstrucciones() {
                                 <FileOpenIcon />
                               </IconButton>
                             </Tooltip>
-                          </Grid>
+                          )}
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -346,6 +423,7 @@ export function SoporteDocumentalInstrucciones() {
           </TableContainer>
         </Paper>
       </Grid>
+
       <Dialog
         open={showModalPrevia}
         onClose={() => {

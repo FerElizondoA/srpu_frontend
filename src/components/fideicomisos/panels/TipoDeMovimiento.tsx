@@ -225,7 +225,7 @@ export function TipoDeMovimientoFideicomiso() {
               acumuladoAfectacionGobiernoEstatalEntre100:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
                 "gobierno estatal"
-                  ? "0.00"
+                  ? "70.00"
                   : "",
               fondoIngresoAfectadoXMunicipio:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
@@ -840,6 +840,7 @@ export function TipoDeMovimientoFideicomiso() {
                   ))}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {tablaTipoMovimiento.map((row: any, index: number) => {
                   return (

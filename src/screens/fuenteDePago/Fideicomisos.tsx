@@ -34,6 +34,8 @@ import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 import { Transition } from "./Mandatos";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { DetalleFideicomiso } from "../../components/fideicomisos/dialog/DetalleFideicomiso";
 
 export interface IDatosFideicomiso {
   AcumuladoEstado: string;
@@ -76,7 +78,7 @@ const heads: Head[] = [
 ];
 
 export function Fideicomisos() {
-  const [openAgregarFideicomisos, changeAgregarFideicomisos] = useState(false);
+  const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
   const [fideicomisos, setFideicomisos] = useState<IDatosFideicomiso[]>([]);
   const [fideicomisosFiltrados, setFideicomisoFiltrados] =
     useState<IDatosFideicomiso[]>(fideicomisos);
@@ -161,6 +163,27 @@ export function Fideicomisos() {
     }
   }, [openAgregarFideicomisos]);
 
+  const [openDetalle, setOpenDetalle] = useState(false);
+
+  const [detalleFideicomiso, setDetalleFideicomiso] =
+    useState<IDatosFideicomiso>({
+      AcumuladoEstado: "",
+      AcumuladoMunicipios: "",
+      AcumuladoOrganismos: "",
+      CreadoPor: "",
+      Fiduciario: "",
+      TipoFideicomiso: "",
+      FechaCreacion: "",
+      FechaFideicomiso: "",
+      Fideicomisario: "",
+      Id: "",
+      ModificadoPor: "",
+      NumeroFideicomiso: "",
+      SoporteDocumental: "",
+      TipoMovimiento: "",
+      UltimaModificacion: "",
+    });
+
   return (
     <Grid height={"74vh"}>
       <Grid item>
@@ -231,7 +254,7 @@ export function Fideicomisos() {
           <Button
             sx={{ ...queries.buttonContinuar }}
             onClick={() => {
-              changeAgregarFideicomisos(!openAgregarFideicomisos);
+              setOpenAgregarFideicomiso(!openAgregarFideicomisos);
             }}
           >
             Agregar
@@ -300,6 +323,18 @@ export function Fideicomisos() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
+                          <Tooltip title="Ver detalle">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                setDetalleFideicomiso(row);
+                                setOpenDetalle(true);
+                              }}
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                          </Tooltip>
+
                           <Tooltip title="Editar">
                             <IconButton
                               type="button"
@@ -326,7 +361,7 @@ export function Fideicomisos() {
                                   JSON.parse(row.SoporteDocumental)
                                 );
 
-                                changeAgregarFideicomisos(
+                                setOpenAgregarFideicomiso(
                                   !openAgregarFideicomisos
                                 );
                               }}
@@ -359,7 +394,7 @@ export function Fideicomisos() {
 
       {openAgregarFideicomisos && (
         <AgregarFideicomisos
-          handler={changeAgregarFideicomisos}
+          handler={setOpenAgregarFideicomiso}
           openState={openAgregarFideicomisos}
         />
       )}
@@ -394,6 +429,14 @@ export function Fideicomisos() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {openDetalle && (
+        <DetalleFideicomiso
+          open={openDetalle}
+          setOpen={setOpenDetalle}
+          fideicomiso={detalleFideicomiso}
+        />
+      )}
     </Grid>
   );
 }

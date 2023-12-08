@@ -638,7 +638,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   ) => {
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocMandato",
+        process.env.REACT_APP_APPLICATION_BACK +
+          "/create-addPathDocFideicomiso",
         {
           IdFideicomiso: id,
           Ruta: ruta,

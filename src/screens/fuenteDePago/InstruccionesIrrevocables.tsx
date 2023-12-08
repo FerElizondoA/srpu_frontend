@@ -11,7 +11,6 @@ import {
   IconButton,
   InputBase,
   Paper,
-  Slide,
   Table,
   TableBody,
   TableContainer,
@@ -20,17 +19,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { AgregarInstruccionesIrrevocables } from "../../components/instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
 import { queries } from "../../queries";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useInstruccionesStore } from "../../store/InstruccionesIrrevocables/main";
+import { Transition } from "./Mandatos";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -50,15 +51,6 @@ export interface IDatosInstrucciones {
   CreadoPor: string;
 }
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 interface Head {
   label: string;
 }
@@ -77,10 +69,7 @@ const heads: Head[] = [
     label: "Fecha",
   },
   {
-    label: "Municipio u Organismo",
-  },
-  {
-    label: "Tipo ente público",
+    label: "Ente Público Obligado",
   },
   {
     label: "Acciones",
@@ -88,70 +77,37 @@ const heads: Head[] = [
 ];
 
 export function InstruccionesIrrevocables() {
-  const [accion, setAccion] = useState("Agregar");
-
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
-
-  const setInstruccionSelect: Function = useInstruccionesStore(
-    (state) => state.setInstruccionSelect
-  );
-
-  const setGeneralInstruccion: Function = useInstruccionesStore(
-    (state) => state.setGeneralInstruccion
-  );
-
-  const setTablaSoporteDocumentalInstrucciones: Function =
-    useInstruccionesStore(
-      (state) => state.setTablaSoporteDocumentalInstrucciones
-    );
-
-  const setTablaTipoMovimientoInstrucciones: Function = useInstruccionesStore(
-    (state) => state.setTablaTipoMovimientoInstrucciones
-  );
-
-  const getInstruccion: Function = useInstruccionesStore(
-    (state) => state.getInstruccion
-  );
-
-  const changeIdInstruccion: Function = useInstruccionesStore(
-    (state) => state.changeIdInstruccion
-  );
-
-  const borrarInstruccion: Function = useInstruccionesStore(
-    (state) => state.borrarInstruccion
-  );
+  const [instrucciones, setInstrucciones] = useState<IDatosInstrucciones[]>([]);
+  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<
+    IDatosInstrucciones[]
+  >([]);
+  const [busqueda, setBusqueda] = useState("");
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
   const idInstruccion: string = useInstruccionesStore(
     (state) => state.idInstruccion
   );
 
+  const getInstrucciones: Function = useInstruccionesStore(
+    (state) => state.getInstrucciones
+  );
   const cleanInstruccion: Function = useInstruccionesStore(
     (state) => state.cleanInstruccion
   );
-  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+  const deleteInstruccion: Function = useInstruccionesStore(
+    (state) => state.deleteInstruccion
+  );
 
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  const handleSearch = () => {
-    filtrarDatos();
-  };
-
-  const [busqueda, setBusqueda] = useState("");
-  const [instruccionesIrrevocables, setInstruccionesIrrevocables] = useState<
-    IDatosInstrucciones[]
-  >([]);
-  const [
-    instruccionesIrrevocablesFiltrado,
-    setInstruccionesIrrevocablesFiltrado,
-  ] = useState<IDatosInstrucciones[]>([]);
-
-  // const [instrucciones, setInstrucciones] = useState([]);
-  // const [instruccionesFiltrados, setInstruccionesFiltrados] = useState([]);
+  const setIdInstruccion: Function = useInstruccionesStore(
+    (state) => state.setIdInstruccion
+  );
+  const editarInstruccion: Function = useInstruccionesStore(
+    (state) => state.editarInstruccion
+  );
 
   const filtrarDatos = () => {
-    let ResultadoBusqueda = instruccionesIrrevocables.filter((elemento) => {
+    let ResultadoBusqueda = instrucciones.filter((elemento) => {
       if (
         elemento.MecanismoPago.toString()
           .toLocaleLowerCase()
@@ -174,54 +130,54 @@ export function InstruccionesIrrevocables() {
         return null;
       }
     });
-    return setInstruccionesIrrevocablesFiltrado(ResultadoBusqueda);
+    return setInstruccionesFiltrados(ResultadoBusqueda);
   };
 
-  useEffect(() => {
-    setInstruccionesIrrevocablesFiltrado(instruccionesIrrevocables);
-  }, [instruccionesIrrevocables]);
+  const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length !== 0
-      ? setInstruccionesIrrevocablesFiltrado(instruccionesIrrevocables)
-      : null;
+    getInstrucciones(setInstrucciones);
+    getInstituciones();
+  }, []);
+
+  useEffect(() => {
+    setInstruccionesFiltrados(instrucciones);
+  }, [instrucciones]);
+
+  useEffect(() => {
+    if (busqueda.length !== 0) {
+      setInstrucciones(instrucciones);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
-
-  useEffect(() => {
-    getInstruccion(setInstruccionesIrrevocables);
-  }, []);
 
   useEffect(() => {
     if (openAgregarInstruccion === false) {
       cleanInstruccion();
     }
-  }, [openAgregarInstruccion]);
-
-  useEffect(() => {
     if (!openDialogEliminar) {
-      getInstruccion(setInstruccionesIrrevocables);
+      getInstrucciones(setInstrucciones);
     }
   }, [openAgregarInstruccion]);
 
-  useEffect(() => {
-    getInstruccion(setInstruccionesIrrevocables);
-    !openAgregarInstruccion && cleanInstruccion();
-  }, [openAgregarInstruccion]);
-
   return (
-    <Grid container flexDirection={"column"} justifyContent={"space-between"}>
+    <Grid height={"74vh"}>
       <Grid item>
         <LateralMenu />
-        {/* //{query.isMobile ? <LateralMenuMobile /> : } */}
       </Grid>
 
       <Grid
         display={"flex"}
         justifyContent={"center"}
+        width={"97%"}
+        height={"4rem"}
         alignItems={"center"}
-        height={60}
       >
         <Typography
           sx={{
@@ -240,15 +196,13 @@ export function InstruccionesIrrevocables() {
         </Typography>
       </Grid>
 
-      <Grid
-        item
-        mb={2}
-        lg={12}
-        display="center"
-        justifyContent="space-between"
-        width={"95%"}
-      >
-        <Grid item width={"80%"} display={"flex"} justifyContent={"end"}>
+      <Grid display="center" justifyContent="space-between" height={"4rem"}>
+        <Grid
+          width={"80%"}
+          height={"75%"}
+          display={"flex"}
+          justifyContent={"end"}
+        >
           <Paper
             component="form"
             sx={{
@@ -262,24 +216,16 @@ export function InstruccionesIrrevocables() {
               value={busqueda}
               onChange={(e) => {
                 if (e.target.value === "") {
-                  handleSearch();
+                  filtrarDatos();
                 }
-                handleChange(e.target.value);
-              }}
-              onKeyPress={(ev) => {
-                //cuando se presiona Enter
-                if (ev.key === "Enter") {
-                  handleSearch();
-                  ev.preventDefault();
-                  return false;
-                }
+                setBusqueda(e.target.value);
               }}
             />
             <IconButton
               type="button"
               sx={{ p: "10px" }}
               aria-label="search"
-              onClick={() => handleSearch()}
+              onClick={() => filtrarDatos()}
             >
               <GridSearchIcon />
             </IconButton>
@@ -290,7 +236,6 @@ export function InstruccionesIrrevocables() {
           <Button
             sx={{ ...queries.buttonContinuar }}
             onClick={() => {
-              setAccion("Agregar");
               setOpenAgregarInstruccion(!openAgregarInstruccion);
             }}
           >
@@ -300,33 +245,12 @@ export function InstruccionesIrrevocables() {
       </Grid>
 
       <Grid
-        item
-        width={"100%"}
-        display={"flex"}
-        justifyContent={"center"}
+        container
         sx={{
-          marginBottom: "2rem",
-          height: "28rem",
-          "@media (min-width: 480px)": {
-            height: "20rem",
-            marginBottom: "0",
-          },
-
-          "@media (min-width: 768px)": {
-            height: "38rem",
-          },
-
-          "@media (min-width: 1140px)": {
-            height: "38rem",
-          },
-
-          "@media (min-width: 1400px)": {
-            height: "34rem",
-          },
-
-          "@media (min-width: 1870px)": {
-            height: "46rem",
-          },
+          ...queries.tablaAgregarFuentesPago,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Paper sx={{ width: "100%", height: "100%" }}>
@@ -347,7 +271,7 @@ export function InstruccionesIrrevocables() {
               },
             }}
           >
-            <Table>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
@@ -358,8 +282,8 @@ export function InstruccionesIrrevocables() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {instruccionesIrrevocablesFiltrado.map(
-                  (row: any, index: number) => {
+                {instruccionesFiltrados.map(
+                  (row: IDatosInstrucciones, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
@@ -391,23 +315,17 @@ export function InstruccionesIrrevocables() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                setAccion("Editar");
-                                changeIdInstruccion(row?.Id);
-
-                                setInstruccionSelect([row]);
-
-                                setGeneralInstruccion({
-                                  numeroCuenta: row.NumeroCuenta,
-                                  cuentaCLABE: row.CLABE,
-                                  banco: {
-                                    Id: row.IdBanco,
-                                    Descripcion: row.DescripcionBanco,
+                                editarInstruccion(
+                                  row.Id,
+                                  {
+                                    numeroCuenta: row.NumeroCuenta,
+                                    cuentaClabe: row.CLABE,
+                                    Banco: catalogoInstituciones.filter(
+                                      (i) =>
+                                        i.Descripcion === row.DescripcionBanco
+                                    )[0],
                                   },
-                                });
-                                setTablaTipoMovimientoInstrucciones(
-                                  JSON.parse(row.TipoMovimiento)
-                                );
-                                setTablaSoporteDocumentalInstrucciones(
+                                  JSON.parse(row.TipoMovimiento),
                                   JSON.parse(row.SoporteDocumental)
                                 );
 
@@ -424,7 +342,7 @@ export function InstruccionesIrrevocables() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                changeIdInstruccion(row?.Id || "");
+                                setIdInstruccion(row?.Id || "");
                                 setOpenDialogEliminar(!openDialogEliminar);
                                 // getInstruccion(setDatos);
                               }}
@@ -446,7 +364,6 @@ export function InstruccionesIrrevocables() {
       <AgregarInstruccionesIrrevocables
         handler={setOpenAgregarInstruccion}
         openState={openAgregarInstruccion}
-        accion={accion}
       />
 
       <Dialog
@@ -466,7 +383,7 @@ export function InstruccionesIrrevocables() {
             sx={queries.buttonContinuar}
             onClick={() => {
               setOpenDialogEliminar(!openDialogEliminar);
-              borrarInstruccion(idInstruccion);
+              deleteInstruccion(idInstruccion);
             }}
           >
             Aceptar

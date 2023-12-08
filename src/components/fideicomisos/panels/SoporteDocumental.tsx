@@ -435,6 +435,7 @@ export function SoporteDocumentalFideicomiso() {
           </TableContainer>
         </Paper>
       </Grid>
+
       <Dialog
         open={showModalPrevia}
         onClose={() => {

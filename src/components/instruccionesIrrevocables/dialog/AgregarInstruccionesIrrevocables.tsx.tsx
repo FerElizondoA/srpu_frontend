@@ -1,75 +1,65 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
+  Backdrop,
   Button,
   CircularProgress,
   Dialog,
   Grid,
   IconButton,
-  Slide,
   Tab,
   Tabs,
   ThemeProvider,
   Toolbar,
   Tooltip,
   Typography,
-  createTheme,
   useMediaQuery,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
-import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
-import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 import {
-  IDeudorInstrucciones,
-  ISoporteDocumentalInstrucciones,
-} from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+  DialogTransition,
+  buttonTheme,
+} from "../../mandatos/dialog/AgregarMandatos";
+import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
+import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 
 export function AgregarInstruccionesIrrevocables({
   handler,
   openState,
-  accion,
 }: {
   handler: Function;
   openState: boolean;
-  accion: string;
 }) {
+  const [tabIndex, setTabIndex] = useState(0);
+
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-  const [tabIndex, setTabIndex] = useState(0);
 
-  //GET
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+  };
+
+  const IdInstruccion: string = useInstruccionesStore(
+    (state) => state.idInstruccion
+  );
+
+  const createInstruccion: Function = useInstruccionesStore(
+    (state) => state.createInstruccion
+  );
+
+  const modificaInstruccion: Function = useInstruccionesStore(
+    (state) => state.modificaInstruccion
+  );
+
+  const [loading, setLoading] = useState(false);
+
   const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
   );
@@ -90,39 +80,6 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
-  const createInstruccion: Function = useInstruccionesStore(
-    (state) => state.createInstruccion
-  );
-
-  //TIPO DE MOVIMIENTO
-  const tablaTipoMovimientoInstrucciones: IDeudorInstrucciones[] =
-    useInstruccionesStore((state) => state.tablaTipoMovimientoInstrucciones);
-
-  //DATOS GENERALES
-  const numeroCuenta: string = useInstruccionesStore(
-    (state) => state.generalInstrucciones.numeroCuenta
-  );
-
-  const cuentaCLABE: string = useInstruccionesStore(
-    (state) => state.generalInstrucciones.cuentaCLABE
-  );
-
-  const banco: { Id: string; Descripcion: string } = useInstruccionesStore(
-    (state) => state.generalInstrucciones.banco
-  );
-
-  //SOPORTE DOCUMENTAL
-  const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
-    useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
-
-  // const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
-  //   (state) => state.generalInstrucciones.municipio
-  // );
-
-  const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-  };
-
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
     getMunicipiosUOrganismosInstrucciones();
@@ -131,143 +88,110 @@ export function AgregarInstruccionesIrrevocables({
     getFondosOIngresosInstrucciones();
   }, []);
 
-  const modificaInstruccion: Function = useInstruccionesStore(
-    (state) => state.modificaInstruccion
-  );
-
-  const cleanInstruccion: Function = useInstruccionesStore(
-    (state) => state.cleanInstruccion
-  );
-
-  // const limpiaInstruccion = () => {
-  //   setGeneralInstruccion({
-  //     numeroCuenta: "",
-  //     cuentaCLABE: "",
-  //     banco: { Id: "", Descripcion: "" },
-  //     mecanismo: "",
-  //     municipio: { Id: "", Descripcion: "" },
-  //   })
-
-  //   addTipoMovimientoInstrucciones([])
-
-  //   setTipoMovimientoInstrucciones({
-  //     altaDeudor: "NO",
-  //     tipoEntePublico: { Id: "", Descripcion: "" },
-  //     entidadFederativa: { Id: "", Descripcion: "" },
-  //     tipoFuente: { Id: "", Descripcion: "" },
-  //     fondoIngreso: { Id: "", Descripcion: "" },
-  //   });
-
-  // }
-
-  const [loading, setLoading] = useState(false);
   return (
-    <>
-      <Dialog fullScreen open={openState} TransitionComponent={Transition}>
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
-            <Tooltip title="Volver">
-              <IconButton
-                edge="start"
-                onClick={() => {
-                  cleanInstruccion();
-                  handler(false);
-                  //reset();
-                }}
-                sx={{ color: "white" }}
-              >
-                <GridCloseIcon />
-              </IconButton>
-            </Tooltip>
-
-            <Grid container>
-              <Grid item>
-                <Typography sx={queries.bold_text}>
-                  {accion} Instrucción Irrevocable
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid item>
-              <ThemeProvider theme={theme}>
-                {loading ? (
-                  <CircularProgress />
-                ) : (
-                  <Button
-                    disabled={
-                      tablaTipoMovimientoInstrucciones.length <= 0 ||
-                      numeroCuenta === "" ||
-                      parseInt(numeroCuenta) === 0 ||
-                      cuentaCLABE === "" ||
-                      parseInt(cuentaCLABE) === 0 ||
-                      banco.Descripcion === "" ||
-                      tablaSoporteDocumentalInstrucciones.length <= 0
-                      // municipio === null
-                    }
-                    sx={queries.buttonContinuar}
-                    onClick={() => {
-                      if (accion === "Agregar") {
-                        createInstruccion(() => {
-                          setLoading(true);
-                          setLoading(false);
-                          handler(false);
-                        });
-                      } else if (accion === "Editar") {
-                        modificaInstruccion(() => {
-                          setLoading(false);
-                          handler(false);
-                        });
-                      }
-                      setTabIndex(0);
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: "1.3ch",
-                        fontFamily: "MontserratMedium",
-                        "@media (min-width: 480px)": {
-                          fontSize: "1.5ch",
-                        },
-                      }}
-                    >
-                      {accion} Instrucción
-                    </Typography>
-                  </Button>
-                )}
-              </ThemeProvider>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-
-        <Grid item container direction="column">
-          <Grid item width={"100%"}>
-            <Tabs
-              value={tabIndex}
-              onChange={handleChange}
-              centered={query.isScrollable ? false : true}
-              variant={query.isScrollable ? "scrollable" : "standard"}
-              scrollButtons
-              allowScrollButtonsMobile
+    <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
+      <AppBar sx={{ position: "relative" }}>
+        <Toolbar>
+          <Tooltip title="Volver">
+            <IconButton
+              edge="start"
+              onClick={() => {
+                handler(false);
+              }}
+              sx={{ color: "white" }}
             >
-              <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
-              <Tab
-                label="Tipo de Movimiento"
-                sx={{ ...queries.bold_text }}
-              ></Tab>
-              <Tab
-                label="Soporte Documental"
-                sx={{ ...queries.bold_text }}
-              ></Tab>
-            </Tabs>
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
 
-            {tabIndex === 0 && <DatosGeneralesIntrucciones />}
-
-            {tabIndex === 1 && <TipoDeMovimientoIntrucciones />}
-
-            {tabIndex === 2 && <SoporteDocumentalInstrucciones />}
+          <Grid container>
+            <Grid item>
+              <Typography sx={queries.bold_text}>
+                {IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
+                Irrevocable
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      </Dialog>
-    </>
+
+          <Grid item>
+            <ThemeProvider theme={buttonTheme}>
+              <Button
+                // disabled={
+                //   tablaTipoMovimientoInstrucciones.length <= 0 ||
+                //   numeroCuenta === "" ||
+                //   parseInt(numeroCuenta) === 0 ||
+                //   cuentaCLABE === "" ||
+                //   parseInt(cuentaCLABE) === 0 ||
+                //   banco.Descripcion === "" ||
+                //   tablaSoporteDocumentalInstrucciones.length <= 0
+                //   // municipio === null
+                // }
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  console.log("falta restricciones");
+
+                  if (IdInstruccion === "") {
+                    setLoading(true);
+                    createInstruccion(() => {
+                      setLoading(false);
+                      handler(false);
+                    });
+                  } else if (IdInstruccion === "") {
+                    setLoading(true);
+                    modificaInstruccion(() => {
+                      setLoading(false);
+                      handler(false);
+                    });
+                  }
+                  setTabIndex(0);
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
+                  }}
+                >
+                  {IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
+                </Typography>
+              </Button>
+            </ThemeProvider>
+          </Grid>
+        </Toolbar>
+      </AppBar>
+
+      <Grid item>
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          centered={query.isScrollable ? false : true}
+          variant={query.isScrollable ? "scrollable" : "standard"}
+          scrollButtons
+          allowScrollButtonsMobile
+        >
+          <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
+          <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
+          <Tab label="Soporte Documental" sx={{ ...queries.bold_text }}></Tab>
+        </Tabs>
+
+        {tabIndex === 0 && <DatosGeneralesIntrucciones />}
+
+        {tabIndex === 1 && <TipoDeMovimientoIntrucciones />}
+
+        {tabIndex === 2 && <SoporteDocumentalInstrucciones />}
+      </Grid>
+
+      <ThemeProvider theme={buttonTheme}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </ThemeProvider>
+    </Dialog>
   );
 }
