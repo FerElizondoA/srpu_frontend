@@ -25,7 +25,7 @@ import { format } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { CamposSoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
@@ -77,7 +77,7 @@ export function SoporteDocumentalInstrucciones() {
     (state) => state.addSoporteDocumentalInstrucciones
   );
 
-  const tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[] =
+  const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
     useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
 
   const cleanSoporteDocumentalInstruccion: Function = useInstruccionesStore(

@@ -6,21 +6,13 @@ import { useInstruccionesStore } from "./main";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
-export interface Beneficiario {
-  tipoBeneficiario: { Id: string, Descripcion: string };
-  entidadFederativa: { Id: string; Descripcion: string };
-  organismoMunicipioMandate: { Id: string, Descripcion: string };
-}
-
-export interface GeneralIntrucciones {
+export interface IDatosGeneralesInstrucciones {
   numeroCuenta: string;
   cuentaCLABE: string;
   banco: { Id: string; Descripcion: string };
-  // mecanismo: string;
-  // municipio: { Id: string; Descripcion: string };
 }
 
-export interface TipoMovimientoInstrucciones {
+export interface IDeudorInstrucciones {
   id: string;
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
   altaDeudor: string;
@@ -41,68 +33,76 @@ export interface TipoMovimientoInstrucciones {
   acumuladoAfectacionOrganismoEntre100: string;
 }
 
-export interface CamposSoporteDocumentalInstrucciones {
+export interface IBeneficiarioInstrucciones {
+  tipoBeneficiario: { Id: string; Descripcion: string };
+  beneficiario: { Id: string; Descripcion: string };
+  fechaAlta: Date;
+}
+
+export interface ISoporteDocumentalInstrucciones {
   archivo: File;
   nombreArchivo: string;
   fechaArchivo: string;
 }
 
-export interface Instruccion {
+export interface IInstruccion {
   Id: string;
-  generalInstrucciones: GeneralIntrucciones;
-  TipoMovimientoInstruccion: TipoMovimientoInstrucciones[];
-  SoporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[];
+  generalInstrucciones: IDatosGeneralesInstrucciones;
+  TipoMovimientoInstruccion: IDeudorInstrucciones[];
+  SoporteDocumentalInstruccion: ISoporteDocumentalInstrucciones[];
 }
 
-
 export interface InstruccionesIrrevocablesSlice {
-  IdRegistroTabla: TipoMovimientoInstrucciones;
-  setIdResgistroTabla: (IdRegistroTabla: TipoMovimientoInstrucciones) => void;
+  IdRegistroTabla: IDeudorInstrucciones;
+  setIdResgistroTabla: (IdRegistroTabla: IDeudorInstrucciones) => void;
 
-  CamposBeneficiario: Beneficiario;
-  setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => void;
+  CamposBeneficiario: IBeneficiarioInstrucciones;
+  setCamposBeneficiario: (
+    CamposBeneficiario: IBeneficiarioInstrucciones
+  ) => void;
 
   idInstruccion: string;
-  instruccionSelect: Instruccion[];
-  setInstruccionSelect: (instruccion: Instruccion[]) => void;
+  instruccionSelect: IInstruccion[];
+  setInstruccionSelect: (instruccion: IInstruccion[]) => void;
 
-  generalInstrucciones: GeneralIntrucciones;
-  tipoMovimientoInstruccion: TipoMovimientoInstrucciones;
-  soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones;
+  generalInstrucciones: IDatosGeneralesInstrucciones;
+  tipoMovimientoInstruccion: IDeudorInstrucciones;
+  soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones;
 
   catalogoTiposBeneficiarios: ICatalogo[];
   getTiposBeneficiarios: () => void;
 
   addSoporteDocumentalInstrucciones: (
-    tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones
+    tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones
   ) => void;
 
-  tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[];
-  tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[];
+  tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[];
+  tablaTipoMovimientoInstrucciones: IDeudorInstrucciones[];
   tablaInstrucciones: IDatosInstrucciones[];
 
   changeIdInstruccion: (Id: string) => void;
   removeSoporteDocumentalInstruccion: (index: number) => void;
 
-  setSoporteDocumentalInstruccion: (soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => void;
+  setSoporteDocumentalInstruccion: (
+    soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones
+  ) => void;
   setTipoMovimientoInstrucciones: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: IDeudorInstrucciones
   ) => void;
 
   setTablaTipoMovimientoInstrucciones: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
+    tipoMovimientoInstruccion: IDeudorInstrucciones[]
   ) => void;
   setTablaSoporteDocumentalInstrucciones: (
-    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[]
+    soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones[]
   ) => void;
 
-
-  setGeneralInstruccion: (generalInstruccion: GeneralIntrucciones) => void;
-
-
+  setGeneralInstruccion: (
+    generalInstruccion: IDatosGeneralesInstrucciones
+  ) => void;
 
   addTipoMovimientoInstrucciones: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: IDeudorInstrucciones
   ) => void;
 
   removeTipoMovimientoInstrucciones: (index: number) => void;
@@ -110,8 +110,7 @@ export interface InstruccionesIrrevocablesSlice {
   cleanTipoMovimientoInstruccion: (index: number) => void;
   cleanSoporteDocumentalInstruccion: () => void;
 
-
-  addPorcentaje: (tipoMovimientoInstruccion: TipoMovimientoInstrucciones) => void;
+  addPorcentaje: (tipoMovimientoInstruccion: IDeudorInstrucciones) => void;
 
   getInstruccion: (setState: Function) => void;
   createInstruccion: (setLoading: Function) => void;
@@ -140,7 +139,6 @@ export interface InstruccionesIrrevocablesSlice {
 export const createInstruccionesIrrevocables: StateCreator<
   InstruccionesIrrevocablesSlice
 > = (set, get) => ({
-
   catalogoTiposBeneficiarios: [],
   getTiposBeneficiarios: async () => {
     await axios
@@ -157,12 +155,10 @@ export const createInstruccionesIrrevocables: StateCreator<
       });
   },
 
-
   removeSoporteDocumentalInstruccion: (index: number) => {
     set((state) => ({
-      tablaSoporteDocumentalInstrucciones: state.tablaSoporteDocumentalInstrucciones.filter(
-        (_, i) => i !== index
-      ),
+      tablaSoporteDocumentalInstrucciones:
+        state.tablaSoporteDocumentalInstrucciones.filter((_, i) => i !== index),
     }));
   },
 
@@ -187,29 +183,28 @@ export const createInstruccionesIrrevocables: StateCreator<
     acumuladoAfectacionOrganismoEntre100: "",
   },
 
-  setIdResgistroTabla: (IdRegistroTabla: TipoMovimientoInstrucciones
-  ) => {
+  setIdResgistroTabla: (IdRegistroTabla: IDeudorInstrucciones) => {
     set(() => ({
-      IdRegistroTabla: IdRegistroTabla
-    }))
+      IdRegistroTabla: IdRegistroTabla,
+    }));
   },
 
   CamposBeneficiario: {
     tipoBeneficiario: { Id: "", Descripcion: "" },
-    entidadFederativa: { Id: "", Descripcion: "" },
-    organismoMunicipioMandate: { Id: "", Descripcion: "" },
+    beneficiario: { Id: "", Descripcion: "" },
+    fechaAlta: new Date(),
   },
 
-  setCamposBeneficiario: (CamposBeneficiario: Beneficiario) => {
+  setCamposBeneficiario: (CamposBeneficiario: IBeneficiarioInstrucciones) => {
     set(() => ({
-      CamposBeneficiario: CamposBeneficiario
-    }))
+      CamposBeneficiario: CamposBeneficiario,
+    }));
   },
 
   idInstruccion: "",
   instruccionSelect: [],
 
-  setInstruccionSelect: (instruccion: Instruccion[]) => {
+  setInstruccionSelect: (instruccion: IInstruccion[]) => {
     set((state) => ({
       instruccionSelect: instruccion,
     }));
@@ -253,20 +248,24 @@ export const createInstruccionesIrrevocables: StateCreator<
   tablaTipoMovimientoInstrucciones: [],
   tablaInstrucciones: [],
 
-  setSoporteDocumentalInstruccion: (soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones) => {
+  setSoporteDocumentalInstruccion: (
+    soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones
+  ) => {
     set(() => ({
       soporteDocumentalInstruccion: soporteDocumentalInstruccion,
     }));
   },
 
-  setGeneralInstruccion: (generalInstrucciones: GeneralIntrucciones) => {
+  setGeneralInstruccion: (
+    generalInstrucciones: IDatosGeneralesInstrucciones
+  ) => {
     set(() => ({
       generalInstrucciones: generalInstrucciones,
     }));
   },
 
   setTipoMovimientoInstrucciones: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones
+    tipoMovimientoInstruccion: IDeudorInstrucciones
   ) => {
     set(() => ({
       tipoMovimientoInstruccion: tipoMovimientoInstruccion,
@@ -274,7 +273,7 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   setTablaTipoMovimientoInstrucciones: (
-    tipoMovimientoInstruccion: TipoMovimientoInstrucciones[]
+    tipoMovimientoInstruccion: IDeudorInstrucciones[]
   ) => {
     set(() => ({
       tablaTipoMovimientoInstrucciones: tipoMovimientoInstruccion,
@@ -282,7 +281,7 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   setTablaSoporteDocumentalInstrucciones: (
-    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones[]
+    soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones[]
   ) => {
     set(() => ({
       tablaSoporteDocumentalInstrucciones: soporteDocumentalInstruccion,
@@ -290,7 +289,7 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   addSoporteDocumentalInstrucciones: (
-    soporteDocumentalInstruccion: CamposSoporteDocumentalInstrucciones
+    soporteDocumentalInstruccion: ISoporteDocumentalInstrucciones
   ) => {
     set((state) => ({
       tablaSoporteDocumentalInstrucciones: [
@@ -301,7 +300,7 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   addTipoMovimientoInstrucciones: (
-    tipoMovimientoInstrucciones: TipoMovimientoInstrucciones
+    tipoMovimientoInstrucciones: IDeudorInstrucciones
   ) => {
     set((state) => ({
       tablaTipoMovimientoInstrucciones: [
@@ -333,8 +332,12 @@ export const createInstruccionesIrrevocables: StateCreator<
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
           CLABE: state.generalInstrucciones.cuentaCLABE,
           Banco: state.generalInstrucciones.banco.Id,
-          MunicipioOrganismoMandante: state.tablaTipoMovimientoInstrucciones[0].entidadFederativa.Descripcion,//// revisar
-          TipoEntePublicoObligado: state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado.Descripcion,
+          MunicipioOrganismoMandante:
+            state.tablaTipoMovimientoInstrucciones[0].entidadFederativa
+              .Descripcion, //// revisar
+          TipoEntePublicoObligado:
+            state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado
+              .Descripcion,
           MecanismoPago: "Instrucciones Irrevocables",
           TipoMovimiento: JSON.stringify(
             state.tablaTipoMovimientoInstrucciones
@@ -397,8 +400,12 @@ export const createInstruccionesIrrevocables: StateCreator<
           IdUsuario: localStorage.getItem("IdUsuario"),
           NumeroCuenta: state.generalInstrucciones.numeroCuenta,
           CLABE: state.generalInstrucciones.cuentaCLABE,
-          MunicipioOrganismoMandante: state.tablaTipoMovimientoInstrucciones[0].entidadFederativa.Descripcion,
-          TipoEntePublicoObligado: state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado.Descripcion,
+          MunicipioOrganismoMandante:
+            state.tablaTipoMovimientoInstrucciones[0].entidadFederativa
+              .Descripcion,
+          TipoEntePublicoObligado:
+            state.tablaTipoMovimientoInstrucciones[0].tipoEntePublicoObligado
+              .Descripcion,
           MecanismoPago: "Instrucciones Irrevocables",
           TipoMovimiento: JSON.stringify(
             state.tablaTipoMovimientoInstrucciones
@@ -420,7 +427,9 @@ export const createInstruccionesIrrevocables: StateCreator<
       )
       .then(({ data }) => {
         state.changeIdInstruccion(data.result.Id);
-        cpState.deleteFiles(`/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`);
+        cpState.deleteFiles(
+          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
+        );
         state.saveFilesInstruccion(
           data.result.Id,
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
@@ -485,7 +494,6 @@ export const createInstruccionesIrrevocables: StateCreator<
     return false;
   },
 
-
   changeIdInstruccion: (Id: any) => {
     set(() => ({
       idInstruccion: Id,
@@ -507,9 +515,8 @@ export const createInstruccionesIrrevocables: StateCreator<
         nombreArchivo: "",
         fechaArchivo: new Date().toString(),
       },
-      tablaSoporteDocumentalInstrucciones: []
+      tablaSoporteDocumentalInstrucciones: [],
     }));
-
   },
   cleanSoporteDocumentalInstruccion: () => {
     set(() => ({
@@ -518,7 +525,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         nombreArchivo: "",
         fechaArchivo: new Date().toString(),
       },
-    }))
+    }));
   },
 
   getInstruccion: (setState: Function) => {
@@ -594,16 +601,16 @@ export const createInstruccionesIrrevocables: StateCreator<
     }));
   },
 
-  saveFilesInstruccion(idRegistro, ruta, archivo) { },
+  saveFilesInstruccion(idRegistro, ruta, archivo) {},
 
   savePathDocInstruccion(
     idInstruccion,
     Ruta,
     NombreIdentificador,
     NombreArchivo
-  ) { },
+  ) {},
 
   arrDocs: [],
 
-  setArrDocs(arr) { },
+  setArrDocs(arr) {},
 });

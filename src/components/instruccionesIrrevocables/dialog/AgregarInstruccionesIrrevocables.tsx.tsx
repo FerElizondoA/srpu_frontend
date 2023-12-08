@@ -25,7 +25,10 @@ import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
-import { CamposSoporteDocumentalInstrucciones, TipoMovimientoInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import {
+  IDeudorInstrucciones,
+  ISoporteDocumentalInstrucciones,
+} from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
 
 const Transition = forwardRef(function Transition(
@@ -92,7 +95,7 @@ export function AgregarInstruccionesIrrevocables({
   );
 
   //TIPO DE MOVIMIENTO
-  const tablaTipoMovimientoInstrucciones: TipoMovimientoInstrucciones[] =
+  const tablaTipoMovimientoInstrucciones: IDeudorInstrucciones[] =
     useInstruccionesStore((state) => state.tablaTipoMovimientoInstrucciones);
 
   //DATOS GENERALES
@@ -109,8 +112,8 @@ export function AgregarInstruccionesIrrevocables({
   );
 
   //SOPORTE DOCUMENTAL
-  const tablaSoporteDocumentalInstrucciones: CamposSoporteDocumentalInstrucciones[] =
-  useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
+  const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
+    useInstruccionesStore((state) => state.tablaSoporteDocumentalInstrucciones);
 
   // const municipio: { Id: string; Descripcion: string } = useInstruccionesStore(
   //   (state) => state.generalInstrucciones.municipio
@@ -189,49 +192,48 @@ export function AgregarInstruccionesIrrevocables({
               <ThemeProvider theme={theme}>
                 {loading ? (
                   <CircularProgress />
-                ) :(
+                ) : (
                   <Button
-                  disabled={
-                    tablaTipoMovimientoInstrucciones.length <= 0 ||
-                    numeroCuenta === "" ||
-                    parseInt(numeroCuenta) === 0 ||
-                    cuentaCLABE === "" ||
-                    parseInt(cuentaCLABE) === 0 ||
-                    banco.Descripcion === ""  || 
-                    tablaSoporteDocumentalInstrucciones.length <= 0 
-                   // municipio === null
-                  }
-                  sx={queries.buttonContinuar}
-                  onClick={() => {
-                    if (accion === "Agregar") {
-                      createInstruccion(() => {
-                        setLoading(true);
-                        setLoading(false);
-                        handler(false);
-                      });
-                    } else if (accion === "Editar") {
-                      modificaInstruccion(() => {
-                        setLoading(false);
-                        handler(false);
-                      });
+                    disabled={
+                      tablaTipoMovimientoInstrucciones.length <= 0 ||
+                      numeroCuenta === "" ||
+                      parseInt(numeroCuenta) === 0 ||
+                      cuentaCLABE === "" ||
+                      parseInt(cuentaCLABE) === 0 ||
+                      banco.Descripcion === "" ||
+                      tablaSoporteDocumentalInstrucciones.length <= 0
+                      // municipio === null
                     }
-                    setTabIndex(0);
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: "1.3ch",
-                      fontFamily: "MontserratMedium",
-                      "@media (min-width: 480px)": {
-                        fontSize: "1.5ch",
-                      },
+                    sx={queries.buttonContinuar}
+                    onClick={() => {
+                      if (accion === "Agregar") {
+                        createInstruccion(() => {
+                          setLoading(true);
+                          setLoading(false);
+                          handler(false);
+                        });
+                      } else if (accion === "Editar") {
+                        modificaInstruccion(() => {
+                          setLoading(false);
+                          handler(false);
+                        });
+                      }
+                      setTabIndex(0);
                     }}
                   >
-                    {accion} Instrucción
-                  </Typography>
-                </Button>
+                    <Typography
+                      sx={{
+                        fontSize: "1.3ch",
+                        fontFamily: "MontserratMedium",
+                        "@media (min-width: 480px)": {
+                          fontSize: "1.5ch",
+                        },
+                      }}
+                    >
+                      {accion} Instrucción
+                    </Typography>
+                  </Button>
                 )}
-              
               </ThemeProvider>
             </Grid>
           </Toolbar>
@@ -248,15 +250,21 @@ export function AgregarInstruccionesIrrevocables({
               allowScrollButtonsMobile
             >
               <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
-              <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
-              <Tab label="Soporte Documental" sx={{...queries.bold_text}}></Tab>
+              <Tab
+                label="Tipo de Movimiento"
+                sx={{ ...queries.bold_text }}
+              ></Tab>
+              <Tab
+                label="Soporte Documental"
+                sx={{ ...queries.bold_text }}
+              ></Tab>
             </Tabs>
 
             {tabIndex === 0 && <DatosGeneralesIntrucciones />}
 
             {tabIndex === 1 && <TipoDeMovimientoIntrucciones />}
-            
-            {tabIndex === 2 && <SoporteDocumentalInstrucciones/>}
+
+            {tabIndex === 2 && <SoporteDocumentalInstrucciones />}
           </Grid>
         </Grid>
       </Dialog>
