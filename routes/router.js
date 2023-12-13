@@ -150,6 +150,8 @@ const {
   getDetailPathDocFideicomiso,
   addPathDocMandato,
   getDetailPathDocMandato,
+  addPathDocInstruccion,
+  getDetailPathDocInstruccion,
 } = require("../controllers/PathDocSol.js");
 const {
   getAutorizaciones,
@@ -579,9 +581,13 @@ router.delete("/delete-destinos", verifyToken.verifyJWT, (req, res) => {
 //#endregion
 
 //#region Beneficiario
-router.post("/create-tipoBeneficiario", verifyToken.verifyJWT, (req, res, express) => {
-  createTipoBeneficiario(req, res);
-});
+router.post(
+  "/create-tipoBeneficiario",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoBeneficiario(req, res);
+  }
+);
 
 router.get("/get-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
   getTipoBeneficiario(req, res);
@@ -595,8 +601,6 @@ router.delete("/delete-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
   deleteTipoBeneficiario(req, res);
 });
 //#endregion
-
-
 
 //#region Roles
 router.post("/create-roles", verifyToken.verifyJWT, (req, res, express) => {
@@ -933,6 +937,21 @@ router.get("/get-DetailPathDocMandato", verifyToken.verifyJWT, (req, res) => {
   getDetailPathDocMandato(req, res);
 });
 
+router.post(
+  "/create-addPathDocInstruccion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    addPathDocInstruccion(req, res);
+  }
+);
+
+router.get(
+  "/get-DetailPathDocInstruccion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetailPathDocInstruccion(req, res);
+  }
+);
 //#endregion
 
 //#region Autorizacion
@@ -1538,8 +1557,6 @@ router.post(
 router.get("/get-instruccion", verifyToken.verifyJWT, (req, res, express) => {
   getInstrucciones(req, res);
 });
-
-
 
 // router.get("/get-tiposDeGarantiaDePago", (req, res) => {
 //   getTiposDeGarantiaDePago(req, res);

@@ -271,4 +271,73 @@ module.exports = {
       }
     );
   },
+
+  //CREAR
+  addPathDocInstruccion: (req, res) => {
+    const IdInstruccion = req.body.IdInstruccion;
+    const Ruta = req.body.Ruta;
+    const NombreIdentificador = req.body.NombreIdentificador;
+    const NombreArchivo = req.body.NombreArchivo;
+
+    db.query(
+      `CALL sp_AddPathDocInstrucciones('${IdInstruccion}', '${Ruta}', '${NombreIdentificador}' , '${NombreArchivo}' )`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
+        if (result.length) {
+          const data = result[0][0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
+
+  // DETALLE POR ID
+  getDetailPathDocInstruccion: (req, res) => {
+    const IdInstruccion = req.query.IdInstruccion;
+    if (IdInstruccion == null || /^[\s]*$/.test(IdInstruccion)) {
+      return res.status(409).send({
+        error: "Ingrese IdSol.",
+      });
+    }
+    db.query(
+      `CALL sp_DetallePathDocInstrucciones('${IdInstruccion}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
+        if (result.length) {
+          const data = result[0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
+  },
 };
