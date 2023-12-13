@@ -10,8 +10,10 @@ const templateSolicitudCorto = "controllers/templates/template_corto.html";
 const templateRequerimientos =
   "controllers/templates/template_requerimientos.html";
 const templateConstancia = "controllers/templates/template_constancia.html";
+
 const templateAcuseEnviado =
   "controllers/templates/template_acuse_envio_solicitud.html";
+
 const templateAcuseRespuesta =
   "controllers/templates/template_acuse_envio_respuesta.html";
 const templateCancelacion =
@@ -391,15 +393,13 @@ module.exports = {
       .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
       .replaceAll("{{hora}}", hora || "'hora de entrega'")
       .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de Solicitud'");
-      
+
     const browser = await puppeteer.launch({
       headless: "false",
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
-
     await page.setContent(html);
-
     const pdfBuffer = await page.pdf({
       format: "A4",
       displayHeaderFooter: true,
@@ -412,9 +412,7 @@ module.exports = {
         left: "0.50in",
       },
     });
-
     await browser.close();
-
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",

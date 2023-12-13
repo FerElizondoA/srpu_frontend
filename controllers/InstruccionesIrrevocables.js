@@ -3,13 +3,20 @@ const db = require("../config/db.js");
 module.exports = {
   //CAMBIA VARIABLES
   createInstruccion: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
-    const NumeroCuenta = req.body.NumeroCuenta;
-    const CLABE = req.body.CLABE;
-    const Banco = req.body.Banco;
-    const MecanismoPago = req.body.MecanismoPago;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const EntePublico = req.body.EntePublico;
+    const {
+      NumeroCuenta,
+      CLABE,
+      Banco,
+      FechaInstruccion,
+      TipoEntePublicoObligado,
+      EntePublicoObligado,
+      TipoMovimiento,
+      AcumuladoEstado,
+      AcumuladoMunicipios,
+      AcumuladoOrganismos,
+      SoporteDocumental,
+      CreadoPor,
+    } = req.body;
 
     if (
       (NumeroCuenta == null || /^[\s]*$/.test(NumeroCuenta)) &&
@@ -20,15 +27,15 @@ module.exports = {
       });
     }
     if (
-      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
-      IdUsuario.length() <= 36
+      (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) &&
+      CreadoPor.length() <= 36
     ) {
       return res.status(409).send({
         error: "Ingrese Id usuario válido.",
       });
     } else {
       db.query(
-        `CALL sp_AgregarInstruccionIrrevocable('${IdUsuario}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
+        `CALL sp_AgregarInstruccionIrrevocable( '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${FechaInstruccion}', '${TipoEntePublicoObligado}', '${EntePublicoObligado}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}', '${CreadoPor}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -56,22 +63,28 @@ module.exports = {
   },
 
   modifyInstruccion: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
-    const IdInstruccion = req.body.IdInstruccion;
-    const NumeroCuenta = req.body.NumeroCuenta;
-    const CLABE = req.body.CLABE;
-    const Banco = req.body.Banco;
-    const MecanismoPago = req.body.MecanismoPago;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const EntePublico = req.body.EntePublico;
+    const {
+      Id,
+      CLABE,
+      Banco,
+      FechaInstruccion,
+      TipoEntePublicoObligado,
+      EntePublicoObligado,
+      TipoMovimiento,
+      AcumuladoEstado,
+      AcumuladoMunicipios,
+      AcumuladoOrganismos,
+      SoporteDocumental,
+      CreadoPor,
+    } = req.body;
 
-    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
+    if (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Clave de inscripcion",
       });
     } else {
       db.query(
-        `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MecanismoPago}', '${TipoMovimiento}', '${EntePublico}')`,
+        `CALL sp_ModificaInstruccionIrrevocable('${Id}', '${CLABE}', '${Banco}', '${FechaInstruccion}', '${TipoEntePublicoObligado}', '${EntePublicoObligado}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}', '${CreadoPor}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

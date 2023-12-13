@@ -150,6 +150,8 @@ const {
   getDetailPathDocFideicomiso,
   addPathDocMandato,
   getDetailPathDocMandato,
+  addPathDocInstruccion,
+  getDetailPathDocInstruccion,
 } = require("../controllers/PathDocSol.js");
 const {
   getAutorizaciones,
@@ -173,12 +175,12 @@ const {
   deleteTipoDeFideicomiso,
 } = require("../controllers/TiposDeFideicomiso.js");
 const {
-  createFiudiciario,
-  getFiudiciarios,
-  getDetailFiudiciario,
-  modifyFiudiciario,
-  deleteFiudiciario,
-} = require("../controllers/Fiudiciarios.js");
+  createFiduciario,
+  getFiduciarios,
+  getDetailFiduciario,
+  modifyFiduciario,
+  deleteFiduciario,
+} = require("../controllers/Fiduciarios.js");
 const {
   createFideicomisario,
   getFideicomisarios,
@@ -309,6 +311,12 @@ const {
   modifyConfiguracionOficios,
 } = require("../controllers/ConfiguracionOficios.js");
 const { sendEmail } = require("../controllers/mail/sendMail.js");
+const {
+  createTipoBeneficiario,
+  getTipoBeneficiario,
+  modifyTipoBeneficiario,
+  deleteTipoBeneficiario,
+} = require("../controllers/TipoBeneficiario.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -569,6 +577,28 @@ router.put("/modify-destinos", verifyToken.verifyJWT, (req, res) => {
 
 router.delete("/delete-destinos", verifyToken.verifyJWT, (req, res) => {
   deleteDestino(req, res);
+});
+//#endregion
+
+//#region Beneficiario
+router.post(
+  "/create-tipoBeneficiario",
+  verifyToken.verifyJWT,
+  (req, res, express) => {
+    createTipoBeneficiario(req, res);
+  }
+);
+
+router.get("/get-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  getTipoBeneficiario(req, res);
+});
+
+router.put("/modify-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  modifyTipoBeneficiario(req, res);
+});
+
+router.delete("/delete-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
+  deleteTipoBeneficiario(req, res);
 });
 //#endregion
 
@@ -907,6 +937,21 @@ router.get("/get-DetailPathDocMandato", verifyToken.verifyJWT, (req, res) => {
   getDetailPathDocMandato(req, res);
 });
 
+router.post(
+  "/create-addPathDocInstruccion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    addPathDocInstruccion(req, res);
+  }
+);
+
+router.get(
+  "/get-DetailPathDocInstruccion",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getDetailPathDocInstruccion(req, res);
+  }
+);
 //#endregion
 
 //#region Autorizacion
@@ -1018,29 +1063,29 @@ router.delete(
 );
 //#endregion
 
-//#region Fiudiciarios
+//#region Fiduciarios
 router.post(
-  "/create-fiudiciarios",
+  "/create-fiduciarios",
   verifyToken.verifyJWT,
   (req, res, express) => {
-    createFiudiciario(req, res);
+    createFiduciario(req, res);
   }
 );
 
-router.get("/get-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  getFiudiciarios(req, res);
+router.get("/get-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  getFiduciarios(req, res);
 });
 
-router.get("/detail-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  getDetailFiudiciario(req, res);
+router.get("/detail-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  getDetailFiduciario(req, res);
 });
 
-router.put("/modify-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  modifyFiudiciario(req, res);
+router.put("/modify-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  modifyFiduciario(req, res);
 });
 
-router.delete("/delete-fiudiciarios", verifyToken.verifyJWT, (req, res) => {
-  deleteFiudiciario(req, res);
+router.delete("/delete-fiduciarios", verifyToken.verifyJWT, (req, res) => {
+  deleteFiduciario(req, res);
 });
 //#endregion
 

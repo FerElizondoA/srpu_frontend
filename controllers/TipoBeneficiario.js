@@ -2,7 +2,7 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createFiudiciario: (req, res) => {
+  createTipoBeneficiario: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
 
@@ -23,7 +23,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarFiudiciario('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarTipoBeneficiario('${IdUsuario}', '${Descripcion}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -51,8 +51,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getFiudiciarios: (req, res) => {
-    db.query(`CALL sp_ListadoFiudiciarios()`, (err, result) => {
+  getTipoBeneficiario: (req, res) => {
+    db.query(`CALL sp_ListadoTipoBeneficiario()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -72,44 +72,9 @@ module.exports = {
     });
   },
 
-  // DETALLE POR ID
-  getDetailFiudiciario: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
-      return res.status(409).send({
-        error: "Ingrese IdDescripcion.",
-      });
-    }
-
-    db.query(
-      `CALL sp_DetalleFiudiciario('${IdDescripcion}')`,
-      (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            error: "Error",
-          });
-        }
-        if (result.length) {
-          const data = result[0][0];
-          if (data.error) {
-            return res.status(409).send({
-              result: data,
-            });
-          }
-          return res.status(200).send({
-            data,
-          });
-        } else {
-          return res.status(409).send({
-            error: "¡Sin Información!",
-          });
-        }
-      }
-    );
-  },
 
   //MODIFICA POR ID
-  modifyFiudiciario: (req, res) => {
+  modifyTipoBeneficiario: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
@@ -122,7 +87,7 @@ module.exports = {
 
     if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
+        error: "Ingrese Nuevo Tipo de Beneficiario",
       });
     }
 
@@ -132,7 +97,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaFiudiciario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaTipoBeneficiario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -160,11 +125,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteFiudiciario: (req, res) => {
+  deleteTipoBeneficiario: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFiudiciario('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaTipoBeneficiario('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -189,4 +154,6 @@ module.exports = {
       }
     );
   },
+
+
 };
