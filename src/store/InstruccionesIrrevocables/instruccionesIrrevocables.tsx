@@ -10,8 +10,8 @@ export interface IDatosGeneralesInstrucciones {
   numeroCuenta: string;
   cuentaCLABE: string;
   banco: { Id: string; Descripcion: string };
+  fechaInstruccion: Date;
 }
-
 export interface IDeudorInstrucciones {
   id: string;
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
@@ -134,6 +134,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     numeroCuenta: "",
     cuentaCLABE: "",
     banco: { Id: "", Descripcion: "" },
+    fechaInstruccion: new Date(),
   },
 
   tipoMovimiento: {
@@ -184,6 +185,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         numeroCuenta: "",
         cuentaCLABE: "",
         banco: { Id: "", Descripcion: "" },
+        fechaInstruccion: new Date(),
       },
 
       deudorInstrucciones: {
@@ -361,12 +363,12 @@ export const createInstruccionesIrrevocables: StateCreator<
         {
           NumeroCuenta: state.datosGenerales.numeroCuenta,
           CLABE: state.datosGenerales.cuentaCLABE,
-          Banco: state.datosGenerales.banco.Id,
-          MunicipioOrganismoMandante:
-            state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion, //// revisar
+          Banco: state.datosGenerales.banco.Descripcion,
+          FechaInstruccion: state.datosGenerales.fechaInstruccion,
           TipoEntePublicoObligado:
             state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
-          MecanismoPago: "Instrucciones Irrevocables",
+          EntePublicoObligado:
+            state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
           AcumuladoEstado: acumuladoEstado,
           AcumuladoMunicipios: acumuladoMunicipio,
@@ -383,6 +385,8 @@ export const createInstruccionesIrrevocables: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log(data.data);
+
         state.setIdInstruccion(data.data.Id);
         state.saveFilesInstruccion(
           data.data.Id,

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   AppBar,
+  Backdrop,
   Button,
   Dialog,
   Grid,
@@ -113,67 +114,71 @@ export function AgregarMandatos({
 
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <Button
-                  sx={queries.buttonContinuar}
-                  onClick={() => {
-                    if (IdMandato === "") {
-                      createMandato(() => {
-                        setLoading(true);
-                        setLoading(false);
-                      });
-                    } else if (IdMandato !== "") {
-                      setLoading(true);
-                      modificaMandato(() => {
-                        setLoading(false);
-                      });
+              <Button
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  if (IdMandato === "") {
+                    setLoading(true);
+                    createMandato(() => {
+                      setLoading(false);
                       handler(false);
-                    }
-                    setTabIndex(0);
+                    });
+                  } else if (IdMandato !== "") {
+                    setLoading(true);
+                    modificaMandato(() => {
+                      setLoading(false);
+                      handler(false);
+                    });
+                  }
+                  setTabIndex(0);
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1.3ch",
+                    fontFamily: "MontserratMedium",
+                    "@media (min-width: 480px)": {
+                      fontSize: "1.5ch",
+                    },
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontSize: "1.3ch",
-                      fontFamily: "MontserratMedium",
-                      "@media (min-width: 480px)": {
-                        fontSize: "1.5ch",
-                      },
-                    }}
-                  >
-                    {IdMandato === "" ? "Agregar" : "Editar"} mandato
-                  </Typography>
-                </Button>
-              )}
+                  {IdMandato === "" ? "Agregar" : "Editar"} Mandato
+                </Typography>
+              </Button>
             </ThemeProvider>
           </Grid>
         </Toolbar>
       </AppBar>
 
-      <Grid item container direction="column">
-        <Grid item width={"100%"}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleChange}
-            centered={query.isScrollable ? false : true}
-            variant={query.isScrollable ? "scrollable" : "standard"}
-            scrollButtons
-            allowScrollButtonsMobile
-          >
-            <Tab label="datos generales" sx={{ ...queries.bold_text }}></Tab>
-            <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
-            <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
-          </Tabs>
+      <Grid item>
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          centered={query.isScrollable ? false : true}
+          variant={query.isScrollable ? "scrollable" : "standard"}
+          scrollButtons
+          allowScrollButtonsMobile
+        >
+          <Tab label="Datos Generales" sx={{ ...queries.bold_text }}></Tab>
+          <Tab label="Tipo de Movimiento" sx={{ ...queries.bold_text }}></Tab>
+          <Tab label="Soporte Documental" sx={queries.bold_text}></Tab>
+        </Tabs>
 
-          {tabIndex === 0 && <DatosGeneralesMandato />}
+        {tabIndex === 0 && <DatosGeneralesMandato />}
 
-          {tabIndex === 1 && <TipoDeMovimientoMandato />}
+        {tabIndex === 1 && <TipoDeMovimientoMandato />}
 
-          {tabIndex === 2 && <SoporteDocumentalMandato />}
-        </Grid>
+        {tabIndex === 2 && <SoporteDocumentalMandato />}
       </Grid>
+
+      <ThemeProvider theme={buttonTheme}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </ThemeProvider>
     </Dialog>
   );
 }

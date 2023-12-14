@@ -35,6 +35,8 @@ import { AgregarMandatos } from "../../components/mandatos/dialog/AgregarMandato
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../store/Mandatos/main";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { DetalleMandato } from "../../components/mandatos/dialog/DetalleMandato";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -80,10 +82,10 @@ const heads: Head[] = [
     label: "Mandatario",
   },
   {
-    label: "Organismo / Municipio Mandante",
+    label: "Tipo de Mandante",
   },
   {
-    label: "Tipo Ente Público Obligado",
+    label: "Organismo / Municipio Mandante",
   },
   {
     label: "Acción",
@@ -168,6 +170,28 @@ export function Mandatos() {
       getMandatos(setMandatos);
     }
   }, [openAgregarMandato]);
+
+  const [openDetalle, setOpenDetalle] = useState(false);
+
+  const [detalleMandato, setDetalleMandato] = useState<IDatosMandatos>({
+    AcumuladoEstado: "",
+    AcumuladoMunicipios: "",
+    AcumuladoOrganismos: "",
+    CreadoPor: "",
+    Deleted: "",
+    FechaCreacion: "",
+    FechaMandato: "",
+    Id: "",
+    Mandatario: "",
+    MecanismoPago: "",
+    ModificadoPor: "",
+    MunicipioOrganismoMandante: "",
+    NumeroMandato: "",
+    SoporteDocumental: "",
+    TipoEntePublicoObligado: "",
+    TipoMovimiento: "",
+    UltimaModificacion: "",
+  });
 
   return (
     <Grid height={"74vh"}>
@@ -306,14 +330,26 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.MunicipioOrganismoMandante}
-                      </StyledTableCell>
-
-                      <StyledTableCell align="center">
                         {row.TipoEntePublicoObligado}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
+                        {row.MunicipioOrganismoMandante}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <Tooltip title="Ver detalle">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              setDetalleMandato(row);
+                              setOpenDetalle(true);
+                            }}
+                          >
+                            <VisibilityIcon />
+                          </IconButton>
+                        </Tooltip>
+
                         <Tooltip title="Editar">
                           <IconButton
                             type="button"
@@ -402,6 +438,14 @@ export function Mandatos() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {openDetalle && (
+        <DetalleMandato
+          open={openDetalle}
+          setOpen={setOpenDetalle}
+          mandato={detalleMandato}
+        />
+      )}
     </Grid>
   );
 }

@@ -60,32 +60,28 @@ export function AgregarInstruccionesIrrevocables({
 
   const [loading, setLoading] = useState(false);
 
-  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
-    (state) => state.getTiposDeFuente
-  );
-
-  const getMunicipiosUOrganismosInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
-
-  const getInstitucionesInstrucciones: Function = useCortoPlazoStore(
-    (state) => state.getInstituciones
-  );
-
-  const getTipoEntePublicoObligadoInstrucciones: Function = useCortoPlazoStore(
+  const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
-
-  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
+  );
+  const getTiposDeFuente: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
+  );
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
+  );
+  const getFondosOIngresos: Function = useFideicomisoStore(
     (state) => state.getFondosOIngresos
   );
 
   useEffect(() => {
-    getTiposDeFuenteInstrucciones();
-    getMunicipiosUOrganismosInstrucciones();
-    getInstitucionesInstrucciones();
-    getTipoEntePublicoObligadoInstrucciones();
-    getFondosOIngresosInstrucciones();
+    getTiposDeFuente();
+    getOrganismos();
+    getInstituciones();
+    getTipoEntePublicoObligado();
+    getFondosOIngresos();
   }, []);
 
   return (

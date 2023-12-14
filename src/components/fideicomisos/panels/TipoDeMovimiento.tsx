@@ -124,7 +124,7 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.catalogoOrganismos
   );
 
-  const catalogotipoFideicomitente: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTIpoFideicomitente: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTipoEntePublicoObligado
   );
 
@@ -139,11 +139,9 @@ export function TipoDeMovimientoFideicomiso() {
   const addTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.addTipoMovimiento
   );
-
   const removeTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.removeTipoMovimiento
   );
-
   const cleanTipoMovimiento: Function = useFideicomisoStore(
     (state) => state.cleanTipoMovimiento
   );
@@ -225,7 +223,7 @@ export function TipoDeMovimientoFideicomiso() {
               acumuladoAfectacionGobiernoEstatalEntre100:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
                 "gobierno estatal"
-                  ? "70.00"
+                  ? "00.00"
                   : "",
               fondoIngresoAfectadoXMunicipio:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
@@ -414,7 +412,7 @@ export function TipoDeMovimientoFideicomiso() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
-            options={catalogotipoFideicomitente}
+            options={catalogoTIpoFideicomitente}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -690,7 +688,7 @@ export function TipoDeMovimientoFideicomiso() {
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={catalogotipoFideicomitente}
+              options={catalogoTIpoFideicomitente}
               getOptionLabel={(option) => option.Descripcion}
               renderOption={(props, option) => {
                 return (

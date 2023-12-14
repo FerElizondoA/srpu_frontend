@@ -65,10 +65,10 @@ export function AgregarFideicomisos({
   const getOrganismos: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
-  const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
+  const getTiposDeFuente: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
   );
-  const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
+  const getFondosOIngresos: Function = useFideicomisoStore(
     (state) => state.getFondosOIngresos
   );
   const getOrdenesFideicomisario: Function = useFideicomisoStore(
@@ -79,8 +79,8 @@ export function AgregarFideicomisos({
     getOrganismos();
     getTipoEntePublicoObligado();
     getOrdenesFideicomisario();
-    getTiposDeFuenteInstrucciones();
-    getFondosOIngresosInstrucciones();
+    getTiposDeFuente();
+    getFondosOIngresos();
   }, []);
 
   return (
@@ -110,13 +110,6 @@ export function AgregarFideicomisos({
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
-                // disabled={
-                //   generalFideicomiso.numeroFideicomiso === "" ||
-                //   generalFideicomiso.fechaFideicomiso === "" ||
-                //   tablaFideicomisario.length < 0 ||
-                //   tablaTipoMovimiento.length < 0 ||
-                //   tablaSoporteDocumental.length < 0
-                // }
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   console.log("falta restricciones");

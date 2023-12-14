@@ -42,16 +42,16 @@ const heads = [
     label: " ",
   },
   {
-    label: "Tipo de documento",
+    label: "Tipo de Documento",
   },
   {
-    label: "Fecha del documento",
+    label: "Fecha del Documento",
   },
   {
     label: "Archivo",
   },
   {
-    label: " ",
+    label: "Ver Documento",
   },
 ];
 

@@ -67,30 +67,18 @@ export function SoporteDocumentalMandato() {
       reader.onerror = reject;
     });
 
+  const soporteDocumental: ISoporteDocumentalMandato = useMandatoStore(
+    (state) => state.soporteDocumental
+  );
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
 
     setSoporteDocumental({
+      ...soporteDocumental,
       tipo: (event.target as HTMLInputElement).value,
-      fechaArchivo: fechaArchivo,
-      archivo: archivo,
-      nombreArchivo: nombreArchivo,
     });
   };
-
-  const tipo: string = useMandatoStore((state) => state.soporteDocumental.tipo);
-
-  const archivo: File = useMandatoStore(
-    (state) => state.soporteDocumental.archivo
-  );
-
-  const nombreArchivo: string = useMandatoStore(
-    (state) => state.soporteDocumental.nombreArchivo
-  );
-
-  const fechaArchivo: string = useMandatoStore(
-    (state) => state.soporteDocumental.fechaArchivo
-  );
 
   const setSoporteDocumental: Function = useMandatoStore(
     (state) => state.setSoporteDocumental
@@ -100,10 +88,6 @@ export function SoporteDocumentalMandato() {
     (state) => state.addSoporteDocumental
   );
 
-  const removeSoporteDocumental: Function = useMandatoStore(
-    (state) => state.removeSoporteDocumental
-  );
-
   const tablaSoporteDocumentalMandato: ISoporteDocumentalMandato[] =
     useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
@@ -111,13 +95,16 @@ export function SoporteDocumentalMandato() {
     (state) => state.cleanSoporteDocumental
   );
 
+  const removeSoporteDocumental: Function = useMandatoStore(
+    (state) => state.removeSoporteDocumental
+  );
+
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
 
     if (file !== undefined) {
       setSoporteDocumental({
-        tipo: tipo,
-        fechaArchivo: fechaArchivo,
+        ...soporteDocumental,
         archivo: file,
         nombreArchivo: file.name,
       });
@@ -143,6 +130,7 @@ export function SoporteDocumentalMandato() {
   }, []);
 
   const [loading, setLoading] = useState(true);
+
   return (
     <Grid
       container
@@ -221,15 +209,17 @@ export function SoporteDocumentalMandato() {
                   width: "30%",
                 },
                 fontFamily:
-                  nombreArchivo !== "" ? "MontserratBold" : "MontserratMedium",
+                  soporteDocumental.nombreArchivo !== ""
+                    ? "MontserratBold"
+                    : "MontserratMedium",
 
                 border:
-                  nombreArchivo !== ""
+                  soporteDocumental.nombreArchivo !== ""
                     ? "2px dotted #af8c55"
                     : "2px dotted black",
               }}
             >
-              {nombreArchivo ||
+              {soporteDocumental.nombreArchivo ||
                 "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
             </Typography>
             <input
@@ -278,13 +268,11 @@ export function SoporteDocumentalMandato() {
                     width: "90%",
                   },
                 }}
-                value={new Date(fechaArchivo)}
+                value={new Date(soporteDocumental.fechaArchivo)}
                 onChange={(date) =>
                   setSoporteDocumental({
-                    tipo: tipo,
+                    ...soporteDocumental,
                     fechaArchivo: date?.toString(),
-                    archivo: archivo,
-                    nombreArchivo: nombreArchivo,
                   })
                 }
               />
@@ -305,15 +293,12 @@ export function SoporteDocumentalMandato() {
                 width: "15vh",
               }}
               disabled={
-                tipo === "" || fechaArchivo === "" || nombreArchivo === ""
+                soporteDocumental.tipo === "" ||
+                soporteDocumental.fechaArchivo === "" ||
+                soporteDocumental.nombreArchivo === ""
               }
               onClick={() => {
-                addSoporteDocumental({
-                  tipo: tipo,
-                  fechaArchivo: fechaArchivo,
-                  archivo: archivo,
-                  nombreArchivo: nombreArchivo,
-                });
+                addSoporteDocumental(soporteDocumental);
               }}
             >
               Agregar

@@ -32,20 +32,23 @@ import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useInstruccionesStore } from "../../store/InstruccionesIrrevocables/main";
 import { Transition } from "./Mandatos";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/dialog/DetalleInstrucciones";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export interface IDatosInstrucciones {
   Id: string;
   NumeroCuenta: string;
   CLABE: string;
-  IdBanco: string; //
-  DescripcionBanco: string; //
-  MunicipioOrganismoMandante: string;
+  FechaInstruccion: string;
+  DescripcionBanco: string;
   TipoEntePublicoObligado: string;
-  MecanismoPago: string;
+  EntePublicoObligado: string;
   TipoMovimiento: string;
-  AcumuladoEstado: number;
-  AcumuladoMunicipios: number;
-  AcumuladoOrganismos: number;
+  AcumuladoEstado: string;
+  AcumuladoMunicipios: string;
+  AcumuladoOrganismos: string;
   SoporteDocumental: string;
   FechaCreacion: string;
   CreadoPor: string;
@@ -57,16 +60,19 @@ interface Head {
 
 const heads: Head[] = [
   {
-    label: "Tipo de mecanismo de pago",
+    label: "Número de Cuenta",
   },
   {
-    label: "Número de Cuenta",
+    label: "Fecha de la Instrucción",
   },
   {
     label: "Cuenta CLABE",
   },
   {
-    label: "Fecha",
+    label: "Banco",
+  },
+  {
+    label: "Tipo de Ente Público Obligado",
   },
   {
     label: "Ente Público Obligado",
@@ -109,9 +115,6 @@ export function InstruccionesIrrevocables() {
   const filtrarDatos = () => {
     let ResultadoBusqueda = instrucciones.filter((elemento) => {
       if (
-        elemento.MecanismoPago.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
         elemento.NumeroCuenta.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
@@ -165,6 +168,26 @@ export function InstruccionesIrrevocables() {
       getInstrucciones(setInstrucciones);
     }
   }, [openAgregarInstruccion]);
+
+  const [openDetalle, setOpenDetalle] = useState(false);
+
+  const [detalleInstruccion, setDetalleInstruccion] =
+    useState<IDatosInstrucciones>({
+      Id: "",
+      NumeroCuenta: "",
+      CLABE: "",
+      FechaInstruccion: "",
+      DescripcionBanco: "",
+      TipoEntePublicoObligado: "",
+      EntePublicoObligado: "",
+      TipoMovimiento: "",
+      AcumuladoEstado: "",
+      AcumuladoMunicipios: "",
+      AcumuladoOrganismos: "",
+      SoporteDocumental: "",
+      FechaCreacion: "",
+      CreadoPor: "",
+    });
 
   return (
     <Grid height={"74vh"}>
@@ -287,11 +310,13 @@ export function InstruccionesIrrevocables() {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          {row.MecanismoPago}
+                          {row.NumeroCuenta}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {row.NumeroCuenta}
+                          {format(new Date(row.FechaInstruccion), "PPP", {
+                            locale: es,
+                          })}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
@@ -303,14 +328,26 @@ export function InstruccionesIrrevocables() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {row.MunicipioOrganismoMandante}
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
                           {row.TipoEntePublicoObligado}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
+                          {row.EntePublicoObligado}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          <Tooltip title="Ver detalle">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                setDetalleInstruccion(row);
+                                setOpenDetalle(true);
+                              }}
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                          </Tooltip>
+
                           <Tooltip title="Editar">
                             <IconButton
                               type="button"
@@ -319,11 +356,14 @@ export function InstruccionesIrrevocables() {
                                   row.Id,
                                   {
                                     numeroCuenta: row.NumeroCuenta,
-                                    cuentaClabe: row.CLABE,
-                                    Banco: catalogoInstituciones.filter(
-                                      (i) =>
+                                    cuentaCLABE: row.CLABE,
+                                    banco: catalogoInstituciones.filter(
+                                      (i: ICatalogo) =>
                                         i.Descripcion === row.DescripcionBanco
                                     )[0],
+                                    fechaInstruccion: new Date(
+                                      row.FechaInstruccion
+                                    ),
                                   },
                                   JSON.parse(row.TipoMovimiento),
                                   JSON.parse(row.SoporteDocumental)
@@ -344,7 +384,6 @@ export function InstruccionesIrrevocables() {
                               onClick={() => {
                                 setIdInstruccion(row?.Id || "");
                                 setOpenDialogEliminar(!openDialogEliminar);
-                                // getInstruccion(setDatos);
                               }}
                             >
                               <DeleteIcon />
@@ -361,10 +400,12 @@ export function InstruccionesIrrevocables() {
         </Paper>
       </Grid>
 
-      <AgregarInstruccionesIrrevocables
-        handler={setOpenAgregarInstruccion}
-        openState={openAgregarInstruccion}
-      />
+      {openAgregarInstruccion && (
+        <AgregarInstruccionesIrrevocables
+          handler={setOpenAgregarInstruccion}
+          openState={openAgregarInstruccion}
+        />
+      )}
 
       <Dialog
         open={openDialogEliminar}
@@ -398,6 +439,14 @@ export function InstruccionesIrrevocables() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {openDetalle && (
+        <DetalleInstruccion
+          open={openDetalle}
+          setOpen={setOpenDetalle}
+          instruccion={detalleInstruccion}
+        />
+      )}
     </Grid>
   );
 }

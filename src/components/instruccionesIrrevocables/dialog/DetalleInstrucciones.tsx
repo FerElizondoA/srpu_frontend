@@ -24,15 +24,14 @@ import { es } from "date-fns/locale";
 import * as React from "react";
 import { useEffect } from "react";
 import { queries } from "../../../queries";
-import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
-import {
-  IDeudorFideicomiso,
-  IFideicomisario,
-  ISoporteDocumentalFideicomiso,
-} from "../../../store/Fideicomiso/fideicomiso";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import SyncProblemIcon from "@mui/icons-material/SyncProblem";
+import { IDatosInstrucciones } from "../../../screens/fuenteDePago/InstruccionesIrrevocables";
+import {
+  IDeudorInstrucciones,
+  ISoporteDocumentalInstrucciones,
+} from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,10 +47,10 @@ const headsTipoMovimiento: { label: string }[] = [
     label: "Id",
   },
   {
-    label: "Tipo de Fideicomitente",
+    label: "Tipo de Ente Público Obligado",
   },
   {
-    label: "Fideicomitente",
+    label: "Ente Público Obligado",
   },
   {
     label: "Fuente de Pago",
@@ -70,7 +69,7 @@ const headsTipoMovimiento: { label: string }[] = [
   },
   {
     label:
-      "% Afectado al Fideicomiso del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Gobierno del Estado",
   },
   {
     label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
@@ -81,14 +80,15 @@ const headsTipoMovimiento: { label: string }[] = [
   },
   {
     label:
-      "% Afectado al Fideicomiso del Ingreso o Fondo Correspondiente al Municipio",
+      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Municipio",
   },
   {
     label:
       "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
   },
   {
-    label: "% Afectado al Fideicomiso del Ingreso Correspondiente al Organismo",
+    label:
+      "% Afectado a la Instrucción del Ingreso Correspondiente al Organismo",
   },
   {
     label:
@@ -107,29 +107,32 @@ const headsSoporteDocumental = [
     label: "Nombre del Documento",
   },
   {
-    label: " ",
+    label: "Ver Documento",
   },
 ];
 
-export function DetalleFideicomiso({
+export function DetalleInstruccion({
   open,
   setOpen,
-  fideicomiso,
+  instruccion,
 }: {
   open: boolean;
   setOpen: Function;
-  fideicomiso: IDatosFideicomiso;
+  instruccion: IDatosInstrucciones;
 }) {
   const [fileSelected, setFileSelected] = React.useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = React.useState(false);
 
-  const idFideicomiso: string = fideicomiso.Id;
+  const idInstruccion: string = instruccion.Id;
 
   const [arr, setArr] = React.useState<any>([]);
 
   useEffect(() => {
-    if (idFideicomiso !== "") {
-      listFile(`/SRPU/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+    if (idInstruccion !== "") {
+      listFile(
+        `/SRPU/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
+        setArr
+      ).then(() => {
         setLoading(false);
       });
     }
@@ -168,7 +171,7 @@ export function DetalleFideicomiso({
         </Button>
 
         <Typography sx={{ ...queries.bold_text, color: "white", ml: 2 }}>
-          Detalle de Fideicomiso
+          Detalle de Instruccion
         </Typography>
       </DialogTitle>
 
@@ -199,72 +202,24 @@ export function DetalleFideicomiso({
           <Divider color="lightGrey"></Divider>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong> Numero de Fideicomiso:</strong>{" "}
-            {fideicomiso.NumeroFideicomiso}
+            <strong> Número de Cuenta:</strong> {instruccion.NumeroCuenta}
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong>Tipo de Fideicomiso:</strong> {fideicomiso.TipoFideicomiso}
-          </Typography>
-
-          <Typography sx={{ ...queries.medium_text }}>
-            <strong>Fecha de Fideicomiso:</strong>{" "}
-            {format(new Date(fideicomiso.FechaFideicomiso), "PPP", {
+            <strong>Fecha de la Instruccion:</strong>{" "}
+            {format(new Date(instruccion.FechaInstruccion), "PPP", {
               locale: es,
             })}
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong>Fiduciario:</strong> {fideicomiso.Fiduciario}
+            <strong>Cuenta CLABE:</strong> {instruccion.CLABE}
           </Typography>
 
-          <Divider color="lightGrey"></Divider>
-        </Grid>
+          <Typography sx={{ ...queries.medium_text }}>
+            <strong>Banco:</strong> {instruccion.DescripcionBanco}
+          </Typography>
 
-        <Grid
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            mb: 4,
-          }}
-        >
-          <Typography sx={queries.bold_text}>Fideicomisario</Typography>
-          <Divider color="lightGrey"></Divider>
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: "700" }}>
-                    Fideicomisario
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: "700" }}>
-                    Orden Fideicomisario
-                  </Typography>
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {JSON.parse(fideicomiso.Fideicomisario).map(
-                (e: IFideicomisario, index: number) => (
-                  <StyledTableRow key={index} id={`${index + 1}`}>
-                    <StyledTableCell scope="row">
-                      <Typography sx={{ fontSize: "0.8rem" }}>
-                        {e.fideicomisario.Descripcion}
-                      </Typography>
-                    </StyledTableCell>
-                    <StyledTableCell scope="row">
-                      <Typography sx={{ fontSize: "0.8rem" }}>
-                        {e.ordenFideicomisario.Descripcion}
-                      </Typography>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )
-              )}
-            </TableBody>
-          </Table>
           <Divider color="lightGrey"></Divider>
         </Grid>
 
@@ -301,8 +256,8 @@ export function DetalleFideicomiso({
               </TableRow>
             </TableHead>
             <TableBody>
-              {JSON.parse(fideicomiso.TipoMovimiento).map(
-                (row: IDeudorFideicomiso, index: number) => {
+              {JSON.parse(instruccion.TipoMovimiento).map(
+                (row: IDeudorInstrucciones, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       {/* ID */}
@@ -315,14 +270,14 @@ export function DetalleFideicomiso({
                       {/* TIPO fideicomitente */}
                       <StyledTableCell align="center">
                         <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.tipoFideicomitente.Descripcion}
+                          {row?.tipoEntePublicoObligado.Descripcion}
                         </Typography>
                       </StyledTableCell>
 
                       {/* fideicomitente */}
                       <StyledTableCell align="center">
                         <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fideicomitente.Descripcion}
+                          {row?.entePublicoObligado.Descripcion}
                         </Typography>
                       </StyledTableCell>
 
@@ -443,8 +398,8 @@ export function DetalleFideicomiso({
               </TableRow>
             </TableHead>
             <TableBody>
-              {JSON.parse(fideicomiso.SoporteDocumental).map(
-                (row: ISoporteDocumentalFideicomiso, index: number) => {
+              {JSON.parse(instruccion.SoporteDocumental).map(
+                (row: ISoporteDocumentalInstrucciones, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">

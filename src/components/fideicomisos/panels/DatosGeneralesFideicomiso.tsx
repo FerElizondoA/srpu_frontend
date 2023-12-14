@@ -58,8 +58,6 @@ export function DatoGeneralesFideicomiso() {
     (state) => state.tablaFideicomisario
   );
 
-  // TABLA FIDEICOMISARIO
-
   const [error, setError] = useState(false);
 
   const setFideicomisario: Function = useFideicomisoStore(

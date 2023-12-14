@@ -157,16 +157,13 @@ export const listFile = async (ROUTE: string, setState: Function) => {
       }
     )
     .then(({ data }) => {
-      let files = data.RESPONSE;
+      if (data.SUCCESS === false) {
+        setState([]);
+      } else {
+        let files = data.RESPONSE;
 
-      // files.map((file: any, index: any) => {
-      //   let auxArrayArchivos = [...state.tablaDocumentos];
-      //   auxArrayArchivos[index].archivo = file.FILE;
-      //   auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
-      //   return state.setTablaDocumentos(auxArrayArchivos);
-      // });
-
-      setState(files);
+        setState(files);
+      }
     })
     .catch((r) => {});
 };

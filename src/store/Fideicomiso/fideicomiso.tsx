@@ -592,6 +592,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   ) => {
     const state = useFideicomisoStore.getState();
 
+    console.log(state.tablaSoporteDocumentalFideicomiso);
+
     return await state.tablaSoporteDocumentalFideicomiso.map((dato, index) => {
       return setTimeout(() => {
         const url = new File([dato.archivo], dato.nombreArchivo);

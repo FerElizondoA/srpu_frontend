@@ -287,19 +287,15 @@ export function Resumen({ coments }: { coments: boolean }) {
         "@media (min-width: 480px)": {
           height: "40rem",
         },
-
         "@media (min-width: 768px)": {
           height: "45rem",
         },
-
         "@media (min-width: 1140px)": {
           height: "35rem",
         },
-
         "@media (min-width: 1400px)": {
           height: "35rem",
         },
-
         "@media (min-width: 1870px)": {
           height: "48rem",
         },
@@ -352,7 +348,6 @@ export function Resumen({ coments }: { coments: boolean }) {
                     </IconButton>
                   </Tooltip>
                 )}
-
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")

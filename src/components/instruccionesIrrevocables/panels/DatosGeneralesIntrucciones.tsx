@@ -13,6 +13,9 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IDatosGeneralesInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { enGB } from "date-fns/locale";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -33,6 +36,7 @@ export function DatosGeneralesIntrucciones() {
       numeroCuenta: datosGenerales.numeroCuenta,
       cuentaCLABE: datosGenerales.cuentaCLABE,
       banco: datosGenerales.banco,
+      fechaInstruccion: new Date(),
     });
   }, []);
 
@@ -68,10 +72,18 @@ export function DatosGeneralesIntrucciones() {
         },
       }}
     >
-      <Grid container display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+      <Grid
+        container
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          justifyItems: "center",
+          height: "40%",
+        }}
+      >
+        <Grid item sx={{ width: "50%" }}>
           <InputLabel sx={{ ...queries.medium_text }}>
-            Numero de Cuenta
+            Número de Cuenta
           </InputLabel>
           <TextField
             fullWidth
@@ -91,7 +103,30 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={3}>
+        <Grid item sx={{ width: "50%" }}>
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Fecha de la Instrucción
+          </InputLabel>
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={enGB}
+          >
+            <DesktopDatePicker
+              sx={{
+                width: "100%",
+              }}
+              value={datosGenerales.fechaInstruccion}
+              onChange={(v) => {
+                setDatosGenerales({
+                  ...datosGenerales,
+                  fechaInstruccion: v,
+                });
+              }}
+            />
+          </LocalizationProvider>
+        </Grid>
+
+        <Grid item sx={{ width: "50%" }}>
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
             fullWidth
@@ -111,7 +146,7 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={3}>
+        <Grid item sx={{ width: "50%" }}>
           <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
           <Autocomplete
             clearText="Borrar"
