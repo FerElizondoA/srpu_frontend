@@ -317,6 +317,7 @@ const {
   modifyTipoBeneficiario,
   deleteTipoBeneficiario,
 } = require("../controllers/TipoBeneficiario.js");
+const { sumaPorcentajeAcumulado } = require("../controllers/Consultas.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1645,7 +1646,7 @@ router.post(
 );
 //#endregion
 
-//#################################Admin Ayudas####################################
+// #region Ayudas
 router.post("/ayuda", verifyToken.verifyJWT, (req, res) => {
   createPreguntaFrecuente(req, res);
 });
@@ -1661,5 +1662,14 @@ router.delete("/ayuda", verifyToken.verifyJWT, (req, res) => {
 router.post("/sendMail", verifyToken.verifyJWT, (req, res) => {
   sendEmail(req, res);
 });
+
+// #endregion
+
+// #region sumaPorcentajeAcumulado
+router.get("/sumaPorcentajeAcumulado", verifyToken.verifyJWT, (req, res) => {
+  sumaPorcentajeAcumulado(req, res);
+});
+
+// #endregion
 
 module.exports = router;
