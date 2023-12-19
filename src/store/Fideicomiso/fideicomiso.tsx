@@ -64,6 +64,12 @@ export interface FideicomisoSlice {
   idFideicomiso: string;
   setIdFideicomiso: (Id: string) => void;
 
+  sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  };
+
   datosGenerales: IDatosGeneralesFideicomiso;
 
   fideicomisario: IFideicomisario;
@@ -141,6 +147,7 @@ export interface FideicomisoSlice {
   catalogoTiposDeFuente: ICatalogo[];
   catalogoFondosOIngresos: IFondoOIngreso[];
 
+  getSumaPorcentajeAcumulado: (tabla: string) => void;
   getTiposFideicomiso: () => void;
   getFiduciarios: () => void;
   getFideicomisarios: () => void;
@@ -161,6 +168,12 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     set(() => ({
       idFideicomiso: Id,
     }));
+  },
+
+  sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: 0,
+    SumaAcumuladoMunicipios: 0,
+    SumaAcumuladoOrganismos: 0,
   },
 
   datosGenerales: {
@@ -667,6 +680,27 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   catalogoTiposDeFideicomitente: [],
   catalogoTiposDeFuente: [],
   catalogoFondosOIngresos: [],
+
+  getSumaPorcentajeAcumulado: async (tabla: string) => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/sumaPorcentajeAcumulado",
+        {
+          params: { tabla: tabla },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        let r = data.data;
+        console.log(r);
+
+        set((state) => ({
+          sumaPorcentajeAcumulado: r,
+        }));
+      });
+  },
 
   getTiposFideicomiso: async () => {
     await axios

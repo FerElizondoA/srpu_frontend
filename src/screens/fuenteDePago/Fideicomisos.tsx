@@ -136,11 +136,21 @@ export function Fideicomisos() {
   const getInstituciones: Function = useCortoPlazoStore(
     (state) => state.getInstituciones
   );
+  const getSumaPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.getSumaPorcentajeAcumulado
+  );
+
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   useEffect(() => {
     getFideicomisos(setFideicomisos);
     getTiposFideicomiso();
     getInstituciones();
+    getSumaPorcentajeAcumulado("Fideicomisos");
   }, []);
 
   useEffect(() => {
@@ -339,6 +349,25 @@ export function Fideicomisos() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                let auxArray = JSON.parse(row.TipoMovimiento);
+
+                                auxArray.map((column: any) => {
+                                  return (
+                                    (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                      ).toString()),
+                                    (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                      ).toString()),
+                                    (column.acumuladoAfectacionOrganismoEntre100 =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                      ).toString())
+                                  );
+                                });
+
                                 editarFideicomiso(
                                   row.Id,
                                   {
@@ -357,7 +386,7 @@ export function Fideicomisos() {
                                     )[0],
                                   },
                                   JSON.parse(row.Fideicomisario),
-                                  JSON.parse(row.TipoMovimiento),
+                                  auxArray,
                                   JSON.parse(row.SoporteDocumental)
                                 );
 

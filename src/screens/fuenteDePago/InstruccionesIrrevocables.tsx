@@ -36,6 +36,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/dialog/DetalleInstrucciones";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -144,9 +145,20 @@ export function InstruccionesIrrevocables() {
     (state) => state.getInstituciones
   );
 
+  const getSumaPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.getSumaPorcentajeAcumulado
+  );
+
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
+
   useEffect(() => {
     getInstrucciones(setInstrucciones);
     getInstituciones();
+    getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
   }, []);
 
   useEffect(() => {
@@ -352,6 +364,25 @@ export function InstruccionesIrrevocables() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                let auxArray = JSON.parse(row.TipoMovimiento);
+
+                                auxArray.map((column: any) => {
+                                  return (
+                                    (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                      ).toString()),
+                                    (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                      ).toString()),
+                                    (column.acumuladoAfectacionOrganismoEntre100 =
+                                      Number(
+                                        sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                      ).toString())
+                                  );
+                                });
+
                                 editarInstruccion(
                                   row.Id,
                                   {
@@ -365,7 +396,7 @@ export function InstruccionesIrrevocables() {
                                       row.FechaInstruccion
                                     ),
                                   },
-                                  JSON.parse(row.TipoMovimiento),
+                                  auxArray,
                                   JSON.parse(row.SoporteDocumental)
                                 );
 

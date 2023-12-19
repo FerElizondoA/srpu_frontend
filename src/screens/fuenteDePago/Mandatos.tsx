@@ -37,6 +37,7 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../store/Mandatos/main";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { DetalleMandato } from "../../components/mandatos/dialog/DetalleMandato";
+import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -145,10 +146,20 @@ export function Mandatos() {
   const getOrganismos: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
+  const getSumaPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.getSumaPorcentajeAcumulado
+  );
+
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   useEffect(() => {
     getMandatos(setMandatos);
     getOrganismos();
+    getSumaPorcentajeAcumulado("Mandatos");
   }, []);
 
   useEffect(() => {
@@ -354,6 +365,25 @@ export function Mandatos() {
                           <IconButton
                             type="button"
                             onClick={() => {
+                              let auxArray = JSON.parse(row.TipoMovimiento);
+
+                              auxArray.map((column: any) => {
+                                return (
+                                  (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                    Number(
+                                      sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                    ).toString()),
+                                  (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                    Number(
+                                      sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                    ).toString()),
+                                  (column.acumuladoAfectacionOrganismoEntre100 =
+                                    Number(
+                                      sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                    ).toString())
+                                );
+                              });
+
                               editarMandato(
                                 row.Id,
                                 {
@@ -369,7 +399,7 @@ export function Mandatos() {
                                       row.MunicipioOrganismoMandante
                                   )[0],
                                 },
-                                JSON.parse(row.TipoMovimiento),
+                                auxArray,
                                 JSON.parse(row.SoporteDocumental)
                               );
 

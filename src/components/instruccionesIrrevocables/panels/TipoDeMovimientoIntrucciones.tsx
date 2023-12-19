@@ -163,6 +163,12 @@ export function TipoDeMovimientoIntrucciones() {
     return row.id;
   });
 
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
+
   const buttonAgregar = () => {
     return (
       <ThemeProvider theme={ButtonTheme}>
@@ -223,7 +229,7 @@ export function TipoDeMovimientoIntrucciones() {
               acumuladoAfectacionGobiernoEstatalEntre100:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                 "gobierno estatal"
-                  ? "00.00"
+                  ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
                   : "",
               fondoIngresoAfectadoXMunicipio:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
@@ -231,14 +237,10 @@ export function TipoDeMovimientoIntrucciones() {
                   ? "0"
                   : "0",
               acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-                tablaTipoMovimiento
-                  .reduce((accumulator, object) => {
-                    return (
-                      accumulator +
-                      Number(object.fondoIngresoAfectadoXMunicipio)
-                    );
-                  }, 0)
-                  .toString(),
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                "municipio"
+                  ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                  : "",
               ingresoAfectadoXOrganismo:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "municipio" &&
@@ -246,14 +248,13 @@ export function TipoDeMovimientoIntrucciones() {
                   "gobierno estatal"
                   ? ""
                   : "",
-              acumuladoAfectacionOrganismoEntre100: tablaTipoMovimiento
-                .reduce((accumulator, object) => {
-                  return (
-                    (accumulator + Number(object.ingresoAfectadoXOrganismo)) /
-                    100
-                  );
-                }, 0)
-                .toString(),
+              acumuladoAfectacionOrganismoEntre100:
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                  "municipio" &&
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                  "gobierno estatal"
+                  ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                  : "",
             });
             cleanTipoMovimiento();
           }}
@@ -837,12 +838,14 @@ export function TipoDeMovimientoIntrucciones() {
                           </Typography>
                         </StyledTableCell>
 
+                        {/* TIPO MANDANTE */}
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
                             {row?.tipoEntePublicoObligado.Descripcion}
                           </Typography>
                         </StyledTableCell>
 
+                        {/* entePublicoObligado */}
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
                             {row?.entePublicoObligado.Descripcion}
@@ -889,7 +892,6 @@ export function TipoDeMovimientoIntrucciones() {
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                             "gobierno estatal" && (
                             <TextField
-                              type="number"
                               inputProps={{
                                 sx: {
                                   fontSize: "0.7rem",
@@ -899,11 +901,43 @@ export function TipoDeMovimientoIntrucciones() {
                               value={row?.fondoIngresoAfectadoXGobiernoEstatal}
                               onChange={(v) => {
                                 let auxArray = [...tablaTipoMovimiento];
-                                if (Number(v.target.value) <= 100) {
+                                let val = Number(v.target.value);
+
+                                if (
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                  ) +
+                                    val <=
+                                    Number(
+                                      tablaTipoMovimiento[index]
+                                        .fondoIngresoGobiernoEstatal
+                                    )
+                                ) {
+                                  let suma = 0;
+
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXGobiernoEstatal
+                                    ));
+                                  });
+
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                        )
+                                      ).toString());
+                                  });
+
                                   auxArray[
                                     index
                                   ].fondoIngresoAfectadoXGobiernoEstatal =
-                                    v.target.value;
+                                    val.toString();
+
                                   addPorcentaje(auxArray);
                                 }
                               }}
@@ -940,29 +974,42 @@ export function TipoDeMovimientoIntrucciones() {
                               value={row?.fondoIngresoAfectadoXMunicipio}
                               onChange={(v) => {
                                 let auxArray = [...tablaTipoMovimiento];
+                                let val = Number(v.target.value);
+
                                 if (
-                                  Number(v.target.value) <= 100 &&
-                                  Number(row?.fondoIngresoMunicipios) > 0 &&
-                                  Number(row?.fondoIngresoAsignadoMunicipio) > 0
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                  ) +
+                                    val <=
+                                    Number(
+                                      tablaTipoMovimiento[index]
+                                        .fondoIngresoAsignadoMunicipio
+                                    )
                                 ) {
+                                  let suma = 0;
+
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXMunicipio
+                                    ));
+                                  });
+
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                        )
+                                      ).toString());
+                                  });
+
                                   auxArray[
                                     index
                                   ].fondoIngresoAfectadoXMunicipio =
-                                    v.target.value;
-
-                                  auxArray.forEach((item) => {
-                                    item.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                      tablaTipoMovimiento
-                                        .reduce((accumulator, object) => {
-                                          return (
-                                            accumulator +
-                                            Number(
-                                              object.fondoIngresoAfectadoXMunicipio
-                                            )
-                                          );
-                                        }, 0)
-                                        .toString();
-                                  });
+                                    val.toString();
 
                                   addPorcentaje(auxArray);
                                 }
@@ -976,11 +1023,9 @@ export function TipoDeMovimientoIntrucciones() {
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                             "municipio" && (
                             <Typography sx={{ fontSize: "0.7rem" }}>
-                              {(
-                                Number(
-                                  row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                                ) / Number(row?.fondoIngresoAsignadoMunicipio)
-                              ).toFixed(6)}
+                              {
+                                row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                              }
                             </Typography>
                           )}
                         </StyledTableCell>
@@ -1002,25 +1047,41 @@ export function TipoDeMovimientoIntrucciones() {
                                 value={row?.ingresoAfectadoXOrganismo}
                                 onChange={(v) => {
                                   let auxArray = [...tablaTipoMovimiento];
+                                  let val = Number(v.target.value);
+
                                   if (
-                                    Number(v.target.value) <= 100 &&
-                                    Number(row?.ingresoOrganismo) > 0
+                                    val <= 100 &&
+                                    Number(
+                                      sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                    ) +
+                                      val <=
+                                      Number(
+                                        tablaTipoMovimiento[index]
+                                          .ingresoOrganismo
+                                      )
                                   ) {
-                                    auxArray[index].ingresoAfectadoXOrganismo =
-                                      v.target.value;
-                                    auxArray.forEach((item) => {
-                                      item.acumuladoAfectacionOrganismoEntre100 =
-                                        tablaTipoMovimiento
-                                          .reduce((accumulator, object) => {
-                                            return (
-                                              accumulator +
-                                              Number(
-                                                object.ingresoAfectadoXOrganismo
-                                              )
-                                            );
-                                          }, 0)
-                                          .toString();
+                                    let suma = 0;
+
+                                    tablaTipoMovimiento.map((column) => {
+                                      return (suma += Number(
+                                        column.ingresoAfectadoXOrganismo
+                                      ));
                                     });
+
+                                    auxArray.map((column) => {
+                                      return (column.acumuladoAfectacionOrganismoEntre100 =
+                                        (
+                                          suma +
+                                          val +
+                                          Number(
+                                            sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                          )
+                                        ).toString());
+                                    });
+
+                                    auxArray[index].ingresoAfectadoXOrganismo =
+                                      val.toString();
+
                                     addPorcentaje(auxArray);
                                   }
                                 }}
@@ -1031,11 +1092,7 @@ export function TipoDeMovimientoIntrucciones() {
                         {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
                         <StyledTableCell align="center">
                           <Typography sx={{ fontSize: "0.7rem" }}>
-                            {(
-                              Number(
-                                row?.acumuladoAfectacionOrganismoEntre100
-                              ) / 100
-                            ).toFixed(6)}
+                            {row?.acumuladoAfectacionOrganismoEntre100}
                           </Typography>
                         </StyledTableCell>
 

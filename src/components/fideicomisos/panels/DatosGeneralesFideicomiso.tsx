@@ -191,13 +191,11 @@ export function DatoGeneralesFideicomiso() {
             }}
             onChange={(event, text) =>
               setDatosGenerales({
-                numeroFideicomiso: datosGenerales.numeroFideicomiso,
+                ...datosGenerales,
                 tipoFideicomiso: {
                   Id: text?.Id,
                   Descripcion: text?.Descripcion,
                 },
-                fechaFideicomiso: datosGenerales.fechaFideicomiso,
-                fiduciario: datosGenerales.fiduciario,
               })
             }
             renderInput={(params) => (
