@@ -317,7 +317,10 @@ const {
   modifyTipoBeneficiario,
   deleteTipoBeneficiario,
 } = require("../controllers/TipoBeneficiario.js");
-const { sumaPorcentajeAcumulado } = require("../controllers/Consultas.js");
+const {
+  sumaPorcentajeAcumulado,
+  listaMecanismosDePago,
+} = require("../controllers/Consultas.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -1669,7 +1672,12 @@ router.post("/sendMail", verifyToken.verifyJWT, (req, res) => {
 router.get("/sumaPorcentajeAcumulado", verifyToken.verifyJWT, (req, res) => {
   sumaPorcentajeAcumulado(req, res);
 });
+// #endregion
 
+// #region listaMecanismosDePago
+router.get("/listaMecanismosDePago", verifyToken.verifyJWT, (req, res) => {
+  listaMecanismosDePago(req, res);
+});
 // #endregion
 
 module.exports = router;
