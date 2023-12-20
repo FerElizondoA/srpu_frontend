@@ -256,36 +256,6 @@ export function Resumen() {
   const tablaCondicionesFinancieras: CondicionFinancieraLP[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
 
-  //Mecanismo o vehiculo de pago
-
-  const mecanismo: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.Mecanismo.mecanismo
-  );
-
-  const bonoCuponCero: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.Mecanismo.bonoCuponCero
-  );
-
-  const clasificacionBono: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.Mecanismo.clasificacionBonoCupo);
-
-  //Asignar Fuente
-  const clasificacion: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.clasificacion
-  );
-
-  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.tipoFuente
-  );
-
-  const fuentePago: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.fuentePago
-  );
-
-  const Respecto: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.RespectoA
-  );
-
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
 
@@ -376,44 +346,6 @@ export function Resumen() {
     {
       label: "Monto Gastos Adicionales",
       value: montoGastosAdicionales.toString(),
-    },
-  ];
-
-  const vehiculoDePago: HeadLabels[] = [
-    {
-      label: "Mecanismo o vehículo de pago",
-      value: mecanismo.Descripcion,
-    },
-    // {
-    //   label: "Numero del fideicomiso",
-    //   value: JSON.stringify(numeroFideicomiso[0].NumeroDeFideicomiso)/////revisar********
-    // },
-    {
-      label: "Bono cupón cero",
-      value: bonoCuponCero.Descripcion,
-    },
-    {
-      label: "Clasificacion del bono del cupon cero:",
-      value: clasificacionBono.Descripcion,
-    },
-  ];
-
-  const asignarFuente: HeadLabels[] = [
-    {
-      label: "Clasificacion",
-      value: clasificacion.Descripcion,
-    },
-    {
-      label: "Tipo de fuente",
-      value: tipoFuente.Descripcion,
-    },
-    {
-      label: "Fuente de pago",
-      value: fuentePago.Descripcion,
-    },
-    {
-      label: "Respecto a",
-      value: Respecto.Descripcion,
     },
   ];
 
@@ -951,7 +883,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
 
-            {vehiculoDePago.map((head, index) => (
+            {/* {vehiculoDePago.map((head, index) => (
               <Grid
                 width={"100%"}
                 sx={{ display: "flex", alignItems: "center" }}
@@ -979,7 +911,7 @@ export function Resumen() {
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
-            ))}
+            ))} */}
           </Grid>
         </Grid>
 
@@ -1060,7 +992,7 @@ export function Resumen() {
           >
             <Divider color="lightGrey"></Divider>
 
-            {asignarFuente.map((head, index) => (
+            {/* {asignarFuente.map((head, index) => (
               <Grid
                 width={"100%"}
                 sx={{ display: "flex", alignItems: "center" }}
@@ -1088,7 +1020,7 @@ export function Resumen() {
                   <strong>{head.label}: </strong>
                 </Typography>
               </Grid>
-            ))}
+            ))} */}
           </Grid>
         </Grid>
 

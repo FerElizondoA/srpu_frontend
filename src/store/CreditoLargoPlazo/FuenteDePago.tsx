@@ -1,62 +1,29 @@
+import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import axios from "axios";
-import { IFideicomisario } from "../Fideicomiso/fideicomiso";
 
-export type Mecanismo = {
-  mecanismo: { Id: string; Descripcion: string };
-  bonoCuponCero: { Id: string; Descripcion: string };
-  clasificacionBonoCupo: { Id: string; Descripcion: string };
-};
+export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
 
-export type NumeroFideicomiso = {
+export interface IRegistro {
   Id: string;
-  DescripcionFiduciario: string;
-  DescripcionTipoFideicomiso: string;
-  IdFiduciario: string;
-  IdTipoFideicomiso: string;
-  NumeroDeFideicomiso: number;
-  TipoDeFideicomiso: string;
-  FechaDeFideicomiso: string;
+  NumeroRegistro: string;
+  FechaRegistro: string;
+
+  TipoFideicomiso: string;
   Fiduciario: string;
   Fideicomisario: string;
-  TipoDeMovimiento: string;
-  SoporteDocumental: string;
-  FechaCreacion: string;
-  CreadoPor: string;
-  ModificadoPor: string;
-  UltimaModificacion: string;
-};
 
-export type NumeroMandato = {
-  CreadoPor: string;
-  Deleted: string;
-  FechaCreacion: string;
-  FechaMandato: string;
-  Id: string;
   Mandatario: string;
-  ModificadoPor: string;
-  MunicipioMandante: string;
-  NumeroMandato: number;
-  OrganismoMandante: string;
-  SoporteDocumental: string;
-  TipoMovimiento: string;
-  UltimaModificacion: string;
-};
+  Mandante: string;
+  TipoEntePublicoObligado: string;
 
-export type NumeroInstruccion = {
   CLABE: string;
-  CreadoPor: string;
-  Deleted: string;
-  DescripcionBanco: string;
-  EntePublico: string;
-  FechaCreacion: string;
-  Id: string;
-  IdBanco: string;
-  MecanismoPago: string;
-  NumeroCuenta: number;
+  Banco: string;
+  EntePublicoObligado: string;
+  // TipoEntePublicoObligado: string;
+
   TipoMovimiento: string;
-};
+}
 
 //ASIGNAR FUENTE
 export type garantiaPago = {
@@ -72,56 +39,20 @@ export type AsignarFuenteV = {
 };
 
 export interface FuenteDePagoLargoPlazoSlice {
-  Mecanismo: Mecanismo;
-  AsignarFuenteV: AsignarFuenteV;
+  tablaMecanismoVehiculoPago: IRegistro[];
+  getMecanismosVehiculosPago: (tabla: string, setState: Function) => void;
+
+  tipoMecanismoVehiculoPago: string;
+  setTipoMecanismoVehiculoPago: (tipo: string) => void;
+
+  mecanismoVehiculoPago: IRegistro;
+  setMecanismoVehiculoPago: (mecanismo: IRegistro) => void;
 
   garantiaPago: { Id: string; Descripcion: string };
-  tablaFideicomisarioFP: IFideicomisario[];
-
-  editFideicomisarioFuentePago: (fideicomisario: IFideicomisario[]) => void;
-
-  changeMecanismo: (
-    mecanismo: { Id: string; Descripcion: string },
-    bonoCuponCero: { Id: string; Descripcion: string },
-    clasificacionBonoCupo: { Id: string; Descripcion: string }
-  ) => void;
-
-  changeAsignarFuente: (
-    clasificacion: { Id: string; Descripcion: string },
-    tipoFuente: { Id: string; Descripcion: string },
-    fuentePago: { Id: string; Descripcion: string },
-    RespectoA: { Id: string; Descripcion: string }
-  ) => void;
-
   changeGarantiaPago: (garantiaPago: {
     Id: string;
     Descripcion: string;
   }) => void;
-
-  //Fideicomiso
-  numeroFideicomiso: NumeroFideicomiso[];
-  getNumeroFideicomiso: () => void;
-
-  numeroFideicomisoSelect: NumeroFideicomiso[];
-  setNumeroFideicomisoSelect: (
-    numeroFideicomisoSelect: NumeroFideicomiso[]
-  ) => void;
-
-  //Mandato
-  numeroMandato: NumeroMandato[];
-  getNumeroMandato: () => void;
-
-  numeroMandatoSelect: NumeroMandato[];
-  setNumeroMandatoSelect: (numeroMandatoSelect: NumeroMandato[]) => void;
-
-  //Intruccion Irrevocable
-  numeroInstruccion: NumeroInstruccion[];
-  getNumeroInstruccion: () => void;
-
-  numeroInstruccionSelect: NumeroInstruccion[];
-  setNumeroInstruccionSelect: (
-    numeroInstruccionSelect: NumeroInstruccion[]
-  ) => void;
 
   catalogoClasificacion: ICatalogo[];
   getClasificacion: () => void;
@@ -136,18 +67,33 @@ export interface FuenteDePagoLargoPlazoSlice {
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
-  Mecanismo: {
-    mecanismo: { Id: "", Descripcion: "" },
-    numeroFideicomiso: { Id: "", Descripcion: "" },
-    bonoCuponCero: { Id: "", Descripcion: "" },
-    clasificacionBonoCupo: { Id: "", Descripcion: "" },
-  },
+  tablaMecanismoVehiculoPago: [],
 
-  AsignarFuenteV: {
-    clasificacion: { Id: "", Descripcion: "" },
-    tipoFuente: { Id: "", Descripcion: "" },
-    fuentePago: { Id: "", Descripcion: "" },
-    RespectoA: { Id: "", Descripcion: "" },
+  tipoMecanismoVehiculoPago: "",
+  setTipoMecanismoVehiculoPago: (tipo: string) =>
+    set(() => ({
+      tipoMecanismoVehiculoPago: tipo,
+    })),
+
+  mecanismoVehiculoPago: {
+    Id: "",
+    NumeroRegistro: "",
+    FechaRegistro: "",
+
+    TipoFideicomiso: "",
+    Fiduciario: "",
+    Fideicomisario: "",
+
+    Mandatario: "",
+    Mandante: "",
+    TipoEntePublicoObligado: "",
+
+    CLABE: "",
+    Banco: "",
+    EntePublicoObligado: "",
+    // TipoEntePublicoObligado: "",
+
+    TipoMovimiento: "",
   },
 
   catalogoClasificacion: [],
@@ -156,107 +102,32 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   garantiaPago: { Id: "", Descripcion: "" },
 
-  //Fideicomiso
-  numeroFideicomisoSelect: [],
-  numeroFideicomiso: [],
-
-  //Mandato
-  numeroMandato: [],
-  numeroMandatoSelect: [],
-
-  //Instruccion Irrevocable
-  numeroInstruccion: [],
-  numeroInstruccionSelect: [],
-
-  tablaFideicomisarioFP: [],
-
-  editFideicomisarioFuentePago: (fideicomisarios: IFideicomisario[]) =>
-    set((state) => ({
-      tablaFideicomisarioFP: fideicomisarios,
-    })),
-
-  changeMecanismo: (Mecanismo: any) =>
+  setMecanismoVehiculoPago: (mecanismo: IRegistro) =>
     set(() => ({
-      Mecanismo: Mecanismo,
-    })),
-
-  changeAsignarFuente: (AsignarFuente: any) =>
-    set(() => ({
-      AsignarFuenteV: AsignarFuente,
+      mecanismoVehiculoPago: mecanismo,
     })),
 
   changeGarantiaPago: (garantiaPago: garantiaPago) => () => ({
     garantiaPago: garantiaPago,
   }),
 
-  //Fideicomisos
-  getNumeroFideicomiso: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fideicomiso", {
+  getMecanismosVehiculosPago: (tabla: string, setState: Function) => {
+    axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + `/listaMecanismosDePago`, {
+        params: { tabla: tabla },
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
         },
       })
       .then(({ data }) => {
         let r = data.data;
-        set((state) => ({
-          numeroFideicomiso: r,
+
+        set(() => ({
+          tablaMecanismoVehiculoPago: r,
         }));
+
+        setState(r);
       });
-  },
-
-  setNumeroFideicomisoSelect: (
-    numeroFideicomisoSelect: NumeroFideicomiso[]
-  ) => {
-    set(() => ({
-      numeroFideicomisoSelect: numeroFideicomisoSelect,
-    }));
-  },
-
-  //Mandatos
-
-  getNumeroMandato: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-mandato", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          numeroMandato: r,
-        }));
-      });
-  },
-
-  setNumeroMandatoSelect(numeroMandatoSelect: NumeroMandato[]) {
-    set(() => ({
-      numeroMandatoSelect: numeroMandatoSelect,
-    }));
-  },
-
-  //Intrucciones Irrevocables
-
-  getNumeroInstruccion: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-Instrucciones", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          numeroInstruccion: r,
-        }));
-      });
-  },
-
-  setNumeroInstruccionSelect(numeroInstruccionSelect: NumeroInstruccion[]) {
-    set(() => ({
-      numeroInstruccionSelect: numeroInstruccionSelect,
-    }));
   },
 
   getClasificacion: async () => {

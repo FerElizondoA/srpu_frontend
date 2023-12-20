@@ -100,27 +100,6 @@ export function AsignarFuente() {
     (state) => state.changeGarantiaPago
   );
 
-  //Asignar Fuente
-  const changeAsignarFuente: Function = useLargoPlazoStore(
-    (state) => state.changeAsignarFuente
-  );
-
-  const clasificacion: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.clasificacion
-  );
-
-  const tipoFuente: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.tipoFuente
-  );
-
-  const fuentePago: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.fuentePago
-  );
-
-  const Respecto: { Id: string; Descripcion: string } = useLargoPlazoStore(
-    (state) => state.AsignarFuenteV.RespectoA
-  );
-
   const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoTiposDeFuente
   );
@@ -167,11 +146,11 @@ export function AsignarFuente() {
       direction={"column"}
       justifyContent={"space-between"}
     >
-      <Grid>
+      {/* <Grid>
         <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
-      </Grid>
+      </Grid> */}
 
-      <Grid
+      {/* <Grid
         container
         display={"flex"}
         justifyContent={"center"}
@@ -183,7 +162,6 @@ export function AsignarFuente() {
             Tipo de garantía de pago
           </InputLabel>
           <Autocomplete
-            //disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -218,46 +196,26 @@ export function AsignarFuente() {
               value.Descripcion === ""
             }
           />
-          {/* <Select
-            fullWidth
-            variant="standard"
-            value={garantiaPago}
-            onChange={(e, text) => {
-              changeGarantiaPago({
-                AsignarFuenteV:{
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
-                },
-              });
-            }}
-          >
-            {CatalogoGarantiaPago.map((item, index) => (
-              <MenuItem key={index} value={item.label}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select> */}
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      <Grid>
+      {/* <Grid>
         <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
-      </Grid>
+      </Grid> */}
 
-      <Grid
+      {/* <Grid
         container
         sx={{
           display: "flex",
-          //...queries.fuentePagoApartados,
+          
           width: "100%",
-          // display:"flex",
+          
           justifyContent: "space-evenly",
         }}
       >
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
           <Autocomplete
-            //disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -297,13 +255,6 @@ export function AsignarFuente() {
               value.Descripcion === ""
             }
           />
-
-          {/* <Select fullWidth variant="standard" value={headsAF}>
-            {headsAF.map((item, index) => (
-              <MenuItem key={index}>{item.Descripcion}</MenuItem>
-            ))}
-
-          </Select> */}
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
@@ -353,7 +304,7 @@ export function AsignarFuente() {
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fuente de pago</InputLabel>
           <Autocomplete
-            //disableClearable
+          
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -396,7 +347,7 @@ export function AsignarFuente() {
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Respecto a: </InputLabel>
           <Autocomplete
-            //disableClearable
+          
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -435,9 +386,9 @@ export function AsignarFuente() {
             }
           />
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
+      {/* <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
         <Paper sx={{ ...queries.tablaAsignarFuente }}>
           <TableContainer
             sx={{
@@ -489,7 +440,7 @@ export function AsignarFuente() {
             </Table>
           </TableContainer>
         </Paper>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
