@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
+  Button,
   Divider,
   Grid,
   InputLabel,
@@ -13,130 +14,107 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import {
+  ICatalogo,
+  IFondoOIngreso,
+} from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 
 interface HeadSelect {
-  Id: string;
-  Descripcion: string;
+  Label: string;
 }
-
-const CatalogoGarantiaPago: HeadSelect[] = [
-  {
-    Id: "0",
-    Descripcion: "No Aplica",
-  },
-  {
-    Id: "1",
-    Descripcion: "Pago 1",
-  },
-  {
-    Id: "2",
-    Descripcion: "Pago 2",
-  },
-];
 
 const headFP: HeadSelect[] = [
   {
-    Id: "1",
-    Descripcion: "Tipo de fuente de pago",
+    Label: "Tipo de fuente de pago",
   },
   {
-    Id: "2",
-    Descripcion: "Fuente de pago",
+    Label: "Fuente de pago",
   },
   {
-    Id: "3",
-    Descripcion: "% Asignado del ingreso o fondo al fideicomiso",
+    Label: "% Asignado del ingreso o fondo al fideicomiso",
   },
   {
-    Id: "4",
-    Descripcion:
+    Label:
       "% Acumulado de afectación del gobierno del estado a los mecanismos de pago / 100",
   },
   {
-    Id: "5",
-    Descripcion:
-      "% De afectación del gobierno del estado / 100 del ingreso o fondo",
+    Label: "% De afectación del gobierno del estado / 100 del ingreso o fondo",
   },
   {
-    Id: "6",
-    Descripcion: "% Afectado al fideiomiso",
+    Label: "% Afectado al fideicomiso",
   },
   {
-    Id: "7",
-    Descripcion: "% Acumulado de afectación a los mecanismos de pago",
+    Label: "% Acumulado de afectación a los mecanismos de pago",
   },
   {
-    Id: "8",
-    Descripcion:
+    Label:
       "% Asignado al financiamiento u obligación respecto de lo fideicomitido",
   },
   {
-    Id: "9",
-    Descripcion:
+    Label:
       "% Asignado al financiamiento u obligaciónes respecto del ingreso o fondo",
   },
   {
-    Id: "10",
-    Descripcion: "% Acumulado de la asignación a las obligaciones",
+    Label: "% Acumulado de la asignación a las obligaciones",
   },
   {
-    Id: "0",
-    Descripcion: "Acciones",
+    Label: " ",
   },
 ];
 
 export function AsignarFuente() {
-  const garantiaPago: { Id: string; Descripcion: string } = useLargoPlazoStore(
+  const mecanismoVehiculoPago: IRegistro = useLargoPlazoStore(
+    (state) => state.mecanismoVehiculoPago
+  );
+
+  const garantiaPago: string = useLargoPlazoStore(
     (state) => state.garantiaPago
   );
-
   const changeGarantiaPago: Function = useLargoPlazoStore(
     (state) => state.changeGarantiaPago
-  );
-
-  const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
-    (state) => state.catalogoTiposDeFuente
   );
 
   const getTiposDeFuente: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
   );
-
-  const getClasificacion: Function = useLargoPlazoStore(
-    (state) => state.getClasificacion
+  const getFuentesPago: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
+  );
+  const getSumaPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.getSumaPorcentajeAcumulado
   );
 
-  const catalogoClasificacion: ICatalogo[] = useLargoPlazoStore(
-    (state) => state.catalogoClasificacion
+  const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
+    (state) => state.catalogoTiposDeFuente
+  );
+  const catalogoFuentesDePago: IFondoOIngreso[] = useFideicomisoStore(
+    (state) => state.catalogoFondosOIngresos
   );
 
-  const catalogoRespecto: ICatalogo[] = useLargoPlazoStore(
-    (state) => state.catalogoRespecto
-  );
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
-  const getRespecto: Function = useLargoPlazoStore(
-    (state) => state.getRespecto
-  );
-
-  const catalogoFuenteDePago: ICatalogo[] = useLargoPlazoStore(
-    (state) => state.catalogoFuenteDePago
-  );
-
-  const getFuentePago: Function = useLargoPlazoStore(
-    (state) => state.getFuentePago
-  );
+  const [filtro, setFiltro] = useState({
+    Clasificacion: { Descripcion: "" },
+    TipoFuente: { Id: "", Descripcion: "" },
+    FuentePago: { Id: "", Descripcion: "" },
+    RespectoA: { Descripcion: "" },
+  });
 
   useEffect(() => {
     getTiposDeFuente();
-    getClasificacion();
-    getRespecto();
-    getFuentePago();
+    getFuentesPago();
+    getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
   }, []);
 
   return (
@@ -146,71 +124,17 @@ export function AsignarFuente() {
       direction={"column"}
       justifyContent={"space-between"}
     >
-      {/* <Grid>
-        <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
-      </Grid> */}
-
-      {/* <Grid
-        container
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        mb={4}
-      >
-        <Grid xs={10} sm={5} md={5} lg={5} xl={5}>
-          <InputLabel sx={queries.medium_text}>
-            Tipo de garantía de pago
-          </InputLabel>
-          <Autocomplete
-            clearText="Borrar"
-            noOptionsText="Sin opciones"
-            closeText="Cerrar"
-            openText="Abrir"
-            options={CatalogoGarantiaPago}
-            value={garantiaPago}
-            getOptionLabel={(option) => option.Descripcion}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} key={option.Id}>
-                  <Typography>{option.Descripcion}</Typography>
-                </li>
-              );
-            }}
-            onChange={(event, text) =>
-              changeGarantiaPago({
-                garantiaPago: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
-                },
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                sx={queries.medium_text}
-              />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.Descripcion === value.Descripcion ||
-              value.Descripcion === ""
-            }
-          />
-        </Grid>
-      </Grid> */}
-
-      {/* <Grid>
+      <Grid mt={2}>
         <Divider sx={queries.bold_text}>ASIGNAR FUENTE</Divider>
-      </Grid> */}
+      </Grid>
 
-      {/* <Grid
+      <Grid
         container
         sx={{
           display: "flex",
-          
           width: "100%",
-          
           justifyContent: "space-evenly",
+          mt: 2,
         }}
       >
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
@@ -220,27 +144,24 @@ export function AsignarFuente() {
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
-            options={catalogoClasificacion}
-            value={
-              clasificacion.Descripcion === undefined ? null : clasificacion
-            }
+            options={[{ Descripcion: "Fuente de Pago" }]}
+            value={filtro.Clasificacion}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Id}>
+                <li {...props} key={option.Descripcion}>
                   <Typography>{option.Descripcion}</Typography>
                 </li>
               );
             }}
             onChange={(event, text) =>
-              changeAsignarFuente({
-                clasificacion: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
+              setFiltro({
+                Clasificacion: {
+                  Descripcion: text?.Descripcion || "",
                 },
-                tipoFuente: tipoFuente,
-                fuentePago: fuentePago,
-                RespectoA: Respecto,
+                TipoFuente: { Id: "", Descripcion: "" },
+                FuentePago: { Id: "", Descripcion: "" },
+                RespectoA: { Descripcion: "" },
               })
             }
             renderInput={(params) => (
@@ -258,16 +179,15 @@ export function AsignarFuente() {
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
-          <InputLabel sx={queries.medium_text}>Tipo de fuente</InputLabel>
-
+          <InputLabel sx={queries.medium_text}>Tipo de Fuente</InputLabel>
           <Autocomplete
-            //disableClearable
+            disabled={filtro.Clasificacion.Descripcion === ""}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
             options={catalogoTiposDeFuente}
-            value={tipoFuente.Descripcion === undefined ? null : tipoFuente}
+            value={filtro.TipoFuente}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -277,14 +197,15 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) =>
-              changeAsignarFuente({
-                clasificacion: clasificacion,
-                tipoFuente: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
+              setFiltro({
+                ...filtro,
+                TipoFuente: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
                 },
-                fuentePago: fuentePago,
-                RespectoA: Respecto,
+
+                FuentePago: { Id: "", Descripcion: "" },
+                RespectoA: { Descripcion: "" },
               })
             }
             renderInput={(params) => (
@@ -302,15 +223,17 @@ export function AsignarFuente() {
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
-          <InputLabel sx={queries.medium_text}>Fuente de pago</InputLabel>
+          <InputLabel sx={queries.medium_text}>Fuente de Pago</InputLabel>
           <Autocomplete
-          
+            disabled={filtro.TipoFuente.Descripcion === ""}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
-            options={catalogoFuenteDePago}
-            value={fuentePago.Descripcion === undefined ? null : fuentePago}
+            options={catalogoFuentesDePago?.filter(
+              (td) => td.TipoDeFuente === filtro.TipoFuente?.Id
+            )}
+            value={filtro.FuentePago}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -320,14 +243,13 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) =>
-              changeAsignarFuente({
-                clasificacion: clasificacion,
-                tipoFuente: tipoFuente,
-                fuentePago: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
+              setFiltro({
+                ...filtro,
+                FuentePago: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
                 },
-                RespectoA: Respecto,
+                RespectoA: { Descripcion: "" },
               })
             }
             renderInput={(params) => (
@@ -345,31 +267,31 @@ export function AsignarFuente() {
         </Grid>
 
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
-          <InputLabel sx={queries.medium_text}>Respecto a: </InputLabel>
+          <InputLabel sx={queries.medium_text}>Respecto A</InputLabel>
           <Autocomplete
-          
+            disabled={filtro.FuentePago.Descripcion === ""}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
-            options={catalogoRespecto}
-            value={Respecto.Descripcion === undefined ? null : Respecto}
+            options={[
+              { Descripcion: "Fondo" },
+              { Descripcion: "Fideicomitido" },
+            ]}
+            value={filtro.RespectoA}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Id}>
+                <li {...props} key={option.Descripcion}>
                   <Typography>{option.Descripcion}</Typography>
                 </li>
               );
             }}
             onChange={(event, text) =>
-              changeAsignarFuente({
-                clasificacion: clasificacion,
-                tipoFuente: tipoFuente,
-                fuentePago: fuentePago,
+              setFiltro({
+                ...filtro,
                 RespectoA: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
+                  Descripcion: text?.Descripcion || "",
                 },
               })
             }
@@ -386,9 +308,29 @@ export function AsignarFuente() {
             }
           />
         </Grid>
-      </Grid> */}
 
-      {/* <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
+        <Grid
+          item
+          sx={{ width: "100%", alignSelf: "center" }}
+          xs={10}
+          sm={5}
+          md={5}
+          lg={1}
+          xl={1}
+        >
+          <Button
+            disabled={filtro.RespectoA.Descripcion === ""}
+            onClick={() => {
+              //   modifDesc();
+            }}
+            sx={queries.buttonContinuar}
+          >
+            Aceptar
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
         <Paper sx={{ ...queries.tablaAsignarFuente }}>
           <TableContainer
             sx={{
@@ -416,31 +358,147 @@ export function AsignarFuente() {
                           fontFamily: "MontserratRegular",
                         }}
                       >
-                        {head.Descripcion}
+                        {head.Label}
                       </Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                <StyledTableRow>
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                  <StyledTableCell />
-                </StyledTableRow>
+                {JSON.parse(mecanismoVehiculoPago.TipoMovimiento).map(
+                  (movimiento: IDeudorFideicomiso, index: number) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        {movimiento.tipoFuente.Descripcion}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngreso.Descripcion}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngresoGobiernoEstatal}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.acumuladoAfectacionGobiernoEstatalEntre100}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.afectacionGobiernoEstatalEntre100}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngresoAfectadoXGobiernoEstatal}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">0.00</StyledTableCell>
+                      <StyledTableCell align="center">
+                        <TextField
+                          type="number"
+                          inputProps={{
+                            sx: {
+                              fontSize: "0.7rem",
+                            },
+                          }}
+                          size="small"
+                          value={""}
+                          // onChange={(v) => {
+                          //   let auxArray = [...tablaTipoMovimiento];
+                          //   let val = Number(v.target.value);
+
+                          //   if (
+                          //     val <= 100 &&
+                          //     Number(
+                          //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                          //     ) +
+                          //       val <=
+                          //       Number(
+                          //         tablaTipoMovimiento[index]
+                          //           .fondoIngresoAsignadoMunicipio
+                          //       )
+                          //   ) {
+                          //     let suma = 0;
+
+                          //     tablaTipoMovimiento.map((column) => {
+                          //       return (suma += Number(
+                          //         column.fondoIngresoAfectadoXMunicipio
+                          //       ));
+                          //     });
+
+                          //     auxArray.map((column) => {
+                          //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                          //         (
+                          //           suma +
+                          //           val +
+                          //           Number(
+                          //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                          //           )
+                          //         ).toString());
+                          //     });
+
+                          //     auxArray[
+                          //       index
+                          //     ].fondoIngresoAfectadoXMunicipio =
+                          //       val.toString();
+
+                          //     addPorcentaje(auxArray);
+                          //   }
+                          // }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell />
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </TableContainer>
         </Paper>
-      </Grid> */}
+      </Grid>
+
+      <Grid mt={4}>
+        <Divider sx={queries.bold_text}>GARANTÍA DE PAGO</Divider>
+      </Grid>
+
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        mt={2}
+      >
+        <Grid xs={10} sm={5} md={5} lg={5} xl={5}>
+          <InputLabel sx={queries.medium_text}>
+            Tipo de garantía de pago
+          </InputLabel>
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            options={["No Aplica"]}
+            value={garantiaPago}
+            getOptionLabel={(option) => option}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option}>
+                  <Typography>{option}</Typography>
+                </li>
+              );
+            }}
+            onChange={(event, text) => changeGarantiaPago(text)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option === value || value === ""
+            }
+          />
+        </Grid>
+      </Grid>
     </Grid>
   );
 }

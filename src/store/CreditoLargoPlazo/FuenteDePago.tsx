@@ -1,10 +1,10 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
 
 export interface IRegistro {
+  MecanismoPago: String;
   Id: string;
   NumeroRegistro: string;
   FechaRegistro: string;
@@ -48,20 +48,8 @@ export interface FuenteDePagoLargoPlazoSlice {
   mecanismoVehiculoPago: IRegistro;
   setMecanismoVehiculoPago: (mecanismo: IRegistro) => void;
 
-  garantiaPago: { Id: string; Descripcion: string };
-  changeGarantiaPago: (garantiaPago: {
-    Id: string;
-    Descripcion: string;
-  }) => void;
-
-  catalogoClasificacion: ICatalogo[];
-  getClasificacion: () => void;
-
-  catalogoRespecto: ICatalogo[];
-  getRespecto: () => void;
-
-  catalogoFuenteDePago: ICatalogo[];
-  getFuentePago: () => void;
+  garantiaPago: string;
+  changeGarantiaPago: (garantiaPago: string) => void;
 }
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
@@ -76,6 +64,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     })),
 
   mecanismoVehiculoPago: {
+    MecanismoPago: "",
     Id: "",
     NumeroRegistro: "",
     FechaRegistro: "",
@@ -96,20 +85,18 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     TipoMovimiento: "",
   },
 
-  catalogoClasificacion: [],
-  catalogoRespecto: [],
-  catalogoFuenteDePago: [],
-
-  garantiaPago: { Id: "", Descripcion: "" },
+  garantiaPago: "",
 
   setMecanismoVehiculoPago: (mecanismo: IRegistro) =>
     set(() => ({
       mecanismoVehiculoPago: mecanismo,
     })),
 
-  changeGarantiaPago: (garantiaPago: garantiaPago) => () => ({
-    garantiaPago: garantiaPago,
-  }),
+  changeGarantiaPago: (garantiaPago: string) => {
+    set(() => ({
+      garantiaPago: garantiaPago,
+    }));
+  },
 
   getMecanismosVehiculosPago: (tabla: string, setState: Function) => {
     axios
@@ -127,55 +114,6 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
         }));
 
         setState(r);
-      });
-  },
-
-  getClasificacion: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK +
-          "/get-clasificacionAsignarFuentePago",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoClasificacion: r,
-        }));
-      });
-  },
-
-  getRespecto: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-respecto", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoRespecto: r,
-        }));
-      });
-  },
-
-  getFuentePago: async () => {
-    await axios
-      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-fuenteDePago", {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      })
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoFuenteDePago: r,
-        }));
       });
   },
 });
