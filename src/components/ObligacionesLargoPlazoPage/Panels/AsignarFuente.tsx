@@ -117,6 +117,8 @@ export function AsignarFuente() {
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
   }, []);
 
+  const [filtrado, setFiltrado] = useState(false);
+
   return (
     <Grid
       container
@@ -154,7 +156,8 @@ export function AsignarFuente() {
                 </li>
               );
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              setFiltrado(false);
               setFiltro({
                 Clasificacion: {
                   Descripcion: text?.Descripcion || "",
@@ -162,8 +165,8 @@ export function AsignarFuente() {
                 TipoFuente: { Id: "", Descripcion: "" },
                 FuentePago: { Id: "", Descripcion: "" },
                 RespectoA: { Descripcion: "" },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -196,7 +199,8 @@ export function AsignarFuente() {
                 </li>
               );
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 TipoFuente: {
@@ -206,8 +210,8 @@ export function AsignarFuente() {
 
                 FuentePago: { Id: "", Descripcion: "" },
                 RespectoA: { Descripcion: "" },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -242,7 +246,8 @@ export function AsignarFuente() {
                 </li>
               );
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 FuentePago: {
@@ -250,8 +255,8 @@ export function AsignarFuente() {
                   Descripcion: text?.Descripcion || "",
                 },
                 RespectoA: { Descripcion: "" },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -287,14 +292,15 @@ export function AsignarFuente() {
                 </li>
               );
             }}
-            onChange={(event, text) =>
+            onChange={(event, text) => {
+              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 RespectoA: {
                   Descripcion: text?.Descripcion || "",
                 },
-              })
-            }
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -321,7 +327,7 @@ export function AsignarFuente() {
           <Button
             disabled={filtro.RespectoA.Descripcion === ""}
             onClick={() => {
-              //   modifDesc();
+              setFiltrado(true);
             }}
             sx={queries.buttonContinuar}
           >
@@ -331,7 +337,7 @@ export function AsignarFuente() {
       </Grid>
 
       <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
-        <Paper sx={{ ...queries.tablaAsignarFuente }}>
+        <Paper>
           <TableContainer
             sx={{
               overflow: "auto",
@@ -365,90 +371,99 @@ export function AsignarFuente() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {JSON.parse(mecanismoVehiculoPago.TipoMovimiento).map(
-                  (movimiento: IDeudorFideicomiso, index: number) => (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        {movimiento.tipoFuente.Descripcion}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {movimiento.fondoIngreso.Descripcion}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {movimiento.fondoIngresoGobiernoEstatal}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {movimiento.acumuladoAfectacionGobiernoEstatalEntre100}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {movimiento.afectacionGobiernoEstatalEntre100}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {movimiento.fondoIngresoAfectadoXGobiernoEstatal}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">0.00</StyledTableCell>
-                      <StyledTableCell align="center">
-                        <TextField
-                          type="number"
-                          inputProps={{
-                            sx: {
-                              fontSize: "0.7rem",
-                            },
-                          }}
-                          size="small"
-                          value={""}
-                          // onChange={(v) => {
-                          //   let auxArray = [...tablaTipoMovimiento];
-                          //   let val = Number(v.target.value);
+                {filtrado &&
+                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento)
+                    .filter(
+                      (i: IDeudorFideicomiso) =>
+                        i.tipoFuente.Descripcion ===
+                          filtro.TipoFuente.Descripcion &&
+                        i.fondoIngreso.Descripcion ===
+                          filtro.FuentePago.Descripcion
+                    )
+                    .map((movimiento: IDeudorFideicomiso, index: number) => (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center">
+                          {movimiento.tipoFuente.Descripcion}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {movimiento.fondoIngreso.Descripcion}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {movimiento.fondoIngresoGobiernoEstatal}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {
+                            movimiento.acumuladoAfectacionGobiernoEstatalEntre100
+                          }
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {movimiento.afectacionGobiernoEstatalEntre100}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {movimiento.fondoIngresoAfectadoXGobiernoEstatal}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">0.00</StyledTableCell>
+                        <StyledTableCell align="center">
+                          <TextField
+                            type="number"
+                            inputProps={{
+                              sx: {
+                                fontSize: "0.7rem",
+                              },
+                            }}
+                            size="small"
+                            value={""}
+                            // onChange={(v) => {
+                            //   let auxArray = [...tablaTipoMovimiento];
+                            //   let val = Number(v.target.value);
 
-                          //   if (
-                          //     val <= 100 &&
-                          //     Number(
-                          //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                          //     ) +
-                          //       val <=
-                          //       Number(
-                          //         tablaTipoMovimiento[index]
-                          //           .fondoIngresoAsignadoMunicipio
-                          //       )
-                          //   ) {
-                          //     let suma = 0;
+                            //   if (
+                            //     val <= 100 &&
+                            //     Number(
+                            //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                            //     ) +
+                            //       val <=
+                            //       Number(
+                            //         tablaTipoMovimiento[index]
+                            //           .fondoIngresoAsignadoMunicipio
+                            //       )
+                            //   ) {
+                            //     let suma = 0;
 
-                          //     tablaTipoMovimiento.map((column) => {
-                          //       return (suma += Number(
-                          //         column.fondoIngresoAfectadoXMunicipio
-                          //       ));
-                          //     });
+                            //     tablaTipoMovimiento.map((column) => {
+                            //       return (suma += Number(
+                            //         column.fondoIngresoAfectadoXMunicipio
+                            //       ));
+                            //     });
 
-                          //     auxArray.map((column) => {
-                          //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                          //         (
-                          //           suma +
-                          //           val +
-                          //           Number(
-                          //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                          //           )
-                          //         ).toString());
-                          //     });
+                            //     auxArray.map((column) => {
+                            //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                            //         (
+                            //           suma +
+                            //           val +
+                            //           Number(
+                            //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                            //           )
+                            //         ).toString());
+                            //     });
 
-                          //     auxArray[
-                          //       index
-                          //     ].fondoIngresoAfectadoXMunicipio =
-                          //       val.toString();
+                            //     auxArray[
+                            //       index
+                            //     ].fondoIngresoAfectadoXMunicipio =
+                            //       val.toString();
 
-                          //     addPorcentaje(auxArray);
-                          //   }
-                          // }}
-                        />
-                      </StyledTableCell>
-                      <StyledTableCell />
-                      <StyledTableCell />
-                    </StyledTableRow>
-                  )
-                )}
+                            //     addPorcentaje(auxArray);
+                            //   }
+                            // }}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell />
+                        <StyledTableCell />
+                      </StyledTableRow>
+                    ))}
               </TableBody>
             </Table>
           </TableContainer>

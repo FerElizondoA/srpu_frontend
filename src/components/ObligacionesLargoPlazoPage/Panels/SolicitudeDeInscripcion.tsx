@@ -553,10 +553,9 @@ export function SolicituDeInscripcion() {
                 </TableContainer>
               </Grid>
 
-              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+              {/* {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
                 <Grid
                   container
-                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}}
                   sx={{
                     width: "100%",
                     display: "flex",
@@ -627,14 +626,6 @@ export function SolicituDeInscripcion() {
                     </Grid>
                   ) : null}
 
-                  {/* <Button
-                    sx={queries.buttonContinuarSolicitudInscripcion}
-                    onClick={() => {
-                      setOpenDialogBorrador(!openDialogBorrador);
-                    }}
-                  >
-                    Guardar Borrador
-                  </Button> */}
 
                   <Grid
                     mb={2}
@@ -673,7 +664,7 @@ export function SolicituDeInscripcion() {
                     />
                   )}
                 </Grid>
-              ) : null}
+              ) : null} */}
             </Grid>
           </Grid>
         </Grid>

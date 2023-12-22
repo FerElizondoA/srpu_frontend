@@ -432,14 +432,6 @@ export function DetalleMandato({
                           <Tooltip title={"Mostrar vista previa del documento"}>
                             <IconButton
                               onClick={() => {
-                                console.log(
-                                  arr.filter((td: any) =>
-                                    td.NOMBREFORMATEADO.includes(
-                                      row.nombreArchivo
-                                    )
-                                  )
-                                );
-
                                 setFileSelected(
                                   `data:application/pdf;base64,${
                                     arr.filter((td: any) =>

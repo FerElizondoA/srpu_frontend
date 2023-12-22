@@ -73,14 +73,14 @@ export function ObligacionesLargoPlazoPage() {
               },
             }}
           >
-            <Button
+            {/* <Button
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
               }}
               sx={{ ...queries.buttonContinuar }}
             >
               Guardar
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
 

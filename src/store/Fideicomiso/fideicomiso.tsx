@@ -605,8 +605,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   ) => {
     const state = useFideicomisoStore.getState();
 
-    console.log(state.tablaSoporteDocumentalFideicomiso);
-
     return await state.tablaSoporteDocumentalFideicomiso.map((dato, index) => {
       return setTimeout(() => {
         const url = new File([dato.archivo], dato.nombreArchivo);
@@ -694,7 +692,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       )
       .then(({ data }) => {
         let r = data.data;
-        console.log(r);
 
         set((state) => ({
           sumaPorcentajeAcumulado: r,

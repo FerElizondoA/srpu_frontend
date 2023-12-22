@@ -67,7 +67,10 @@ export const getUserAppDetail = (idCentral: string) => {
 
         localStorage.setItem("Rol", r.data.roles[0][0].Nombre);
         localStorage.setItem("IdRol", r.data.roles[0][0].Id);
-        localStorage.setItem("EntePublicoObligado", r.data.data.Entidad);
+        localStorage.setItem(
+          "EntePublicoObligado",
+          r.data.entidades[0][0].Nombre
+        );
         localStorage.setItem("IdEntePublicoObligado", r.data.data.IdEntidad);
         localStorage.setItem(
           "TipoEntePublicoObligado",

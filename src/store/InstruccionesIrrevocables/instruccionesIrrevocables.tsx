@@ -385,8 +385,6 @@ export const createInstruccionesIrrevocables: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data.data);
-
         state.setIdInstruccion(data.data.Id);
         state.saveFilesInstruccion(
           data.data.Id,
