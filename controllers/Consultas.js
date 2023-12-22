@@ -39,7 +39,6 @@ module.exports = {
       }
       if (result.length) {
         const data = result[0];
-        console.log(data);
         if (data.error) {
           return res.status(409).send({
             result: data,
