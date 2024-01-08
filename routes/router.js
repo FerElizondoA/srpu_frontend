@@ -111,6 +111,7 @@ const {
 const {
   createSolicitud,
   getSolicitudes,
+  getSolicitudesReestructura,
   getSolicitudesCancelaciones,
   modifySolicitud,
   deleteSolicitud,
@@ -829,6 +830,11 @@ router.get(
     getSolicitudesCancelaciones(req, res);
   }
 );
+
+router.get("/get-solicitudes-reestructura",verifyToken.verifyJWT,(req, res) => {
+  getSolicitudesReestructura(req, res);}
+);
+
 
 router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
   modifySolicitud(req, res);
