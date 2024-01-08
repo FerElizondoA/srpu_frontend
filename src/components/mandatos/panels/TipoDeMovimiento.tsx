@@ -535,6 +535,7 @@ export function TipoDeMovimiento() {
               Agregar
             </Button>
           </ThemeProvider>
+          
         </Grid>
 
         <Grid

@@ -2,9 +2,10 @@ import { Button, Dialog, TextField, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function ComentarioApartado({
   setOpen,
@@ -24,6 +25,20 @@ export function ComentarioApartado({
   const removeComentario: Function = useLargoPlazoStore(
     (state) => state.removeComentario
   );
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+  useEffect(() => {
+    // comentariosRegistro[openState.apartado] &&
+    setComent({
+      Apartado: openState.apartado,
+      Comentario: comentario[openState.apartado],
+      // ||
+      // comentariosRegistro[openState.apartado],
+    });
+  }, [openState.apartado]);
 
   return (
     <Dialog
@@ -46,6 +61,7 @@ export function ComentarioApartado({
           label="Nuevo comentario"
           sx={{ width: "100%", mt: 2 }}
           value={coment.Comentario}
+          disabled={reestructura === "con autorizacion"}
           onChange={(v) => {
             setComent({
               Comentario: v.target.value,
@@ -61,6 +77,7 @@ export function ComentarioApartado({
         {comentario[openState.apartado] !== "" ? (
           <Button
             sx={queries.buttonCancelar}
+            disabled={reestructura === "con autorizacion"}
             onClick={() => {
               removeComentario(openState.apartado);
               setOpen(false);
@@ -71,6 +88,7 @@ export function ComentarioApartado({
         ) : null}
         <Button
           sx={queries.buttonCancelar}
+          //disabled={reestructura}
           onClick={() => {
             setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
@@ -80,6 +98,7 @@ export function ComentarioApartado({
         </Button>
         <Button
           sx={queries.buttonContinuar}
+          disabled={reestructura === "con autorizacion"}
           onClick={() => {
             newComentario(coment, openState.tab);
             setComent({ Comentario: "", Apartado: "" });

@@ -9,6 +9,10 @@ export type ObligadoSolidarioAval = {
 };
 
 export interface InformacionGeneralSlice {
+
+  reestructura: string;
+  changeRestructura: (restructura: string) => void;
+
   informacionGeneral: {
     fechaContratacion: string;
     fechaVencimiento: string;
@@ -63,6 +67,13 @@ export interface InformacionGeneralSlice {
 export const createInformacionGeneralSlice: StateCreator<
   InformacionGeneralSlice
 > = (set, get) => ({
+  reestructura: "",
+  changeRestructura:(reestructura: string) => {
+    set(() => ({
+      reestructura: reestructura
+    }))
+  },
+
   informacionGeneral: {
     fechaContratacion: new Date().toString(),
     fechaVencimiento: new Date().toString(),

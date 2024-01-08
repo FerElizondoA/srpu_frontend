@@ -27,6 +27,7 @@ import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud
 import { ConfirmacionDescargaSolicitud } from "../Dialog/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialog/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export let erroresValidacion: string[] = [];
 
@@ -337,6 +338,10 @@ export function SolicituDeInscripcion() {
     }
   };
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
 
@@ -529,13 +534,13 @@ export function SolicituDeInscripcion() {
                                 onChange={(v) => {
                                   v.target.checked
                                     ? setCheckObj({
-                                        ...checkObj,
-                                        [index]: true,
-                                      })
+                                      ...checkObj,
+                                      [index]: true,
+                                    })
                                     : setCheckObj({
-                                        ...checkObj,
-                                        [index]: false,
-                                      });
+                                      ...checkObj,
+                                      [index]: false,
+                                    });
 
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
@@ -553,63 +558,82 @@ export function SolicituDeInscripcion() {
                 </TableContainer>
               </Grid>
 
-              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
-                <Grid
-                  container
-                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}}
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    mb: 2,
-                    ml: 2,
-                    height: "7rem",
-                    "@media (max-width: 974px)": {
+              {reestructura === "con autorizacion" ?
+
+                localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+                  <Grid
+                    container
+                    //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
+                    sx={{
                       width: "100%",
                       display: "flex",
-                      justifyContent: "space-evenly",
-                    },
-                    "@media (min-width: 974.1px)": {
-                      flexDirection: "column",
-                      justifyContent: "end",
-                      height: "22rem",
-                      width: "10%",
-                    },
+                      justifyContent: "center",
+                      mb: 2,
+                      ml: 2,
+                      height: "7rem",
+                      "@media (max-width: 974px)": {
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                      },
+                      "@media (min-width: 974.1px)": {
+                        flexDirection: "column",
+                        justifyContent: "end",
+                        height: "22rem",
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1140px)": {
-                      flexDirection: "column",
-                      justifyContent: "end",
-                      height: "22rem",
-                      width: "10%",
-                    },
+                      "@media (min-width: 1140px)": {
+                        flexDirection: "column",
+                        justifyContent: "end",
+                        height: "22rem",
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1400px)": {
-                      width: "10%",
-                    },
+                      "@media (min-width: 1400px)": {
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1870px)": {
-                      width: "5%",
-                      height: "35rem",
-                    },
-                  }}
-                >
-                  <Grid
-                    mb={2}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                      "@media (min-width: 1870px)": {
+                        width: "5%",
+                        height: "35rem",
+                      },
+                    }}
                   >
-                    <Button
-                      onClick={() => {
-                        setOpenDialogCancelar(!openDialogCancelar);
-                      }}
-                      sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                    <Grid
+                      mb={2}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
                     >
-                      Cancelar
-                    </Button>
-                  </Grid>
+                      <Button
+                        onClick={() => {
+                          setOpenDialogCancelar(!openDialogCancelar);
+                        }}
+                        sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                      >
+                        Cancelar
+                      </Button>
+                    </Grid>
 
-                  {localStorage.getItem("Rol") === "Verificador" ? (
+                    {localStorage.getItem("Rol") === "Verificador" ? (
+                      <Grid
+                        mb={2}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <Button
+                          sx={queries.buttonContinuarSolicitudInscripcion}
+                          onClick={() => {
+                            infoValidaciones("Modificacion");
+                          }}
+                        >
+                          Solicitar Modificación
+                        </Button>
+                      </Grid>
+                    ) : null}
+
                     <Grid
                       mb={2}
                       display={"flex"}
@@ -619,61 +643,36 @@ export function SolicituDeInscripcion() {
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
-                          infoValidaciones("Modificacion");
+                          infoValidaciones("Enviar");
                         }}
                       >
-                        Solicitar Modificación
+                        {localStorage.getItem("Rol") === "Verificador"
+                          ? "Finalizar"
+                          : "Enviar"}
                       </Button>
                     </Grid>
-                  ) : null}
 
-                  {/* <Button
-                    sx={queries.buttonContinuarSolicitudInscripcion}
-                    onClick={() => {
-                      setOpenDialogBorrador(!openDialogBorrador);
-                    }}
-                  >
-                    Guardar Borrador
-                  </Button> */}
-
-                  <Grid
-                    mb={2}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        infoValidaciones("Enviar");
-                      }}
-                    >
-                      {localStorage.getItem("Rol") === "Verificador"
-                        ? "Finalizar"
-                        : "Enviar"}
-                    </Button>
-                  </Grid>
-
-                  <ConfirmacionBorradorSolicitud
-                    handler={setOpenDialogBorrador}
-                    openState={openDialogBorrador}
-                  />
-                  <ConfirmacionDescargaSolicitud
-                    handler={setOpenDialogEnviar}
-                    openState={openDialogEnviar}
-                  />
-                  <ConfirmacionCancelarSolicitud
-                    handler={setOpenDialogCancelar}
-                    openState={openDialogCancelar}
-                  />
-                  {openDialogModificacion && (
-                    <DialogSolicitarModificacion
-                      handler={setOpenDialogModificacion}
-                      openState={openDialogModificacion}
+                    <ConfirmacionBorradorSolicitud
+                      handler={setOpenDialogBorrador}
+                      openState={openDialogBorrador}
                     />
-                  )}
-                </Grid>
-              ) : null}
+                    <ConfirmacionDescargaSolicitud
+                      handler={setOpenDialogEnviar}
+                      openState={openDialogEnviar}
+                    />
+                    <ConfirmacionCancelarSolicitud
+                      handler={setOpenDialogCancelar}
+                      openState={openDialogCancelar}
+                    />
+                    {openDialogModificacion && (
+                      <DialogSolicitarModificacion
+                        handler={setOpenDialogModificacion}
+                        openState={openDialogModificacion}
+                      />
+                    )}
+                  </Grid>
+                ) : null
+                : null}
             </Grid>
           </Grid>
         </Grid>

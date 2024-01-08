@@ -9,6 +9,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
@@ -63,8 +64,8 @@ export function VerBorradorDocumento(props: Props) {
   const justificacionAnulacion: string = useCortoPlazoStore(
     (state) => state.justificacionAnulacion);
 
-    const setJustificacionAnulacion: Function = useCortoPlazoStore(
-      (state) => state.setJustificacionAnulacion);
+  const setJustificacionAnulacion: Function = useCortoPlazoStore(
+    (state) => state.setJustificacionAnulacion);
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -211,15 +212,14 @@ export function VerBorradorDocumento(props: Props) {
       CambiaEstatus("Cancelado", props.rowId);
       createNotificationCortoPlazo(
         "Solicitud enviada",
-        `La solicitud de cancelación ha sido aceptada con fecha ${
-          new Date().toLocaleString("es-MX").split(" ")[0]
+        `La solicitud de cancelación ha sido aceptada con fecha ${new Date().toLocaleString("es-MX").split(" ")[0]
         } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
         [localStorage.getItem("IdUsuario")!]
       );
       navigate("../cancelaciones");
       window.location.reload();
     } else if (accion === "Anulación") {
-      
+
       Swal.close();
       AnularCancelacionSolicitud(
         props.rowSolicitud.Solicitud,
@@ -227,7 +227,7 @@ export function VerBorradorDocumento(props: Props) {
         justificacionAnulacion,
         props.rowSolicitud.UltimaModificacion,
         setUrl
-      ) 
+      )
       navigate("../firmaUrl");
     }
   };
@@ -236,12 +236,28 @@ export function VerBorradorDocumento(props: Props) {
 
   const [error, setError] = useState(false);
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+  const changeRestructura: Function = useCortoPlazoStore(
+    (state) => state.changeRestructura
+  );
+
   useEffect(() => {
     if (openDialogAnularConfirmacion === false) {
       setJustificacionAnulacion("");
       setError(false);
     }
   }, [openDialogAnularConfirmacion]);
+
+
+
+  const query = {
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1537px)"),
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 638px)"),
+  };
 
   return (
     <Dialog
@@ -260,12 +276,32 @@ export function VerBorradorDocumento(props: Props) {
           height: "8%",
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center"
         }}
       >
         <Button
           sx={{
-            ...queries.buttonCancelar,
-            fontSize: "70%",
+            backgroundColor: "rgb(175, 140, 85)",
+            color: "white",
+            "&&:hover": {
+              backgroundColor: "rgba(175, 140, 85, 0.6)",
+              color: "#000",
+            },
+            height:"2rem",
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center",
+            borderRadius: "0.8vh",
+            textTransform: "capitalize",
+            fontSize: "60%",
+            "@media (min-width: 480px)": {
+              fontSize: "70%",
+            },
+        
+            "@media (min-width: 768px)": {
+              fontSize: "80%",
+            },
+    
           }}
           onClick={() => {
             props.handler(false);
@@ -278,90 +314,258 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
+        {reestructura === "con autorizacion"
+          ? null
+          :
+          <Grid container display={"flex"} justifyContent={"space-evenly"} alignItems={"center"}
+            sx={{
+              width: "65%",
+              "@media (min-width: 480px)": {
+                width: "82%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "82%",
+              },
+               
+              "@media (min-width: 1140px)": {
+                width: "60%",
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "50%",
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "40%",
+              },
+            }}
+          >
+            <Button sx={{
+              width: "45%",
+              display:"flex",
+              justifyContent:"center",
+              alignItems:"center",
+              backgroundColor: "#15212f",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(47, 47, 47, 0.4)",
+                color: "#000",
+              },
+              //fontSize: "90%",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              fontSize: "60%",
+              "@media (min-width: 480px)": {
+                width: "45%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "40%",
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "40%",
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "42%",
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "40%",
+              },
+
+            }}
+              onClick={() => {
+                navigate("../ObligacionesCortoPlazo");
+                // if (props.rowSolicitud.TipoSolicitud === "Crédito simple a corto plazo") {
+                //   navigate("../ObligacionesCortoPlazo");
+                // } else {
+                //   navigate("../ObligacionesLargoPlazo");
+                // }
+              }}
+            >
+              <Typography sx={{
+                fontSize: "0.7rem",
+                fontFamily: "MontserratMedium",
+
+                "@media (min-width: 480px)": {
+                  fontSize: "0.7rem",
+                },
+
+                "@media (min-width: 768px)": {
+                  fontSize: ".75rem",
+                },
+
+                "@media (min-width: 1140px)": {
+                  fontSize: ".8rem",
+                },
+
+                "@media (min-width: 1400px)": {
+                  fontSize: ".85rem",
+                }
+              }}>
+                {query.isTittle ? "Reest. con autorización" : "Reestructuración con autorización"}
+
+                
+              </Typography>
+
+            </Button>
+
+            <Button sx={{
+              width: "45%",
+              backgroundColor: "#15212f",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(47, 47, 47, 0.4)",
+                color: "#000",
+              },
+              //fontSize: "90%",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              fontSize: "60%",
+              "@media (min-width: 480px)": {
+                width: "45%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "40%",
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "40%",
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "40%",
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "40%",
+              },
+
+            }}
+              onClick={() => {
+                navigate("../ObligacionesCortoPlazo");
+                // if (props.rowSolicitud.TipoSolicitud === "Crédito simple a corto plazo") {
+                //   navigate("../ObligacionesCortoPlazo");
+                // } else {
+                //   navigate("../ObligacionesLargoPlazo");
+                // }
+              }}
+            >
+              <Typography sx={{
+                fontSize: "0.7rem",
+                fontFamily: "MontserratMedium",
+
+                "@media (min-width: 480px)": {
+                  fontSize: "0.7rem",
+                },
+
+                "@media (min-width: 768px)": {
+                  fontSize: ".75rem",
+                },
+
+                "@media (min-width: 1140px)": {
+                  fontSize: ".8rem",
+                },
+
+                "@media (min-width: 1400px)": {
+                  fontSize: ".9rem",
+                }
+              }}>
+                {query.isTittle ? "Reest. sin autorización" :"Reestructuración sin autorización"}
+                
+              </Typography>
+            </Button>
+
+          </Grid>
+        }
+
         {((estatus === "Revision" &&
           localStorage.getItem("Rol") === "Revisor") ||
           (estatus === "Validacion" &&
             localStorage.getItem("Rol") === "Validador") ||
           (estatus === "Autorizacion" &&
             localStorage.getItem("Rol") === "Autorizador")) && (
-          <Grid
-            justifyContent={"space-evenly"}
-            sx={{ width: "40rem", display: "flex" }}
-          >
-            {((estatus === "Validacion" &&
-              localStorage.getItem("Rol") === "Validador") ||
-              (estatus === "Autorizacion" &&
-                localStorage.getItem("Rol") === "Autorizador")) && (
+            <Grid
+              justifyContent={"space-evenly"}
+              sx={{ width: "40rem", display: "flex" }}
+            >
+              {((estatus === "Validacion" &&
+                localStorage.getItem("Rol") === "Validador") ||
+                (estatus === "Autorizacion" &&
+                  localStorage.getItem("Rol") === "Autorizador")) && (
+                  <Button
+                    sx={{
+                      ...queries.buttonCancelar,
+                      fontSize: "70%",
+                    }}
+                    disabled={!tieneComentarios}
+                    onClick={() => {
+                      if (localStorage.getItem("Rol") === "Validador") {
+                        enviaNotificacion("Revision");
+                      } else {
+                        enviaNotificacion("Validacion");
+                      }
+                      window.location.reload();
+                    }}
+                  >
+                    {`Devolver para ${estatus === "Validacion" ? "Revisión" : "Validación"
+                      }`}
+                  </Button>
+                )}
+
               <Button
                 sx={{
                   ...queries.buttonCancelar,
                   fontSize: "70%",
                 }}
-                disabled={!tieneComentarios}
                 onClick={() => {
-                  if (localStorage.getItem("Rol") === "Validador") {
-                    enviaNotificacion("Revision");
-                  } else {
-                    enviaNotificacion("Validacion");
-                  }
-                  window.location.reload();
+                  setOpenGuardaComentarios(true);
                 }}
               >
-                {`Devolver para ${
-                  estatus === "Validacion" ? "Revisión" : "Validación"
-                }`}
+                Guardar Comentarios
               </Button>
-            )}
-
-            <Button
-              sx={{
-                ...queries.buttonCancelar,
-                fontSize: "70%",
-              }}
-              onClick={() => {
-                setOpenGuardaComentarios(true);
-              }}
-            >
-              Guardar Comentarios
-            </Button>
-            <Button
-              sx={{
-                ...queries.buttonContinuar,
-                fontSize: "70%",
-              }}
-              onClick={() => {
-                localStorage.getItem("Rol") === "Revisor"
-                  ? enviaNotificacion("Validacion")
+              <Button
+                sx={{
+                  ...queries.buttonContinuar,
+                  fontSize: "70%",
+                }}
+                onClick={() => {
+                  localStorage.getItem("Rol") === "Revisor"
+                    ? enviaNotificacion("Validacion")
+                    : localStorage.getItem("Rol") === "Validador"
+                      ? enviaNotificacion("Autorizacion")
+                      : enviaNotificacion("Autorizado, Por Firmar");
+                  addComentario(
+                    IdSolicitud,
+                    JSON.stringify(comentarios),
+                    "Requerimiento"
+                  );
+                  props.handler(false);
+                  Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se envió con éxito",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.reload();
+                    }
+                  });
+                }}
+              >
+                Confirmar{" "}
+                {localStorage.getItem("Rol") === "Revisor"
+                  ? "revisión"
                   : localStorage.getItem("Rol") === "Validador"
-                  ? enviaNotificacion("Autorizacion")
-                  : enviaNotificacion("Autorizado, Por Firmar");
-                addComentario(
-                  IdSolicitud,
-                  JSON.stringify(comentarios),
-                  "Requerimiento"
-                );
-                props.handler(false);
-                Swal.fire({
-                  confirmButtonColor: "#15212f",
-                  icon: "success",
-                  title: "Mensaje",
-                  text: "La solicitud se envió con éxito",
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    window.location.reload();
-                  }
-                });
-              }}
-            >
-              Confirmar{" "}
-              {localStorage.getItem("Rol") === "Revisor"
-                ? "revisión"
-                : localStorage.getItem("Rol") === "Validador"
-                ? "validación"
-                : "autorización"}
-            </Button>
-          </Grid>
-        )}
+                    ? "validación"
+                    : "autorización"}
+              </Button>
+            </Grid>
+          )}
 
         {props.rowSolicitud.Estatus === "En espera cancelación" &&
           (localStorage.getItem("Rol") === "Autorizador" ||

@@ -142,8 +142,8 @@ export function Documentacion() {
     if (IdSolicitud) {
       getDocumentos(
         `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-        () => {},
-        () => {}
+        () => { },
+        () => { }
       );
     }
   }, []);
@@ -223,38 +223,43 @@ export function Documentacion() {
                     </StyledTableCell>
 
                     <StyledTableCell scope="row">
-                      <TextField
-                        sx={{ width: "250px" }}
-                        disabled={
-                          val.archivo?.name ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                          val.nombreArchivo ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                          (datosActualizar.length > 0 &&
-                            !datosActualizar.includes(val.tipoArchivo))
-                        }
-                        size="small"
-                        multiline={!query.isMobile}
-                        value={val.nombreArchivo}
-                        onChange={(v) => {
-                          let auxArrayArchivos = [...tablaDocumentos];
-                          auxArrayArchivos[index].nombreArchivo = v.target.value
-                            .replaceAll("'", "")
-                            .replaceAll('"', "")
-                            .replaceAll("\n", "");
-                          setTablaDocumentos(auxArrayArchivos);
-                        }}
-                      ></TextField>
+                        <TextField
+                          sx={{ width: "250px",
+                         }}
+                          disabled={
+                            (val.archivo?.name ===
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                              val.nombreArchivo ===
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                              (datosActualizar.length > 0 &&
+                                !datosActualizar.includes(val.tipoArchivo)))
+
+                          }
+                          size="small"
+                          multiline={!query.isMobile}
+                          value={val.nombreArchivo}
+                          onChange={(v) => {
+                            let auxArrayArchivos = [...tablaDocumentos];
+                            auxArrayArchivos[index].nombreArchivo = v.target.value
+                              .replaceAll("'", "")
+                              .replaceAll('"', "")
+                              .replaceAll("\n", "");
+                            setTablaDocumentos(auxArrayArchivos);
+                          }}
+                        ></TextField>
+
+
                     </StyledTableCell>
 
                     <StyledTableCell sx={{ position: "relative" }}>
+                    <Grid container height={"3rem"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                       <Typography
                         position={"absolute"}
                         sx={{
                           display: "flex",
                           fontFamily:
                             val.archivo?.name !==
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "MontserratBold"
                               : "MontserratMedium",
                           textAlign: "center",
@@ -265,7 +270,7 @@ export function Documentacion() {
                           fontSize: "70%",
                           border:
                             val.archivo?.name !==
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                               ? "2px dotted #af8c55"
                               : "2px dotted black",
                         }}
@@ -276,8 +281,8 @@ export function Documentacion() {
                       </Typography>
                       <input
                         disabled={
-                          datosActualizar.length > 0 &&
-                          !datosActualizar.includes(val.tipoArchivo)
+                          (datosActualizar.length > 0 &&
+                            !datosActualizar.includes(val.tipoArchivo))
                         }
                         type="file"
                         accept="application/pdf"
@@ -291,6 +296,7 @@ export function Documentacion() {
                           cursor: "pointer",
                         }}
                       />
+                      </Grid>
                     </StyledTableCell>
                     <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
@@ -319,7 +325,7 @@ export function Documentacion() {
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                tablaDocumentos[index]?.tipoArchivo ===
+                                  tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,
@@ -333,24 +339,19 @@ export function Documentacion() {
                               index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-                            {tiposDocumentos.map((tipo) => (
-                              <MenuItem key={tipo.Id} value={tipo.Id}>
-                                {tipo.Descripcion}
-                              </MenuItem>
-                            ))}
                           </Select>
                         </FormControl>
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                      comentario[val.descripcionTipo] !== "" ? (
+                        comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                                  comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -373,7 +374,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                              comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -457,6 +458,7 @@ export function Documentacion() {
             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
           </Typography>
           <input
+            //disabled={reestructura}
             type="file"
             accept="application/pdf"
             onChange={(v) => {

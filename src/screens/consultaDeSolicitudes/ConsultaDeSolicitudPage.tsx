@@ -496,39 +496,7 @@ export function ConsultaDeSolicitudPage() {
           Consulta de Solicitudes
         </Typography>
       </Grid>
-      <Grid item mb={5} lg={12} display="center" justifyContent="center">
-        <Paper
-          component="form"
-          sx={{
-            display: "flex",
-            width: "50%",
-          }}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Buscar"
-            value={busqueda}
-            onChange={(e) => {
-              handleChange(e.target.value);
-            }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                handleSearch();
-                ev.preventDefault();
-                return false;
-              }
-            }}
-          />
-          <IconButton
-            type="button"
-            sx={{ p: "10px" }}
-            aria-label="search"
-            onClick={() => handleSearch()}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-      </Grid>
+      
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
           <TableContainer

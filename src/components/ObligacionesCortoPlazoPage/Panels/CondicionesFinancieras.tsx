@@ -12,8 +12,10 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  ThemeProvider,
   Tooltip,
   Typography,
+  createTheme,
 } from "@mui/material";
 import { useState } from "react";
 import {
@@ -34,6 +36,23 @@ import { format, lightFormat } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
+
 
 interface Head {
   label: string;
@@ -159,6 +178,7 @@ export function CondicionesFinancieras() {
   const datosActualizar: Array<string> = useCortoPlazoStore(
     (state) => state.datosActualizar
   );
+
 
   let disable =
     datosActualizar.length < 0 &&
@@ -305,9 +325,9 @@ export function CondicionesFinancieras() {
                         {row.disposicion.length > 1
                           ? null
                           : format(
-                              new Date(row.disposicion[0].fechaDisposicion),
-                              "dd/MM/yyyy"
-                            )}
+                            new Date(row.disposicion[0].fechaDisposicion),
+                            "dd/MM/yyyy"
+                          )}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -588,17 +608,20 @@ export function CondicionesFinancieras() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Button
-          disabled={disable}
-          sx={queries.buttonContinuar}
-          variant="outlined"
-          onClick={() => {
-            changeOpenAgregarState(!openAgregarCondicion);
-            setAccion("Agregar");
-          }}
-        >
-          Agregar
-        </Button>
+        <ThemeProvider theme={theme}>
+          <Button
+            disabled={disable}
+            sx={queries.buttonContinuar}
+            variant="outlined"
+            onClick={() => {
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
+
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}

@@ -28,6 +28,7 @@ import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
+import { Reestructura } from "./screens/Reestructura/Reestructura"; 
 
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
@@ -107,6 +108,7 @@ function App() {
           element={<InstruccionesIrrevocables />}
         />
         <Route path="AdministracionAyudas" element={<Ayuda />} />
+        <Route path="reestructura" element={<Reestructura />} />
       </Routes>
     </HashRouter>
   );

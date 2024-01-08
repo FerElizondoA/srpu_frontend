@@ -19,6 +19,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface HeadSelect {
   Id: string;
@@ -153,6 +154,10 @@ export function AsignarFuente() {
     (state) => state.getFuentePago
   );
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   useEffect(() => {
     getTiposDeFuente();
     getClasificacion();
@@ -183,6 +188,7 @@ export function AsignarFuente() {
             Tipo de garantía de pago
           </InputLabel>
           <Autocomplete
+          disabled={reestructura === "con autorizacion"}
             //disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -258,6 +264,7 @@ export function AsignarFuente() {
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
           <Autocomplete
             //disableClearable
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -311,6 +318,7 @@ export function AsignarFuente() {
 
           <Autocomplete
             //disableClearable
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -354,6 +362,7 @@ export function AsignarFuente() {
           <InputLabel sx={queries.medium_text}>Fuente de pago</InputLabel>
           <Autocomplete
             //disableClearable
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -397,6 +406,7 @@ export function AsignarFuente() {
           <InputLabel sx={queries.medium_text}>Respecto a: </InputLabel>
           <Autocomplete
             //disableClearable
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"

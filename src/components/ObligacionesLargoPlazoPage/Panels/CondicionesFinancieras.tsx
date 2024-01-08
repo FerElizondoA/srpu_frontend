@@ -13,6 +13,7 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip,
+  ThemeProvider,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -33,6 +34,8 @@ import {
   TasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { theme } from "./InformacionGeneral";
 
 interface Head {
   label: string;
@@ -154,6 +157,19 @@ export function CondicionesFinancieras() {
     (state) => state.changeTasaInteres
   );
 
+  const datosActualizar: Array<string> = useLargoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+  let disable =
+    datosActualizar.length < 0 &&
+    (!datosActualizar.includes("Tabla Condiciones Financieras") ||
+      !datosActualizar.includes("Monto Original Contratado"));
+
   return (
     <Grid container>
       <Grid item sx={queries.tablaCondicionFinanciera}>
@@ -192,6 +208,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
+                            disabled={reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => {
                               changeOpenAgregarState(!openAgregarCondicion);
@@ -237,6 +254,7 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
+                            disabled={disable || reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => {
                               updatecondicionFinancieraTable(
@@ -260,9 +278,9 @@ export function CondicionesFinancieras() {
                         {row.disposicion.length > 1
                           ? null
                           : format(
-                              new Date(row.disposicion[0].fechaDisposicion),
-                              "dd/MM/yyyy"
-                            )}
+                            new Date(row.disposicion[0].fechaDisposicion),
+                            "dd/MM/yyyy"
+                          )}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -542,16 +560,20 @@ export function CondicionesFinancieras() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Button
-          sx={queries.buttonContinuar}
-          variant="outlined"
-          onClick={() => {
-            changeOpenAgregarState(!openAgregarCondicion);
-            setAccion("Agregar");
-          }}
-        >
-          Agregar
-        </Button>
+        <ThemeProvider theme={theme}>
+          <Button
+            disabled={disable || reestructura === "con autorizacion"}
+            sx={queries.buttonContinuar}
+            variant="outlined"
+            onClick={() => {
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
+
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}

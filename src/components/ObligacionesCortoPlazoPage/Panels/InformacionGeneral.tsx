@@ -170,6 +170,7 @@ export function InformacionGeneral() {
     (state) => state.cleanObligadoSolidarioAval
   );
 
+
   const addRows = () => {
     let tab = {
       obligadoSolidario: generalObligadoSolidario.Descripcion,
@@ -294,8 +295,8 @@ export function InformacionGeneral() {
           >
             <DesktopDatePicker
               disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación")
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Fecha de Contratación")) 
               }
               disablePast={false}
               sx={{ width: "100%" }}
@@ -305,9 +306,9 @@ export function InformacionGeneral() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
+            // slots={{
+            //   textField: DateInput,
+            // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -315,6 +316,7 @@ export function InformacionGeneral() {
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
+
             fullWidth
             variant="standard"
             value={plazoD}
@@ -339,8 +341,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Monto Original Contratado")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Monto Original Contratado"))
             }
             fullWidth
             placeholder="0"
@@ -400,16 +402,16 @@ export function InformacionGeneral() {
           >
             <DesktopDatePicker
               disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Vencimiento")
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Fecha de Vencimiento"))
               }
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))} //1
-              // slots={{
-              //   textField: DateInput,
-              // }}
+            // slots={{
+            //   textField: DateInput,
+            // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -418,7 +420,7 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             disabled={
-              datosActualizar.length > 0 && !datosActualizar.includes("Destino")
+              (datosActualizar.length > 0 && !datosActualizar.includes("Destino")) 
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -469,8 +471,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Denominación")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Denominación"))
             }
             fullWidth
             variant="standard"
@@ -503,8 +505,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Institución Financiera")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Institución Financiera")) 
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -564,8 +566,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) 
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -633,10 +635,10 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+              (generalObligadoSolidario.Descripcion === "No Aplica" ||
+                /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Tabla Obligado Solidario / Aval"))) 
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -805,7 +807,7 @@ export function InformacionGeneral() {
 
               <TableBody>
                 {generalObligadoSolidario.Descripcion === "No Aplica" &&
-                tablaObligados.length === 0 ? (
+                  tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell />

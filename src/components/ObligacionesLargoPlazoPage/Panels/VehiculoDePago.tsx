@@ -28,6 +28,7 @@ import {
   NumeroMandato,
 } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -189,6 +190,11 @@ export function VehiculoDePago() {
     MonitorEscritorio: useMediaQuery("(min-width: 1870px) "),
   };
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+
   return (
     <Grid
       container
@@ -252,6 +258,7 @@ export function VehiculoDePago() {
 
             <FormControl fullWidth>
               <Select
+              disabled={reestructura === "con autorizacion"}
                 value={mecanismo}
                 fullWidth
                 variant="standard"
@@ -275,6 +282,7 @@ export function VehiculoDePago() {
               </InputLabel>
 
               <Autocomplete
+              disabled={reestructura === "con autorizacion"}
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
@@ -321,6 +329,7 @@ export function VehiculoDePago() {
               </InputLabel>
 
               <Autocomplete
+              disabled={reestructura === "con autorizacion"}
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
@@ -366,6 +375,7 @@ export function VehiculoDePago() {
               </InputLabel>
 
               <Autocomplete
+              disabled={reestructura === "con autorizacion"}
                 clearText="Borrar"
                 noOptionsText="Sin opciones"
                 closeText="Cerrar"
@@ -589,6 +599,7 @@ export function VehiculoDePago() {
                   <Grid xs={5} sm={5} md={3.3} lg={3} xl={3}>
                     <InputLabel>Mandatario</InputLabel>
                     <TextField
+                    disabled
                       value={row.Mandatario}
                       fullWidth
                       variant="standard"
@@ -599,6 +610,7 @@ export function VehiculoDePago() {
                   <Grid xs={5} sm={5} md={3.3} lg={3} xl={3}>
                     <InputLabel>Fecha del mandato</InputLabel>
                     <TextField
+                    disabled
                       value={row.FechaMandato}
                       fullWidth
                       variant="standard"
@@ -763,6 +775,7 @@ export function VehiculoDePago() {
                   <Grid xs={10} sm={6} md={6} lg={6} xl={3}>
                     <InputLabel>Banco</InputLabel>
                     <TextField
+                    disabled
                       value={row.DescripcionBanco}
                       fullWidth
                       variant="standard"
@@ -773,6 +786,7 @@ export function VehiculoDePago() {
                   <Grid xs={10} sm={3} md={3} lg={3} xl={3}>
                     <InputLabel>CLABE</InputLabel>
                     <TextField
+                    disabled
                       value={row.CLABE}
                       fullWidth
                       variant="standard"
