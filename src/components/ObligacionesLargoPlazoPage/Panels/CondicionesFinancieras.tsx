@@ -111,8 +111,12 @@ export function CondicionesFinancieras() {
     (state) => state.changeTasaInteres
   );
 
-  const datosActualizar: Array<string> = useCortoPlazoStore(
+  const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
+  );
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
   );
 
   let disable =
@@ -190,7 +194,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
-                            disabled={disable}
+                            disabled={reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => {
                               changeOpenAgregarState(!openAgregarCondicion);
@@ -236,7 +240,9 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
-                            disabled={disable}
+                            disabled={
+                              disable || reestructura === "con autorizacion"
+                            }
                             type="button"
                             onClick={() => {
                               updatecondicionFinancieraTable(
@@ -544,7 +550,7 @@ export function CondicionesFinancieras() {
         alignItems={"center"}
       >
         <Button
-          disabled={disable}
+          disabled={disable || reestructura === "con autorizacion"}
           sx={queries.buttonContinuar}
           variant="outlined"
           onClick={() => {
@@ -554,6 +560,7 @@ export function CondicionesFinancieras() {
         >
           Agregar
         </Button>
+
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}

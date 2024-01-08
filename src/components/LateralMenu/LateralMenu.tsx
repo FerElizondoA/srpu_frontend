@@ -23,6 +23,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -105,6 +106,8 @@ export const IconsMenu = (icon: string) => {
       return <HelpIcon sx={queries.icon} />;
     case "CancelIcon":
       return <DoNotDisturbAltIcon sx={queries.icon} />;
+    case "BuildIcon":
+      return <BuildOutlinedIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -635,6 +638,31 @@ export function LateralMenu() {
               <Divider />
 
               <List>
+                <ListItemButton
+                  sx={{
+                    backgroundColor:
+                      i === indexSelect && seccionesHover === true
+                        ? "#AF8C55"
+                        : "#ffff",
+                    //border: i === indexSelect ? "2px solid" : null,
+                    ":hover": { backgroundColor: "#AF8C55" },
+                  }}
+                  onClick={() => {
+                    navigate("/reestructura");
+                  }}
+                >
+                  <ListItemIcon>
+                    <BuildOutlinedIcon />
+                  </ListItemIcon>
+                  <Typography sx={{
+                    ...queries.bold_text,
+                    ":hover": { backgroundColor: "#AF8C55" },
+                  }}>
+                    Reestructura
+                  </Typography>
+
+
+                </ListItemButton>
                 {menu.length > 0 ? (
                   menu.map(
                     (v: any, i: number) =>
@@ -699,6 +727,7 @@ export function LateralMenu() {
                             >
                               <List>
                                 {/* CAMPOS PRIMER DESGLOSE */}
+
                                 {v.item.map((v: any, i: number) => (
                                   <Grid key={i}>
                                     <ListItemButton

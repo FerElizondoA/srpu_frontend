@@ -144,6 +144,10 @@ export function InformacionGeneral() {
     (state) => state.cleanObligadoSolidarioAval
   );
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   const addRows = () => {
     let tab = {
       obligadoSolidario: generalObligadoSolidario.Descripcion,
@@ -210,6 +214,10 @@ export function InformacionGeneral() {
     });
   }, [contratacion, vencimiento]);
 
+  const datosActualizar: Array<string> = useLargoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
   return (
     <Grid
       container
@@ -236,6 +244,11 @@ export function InformacionGeneral() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
+              disabled={
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Fecha de Contratación")) ||
+                reestructura === "con autorizacion"
+              }
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
               onChange={(date) => {
@@ -273,6 +286,11 @@ export function InformacionGeneral() {
             Monto Original Contratado
           </InputLabel>
           <TextField
+            disabled={
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Monto Original Contratado")) ||
+              reestructura === "con autorizacion"
+            }
             fullWidth
             placeholder="0"
             value={monto <= 0 ? "" : monto.toString()}
@@ -325,6 +343,11 @@ export function InformacionGeneral() {
           >
             <DesktopDatePicker
               sx={{ width: "100%" }}
+              disabled={
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Fecha de Vencimiento")) ||
+                reestructura === "con autorizacion"
+              }
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))}
@@ -335,6 +358,11 @@ export function InformacionGeneral() {
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
+            disabled={
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Destino")) ||
+              reestructura === "con autorizacion"
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -383,6 +411,11 @@ export function InformacionGeneral() {
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
+            disabled={
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Denominación")) ||
+              reestructura === "con autorizacion"
+            }
             fullWidth
             variant="standard"
             value={denominacion || ""}
@@ -413,6 +446,11 @@ export function InformacionGeneral() {
             Institución Financiera
           </InputLabel>
           <Autocomplete
+            disabled={
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Institución Financiera")) ||
+              reestructura === "con autorizacion"
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -465,6 +503,11 @@ export function InformacionGeneral() {
             Obligado Solidario / Aval
           </InputLabel>
           <Autocomplete
+            disabled={
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) ||
+              reestructura === "con autorizacion"
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -532,7 +575,10 @@ export function InformacionGeneral() {
             openText="Abrir"
             disabled={
               generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion)
+              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) ||
+              reestructura === "con autorizacion"
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -711,6 +757,7 @@ export function InformacionGeneral() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
+                              disabled={reestructura === "con autorizacion"}
                               onClick={() => removeObligadoSolidarioAval(index)}
                             >
                               <DeleteIcon />

@@ -177,6 +177,10 @@ export function GastoCostos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   return (
     <Grid
       item
@@ -192,6 +196,7 @@ export function GastoCostos() {
         <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -252,6 +257,7 @@ export function GastoCostos() {
           </InputLabel>
 
           <TextField
+            disabled={reestructura === "con autorizacion"}
             fullWidth
             value={generalGCClaveInscripcionFinanciamiento}
             onChange={(v) => {
@@ -280,6 +286,7 @@ export function GastoCostos() {
         <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
           <TextField
+            disabled={reestructura === "con autorizacion"}
             fullWidth
             value={GCGastosAdicionales}
             onChange={(v) => {
@@ -315,6 +322,7 @@ export function GastoCostos() {
             Detalle de la Inversión
           </InputLabel>
           <Autocomplete
+            disabled={reestructura === "con autorizacion"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -363,6 +371,7 @@ export function GastoCostos() {
         <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
           <TextField
+            disabled={reestructura === "con autorizacion"}
             value={generalGCDescripcion}
             onChange={(v) =>
               changeGeneralGastosCostos({
@@ -394,6 +403,7 @@ export function GastoCostos() {
             Monto Gastos Adicionales
           </InputLabel>
           <TextField
+            disabled={reestructura === "con autorizacion"}
             fullWidth
             placeholder="0"
             value={
@@ -463,7 +473,7 @@ export function GastoCostos() {
                   ...queries.leyendaArchivoGastosCosto,
                   border:
                     detalleInversion.nombreArchivo !==
-                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                       ? "2px dotted #af8c55"
                       : "2x dotted black",
                 }}
@@ -472,6 +482,7 @@ export function GastoCostos() {
                   "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
               </Typography>
               <input
+                disabled={reestructura === "con autorizacion"}
                 type="file"
                 accept="application/pdf"
                 onChange={(v) => {
@@ -499,6 +510,7 @@ export function GastoCostos() {
         <Grid item xs={10} sm={3.3} md={3.3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Monto</InputLabel>
           <TextField
+            disabled={reestructura === "con autorizacion"}
             fullWidth
             placeholder="0"
             value={generalGCMonto <= 0 ? "" : generalGCMonto}
@@ -547,6 +559,7 @@ export function GastoCostos() {
             Saldo Vigente
           </InputLabel>
           <TextField
+            disabled={reestructura === "con autorizacion"}
             fullWidth
             value={GCSaldoVigente <= 0 ? "" : GCSaldoVigente.toString()}
             onChange={(v) => {
@@ -690,6 +703,7 @@ export function GastoCostos() {
                       <StyledTableCell align="center">
                         <Tooltip title="Eliminar">
                           <IconButton
+                            disabled={reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => removeGeneralGastosCostos(index)}
                           >

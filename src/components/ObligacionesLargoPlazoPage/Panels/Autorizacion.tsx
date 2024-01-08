@@ -21,6 +21,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  ThemeProvider,
 } from "@mui/material";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -35,6 +36,8 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IPathDocumentos } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
 import { DialogEliminarAutorizacion } from "../Dialog/DialogEliminarAutorizacion";
 import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { theme } from "./InformacionGeneral";
 
 interface Head {
   label: string;
@@ -125,7 +128,7 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
       getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => {});
+      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => { });
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
@@ -145,6 +148,10 @@ export function Autorizacion() {
     }
   }, [pathDocumentos]);
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   return (
     <Grid
       container
@@ -159,6 +166,7 @@ export function Autorizacion() {
             Autorización de la legislatura local
           </InputLabel>
           <Autocomplete
+            disabled={reestructura === "con autorizacion"}
             disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -215,16 +223,20 @@ export function Autorizacion() {
           </Grid> */}
 
           <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
-            <Button
-              sx={queries.buttonContinuar}
-              variant="outlined"
-              onClick={() => {
-                setAccion("Agregar");
-                setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion);
-              }}
-            >
-              Nuevo
-            </Button>
+            <ThemeProvider theme={theme}>
+              <Button
+                disabled={reestructura === "con autorizacion"}
+                sx={queries.buttonContinuar}
+                variant="outlined"
+                onClick={() => {
+                  setAccion("Agregar");
+                  setOpenNuevaAutorizacion(!openDialogNuevaAutorizacion);
+                }}
+              >
+                Nuevo
+              </Button>
+            </ThemeProvider>
+
           </Grid>
         </Grid>
       </Grid>
@@ -302,13 +314,12 @@ export function Autorizacion() {
                             <IconButton
                               onClick={() => {
                                 setFileSelected(
-                                  `data:application/pdf;base64,${
-                                    arrDocs.filter((td: any) =>
-                                      td.nombre.includes(
-                                        JSON.parse(row.DocumentoSoporte)
-                                          ?.nombreArchivo
-                                      )
-                                    )[0].file
+                                  `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                    td.nombre.includes(
+                                      JSON.parse(row.DocumentoSoporte)
+                                        ?.nombreArchivo
+                                    )
+                                  )[0].file
                                   }`
                                 );
 
@@ -334,6 +345,7 @@ export function Autorizacion() {
                         >
                           <Tooltip title="Eliminar">
                             <IconButton
+                              disabled={reestructura === "con autorizacion"}
                               type="button"
                               onClick={() => {
                                 setIndexTabla(index);
@@ -352,6 +364,7 @@ export function Autorizacion() {
 
                           <Tooltip title="Editar">
                             <IconButton
+                              disabled={reestructura === "con autorizacion"}
                               type="button"
                               onClick={() => {
                                 setAccion("Editar");

@@ -13,6 +13,10 @@ export interface ComentarioApartadoLargoPlazoSlice {
   removeComentario: (apartado: string, Tab: string) => void;
 
   setComentarios: (comentario: any) => void;
+
+  datosActualizar: Array<string>;
+
+  setDatosActualizar: (datos: any) => void;
 }
 
 export const createComentarioLargoPlazoSlice: StateCreator<ComentarioApartadoLargoPlazoSlice> = (
@@ -48,6 +52,15 @@ export const createComentarioLargoPlazoSlice: StateCreator<ComentarioApartadoLar
   setComentarios: (comentarios: any) => {
     set((state) => ({
       comentarios: comentarios,
+    }));
+  },
+
+  
+  datosActualizar: [],
+
+  setDatosActualizar: (datos: any) => {
+    set((state) => ({
+      datosActualizar: Object.keys(JSON.parse(datos[0]!.Comentarios)),
     }));
   },
 });

@@ -61,6 +61,8 @@ export function Encabezado() {
     getListadoUsuarios(setUsuarios);
     getTiposEntesPublicos();
     getOrganismos();
+    changeRestructura("con autorizacion");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosLargo>>([]);
@@ -75,6 +77,13 @@ export function Encabezado() {
     (state) => state.datosActualizar
   );
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+  const changeRestructura: Function = useCortoPlazoStore(
+    (state) => state.changeRestructura
+  );
   return (
     <Grid container height={"25rem"}>
       <Grid
@@ -90,8 +99,9 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Documento")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tipo de Documento")) ||
+              reestructura === "con autorizacion"
             }
             fullWidth
             value={tipoDocumento}
@@ -117,8 +127,9 @@ export function Encabezado() {
           </InputLabel>
           <Select
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Solicitante Autorizado")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Solicitante Autorizado")) ||
+              reestructura === "con autorizacion"
             }
             sx={queries.medium_text}
             fullWidth
@@ -154,8 +165,9 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Cargo del Solicitante")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Cargo del Solicitante")) ||
+              reestructura === "con autorizacion"
             }
             fullWidth
             value={solicitanteAutorizado.Cargo}
@@ -191,8 +203,9 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Ente Público")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tipo de Ente Público")) ||
+              reestructura === "con autorizacion"
             }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
@@ -219,8 +232,9 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Municipio u Organismo")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Municipio u Organismo")) ||
+              reestructura === "con autorizacion"
             }
             fullWidth
             value={organismo.Organismo}
@@ -250,8 +264,9 @@ export function Encabezado() {
           >
             <DesktopDatePicker
               disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación")
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Fecha de Contratación")) ||
+                reestructura === "con autorizacion"
               }
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}

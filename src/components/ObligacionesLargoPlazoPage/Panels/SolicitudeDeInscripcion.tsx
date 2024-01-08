@@ -23,6 +23,7 @@ import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export let erroresValidacion: string[] = [];
 
@@ -71,6 +72,263 @@ export function SolicituDeInscripcion() {
     getReglas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const infoValidaciones = (filtroValidacion: string) => {
+    let err = 0;
+    if (filtroValidacion === "Enviar") {
+      erroresValidacion = [];
+
+      const state = useLargoPlazoStore.getState();
+      const solicitud: any = {
+        encabezado: state.encabezado,
+        MontoOriginalContratado: state.informacionGeneral.monto,
+        PlazoDias: state.informacionGeneral.plazo,
+        Destino: state.informacionGeneral.destino.Descripcion,
+        Denominacion: state.informacionGeneral.denominacion,
+        InstitucionFinanciera:
+          state.informacionGeneral.institucionFinanciera.Descripcion,
+      };
+      /////////////////// Por definir /////////////////////
+      ///////////////////   Condiciones Financieras /////////////////////
+      let numeroDePago = 0;
+      let PeriocidadDePago = "";
+      let diasEjercicio = "";
+      let tasaEfectiva = "";
+      let comisiones: any = [];
+      let TasaDeInteres: any = [];
+
+      ///////////////////    Gastos y costos   ///////////////////
+      const CostosGastos: any = {
+        destinoCG: state.generalGastosCostos.destino.Descripcion,
+        detalleInversion: state.generalGastosCostos.detalleInversion,
+        //periodoAdministracion: state.generalGastosCostos.periodoAdministracion, // NO SABEMOS AUN
+        gastosAdicionales: state.GastosCostos.gastosAdicionales,
+        claveInscripcionFinanciamiento:
+          state.generalGastosCostos.claveInscripcionFinanciamiento, // NO SABEMOS AUN
+        descripcion: state.generalGastosCostos.descripcion,
+        monto: state.generalGastosCostos.monto,
+        //periodoFinanciamiento: state.generalGastosCostos.periodoFinanciamiento, //AUN NO SABEMOS
+        saldoVigente: state.GastosCostos.saldoVigente, //AUN NO SABEMOS
+        montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
+      };
+
+      //let periodoFinanciamiento = "";
+
+      for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
+        const item = state.tablaCondicionesFinancieras[0];
+        //importe = item.disposicion.importe;
+        numeroDePago = item.pagosDeCapital.numeroDePago;
+        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
+        TasaDeInteres = item.tasaInteres;
+        diasEjercicio = item.diasEjercicio;
+        tasaEfectiva = item.tasaEfectiva;
+        comisiones = item.comisiones;
+      }
+
+      if (
+        solicitud.PlazoDias === undefined ||
+        solicitud.PlazoDias === 0 ||
+        /^[\s]*$/.test(solicitud.PlazoDias)
+      ) {
+        err = 1;
+        erroresValidacion.push(
+          "Sección Información General: El Plazo a Días no puede ser  0."
+        );
+      }
+
+      if (
+        solicitud.MontoOriginalContratado === undefined ||
+        solicitud.MontoOriginalContratado === 0 ||
+        /^[\s]*$/.test(solicitud.MontoOriginalContratado)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Ingrese un Monto original contratado valido."
+        );
+      }
+      if (
+        solicitud.Destino === undefined ||
+        solicitud.Destino === "" ||
+        /^[\s]*$/.test(solicitud.Destino)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Seleccione el Destino."
+        );
+      }
+      if (
+        solicitud.InstitucionFinanciera === undefined ||
+        solicitud.InstitucionFinanciera === "" ||
+        /^[\s]*$/.test(solicitud.InstitucionFinanciera)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Seleccione la Institución Financiera."
+        );
+      }
+
+      if (
+        state.tablaCondicionesFinancieras[0] === undefined ||
+        state.tablaCondicionesFinancieras[0] === null
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Agregar al menos una Condicion Financiera."
+        );
+      }
+
+      if (TasaDeInteres[0] === undefined || TasaDeInteres[0].tasa === "") {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Agregar al menos una Tasa De Interés."
+        );
+      }
+      // if (importe === undefined || importe === 0) {
+      //   err = 1;
+
+      //   erroresValidacion.push(
+      //     "Sección Condiciones Financieras: Ingrese el Importe."
+      //   );
+      // }
+      if (numeroDePago === undefined || numeroDePago === 0) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Ingrese el Número de pagos."
+        );
+      }
+      if (
+        PeriocidadDePago === undefined ||
+        PeriocidadDePago === "" ||
+        /^[\s]*$/.test(PeriocidadDePago)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Seleccione la periodicidad de pago."
+        );
+      }
+      if (
+        diasEjercicio === undefined ||
+        diasEjercicio === "" ||
+        /^[\s]*$/.test(diasEjercicio)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
+        );
+      }
+      if (
+        tasaEfectiva === undefined ||
+        tasaEfectiva === "" ||
+        /^[\s]*$/.test(tasaEfectiva)
+      ) {
+        err = 1;
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Ingrese la tasa Efectiva."
+        );
+      }
+
+      ///////////////////NUEVOOOOOOOSSS
+
+      if (
+        CostosGastos.destinoCG === undefined ||
+        CostosGastos.destinoCG === null ||
+        /^[\s]*$/.test(CostosGastos.destinoCG)
+      ) {
+        err = 1;
+        erroresValidacion.push(
+          "Sección Información General: Seleccione el Destino en costos y gastos"
+        );
+      }
+
+      /////////////////// FIN NUEVOOOOOOOSSS
+
+      if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
+        err = 1;
+        erroresValidacion.push(
+          "Sección Condiciones Financieras: Agregar al menos una comision."
+        );
+      }
+
+      // if (
+      //   state.reglasAplicables[0] === undefined ||
+      //   state.reglasAplicables[0] === ""
+      // ) {
+      //     erroresValidacion.push(
+      //     "Sección <strong>Solicitud de Inscripción</strong>:Agregar al menos una regla."
+      //   );
+      // }
+
+      if (err === 0) {
+        // setOpenDialogEnviar(!openDialogEnviar);
+      } else {
+        setOpenDialogValidacion(!openDialogValidacion);
+      }
+    } else if (filtroValidacion === "Modificacion") {
+      // <-- OTRA VALIDACION
+      erroresValidacion = [];
+
+      const state = useLargoPlazoStore.getState();
+      const solicitud: any = {
+        encabezado: state.encabezado,
+        MontoOriginalContratado: state.informacionGeneral.monto,
+        PlazoDias: state.informacionGeneral.plazo,
+        Destino: state.informacionGeneral.destino.Descripcion,
+        Denominacion: state.informacionGeneral.denominacion,
+        InstitucionFinanciera:
+          state.informacionGeneral.institucionFinanciera.Descripcion,
+      };
+      if (
+        solicitud.MontoOriginalContratado === undefined ||
+        solicitud.MontoOriginalContratado === 0 ||
+        /^[\s]*$/.test(solicitud.MontoOriginalContratado)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Ingrese un Monto original contratado valido."
+        );
+      }
+      if (
+        solicitud.Destino === undefined ||
+        solicitud.Destino === "" ||
+        /^[\s]*$/.test(solicitud.Destino)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Seleccione  el Destino."
+        );
+      }
+      if (
+        solicitud.InstitucionFinanciera === undefined ||
+        solicitud.InstitucionFinanciera === "" ||
+        /^[\s]*$/.test(solicitud.InstitucionFinanciera)
+      ) {
+        err = 1;
+
+        erroresValidacion.push(
+          "Sección Información General: Seleccione la Institución Financiera."
+        );
+      }
+      if (err === 0) {
+        // setOpenDialogModificacion(!openDialogModificacion);
+      } else {
+        setOpenDialogValidacion(!openDialogValidacion);
+      }
+    }
+  };
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
 
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
@@ -288,62 +546,81 @@ export function SolicituDeInscripcion() {
                 </TableContainer>
               </Grid>
 
-              {/* {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
-                <Grid
-                  container
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    mb: 2,
-                    ml: 2,
-                    height: "7rem",
-                    "@media (max-width: 974px)": {
+              {reestructura === "con autorizacion" ? (
+                localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+                  <Grid
+                    container
+                    //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
+                    sx={{
                       width: "100%",
                       display: "flex",
-                      justifyContent: "space-evenly",
-                    },
-                    "@media (min-width: 974.1px)": {
-                      flexDirection: "column",
-                      justifyContent: "end",
-                      height: "22rem",
-                      width: "10%",
-                    },
+                      justifyContent: "center",
+                      mb: 2,
+                      ml: 2,
+                      height: "7rem",
+                      "@media (max-width: 974px)": {
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                      },
+                      "@media (min-width: 974.1px)": {
+                        flexDirection: "column",
+                        justifyContent: "end",
+                        height: "22rem",
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1140px)": {
-                      flexDirection: "column",
-                      justifyContent: "end",
-                      height: "22rem",
-                      width: "10%",
-                    },
+                      "@media (min-width: 1140px)": {
+                        flexDirection: "column",
+                        justifyContent: "end",
+                        height: "22rem",
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1400px)": {
-                      width: "10%",
-                    },
+                      "@media (min-width: 1400px)": {
+                        width: "10%",
+                      },
 
-                    "@media (min-width: 1870px)": {
-                      width: "5%",
-                      height: "35rem",
-                    },
-                  }}
-                >
-                  <Grid
-                    mb={2}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                      "@media (min-width: 1870px)": {
+                        width: "5%",
+                        height: "35rem",
+                      },
+                    }}
                   >
-                    <Button
-                      onClick={() => {
-                        setOpenDialogCancelar(!openDialogCancelar);
-                      }}
-                      sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                    <Grid
+                      mb={2}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
                     >
-                      Cancelar
-                    </Button>
-                  </Grid>
+                      <Button
+                        onClick={() => {
+                          // setOpenDialogCancelar(!openDialogCancelar);
+                        }}
+                        sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                      >
+                        Cancelar
+                      </Button>
+                    </Grid>
 
-                  {localStorage.getItem("Rol") === "Verificador" ? (
+                    {localStorage.getItem("Rol") === "Verificador" ? (
+                      <Grid
+                        mb={2}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <Button
+                          sx={queries.buttonContinuarSolicitudInscripcion}
+                          onClick={() => {
+                            infoValidaciones("Modificacion");
+                          }}
+                        >
+                          Solicitar Modificación
+                        </Button>
+                      </Grid>
+                    ) : null}
+
                     <Grid
                       mb={2}
                       display={"flex"}
@@ -353,53 +630,36 @@ export function SolicituDeInscripcion() {
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
-                          infoValidaciones("Modificacion");
+                          infoValidaciones("Enviar");
                         }}
                       >
-                        Solicitar Modificación
+                        {localStorage.getItem("Rol") === "Verificador"
+                          ? "Finalizar"
+                          : "Enviar"}
                       </Button>
                     </Grid>
-                  ) : null}
 
-
-                  <Grid
-                    mb={2}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        infoValidaciones("Enviar");
-                      }}
-                    >
-                      {localStorage.getItem("Rol") === "Verificador"
-                        ? "Finalizar"
-                        : "Enviar"}
-                    </Button>
+                    {/* <ConfirmacionBorradorSolicitud
+                      handler={setOpenDialogBorrador}
+                      openState={openDialogBorrador}
+                    /> */}
+                    {/* <ConfirmacionDescargaSolicitud
+                      handler={setOpenDialogEnviar}
+                      openState={openDialogEnviar}
+                    /> */}
+                    {/* <ConfirmacionCancelarSolicitud
+                      handler={setOpenDialogCancelar}
+                      openState={openDialogCancelar}
+                    /> */}
+                    {/* {openDialogModificacion && (
+                      <DialogSolicitarModificacion
+                        handler={setOpenDialogModificacion}
+                        openState={openDialogModificacion}
+                      />
+                    )} */}
                   </Grid>
-
-                  <ConfirmacionBorradorSolicitud
-                    handler={setOpenDialogBorrador}
-                    openState={openDialogBorrador}
-                  />
-                  <ConfirmacionDescargaSolicitud
-                    handler={setOpenDialogEnviar}
-                    openState={openDialogEnviar}
-                  />
-                  <ConfirmacionCancelarSolicitud
-                    handler={setOpenDialogCancelar}
-                    openState={openDialogCancelar}
-                  />
-                  {openDialogModificacion && (
-                    <DialogSolicitarModificacion
-                      handler={setOpenDialogModificacion}
-                      openState={openDialogModificacion}
-                    />
-                  )}
-                </Grid>
-              ) : null} */}
+                ) : null
+              ) : null}
             </Grid>
           </Grid>
         </Grid>

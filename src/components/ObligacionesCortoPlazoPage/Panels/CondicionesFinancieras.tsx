@@ -12,15 +12,16 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  ThemeProvider,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
 
 import {
+  IComisiones,
   ICondicionFinanciera,
   IDisposicion,
-  IComisiones,
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
@@ -34,6 +35,7 @@ import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
 export const headsTasa: readonly {
@@ -592,17 +594,20 @@ export function CondicionesFinancieras() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Button
-          disabled={disable}
-          sx={queries.buttonContinuar}
-          variant="outlined"
-          onClick={() => {
-            changeOpenAgregarState(!openAgregarCondicion);
-            setAccion("Agregar");
-          }}
-        >
-          Agregar
-        </Button>
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={disable}
+            sx={queries.buttonContinuar}
+            variant="outlined"
+            onClick={() => {
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
+
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}

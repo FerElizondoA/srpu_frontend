@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
@@ -15,10 +15,14 @@ import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage
 import { InfoGeneralGastoCosto } from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto";
 import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { DialogSolicitarReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarReestructura";
+
 export function ObligacionesLargoPlazoPage() {
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1900px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1537px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 635px)"),
   };
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -28,8 +32,14 @@ export function ObligacionesLargoPlazoPage() {
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
+  const [openDialogReestructura, setOpenDialogReestructura] = useState(false);
+
   const getTiposDocumentos: Function = useLargoPlazoStore(
     (state) => state.getTiposDocumentos
+  );
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
   );
 
   useEffect(() => {
@@ -47,8 +57,28 @@ export function ObligacionesLargoPlazoPage() {
       </Grid>
 
       <Grid item container direction="column" width={"100%"}>
-        <Grid mt={2} display={"flex"} justifyContent={"center"}>
-          <Grid width={"85%"} display={"flex"} justifyContent={"center"}>
+        <Grid
+          mt={2}
+          width={"100%"}
+          display={"flex"}
+          justifyContent={
+            reestructura === "con autorizacion" ? "end" : "center"
+          }
+        >
+          <Grid
+            width={reestructura === "con autorizacion" ? "60%" : "55%"}
+            sx={{
+              width: query.isMobile
+                ? reestructura === "con autorizacion"
+                  ? "60%"
+                  : "55%"
+                : "55%",
+            }}
+            display={"flex"}
+            justifyContent={
+              reestructura === "con autorizacion" ? "center" : " end"
+            }
+          >
             <Typography
               sx={{
                 color: "#AF8C55",
@@ -59,29 +89,75 @@ export function ObligacionesLargoPlazoPage() {
             </Typography>
           </Grid>
 
-          <Grid
-            display={"flex"}
-            justifyContent={"end"}
-            sx={{
-              width: "10%",
-              "@media (min-width: 480px)": {
-                width: "10%",
-              },
+          {reestructura === "con autorizacion" ? (
+            <Grid
+              display={"flex"}
+              justifyContent={"center"}
+              sx={{
+                width: "30%",
+                height: "2rem",
+                "@media (min-width: 480px)": {
+                  width: "20%",
+                },
 
-              "@media (min-width: 768px)": {
-                width: "2%",
-              },
-            }}
-          >
-            {/* <Button
-              onClick={() => {
-                setOpenDialogBorrador(!openDialogBorrador);
+                "@media (min-width: 768px)": {
+                  width: "22%",
+                  height: "2.5rem",
+                },
+
+                "@media (min-width: 1140px)": {
+                  width: "22%",
+                  height: "2.5rem",
+                },
               }}
-              sx={{ ...queries.buttonContinuar }}
             >
-              Guardar
-            </Button> */}
-          </Grid>
+              <Button
+                onClick={() => {
+                  setOpenDialogReestructura(!openDialogReestructura);
+                }}
+                sx={{
+                  backgroundColor: "#15212f",
+                  color: "white",
+                  "&&:hover": {
+                    backgroundColor: "rgba(47, 47, 47, 0.4)",
+                    color: "#000",
+                  },
+                  //fontSize: "90%",
+                  borderRadius: "0.8vh",
+                  textTransform: "capitalize",
+                  fontSize: "70%",
+                }}
+              >
+                {query.isTittle
+                  ? "Solicitar Autorización"
+                  : "Solicitar Autorización para Reestructura"}
+              </Button>
+            </Grid>
+          ) : (
+            <Grid
+              display={"flex"}
+              justifyContent={"end"}
+              sx={{
+                width: "20%",
+                "@media (min-width: 480px)": {
+                  width: "20%",
+                },
+
+                "@media (min-width: 768px)": {
+                  width: "35%",
+                },
+              }}
+            >
+              <Button
+                onClick={() => {
+                  setOpenDialogBorrador(!openDialogBorrador);
+                }}
+                sx={{ ...queries.buttonContinuar }}
+              >
+                Guardar
+              </Button>
+            </Grid>
+          )}
         </Grid>
 
         <Grid
@@ -135,6 +211,11 @@ export function ObligacionesLargoPlazoPage() {
       <ConfirmacionBorradorSolicitud
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
+      />
+
+      <DialogSolicitarReestructura
+        handler={setOpenDialogReestructura}
+        openState={openDialogReestructura}
       />
     </>
   );

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, TextField } from "@mui/material";
+import { Button, Dialog, TextField, ThemeProvider, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -7,6 +7,20 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
 export function ComentarioApartado({
   setOpen,
   openState,
@@ -30,6 +44,7 @@ export function ComentarioApartado({
   //   (state) => state.comentariosRegistro
   // );
 
+
   useEffect(() => {
     // comentariosRegistro[openState.apartado] &&
     setComent({
@@ -39,6 +54,7 @@ export function ComentarioApartado({
       // comentariosRegistro[openState.apartado],
     });
   }, [openState.apartado]);
+
 
   return (
     <Dialog
@@ -76,6 +92,7 @@ export function ComentarioApartado({
 
       <DialogActions>
         {comentario[openState.apartado] !== "" ? (
+
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
@@ -95,16 +112,20 @@ export function ComentarioApartado({
         >
           Cancelar
         </Button>
-        <Button
-          sx={queries.buttonContinuar}
-          onClick={() => {
-            newComentario(coment, openState.tab);
-            setComent({ Comentario: "", Apartado: "" });
-            setOpen(false);
-          }}
-        >
-          Aceptar
-        </Button>
+
+        <ThemeProvider theme={theme}>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              newComentario(coment, openState.tab);
+              setComent({ Comentario: "", Apartado: "" });
+              setOpen(false);
+            }}
+          >
+            Aceptar
+          </Button>
+        </ThemeProvider>
+
       </DialogActions>
     </Dialog>
   );

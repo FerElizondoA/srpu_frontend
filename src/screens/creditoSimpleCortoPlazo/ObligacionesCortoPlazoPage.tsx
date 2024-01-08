@@ -33,6 +33,13 @@ export function ObligacionesCortoPlazoPage() {
   const getTiposDocumentos: Function = useCortoPlazoStore(
     (state) => state.getTiposDocumentos
   );
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+  const changeRestructura: Function = useCortoPlazoStore(
+    (state) => state.changeRestructura
+  )
 
   useEffect(() => {
     getTiposDocumentos();
