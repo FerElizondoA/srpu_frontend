@@ -201,7 +201,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioNum - new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -377,7 +377,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -416,7 +416,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -504,7 +504,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia - new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -630,7 +630,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${numeroSolicitud - new Date().getFullYear}.pdf`
+      `attachment; filename = ${numeroSolicitud}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -718,7 +718,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${numeroSolicitud - new Date().getFullYear}.pdf`
+      `attachment; filename = ${numeroSolicitud}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },

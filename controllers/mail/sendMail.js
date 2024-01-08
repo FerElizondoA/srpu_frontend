@@ -9,7 +9,7 @@ module.exports = {
     var transporter = nodemailer.createTransport({
       host: process.env.SRPU_B_APP_EMAIL_HOST,
       port: process.env.SRPU_B_APP_EMAIL_PORT,
-      secure: false,
+      secure: true,
       auth: {
         user: process.env.SRPU_B_APP_EMAIL_USERNAME, // enter your email address
         pass: process.env.SRPU_B_APP_EMAIL_PASSWORD, // enter your visible/encripted password
