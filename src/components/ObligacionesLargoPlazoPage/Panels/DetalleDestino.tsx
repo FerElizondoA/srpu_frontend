@@ -15,7 +15,6 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 
 import { useEffect } from "react";
@@ -25,6 +24,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -41,21 +41,6 @@ const headsDetalleMontoAutorizado: Head[] = [
     label: "Acción",
   },
 ];
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function DestalleDestino() {
   const detalleDestino: { Id: string; Descripcion: string } =
@@ -212,7 +197,7 @@ export function DestalleDestino() {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={buttonTheme}>
               <Button
                 sx={queries.buttonContinuar}
                 variant="outlined"

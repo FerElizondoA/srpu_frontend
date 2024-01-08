@@ -12,7 +12,6 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -25,6 +24,7 @@ import {
   GeneralAutorizado,
 } from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { DestalleDestino } from "../Panels/DetalleDestino";
 import { DestinoAutorizado } from "../Panels/MontoAutorizado";
 import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
@@ -43,21 +43,6 @@ type Props = {
   openState: boolean;
   accion: string;
 };
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function DialogNuevaAutorizacion(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -150,7 +135,7 @@ export function DialogNuevaAutorizacion(props: Props) {
             </Grid>
 
             <Grid item sx={{ top: 12, bottom: "auto" }}>
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   disabled={
                     registrarAutorizacion.entidad.Organismo === "" ||

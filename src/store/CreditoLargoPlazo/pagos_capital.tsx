@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import {
-  Disposicion,
-  TasaInteres,
+  IDisposicion,
+  ITasaInteres,
 } from "../CreditoCortoPlazo/condicion_financiera";
 
 export interface PagosCapitalLargoPlazoSlice {
@@ -11,7 +11,7 @@ export interface PagosCapitalLargoPlazoSlice {
   tasasParciales: boolean;
   setTasasParciales: (bol: boolean) => void;
 
-  tablaDisposicion: Disposicion[];
+  tablaDisposicion: IDisposicion[];
   disposicion: { fechaDisposicion: string; importe: number };
 
   pagosDeCapital: {
@@ -20,7 +20,7 @@ export interface PagosCapitalLargoPlazoSlice {
     numeroDePago: number;
   };
 
-  tablaTasaInteres: TasaInteres[];
+  tablaTasaInteres: ITasaInteres[];
 
   tasaInteres: {
     tasaFija: false;
@@ -35,8 +35,8 @@ export interface PagosCapitalLargoPlazoSlice {
 
   changeDisposicion: (fechaDisposicion: string, importe: number) => void;
 
-  addDisposicion: (Disposicion: Disposicion) => void;
-  updateDisposicion: (Disposicion: Disposicion[]) => void;
+  addDisposicion: (Disposicion: IDisposicion) => void;
+  updateDisposicion: (Disposicion: IDisposicion[]) => void;
   cleanDisposicion: (monto: number) => void;
   removeDisposicion: (index: number) => void;
 
@@ -57,8 +57,8 @@ export interface PagosCapitalLargoPlazoSlice {
     sobreTasa: string
   ) => void;
 
-  addTasaInteres: (newTasaInteres: TasaInteres) => void;
-  updatePagosCapitalTable: (tasaInteresTable: TasaInteres[]) => void;
+  addTasaInteres: (newTasaInteres: ITasaInteres) => void;
+  updatePagosCapitalTable: (tasaInteresTable: ITasaInteres[]) => void;
   cleanTasaInteres: () => void;
   removeTasaInteres: (index: number) => void;
 }
@@ -112,12 +112,12 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
       },
     })),
 
-  addDisposicion: (Disposicion: Disposicion) =>
+  addDisposicion: (Disposicion: IDisposicion) =>
     set((state) => ({
       tablaDisposicion: [...state.tablaDisposicion, Disposicion],
     })),
 
-  updateDisposicion: (Disposicion: Disposicion[]) =>
+  updateDisposicion: (Disposicion: IDisposicion[]) =>
     set(() => ({ tablaDisposicion: Disposicion })),
 
   removeDisposicion: (index: number) =>
@@ -156,12 +156,12 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
       tasaInteres: tasaInteres,
     })),
 
-  addTasaInteres: (newTasaInteres: TasaInteres) =>
+  addTasaInteres: (newTasaInteres: ITasaInteres) =>
     set((state) => ({
       tablaTasaInteres: [...state.tablaTasaInteres, newTasaInteres],
     })),
 
-  updatePagosCapitalTable: (tasaInteres: TasaInteres[]) =>
+  updatePagosCapitalTable: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
 
   removeTasaInteres: (index: number) =>

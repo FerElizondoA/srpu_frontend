@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
@@ -17,8 +18,8 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
+
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
@@ -32,34 +33,11 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
-interface Head {
+const heads: {
   label: string;
-}
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
-
-export interface IFileInfoGeneral {
-  archivo: File;
-  nombreArchivo: string;
-  tipoArchivo: string;
-  descripcionTipo: string;
-}
-
-const heads: Head[] = [
+}[] = [
   {
     label: "Selección",
   },
@@ -129,7 +107,6 @@ export function InformacionGeneral() {
     useLargoPlazoStore(
       (state) => state.informacionGeneral.institucionFinanciera
     );
-
   const changeInformacionGeneral: Function = useLargoPlazoStore(
     (state) => state.changeInformacionGeneral
   );
@@ -183,10 +160,8 @@ export function InformacionGeneral() {
     getDestinos();
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Para que el apartado obligado solidario / aval tenga un resultado por defecto
   useEffect(() => {
     if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
       let obligado = catalogoObligadoSolidarioAval.find(
@@ -206,9 +181,7 @@ export function InformacionGeneral() {
           Descripcion: "",
         },
       });
-    } else {
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
@@ -235,8 +208,6 @@ export function InformacionGeneral() {
       denominacion: denominacion,
       institucionFinanciera: institucionFinanciera,
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contratacion, vencimiento]);
 
   return (
@@ -250,7 +221,12 @@ export function InformacionGeneral() {
         justifyContent: "space-evenly",
       }}
     >
-      <Grid container display="flex" justifyContent={"space-evenly"} sx={{}}>
+      <Grid
+        container
+        display="flex"
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
@@ -267,9 +243,6 @@ export function InformacionGeneral() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -354,10 +327,7 @@ export function InformacionGeneral() {
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
-              minDate={new Date(addDays(new Date(contratacion), 0))} //1
-              // slots={{
-              //   textField: DateInput,
-              // }}
+              minDate={new Date(addDays(new Date(contratacion), 0))}
             />
           </LocalizationProvider>
         </Grid>
@@ -500,7 +470,7 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             fullWidth
-            options={catalogoObligadoSolidarioAval} //.filter((td: any) => td.Descripcion !== "Capturador")
+            options={catalogoObligadoSolidarioAval}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -607,7 +577,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Ente público obligado
+            Ente público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -658,8 +628,9 @@ export function InformacionGeneral() {
           />
         </Grid>
       </Grid>
+
       <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={buttonTheme}>
           <Button
             sx={queries.buttonContinuar}
             disabled={
@@ -689,12 +660,11 @@ export function InformacionGeneral() {
         </ThemeProvider>
       </Grid>
 
-      {/* <Box sx={{justifyContent:"center", display:"flex"}}> */}
       <Grid
-        height={"40%"}
-        width={"100%"}
+        height={"35%"}
         display={"flex"}
         justifyContent={"space-evenly"}
+        width={"100%"}
       >
         <Paper sx={{ width: "88%", overflow: "clip" }}>
           <TableContainer

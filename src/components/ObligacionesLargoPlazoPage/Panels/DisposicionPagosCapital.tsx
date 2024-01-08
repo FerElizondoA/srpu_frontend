@@ -24,15 +24,12 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
   useMediaQuery,
 } from "@mui/material";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { addDays, lightFormat } from "date-fns";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
@@ -46,13 +43,12 @@ import {
 } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
-interface Head {
+const heads: readonly {
   label: string;
-}
-
-const heads: readonly Head[] = [
+}[] = [
   {
     label: "Borrar",
   },
@@ -76,7 +72,9 @@ const heads: readonly Head[] = [
   },
 ];
 
-const headsDisposicion: readonly Head[] = [
+const headsDisposicion: readonly {
+  label: string;
+}[] = [
   {
     label: "Borrar",
   },
@@ -87,21 +85,6 @@ const headsDisposicion: readonly Head[] = [
     label: `Importe`,
   },
 ];
-
-export const ButtonTheme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -390,6 +373,19 @@ export function DisposicionPagosCapital() {
   return (
     <Grid
       container
+      sx={{
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: ".5vw",
+          height: ".5vh",
+          mt: 1,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#AF8C55",
+          outline: "1px solid slategrey",
+          borderRadius: 1,
+        },
+      }}
       flexDirection={"column"}
       justifyContent={"space-between"}
       height={
@@ -397,9 +393,9 @@ export function DisposicionPagosCapital() {
           ? disposicionesParciales === false && tasasParciales === false
             ? "32rem"
             : disposicionesParciales === true && tasasParciales === false
-            ? "38rem"
+            ? "44rem"
             : disposicionesParciales === false && tasasParciales === true
-            ? "38rem"
+            ? "44rem"
             : disposicionesParciales === true && tasasParciales === true
             ? "60rem"
             : "36rem"
@@ -411,12 +407,12 @@ export function DisposicionPagosCapital() {
             : disposicionesParciales === false && tasasParciales === true
             ? "65rem"
             : disposicionesParciales === true && tasasParciales === true
-            ? "80rem"
+            ? "85rem"
             : "52rem"
           : "36rem"
       }
     >
-      <Grid container mt={2} direction="column">
+      <Grid item container mt={2} direction="column">
         <Grid item>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
@@ -426,7 +422,7 @@ export function DisposicionPagosCapital() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -446,10 +442,25 @@ export function DisposicionPagosCapital() {
                 }
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                // slots={{
-                //   textField: DateInput,
-                // }}
+
+                //slots={(props: any) => <TextField variant="standard" {...props} />}
               />
+
+              {/* <DatePicker
+                value={new Date(capitalFechaPrimerPago)}
+                onChange={(date) =>
+                  changeCapital(
+                    date?.toString(),
+                    capitalPeriocidadPago,
+                    capitalNumeroPago
+                  )
+                }
+                minDate={new Date(disposicionFechaDisposicion)}
+                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                slots={{
+                  textField: DateInput,
+                }}
+              /> */}
             </LocalizationProvider>
           </Grid>
 
@@ -566,13 +577,14 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
+              {}
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={enGB}
               >
                 <DesktopDatePicker
-                  // disabled={!disposicionesParciales}
                   sx={{ width: "100%" }}
+                  // disabled={!disposicionesParciales}
                   value={new Date(disposicionFechaDisposicion)}
                   onChange={(date) => {
                     changeDisposicion(
@@ -582,9 +594,9 @@ export function DisposicionPagosCapital() {
                   }}
                   minDate={new Date()}
                   maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                  // slots={{
-                  //   textField: DateInput,
-                  // }}
+                  slots={{
+                    textField: DateInput,
+                  }}
                 />
               </LocalizationProvider>
             </Grid>
@@ -596,7 +608,7 @@ export function DisposicionPagosCapital() {
                 disabled={!disposicionesParciales}
                 helperText={
                   disposicionesParciales
-                    ? "Monto original contratado: " +
+                    ? "Monto Original Contratado: " +
                       monto +
                       "; Monto restante: " +
                       restante.toFixed(2)
@@ -654,9 +666,14 @@ export function DisposicionPagosCapital() {
               alignItems={"center"}
               width={"100%"}
             >
-              <ThemeProvider theme={ButtonTheme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
-                  sx={queries.buttonContinuar}
+                  sx={{
+                    ...queries.buttonContinuarSolicitudInscripcion,
+                    mt: 2,
+                    mb: 2,
+                    width: "15vh",
+                  }}
                   disabled={
                     disposicionFechaDisposicion === "" ||
                     parseInt(
@@ -845,9 +862,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: "",
                         })
                       }
-                      // slots={{
-                      //   textField: DateInput,
-                      // }}
+                      slots={{
+                        textField: DateInput,
+                      }}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -946,7 +963,6 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
@@ -1012,7 +1028,7 @@ export function DisposicionPagosCapital() {
                     dateAdapter={AdapterDateFns}
                     adapterLocale={enGB}
                   >
-                    <DatePicker
+                    <DesktopDatePicker
                       value={new Date(tasaInteresFechaPrimerPago)}
                       onChange={(date) =>
                         changeTasaInteres({
@@ -1032,7 +1048,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -1219,10 +1235,12 @@ export function DisposicionPagosCapital() {
                 flexDirection={"column"}
                 alignItems={"center"}
               >
-                <ThemeProvider theme={ButtonTheme}>
+                <ThemeProvider theme={buttonTheme}>
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
+                      mt: 2,
+                      mb: 2,
                       width: "15vh",
                     }}
                     disabled={

@@ -25,26 +25,23 @@ import { queries } from "../../../queries";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
+import CommentIcon from "@mui/icons-material/Comment";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { IFile } from "../../ObligacionesCortoPlazoPage/Panels/Documentacion";
+import {
+  IComisiones,
+  ICondicionFinanciera,
+  IDisposicion,
+  ITasaInteres,
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
-} from "./CondicionesFinancieras";
-//"./CondicionesFinancieras";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
-//"../Dialogs/DialogComentarioApartado";
-import CommentIcon from "@mui/icons-material/Comment";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
-
-import {
-  Disposicion,
-  IComisiones,
-  TasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
-import { IFile } from "../../ObligacionesCortoPlazoPage/Panels/Documentacion";
+} from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 
 interface Head {
   label: string;
@@ -253,13 +250,13 @@ export function Resumen() {
   );
 
   // Condiciones Financieras
-  const tablaCondicionesFinancieras: CondicionFinancieraLP[] =
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
 
-  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
 
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
@@ -398,7 +395,7 @@ export function Resumen() {
       reader.onerror = reject;
     });
 
-  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   return (

@@ -13,10 +13,19 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 
+import {
+  ICondicionFinanciera,
+  IDisposicion,
+  IComisiones,
+  ITasaInteres,
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,71 +34,17 @@ import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
-import { CondicionFinancieraLP } from "../../../store/CreditoLargoPlazo/condicion_financiera";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
-  Disposicion,
-  IComisiones,
-  TasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+  headsComision,
+  headsDisposicion,
+  headsTasa,
+} from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
-interface Head {
+const heads: readonly {
   label: string;
-}
-
-export const headsTasa: readonly Head[] = [
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Fija",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
-
-export const headsComision: readonly Head[] = [
-  {
-    label: "Tipo de comisión",
-  },
-  {
-    label: "Fecha de primer pago",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Porcentaje",
-  },
-  {
-    label: "Monto",
-  },
-  {
-    label: "IVA",
-  },
-];
-
-export const headsDisposicion: readonly Head[] = [
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: "Importe",
-  },
-];
-
-const heads: readonly Head[] = [
+}[] = [
   {
     label: "Acciones",
   },
@@ -118,8 +73,10 @@ const heads: readonly Head[] = [
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
-  const tablaCondicionesFinancieras: CondicionFinancieraLP[] =
+
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
+
   const loadCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );
@@ -135,9 +92,9 @@ export function CondicionesFinancieras() {
     (state) => state.updatecondicionFinancieraTable
   );
 
-  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
-  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
@@ -154,13 +111,45 @@ export function CondicionesFinancieras() {
     (state) => state.changeTasaInteres
   );
 
+  const datosActualizar: Array<string> = useCortoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
+  let disable =
+    datosActualizar.length < 0 &&
+    (!datosActualizar.includes("Tabla Condiciones Financieras") ||
+      !datosActualizar.includes("Monto Original Contratado"));
+
   return (
-    <Grid container>
-      <Grid item sx={queries.tablaCondicionFinanciera}>
+    <Grid
+      container
+      sx={{
+        height: "30rem",
+        "@media (min-width: 480px)": {
+          height: "39rem",
+        },
+
+        "@media (min-width: 768px)": {
+          height: "48rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "31rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "31rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "44rem",
+        },
+      }}
+    >
+      <Grid container height={"100%"}>
         <Paper sx={{ height: "100%", width: "100%" }}>
           <TableContainer
             sx={{
-              height: "100%",
               width: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
@@ -180,7 +169,16 @@ export function CondicionesFinancieras() {
                 <TableRow>
                   {heads.map((head, index) => (
                     <StyledTableCell align="center" key={index}>
-                      {head.label}
+                      <Typography
+                        sx={{
+                          fontSize: ".8rem",
+                          "@media (min-width: 480px)": {
+                            fontSize: "1rem",
+                          },
+                        }}
+                      >
+                        {head.label}
+                      </Typography>
                     </StyledTableCell>
                   ))}
                 </TableRow>
@@ -192,6 +190,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               changeOpenAgregarState(!openAgregarCondicion);
@@ -237,6 +236,7 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               updatecondicionFinancieraTable(
@@ -535,14 +535,16 @@ export function CondicionesFinancieras() {
 
       <Grid
         container
+        item
         md={12}
         lg={12}
-        height={75}
+        height={"4rem"}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
       >
         <Button
+          disabled={disable}
           sx={queries.buttonContinuar}
           variant="outlined"
           onClick={() => {

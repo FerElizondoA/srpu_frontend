@@ -24,7 +24,6 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
   useMediaQuery,
 } from "@mui/material";
 
@@ -43,14 +42,13 @@ import {
   StyledTableRow,
 } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { moneyMask } from "./InformacionGeneral";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
-interface Head {
+const heads: readonly {
   label: string;
-}
-
-const heads: readonly Head[] = [
+}[] = [
   {
     label: "Borrar",
   },
@@ -74,7 +72,9 @@ const heads: readonly Head[] = [
   },
 ];
 
-const headsDisposicion: readonly Head[] = [
+const headsDisposicion: readonly {
+  label: string;
+}[] = [
   {
     label: "Borrar",
   },
@@ -85,21 +85,6 @@ const headsDisposicion: readonly Head[] = [
     label: `Importe`,
   },
 ];
-
-export const ButtonTheme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -681,7 +666,7 @@ export function DisposicionPagosCapital() {
               alignItems={"center"}
               width={"100%"}
             >
-              <ThemeProvider theme={ButtonTheme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   sx={{
                     ...queries.buttonContinuarSolicitudInscripcion,
@@ -1250,7 +1235,7 @@ export function DisposicionPagosCapital() {
                 flexDirection={"column"}
                 alignItems={"center"}
               >
-                <ThemeProvider theme={ButtonTheme}>
+                <ThemeProvider theme={buttonTheme}>
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,

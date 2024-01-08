@@ -11,7 +11,6 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +21,7 @@ import {
   ArchivosCancelacion,
   CancelacionSolicitud,
 } from "../../../store/SolicitudFirma/solicitudFirma";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -40,20 +40,6 @@ export function DialogSolicitarCancelacion({
   openState: boolean;
   rowSolicitud: IDataPrueba;
 }) {
-  const theme = createTheme({
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            "&.Mui-disabled": {
-              background: "#f3f3f3",
-              color: "#dadada",
-            },
-          },
-        },
-      },
-    },
-  });
   const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");
   const [error, setError] = useState(false);
@@ -224,7 +210,7 @@ export function DialogSolicitarCancelacion({
           <Typography sx={queries.medium_text}>Cancelar</Typography>
         </Button>
 
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={buttonTheme}>
           <Tooltip
             title={
               archivosCancelacion.bajaCreditoFederal.nombreArchivo === "" ||
@@ -247,7 +233,7 @@ export function DialogSolicitarCancelacion({
                 ) {
                   CancelacionSolicitud(
                     rowSolicitud.Solicitud,
-                    rowSolicitud.NumeroRegistro, 
+                    rowSolicitud.NumeroRegistro,
                     justificacion,
                     archivosCancelacion,
                     rowSolicitud.UltimaModificacion,

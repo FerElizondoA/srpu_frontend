@@ -15,7 +15,6 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -25,14 +24,15 @@ import { queries } from "../../../queries";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
-  CondicionFinanciera,
-  Disposicion,
   IComisiones,
-  TasaInteres,
+  ICondicionFinanciera,
+  IDisposicion,
+  ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -50,21 +50,6 @@ type Props = {
   indexA: number;
 };
 
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
-
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
@@ -76,7 +61,7 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   // DISPOSICION
 
-  const tablaDisposicion: Disposicion[] = useLargoPlazoStore(
+  const tablaDisposicion: IDisposicion[] = useLargoPlazoStore(
     (state) => state.tablaDisposicion
   );
 
@@ -86,13 +71,12 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
   const capitalPeriocidadPago: { Id: string; Descripcion: string } =
     useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
-
   const capitalNumeroPago: number = useLargoPlazoStore(
     (state) => state.pagosDeCapital.numeroDePago
   );
 
   // TASA DE INTERES
-  const tablaTasaInteres: TasaInteres[] = useLargoPlazoStore(
+  const tablaTasaInteres: ITasaInteres[] = useLargoPlazoStore(
     (state) => state.tablaTasaInteres
   );
 
@@ -145,7 +129,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
 
   const addRow = () => {
-    const CF: CondicionFinanciera = {
+    const CF: ICondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -162,7 +146,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   const updateRow = (indexA: number) => {
-    const CF: CondicionFinanciera = {
+    const CF: ICondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -211,7 +195,7 @@ export function AgregarCondicionFinanciera(props: Props) {
         open={props.openState}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative"}}>
+        <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -232,7 +216,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               </Grid>
             </Grid>
             <Grid item sx={{ top: 12, bottom: "auto" }}>
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   disabled={
                     tablaComisiones.length === 0 ||
@@ -268,6 +252,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             </Grid>
           </Toolbar>
         </AppBar>
+
         <Grid container direction="column">
           <Grid item width={"100%"}>
             <Tabs

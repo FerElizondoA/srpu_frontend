@@ -32,7 +32,7 @@ import {
 } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface HeadLabels {
   label: string;
@@ -374,7 +374,7 @@ export function DatoGeneralesFideicomiso() {
           </Grid>
         </Grid>
 
-        <ThemeProvider theme={ButtonTheme}>
+        <ThemeProvider theme={buttonTheme}>
           <Button
             sx={{
               ...queries.buttonContinuarSolicitudInscripcion,

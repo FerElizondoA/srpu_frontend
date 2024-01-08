@@ -28,7 +28,6 @@ import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import {
@@ -38,6 +37,7 @@ import {
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import enGB from "date-fns/locale/en-GB";
+import { buttonTheme } from "../dialog/AgregarMandatos";
 
 interface HeadLabels {
   label: string;
@@ -190,7 +190,7 @@ export function TipoDeMovimientoMandato() {
 
   const buttonAgregar = () => {
     return (
-      <ThemeProvider theme={ButtonTheme}>
+      <ThemeProvider theme={buttonTheme}>
         <Button
           disabled={
             tipoMovimiento.tipoEntePublicoObligado.Id === "" ||

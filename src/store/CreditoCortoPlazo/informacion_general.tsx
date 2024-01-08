@@ -52,6 +52,7 @@ export interface InformacionGeneralSlice {
   ) => void;
 
   cleanObligadoSolidarioAval: () => void;
+
   removeObligadoSolidarioAval: (index: number) => void;
 
   getDestinos: () => void;

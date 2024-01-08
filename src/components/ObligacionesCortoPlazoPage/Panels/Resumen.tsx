@@ -25,12 +25,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import {
-  CondicionFinanciera,
-  Disposicion,
-  IComisiones,
-  TasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
@@ -43,6 +37,12 @@ import {
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
+import {
+  IComisiones,
+  ICondicionFinanciera,
+  IDisposicion,
+  ITasaInteres,
+} from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 interface Head {
   label: string;
@@ -148,9 +148,8 @@ export function Resumen({ coments }: { coments: boolean }) {
   );
 
   // Condiciones Financieras
-  const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
-    (state) => state.tablaCondicionesFinancieras
-  );
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] =
+    useCortoPlazoStore((state) => state.tablaCondicionesFinancieras);
 
   // Documentación
   const documentos: IFile[] = useCortoPlazoStore(
@@ -160,7 +159,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
 
-  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
 
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
@@ -251,7 +250,7 @@ export function Resumen({ coments }: { coments: boolean }) {
       reader.onerror = reject;
     });
 
-  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   const estatus: string = useCortoPlazoStore((state) => state.estatus);

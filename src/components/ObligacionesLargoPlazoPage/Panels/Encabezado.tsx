@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -5,11 +6,11 @@ import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
-export interface IUsuariosCorto {
+export interface IUsuariosLargo {
   Id: string;
   Nombre: string;
   ApellidoPaterno: string;
@@ -33,6 +34,7 @@ export function Encabezado() {
   );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
+
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -42,14 +44,16 @@ export function Encabezado() {
   const organismo: { Id: string; Organismo: string } = useLargoPlazoStore(
     (state) => state.encabezado.organismo
   );
+
   const getOrganismos: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
+
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
 
-  const changeEncabezado: Function = useLargoPlazoStore(
+  const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
 
@@ -57,11 +61,9 @@ export function Encabezado() {
     getListadoUsuarios(setUsuarios);
     getTiposEntesPublicos();
     getOrganismos();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosLargo>>([]);
 
   const selectedValue =
     usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)

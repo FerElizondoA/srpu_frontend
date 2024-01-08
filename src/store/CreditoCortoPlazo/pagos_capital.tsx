@@ -1,7 +1,7 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { Disposicion, TasaInteres } from "./condicion_financiera";
+import { IDisposicion, ITasaInteres } from "./condicion_financiera";
 
 export interface PagosCapitalSlice {
   disposicionesParciales: boolean;
@@ -9,7 +9,7 @@ export interface PagosCapitalSlice {
   tasasParciales: boolean;
   setTasasParciales: (bol: boolean) => void;
 
-  tablaDisposicion: Disposicion[];
+  tablaDisposicion: IDisposicion[];
   disposicion: {
     fechaDisposicion: string;
     importe: number;
@@ -21,7 +21,7 @@ export interface PagosCapitalSlice {
     numeroDePago: number;
   };
 
-  tablaTasaInteres: TasaInteres[];
+  tablaTasaInteres: ITasaInteres[];
   tasaInteres: {
     tasaFija: boolean;
     tasaVariable: boolean;
@@ -39,8 +39,8 @@ export interface PagosCapitalSlice {
 
   changeDisposicion: (fechaDisposicion: string, importe: number) => void;
 
-  addDisposicion: (Disposicion: Disposicion) => void;
-  updateDisposicion: (Disposicion: Disposicion[]) => void;
+  addDisposicion: (Disposicion: IDisposicion) => void;
+  updateDisposicion: (Disposicion: IDisposicion[]) => void;
   cleanDisposicion: (monto: number) => void;
   removeDisposicion: (index: number) => void;
 
@@ -61,8 +61,8 @@ export interface PagosCapitalSlice {
     sobreTasa: string
   ) => void;
 
-  addTasaInteres: (newTasaInteres: TasaInteres) => void;
-  updatePagosCapitalTable: (tasaInteresTable: TasaInteres[]) => void;
+  addTasaInteres: (newTasaInteres: ITasaInteres) => void;
+  updatePagosCapitalTable: (tasaInteresTable: ITasaInteres[]) => void;
   cleanTasaInteres: () => void;
   removeTasaInteres: (index: number) => void;
 
@@ -121,12 +121,12 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
       },
     })),
 
-  addDisposicion: (Disposicion: Disposicion) =>
+  addDisposicion: (Disposicion: IDisposicion) =>
     set((state) => ({
       tablaDisposicion: [...state.tablaDisposicion, Disposicion],
     })),
 
-  updateDisposicion: (Disposicion: Disposicion[]) =>
+  updateDisposicion: (Disposicion: IDisposicion[]) =>
     set(() => ({ tablaDisposicion: Disposicion })),
 
   removeDisposicion: (index: number) =>
@@ -165,12 +165,12 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
       tasaInteres: tasaInteres,
     })),
 
-  addTasaInteres: (newTasaInteres: TasaInteres) =>
+  addTasaInteres: (newTasaInteres: ITasaInteres) =>
     set((state) => ({
       tablaTasaInteres: [...state.tablaTasaInteres, newTasaInteres],
     })),
 
-  updatePagosCapitalTable: (tasaInteres: TasaInteres[]) =>
+  updatePagosCapitalTable: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
 
   removeTasaInteres: (index: number) =>

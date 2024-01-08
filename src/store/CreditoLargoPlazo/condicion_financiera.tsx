@@ -1,47 +1,28 @@
 import { StateCreator } from "zustand";
+import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "./main";
-import {
-  Disposicion,
-  IComisiones,
-  TasaInteres,
-} from "../CreditoCortoPlazo/condicion_financiera";
 
-export type CondicionFinancieraLP = {
-  id: number;
-  disposicion: Disposicion[];
-  pagosDeCapital: {
-    fechaPrimerPago: string;
-    periodicidadDePago: string;
-    numeroDePago: number;
-  };
-
-  tasaInteres: TasaInteres[];
-  comisiones: IComisiones[];
-  tasaEfectiva: string;
-  diasEjercicio: string;
-};
-
-export interface CondicionFinancieraLargoPlazoSlice {
-  tablaCondicionesFinancieras: CondicionFinancieraLP[];
+export interface CondicionFinancieraSlice {
+  tablaCondicionesFinancieras: ICondicionFinanciera[];
   addCondicionFinanciera: (
-    newCondicionFinanciera: CondicionFinancieraLP
+    newCondicionFinanciera: ICondicionFinanciera
   ) => void;
-  loadCondicionFinanciera: (condicionFinanciera: CondicionFinancieraLP) => void;
+  loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => void;
   upDataCondicionFinanciera: (
-    condicionFinanciera: CondicionFinancieraLP,
+    condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => void;
   removeCondicionFinanciera: (index: number) => void;
   updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: CondicionFinancieraLP[]
+    tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) => void;
 }
 
-export const createCondicionFinancieraLargoPlazoSlice: StateCreator<
-  CondicionFinancieraLargoPlazoSlice
+export const createCondicionFinancieraSlice: StateCreator<
+  CondicionFinancieraSlice
 > = (set, get) => ({
   tablaCondicionesFinancieras: [],
-  addCondicionFinanciera: (newCondicionFinanciera: CondicionFinancieraLP) =>
+  addCondicionFinanciera: (newCondicionFinanciera: ICondicionFinanciera) =>
     set((state) => ({
       tablaCondicionesFinancieras: [
         ...state.tablaCondicionesFinancieras,
@@ -49,7 +30,7 @@ export const createCondicionFinancieraLargoPlazoSlice: StateCreator<
       ],
     })),
 
-  loadCondicionFinanciera: (condicionFinanciera: CondicionFinancieraLP) => {
+  loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useLargoPlazoStore.setState({
       tablaDisposicion: condicionFinanciera.disposicion,
     });
@@ -69,7 +50,6 @@ export const createCondicionFinancieraLargoPlazoSlice: StateCreator<
     useLargoPlazoStore.setState({
       tablaComisiones: condicionFinanciera.comisiones,
     });
-
     useLargoPlazoStore.setState({
       tasaEfectiva: {
         diasEjercicio: {
@@ -81,7 +61,7 @@ export const createCondicionFinancieraLargoPlazoSlice: StateCreator<
     });
   },
   upDataCondicionFinanciera: (
-    condicionFinanciera: CondicionFinancieraLP,
+    condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => {
     set((state) => {
@@ -102,7 +82,7 @@ export const createCondicionFinancieraLargoPlazoSlice: StateCreator<
     })),
 
   updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: CondicionFinancieraLP[]
+    tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) =>
     set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),
 });

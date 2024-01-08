@@ -139,7 +139,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-      documentacion: state.tablaDocumentosLP.map((v, i) => {
+      documentacion: state.tablaDocumentosLP.map((v: any, i: any) => {
         return {
           nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,
@@ -222,7 +222,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-      documentacion: state.tablaDocumentosLP.map((v, i) => {
+      documentacion: state.tablaDocumentosLP.map((v: any, i: any) => {
         return {
           nombreArchivo: v.nombreArchivo,
           tipoArchivo: v.tipoArchivo,

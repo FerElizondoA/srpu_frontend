@@ -125,7 +125,6 @@ export const modulos = [
     label: "Usuarios",
     fnc: "Usuarios",
   },
-
 ];
 
 export function Configuracion() {

@@ -32,7 +32,7 @@ import { ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrr
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 const heads = [
   {
@@ -242,7 +242,7 @@ export function SoporteDocumentalInstrucciones() {
           </LocalizationProvider>
         </Grid>
 
-        <ThemeProvider theme={ButtonTheme}>
+        <ThemeProvider theme={buttonTheme}>
           <Button
             sx={{
               ...queries.buttonContinuarSolicitudInscripcion,

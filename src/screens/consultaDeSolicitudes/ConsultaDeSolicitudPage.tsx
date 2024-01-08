@@ -311,9 +311,7 @@ export function ConsultaDeSolicitudPage() {
   //END Row Solicitud
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    // const state = useCortoPlazoStore.getState();
-
-    if (TipoDocumento === "Crédito simple a corto plazo") {
+    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -331,7 +329,7 @@ export function ConsultaDeSolicitudPage() {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
-    } else if (TipoDocumento === "Crédito simple a largo plazo") {
+    } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
@@ -786,7 +784,7 @@ export function ConsultaDeSolicitudPage() {
                             flexDirection: "row",
                             display: "grid",
                             height: "7rem",
-                            gridTemplateColumns: "repeat(3,1fr)",
+                            gridTemplateColumns: "repeat(2,1fr)",
                           }}
                           align="center"
                           component="th"

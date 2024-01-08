@@ -73,7 +73,6 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* <Route index element={<Init />} /> */}
         <Route path="/" element={<HomePage />} />
         <Route path="firmar" element={<Firma />} />
         <Route path="firmaUrl" element={<FirmaConUrl />} />

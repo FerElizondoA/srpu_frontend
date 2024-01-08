@@ -54,14 +54,6 @@ export function VehiculoDePago() {
     (state) => state.setMecanismoVehiculoPago
   );
 
-  // const query = {
-  //   movil: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
-  //   tabletaMini: useMediaQuery("(min-width: 480px) and (max-width: 767px)"),
-  //   tabletaGrande: useMediaQuery("(min-width: 768px) and (max-width: 1139px)"),
-  //   monitorLaptop: useMediaQuery("(min-width: 1140px) and (max-width: 1399px)"),
-  //   MonitorEscritorio: useMediaQuery("(min-width: 1870px) "),
-  // };
-
   return (
     <Grid container direction={"column"} justifyContent={"space-around"}>
       <Grid
@@ -70,7 +62,7 @@ export function VehiculoDePago() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Mecanismo o vehículo de pago
           </InputLabel>
@@ -113,7 +105,7 @@ export function VehiculoDePago() {
           </FormControl>
         </Grid>
 
-        <Grid xs={10} sm={4.5} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Identificador</InputLabel>
           <Autocomplete
             disabled={tipoMecanismoVehiculoPago.length < 1}

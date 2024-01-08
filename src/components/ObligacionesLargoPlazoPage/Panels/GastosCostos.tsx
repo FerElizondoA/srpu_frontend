@@ -16,7 +16,6 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { useEffect } from "react";
 import validator from "validator";
@@ -26,6 +25,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -51,21 +51,6 @@ const headsGC: Head[] = [
     label: "Acción",
   },
 ];
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function GastoCostos() {
   //CATALOGO
@@ -597,7 +582,6 @@ export function GastoCostos() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              //startAdornment: <AttachMoneyIcon />,
             }}
             variant="standard"
           />
@@ -611,7 +595,7 @@ export function GastoCostos() {
           justifyContent: "center",
         }}
       >
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={buttonTheme}>
           <Button
             sx={queries.buttonContinuar}
             variant="outlined"

@@ -481,7 +481,7 @@ export function AsignarFuente() {
         alignItems={"center"}
         mt={2}
       >
-        <Grid xs={10} sm={5} md={5} lg={5} xl={5}>
+        <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
           <InputLabel sx={queries.medium_text}>
             Tipo de garantía de pago
           </InputLabel>

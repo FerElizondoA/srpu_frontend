@@ -12,28 +12,13 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { forwardRef, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
 import { queries } from "../../queries";
 import { createAyuda, getMenus, saveFile } from "./ServicesAyuda";
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -151,7 +136,7 @@ export const AyudasModal = ({
 
           <Grid item>
             {TabValue === "Videos" && nombreArchivo !== "" ? (
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   sx={queries.buttonContinuar}
                   onClick={() => {
@@ -182,7 +167,7 @@ export const AyudasModal = ({
             )}
 
             {TabValue === "Guías" && nombreArchivo !== "" ? (
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   sx={{ ...queries.buttonContinuar }}
                   onClick={() => {
@@ -221,7 +206,7 @@ export const AyudasModal = ({
               ""
             )}
             {TabValue === "Preguntas" ? (
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   //className="aceptar"
                   sx={{ ...queries.buttonContinuar }}

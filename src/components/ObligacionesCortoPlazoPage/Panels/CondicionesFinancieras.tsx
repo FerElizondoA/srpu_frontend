@@ -16,11 +16,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+
 import {
-  CondicionFinanciera,
-  Disposicion,
+  ICondicionFinanciera,
+  IDisposicion,
   IComisiones,
-  TasaInteres,
+  ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -35,11 +36,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
 
-interface Head {
+export const headsTasa: readonly {
   label: string;
-}
-
-export const headsTasa: readonly Head[] = [
+}[] = [
   {
     label: "Fecha de Primer Pago",
   },
@@ -60,7 +59,9 @@ export const headsTasa: readonly Head[] = [
   },
 ];
 
-export const headsComision: readonly Head[] = [
+export const headsComision: readonly {
+  label: string;
+}[] = [
   {
     label: "Tipo de comisión",
   },
@@ -81,7 +82,9 @@ export const headsComision: readonly Head[] = [
   },
 ];
 
-export const headsDisposicion: readonly Head[] = [
+export const headsDisposicion: readonly {
+  label: string;
+}[] = [
   {
     label: "Fecha de Disposición",
   },
@@ -90,7 +93,9 @@ export const headsDisposicion: readonly Head[] = [
   },
 ];
 
-const heads: readonly Head[] = [
+const heads: readonly {
+  label: string;
+}[] = [
   {
     label: "Acciones",
   },
@@ -119,9 +124,8 @@ const heads: readonly Head[] = [
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
-  const tablaCondicionesFinancieras: CondicionFinanciera[] = useCortoPlazoStore(
-    (state) => state.tablaCondicionesFinancieras
-  );
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] =
+    useCortoPlazoStore((state) => state.tablaCondicionesFinancieras);
   const loadCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );
@@ -137,9 +141,9 @@ export function CondicionesFinancieras() {
     (state) => state.updatecondicionFinancieraTable
   );
 
-  const [rowTasa, setRowTasa] = useState<Array<TasaInteres>>([]);
+  const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
-  const [rowDisposicion, setRowDisposicion] = useState<Array<Disposicion>>([]);
+  const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);

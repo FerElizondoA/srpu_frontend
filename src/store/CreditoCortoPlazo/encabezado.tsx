@@ -34,7 +34,6 @@ export interface EncabezadoSlice {
     fechaContratacion: string
   ) => void;
 
-  // changeIdSolicitud: (newId: string) => void;getTiposEntesPublicos: () => void;
   getOrganismos: () => void;
   getTiposEntesPublicos: () => void;
 }
@@ -43,9 +42,8 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   set,
   get
 ) => ({
-  // IdSolicitud: "",
   encabezado: {
-    tipoDocumento: "Crédito simple a corto plazo",
+    tipoDocumento: "Crédito Simple a Corto Plazo",
     solicitanteAutorizado: {
       Solicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",
@@ -64,7 +62,6 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
 
   catalogoOrganismos: [],
   catalogoTiposEntePublico: [],
-  // changeIdSolicitud: (newId: string) => set(() => ({ IdSolicitud: newId })),
 
   changeEncabezado: (encabezado: any) =>
     set(() => ({

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Grid, Tab, Tabs, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";

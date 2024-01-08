@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
 
-export interface TasaInteres {
+export interface ITasaInteres {
   tasaFija: boolean;
   tasaVariable: boolean;
   tasa: string;
@@ -12,7 +12,7 @@ export interface TasaInteres {
   sobreTasa: string;
 }
 
-export interface Disposicion {
+export interface IDisposicion {
   fechaDisposicion: string;
   importe: number;
 }
@@ -28,32 +28,34 @@ export interface IComisiones {
   iva: boolean;
 }
 
-export type CondicionFinanciera = {
+export type ICondicionFinanciera = {
   id: number;
-  disposicion: Disposicion[];
+  disposicion: IDisposicion[];
   pagosDeCapital: {
     fechaPrimerPago: string;
     periodicidadDePago: string;
     numeroDePago: number;
   };
 
-  tasaInteres: TasaInteres[];
+  tasaInteres: ITasaInteres[];
   comisiones: IComisiones[];
   tasaEfectiva: string;
   diasEjercicio: string;
 };
 
 export interface CondicionFinancieraSlice {
-  tablaCondicionesFinancieras: CondicionFinanciera[];
-  addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) => void;
-  loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => void;
+  tablaCondicionesFinancieras: ICondicionFinanciera[];
+  addCondicionFinanciera: (
+    newCondicionFinanciera: ICondicionFinanciera
+  ) => void;
+  loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => void;
   upDataCondicionFinanciera: (
-    condicionFinanciera: CondicionFinanciera,
+    condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => void;
   removeCondicionFinanciera: (index: number) => void;
   updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: CondicionFinanciera[]
+    tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) => void;
 }
 
@@ -61,7 +63,7 @@ export const createCondicionFinancieraSlice: StateCreator<
   CondicionFinancieraSlice
 > = (set, get) => ({
   tablaCondicionesFinancieras: [],
-  addCondicionFinanciera: (newCondicionFinanciera: CondicionFinanciera) =>
+  addCondicionFinanciera: (newCondicionFinanciera: ICondicionFinanciera) =>
     set((state) => ({
       tablaCondicionesFinancieras: [
         ...state.tablaCondicionesFinancieras,
@@ -69,7 +71,7 @@ export const createCondicionFinancieraSlice: StateCreator<
       ],
     })),
 
-  loadCondicionFinanciera: (condicionFinanciera: CondicionFinanciera) => {
+  loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useCortoPlazoStore.setState({
       tablaDisposicion: condicionFinanciera.disposicion,
     });
@@ -100,7 +102,7 @@ export const createCondicionFinancieraSlice: StateCreator<
     });
   },
   upDataCondicionFinanciera: (
-    condicionFinanciera: CondicionFinanciera,
+    condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => {
     set((state) => {
@@ -121,7 +123,7 @@ export const createCondicionFinancieraSlice: StateCreator<
     })),
 
   updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: CondicionFinanciera[]
+    tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) =>
     set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),
 });

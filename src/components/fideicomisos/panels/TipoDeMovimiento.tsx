@@ -36,7 +36,7 @@ import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface HeadLabels {
   label: string;
@@ -172,7 +172,7 @@ export function TipoDeMovimientoFideicomiso() {
 
   const buttonAgregar = () => {
     return (
-      <ThemeProvider theme={ButtonTheme}>
+      <ThemeProvider theme={buttonTheme}>
         <Button
           disabled={
             tipoMovimientoFideicomiso.tipoFideicomitente.Id === "" ||

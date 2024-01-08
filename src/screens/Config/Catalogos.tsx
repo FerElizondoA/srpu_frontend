@@ -345,8 +345,8 @@ export function Catalogos() {
                               </TableCell>
                             ) : null}
                             <TableCell sx={{ textAlign: "center" }}>
-                              {modulo === "Reglas de financiamiento" ||
-                              modulo === "Tipos de documento" ? (
+                              {modulo === "Reglas de Financiamiento" ||
+                              modulo === "Tipos de Documento" ? (
                                 <Tooltip
                                   title={
                                     item.OCP === 1 && item.OLP === 1

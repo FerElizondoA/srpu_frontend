@@ -15,7 +15,6 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
-  createTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -27,11 +26,12 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { hashFunctionCYRB53 } from "../../CustomComponents";
 
 import {
-  CondicionFinanciera,
-  Disposicion,
   IComisiones,
-  TasaInteres,
+  ICondicionFinanciera,
+  IDisposicion,
+  ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 
@@ -51,21 +51,6 @@ type Props = {
   indexA: number;
 };
 
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
-
 export function AgregarCondicionFinanciera(props: Props) {
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
@@ -77,7 +62,7 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   // DISPOSICION
 
-  const tablaDisposicion: Disposicion[] = useCortoPlazoStore(
+  const tablaDisposicion: IDisposicion[] = useCortoPlazoStore(
     (state) => state.tablaDisposicion
   );
 
@@ -92,7 +77,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
 
   // TASA DE INTERES
-  const tablaTasaInteres: TasaInteres[] = useCortoPlazoStore(
+  const tablaTasaInteres: ITasaInteres[] = useCortoPlazoStore(
     (state) => state.tablaTasaInteres
   );
 
@@ -145,7 +130,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
 
   const addRow = () => {
-    const CF: CondicionFinanciera = {
+    const CF: ICondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -162,7 +147,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   };
 
   const updateRow = (indexA: number) => {
-    const CF: CondicionFinanciera = {
+    const CF: ICondicionFinanciera = {
       id: hashFunctionCYRB53(new Date().getTime().toString()),
       disposicion: tablaDisposicion,
       pagosDeCapital: {
@@ -232,7 +217,7 @@ export function AgregarCondicionFinanciera(props: Props) {
               </Grid>
             </Grid>
             <Grid item sx={{ top: 12, bottom: "auto" }}>
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   disabled={
                     tablaComisiones.length === 0 ||
@@ -269,27 +254,31 @@ export function AgregarCondicionFinanciera(props: Props) {
           </Toolbar>
         </AppBar>
 
-        <Grid  container direction="column" >
-        <Grid item width={"100%"}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleChange}
-            centered={query.isScrollable ? false : true}
-            variant={query.isScrollable ? "scrollable" : "standard"}
-            scrollButtons
-            allowScrollButtonsMobile
-          >
-            <Tab label="Disposición/Pagos de Capital" sx={queries.bold_text}></Tab>
-            <Tab label="Comisiones/Tasa Efectiva" sx={queries.bold_text}></Tab>
-          </Tabs>
+        <Grid container direction="column">
+          <Grid item width={"100%"}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleChange}
+              centered={query.isScrollable ? false : true}
+              variant={query.isScrollable ? "scrollable" : "standard"}
+              scrollButtons
+              allowScrollButtonsMobile
+            >
+              <Tab
+                label="Disposición/Pagos de Capital"
+                sx={queries.bold_text}
+              ></Tab>
+              <Tab
+                label="Comisiones/Tasa Efectiva"
+                sx={queries.bold_text}
+              ></Tab>
+            </Tabs>
 
-          {tabIndex === 0 && <DisposicionPagosCapital />}
+            {tabIndex === 0 && <DisposicionPagosCapital />}
 
-          {tabIndex === 1 && <ComisionesTasaEfectiva />}
+            {tabIndex === 1 && <ComisionesTasaEfectiva />}
+          </Grid>
         </Grid>
-        </Grid>
-       
-
       </Dialog>
 
       <Dialog
@@ -304,7 +293,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             {tablaComisiones.length === 0 && tablaTasaInteres.length === 0
               ? 'No se puede realizar la accion de agregar condición financiera por falta datos en: "Disposición/Pagos de Capital" y en "Comisiones/TasaEfectiva '
               : "No se puede realizar la accion de agregar condición financiera por falta datos en: " +
-              dialogValidacion}
+                dialogValidacion}
           </DialogContentText>
           <DialogActions>
             <Button

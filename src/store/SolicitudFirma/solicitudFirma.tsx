@@ -447,6 +447,8 @@ export async function ConsultaSolicitud(
       }
     )
     .then((response) => {
+      console.log(response);
+
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -612,12 +614,6 @@ export async function GeneraAcuseEnvio(
       }
     )
     .then((response) => {
-      // const a = window.URL || window.webkitURL;
-
-      // const url = a.createObjectURL(
-      //   new Blob([response.data], { type: "application/pdf" })
-      // );
-
       const state = useCortoPlazoStore.getState();
 
       state.guardaDocumentos(

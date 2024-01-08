@@ -23,7 +23,6 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  createTheme,
 } from "@mui/material";
 import validator from "validator";
 
@@ -42,6 +41,7 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -70,21 +70,6 @@ const heads: readonly Head[] = [
     label: "IVA",
   },
 ];
-
-const theme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            background: "#f3f3f3",
-            color: "#dadada",
-          },
-        },
-      },
-    },
-  },
-});
 
 export function ComisionesTasaEfectiva() {
   // GET CATALOGOS
@@ -667,7 +652,7 @@ export function ComisionesTasaEfectiva() {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={buttonTheme}>
             <Button
               sx={{
                 backgroundColor: "#15212f",

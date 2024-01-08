@@ -95,11 +95,6 @@ const heads: readonly Head[] = [
     label: "Fecha de contratación",
   },
   {
-    id: "FechaRequerimientos",
-    isNumeric: true,
-    label: "Fecha Requerimientos",
-  },
-  {
     id: "tipoDocumento",
     isNumeric: true,
     label: "Tipo de Documento",
@@ -276,7 +271,7 @@ export const Cancelaciones = () => {
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
 
-    if (TipoDocumento === "Crédito simple a corto plazo") {
+    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -294,7 +289,7 @@ export const Cancelaciones = () => {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
-    } else if (TipoDocumento === "Crédito simple a largo plazo") {
+    } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
@@ -355,7 +350,7 @@ export const Cancelaciones = () => {
   };
 
   const editarSolicitud = (Tipo: string) => {
-    if (Tipo === "Crédito simple a corto plazo") {
+    if (Tipo === "Crédito Simple a Corto Plazo") {
       navigate("../ObligacionesCortoPlazo");
     } else {
       navigate("../ObligacionesLargoPlazo");
@@ -691,20 +686,6 @@ export const Cancelaciones = () => {
                             new Date(row.FechaContratacion),
                             "dd/MM/yyyy"
                           )}
-                        </StyledTableCell>
-
-                        <StyledTableCell
-                          sx={{ padding: "1px 25px 1px 0" }}
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.Estatus === "Actualizacion"
-                            ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
-                            : " "}
                         </StyledTableCell>
 
                         <StyledTableCell

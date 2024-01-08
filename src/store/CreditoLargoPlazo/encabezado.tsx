@@ -31,7 +31,7 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
   EncabezadoLargoPlazoSlice
 > = (set, get) => ({
   encabezado: {
-    tipoDocumento: "Crédito simple a largo plazo",
+    tipoDocumento: "Crédito Simple a Largo Plazo",
     solicitanteAutorizado: {
       Solicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",

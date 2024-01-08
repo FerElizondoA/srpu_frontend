@@ -24,6 +24,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
@@ -31,11 +32,10 @@ import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
+import { ISoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
-import CircularProgress from "@mui/material/CircularProgress";
-import { ISoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
+import { buttonTheme } from "../dialog/AgregarMandatos";
 
 const heads = [
   {
@@ -286,7 +286,7 @@ export function SoporteDocumentalMandato() {
           alignItems={"center"}
           mt={2}
         >
-          <ThemeProvider theme={ButtonTheme}>
+          <ThemeProvider theme={buttonTheme}>
             <Button
               sx={{
                 ...queries.buttonContinuarSolicitudInscripcion,

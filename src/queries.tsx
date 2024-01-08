@@ -31,8 +31,6 @@ export const queries = {
     "@media (min-width: 1400px)": {
       fontSize: ".9rem",
     },
-
-
   },
 
   bold_text: {
@@ -54,7 +52,6 @@ export const queries = {
     "@media (min-width: 1400px)": {
       fontSize: "1rem",
     },
-
   },
 
   bold_text_Largo_Plazo: {
@@ -311,26 +308,26 @@ export const queries = {
     fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
-    width:"6rem",
-    
+    width: "6rem",
+
     "@media (min-width: 480px)": {
-      width:"6rem",
+      width: "6rem",
     },
 
     "@media (min-width: 768px)": {
-      width:"10rem",
+      width: "10rem",
     },
 
     "@media (min-width: 1140px)": {
-      width:"10rem",
+      width: "10rem",
     },
 
     "@media (min-width: 1400px)": {
-      width:"12rem",
+      width: "12rem",
     },
 
     "@media (min-width: 1870px)": {
-      width:"12rem",
+      width: "12rem",
     },
   },
 
@@ -345,25 +342,25 @@ export const queries = {
     fontSize: "90%",
     borderRadius: "0.8vh",
     textTransform: "capitalize",
-    width:"6rem",
+    width: "6rem",
     "@media (min-width: 480px)": {
-      width:"6rem",
+      width: "6rem",
     },
 
     "@media (min-width: 768px)": {
-      width:"10rem",
+      width: "10rem",
     },
 
     "@media (min-width: 1140px)": {
-      width:"10rem",
+      width: "10rem",
     },
 
     "@media (min-width: 1400px)": {
-      width:"12rem",
+      width: "12rem",
     },
 
     "@media (min-width: 1870px)": {
-      width:"12rem",
+      width: "12rem",
     },
   },
 
@@ -588,6 +585,7 @@ export const queries = {
   },
 
   modulosConfig: {
+    color: "black",
     width: "80%",
     height: "65%",
     display: "flex",
@@ -705,6 +703,7 @@ export const queries = {
     },
 
     botonListado: {
+      color: "black",
       width: "100%",
       borderRadius: 20,
       display: "flex",

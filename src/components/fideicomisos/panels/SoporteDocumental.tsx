@@ -32,10 +32,10 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ButtonTheme } from "../../ObligacionesCortoPlazoPage/Panels/DisposicionPagosCapital";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 import CircularProgress from "@mui/material/CircularProgress";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 const heads = [
   {
@@ -307,7 +307,7 @@ export function SoporteDocumentalFideicomiso() {
           alignItems={"center"}
           mt={1}
         >
-          <ThemeProvider theme={ButtonTheme}>
+          <ThemeProvider theme={buttonTheme}>
             <Button
               sx={{
                 ...queries.buttonContinuarSolicitudInscripcion,
