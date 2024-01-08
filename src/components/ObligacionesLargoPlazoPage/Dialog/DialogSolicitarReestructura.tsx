@@ -4,27 +4,19 @@ import {
   FormControl,
   Grid,
   MenuItem,
-  Slide,
   TextField,
-  Typography,
 } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import {
-  IUsuariosAsignables,
-  rolesAdmin,
-} from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
+import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 type Props = {
   handler: Function;
@@ -38,24 +30,17 @@ export function DialogSolicitarReestructura(props: Props) {
 
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
-  const crearSolicitud: Function = useLargoPlazoStore(
-    (state) => state.crearSolicitud
-  );
-
   const modificaSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaSolicitud
   );
 
   const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
-  const addComentario: Function = useLargoPlazoStore(
-    (state) => state.addComentario
-  );
 
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
-    setidUsuarioAsignado("")
+    setidUsuarioAsignado("");
   }, [props.openState]);
 
   useEffect(() => {
@@ -67,9 +52,10 @@ export function DialogSolicitarReestructura(props: Props) {
   );
 
   const reestriccionReestructura = () => {
-    if(idUsuarioAsignado === "") {
-      setErrorAsignacion(true)
-    }if (idSolicitud !== "") {
+    if (idUsuarioAsignado === "") {
+      setErrorAsignacion(true);
+    }
+    if (idSolicitud !== "") {
       modificaSolicitud(editCreadoPor, idUsuarioAsignado, "En Reestructura")
         .then(() => {
           //addComentario(idSolicitud);
@@ -97,7 +83,7 @@ export function DialogSolicitarReestructura(props: Props) {
       );
       navigate("../reestructura");
     }
-  }; 
+  };
 
   return (
     <Dialog open={props.openState} fullWidth>
@@ -144,7 +130,7 @@ export function DialogSolicitarReestructura(props: Props) {
           sx={queries.buttonCancelar}
           variant="text"
           onClick={() => {
-            props.handler(false)
+            props.handler(false);
           }}
         >
           Cancelar
@@ -155,7 +141,7 @@ export function DialogSolicitarReestructura(props: Props) {
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            reestriccionReestructura()
+            reestriccionReestructura();
           }}
         >
           {"Enviar"}

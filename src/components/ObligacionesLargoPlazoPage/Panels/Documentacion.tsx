@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CommentIcon from "@mui/icons-material/Comment";
 import {
   Badge,
@@ -126,7 +127,7 @@ export function Documentacion() {
   });
 
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
-  const [opciones, setOpciones] = useState(tiposDocumentos)
+  const [opciones, setOpciones] = useState(tiposDocumentos);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -138,19 +139,23 @@ export function Documentacion() {
     //let justificacion = tiposDocumentos.filter((opcion: any) => opcion.Descripcion = 'Justificacion para Reestructurar')[0].Descripcion;
 
     if (reestructura === "con autorizacion") {
-      let justificacion = tiposDocumentos.filter((opcion: ITiposDocumento) => opcion.Descripcion = 'Justificacion para Reestructurar')
+      let justificacion = tiposDocumentos.filter(
+        (opcion: ITiposDocumento) =>
+          (opcion.Descripcion = "Justificacion para Reestructurar")
+      );
       setOpciones(justificacion);
     } else {
-      let justificacion = tiposDocumentos.filter((opcion: ITiposDocumento) => opcion.Descripcion !== 'Justificacion para Reestructurar')
+      let justificacion = tiposDocumentos.filter(
+        (opcion: ITiposDocumento) =>
+          opcion.Descripcion !== "Justificacion para Reestructurar"
+      );
       setOpciones(justificacion);
     }
-
-
   };
 
   useEffect(() => {
-    handleBotonClick()
-  }, [])
+    handleBotonClick();
+  }, []);
 
   return (
     <Grid
@@ -234,13 +239,13 @@ export function Documentacion() {
                           width: "250px",
                         }}
                         disabled={
-                          (val.archivo?.name ===
+                          val.archivo?.name ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                            val.nombreArchivo ===
+                          val.nombreArchivo ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                            (datosActualizar.length > 0 &&
-                              !datosActualizar.includes(val.tipoArchivo))) || reestructura === "con autorizacion"
-
+                          (datosActualizar.length > 0 &&
+                            !datosActualizar.includes(val.tipoArchivo)) ||
+                          reestructura === "con autorizacion"
                         }
                         size="small"
                         multiline={!query.isMobile}
@@ -257,14 +262,20 @@ export function Documentacion() {
                     </StyledTableCell>
 
                     <StyledTableCell sx={{ position: "relative" }}>
-                      <Grid container height={"3rem"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                      <Grid
+                        container
+                        height={"3rem"}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
                         <Typography
                           position={"absolute"}
                           sx={{
                             display: "flex",
                             fontFamily:
                               val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "MontserratBold"
                                 : "MontserratMedium",
                             textAlign: "center",
@@ -275,7 +286,7 @@ export function Documentacion() {
                             fontSize: "80%",
                             border:
                               val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "2px dotted #af8c55"
                                 : "2px dotted black",
                           }}
@@ -287,7 +298,8 @@ export function Documentacion() {
                         <input
                           disabled={
                             (datosActualizar.length > 0 &&
-                              !datosActualizar.includes(val.tipoArchivo)) || reestructura === "con autorizacion"
+                              !datosActualizar.includes(val.tipoArchivo)) ||
+                            reestructura === "con autorizacion"
                           }
                           type="file"
                           accept="application/pdf"
@@ -331,30 +343,33 @@ export function Documentacion() {
                               index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-
-                            {reestructura === "con autorizacion"
-                              ? <MenuItem key={opciones[5].Id} value={opciones[5].Id} >
+                            {reestructura === "con autorizacion" ? (
+                              <MenuItem
+                                key={opciones[5].Id}
+                                value={opciones[5].Id}
+                              >
                                 {opciones[5].Descripcion}
                               </MenuItem>
-                              : opciones.map((tipo) => (
+                            ) : (
+                              opciones.map((tipo) => (
                                 <MenuItem key={tipo.Id} value={tipo.Id}>
                                   {tipo.Descripcion}
                                 </MenuItem>
                               ))
-                            }
+                            )}
                           </Select>
                         </FormControl>
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                        comentario[val.descripcionTipo] !== "" ? (
+                      comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                  comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -377,7 +392,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                              comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }

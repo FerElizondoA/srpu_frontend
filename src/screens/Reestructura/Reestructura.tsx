@@ -1,19 +1,37 @@
-import { Button, Chip, Grid, IconButton, InputBase, InputLabel, Paper, Table, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { queries } from "../../queries";
-import { StyledTableCell, StyledTableRow } from "../../components/CustomComponents";
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Chip,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../components/CustomComponents";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 
-import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import { useEffect, useState } from "react";
-import { IData, IDataPrueba } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import FindInPageIcon from "@mui/icons-material/FindInPage";
 import { format } from "date-fns";
-import FindInPageIcon from '@mui/icons-material/FindInPage';
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { useEffect, useState } from "react";
+import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
-import { useNavigate } from "react-router-dom";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import {
+  IData,
+  IDataPrueba,
+} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 interface Head {
   id: keyof IData;
@@ -73,10 +91,7 @@ const heads: readonly Head[] = [
   },
 ];
 
-
 export function Reestructura() {
-  const navigate = useNavigate();
-
   const [datos, setDatos] = useState<Array<IData>>([]);
 
   const changeIdSolicitud: Function = useCortoPlazoStore(
@@ -97,19 +112,12 @@ export function Reestructura() {
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const setTablaDocumentos: Function = useCortoPlazoStore(
-    (state) => state.setTablaDocumentos
-  );
-
   const addDocumento: Function = useCortoPlazoStore(
     (state) => state.addDocumento
   );
 
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
-  );
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
   );
 
   const changeRestructura: Function = useCortoPlazoStore(
@@ -173,18 +181,16 @@ export function Reestructura() {
       //     return addDocumentoLP(v);
       //   });
       // }
-    };
-  }
+    }
+  };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
-    getSolicitudesReestructura(setDatos)
-    changeRestructura(false)
-  }, [])
-
+    getSolicitudesReestructura(setDatos);
+    changeRestructura(false);
+  }, []);
 
   return (
-
     <Grid>
       <Grid>
         <LateralMenu />
@@ -291,11 +297,7 @@ export function Reestructura() {
             </IconButton>
           </Paper>
         </Grid>
-
-
       </Grid>
-
-
 
       <Paper sx={{ width: "100%", height: "100%" }}>
         <TableContainer
@@ -351,74 +353,44 @@ export function Reestructura() {
                       color="success"
                       variant="outlined"
                     />
-                  )
+                  );
                 }
 
                 return (
                   <StyledTableRow>
-
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.NumeroRegistro}
-
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
-
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoEntePublico}
+                    </StyledTableCell>
 
-                    </StyledTableCell >
-
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {chip}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.IdClaveInscripcion}
-
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.MontoOriginalContratado}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
-                      {format(
-                        new Date(row.FechaContratacion),
-                        "dd/MM/yyyy"
-                      )}
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {format(new Date(row.FechaContratacion), "dd/MM/yyyy")}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
-                      {format(
-                        new Date(row.FechaRequerimientos),
-                        "dd/MM/yyyy"
-                      )
-                      }
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {format(new Date(row.FechaRequerimientos), "dd/MM/yyyy")}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center"
-                      component="th"
-                      scope="row">
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.TipoSolicitud}
                     </StyledTableCell>
 
@@ -433,22 +405,17 @@ export function Reestructura() {
                               row.Id,
                               setDatosActualizar
                             );
-                            changeRestructura(true)
+                            changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
-
                           }}
                         >
                           <FindInPageIcon />
                         </IconButton>
-
                       </Tooltip>
-
                     </StyledTableCell>
-
                   </StyledTableRow>
-                )
+                );
               })}
-              
             </TableBody>
           </Table>
         </TableContainer>
@@ -462,7 +429,6 @@ export function Reestructura() {
           rowId={rowId}
         />
       )}
-
     </Grid>
   );
 }

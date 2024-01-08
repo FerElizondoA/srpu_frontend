@@ -1,10 +1,9 @@
 import { Grid, Tab, Tabs } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { queries } from "../../../queries";
 import { GastoCostos } from "./GastosCostos";
 import { InformacionGeneral } from "./InformacionGeneral";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function InfoGeneralGastoCosto() {
   const query = {
@@ -16,10 +15,6 @@ export function InfoGeneralGastoCosto() {
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  )
 
   return (
     <Grid container direction="column">

@@ -19,6 +19,7 @@ import { enGB } from "date-fns/locale";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
+
   const datosGenerales: IDatosGeneralesInstrucciones = useInstruccionesStore(
     (state) => state.datosGenerales
   );

@@ -10,7 +10,6 @@ import {
   Divider,
   FormControl,
   Grid,
-  MenuItem,
   Select,
   Table,
   TableBody,
@@ -142,8 +141,8 @@ export function Documentacion() {
     if (IdSolicitud) {
       getDocumentos(
         `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-        () => { },
-        () => { }
+        () => {},
+        () => {}
       );
     }
   }, []);
@@ -223,79 +222,81 @@ export function Documentacion() {
                     </StyledTableCell>
 
                     <StyledTableCell scope="row">
-                        <TextField
-                          sx={{ width: "250px",
-                         }}
-                          disabled={
-                            (val.archivo?.name ===
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                              val.nombreArchivo ===
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                              (datosActualizar.length > 0 &&
-                                !datosActualizar.includes(val.tipoArchivo)))
-
-                          }
-                          size="small"
-                          multiline={!query.isMobile}
-                          value={val.nombreArchivo}
-                          onChange={(v) => {
-                            let auxArrayArchivos = [...tablaDocumentos];
-                            auxArrayArchivos[index].nombreArchivo = v.target.value
-                              .replaceAll("'", "")
-                              .replaceAll('"', "")
-                              .replaceAll("\n", "");
-                            setTablaDocumentos(auxArrayArchivos);
-                          }}
-                        ></TextField>
-
-
-                    </StyledTableCell>
-
-                    <StyledTableCell sx={{ position: "relative" }}>
-                    <Grid container height={"3rem"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                      <Typography
-                        position={"absolute"}
-                        sx={{
-                          display: "flex",
-                          fontFamily:
-                            val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                              ? "MontserratBold"
-                              : "MontserratMedium",
-                          textAlign: "center",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "95%",
-                          height: "65%",
-                          fontSize: "70%",
-                          border:
-                            val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                              ? "2px dotted #af8c55"
-                              : "2px dotted black",
-                        }}
-                      >
-                        {val.archivo?.name ||
-                          val.nombreArchivo ||
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-                      </Typography>
-                      <input
+                      <TextField
+                        sx={{ width: "250px" }}
                         disabled={
+                          val.archivo?.name ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          val.nombreArchivo ===
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           (datosActualizar.length > 0 &&
                             !datosActualizar.includes(val.tipoArchivo))
                         }
-                        type="file"
-                        accept="application/pdf"
+                        size="small"
+                        multiline={!query.isMobile}
+                        value={val.nombreArchivo}
                         onChange={(v) => {
-                          cargarArchivo(v, index);
+                          let auxArrayArchivos = [...tablaDocumentos];
+                          auxArrayArchivos[index].nombreArchivo = v.target.value
+                            .replaceAll("'", "")
+                            .replaceAll('"', "")
+                            .replaceAll("\n", "");
+                          setTablaDocumentos(auxArrayArchivos);
                         }}
-                        style={{
-                          opacity: 0,
-                          width: "100%",
-                          height: "5vh",
-                          cursor: "pointer",
-                        }}
-                      />
+                      ></TextField>
+                    </StyledTableCell>
+
+                    <StyledTableCell sx={{ position: "relative" }}>
+                      <Grid
+                        container
+                        height={"3rem"}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <Typography
+                          position={"absolute"}
+                          sx={{
+                            display: "flex",
+                            fontFamily:
+                              val.archivo?.name !==
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                ? "MontserratBold"
+                                : "MontserratMedium",
+                            textAlign: "center",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "95%",
+                            height: "65%",
+                            fontSize: "70%",
+                            border:
+                              val.archivo?.name !==
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                ? "2px dotted #af8c55"
+                                : "2px dotted black",
+                          }}
+                        >
+                          {val.archivo?.name ||
+                            val.nombreArchivo ||
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                        </Typography>
+                        <input
+                          disabled={
+                            datosActualizar.length > 0 &&
+                            !datosActualizar.includes(val.tipoArchivo)
+                          }
+                          type="file"
+                          accept="application/pdf"
+                          onChange={(v) => {
+                            cargarArchivo(v, index);
+                          }}
+                          style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: "5vh",
+                            cursor: "pointer",
+                          }}
+                        />
                       </Grid>
                     </StyledTableCell>
                     <StyledTableCell>
@@ -325,7 +326,7 @@ export function Documentacion() {
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                  tablaDocumentos[index]?.tipoArchivo ===
+                                tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,
@@ -338,20 +339,19 @@ export function Documentacion() {
                             disabled={
                               index < catalogoTiposDocumentosObligatorios.length
                             }
-                          >
-                          </Select>
+                          ></Select>
                         </FormControl>
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                        comentario[val.descripcionTipo] !== "" ? (
+                      comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                  comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -374,7 +374,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                              comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }

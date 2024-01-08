@@ -447,8 +447,6 @@ export async function ConsultaSolicitud(
       }
     )
     .then((response) => {
-      console.log(response);
-
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(

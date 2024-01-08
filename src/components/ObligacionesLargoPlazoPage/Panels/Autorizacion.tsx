@@ -37,7 +37,7 @@ import { IPathDocumentos } from "../../ObligacionesCortoPlazoPage/Panels/Resumen
 import { DialogEliminarAutorizacion } from "../Dialog/DialogEliminarAutorizacion";
 import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { theme } from "./InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -128,7 +128,7 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect.length !== 0) {
       getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => { });
+      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => {});
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
@@ -223,7 +223,7 @@ export function Autorizacion() {
           </Grid> */}
 
           <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={buttonTheme}>
               <Button
                 disabled={reestructura === "con autorizacion"}
                 sx={queries.buttonContinuar}
@@ -236,7 +236,6 @@ export function Autorizacion() {
                 Nuevo
               </Button>
             </ThemeProvider>
-
           </Grid>
         </Grid>
       </Grid>
@@ -314,12 +313,13 @@ export function Autorizacion() {
                             <IconButton
                               onClick={() => {
                                 setFileSelected(
-                                  `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                    td.nombre.includes(
-                                      JSON.parse(row.DocumentoSoporte)
-                                        ?.nombreArchivo
-                                    )
-                                  )[0].file
+                                  `data:application/pdf;base64,${
+                                    arrDocs.filter((td: any) =>
+                                      td.nombre.includes(
+                                        JSON.parse(row.DocumentoSoporte)
+                                          ?.nombreArchivo
+                                      )
+                                    )[0].file
                                   }`
                                 );
 
