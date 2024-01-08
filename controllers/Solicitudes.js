@@ -489,9 +489,10 @@ module.exports = {
 
   getSolicitudesAdministrador: (req, res) => {
     const Estatus = req.query.Estado;
+    const tipoListado = req.query.tipoListado
 
     db.query(
-      `CALL sp_ListadoSolicitudesAdministrador('${Estatus}')`,
+      `CALL sp_ListadoSolicitudesAdministrador('${Estatus}', '${tipoListado}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
