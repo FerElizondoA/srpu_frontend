@@ -3,18 +3,21 @@ const db = require("../config/db.js");
 module.exports = {
   //CAMBIA VARIABLES
   createInstruccion: (req, res) => {
-    const NumeroCuenta = req.body.NumeroCuenta;
-    const CLABE = req.body.CLABE;
-    const Banco = req.body.Banco;
-    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
-    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
-    const MecanismoPago = req.body.MecanismoPago;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const AcumuladoEstado = req.body.AcumuladoEstado;
-    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
-    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
-    const SoporteDocumental = req.body.SoporteDocumental;
-    const CreadoPor = req.body.CreadoPor;
+    const {
+      NumeroCuenta,
+      CLABE,
+      Banco,
+      FechaInstruccion,
+      TipoEntePublicoObligado,
+      EntePublicoObligado,
+      TipoMovimiento,
+      AcumuladoEstado,
+      AcumuladoMunicipios,
+      AcumuladoOrganismos,
+      SoporteDocumental,
+      CreadoPor,
+    } = req.body;
+
     if (
       (NumeroCuenta == null || /^[\s]*$/.test(NumeroCuenta)) &&
       NumeroCuenta.length() <= 255
@@ -32,10 +35,9 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarInstruccionIrrevocable('${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MunicipioOrganismoMandante}', '${TipoEntePublicoObligado}' ,'${MecanismoPago}', '${TipoMovimiento}',   '${AcumuladoEstado}' , '${AcumuladoMunicipios}' , '${AcumuladoOrganismos}' , '${SoporteDocumental}','${CreadoPor}')`,
+        `CALL sp_AgregarInstruccionIrrevocable( '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${FechaInstruccion}', '${TipoEntePublicoObligado}', '${EntePublicoObligado}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}', '${CreadoPor}')`,
         (err, result) => {
           if (err) {
-            console.log(err);
             return res.status(500).send({
               error: "Error",
             });
@@ -61,19 +63,20 @@ module.exports = {
   },
 
   modifyInstruccion: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
-    const IdInstruccion = req.body.IdInstruccion;
-    const NumeroCuenta = req.body.NumeroCuenta;
-    const CLABE = req.body.CLABE;
-    const Banco = req.body.Banco;
-    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
-    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
-    const MecanismoPago = req.body.MecanismoPago;
-    const TipoMovimiento = req.body.TipoMovimiento;
-    const AcumuladoEstado = req.body.AcumuladoEstado;
-    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
-    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
-    const SoporteDocumental = req.body.SoporteDocumental;
+    const {
+      Id,
+      CLABE,
+      Banco,
+      FechaInstruccion,
+      TipoEntePublicoObligado,
+      EntePublicoObligado,
+      TipoMovimiento,
+      AcumuladoEstado,
+      AcumuladoMunicipios,
+      AcumuladoOrganismos,
+      SoporteDocumental,
+      CreadoPor,
+    } = req.body;
 
     if (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) {
       return res.status(409).send({
@@ -81,7 +84,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaInstruccionIrrevocable('${IdUsuario}', '${IdInstruccion}', '${NumeroCuenta}' , '${CLABE}', '${Banco}', '${MunicipioOrganismoMandante}', '${TipoEntePublicoObligado}', '${MecanismoPago}', '${TipoMovimiento}', '${AcumuladoEstado}','${AcumuladoMunicipios}','${AcumuladoOrganismos}', '${SoporteDocumental}')`,
+        `CALL sp_ModificaInstruccionIrrevocable('${Id}', '${CLABE}', '${Banco}', '${FechaInstruccion}', '${TipoEntePublicoObligado}', '${EntePublicoObligado}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}', '${CreadoPor}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -141,7 +144,6 @@ module.exports = {
   getInstrucciones: (req, res) => {
     db.query(`CALL sp_ListadoInstruccionesIrrevocables()`, (err, result) => {
       if (err) {
-        console.log(err);
         return res.status(500).send({
           error: "Error",
         });
