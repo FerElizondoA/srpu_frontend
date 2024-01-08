@@ -203,11 +203,11 @@ export function ConsultaDeSolicitudPage() {
     ) {
       getSolicitudes(setDatos);
     } else if (localStorage.getItem("Rol") === "Revisor") {
-      getSolicitudesAdmin("Revision", setDatos);
+      getSolicitudesAdmin("Revision", setDatos, "consulta");
     } else if (localStorage.getItem("Rol") === "Validador") {
-      getSolicitudesAdmin("Validacion", setDatos);
+      getSolicitudesAdmin("Validacion", setDatos, "consulta");
     } else if (localStorage.getItem("Rol") === "Autorizador") {
-      getSolicitudesAdmin("Autorizacion", setDatos);
+      getSolicitudesAdmin("Autorizacion", setDatos, "consulta");
     }
   }, []);
 
@@ -423,7 +423,7 @@ export function ConsultaDeSolicitudPage() {
       if (!rolesAdmin.includes(localStorage.getItem("Rol")!)) {
         getSolicitudes(setDatos);
       } else {
-        getSolicitudesAdmin("Autorizacion", setDatos);
+        getSolicitudesAdmin("Autorizacion", setDatos, "consulta");
       }
     }
   }, [openEliminar]);
@@ -950,7 +950,8 @@ export function ConsultaDeSolicitudPage() {
                                     } else {
                                       getSolicitudesAdmin(
                                         "Autorizacion",
-                                        setDatos
+                                        setDatos,
+                                       "consulta"
                                       );
                                     }
                                   }}

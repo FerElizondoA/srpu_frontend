@@ -161,11 +161,11 @@ export const Cancelaciones = () => {
     ) {
       getSolicitudesCancelaciones(setDatos);
     } else if (localStorage.getItem("Rol") === "Revisor") {
-      getSolicitudesAdmin("Revision", setDatos);
+      getSolicitudesAdmin("Revision", setDatos, "cancelacion");
     } else if (localStorage.getItem("Rol") === "Validador") {
-      getSolicitudesAdmin("Validacion", setDatos);
+      getSolicitudesAdmin("Validacion", setDatos, "cancelacion");
     } else if (localStorage.getItem("Rol") === "Autorizador") {
-      getSolicitudesAdmin("Autorizacion", setDatos);
+      getSolicitudesAdmin("Autorizacion", setDatos, "cancelacion");
     }
   }, []);
 
@@ -379,7 +379,7 @@ export const Cancelaciones = () => {
       if (!rolesAdmin.includes(localStorage.getItem("Rol")!)) {
         getSolicitudesCancelaciones(setDatos);
       } else {
-        getSolicitudesAdmin("Autorizacion", setDatos);
+        getSolicitudesAdmin("Autorizacion", setDatos, "cancelacion");
       }
     }
   }, [openEliminar]);
@@ -896,7 +896,8 @@ export const Cancelaciones = () => {
                                     } else {
                                       getSolicitudesAdmin(
                                         "Autorizacion",
-                                        setDatos
+                                        setDatos,
+                                        "cancelacion"
                                       );
                                     }
                                   }}

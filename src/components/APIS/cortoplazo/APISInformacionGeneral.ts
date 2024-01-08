@@ -124,11 +124,14 @@ export function getSolicitudesReestructura(setState: Function) {
     });
 }
 
-export async function getSolicitudesAdmin(Estado: string, setState: Function) {
+export async function getSolicitudesAdmin(Estado: string, setState: Function, tipoListado: string) {
   await axios({
     method: "get",
     url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudesAdmin",
-    params: { Estado: Estado },
+    params: { 
+      Estado: Estado,
+      tipoListado: tipoListado
+     },
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("jwtToken") || "",
