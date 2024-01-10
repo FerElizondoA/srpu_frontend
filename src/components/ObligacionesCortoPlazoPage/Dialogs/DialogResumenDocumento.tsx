@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IDataPrueba, stringCapitalize } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import {
@@ -310,7 +310,8 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
-        {reestructura === "con autorizacion" ? null : (
+        {reestructura !== "con autorizacion"  &&  stringCapitalize(props.rowSolicitud.TipoSolicitud) !==  "Crédito Simple A Largo Plazo"
+        ? null : (
           <Grid
             container
             display={"flex"}

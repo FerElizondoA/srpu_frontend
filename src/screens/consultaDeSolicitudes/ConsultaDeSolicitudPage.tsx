@@ -91,6 +91,13 @@ export interface IDataPrueba {
   UltimaModificacion: string;
 }
 
+export function stringCapitalize(value: any) {
+  return String(value)
+    .split(' ')
+    .map((str) => (str.length > 0 ? str[0].toUpperCase() + str.slice(1) : ''))
+    .join(' ');
+}
+
 interface Head {
   id: keyof IData;
   isNumeric: boolean;
@@ -394,7 +401,7 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const editarSolicitud = (Tipo: string) => {
-    if (Tipo === "Crédito simple a corto plazo") {
+    if (Tipo === "Crédito Simple a Corto Plazo") {
       navigate("../ObligacionesCortoPlazo");
     } else {
       navigate("../ObligacionesLargoPlazo");
@@ -463,6 +470,18 @@ export function ConsultaDeSolicitudPage() {
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
   );
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+   const changeRestructura: Function = useCortoPlazoStore(
+    (state) => state.changeRestructura
+  );
+
+  useEffect(() => {
+    changeRestructura("")
+  }, [])
+  
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -744,7 +763,7 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {row.TipoSolicitud}
+                          {stringCapitalize(row.TipoSolicitud)}
                         </StyledTableCell>
 
                         <StyledTableCell
