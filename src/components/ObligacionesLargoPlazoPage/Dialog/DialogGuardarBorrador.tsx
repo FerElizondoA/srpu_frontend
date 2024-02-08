@@ -1,25 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, Slide, Typography } from "@mui/material";
+import { Button, Dialog, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 type Props = {
   handler: Function;
@@ -33,17 +22,14 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const modificaSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaSolicitud
   );
-
   const institucion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
-
-  const montoOriginal: number = useLargoPlazoStore(
-    (state) => state.informacionGeneral.monto
-  );
-
   const tipoEntePublico: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoEntePublico.TipoEntePublico
+  );
+  const montoOriginal: number = useLargoPlazoStore(
+    (state) => state.informacionGeneral.monto
   );
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
@@ -51,13 +37,14 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
   const [info, setInfo] = useState(
-    "En este apartado se guardara un borrador de la informacion quepodras visualizar en un futuro"
+    "La solicitud se guardará como borrador y estará disponible para modificar"
   );
 
   const notnull = () => {
     const isMissingInstitution = institucion === "" || institucion === null;
     const isMissingOriginalAmount =
       montoOriginal === null ||
+      montoOriginal === 0 ||
       montoOriginal.toString() === "0" ||
       montoOriginal === undefined ||
       montoOriginal.toString() === "$ 0.00";
@@ -81,11 +68,11 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     notnull();
   }, [institucion, montoOriginal]);
 
-  const navigate = useNavigate();
-
   const editCreadoPor: string = useLargoPlazoStore(
     (state) => state.editCreadoPor
   );
+
+  const navigate = useNavigate();
 
   const changeEncabezado: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
@@ -99,9 +86,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const updatecondicionFinancieraTable: Function = useLargoPlazoStore(
     (state) => state.updatecondicionFinancieraTable
   );
-  // const addCondicionFinanciera: Function = useLargoPlazoStore(
-  //   (state) => state.addCondicionFinanciera
-  // );
+
   const cleanComentario: Function = useLargoPlazoStore(
     (state) => state.cleanComentario
   );
@@ -113,7 +98,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   const reset = () => {
     cleanComentario();
     changeEncabezado({
-      tipoDocumento: "Crédito simple a largo plazo",
+      tipoDocumento: "Crédito simple a corto plazo",
       solicitanteAutorizado: {
         Solicitante: localStorage.getItem("IdUsuario") || "",
         Cargo: localStorage.getItem("Puesto") || "",
@@ -161,32 +146,28 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       }}
     >
       <DialogTitle>
-        <Typography align="center" sx={queries.medium_text} mb={2}>
+        <Typography align="center" sx={queries.bold_text_Largo_Plazo} mb={2}>
           Guardar como Borrador
         </Typography>
       </DialogTitle>
 
       <DialogContent>
-        <DialogContentText>
-          <Typography
-            color={
-              (institucion === "" || institucion === null) &&
-              (montoOriginal === null ||
-                montoOriginal === 0 ||
-                montoOriginal.toString() === "0" ||
-                montoOriginal === undefined ||
-                montoOriginal.toString() === "$ 0.00")
-                ? "red"
-                : "black"
-            }
-          >
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {markedText}
-            </span>
+        <Typography
+          color={
+            (institucion === "" || institucion === null) &&
+            (montoOriginal === null ||
+              montoOriginal === 0 ||
+              montoOriginal.toString() === "0" ||
+              montoOriginal === undefined ||
+              montoOriginal.toString() === "$ 0.00")
+              ? "red"
+              : "black"
+          }
+        >
+          <span style={{ color: "red", fontWeight: "bold" }}>{markedText}</span>
 
-            <span style={{ color: "red" }}>{restText}</span>
-          </Typography>
-        </DialogContentText>
+          <span style={{ color: "red" }}>{restText}</span>
+        </Typography>
       </DialogContent>
 
       <DialogActions>

@@ -1,22 +1,22 @@
+import { useState, useEffect } from "react";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  Grid,
-  MenuItem,
-  TextField,
   Typography,
+  Dialog,
+  Button,
+  TextField,
+  DialogTitle,
+  DialogContent,
+  FormControl,
+  MenuItem,
+  DialogActions,
+  Grid,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
+import Swal from "sweetalert2";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
   IUsuariosAsignables,
   rolesAdmin,
@@ -44,6 +44,7 @@ export function DialogSolicitarModificacion({
   );
 
   const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
+
   const addComentario: Function = useLargoPlazoStore(
     (state) => state.addComentario
   );
@@ -60,18 +61,20 @@ export function DialogSolicitarModificacion({
     setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
 
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   const checkform = () => {
     if (idUsuarioAsignado === "") {
       setErrorAsignacion(true);
     } else {
       if (idSolicitud !== "") {
-        modificaSolicitud(editCreadoPor, idUsuarioAsignado, "Captura")
+        modificaSolicitud(
+          localStorage.getItem("IdUsuario"),
+          idUsuarioAsignado,
+          rolesAdmin.includes(localStorage.getItem("Rol")!)
+            ? "Verificacion"
+            : "Captura"
+        )
           .then(() => {
-            addComentario(idSolicitud, comentario);
+            addComentario(idSolicitud, JSON.stringify(comentario), "Captura");
             Swal.fire({
               confirmButtonColor: "#15212f",
               cancelButtonColor: "rgb(175, 140, 85)",
@@ -90,7 +93,7 @@ export function DialogSolicitarModificacion({
             });
           });
         createNotification(
-          "Crédito simple a largo plazo",
+          "Crédito simple a corto plazo",
           "Se te ha asignado una solicitud para modificación.",
           [idUsuarioAsignado]
         );
@@ -110,11 +113,6 @@ export function DialogSolicitarModificacion({
             text: "Ocurrió un error, inténtelo de nuevo",
           });
         });
-        createNotification(
-          "Crédito simple a largo plazo",
-          "Se te ha asignado una solicitud.",
-          [idUsuarioAsignado]
-        );
         navigate("../ConsultaDeSolicitudes");
       }
 
@@ -218,7 +216,7 @@ export function DialogSolicitarModificacion({
             checkform();
           }}
         >
-          {"Enviar"}
+          Enviar
         </Button>
       </DialogActions>
     </Dialog>

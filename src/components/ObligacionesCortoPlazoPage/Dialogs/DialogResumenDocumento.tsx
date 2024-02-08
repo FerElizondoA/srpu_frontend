@@ -6,19 +6,21 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  Slide,
   TextField,
   Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { IDataPrueba, stringCapitalize } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import {
+  IDataPrueba,
+  stringCapitalize,
+} from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import {
@@ -33,15 +35,6 @@ import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 type Props = {
   handler: Function;
@@ -310,8 +303,9 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
-        {reestructura !== "con autorizacion"  &&  stringCapitalize(props.rowSolicitud.TipoSolicitud) !==  "Crédito Simple A Largo Plazo"
-        ? null : (
+        {reestructura !== "con autorizacion" &&
+        stringCapitalize(props.rowSolicitud.TipoSolicitud) !==
+          "Crédito Simple A Largo Plazo" ? null : (
           <Grid
             container
             display={"flex"}

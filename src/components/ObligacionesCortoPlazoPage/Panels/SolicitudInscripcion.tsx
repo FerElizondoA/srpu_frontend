@@ -25,7 +25,7 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
-import { ConfirmacionDescargaSolicitud } from "../Dialogs/DialogEnviarSolicitud";
+import { ConfirmacionEnviarSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 
@@ -44,18 +44,15 @@ const heads: readonly Head[] = [
 export let errores: string[] = [];
 
 export function SolicitudInscripcion() {
-  const [checkObj, setCheckObj] = React.useState<checkBoxType>({});
-
-  // eslint-disable-next-line @typescript-eslint/no-array-constructor
+  const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
-  const [openDialogCancelar, setOpenDialogCancelar] = React.useState(false);
+  const [openDialogCancelar, setOpenDialogCancelar] = useState(false);
 
-  const [openDialogModificacion, setOpenDialogModificacion] =
-    React.useState(false);
+  const [openDialogModificacion, setOpenDialogModificacion] = useState(false);
 
   const nombreServidorPublico: string = useCortoPlazoStore(
     (state) => state.inscripcion.servidorPublicoDirigido
@@ -76,8 +73,6 @@ export function SolicitudInscripcion() {
     (state) => state.reglasAplicables
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
-
-  // const [comentario, setComentario] = useState("");
 
   useEffect(() => {
     getReglas();
@@ -293,116 +288,9 @@ export function SolicitudInscripcion() {
         setOpenDialogModificacion(!openDialogModificacion);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
-        // Toast.fire({
-        //   showConfirmButton: true,
-        //   confirmButtonColor: "#15212f",
-        //   cancelButtonColor: "rgb(175, 140, 85)",
-        //   buttonsStyling: true,
-        //   html: `
-        //   <div>
-        //     <h2  >Se han encontrado los siguientes errores:</h2>
-        //     <div style="text-align: left;   color:red;  overflow:auto;">
-        //       *</strong>${errores.join("<br><br><strong>*</strong>")}
-        //     </div>
-        //     <div  style="text-align: right;">
-
-        //       <Button style="float:right;
-        //       cursor: pointer;
-        //       background-color:#15212f;
-        //       height:30px;
-        //       color:white;
-        //       border-radius: 0.8vh;
-        //       font-size:100%;
-        //       textTransform:capitalize";
-        //       "  >Cerrar</Button>
-
-        //     </div>
-        //   </div>`,
-        // });
       }
     }
   };
-
-  // const InfoFaltanteModificacion = () => {
-  //   errores = [];
-
-  //   const state = useCortoPlazoStore.getState();
-  //   const solicitud: any = {
-  //     encabezado: state.encabezado,
-  //     MontoOriginalContratado: state.informacionGeneral.monto,
-  //     PlazoDias: state.informacionGeneral.plazo,
-  //     Destino: state.informacionGeneral.destino.Descripcion,
-  //     Denominacion: state.informacionGeneral.denominacion,
-  //     InstitucionFinanciera:
-  //       state.informacionGeneral.institucionFinanciera.Descripcion,
-  //   };
-  //   if (
-  //     solicitud.MontoOriginalContratado === undefined ||
-  //     solicitud.MontoOriginalContratado === 0 ||
-  //     /^[\s]*$/.test(solicitud.MontoOriginalContratado)
-  //   ) {
-  //     err = 1;
-
-  //     errores.push(
-  //       "Sección Información General: Ingrese un Monto original contratado valido."
-  //     );
-  //   }
-  //   if (
-  //     solicitud.Destino === undefined ||
-  //     solicitud.Destino === "" ||
-  //     /^[\s]*$/.test(solicitud.Destino)
-  //   ) {
-  //     err = 1;
-
-  //     errores.push("Sección Información General: Seleccione  el Destino.");
-  //   }
-  //   if (
-  //     solicitud.InstitucionFinanciera === undefined ||
-  //     solicitud.InstitucionFinanciera === "" ||
-  //     /^[\s]*$/.test(solicitud.InstitucionFinanciera)
-  //   ) {
-  //     err = 1;
-
-  //     errores.push(
-  //       "Sección Información General: Seleccione la Institución Financiera."
-  //     );
-  //   }
-  //   if (err === 0) {
-  //     setOpenDialogModificacion(!openDialogModificacion);
-  //   } else {
-  //     setOpenDialogValidacion(!openDialogValidacion);
-  //     // Toast.fire({
-  //     //   showConfirmButton: true,
-  //     //   confirmButtonColor: "#15212f",
-  //     //   cancelButtonColor: "rgb(175, 140, 85)",
-  //     //   buttonsStyling: true,
-  //     //   html: `
-  //     //   <div>
-  //     //     <h2  >Se han encontrado los siguientes errores:</h2>
-  //     //     <div style="text-align: left;   color:red;  overflow:auto;">
-  //     //       *</strong>${errores.join("<br><br><strong>*</strong>")}
-  //     //     </div>
-  //     //     <div  style="text-align: right;">
-
-  //     //       <Button style="float:right;
-  //     //       cursor: pointer;
-  //     //       background-color:#15212f;
-  //     //       height:30px;
-  //     //       color:white;
-  //     //       border-radius: 0.8vh;
-  //     //       font-size:100%;
-  //     //       textTransform:capitalize";
-  //     //       "  >Cerrar</Button>
-
-  //     //     </div>
-  //     //   </div>`,
-  //     // });
-  //   }
-  // };
-
-  // const InfoFaltante = () => {
-  //   errores = [];
-  // };
 
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
@@ -419,20 +307,6 @@ export function SolicitudInscripcion() {
     arrReglas = aux;
     changeReglasAplicables(arrReglas);
   };
-
-  // const [botonComentarios, setBotonComentarios] = useState("hola")
-
-  // const labelBotonComentarios = () => {
-
-  //   //POR HACER
-  //       // let cont =comentarios.length||0;
-  //       // comentarios?.map((elemento)=>{
-  //       //   !(/^[\s]*$/.test(elemento?.Comentario) ) ? null:cont--
-  //       // })
-
-  //       // cont===0?setBotonComentarios("Enviar sin comentarios"):setBotonComentarios("Enviar con comentarios")
-
-  // }
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
@@ -613,13 +487,13 @@ export function SolicitudInscripcion() {
                                 onChange={(v) => {
                                   v.target.checked
                                     ? setCheckObj({
-                                      ...checkObj,
-                                      [index]: true,
-                                    })
+                                        ...checkObj,
+                                        [index]: true,
+                                      })
                                     : setCheckObj({
-                                      ...checkObj,
-                                      [index]: false,
-                                    });
+                                        ...checkObj,
+                                        [index]: false,
+                                      });
 
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
@@ -637,79 +511,62 @@ export function SolicitudInscripcion() {
                 </TableContainer>
               </Grid>
               {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
-                  <Grid
-                    container
-                    //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
-                    sx={{
+                <Grid
+                  container
+                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    mb: 2,
+                    ml: 2,
+                    height: "7rem",
+                    "@media (max-width: 974px)": {
                       width: "100%",
                       display: "flex",
-                      justifyContent: "center",
-                      mb: 2,
-                      ml: 2,
-                      height: "7rem",
-                      "@media (max-width: 974px)": {
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-evenly",
-                      },
-                      "@media (min-width: 974.1px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
+                      justifyContent: "space-evenly",
+                    },
+                    "@media (min-width: 974.1px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1140px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
+                    "@media (min-width: 1140px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1400px)": {
-                        width: "10%",
-                      },
+                    "@media (min-width: 1400px)": {
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1870px)": {
-                        width: "5%",
-                        height: "35rem",
-                      },
-                    }}
+                    "@media (min-width: 1870px)": {
+                      width: "5%",
+                      height: "35rem",
+                    },
+                  }}
+                >
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
                   >
-                    <Grid
-                      mb={2}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                    <Button
+                      onClick={() => {
+                        setOpenDialogCancelar(!openDialogCancelar);
+                      }}
+                      sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
                     >
-                      <Button
-                        onClick={() => {
-                          setOpenDialogCancelar(!openDialogCancelar);
-                        }}
-                        sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
-                      >
-                        Cancelar
-                      </Button>
-                    </Grid>
+                      Cancelar
+                    </Button>
+                  </Grid>
 
-                    {localStorage.getItem("Rol") === "Verificador" ? (
-                      <Grid
-                        mb={2}
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <Button
-                          sx={queries.buttonContinuarSolicitudInscripcion}
-                          onClick={() => {
-                            infoValidaciones("Modificacion");
-                          }}
-                        >
-                          Solicitar Modificación
-                        </Button>
-                      </Grid>
-                    ) : null}
-
+                  {localStorage.getItem("Rol") === "Verificador" ? (
                     <Grid
                       mb={2}
                       display={"flex"}
@@ -719,35 +576,52 @@ export function SolicitudInscripcion() {
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
-                          infoValidaciones("Enviar");
+                          infoValidaciones("Modificacion");
                         }}
                       >
-                        {localStorage.getItem("Rol") === "Verificador"
-                          ? "Finalizar"
-                          : "Enviar"}
+                        Solicitar Modificación
                       </Button>
                     </Grid>
+                  ) : null}
 
-                    <ConfirmacionBorradorSolicitud
-                      handler={setOpenDialogBorrador}
-                      openState={openDialogBorrador}
-                    />
-                    <ConfirmacionDescargaSolicitud
-                      handler={setOpenDialogEnviar}
-                      openState={openDialogEnviar}
-                    />
-                    <ConfirmacionCancelarSolicitud
-                      handler={setOpenDialogCancelar}
-                      openState={openDialogCancelar}
-                    />
-                    {openDialogModificacion && (
-                      <DialogSolicitarModificacion
-                        handler={setOpenDialogModificacion}
-                        openState={openDialogModificacion}
-                      />
-                    )}
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        infoValidaciones("Enviar");
+                      }}
+                    >
+                      {localStorage.getItem("Rol") === "Verificador"
+                        ? "Finalizar"
+                        : "Enviar"}
+                    </Button>
                   </Grid>
-                ) : null}
+
+                  <ConfirmacionBorradorSolicitud
+                    handler={setOpenDialogBorrador}
+                    openState={openDialogBorrador}
+                  />
+                  <ConfirmacionEnviarSolicitud
+                    handler={setOpenDialogEnviar}
+                    openState={openDialogEnviar}
+                  />
+                  <ConfirmacionCancelarSolicitud
+                    handler={setOpenDialogCancelar}
+                    openState={openDialogCancelar}
+                  />
+                  {openDialogModificacion && (
+                    <DialogSolicitarModificacion
+                      handler={setOpenDialogModificacion}
+                      openState={openDialogModificacion}
+                    />
+                  )}
+                </Grid>
+              ) : null}
             </Grid>
           </Grid>
         </Grid>

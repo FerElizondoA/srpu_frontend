@@ -23,14 +23,6 @@ import {
 } from "../../../store/SolicitudFirma/solicitudFirma";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
-export interface IUsuariosAsignables {
-  Id: string;
-  Nombre: string;
-  ApellidoPaterno: string;
-  ApellidoMaterno: string;
-  Rol: string;
-}
-
 export function DialogSolicitarCancelacion({
   handler,
   openState,

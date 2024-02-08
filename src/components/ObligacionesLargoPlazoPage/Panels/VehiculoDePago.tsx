@@ -54,6 +54,10 @@ export function VehiculoDePago() {
     (state) => state.setMecanismoVehiculoPago
   );
 
+  const cleanTablaAsignarFuente: Function = useLargoPlazoStore(
+    (state) => state.cleanTablaAsignarFuente
+  );
+
   return (
     <Grid container direction={"column"} justifyContent={"space-around"}>
       <Grid
@@ -94,6 +98,7 @@ export function VehiculoDePago() {
                 });
                 getMecanismosVehiculosPago(e.target.value, () => {});
                 setTipoMecanismoVehiculoPago(e.target.value);
+                cleanTablaAsignarFuente();
               }}
             >
               {CatalogoMecanismo.map((item, index) => (
@@ -135,7 +140,9 @@ export function VehiculoDePago() {
                 sx={queries.medium_text}
               />
             )}
-            isOptionEqualToValue={(option, value) => option.Id === value.Id}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Id === ""
+            }
           />
         </Grid>
       </Grid>

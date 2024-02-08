@@ -8,29 +8,20 @@ import {
   Grid,
   MenuItem,
   Select,
-  Slide,
   Typography,
 } from "@mui/material";
 
-import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
-export function ConfirmacionDescargaSolicitud({
+export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
 }: {
@@ -44,8 +35,6 @@ export function ConfirmacionDescargaSolicitud({
   const modificaSolicitud: Function = useCortoPlazoStore(
     (state) => state.modificaSolicitud
   );
-
-  // const [comentario, setComentario] = React.useState("");
 
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
@@ -81,9 +70,6 @@ export function ConfirmacionDescargaSolicitud({
   const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
     (state) => state.updatecondicionFinancieraTable
   );
-  // const addCondicionFinanciera: Function = useCortoPlazoStore(
-  //   (state) => state.addCondicionFinanciera
-  // );
   const cleanComentario: Function = useCortoPlazoStore(
     (state) => state.cleanComentario
   );

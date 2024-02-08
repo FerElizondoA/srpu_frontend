@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from "@mui/icons-material/Close";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
+import SyncProblemIcon from "@mui/icons-material/SyncProblem";
 import {
   Button,
   CircularProgress,
@@ -10,7 +11,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  Slide,
   Table,
   TableBody,
   TableHead,
@@ -18,7 +18,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import * as React from "react";
@@ -32,16 +31,7 @@ import {
 } from "../../../store/Fideicomiso/fideicomiso";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import SyncProblemIcon from "@mui/icons-material/SyncProblem";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 
 const headsTipoMovimiento: { label: string }[] = [
   {

@@ -24,6 +24,10 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { ConfirmacionBorradorSolicitud } from "../Dialog/DialogGuardarBorrador";
+import { ConfirmacionEnviarSolicitud } from "../Dialog/DialogEnviarSolicitud";
+import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
+import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
 
 export let erroresValidacion: string[] = [];
 
@@ -44,7 +48,13 @@ export let errores: string[] = [];
 export function SolicituDeInscripcion() {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
-  // eslint-disable-next-line @typescript-eslint/no-array-constructor
+  const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
+
+  const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
+
+  const [openDialogCancelar, setOpenDialogCancelar] = useState(false);
+
+  const [openDialogModificacion, setOpenDialogModificacion] = useState(false);
 
   const nombreServidorPublico: string = useLargoPlazoStore(
     (state) => state.inscripcion.servidorPublicoDirigido
@@ -88,8 +98,6 @@ export function SolicituDeInscripcion() {
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
-      /////////////////// Por definir /////////////////////
-      ///////////////////   Condiciones Financieras /////////////////////
       let numeroDePago = 0;
       let PeriocidadDePago = "";
       let diasEjercicio = "";
@@ -97,26 +105,20 @@ export function SolicituDeInscripcion() {
       let comisiones: any = [];
       let TasaDeInteres: any = [];
 
-      ///////////////////    Gastos y costos   ///////////////////
       const CostosGastos: any = {
         destinoCG: state.generalGastosCostos.destino.Descripcion,
         detalleInversion: state.generalGastosCostos.detalleInversion,
-        //periodoAdministracion: state.generalGastosCostos.periodoAdministracion, // NO SABEMOS AUN
         gastosAdicionales: state.GastosCostos.gastosAdicionales,
         claveInscripcionFinanciamiento:
-          state.generalGastosCostos.claveInscripcionFinanciamiento, // NO SABEMOS AUN
+          state.generalGastosCostos.claveInscripcionFinanciamiento,
         descripcion: state.generalGastosCostos.descripcion,
         monto: state.generalGastosCostos.monto,
-        //periodoFinanciamiento: state.generalGastosCostos.periodoFinanciamiento, //AUN NO SABEMOS
-        saldoVigente: state.GastosCostos.saldoVigente, //AUN NO SABEMOS
+        saldoVigente: state.GastosCostos.saldoVigente,
         montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
       };
 
-      //let periodoFinanciamiento = "";
-
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
         const item = state.tablaCondicionesFinancieras[0];
-        //importe = item.disposicion.importe;
         numeroDePago = item.pagosDeCapital.numeroDePago;
         PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
         TasaDeInteres = item.tasaInteres;
@@ -188,13 +190,6 @@ export function SolicituDeInscripcion() {
           "Sección Condiciones Financieras: Agregar al menos una Tasa De Interés."
         );
       }
-      // if (importe === undefined || importe === 0) {
-      //   err = 1;
-
-      //   erroresValidacion.push(
-      //     "Sección Condiciones Financieras: Ingrese el Importe."
-      //   );
-      // }
       if (numeroDePago === undefined || numeroDePago === 0) {
         err = 1;
 
@@ -257,22 +252,12 @@ export function SolicituDeInscripcion() {
         );
       }
 
-      // if (
-      //   state.reglasAplicables[0] === undefined ||
-      //   state.reglasAplicables[0] === ""
-      // ) {
-      //     erroresValidacion.push(
-      //     "Sección <strong>Solicitud de Inscripción</strong>:Agregar al menos una regla."
-      //   );
-      // }
-
       if (err === 0) {
         // setOpenDialogEnviar(!openDialogEnviar);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
     } else if (filtroValidacion === "Modificacion") {
-      // <-- OTRA VALIDACION
       erroresValidacion = [];
 
       const state = useLargoPlazoStore.getState();
@@ -386,7 +371,6 @@ export function SolicituDeInscripcion() {
             fullWidth
             variant="standard"
             value={cargoServidorPublico}
-            // onChange={(text) => changeCargo(text.target.value)}
             disabled
             sx={queries.medium_text}
             InputLabelProps={{
@@ -415,7 +399,6 @@ export function SolicituDeInscripcion() {
             value={
               solicitanteAutorizado || localStorage.getItem("NombreUsuario")
             }
-            // onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -444,11 +427,9 @@ export function SolicituDeInscripcion() {
               fontFamily: "MontserratMedium",
               width: "100%",
               "@media (max-width: 600px)": {
-                // XS (extra small) screen
                 fontSize: "1.4ch",
               },
               "@media (min-width: 601px) and (max-width: 900px)": {
-                // SM (small) screen
                 fontSize: "1.5ch",
               },
             }}
@@ -471,11 +452,9 @@ export function SolicituDeInscripcion() {
             <Typography
               sx={{
                 "@media (max-width: 600px)": {
-                  // XS (extra small) screen
                   fontSize: "1.4ch",
                 },
                 "@media (min-width: 601px) and (max-width: 900px)": {
-                  // SM (small) screen
                   fontSize: "1.5ch",
                 },
               }}
@@ -505,7 +484,6 @@ export function SolicituDeInscripcion() {
                     </TableHead>
                     <TableBody>
                       {catalogoReglas.map((row, index) => {
-                        // const stringIndex = index.toString()
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell padding="checkbox">
@@ -546,11 +524,10 @@ export function SolicituDeInscripcion() {
                 </TableContainer>
               </Grid>
 
-              {reestructura === "con autorizacion" ? (
-                localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+              {reestructura !== "con autorizacion" ? (
+                localStorage.getItem("Rol") !== "Administrador" ? (
                   <Grid
                     container
-                    //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
                     sx={{
                       width: "100%",
                       display: "flex",
@@ -639,24 +616,24 @@ export function SolicituDeInscripcion() {
                       </Button>
                     </Grid>
 
-                    {/* <ConfirmacionBorradorSolicitud
+                    <ConfirmacionBorradorSolicitud
                       handler={setOpenDialogBorrador}
                       openState={openDialogBorrador}
-                    /> */}
-                    {/* <ConfirmacionDescargaSolicitud
+                    />
+                    <ConfirmacionEnviarSolicitud
                       handler={setOpenDialogEnviar}
                       openState={openDialogEnviar}
-                    /> */}
-                    {/* <ConfirmacionCancelarSolicitud
+                    />
+                    <ConfirmacionCancelarSolicitud
                       handler={setOpenDialogCancelar}
                       openState={openDialogCancelar}
-                    /> */}
-                    {/* {openDialogModificacion && (
+                    />
+                    {openDialogModificacion && (
                       <DialogSolicitarModificacion
                         handler={setOpenDialogModificacion}
                         openState={openDialogModificacion}
                       />
-                    )} */}
+                    )}
                   </Grid>
                 ) : null
               ) : null}

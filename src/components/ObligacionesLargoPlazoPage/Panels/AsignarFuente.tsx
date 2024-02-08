@@ -97,6 +97,17 @@ export function AsignarFuente() {
   const catalogoFuentesDePago: IFondoOIngreso[] = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
+  const tablaAsignarFuente: IDeudorFideicomiso[] = useLargoPlazoStore(
+    (state) => state.tablaAsignarFuente
+  );
+
+  const setTablaAsignarFuente: Function = useLargoPlazoStore(
+    (state) => state.setTablaAsignarFuente
+  );
+
+  const addPorcentaje: Function = useLargoPlazoStore(
+    (state) => state.addPorcentaje
+  );
 
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -116,8 +127,6 @@ export function AsignarFuente() {
     getFuentesPago();
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
   }, []);
-
-  const [filtrado, setFiltrado] = useState(false);
 
   return (
     <Grid
@@ -157,7 +166,6 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) => {
-              setFiltrado(false);
               setFiltro({
                 Clasificacion: {
                   Descripcion: text?.Descripcion || "",
@@ -200,7 +208,6 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) => {
-              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 TipoFuente: {
@@ -247,7 +254,6 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) => {
-              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 FuentePago: {
@@ -293,7 +299,6 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) => {
-              setFiltrado(false);
               setFiltro({
                 ...filtro,
                 RespectoA: {
@@ -327,7 +332,22 @@ export function AsignarFuente() {
           <Button
             disabled={filtro.RespectoA.Descripcion === ""}
             onClick={() => {
-              setFiltrado(true);
+              setTablaAsignarFuente(
+                JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
+                  (i: IDeudorFideicomiso) =>
+                    i.tipoFuente.Descripcion ===
+                      filtro.TipoFuente.Descripcion &&
+                    i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+                )
+              );
+              setFiltro({
+                Clasificacion: {
+                  Descripcion: "",
+                },
+                TipoFuente: { Id: "", Descripcion: "" },
+                FuentePago: { Id: "", Descripcion: "" },
+                RespectoA: { Descripcion: "" },
+              });
             }}
             sx={queries.buttonContinuar}
           >
@@ -371,99 +391,64 @@ export function AsignarFuente() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filtrado &&
-                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento)
-                    .filter(
-                      (i: IDeudorFideicomiso) =>
-                        i.tipoFuente.Descripcion ===
-                          filtro.TipoFuente.Descripcion &&
-                        i.fondoIngreso.Descripcion ===
-                          filtro.FuentePago.Descripcion
-                    )
-                    .map((movimiento: IDeudorFideicomiso, index: number) => (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell align="center">
-                          {movimiento.tipoFuente.Descripcion}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {movimiento.fondoIngreso.Descripcion}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {movimiento.fondoIngresoGobiernoEstatal}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {
-                            movimiento.acumuladoAfectacionGobiernoEstatalEntre100
+                {tablaAsignarFuente.map(
+                  (movimiento: IDeudorFideicomiso, index: number) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        {movimiento.tipoFuente.Descripcion}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngreso.Descripcion}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngresoGobiernoEstatal}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.acumuladoAfectacionGobiernoEstatalEntre100}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.afectacionGobiernoEstatalEntre100}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngresoAfectadoXGobiernoEstatal}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">0.00</StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <TextField
+                          disabled={
+                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
+                              "mandato" ||
+                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
+                              "instruccion irrevocable"
                           }
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {movimiento.afectacionGobiernoEstatalEntre100}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {movimiento.fondoIngresoAfectadoXGobiernoEstatal}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">0.00</StyledTableCell>
-                        <StyledTableCell align="center">
-                          <TextField
-                            type="number"
-                            inputProps={{
-                              sx: {
-                                fontSize: "0.7rem",
-                              },
-                            }}
-                            size="small"
-                            value={""}
-                            // onChange={(v) => {
-                            //   let auxArray = [...tablaTipoMovimiento];
-                            //   let val = Number(v.target.value);
+                          type="number"
+                          inputProps={{
+                            sx: {
+                              fontSize: "0.7rem",
+                            },
+                          }}
+                          size="small"
+                          value={movimiento.fondoIngresoAfectadoXMunicipio}
+                          onChange={(v) => {
+                            let auxArray = [...tablaAsignarFuente];
+                            let val = Number(v.target.value);
 
-                            //   if (
-                            //     val <= 100 &&
-                            //     Number(
-                            //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                            //     ) +
-                            //       val <=
-                            //       Number(
-                            //         tablaTipoMovimiento[index]
-                            //           .fondoIngresoAsignadoMunicipio
-                            //       )
-                            //   ) {
-                            //     let suma = 0;
+                            auxArray[index].fondoIngresoAfectadoXMunicipio =
+                              val.toString();
 
-                            //     tablaTipoMovimiento.map((column) => {
-                            //       return (suma += Number(
-                            //         column.fondoIngresoAfectadoXMunicipio
-                            //       ));
-                            //     });
-
-                            //     auxArray.map((column) => {
-                            //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                            //         (
-                            //           suma +
-                            //           val +
-                            //           Number(
-                            //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                            //           )
-                            //         ).toString());
-                            //     });
-
-                            //     auxArray[
-                            //       index
-                            //     ].fondoIngresoAfectadoXMunicipio =
-                            //       val.toString();
-
-                            //     addPorcentaje(auxArray);
-                            //   }
-                            // }}
-                          />
-                        </StyledTableCell>
-                        <StyledTableCell />
-                        <StyledTableCell />
-                      </StyledTableRow>
-                    ))}
+                            addPorcentaje(auxArray);
+                          }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell />
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </TableContainer>

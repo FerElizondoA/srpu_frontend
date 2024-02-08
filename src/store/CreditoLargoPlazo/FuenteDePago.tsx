@@ -1,5 +1,6 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
+import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
 
@@ -20,7 +21,6 @@ export interface IRegistro {
   CLABE: string;
   Banco: string;
   EntePublicoObligado: string;
-  // TipoEntePublicoObligado: string;
 
   TipoMovimiento: string;
 }
@@ -47,6 +47,11 @@ export interface FuenteDePagoLargoPlazoSlice {
 
   mecanismoVehiculoPago: IRegistro;
   setMecanismoVehiculoPago: (mecanismo: IRegistro) => void;
+
+  tablaAsignarFuente: IDeudorFideicomiso[];
+  setTablaAsignarFuente: (fuente: IDeudorFideicomiso[]) => void;
+  cleanTablaAsignarFuente: () => void;
+  addPorcentaje: (tablaAsignarFuente: IDeudorFideicomiso) => void;
 
   garantiaPago: string;
   changeGarantiaPago: (garantiaPago: string) => void;
@@ -80,17 +85,32 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     CLABE: "",
     Banco: "",
     EntePublicoObligado: "",
-    // TipoEntePublicoObligado: "",
 
     TipoMovimiento: "",
   },
 
   garantiaPago: "",
 
+  tablaAsignarFuente: [],
+
+  setTablaAsignarFuente: (fuente: IDeudorFideicomiso[]) =>
+    set(() => ({
+      tablaAsignarFuente: fuente,
+    })),
+
   setMecanismoVehiculoPago: (mecanismo: IRegistro) =>
     set(() => ({
       mecanismoVehiculoPago: mecanismo,
     })),
+
+  cleanTablaAsignarFuente: () =>
+    set(() => ({
+      tablaAsignarFuente: [],
+    })),
+
+  addPorcentaje: (tablaAsignarFuente: any) => {
+    set(() => ({ tablaAsignarFuente: tablaAsignarFuente }));
+  },
 
   changeGarantiaPago: (garantiaPago: string) => {
     set(() => ({

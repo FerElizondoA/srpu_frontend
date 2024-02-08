@@ -1,20 +1,11 @@
-import { Button, Dialog, Slide, Typography } from "@mui/material";
+import { Button, Dialog, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../../queries";
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 
 export function ConfirmacionCancelarSolicitud({
   handler,

@@ -48,10 +48,6 @@ export function ObligacionesLargoPlazoPage() {
 
   return (
     <>
-      {/* <Grid item>
-        {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />}
-      </Grid> */}
-
       <Grid item width={"100%"}>
         <LateralMenu />
       </Grid>

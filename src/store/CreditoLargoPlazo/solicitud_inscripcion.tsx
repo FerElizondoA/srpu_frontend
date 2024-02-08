@@ -208,18 +208,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         generalGastosCostos: state.tablaGastosCostos,
       },
 
-      //detalleInversion: {
-      //  ...state.archivoDetalleInversion,
-      //},
-      //
-      //registrarAutorizacion: {
-      //  autorizacionSelect: state.autorizacionSelect
-      //  // numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
-      //  // fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
-      //  // montoAutorizado: state.registrarAutorizacion.montoAutorizado,
-      //  // medioPublicacion: state.registrarAutorizacion.medioPublicacion,
-      //},
-
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
       documentacion: state.tablaDocumentosLP.map((v: any, i: any) => {
@@ -264,10 +252,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       .then(({ data }) => {
         state.changeIdSolicitud(data.data.Id);
         state.changeNoRegistro(data.data.NumeroRegistro);
-        // state.saveFiles(
-        //   data.data.Id,
-        //   `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        // );
       });
   },
   borrarSolicitud: async (Id: string) => {

@@ -6,9 +6,9 @@ import { subDays } from "date-fns/esm";
 import enGB from "date-fns/locale/en-GB";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 
 export interface IUsuariosLargo {
   Id: string;
@@ -61,7 +61,6 @@ export function Encabezado() {
     getListadoUsuarios(setUsuarios);
     getTiposEntesPublicos();
     getOrganismos();
-    changeRestructura("con autorizacion");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,9 +80,6 @@ export function Encabezado() {
     (state) => state.reestructura
   );
 
-  const changeRestructura: Function = useCortoPlazoStore(
-    (state) => state.changeRestructura
-  );
   return (
     <Grid container height={"25rem"}>
       <Grid

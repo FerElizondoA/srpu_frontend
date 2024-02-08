@@ -3,7 +3,6 @@ import {
   Dialog,
   Grid,
   Paper,
-  Slide,
   Tab,
   Table,
   TableBody,
@@ -17,16 +16,15 @@ import {
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
 import { rolesAdmin } from "./DialogSolicitarModificacion";
-import { format } from "date-fns";
 
 export interface IComentarios {
   Id: string;
@@ -60,15 +58,6 @@ const heads: readonly Head[] = [
     label: "Comentarios",
   },
 ];
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export function VerComentariosSolicitud({
   handler,

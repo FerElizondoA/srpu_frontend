@@ -985,13 +985,23 @@ export function Resumen({ coments }: { coments: boolean }) {
                         {row.nombreArchivo === undefined ? null : (
                           <StyledTableCell>
                             <Tooltip
-                              title={"Mostrar vista previa del documento"}
+                              title={"Descargar documento para visualizar"}
                             >
                               {cargados ? (
                                 <CircularProgress />
                               ) : (
                                 <IconButton
                                   onClick={() => {
+                                    // var a = document.createElement("a"); //Create <a>
+                                    // a.href =
+                                    //   "data:application/pdf;base64," +
+                                    //   arr.filter((td: any) =>
+                                    //     td.NOMBREFORMATEADO.includes(
+                                    //       row.nombreArchivo
+                                    //     )
+                                    //   )[0].FILE; //Image Base64 Goes here
+                                    // a.download = `${"NOMBRE"}.pdf`; //File name Here
+
                                     toBase64(documentos[index].archivo)
                                       .then((data) => {
                                         setFileSelected(data);
@@ -1007,7 +1017,9 @@ export function Resumen({ coments }: { coments: boolean }) {
                                           }`
                                         );
                                       });
+                                    // setFileSelected(a);
                                     setShowModalPrevia(true);
+                                    // a.click();
                                   }}
                                 >
                                   <FileOpenIcon />
@@ -1054,7 +1066,7 @@ export function Resumen({ coments }: { coments: boolean }) {
               width: "100%",
               height: "85vh",
             }}
-            src={`${fileSelected}`}
+            src={fileSelected}
             title="description"
           ></iframe>
         </DialogContent>

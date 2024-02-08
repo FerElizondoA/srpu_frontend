@@ -372,6 +372,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
+        console.log(url);
+
         let dataArray = new FormData();
         dataArray.append("ROUTE", `${ruta}`);
         dataArray.append("ADDROUTE", "true");

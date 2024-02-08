@@ -1,21 +1,10 @@
-import * as React from "react";
-
-import { Button, Dialog, Slide } from "@mui/material";
+import { Button, Dialog } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { TransitionProps } from "@mui/material/transitions";
 import { queries } from "../../../queries";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export function DialogEliminar({
   handler,
@@ -40,12 +29,6 @@ export function DialogEliminar({
         handler(false);
       }}
     >
-      {/* <DialogTitle>
-        <Typography align="center" sx={queries.medium_text} mb={2}>
-          Confirmacion de Borrado
-        </Typography>
-      </DialogTitle> */}
-
       <DialogContent>
         <DialogContentText sx={{ ...queries.bold_text, textalign: "center" }}>
           ¿Deseas Eliminar la {texto}?

@@ -1,37 +1,27 @@
-import * as React from "react";
 import {
-  Typography,
-  Dialog,
-  Slide,
   Button,
-  TextField,
-  DialogTitle,
-  DialogContent,
+  Dialog,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
-  Select,
-  MenuItem,
   Grid,
+  MenuItem,
+  Select,
+  Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { queries } from "../../../queries";
+import { Transition } from "../../../screens/fuenteDePago/Mandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
-//"./DialogSolicitarModificacion";
-import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
-export function ConfirmacionDescargaSolicitud({
+export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
 }: {
@@ -45,8 +35,6 @@ export function ConfirmacionDescargaSolicitud({
   const modificaSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaSolicitud
   );
-
-  const [comentario, setComentario] = React.useState("");
 
   const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
@@ -65,11 +53,62 @@ export function ConfirmacionDescargaSolicitud({
   );
 
   React.useEffect(() => {
-    getListadoUsuarios(setUsuarios);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openState === true]);
+    getListadoUsuarioRol(setUsuarios);
+  }, [openState]);
 
   const navigate = useNavigate();
+
+  const changeEncabezado: Function = useLargoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+  const changeInformacionGeneral: Function = useLargoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
+  const cleanObligadoSolidarioAval: Function = useLargoPlazoStore(
+    (state) => state.cleanObligadoSolidarioAval
+  );
+  const updatecondicionFinancieraTable: Function = useLargoPlazoStore(
+    (state) => state.updatecondicionFinancieraTable
+  );
+  const cleanComentario: Function = useLargoPlazoStore(
+    (state) => state.cleanComentario
+  );
+
+  const comentarios: {} = useLargoPlazoStore((state) => state.comentarios);
+
+  const reset = () => {
+    changeEncabezado({
+      tipoDocumento: "Crédito simple a corto plazo",
+      solicitanteAutorizado: {
+        Solicitante: localStorage.getItem("IdUsuario") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      tipoEntePublico: {
+        Id: "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      organismo: {
+        Id: "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      fechaContratacion: new Date().toString(),
+    });
+
+    changeInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+
+    cleanObligadoSolidarioAval();
+    updatecondicionFinancieraTable([]);
+    cleanComentario();
+  };
   return (
     <Dialog
       open={openState}
@@ -127,7 +166,7 @@ export function ConfirmacionDescargaSolicitud({
           </Grid>
         )}
 
-        <TextField
+        {/* <TextField
           fullWidth
           label="Comentario"
           multiline
@@ -139,7 +178,7 @@ export function ConfirmacionDescargaSolicitud({
               setComentario(texto.target.value);
             }
           }}
-        />
+        /> */}
       </DialogContent>
 
       <DialogActions>
@@ -161,7 +200,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -169,6 +212,13 @@ export function ConfirmacionDescargaSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""]
+                    );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -179,12 +229,6 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                createNotification(
-                  "Crédito simple largo plazo",
-                  "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""]
-                );
-                navigate("../ConsultaDeSolicitudes");
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(
                   editCreadoPor,
@@ -192,7 +236,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -200,6 +248,13 @@ export function ConfirmacionDescargaSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "Se te ha asignado una solicitud de inscripción",
+                      [idUsuarioAsignado]
+                    );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -210,12 +265,6 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
-                createNotification(
-                  "Crédito simple largo plazo",
-                  "Se te ha asignado una solicitud de inscripción",
-                  [idUsuarioAsignado]
-                );
               }
             } else {
               if (localStorage.getItem("Rol") === "Verificador") {
@@ -225,7 +274,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Por Firmar"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -233,6 +286,8 @@ export function ConfirmacionDescargaSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -243,9 +298,8 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
                 createNotification(
-                  "Crédito simple largo plazo",
+                  "Crédito simple a corto plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""]
                 );
@@ -256,7 +310,11 @@ export function ConfirmacionDescargaSolicitud({
                   "Verificacion"
                 )
                   .then(() => {
-                    addComentario(idSolicitud, comentario);
+                    addComentario(
+                      idSolicitud,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -264,6 +322,8 @@ export function ConfirmacionDescargaSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    reset();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -274,20 +334,14 @@ export function ConfirmacionDescargaSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                navigate("../ConsultaDeSolicitudes");
-                createNotification(
-                  "Crédito simple largo plazo",
-                  "Se te ha asignado una solicitud de inscripción",
-                  [idUsuarioAsignado]
-                );
               }
             }
-            navigate("../ConsultaDeSolicitudes");
           }}
           variant="text"
           sx={queries.buttonContinuar}
         >
-          {comentario == null || /^[\s]*$/.test(comentario)
+          {JSON.stringify(comentarios) == null ||
+          /^[\s]*$/.test(JSON.stringify(comentarios))
             ? `${
                 localStorage.getItem("Rol") === "Capturador"
                   ? "Enviar"
