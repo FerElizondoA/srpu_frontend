@@ -6,6 +6,7 @@ COPY .npmrc.example .npmrc
 COPY package.json .
 COPY package-lock.json .
 RUN npm install
+RUN npm install @jbcecapmex/pakfirma
 # Copy app files
 COPY . .
 # Expose port
