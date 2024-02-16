@@ -10,10 +10,8 @@ const templateSolicitudCorto = "controllers/templates/template_corto.html";
 const templateRequerimientos =
   "controllers/templates/template_requerimientos.html";
 const templateConstancia = "controllers/templates/template_constancia.html";
-
 const templateAcuseEnviado =
   "controllers/templates/template_acuse_envio_solicitud.html";
-
 const templateAcuseRespuesta =
   "controllers/templates/template_acuse_envio_respuesta.html";
 const templateCancelacion =
@@ -22,6 +20,10 @@ const templateAnulacion =
   "controllers/templates/template_anular_cancelacion.html";
 const templateAcuseCancelacion =
   "controllers/templates/template_acuse_cancelacion.html";
+const templateConstanciaReestructura =
+  "controllers/templates/template_constancia_reestructuracion.html";
+const templateContestacionReestructura =
+  "controllers/templates/template_contestacion_reestructura.html";
 
 //#region HEADER
 
@@ -74,7 +76,6 @@ var footer = footerTemplate;
 
 const footerImg = (logoLeon) => {
   const resLogoLeon = fs.readFileSync(logoLeon);
-
   footer = footerTemplate.replaceAll(
     "{{logoLeon}}",
     `data:image/${path.extname(logoLeon).split(".").pop()};base64,${Buffer.from(
@@ -719,6 +720,187 @@ module.exports = {
     res.setHeader(
       "Content-Disposition",
       `attachment; filename = ${numeroSolicitud}-${new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  createPdfConstanciaReestructura: async (req, res) => {
+    callHeader();
+    const htmlTemplate = fs.readFileSync(
+      templateConstanciaReestructura,
+      "utf8"
+    );
+
+    const {
+      oficioNum,
+      servidorPublico,
+      cargo,
+      organismo,
+      oficioSolicitud,
+      fechaSolicitud,
+      tipoDocumento,
+      fechaContratacion,
+      claveInscripcion,
+      fechaClave,
+      fechaReestructuracion,
+      entePublicoObligado,
+      obligadoSolidarioAval,
+      institucionFinanciera,
+      montoOriginalContratado,
+      saldoVigente,
+      mecanismoVehiculoDePago,
+      fuentePago,
+      directorGeneral,
+      cargoDirectorGeneral,
+      modificaciones,
+    } = req.body;
+
+    const tablaModificaciones =
+      '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 12px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
+      Object.keys(JSON.parse(modificaciones)).map((val) => {
+        return (
+          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
+          val +
+          '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+          JSON.parse(modificaciones)[val] +
+          "</td> </tr>"
+        );
+      }) +
+      "</tbody> </table>";
+
+    const html = htmlTemplate
+      .replaceAll("{{oficioNum}}", oficioNum)
+      .replaceAll("{{servidorPublico}}", servidorPublico)
+      .replaceAll("{{cargo}}", cargo)
+      .replaceAll("{{organismo}}", organismo)
+      .replaceAll("{{oficioSolicitud}}", oficioSolicitud)
+      .replaceAll("{{fechaSolicitud}}", fechaSolicitud)
+      .replaceAll("{{tipoDocumento}}", tipoDocumento)
+      .replaceAll("{{fechaContratacion}}", fechaContratacion)
+      .replaceAll("{{claveInscripcion}}", claveInscripcion)
+      .replaceAll("{{fechaClave}}", fechaClave)
+      .replaceAll("{{fechaReestructuracion}}", fechaReestructuracion)
+      .replaceAll("{{entePublicoObligado}}", entePublicoObligado)
+      .replaceAll("{{obligadoSolidarioAval}}", obligadoSolidarioAval)
+      .replaceAll("{{institucionFinanciera}}", institucionFinanciera)
+      .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
+      .replaceAll("{{saldoVigente}}", saldoVigente)
+      .replaceAll("{{mecanismoVehiculoDePago}}", mecanismoVehiculoDePago)
+      .replaceAll("{{fuentePago}}", fuentePago)
+      .replaceAll("{{directorGeneral}}", directorGeneral)
+      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
+      .replaceAll("{{tablaModificaciones}}", tablaModificaciones);
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  createPdfContestacionReestructura: async (req, res) => {
+    callHeader();
+    const htmlTemplate = fs.readFileSync(
+      templateContestacionReestructura,
+      "utf8"
+    );
+
+    const {
+      oficioNum,
+      servidorPublico,
+      cargo,
+      fechaSolicitud,
+      fechaRecepcion,
+      claseTitulo,
+      fechaContratacion,
+      noInscripcionEstatal,
+      acreditado,
+      acreditante,
+      monto,
+      modificaciones,
+      directorGeneral,
+      cargoDirectorGeneral,
+    } = req.body;
+
+    const tablaModificaciones =
+      '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 10px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
+      Object.keys(JSON.parse(modificaciones)).map((val) => {
+        return (
+          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
+          val +
+          '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+          JSON.parse(modificaciones)[val] +
+          "</td> </tr>"
+        );
+      }) +
+      "</tbody> </table>";
+
+    const html = htmlTemplate
+      .replaceAll("{{servidorPublico}}", servidorPublico)
+      .replaceAll("{{cargo}}", cargo)
+      .replaceAll("{{fechaSolicitud}}", fechaSolicitud)
+      .replaceAll("{{fechaRecepcion}}", fechaRecepcion)
+      .replaceAll("{{claseTitulo}}", claseTitulo)
+      .replaceAll("{{fechaContratacion}}", fechaContratacion)
+      .replaceAll("{{noInscripcionEstatal}}", noInscripcionEstatal)
+      .replaceAll("{{acreditado}}", acreditado)
+      .replaceAll("{{acreditante}}", acreditante)
+      .replaceAll("{{monto}}", monto)
+      .replaceAll("{{directorGeneral}}", directorGeneral)
+      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
+      .replaceAll("{{tablaModificaciones}}", tablaModificaciones);
+
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },

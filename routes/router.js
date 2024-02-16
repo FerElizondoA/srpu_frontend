@@ -299,6 +299,8 @@ const {
   actualizaDescarga,
   createPdfSolicitudCancelacion,
   createPdfSolicitudAnulacion,
+  createPdfConstanciaReestructura,
+  createPdfContestacionReestructura,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -839,10 +841,13 @@ router.get(
   }
 );
 
-router.get("/get-solicitudes-reestructura",verifyToken.verifyJWT,(req, res) => {
-  getSolicitudesReestructura(req, res);}
+router.get(
+  "/get-solicitudes-reestructura",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    getSolicitudesReestructura(req, res);
+  }
 );
-
 
 router.put("/modify-solicitud", verifyToken.verifyJWT, (req, res) => {
   modifySolicitud(req, res);
@@ -1651,6 +1656,20 @@ router.post(
   verifyToken.verifyJWT,
   (req, res) => {
     createPdfSolicitudAnulacion(req, res);
+  }
+);
+router.post(
+  "/create-pdf-constancia-reestructura",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfConstanciaReestructura(req, res);
+  }
+);
+router.post(
+  "/create-pdf-contestacion-reestructura",
+  verifyToken.verifyJWT,
+  (req, res) => {
+    createPdfContestacionReestructura(req, res);
   }
 );
 //#endregion

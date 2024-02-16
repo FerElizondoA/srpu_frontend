@@ -1,0 +1,470 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<h4
+  style="
+    text-align: center;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+  "
+  class="header"
+>
+  REGISTRO PÚBLICO ÚNICO DE FINANCIAMIENTOS Y OBLIGACIONES DE ENTIDADES
+  FEDERATIVAS Y MUNICIPIOS
+  <br />
+  CONSTANCIA DE REESTRUCTURACIÓN O MODIFICACIÓN
+</h4>
+
+<!-- CONSTANCIA DE REESTRUCTURACIÓN O MODIFICACIÓN -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+  "
+>
+  <table id="data-table" style="width: 70%; border: 1px solid black">
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="
+            width: 30%;
+            border-right: 2px solid black;
+            font-family: Arial;
+            font-size: 12px;
+            font-weight: 900;
+          "
+        >
+          OFICIO NO.
+        </td>
+        <td style="width: 30%; border-right: 2px solid black">
+          DDPYPF-CR-{{oficioNum}}/2023
+        </td>
+        <td
+          style="
+            width: 10%;
+            border-right: 2px solid black;
+            font-family: Arial;
+            font-size: 12px;
+            font-weight: 900;
+          "
+        >
+          FECHA
+        </td>
+        <td style="width: 30%; letter-spacing: 1px">
+          <div id="current_date">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+            <script>
+              moment.locale("es");
+              const formattedDate = moment().format("LL");
+              document.getElementById("current_date").innerHTML = formattedDate;
+            </script>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SERVIDOR PÚBLICO -->
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: justify;
+    letter-spacing: 1px;
+  "
+>
+  {{servidorPublico}} <br />
+  {{cargo}} <br />
+  {{organismo}}
+</h3>
+
+<!-- SOLICITUD -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    SOLICITUD
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          OFICIO DE SOLICITUD
+        </td>
+        <td
+          style="width: 25%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{oficioSolicitud}}
+        </td>
+        <td
+          style="width: 25%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE SOLICITUD
+        </td>
+        <td
+          style="width: 20%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaSolicitud}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DOCUMENTACIÓN REGISTRADA -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    DOCUMENTACIÓN REGISTRADA
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          TIPO DE DOCUMENTO
+        </td>
+        <td
+          style="width: 40%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{tipoDocumento}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE CONTRATACIÓN
+        </td>
+        <td
+          style="
+            width: 40%;
+
+            border: 1px solid black;
+            border-collapse: collapse;
+          "
+        >
+          {{fechaContratacion}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          CLAVE DE INSCRIPCIÓN
+        </td>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{claveInscripcion}}
+        </td>
+        <td
+          style="width: 20%; border: 1px solid black; border-collapse: collapse"
+        >
+          DE FECHA
+        </td>
+        <td
+          style="width: 20%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaClave}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE REESTRUCTURACIÓN
+        </td>
+        <td
+          style="width: 40%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaReestructuracion}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- INFORMACIÓN DEL NUEVO FINANCIAMIENTO -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    INFORMACIÓN DEL FINANCIAMIENTO
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          ENTE PÚBLICO OBLIGADO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{entePublicoObligado}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          OBLIGADO SOLIDARIO/AVAL
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{obligadoSolidarioAval}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          INSTITUCIÓN FINANCIERA
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{institucionFinanciera}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          MONTO ORIGINAL CONTRATADO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{montoOriginalContratado}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          SALDO VIGENTE
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{saldoVigente}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          MECANISMO O VEHÍCULO DE PAGO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{mecanismoVehiculoDePago}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          FUENTE DE PAGO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fuentePago}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODIFICACIONES EFECTUADAS -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    MODIFICACIONES EFECTUADAS
+  </h3>
+  <div style="border: 1px solid black; border-collapse: collapse">
+    {{tablaModificaciones}}
+  </div>
+</div>
+
+<p
+  style="
+    text-align: justify;
+    font-family: Arial;
+    letter-spacing: 1px;
+    font-size: 10px;
+  "
+>
+  El presente Tercer Convenio Modificatorio se inscribe a la par de su Addendum
+  de fecha 18 de abril de 2022. El presente fue inscrito en el Registro Público
+  Único de Financiamientos y Obligaciones de Entidades Federativas y Municipios,
+  de conformidad con lo establecido en los Artículos 49 y 50 de la Ley de
+  Disciplina Financiera de las Entidades Federativas y los Municipios; el
+  Artículo 9º de la Ley de Coordinación Fiscal; y los Artículos 3, 23, 30 y 46
+  del Reglamento del Registro Público Único de Financiamientos y Obligaciones de
+  Entidades Federativas y Municipios. Los pagos de los Financiamientos
+  contraídos se efectuarán de acuerdo con los mecanismos y sistemas de registro
+  establecidos en su Ley Estatal de Deuda. Lo anterior, con fundamento en el
+  artículo 59 Bis, fracciones III y XI del Reglamento Interior de la Secretaría
+  de Hacienda y Crédito Público y Segundo Transitorio del Decreto por el que se
+  reforman, adicionan y derogan diversas disposiciones del Reglamento Interior
+  de la Secretaría de Hacienda y Crédito Público, publicado en el Diario Oficial
+  de la Federación el 27 de septiembre de 2017.
+</p>
+
+<h3
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+  "
+  class="atte"
+>
+  Atentamente <br />
+  {{cargoDirectorGeneral}} <br />
+  <br />
+  {{directorGeneral}} <br />
+</h3>
