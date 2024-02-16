@@ -150,37 +150,6 @@ export function Reestructura() {
       aux?.documentacion.map((v: any, index: number) => {
         return addDocumento(v);
       });
-
-      // } else if (TipoDocumento === "Crédito simple a largo plazo") {
-      //   let aux: any = JSON.parse(solicitud.Solicitud!);
-
-      //   changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
-      //   changeEncabezadoLP(aux?.encabezado);
-      //   changeInformacionGeneralLP(aux?.informacionGeneral);
-      //   changeGastosCostos(aux?.GastosCostos);
-
-      //   aux?.informacionGeneral.obligadosSolidarios.map(
-      //     (v: any, index: number) => {
-      //       return addObligadoSolidarioAvalLP(v);
-      //     }
-      //   );
-
-      //   aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
-      //     return addGeneralGastosCostos(v);
-      //   });
-
-      //   //aux?.registrarAutorizacion.autorizacionSelect.map((v: any, index: number) => {
-      //   //  return setAutorizacionSelect(v);
-      //   //});
-
-      //   aux?.condicionesFinancieras.map((v: any, index: number) => {
-      //     return addCondicionFinancieraLP(v);
-      //   });
-
-      //   aux?.documentacion.map((v: any, index: number) => {
-      //     return addDocumentoLP(v);
-      //   });
-      // }
     }
   };
 

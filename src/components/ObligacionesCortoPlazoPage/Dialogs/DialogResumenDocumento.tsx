@@ -35,6 +35,7 @@ import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import { useResumenStore } from "../../../store/Resumen/main";
 
 type Props = {
   handler: Function;
@@ -52,43 +53,30 @@ export function VerBorradorDocumento(props: Props) {
 
   const [openDialogAnularConfirmacion, setOpenDialogAnularConfirmacion] =
     React.useState(false);
-
+  // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
 
+  // ACCION
+  const accion: string = useResumenStore((state) => state.accion);
+
+  // CANCELACIÓN
   const justificacionAnulacion: string = useCortoPlazoStore(
     (state) => state.justificacionAnulacion
   );
-
   const setJustificacionAnulacion: Function = useCortoPlazoStore(
     (state) => state.setJustificacionAnulacion
   );
 
-  const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>
-  >([]);
-
+  // REQUERIMIENTOS
   React.useEffect(() => {
     if (IdSolicitud !== "") {
       getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud]);
-
-  const addComentario: Function = useCortoPlazoStore(
-    (state) => state.addComentario
-  );
-
-  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
-
-  const tieneComentarios: boolean =
-    Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
-
-  const setComentarios: Function = useCortoPlazoStore(
-    (state) => state.setComentarios
-  );
-
-  const navigate = useNavigate();
-
+  const [datosComentario, setDatosComentarios] = React.useState<
+    Array<IComentarios>
+  >([]);
   React.useEffect(() => {
     let a: any = {};
 
@@ -110,6 +98,17 @@ export function VerBorradorDocumento(props: Props) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datosComentario]);
+  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+  const setComentarios: Function = useCortoPlazoStore(
+    (state) => state.setComentarios
+  );
+  const addComentario: Function = useCortoPlazoStore(
+    (state) => state.addComentario
+  );
+  const tieneComentarios: boolean =
+    Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
+
+  const navigate = useNavigate();
 
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
@@ -120,7 +119,6 @@ export function VerBorradorDocumento(props: Props) {
   );
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
-
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [props.openState]);
@@ -202,8 +200,8 @@ export function VerBorradorDocumento(props: Props) {
     getCatalogoFirmaDetalle(IdSolicitud, estatusFirma);
   };
 
-  const alertaConfirmacion = (accion: string) => {
-    if (accion === "Cancelado") {
+  const alertaConfirmacion = (Action: string) => {
+    if (Action === "Cancelado") {
       AcuseRespuestaCancelacion(props.rowId, "En espera cancelación");
       CambiaEstatus("Cancelado", props.rowId);
       createNotificationCortoPlazo(
@@ -215,7 +213,7 @@ export function VerBorradorDocumento(props: Props) {
       );
       navigate("../cancelaciones");
       window.location.reload();
-    } else if (accion === "Anulación") {
+    } else if (Action === "Anulación") {
       Swal.close();
       AnularCancelacionSolicitud(
         props.rowSolicitud.Solicitud,
@@ -227,8 +225,6 @@ export function VerBorradorDocumento(props: Props) {
       navigate("../firmaUrl");
     }
   };
-
-  //const [justificacionAnulacion, setJustificacionAnulacion] = useState("");
 
   const [error, setError] = useState(false);
 
@@ -370,14 +366,7 @@ export function VerBorradorDocumento(props: Props) {
                   width: "40%",
                 },
               }}
-              onClick={() => {
-                navigate("../ObligacionesCortoPlazo");
-                // if (props.rowSolicitud.TipoSolicitud === "Crédito simple a corto plazo") {
-                //   navigate("../ObligacionesCortoPlazo");
-                // } else {
-                //   navigate("../ObligacionesLargoPlazo");
-                // }
-              }}
+              onClick={() => {}}
             >
               <Typography
                 sx={{
@@ -617,6 +606,7 @@ export function VerBorradorDocumento(props: Props) {
             </Button>
           )}
       </DialogTitle>
+
       <DialogContent
         sx={{
           mt: 2,
@@ -741,15 +731,10 @@ export function VerBorradorDocumento(props: Props) {
               sx={{ ...queries.buttonContinuar }}
               onClick={() => {
                 if (estatus === "Anulación" && justificacionAnulacion !== "") {
-                  //Pasarlo a firmar la anulacion de la solicitud de cancelacion
                   setOpenDialogAnularConfirmacion(false);
-                  //CambiaEstatus("Autorizado", props.rowId)
                   alertaConfirmacion(estatus);
                 } else if (estatus === "Cancelado") {
-                  //AcuseRespuestaCancelacion(props.rowId)
                   setOpenDialogAnularConfirmacion(false);
-
-                  //CambiaEstatus("Cancelado", props.rowId)
                   alertaConfirmacion(estatus);
                 } else {
                   setError(true);

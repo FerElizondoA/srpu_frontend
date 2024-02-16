@@ -20,10 +20,8 @@ import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import SearchIcon from "@mui/icons-material/Search";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
-import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
 import { differenceInDays, format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -93,9 +91,9 @@ export interface IDataPrueba {
 
 export function stringCapitalize(value: any) {
   return String(value)
-    .split(' ')
-    .map((str) => (str.length > 0 ? str[0].toUpperCase() + str.slice(1) : ''))
-    .join(' ');
+    .split(" ")
+    .map((str) => (str.length > 0 ? str[0].toUpperCase() + str.slice(1) : ""))
+    .join(" ");
 }
 
 interface Head {
@@ -471,18 +469,6 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  );
-   const changeRestructura: Function = useCortoPlazoStore(
-    (state) => state.changeRestructura
-  );
-
-  useEffect(() => {
-    changeRestructura("")
-  }, [])
-  
-
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
@@ -513,7 +499,7 @@ export function ConsultaDeSolicitudPage() {
           Consulta de Solicitudes
         </Typography>
       </Grid>
-      
+
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
           <TableContainer
@@ -970,7 +956,7 @@ export function ConsultaDeSolicitudPage() {
                                       getSolicitudesAdmin(
                                         "Autorizacion",
                                         setDatos,
-                                       "consulta"
+                                        "consulta"
                                       );
                                     }
                                   }}
