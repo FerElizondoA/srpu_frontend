@@ -2,58 +2,50 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createFondoOIngreso: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
-    const Descripcion = req.body.Descripcion;
-    const TipoDeFuente = req.body.TipoDeFuente;
+  createConfiguracionOficios: (req, res) => {
+    const { Tipo, Descripcion, CreadoPor } = req.body;
 
-    if (
-      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
-      Descripcion.length() <= 255
-    ) {
+    if (Tipo == null || /^[\s]*$/.test(Tipo)) {
       return res.status(409).send({
-        error: "Ingrese Descripcion válido.",
+        error: "Ingrese Id",
       });
     }
-    if (
-      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
-      IdUsuario.length() <= 36
-    ) {
+    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
-        error: "Ingrese Id usuario válido.",
+        error: "Ingrese Id",
       });
-    } else {
-      db.query(
-        `CALL sp_AgregarFondoOIngreso('${IdUsuario}', '${Descripcion}', '${TipoDeFuente}' )`,
-        (err, result) => {
-          if (err) {
-            return res.status(500).send({
-              error: "Error",
-            });
-          }
-          if (result.length) {
-            const data = result[0][0];
-            if (data.error) {
-              return res.status(409).send({
-                result: data,
-              });
-            }
-            return res.status(200).send({
-              data,
-            });
-          } else {
-            return res.status(409).send({
-              error: "¡Sin Información!",
-            });
-          }
+    }
+
+    db.query(
+      `CALL sp_AgregarConfiguracionOficios('${Tipo}', '${Descripcion}', '${CreadoPor}'  )`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
         }
-      );
-    }
+        if (result.length) {
+          const data = result[0][0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
+      }
+    );
   },
 
   //LISTADO COMPLETO
-  getFondosOIngresos: (req, res) => {
-    db.query(`CALL sp_ListadoFondosOIngresos()`, (err, result) => {
+  getConfiguracionOficios: (req, res) => {
+    db.query(`CALL sp_ListadoConfiguracionOficios()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -73,8 +65,29 @@ module.exports = {
     });
   },
 
+  //LISTADO COMPLETO
+  getHeader: (req, res) => {
+    db.query(`CALL sp_DetalleHeader()`, (err, result) => {
+      if (err) {
+        return res.status(500).send({
+          error: " ",
+        });
+      }
+      if (result.length) {
+        const data = result[0][0].Descripcion;
+        return res.status(200).send({
+          data,
+        });
+      } else {
+        return res.status(409).send({
+          error: " ",
+        });
+      }
+    });
+  },
+
   // DETALLE POR ID
-  getDetailFondoOIngreso: (req, res) => {
+  getDetailConfiguracionOficios: (req, res) => {
     const IdDescripcion = req.body.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -83,7 +96,7 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_DetalleFondoOIngreso('${IdDescripcion}')`,
+      `CALL sp_DetalleConfiguracionOficios('${IdDescripcion}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -110,10 +123,8 @@ module.exports = {
   },
 
   //MODIFICA POR ID
-  modifyFondoOIngreso: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    const Descripcion = req.body.Descripcion;
-    const IdUsuarioModificador = req.body.IdUsuario;
+  modifyConfiguracionOficios: (req, res) => {
+    let { IdDescripcion, Descripcion, IdUsuario } = req.body;
 
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -122,18 +133,16 @@ module.exports = {
     }
 
     if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
-      return res.status(409).send({
-        error: "Ingrese Nuevo FondoOIngreso",
-      });
+      Descripcion = "";
     }
 
-    if (IdUsuarioModificador == null || /^[\s]*$/.test(IdUsuarioModificador)) {
+    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
         error: "Ingrese Id usuario modificador",
       });
     } else {
       db.query(
-        `CALL sp_ModificaFondoOIngreso('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaConfiguracionOficios('${IdDescripcion}','${Descripcion}','${IdUsuario}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -161,11 +170,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteFondoOIngreso: (req, res) => {
+  deleteConfiguracionOficios: (req, res) => {
     const IdDescripcion = req.query.IdDescripcion;
     const IdUsuarioModificador = req.query.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFondoOIngreso('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaConfiguracionOficios('${IdDescripcion}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

@@ -2,28 +2,37 @@ const db = require("../config/db.js");
 
 module.exports = {
   //CREAR
-  createFiudiciario: (req, res) => {
-    const IdUsuario = req.body.IdUsuario;
-    const Descripcion = req.body.Descripcion;
-
+  createMandato: (req, res) => {
+    const NumeroMandato = req.body.NumeroMandato;
+    const FechaMandato = req.body.FechaMandato;
+    const Mandatario = req.body.Mandatario;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
+    const MecanismoPago = req.body.MecanismoPago;
+    const TipoMovimiento = req.body.TipoMovimiento;
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
+    const SoporteDocumental = req.body.SoporteDocumental;
+    const CreadoPor = req.body.CreadoPor;
     if (
-      (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
-      Descripcion.length() <= 255
+      (NumeroMandato == null || /^[\s]*$/.test(NumeroMandato)) &&
+      NumeroMandato.length() <= 255
     ) {
       return res.status(409).send({
-        error: "Ingrese Descripcion válido.",
+        error: "Ingrese Descripcion válida.",
       });
     }
     if (
-      (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) &&
-      IdUsuario.length() <= 36
+      (CreadoPor == null || /^[\s]*$/.test(CreadoPor)) &&
+      CreadoPor.length() <= 36
     ) {
       return res.status(409).send({
         error: "Ingrese Id usuario válido.",
       });
     } else {
       db.query(
-        `CALL sp_AgregarFiudiciario('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarMandato('${NumeroMandato}', '${FechaMandato}', '${Mandatario}', '${MunicipioOrganismoMandante}', '${TipoEntePublicoObligado}',  '${MecanismoPago}', '${TipoMovimiento}', '${AcumuladoEstado}', '${AcumuladoMunicipios}', '${AcumuladoOrganismos}', '${SoporteDocumental}' , '${CreadoPor}'  )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -51,8 +60,8 @@ module.exports = {
   },
 
   //LISTADO COMPLETO
-  getFiudiciarios: (req, res) => {
-    db.query(`CALL sp_ListadoFiudiciarios()`, (err, result) => {
+  getMandatos: (req, res) => {
+    db.query(`CALL sp_ListadoMandatos()`, (err, result) => {
       if (err) {
         return res.status(500).send({
           error: "Error",
@@ -72,67 +81,34 @@ module.exports = {
     });
   },
 
-  // DETALLE POR ID
-  getDetailFiudiciario: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
-      return res.status(409).send({
-        error: "Ingrese IdDescripcion.",
-      });
-    }
-
-    db.query(
-      `CALL sp_DetalleFiudiciario('${IdDescripcion}')`,
-      (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            error: "Error",
-          });
-        }
-        if (result.length) {
-          const data = result[0][0];
-          if (data.error) {
-            return res.status(409).send({
-              result: data,
-            });
-          }
-          return res.status(200).send({
-            data,
-          });
-        } else {
-          return res.status(409).send({
-            error: "¡Sin Información!",
-          });
-        }
-      }
-    );
-  },
-
   //MODIFICA POR ID
-  modifyFiudiciario: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    const Descripcion = req.body.Descripcion;
-    const IdUsuarioModificador = req.body.IdUsuario;
 
-    if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
+  modifyMandato: (req, res) => {
+    const IdMandato = req.body.IdMandato;
+    const IdUsuario = req.body.IdUsuario;
+    const FechaMandato = req.body.FechaMandato;
+    const Mandatario = req.body.Mandatario;
+    const MunicipioOrganismoMandante = req.body.MunicipioOrganismoMandante;
+    // const TipoEntePublicoObligado = req.body.TipoEntePublicoObligado;
+    const TipoMovimiento = req.body.TipoMovimiento;
+    const AcumuladoEstado = req.body.AcumuladoEstado;
+    const AcumuladoMunicipios = req.body.AcumuladoMunicipios;
+    const AcumuladoOrganismos = req.body.AcumuladoOrganismos;
+    const SoporteDocumental = req.body.SoporteDocumental;
+
+    if (IdMandato == null || /^[\s]*$/.test(IdMandato)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
 
-    if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
-      return res.status(409).send({
-        error: "Ingrese Nuevo Clave de inscripcion",
-      });
-    }
-
-    if (IdUsuarioModificador == null || /^[\s]*$/.test(IdUsuarioModificador)) {
+    if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
         error: "Ingrese Id usuario modificador",
       });
     } else {
       db.query(
-        `CALL sp_ModificaFiudiciario('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaMandato('${IdMandato}', '${IdUsuario}', '${FechaMandato}', '${Mandatario}', '${MunicipioOrganismoMandante}', '${TipoMovimiento}','${AcumuladoEstado}','${AcumuladoMunicipios}','${AcumuladoOrganismos}','${SoporteDocumental}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
@@ -160,11 +136,11 @@ module.exports = {
   },
 
   //BORRADO LOGICO
-  deleteFiudiciario: (req, res) => {
-    const IdDescripcion = req.query.IdDescripcion;
-    const IdUsuarioModificador = req.query.IdUsuario;
+  deleteMandato: (req, res) => {
+    const IdMandato = req.body.IdMandato;
+    const IdUsuarioModificador = req.body.IdUsuario;
     db.query(
-      `CALL sp_BajaLogicaFiudiciario('${IdDescripcion}', '${IdUsuarioModificador}')`,
+      `CALL sp_BajaLogicaMandato('${IdMandato}', '${IdUsuarioModificador}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({

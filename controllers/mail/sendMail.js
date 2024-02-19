@@ -4,18 +4,14 @@ const db = require("../../config/db.js");
 
 module.exports = {
   sendEmail: async (req, res) => {
-    const mailData = req.body;
-    const subject = mailData.subject;
-    const message = mailData.message;
-    const IdDestinatario = mailData.IdDestinatario;
-    const IdRemitente = mailData.IdRemitente;
+    let { usuarios, titulo, asunto, plantilla } = req;
 
     var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      host: process.env.SRPU_B_APP_EMAIL_HOST,
+      port: process.env.SRPU_B_APP_EMAIL_PORT,
+      secure: true,
       auth: {
-        user: process.env.SRPU_B_APP_EMAIL_USER, // enter your email address
+        user: process.env.SRPU_B_APP_EMAIL_USERNAME, // enter your email address
         pass: process.env.SRPU_B_APP_EMAIL_PASSWORD, // enter your visible/encripted password
       },
       tls: { rejectUnauthorized: false },
@@ -23,59 +19,35 @@ module.exports = {
 
     function getCorreo() {
       return new Promise((resolve, reject) => {
+        let emails = "";
+        let mock = "";
         db.query(
-          `CALL sp_DetalleUsuario('${IdDestinatario}')`,
+          `CALL sp_DetalleCorreos('${usuarios}', '${plantilla}')`,
           (err, result) => {
-            resolve(result[0][0].CorreoElectronico);
+            mock = result[1][0].body;
+            result[0].map(({ CorreoElectronico }) => {
+              if (emails !== "") {
+                return (emails = emails + "; " + CorreoElectronico);
+              } else {
+                return (emails = CorreoElectronico);
+              }
+            });
+            resolve({ emails: emails, plantilla: mock });
           }
         );
       });
     }
 
     getCorreo().then((r) => {
-      var CorreoElectronico = r;
-      var mailOptions = {
-        from: process.env.SRPU_B_APP_EMAIL_USER,
-        to: CorreoElectronico,
-        subject: subject,
-        text: message,
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          throw error;
-        }
-
-        if (info.response.includes("250")) {
-          db.query(
-            `CALL sp_RegistroCorreo('${IdDestinatario}','${IdRemitente}','${subject}','${message}','${info.response}')`,
-            (err, result) => {
-              if (err) {
-                return res.status(500).send({
-                  error: "Error",
-                });
-              }
-              if (result.length) {
-                const data = result[0];
-                if (data.error) {
-                  return res.status(409).send({
-                    data,
-                  });
-                }
-                return res.status(201).send({
-                  msg: "¡Email enviado!",
-                });
-              } else {
-                return res.status(409).send({
-                  error: "¡Sin Información!",
-                });
-              }
-            }
-          );
-        }
+      transporter.sendMail({
+        from: process.env.SRPU_B_APP_EMAIL_ADDRESS,
+        to: r.emails, //"japerez@cecapmex.com; prpardo@cecapmex.com"
+        subject: titulo,
+        text: asunto,
+        html: r.plantilla
+          .replaceAll("{{Titulo}}", titulo)
+          .replaceAll("{{Asunto}}", asunto),
       });
     });
   },
-
-  enviarCorreo: {},
 };
