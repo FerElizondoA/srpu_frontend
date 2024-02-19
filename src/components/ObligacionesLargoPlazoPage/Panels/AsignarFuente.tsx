@@ -13,6 +13,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  ThemeProvider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
@@ -25,6 +26,7 @@ import {
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface HeadSelect {
   Label: string;
@@ -141,6 +143,7 @@ export function AsignarFuente() {
 
       <Grid
         container
+        height={{ xs: "20rem", sm: "4rem" }}
         sx={{
           display: "flex",
           width: "100%",
@@ -322,7 +325,8 @@ export function AsignarFuente() {
 
         <Grid
           item
-          sx={{ width: "100%", alignSelf: "center" }}
+          display={"flex"}
+          sx={{ width: "100%", justifyContent: "center", alignItems: "center" }}
           xs={10}
           sm={5}
           md={5}
@@ -356,10 +360,17 @@ export function AsignarFuente() {
         </Grid>
       </Grid>
 
-      <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
-        <Paper>
+      <Grid
+        container
+        mt={1}
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
+        <Paper sx={{ width: "100%" }}>
           <TableContainer
             sx={{
+              width: "100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",

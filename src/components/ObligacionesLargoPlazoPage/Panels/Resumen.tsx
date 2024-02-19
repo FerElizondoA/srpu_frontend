@@ -175,7 +175,7 @@ const headsAF: Head[] = [
   },
 ];
 
-export function Resumen() {
+export function Resumen({ coments }: { coments: boolean }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   // IdSolicitud

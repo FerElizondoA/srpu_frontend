@@ -121,7 +121,7 @@ export function DatoGeneralesFideicomiso() {
       sx={{
         height: "46rem",
         "@media (min-width: 480px)": {
-          height: "50rem",
+          height: "60rem",
         },
 
         "@media (min-width: 768px)": {
@@ -129,11 +129,11 @@ export function DatoGeneralesFideicomiso() {
         },
 
         "@media (min-width: 1140px)": {
-          height: "35rem",
+          height: "60rem",
         },
 
         "@media (min-width: 1400px)": {
-          height: "38rem",
+          height: "37rem",
         },
 
         "@media (min-width: 1870px)": {
@@ -142,7 +142,9 @@ export function DatoGeneralesFideicomiso() {
       }}
     >
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+          mb={{ xs: 2, sm: 0 }}
+        >
           <InputLabel sx={queries.medium_text}>
             Número del Fideicomiso
           </InputLabel>
@@ -171,7 +173,9 @@ export function DatoGeneralesFideicomiso() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+          mb={{ xs: 2, sm: 0 }}
+        >
           <InputLabel sx={queries.medium_text}>Tipo de Fideicomiso</InputLabel>
           <Autocomplete
             disableClearable
@@ -214,7 +218,9 @@ export function DatoGeneralesFideicomiso() {
       </Grid>
 
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+          mb={{ xs: 2, sm: 0 }}
+        >
           <InputLabel sx={{ ...queries.medium_text }}>
             Fecha del Fideicomiso
           </InputLabel>
@@ -223,6 +229,7 @@ export function DatoGeneralesFideicomiso() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
+              sx={{ width: "100%" }}
               value={datosGenerales.fechaFideicomiso}
               onChange={(v) => {
                 setDatosGenerales({
@@ -234,7 +241,9 @@ export function DatoGeneralesFideicomiso() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={10} sm={4} md={4} lg={5} xl={4}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+          mb={{ xs: 2, sm: 0 }}
+        >
           <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
           <Autocomplete
             disableClearable
@@ -290,12 +299,15 @@ export function DatoGeneralesFideicomiso() {
 
       <Grid item container display={"flex"} justifyContent={"center"} mt={2}>
         <Grid
+          container
           width={"100%"}
           display={"flex"}
           justifyItems={"center"}
           justifyContent={"space-evenly"}
         >
-          <Grid item xs={5} sm={4} md={4} lg={3} xl={4}>
+          <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+            mb={{ xs: 2, sm: 0 }}
+          >
             <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
             <Autocomplete
               disableClearable
@@ -333,7 +345,9 @@ export function DatoGeneralesFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={4} sm={4} md={4} lg={3} xl={4}>
+          <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
+            mb={{ xs: 2, sm: 0 }}
+          >
             <InputLabel sx={queries.medium_text}>
               Orden fideicomisario
             </InputLabel>
@@ -374,28 +388,31 @@ export function DatoGeneralesFideicomiso() {
           </Grid>
         </Grid>
 
-        <ThemeProvider theme={buttonTheme}>
-          <Button
-            sx={{
-              ...queries.buttonContinuarSolicitudInscripcion,
-              width: "15vh",
-              marginBottom: "1rem",
-            }}
-            disabled={
-              fideicomisario.Descripcion === "" ||
-              ordenFideicomisario.Descripcion === ""
-            }
-            onClick={() => {
-              addFideicomisario({
-                fideicomisario: fideicomisario,
-                ordenFideicomisario: ordenFideicomisario,
-              });
-              cleanFideicomisario();
-            }}
-          >
-            Agregar
-          </Button>
-        </ThemeProvider>
+        <Grid mt={{xs:0, sm:2}}>
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              sx={{
+                ...queries.buttonContinuarSolicitudInscripcion,
+                width: "15vh",
+                marginBottom: "1rem",
+              }}
+              disabled={
+                fideicomisario.Descripcion === "" ||
+                ordenFideicomisario.Descripcion === ""
+              }
+              onClick={() => {
+                addFideicomisario({
+                  fideicomisario: fideicomisario,
+                  ordenFideicomisario: ordenFideicomisario,
+                });
+                cleanFideicomisario();
+              }}
+            >
+              Agregar
+            </Button>
+          </ThemeProvider>
+        </Grid>
+
         <Grid
           width={"100%"}
           display={"flex"}

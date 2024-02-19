@@ -1,6 +1,7 @@
 import {
   Chip,
   Grid,
+  InputBase,
   Table,
   TableBody,
   TableContainer,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+import SearchIcon from "@mui/icons-material/Search";
 
 import {
   StyledTableCell,
@@ -316,7 +318,7 @@ export function ConsultaDeSolicitudPage() {
   //END Row Solicitud
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
+    if (TipoDocumento === "Crédito Simple A Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -469,6 +471,17 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+  const changeRestructura: Function = useCortoPlazoStore(
+    (state) => state.changeRestructura
+  );
+
+  useEffect(() => {
+    changeRestructura("");
+  }, []);
+
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
@@ -498,6 +511,39 @@ export function ConsultaDeSolicitudPage() {
         >
           Consulta de Solicitudes
         </Typography>
+      </Grid>
+      <Grid item mb={3} lg={12} display="center" justifyContent="center">
+        <Paper
+          component="form"
+          sx={{
+            display: "flex",
+            width: "50%",
+          }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Buscar"
+            value={busqueda}
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                handleSearch();
+                ev.preventDefault();
+                return false;
+              }
+            }}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={() => handleSearch()}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Paper>
       </Grid>
 
       <Grid container display={"flex"} justifyContent={"center"}>

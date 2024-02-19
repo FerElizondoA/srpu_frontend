@@ -32,6 +32,7 @@ import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNo
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { Resumen } from "../Panels/Resumen";
+import { Resumen as ResumenLP } from "../../ObligacionesLargoPlazoPage/Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
@@ -299,9 +300,12 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
-        {reestructura !== "con autorizacion" &&
-        stringCapitalize(props.rowSolicitud.TipoSolicitud) !==
-          "Crédito Simple A Largo Plazo" ? null : (
+        {reestructura === "con autorizacion" &&
+        stringCapitalize(props.rowSolicitud.TipoSolicitud) ===
+          "Crédito Simple A Largo Plazo" &&
+        localStorage.getItem("IdUsuario") !== props.rowSolicitud.IdEditor &&
+        props.rowSolicitud.Estatus === "Autorizado" &&
+        localStorage.getItem("Rol") !== "Autorizador" ? (
           <Grid
             container
             display={"flex"}
@@ -366,7 +370,9 @@ export function VerBorradorDocumento(props: Props) {
                   width: "40%",
                 },
               }}
-              onClick={() => {}}
+              onClick={() => {
+                navigate("../ObligacionesLargoPlazo");
+              }}
             >
               <Typography
                 sx={{
@@ -430,12 +436,7 @@ export function VerBorradorDocumento(props: Props) {
                 },
               }}
               onClick={() => {
-                navigate("../ObligacionesCortoPlazo");
-                // if (props.rowSolicitud.TipoSolicitud === "Crédito simple a corto plazo") {
-                //   navigate("../ObligacionesCortoPlazo");
-                // } else {
-                //   navigate("../ObligacionesLargoPlazo");
-                // }
+                navigate("../ObligacionesLargoPlazo");
               }}
             >
               <Typography
@@ -466,7 +467,170 @@ export function VerBorradorDocumento(props: Props) {
               </Typography>
             </Button>
           </Grid>
-        )}
+        ) : reestructura === "con autorizacion" &&
+          stringCapitalize(props.rowSolicitud.TipoSolicitud) ===
+            "Crédito Simple A Largo Plazo" &&
+          localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+          props.rowSolicitud.Estatus === "En Reestructura" &&
+          localStorage.getItem("Rol") === "Autorizador" ? (
+          <Grid
+            container
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            alignItems={"center"}
+            sx={{
+              width: "65%",
+              "@media (min-width: 480px)": {
+                width: "82%",
+              },
+
+              "@media (min-width: 768px)": {
+                width: "82%",
+              },
+
+              "@media (min-width: 1140px)": {
+                width: "60%",
+              },
+
+              "@media (min-width: 1400px)": {
+                width: "50%",
+              },
+
+              "@media (min-width: 1870px)": {
+                width: "40%",
+              },
+            }}
+          >
+            <Button
+              sx={{
+                width: "45%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#15212f",
+                color: "white",
+                "&&:hover": {
+                  backgroundColor: "rgba(47, 47, 47, 0.4)",
+                  color: "#000",
+                },
+                //fontSize: "90%",
+                borderRadius: "0.8vh",
+                textTransform: "capitalize",
+                fontSize: "60%",
+                "@media (min-width: 480px)": {
+                  width: "45%",
+                },
+
+                "@media (min-width: 768px)": {
+                  width: "40%",
+                },
+
+                "@media (min-width: 1140px)": {
+                  width: "40%",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "42%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  width: "40%",
+                },
+              }}
+              onClick={() => {
+                CambiaEstatus("Autorizado", props.rowId);
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "0.7rem",
+                  fontFamily: "MontserratMedium",
+
+                  "@media (min-width: 480px)": {
+                    fontSize: "0.7rem",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    fontSize: ".75rem",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    fontSize: ".8rem",
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    fontSize: ".85rem",
+                  },
+                }}
+              >
+                Rechazar Reestructuración
+              </Typography>
+            </Button>
+
+            <Button
+              sx={{
+                width: "45%",
+                backgroundColor: "#15212f",
+                color: "white",
+                "&&:hover": {
+                  backgroundColor: "rgba(47, 47, 47, 0.4)",
+                  color: "#000",
+                },
+                // fontSize: "90%",
+                borderRadius: "0.8vh",
+                textTransform: "capitalize",
+                fontSize: "60%",
+                "@media (min-width: 480px)": {
+                  width: "45%",
+                },
+
+                "@media (min-width: 768px)": {
+                  width: "40%",
+                },
+
+                "@media (min-width: 1140px)": {
+                  width: "40%",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "40%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  width: "40%",
+                },
+              }}
+              onClick={() => {
+                CambiaEstatus("Autorizado", props.rowId);
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "0.7rem",
+                  fontFamily: "MontserratMedium",
+
+                  "@media (min-width: 480px)": {
+                    fontSize: "0.7rem",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    fontSize: ".75rem",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    fontSize: ".8rem",
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    fontSize: ".9rem",
+                  },
+                }}
+              >
+                Autorizar Reestructuración
+              </Typography>
+            </Button>
+          </Grid>
+        ) : null}
 
         {((estatus === "Revision" &&
           localStorage.getItem("Rol") === "Revisor") ||
@@ -591,7 +755,8 @@ export function VerBorradorDocumento(props: Props) {
           )}
 
         {props.rowSolicitud.Estatus === "Autorizado" &&
-          localStorage.getItem("Rol") === "Verificador" && (
+          localStorage.getItem("Rol") === "Verificador" &&
+          reestructura === "" && (
             <Button
               sx={{
                 ...queries.buttonCancelar,
@@ -622,7 +787,11 @@ export function VerBorradorDocumento(props: Props) {
           },
         }}
       >
-        <Resumen coments={false} />
+        {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
+          <Resumen coments={false} />
+        ) : (
+          <ResumenLP coments={false} />
+        )}
       </DialogContent>
 
       <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>

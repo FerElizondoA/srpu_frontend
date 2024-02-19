@@ -112,7 +112,6 @@ export function AgregarFideicomisos({
               <Button
                 sx={queries.buttonContinuar}
                 onClick={() => {
-                  console.log("falta restricciones");
 
                   if (IdFideicomiso === "") {
                     setLoading(true);

@@ -51,9 +51,9 @@ export function DatosGeneralesIntrucciones() {
       flexDirection="column"
       justifyContent={"space-evenly"}
       sx={{
-        height: "46rem",
+        height: "30rem",
         "@media (min-width: 480px)": {
-          height: "50rem",
+          height: "20rem",
         },
 
         "@media (min-width: 768px)": {
@@ -61,11 +61,11 @@ export function DatosGeneralesIntrucciones() {
         },
 
         "@media (min-width: 1140px)": {
-          height: "35rem",
+          height: "25rem",
         },
 
         "@media (min-width: 1400px)": {
-          height: "38rem",
+          height: "31rem",
         },
 
         "@media (min-width: 1870px)": {
@@ -76,13 +76,13 @@ export function DatosGeneralesIntrucciones() {
       <Grid
         container
         sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2,1fr)",
-          justifyItems: "center",
-          height: "40%",
+          display: "flex",
+          // gridTemplateColumns: "repeat(2,1fr)",
+          justifyContent: "space-evenly",
+          height:"13rem"
         }}
       >
-        <Grid item sx={{ width: "50%" }}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} >
           <InputLabel sx={{ ...queries.medium_text }}>
             Número de Cuenta
           </InputLabel>
@@ -104,7 +104,7 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item sx={{ width: "50%" }}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>
             Fecha de la Instrucción
           </InputLabel>
@@ -126,8 +126,10 @@ export function DatosGeneralesIntrucciones() {
             />
           </LocalizationProvider>
         </Grid>
+      </Grid>
 
-        <Grid item sx={{ width: "50%" }}>
+      <Grid container height={"40%"} display={"flex"} justifyContent={"space-evenly"} >
+      <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
             fullWidth
@@ -147,7 +149,7 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item sx={{ width: "50%" }}>
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
           <Autocomplete
             clearText="Borrar"

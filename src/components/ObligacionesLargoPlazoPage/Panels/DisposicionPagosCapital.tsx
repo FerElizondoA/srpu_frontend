@@ -49,42 +49,44 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Interes",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Interes",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: `Importe`,
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: `Importe`,
+    },
+  ];
+
+
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -204,6 +206,11 @@ export function DisposicionPagosCapital() {
 
   const tasasParciales: boolean = useLargoPlazoStore(
     (state) => state.tasasParciales
+  );
+
+  //RESTRUCTURA
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
   );
 
   useEffect(() => {
@@ -393,23 +400,23 @@ export function DisposicionPagosCapital() {
           ? disposicionesParciales === false && tasasParciales === false
             ? "32rem"
             : disposicionesParciales === true && tasasParciales === false
-            ? "44rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "44rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "60rem"
-            : "36rem"
+              ? "44rem"
+              : disposicionesParciales === false && tasasParciales === true
+                ? "44rem"
+                : disposicionesParciales === true && tasasParciales === true
+                  ? "60rem"
+                  : "36rem"
           : query.isMobile === true
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "65rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "65rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "85rem"
-            : "52rem"
-          : "36rem"
+            ? disposicionesParciales === false && tasasParciales === false
+              ? "50rem"
+              : disposicionesParciales === true && tasasParciales === false
+                ? "65rem"
+                : disposicionesParciales === false && tasasParciales === true
+                  ? "65rem"
+                  : disposicionesParciales === true && tasasParciales === true
+                    ? "85rem"
+                    : "52rem"
+            : "36rem"
       }
     >
       <Grid item container mt={2} direction="column">
@@ -431,6 +438,7 @@ export function DisposicionPagosCapital() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
+                disabled={reestructura === "con autorizacion"}
                 sx={{ width: "100%" }}
                 value={new Date(capitalFechaPrimerPago)}
                 onChange={(date) =>
@@ -443,7 +451,7 @@ export function DisposicionPagosCapital() {
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
 
-                //slots={(props: any) => <TextField variant="standard" {...props} />}
+              //slots={(props: any) => <TextField variant="standard" {...props} />}
               />
 
               {/* <DatePicker
@@ -469,6 +477,7 @@ export function DisposicionPagosCapital() {
               Periodicidad de Pago
             </InputLabel>
             <Autocomplete
+              disabled={reestructura === "con autorizacion"}
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
@@ -511,6 +520,7 @@ export function DisposicionPagosCapital() {
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
             <TextField
+              disabled={reestructura === "con autorizacion"}
               placeholder="0"
               value={capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()}
               onChange={(v) => {
@@ -562,6 +572,7 @@ export function DisposicionPagosCapital() {
           >
             <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <FormControlLabel
+              disabled={reestructura==="con autorizacion"}
                 label="Disposiciones Parciales"
                 control={
                   <Checkbox
@@ -577,12 +588,13 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
-              {}
+              { }
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={enGB}
               >
                 <DesktopDatePicker
+                  disabled={reestructura === "con autorizacion"}
                   sx={{ width: "100%" }}
                   // disabled={!disposicionesParciales}
                   value={new Date(disposicionFechaDisposicion)}
@@ -605,13 +617,13 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
               <TextField
-                disabled={!disposicionesParciales}
+                disabled={!disposicionesParciales || reestructura === "con autorizacion"}
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
+                    monto +
+                    "; Monto restante: " +
+                    restante.toFixed(2)
                     : ""
                 }
                 value={
@@ -624,9 +636,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseInt(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
+                    9999999999999999 &&
                     parseInt(v.target.value.replace(/\D/g, "")) <=
-                      restante * 100
+                    restante * 100
                   ) {
                     changeDisposicion(
                       disposicionFechaDisposicion,
@@ -680,7 +692,7 @@ export function DisposicionPagosCapital() {
                       disposicionImporte.toString().replace(/\D/g, "")
                     ) === 0 ||
                     parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                      restante * 100
+                    restante * 100
                   }
                   variant="outlined"
                   onClick={() => {

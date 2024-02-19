@@ -341,13 +341,13 @@ export function TipoDeMovimientoFideicomiso() {
           <Grid
             item
             xs={10}
-            sm={5}
-            md={5}
-            lg={2}
-            xl={2}
+            sm={3}
+            md={3}
+            lg={3}
+            xl={3}
             mb={
               movimiento === "BENEFICIARIO"
-                ? { xs: 2, sm: 4, md: 4, lg: 2 }
+                ? { xs: 2, sm: 0, md: 0, lg: 0 }
                 : { xs: 0, sm: 0 }
             }
           >
@@ -392,14 +392,14 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 3 : 5}
-          md={movimiento === "DEUDOR" ? 3 : 5}
-          lg={movimiento === "DEUDOR" ? 3 : 2}
-          xl={movimiento === "DEUDOR" ? 3 : 2}
+          sm={movimiento === "DEUDOR" ? 5 : 3}
+          md={movimiento === "DEUDOR" ? 5 : 3}
+          lg={movimiento === "DEUDOR" ? 5 : 3}
+          xl={movimiento === "DEUDOR" ? 5 : 3}
           mb={
             movimiento === "BENEFICIARIO"
-              ? { xs: 2, sm: 0, md: 0 }
-              : { xs: 4, sm: 0 }
+              ? { xs: 1, sm: 0, md: 0 }
+              : { xs: 4, sm: 0, md: 0 }
           }
         >
           <InputLabel sx={queries.medium_text}>
@@ -455,12 +455,12 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 3 : 5}
-          md={movimiento === "DEUDOR" ? 3 : 5}
-          lg={movimiento === "DEUDOR" ? 3 : 2}
-          xl={movimiento === "DEUDOR" ? 3 : 3}
-          mb={
-            movimiento === "BENEFICIARIO" ? { xs: 0, sm: 0, md: 0 } : { xs: 0 }
+          sm={movimiento === "DEUDOR" ? 5 : 3}
+          md={movimiento === "DEUDOR" ? 5 : 3}
+          lg={movimiento === "DEUDOR" ? 5 : 3}
+          xl={movimiento === "DEUDOR" ? 5 : 3}
+          mt={
+            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : {  sm: 0 }
           }
         >
           <InputLabel sx={queries.medium_text}>Fideicomitente</InputLabel>
@@ -524,12 +524,12 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 3 : 5}
-          md={movimiento === "DEUDOR" ? 3 : 5}
-          lg={movimiento === "DEUDOR" ? 3 : 3}
-          xl={movimiento === "DEUDOR" ? 3 : 3}
-          mb={
-            movimiento === "BENEFICIARIO" ? { xs: 3, sm: 0 } : { xs: 4, sm: 0 }
+          sm={movimiento === "DEUDOR" ? 5 : 4}
+          md={movimiento === "DEUDOR" ? 5 : 4}
+          lg={movimiento === "DEUDOR" ? 5 : 3}
+          xl={movimiento === "DEUDOR" ? 5 : 3}
+          mt={
+            movimiento === "BENEFICIARIO" ? { xs: 5, sm: 3 } : { xs: 0, sm: 0 }
           }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
@@ -582,10 +582,13 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 3 : 5}
-          md={movimiento === "DEUDOR" ? 3 : 5}
-          lg={movimiento === "DEUDOR" ? 3 : 3}
-          xl={movimiento === "DEUDOR" ? 3 : 3}
+          sm={movimiento === "DEUDOR" ? 5 : 4}
+          md={movimiento === "DEUDOR" ? 5 : 4}
+          lg={movimiento === "DEUDOR" ? 5 : 3}
+          xl={movimiento === "DEUDOR" ? 5 : 3}
+          mt={
+            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 3 } : { xs: 3, sm: 0 }
+          }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
             Fondo o Ingreso
@@ -677,7 +680,7 @@ export function TipoDeMovimientoFideicomiso() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>
               Tipo de Beneficiario
             </InputLabel>
@@ -728,7 +731,7 @@ export function TipoDeMovimientoFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Beneficiario</InputLabel>
             <Autocomplete
               disableClearable
@@ -776,7 +779,8 @@ export function TipoDeMovimientoFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
+          <Grid item xs={10} sm={8} md={5} lg={3} xl={3} 
+          mt={{xs:2, sm:2, md:0}}>
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha de Alta
             </InputLabel>
@@ -785,6 +789,9 @@ export function TipoDeMovimientoFideicomiso() {
               adapterLocale={enGB}
             >
               <DesktopDatePicker
+                sx={{
+                  width: "100%"
+                }}
                 value={beneficiario.fechaAlta}
                 onChange={(v) => {
                   setBeneficiario({

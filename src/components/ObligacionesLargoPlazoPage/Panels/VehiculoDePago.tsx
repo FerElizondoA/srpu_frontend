@@ -65,8 +65,9 @@ export function VehiculoDePago() {
         width={"100%"}
         display={"flex"}
         justifyContent={"space-evenly"}
+        mt={2}
       >
-        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3} >
           <InputLabel sx={queries.medium_text}>
             Mecanismo o vehículo de pago
           </InputLabel>
@@ -96,7 +97,7 @@ export function VehiculoDePago() {
 
                   TipoMovimiento: "",
                 });
-                getMecanismosVehiculosPago(e.target.value, () => {});
+                getMecanismosVehiculosPago(e.target.value, () => { });
                 setTipoMecanismoVehiculoPago(e.target.value);
                 cleanTablaAsignarFuente();
               }}
@@ -151,7 +152,7 @@ export function VehiculoDePago() {
         <Grid
           container
           mt={2}
-          p={4}
+          p={{ xs: 2, sm: 2, md: 4 }}
           border={"1px solid black"}
           sx={{
             display: "flex",
@@ -162,7 +163,7 @@ export function VehiculoDePago() {
             maxHeight: "60vh",
             overflow: "auto",
             "&::-webkit-scrollbar": {
-              width: ".5vw",
+              width: "1vw",
               height: "1vh",
               mt: 1,
             },
@@ -173,119 +174,163 @@ export function VehiculoDePago() {
             },
           }}
         >
-          <InputLabel sx={{ ...queries.bold_text, mb: 2 }}>
-            {tipoMecanismoVehiculoPago}
-          </InputLabel>
 
-          {tipoMecanismoVehiculoPago === "Fideicomiso" && (
-            <Grid
-              container
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr 1fr",
-                justifyItems: "center",
-              }}
-            >
-              <Grid
-                sx={{
-                  width: "100%",
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2,1fr)",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
+          <Grid display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
+            {tipoMecanismoVehiculoPago === "Fideicomiso" && (
+
+              <Grid container
+                display={"flex"}
+                justifyContent={"space-evenly"}
+                width={"100%"}
               >
-                <Typography>Tipo de Fideicomiso</Typography>
-                <TextField
-                  inputProps={{
-                    sx: {
-                      fontSize: "0.7rem",
-                    },
-                  }}
-                  size="small"
-                  value={mecanismoVehiculoPago.TipoFideicomiso}
-                />
-                <Typography>Fecha del Fideicomiso</Typography>
-                <TextField
-                  inputProps={{
-                    sx: {
-                      fontSize: "0.7rem",
-                    },
-                  }}
-                  size="small"
-                  value={format(
-                    new Date(mecanismoVehiculoPago.FechaRegistro),
-                    "dd/MM/yyyy"
-                  )}
-                />
-                <Typography>Fiduciario</Typography>
-                <TextField
-                  inputProps={{
-                    sx: {
-                      fontSize: "0.7rem",
-                    },
-                  }}
-                  size="small"
-                  value={mecanismoVehiculoPago.Fiduciario}
-                />
-              </Grid>
+                <Grid container xs={10} sm={10} md={3} lg={4} xl={3}
+                  mb={{ xs: 4, sm: 4, md: 0 }}
+                  flexDirection={"column"}
+                >
 
-              <Grid item sx={{ width: "80%" }}>
-                <InputLabel sx={queries.bold_text}>Fideicomisario</InputLabel>
-                {mecanismoVehiculoPago.Fideicomisario &&
-                  JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
-                    (fideicomisario: IFideicomisario, index: number) => (
-                      <TextField
-                        key={index}
-                        size="small"
-                        sx={{ width: "100%" }}
-                        inputProps={{
-                          sx: {
-                            fontSize: "0.7rem",
-                          },
-                        }}
-                        value={fideicomisario.fideicomisario.Descripcion}
-                      />
-                    )
-                  )}
-              </Grid>
+                  <Grid item display={"flex"} justifyContent={"center"} >
+                    <InputLabel sx={{ ...queries.bold_text, mb: 2 }}>
+                      {tipoMecanismoVehiculoPago}
+                    </InputLabel>
+                  </Grid>
 
-              <Grid>
-                <InputLabel sx={queries.bold_text}>
-                  Orden Fideicomisario
-                </InputLabel>
-                {mecanismoVehiculoPago.Fideicomisario &&
-                  JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
-                    (fideicomisario: IFideicomisario, index: number) => (
-                      <TextField
-                        key={index}
-                        size="small"
-                        sx={{ width: "100%" }}
-                        inputProps={{
-                          sx: {
-                            fontSize: "0.7rem",
-                          },
-                        }}
-                        value={fideicomisario.ordenFideicomisario.Descripcion}
-                      />
-                    )
-                  )}
+                  <Grid display={"flex"} mb={2}>
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Tipo de Fideicomiso</Typography>
+                    <TextField
+                      fullWidth
+                      inputProps={{
+                        sx: {
+                          fontSize: "0.7rem",
+                        },
+                      }}
+                      size="small"
+                      value={mecanismoVehiculoPago.TipoFideicomiso}
+                    />
+                  </Grid>
+
+                  <Grid display={"flex"} mb={2}>
+                    {/* <Typography sx={{ width: "85%", fontSize: ".9rem" }}>Fecha del Fideicomiso</Typography> */}
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Fecha del Fideicomiso</Typography>
+                    <TextField
+                      fullWidth
+                      inputProps={{
+                        sx: {
+                          fontSize: "0.7rem",
+                        },
+                      }}
+                      size="small"
+                      value={format(
+                        new Date(mecanismoVehiculoPago.FechaRegistro),
+                        "dd/MM/yyyy"
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid display={"flex"} >
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Fiduciario</Typography>
+                    <TextField
+                      fullWidth
+                      inputProps={{
+                        sx: {
+                          fontSize: "0.7rem",
+                        },
+                      }}
+                      size="small"
+                      value={mecanismoVehiculoPago.Fiduciario}
+                    />
+                  </Grid>
+
+                </Grid>
+
+                <Grid container xs={10} sm={10} md={3} lg={3} xl={3}
+                  flexDirection={"column"}
+                >
+                  <Grid item display={"flex"} justifyContent={"center"} mb={2} >
+                    <InputLabel sx={queries.bold_text} >
+                      Fideicomisario
+                    </InputLabel>
+                  </Grid>
+
+                  <Grid width={"100%"}>
+                    {mecanismoVehiculoPago.Fideicomisario &&
+                      JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
+                        (fideicomisario: IFideicomisario, index: number) => (
+                          <Grid mb={2}>
+                            <TextField
+                              fullWidth
+                              key={index}
+                              size="small"
+                              sx={{ width: "100%" }}
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              value={fideicomisario.fideicomisario.Descripcion}
+                            />
+                          </Grid>
+
+                        )
+                      )}
+                  </Grid>
+                </Grid>
+
+
+                <Grid container
+                  flexDirection={"column"}
+                  xs={10} sm={10} md={3} lg={3} xl={3}
+                  mt={{ xs: 4, sm: 4, md: 0 }}
+                >
+                  <Grid item display={"flex"} justifyContent={"center"} mb={2} >
+                    <InputLabel sx={queries.bold_text}>
+                      Fideicomisario
+                    </InputLabel>
+
+                  </Grid>
+
+                  <Grid width={"100%"} >
+                    {mecanismoVehiculoPago.Fideicomisario &&
+                      JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
+                        (fideicomisario: IFideicomisario, index: number) => (
+
+                          <Grid mb={2}>
+                            <TextField
+                              key={index}
+                              size="small"
+                              sx={{ width: "100%" }}
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              value={fideicomisario.ordenFideicomisario.Descripcion}
+                            />
+                          </Grid>
+
+                        )
+                      )}
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>
-          )}
+            )}
+          </Grid>
 
           {tipoMecanismoVehiculoPago === "Mandato" && (
-            <Grid container justifyContent={"center"}>
-              <Grid
-                sx={{
-                  width: "45%",
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2,1fr)",
-                  alignContent: "center",
-                }}
-              >
-                <Typography>Fecha del Mandato</Typography>
+            <Grid container
+              flexDirection={"column"}
+              justifyContent={"space-evenly"}
+              width={{ xs: "100%", sm: "100%", md: "50%" }}
+              height={"18rem"}
+            >
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Fecha del Mandato</Typography>
                 <TextField
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -297,8 +342,18 @@ export function VehiculoDePago() {
                     "dd/MM/yyyy"
                   )}
                 />
-                <Typography>Tipo de Ente Público Obligado</Typography>
+              </Grid>
+
+              <Grid display={"flex"} justifyContent={"center"} >
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start"
+                  }}
+                >Tipo de Ente Público Obligado</Typography>
                 <TextField
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -307,8 +362,18 @@ export function VehiculoDePago() {
                   size="small"
                   value={mecanismoVehiculoPago.TipoEntePublicoObligado}
                 />
-                <Typography>Mandatario</Typography>
+              </Grid>
+
+
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Mandatario</Typography>
                 <TextField
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -317,8 +382,20 @@ export function VehiculoDePago() {
                   size="small"
                   value={mecanismoVehiculoPago.Mandatario}
                 />
-                <Typography>Organismo / Municipio Mandante</Typography>
+              </Grid>
+
+
+              <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start",
+
+
+
+                }}>Organismo / Municipio Mandante</Typography>
                 <TextField
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -332,17 +409,21 @@ export function VehiculoDePago() {
           )}
 
           {tipoMecanismoVehiculoPago === "Instrucción Irrevocable" && (
-            <Grid container justifyContent={"center"}>
-              <Grid
-                sx={{
-                  width: "45%",
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2,1fr)",
-                  alignContent: "center",
-                }}
-              >
-                <Typography>Banco</Typography>
+            <Grid container
+              flexDirection={"column"}
+              justifyContent={"space-evenly"}
+              width={{ xs: "100%", sm: "100%", md: "50%" }}
+              height={"18rem"}
+            >
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Banco</Typography>
                 <TextField
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -351,8 +432,17 @@ export function VehiculoDePago() {
                   size="small"
                   value={mecanismoVehiculoPago.Banco}
                 />
-                <Typography>CLABE</Typography>
+              </Grid>
+
+              <Grid display={"flex"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>CLABE</Typography>
                 <TextField
+                fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -361,8 +451,18 @@ export function VehiculoDePago() {
                   size="small"
                   value={mecanismoVehiculoPago.CLABE}
                 />
-                <Typography>Fecha de la Instrucción</Typography>
+              </Grid>
+
+              <Grid display={"flex"} justifyContent={"center"}>
+
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Fecha de la Instrucción</Typography>
                 <TextField
+                fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -374,8 +474,18 @@ export function VehiculoDePago() {
                     "dd/MM/yyyy"
                   )}
                 />
-                <Typography>Tipo de Ente Público Obligado</Typography>
+              </Grid>
+
+
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Tipo de Ente Público Obligado</Typography>
                 <TextField
+                fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -384,8 +494,17 @@ export function VehiculoDePago() {
                   size="small"
                   value={mecanismoVehiculoPago.TipoEntePublicoObligado}
                 />
-                <Typography>Ente Público Obligado</Typography>
+              </Grid>
+
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography sx={{
+                  fontSize: ".9rem",
+                  width: "50%",
+                  justifyContent: "start"
+
+                }}>Ente Público Obligado</Typography>
                 <TextField
+                fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",

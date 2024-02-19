@@ -413,8 +413,8 @@ export function InformacionGeneral() {
           <Select
             disabled={
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Denominación")) ||
-              reestructura === "con autorizacion"
+                !datosActualizar.includes("Denominación")) 
+                || reestructura === "con autorizacion"
             }
             fullWidth
             variant="standard"
@@ -448,8 +448,8 @@ export function InformacionGeneral() {
           <Autocomplete
             disabled={
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Institución Financiera")) ||
-              reestructura === "con autorizacion"
+                !datosActualizar.includes("Institución Financiera")) 
+                 || reestructura === "con autorizacion"
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -505,8 +505,8 @@ export function InformacionGeneral() {
           <Autocomplete
             disabled={
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) ||
-              reestructura === "con autorizacion"
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) 
+                // || reestructura === "con autorizacion"
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -577,8 +577,8 @@ export function InformacionGeneral() {
               generalObligadoSolidario.Descripcion === "No Aplica" ||
               /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) ||
-              reestructura === "con autorizacion"
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+                 // || reestructura === "con autorizacion"
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}

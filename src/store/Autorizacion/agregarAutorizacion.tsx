@@ -292,6 +292,15 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
           `/SRPU/AUTORIZACIONES/${data.data.Id}`,
           state.registrarAutorizacion.acreditacionQuorum
         );
+      })
+      .catch(() => {
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "error",
+          title: "Mensaje",
+          text: "Ha sucedido un error, inténtelo de nuevo",
+        });
       });
   },
 
