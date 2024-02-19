@@ -546,7 +546,7 @@ export function SolicituDeInscripcion() {
                 </TableContainer>
               </Grid>
 
-              {reestructura === "con autorizacion" ? (
+              {reestructura !== "con autorizacion" ? (
                 localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
                   <Grid
                     container

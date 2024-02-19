@@ -87,7 +87,7 @@ export function AgregarInstruccionesIrrevocables({
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
       <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
+        <Toolbar >
           <Tooltip title="Volver">
             <IconButton
               edge="start"
@@ -109,7 +109,7 @@ export function AgregarInstruccionesIrrevocables({
             </Grid>
           </Grid>
 
-          <Grid item>
+          <Grid item width={"4rem"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
                 // disabled={
@@ -122,9 +122,26 @@ export function AgregarInstruccionesIrrevocables({
                 //   tablaSoporteDocumentalInstrucciones.length <= 0
                 //   // municipio === null
                 // }
-                sx={queries.buttonContinuar}
+                sx={{
+                  backgroundColor: "#15212f",
+                  color: "white",
+                  "&&:hover": {
+                    backgroundColor: "rgba(47, 47, 47, 0.4)",
+                    color: "#000",
+                  },
+                  //fontSize: "90%",
+                  borderRadius: "0.8vh",
+                  textTransform: "capitalize",
+                  fontSize: "70%",
+                  "@media (min-width: 480px)": {
+                    fontSize: "70%",
+                  },
+
+                  "@media (min-width: 768px)": {
+                    fontSize: "80%",
+                  }
+                }}
                 onClick={() => {
-                  console.log("falta restricciones");
 
                   if (IdInstruccion === "") {
                     setLoading(true);
@@ -144,7 +161,7 @@ export function AgregarInstruccionesIrrevocables({
               >
                 <Typography
                   sx={{
-                    fontSize: "1.3ch",
+                    fontSize: "1.8ch",
                     fontFamily: "MontserratMedium",
                     "@media (min-width: 480px)": {
                       fontSize: "1.5ch",

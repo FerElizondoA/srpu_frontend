@@ -550,7 +550,7 @@ export function CondicionesFinancieras() {
         alignItems={"center"}
       >
         <Button
-          disabled={disable || reestructura === "con autorizacion"}
+          disabled={disable}
           sx={queries.buttonContinuar}
           variant="outlined"
           onClick={() => {

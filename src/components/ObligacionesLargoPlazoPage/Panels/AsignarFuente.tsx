@@ -13,6 +13,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  ThemeProvider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
@@ -25,6 +26,7 @@ import {
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface HeadSelect {
   Label: string;
@@ -132,6 +134,7 @@ export function AsignarFuente() {
 
       <Grid
         container
+        height={{xs:"20rem", sm:"4rem"}}
         sx={{
           display: "flex",
           width: "100%",
@@ -317,29 +320,51 @@ export function AsignarFuente() {
 
         <Grid
           item
-          sx={{ width: "100%", alignSelf: "center" }}
+          display={"flex"}
+          sx={{ width: "100%", justifyContent:"center", alignItems:"center" }}
           xs={10}
           sm={5}
           md={5}
           lg={1}
           xl={1}
         >
-          <Button
-            disabled={filtro.RespectoA.Descripcion === ""}
-            onClick={() => {
-              setFiltrado(true);
-            }}
-            sx={queries.buttonContinuar}
-          >
-            Aceptar
-          </Button>
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              disabled={filtro.RespectoA.Descripcion === ""}
+              onClick={() => {
+                setFiltrado(true);
+              }}
+              sx={{
+                backgroundColor: "#15212f",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(47, 47, 47, 0.4)",
+                color: "#000",
+              },
+              //fontSize: "90%",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              fontSize: "80%",
+              height:"2.5rem",
+              "@media (min-width: 480px)": {
+                fontSize: "70%",
+              },
+          
+              "@media (min-width: 768px)": {
+                fontSize: "80%",
+              },}}
+            >
+              Aceptar
+            </Button>
+          </ThemeProvider>
         </Grid>
       </Grid>
 
-      <Grid mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
-        <Paper>
+      <Grid container mt={1} width={"100%"} display={"flex"} justifyContent={"center"}>
+        <Paper sx={{width:"100%"}}>
           <TableContainer
             sx={{
+              width:"100%",
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -376,9 +401,9 @@ export function AsignarFuente() {
                     .filter(
                       (i: IDeudorFideicomiso) =>
                         i.tipoFuente.Descripcion ===
-                          filtro.TipoFuente.Descripcion &&
+                        filtro.TipoFuente.Descripcion &&
                         i.fondoIngreso.Descripcion ===
-                          filtro.FuentePago.Descripcion
+                        filtro.FuentePago.Descripcion
                     )
                     .map((movimiento: IDeudorFideicomiso, index: number) => (
                       <StyledTableRow key={index}>
@@ -416,48 +441,48 @@ export function AsignarFuente() {
                             }}
                             size="small"
                             value={""}
-                            // onChange={(v) => {
-                            //   let auxArray = [...tablaTipoMovimiento];
-                            //   let val = Number(v.target.value);
+                          // onChange={(v) => {
+                          //   let auxArray = [...tablaTipoMovimiento];
+                          //   let val = Number(v.target.value);
 
-                            //   if (
-                            //     val <= 100 &&
-                            //     Number(
-                            //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                            //     ) +
-                            //       val <=
-                            //       Number(
-                            //         tablaTipoMovimiento[index]
-                            //           .fondoIngresoAsignadoMunicipio
-                            //       )
-                            //   ) {
-                            //     let suma = 0;
+                          //   if (
+                          //     val <= 100 &&
+                          //     Number(
+                          //       sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                          //     ) +
+                          //       val <=
+                          //       Number(
+                          //         tablaTipoMovimiento[index]
+                          //           .fondoIngresoAsignadoMunicipio
+                          //       )
+                          //   ) {
+                          //     let suma = 0;
 
-                            //     tablaTipoMovimiento.map((column) => {
-                            //       return (suma += Number(
-                            //         column.fondoIngresoAfectadoXMunicipio
-                            //       ));
-                            //     });
+                          //     tablaTipoMovimiento.map((column) => {
+                          //       return (suma += Number(
+                          //         column.fondoIngresoAfectadoXMunicipio
+                          //       ));
+                          //     });
 
-                            //     auxArray.map((column) => {
-                            //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                            //         (
-                            //           suma +
-                            //           val +
-                            //           Number(
-                            //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                            //           )
-                            //         ).toString());
-                            //     });
+                          //     auxArray.map((column) => {
+                          //       return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                          //         (
+                          //           suma +
+                          //           val +
+                          //           Number(
+                          //             sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                          //           )
+                          //         ).toString());
+                          //     });
 
-                            //     auxArray[
-                            //       index
-                            //     ].fondoIngresoAfectadoXMunicipio =
-                            //       val.toString();
+                          //     auxArray[
+                          //       index
+                          //     ].fondoIngresoAfectadoXMunicipio =
+                          //       val.toString();
 
-                            //     addPorcentaje(auxArray);
-                            //   }
-                            // }}
+                          //     addPorcentaje(auxArray);
+                          //   }
+                          // }}
                           />
                         </StyledTableCell>
                         <StyledTableCell />

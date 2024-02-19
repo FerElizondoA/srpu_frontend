@@ -61,7 +61,7 @@ export function Encabezado() {
     getListadoUsuarios(setUsuarios);
     getTiposEntesPublicos();
     getOrganismos();
-    changeRestructura("con autorizacion");
+    //changeRestructura("con autorizacion");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

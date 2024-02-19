@@ -17,10 +17,12 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 
 type Props = {
   handler: Function;
   openState: boolean;
+  idSolicitud:string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
@@ -47,42 +49,48 @@ export function DialogSolicitarReestructura(props: Props) {
     setErrorAsignacion(false);
   }, [idUsuarioAsignado]);
 
+  useEffect(() => {
+    setErrorAsignacion(false);
+  }, []);
+
   const editCreadoPor: string = useLargoPlazoStore(
     (state) => state.editCreadoPor
   );
 
   const reestriccionReestructura = () => {
-    if (idUsuarioAsignado === "") {
-      setErrorAsignacion(true);
-    }
-    if (idSolicitud !== "") {
-      modificaSolicitud(editCreadoPor, idUsuarioAsignado, "En Reestructura")
-        .then(() => {
-          //addComentario(idSolicitud);
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "success",
-            title: "Mensaje",
-            text: "La solicitud de autorización se envió con éxito",
-          });
-        })
-        .catch(() => {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Mensaje",
-            text: "Ocurrió un error, inténtelo de nuevo",
-          });
-        });
+   //if (idUsuarioAsignado === "") {
+   //  setErrorAsignacion(true);
+   //}
+    //if (idSolicitud !== "") {
+      // modificaSolicitud(editCreadoPor, idUsuarioAsignado, "En Reestructura")
+      //   .then(() => {
+      //     //addComentario(idSolicitud);
+      //     //CambiaEstatus("En Reestructura", props.Solicitud);
+      //     Swal.fire({
+      //       confirmButtonColor: "#15212f",
+      //       cancelButtonColor: "rgb(175, 140, 85)",
+      //       icon: "success",
+      //       title: "Mensaje",
+      //       text: "La solicitud de autorización se envió con éxito",
+      //     });
+      //   })
+      //   .catch(() => {
+      //     Swal.fire({
+      //       confirmButtonColor: "#15212f",
+      //       cancelButtonColor: "rgb(175, 140, 85)",
+      //       icon: "error",
+      //       title: "Mensaje",
+      //       text: "Ocurrió un error, inténtelo de nuevo",
+      //     });
+      //   });
       createNotification(
         "Crédito simple a largo plazo",
-        "Se te ha solicitado revisar una autorización para reestructurar.",
-        [idUsuarioAsignado]
+        "Su solicitud fue aprobada para reestructuración.",
+        ["a6860b44-3087-11ed-aed0-040300000000"]
       );
-      navigate("../reestructura");
-    }
+     // CambiaEstatus("En Reestructura", props.rowId) //// revisar!! 11/01/2024
+      //navigate("../reestructura");
+   // }
   };
 
   return (

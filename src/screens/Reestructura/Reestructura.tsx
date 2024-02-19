@@ -31,6 +31,7 @@ import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   IData,
   IDataPrueba,
+  stringCapitalize,
 } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 interface Head {
@@ -132,7 +133,7 @@ export function Reestructura() {
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
-    if (TipoDocumento === "Crédito simple a corto plazo") {
+    if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -187,7 +188,7 @@ export function Reestructura() {
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
     getSolicitudesReestructura(setDatos);
-    changeRestructura(false);
+    changeRestructura("con autorizacion");
   }, []);
 
   return (
@@ -213,7 +214,7 @@ export function Reestructura() {
             },
             "@media (min-width: 601px) and (max-width: 900px)": {
               // SM (small) screen
-              fontSize: "1.5ch",
+              fontSize: "1.2rem",
             },
           }}
         >
@@ -226,27 +227,8 @@ export function Reestructura() {
           height={"3.2rem"}
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
-            width: "60%",
-            "@media (min-width: 480px)": {
-              width: "65%",
-            },
-
-            "@media (min-width: 768px)": {
-              width: "55%",
-            },
-
-            "@media (min-width: 1140px)": {
-              width: "65%",
-            },
-
-            "@media (min-width: 1400px)": {
-              width: "75%",
-            },
-
-            "@media (min-width: 1870px)": {
-              width: "75%",
-            },
+            justifyContent: "center",
+            width: "100%"
           }}
         >
           <Paper
@@ -335,8 +317,53 @@ export function Reestructura() {
             <TableHead>
               <TableRow>
                 {heads.map((head, index) => (
-                  <StyledTableCell align="center" key={index}>
-                    <Typography sx={{ fontSize: ".8rem" }}>
+                  <StyledTableCell align="left" key={index}>
+                    <Typography sx={{
+                      fontSize: ".8rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      width: head.label === "Clave de inscripción" ||
+                        head.label === "Institución financiera" ||
+                        head.label === "Monto original contratado" ||
+                        head.label === "Tipo de Documento" ||
+                        head.label === "Tipo de Ente Público Obligado"
+                        ? "180px" : "100%",
+
+                      "@media (min-width: 480px)": {
+                        width: head.label === "Clave de inscripción" ||
+                          head.label === "Institución financiera" ||
+                          head.label === "Monto original contratado" ||
+                          head.label === "Tipo de Documento" ||
+                          head.label === "Tipo de Ente Público Obligado"
+                          ? "180px" : "100%"
+                      },
+
+                      "@media (min-width: 768px)": {
+                        width: head.label === "Clave de inscripción" ||
+                          head.label === "Institución financiera" ||
+                          head.label === "Monto original contratado" ||
+                          head.label === "Tipo de Documento" ||
+                          head.label === "Tipo de Ente Público Obligado"
+                          ? "200x" : "100%"
+                      },
+
+                      "@media (min-width: 1140px)": {
+                        width: head.label === "Clave de inscripción" ||
+                          head.label === "Institución financiera" ||
+                          head.label === "Monto original contratado" ||
+                          head.label === "Tipo de Documento" ||
+                          head.label === "Tipo de Ente Público Obligado"
+                          ? "180px" : "100%"
+                      },
+
+                      "@media (min-width: 1400px)": {
+                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
+                      },
+
+                      "@media (min-width: 1870px)": {
+                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
+                      },
+                    }}>
                       {head.label}
                     </Typography>
                   </StyledTableCell>
@@ -362,7 +389,7 @@ export function Reestructura() {
                       {row.NumeroRegistro}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row">
+                    <StyledTableCell align="center" component="th" scope="row" >
                       {row.Institucion}
                     </StyledTableCell>
 

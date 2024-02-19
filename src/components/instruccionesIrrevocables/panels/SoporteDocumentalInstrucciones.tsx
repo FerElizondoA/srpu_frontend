@@ -131,23 +131,25 @@ export function SoporteDocumentalInstrucciones() {
       <Grid
         container
         sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2,1fr)",
-          justifyItems: "center",
+          //display: "grid",
+          //gridTemplateColumns: "repeat(2,1fr)",
+          display: "flex",
+          justifyContent: "space-evenly",
           height: "40%",
         }}
       >
-        <Grid item sx={{ width: "50%" }}>
+        <Grid item xs={10} sm={10} md={5} lg={4} xl={4}>
           <InputLabel sx={{ ...queries.medium_text }}>
             Tipo de Documento
           </InputLabel>
           <TextField
+            fullWidth
             size="small"
-            sx={{
-              width: "100%",
-              fontSize: "60%",
-              fontFamily: "MontserratMedium",
-            }}
+            // sx={{
+            //   width: "100%",
+            //   fontSize: "60%",
+            //   fontFamily: "MontserratMedium",
+            // }}
             value={soporteDocumentalInstruccion.tipo}
             onChange={(v) => {
               setSoporteDocumentalInstruccion({
@@ -158,7 +160,7 @@ export function SoporteDocumentalInstrucciones() {
           />
         </Grid>
 
-        <Grid item sx={{ width: "50%" }}>
+        <Grid item xs={10} sm={10} md={5} lg={4} xl={4}>
           <InputLabel>Archivo</InputLabel>
           <Typography
             position={"absolute"}
@@ -167,30 +169,36 @@ export function SoporteDocumentalInstrucciones() {
               textAlign: "center",
               justifyContent: "center",
               alignItems: "center",
-              width: "45%",
-              fontSize: "60%",
+              width: "83%",
+              fontSize: "80%",
               "@media (min-width: 480px)": {
-                fontSize: "60%",
-                width: "45%",
+                fontSize: "80%",
+                width: "83%",
               },
 
               "@media (min-width: 768px)": {
-                fontSize: "60%",
-                width: "30%",
+                fontSize: "90%",
+                width: "83%",
+              },
+
+              "@media (min-width: 900px)": {
+                fontSize: "90%",
+                width: "40%",
               },
 
               "@media (min-width: 1140px)": {
                 fontSize: "90%",
+                width: "40%",
               },
 
               "@media (min-width: 1400px)": {
                 fontSize: "90%",
-                width: "30%",
+                width: "35%",
               },
 
               "@media (min-width: 1870px)": {
                 fontSize: "90%",
-                width: "30%",
+                width: "35%",
               },
               fontFamily:
                 soporteDocumentalInstruccion.nombreArchivo !== ""
@@ -221,7 +229,13 @@ export function SoporteDocumentalInstrucciones() {
           />
         </Grid>
 
-        <Grid item sx={{ width: "50%" }}>
+
+
+
+      </Grid>
+
+      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+        <Grid item xs={10} sm={10} md={5} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>Fecha del Documento</InputLabel>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
@@ -229,7 +243,7 @@ export function SoporteDocumentalInstrucciones() {
           >
             <DesktopDatePicker
               sx={{
-                width: "50%",
+                width: "100%",
               }}
               value={new Date(soporteDocumentalInstruccion.fechaArchivo)}
               onChange={(date) =>
@@ -242,22 +256,27 @@ export function SoporteDocumentalInstrucciones() {
           </LocalizationProvider>
         </Grid>
 
-        <ThemeProvider theme={buttonTheme}>
-          <Button
-            sx={{
-              ...queries.buttonContinuarSolicitudInscripcion,
-            }}
-            disabled={
-              soporteDocumentalInstruccion.tipo === "" ||
-              soporteDocumentalInstruccion.nombreArchivo === ""
-            }
-            onClick={() => {
-              addSoporteDocumentalInstrucciones(soporteDocumentalInstruccion);
-            }}
-          >
-            Agregar
-          </Button>
-        </ThemeProvider>
+        <Grid xs={10} sm={10} md={5} lg={4} xl={4}
+          display={"flex"} justifyContent={"center"} alignItems={"center"}
+          mt={{xs:2, sm:2 , md:0}}
+        >
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              sx={{
+                ...queries.buttonContinuarSolicitudInscripcion,
+              }}
+              disabled={
+                soporteDocumentalInstruccion.tipo === "" ||
+                soporteDocumentalInstruccion.nombreArchivo === ""
+              }
+              onClick={() => {
+                addSoporteDocumentalInstrucciones(soporteDocumentalInstruccion);
+              }}
+            >
+              Agregar
+            </Button>
+          </ThemeProvider>
+        </Grid>
       </Grid>
 
       <Grid
@@ -340,12 +359,11 @@ export function SoporteDocumentalInstrucciones() {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.NOMBREFORMATEADO.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].FILE
+                                        `data:application/pdf;base64,${arr.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].FILE
                                         }`
                                       );
                                     });

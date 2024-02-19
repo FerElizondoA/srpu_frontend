@@ -42,6 +42,10 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
+  const idSolicitud: string = useCortoPlazoStore(
+    (state) => state.idSolicitud
+  );
+
   useEffect(() => {
     getTiposDocumentos();
   }, []);
@@ -205,7 +209,7 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 3 && <FuentePagoSecciones />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
-      {tabIndex === 6 && <Resumen />}
+      {tabIndex === 6 && <Resumen coments={true}/>}
       {tabIndex === 7 && <SolicituDeInscripcion />}
 
       <ConfirmacionBorradorSolicitud
@@ -216,6 +220,7 @@ export function ObligacionesLargoPlazoPage() {
       <DialogSolicitarReestructura
         handler={setOpenDialogReestructura}
         openState={openDialogReestructura}
+        idSolicitud={idSolicitud}
       />
     </>
   );

@@ -351,6 +351,48 @@ export async function GeneraAcuseRespuesta(
     .catch((err) => {}); // aqui
 }
 
+
+export async function GeneraFormatoReestructura(
+  tipoSolicitud: string,
+  noOficio: string,
+  idRegistro: string,
+  fraccionTexto: string
+) {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-provisional-reestructura",
+      {
+        tipoSolicitud: tipoSolicitud,
+        oficioConstancia: noOficio,
+        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        hora: new Date().toLocaleString("es-MX").split(" ")[1],
+        fraccionTexto: fraccionTexto,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const state = useCortoPlazoStore.getState();
+
+      state.guardaDocumentos(
+        idRegistro,
+        "/SRPU/CORTOPLAZO/ACUSE",
+        new File(
+          [response.data],
+          `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
+        )
+      );
+      // setUrl(url);
+    })
+    .catch((err) => {}); // aqui
+}
+
+
 export async function ConsultaSolicitud(
   Solicitud: string,
   NoOficio: string,

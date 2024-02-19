@@ -318,7 +318,7 @@ export function ConsultaDeSolicitudPage() {
   //END Row Solicitud
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
+    if (TipoDocumento === "Crédito Simple A Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -474,14 +474,14 @@ export function ConsultaDeSolicitudPage() {
   const reestructura: string = useCortoPlazoStore(
     (state) => state.reestructura
   );
-   const changeRestructura: Function = useCortoPlazoStore(
+  const changeRestructura: Function = useCortoPlazoStore(
     (state) => state.changeRestructura
   );
 
   useEffect(() => {
     changeRestructura("")
   }, [])
-  
+
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -513,7 +513,40 @@ export function ConsultaDeSolicitudPage() {
           Consulta de Solicitudes
         </Typography>
       </Grid>
-      
+      <Grid item mb={3} lg={12} display="center" justifyContent="center">
+        <Paper
+          component="form"
+          sx={{
+            display: "flex",
+            width: "50%",
+          }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Buscar"
+            value={busqueda}
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                handleSearch();
+                ev.preventDefault();
+                return false;
+              }
+            }}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={() => handleSearch()}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+      </Grid>
+
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
           <TableContainer
@@ -603,8 +636,8 @@ export function ConsultaDeSolicitudPage() {
                             row.Estatus === "Verificacion"
                               ? "En Verificación"
                               : row.Estatus === "Validacion"
-                              ? "En Validación"
-                              : "En " + row.Estatus
+                                ? "En Validación"
+                                : "En " + row.Estatus
                           }
                           // icon={<RateReviewSharpIcon />}
                           color="info"
@@ -751,9 +784,9 @@ export function ConsultaDeSolicitudPage() {
                         >
                           {row.Estatus === "Actualizacion"
                             ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
+                              new Date(row.FechaRequerimientos),
+                              "dd/MM/yyyy"
+                            )
                             : " "}
                         </StyledTableCell>
 
@@ -802,61 +835,61 @@ export function ConsultaDeSolicitudPage() {
                             !row.Estatus.includes("Autorizado")) ||
                             (localStorage.getItem("Rol") === "Autorizador" &&
                               row.Estatus.includes("Por Firmar"))) && (
-                            <Tooltip title="Firmar documento">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  getComentariosSolicitudPlazo(
-                                    row.Id,
-                                    () => {}
-                                  ).then((data) => {
-                                    if (
-                                      rolesAdmin.includes(
-                                        localStorage.getItem("Rol")!
-                                      )
-                                    ) {
+                              <Tooltip title="Firmar documento">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    getComentariosSolicitudPlazo(
+                                      row.Id,
+                                      () => { }
+                                    ).then((data) => {
                                       if (
-                                        data.filter(
-                                          (a: any) => a.Tipo === "Requerimiento"
-                                        ).length > 0
+                                        rolesAdmin.includes(
+                                          localStorage.getItem("Rol")!
+                                        )
                                       ) {
-                                        requerimientos(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
+                                        if (
                                           data.filter(
-                                            (a: any) =>
-                                              a.Tipo === "Requerimiento"
-                                          )[0],
-                                          row.Id
-                                        );
+                                            (a: any) => a.Tipo === "Requerimiento"
+                                          ).length > 0
+                                        ) {
+                                          requerimientos(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            data.filter(
+                                              (a: any) =>
+                                                a.Tipo === "Requerimiento"
+                                            )[0],
+                                            row.Id
+                                          );
+                                        } else {
+                                          ConsultaConstancia(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            setUrl
+                                          );
+                                          changeEstatus(row.Estatus);
+                                          changeIdSolicitud(row.Id);
+                                          navigate("../firmaUrl");
+                                        }
                                       } else {
-                                        ConsultaConstancia(
+                                        ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus(row.Estatus);
+                                        changeEstatus("Por Firmar");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
-                                    } else {
-                                      ConsultaSolicitud(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        setUrl
-                                      );
-                                      changeEstatus("Por Firmar");
-                                      changeIdSolicitud(row.Id);
-                                      navigate("../firmaUrl");
-                                    }
-                                  });
-                                }}
-                              >
-                                <HistoryEduIcon />
-                                {row.Acciones}
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                                    });
+                                  }}
+                                >
+                                  <HistoryEduIcon />
+                                  {row.Acciones}
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {((localStorage.getItem("Rol") === "Verificador" &&
                             (row.Estatus === "Verificacion" ||
@@ -961,16 +994,16 @@ export function ConsultaDeSolicitudPage() {
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
-                                        "Capturador" ||
+                                      "Capturador" ||
                                       localStorage.getItem("Rol") ===
-                                        "Verificador"
+                                      "Verificador"
                                     ) {
                                       getSolicitudes(setDatos);
                                     } else {
                                       getSolicitudesAdmin(
                                         "Autorizacion",
                                         setDatos,
-                                       "consulta"
+                                        "consulta"
                                       );
                                     }
                                   }}
