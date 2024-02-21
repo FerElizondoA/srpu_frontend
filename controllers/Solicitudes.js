@@ -1,7 +1,6 @@
 const db = require("../config/db.js");
 
 module.exports = {
-  //CREAR
   createSolicitud: (req, res) => {
     const IdEntePublico = req.body.IdEntePublico;
     const IdTipoEntePublico = req.body.IdTipoEntePublico;
@@ -108,11 +107,9 @@ module.exports = {
     );
   },
 
-
-
   //LISTADO COMPLETO
   getSolicitudes: (req, res) => {
-    const IdUsuario = req.query.IdUsuario;
+    const { IdUsuario, TipoListado, IdEntePublico } = req.query;
 
     if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
       return res.status(409).send({
@@ -120,28 +117,31 @@ module.exports = {
       });
     }
 
-    db.query(`CALL sp_ListadoSolicitudes('${IdUsuario}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
+    db.query(
+      `CALL sp_ListadoSolicitudes('${IdUsuario}', '${TipoListado}', '${IdEntePublico}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
 
-      if (result.length) {
-        const data = result[0];
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
   },
 
-   //LISTADO SOLAMENTE CANCELADO O EN ESPERA CANCELACION
-   getSolicitudesCancelaciones: (req, res) => {
+  //LISTADO SOLAMENTE CANCELADO O EN ESPERA CANCELACION
+  getSolicitudesCancelaciones: (req, res) => {
     const IdUsuario = req.query.IdUsuario;
 
     if (IdUsuario == null || /^[\s]*$/.test(IdUsuario)) {
@@ -150,24 +150,27 @@ module.exports = {
       });
     }
 
-    db.query(`CALL sp_ListadoSolicitudesCancelaciones('${IdUsuario}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
+    db.query(
+      `CALL sp_ListadoSolicitudesCancelaciones('${IdUsuario}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
 
-      if (result.length) {
-        const data = result[0];
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
   },
 
   getSolicitudesReestructura: (req, res) => {
@@ -179,26 +182,28 @@ module.exports = {
       });
     }
 
-    db.query(`CALL sp_ListadoSolicitudesReestructura('${IdUsuario}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
+    db.query(
+      `CALL sp_ListadoSolicitudesReestructura('${IdUsuario}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
+          });
+        }
 
-      if (result.length) {
-        const data = result[0];
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0];
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
   },
-
 
   //delete solicitud
   deleteSolicitud: (req, res) => {
@@ -489,7 +494,7 @@ module.exports = {
 
   getSolicitudesAdministrador: (req, res) => {
     const Estatus = req.query.Estado;
-    const tipoListado = req.query.tipoListado
+    const tipoListado = req.query.tipoListado;
 
     db.query(
       `CALL sp_ListadoSolicitudesAdministrador('${Estatus}', '${tipoListado}')`,
