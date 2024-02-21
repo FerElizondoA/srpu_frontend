@@ -1,0 +1,305 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<h4
+  style="
+    text-align: center;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+  "
+  class="header"
+>
+  SUBSECRETARÍA DE EGRESOS Y PLANEACIÓN FINANCIERA
+  <br />
+  DIRECCIÓN DE DEUDA PÚBLICA Y PLANEACIÓN FINANCIERA
+  <br />
+  REGISTRO DE OBLIGACIONES Y EMPRÉSTITOS DEL ESTADO DE NUEVO LEÓN
+</h4>
+
+<!-- SERVIDOR PÚBLICO -->
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: justify;
+    letter-spacing: 1px;
+  "
+>
+  Lic. {{servidorPublico}} <br />
+  {{cargo}} <br />
+</h3>
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    text-align: justify;
+    font-weight: 100;
+    letter-spacing: 5px;
+  "
+>
+  PRESENTE
+</h3>
+
+<!-- SOLICITUD -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    SOLICITUD
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE SOLICITUD
+        </td>
+        <td
+          style="width: 25%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaSolicitud}}
+        </td>
+        <td
+          style="width: 25%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE RECEPCION
+        </td>
+        <td
+          style="width: 20%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaRecepcion}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DOCUMENTACIÓN REGISTRADA -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    DOCUMENTACIÓN REGISTRADA
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          CLASE DE TITULO
+        </td>
+        <td
+          style="width: 40%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{claseTitulo}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          FECHA DE SUSCRIPCION
+        </td>
+        <td
+          style="width: 40%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{fechaContratacion}}
+        </td>
+      </tr>
+      <tr>
+        <td
+          style="width: 60%; border: 1px solid black; border-collapse: collapse"
+        >
+          No. INSCRIPCIÓN ESTATAL
+        </td>
+        <td
+          style="width: 40%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{noInscripcionEstatal}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DATOS DEL CREDITO:  -->
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  "
+>
+  <h3
+    style="
+      font-family: Arial;
+      font-size: 12px;
+      text-align: justify;
+      font-weight: 900;
+      margin-bottom: 0;
+    "
+  >
+    DATOS DEL CREDITO
+  </h3>
+  <table
+    id="data-table"
+    style="width: 100%; border: 1px solid black; border-collapse: collapse"
+  >
+    <tbody
+      style="
+        letter-spacing: 1px;
+        font-family: Arial;
+        font-size: 12px;
+        font-weight: 100;
+      "
+    >
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          ACREDITADO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{acreditado}}
+        </td>
+      </tr>
+
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          ACREDITANTE
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{acreditante}}
+        </td>
+      </tr>
+
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          MONTO
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{monto}}
+        </td>
+      </tr>
+
+      <tr>
+        <td
+          style="width: 30%; border: 1px solid black; border-collapse: collapse"
+        >
+          MODIFICACIONES
+        </td>
+        <td
+          style="width: 70%; border: 1px solid black; border-collapse: collapse"
+        >
+          {{tablaModificaciones}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3
+  style="
+    font-family: Arial;
+    font-size: 12px;
+    text-align: justify;
+    font-weight: 100;
+    letter-spacing: 5px;
+  "
+>
+  Atentamente
+</h3>
+<h3
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+  "
+  class="atte"
+>
+  MONTERREY, NUEVO LEÓN A {{fechaRecepcion}}
+</h3>
+<h3
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+  "
+  class="atte"
+>
+  {{directorGeneral}} <br />
+  {{cargoDirectorGeneral}} <br />
+</h3>
