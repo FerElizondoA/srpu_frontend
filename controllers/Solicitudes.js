@@ -252,7 +252,6 @@ module.exports = {
     const TipoSolicitud = req.body.TipoSolicitud;
     const IdInstitucionFinanciera = req.body.IdInstitucionFinanciera;
     const Estatus = req.body.Estatus;
-    const IdClaveInscripcion = req.body.IdClaveInscripcion;
     const MontoOriginalContratado = req.body.MontoOriginalContratado;
     const FechaContratacion = req.body.FechaContratacion;
     const Solicitud = req.body.Solicitud;
@@ -302,11 +301,6 @@ module.exports = {
         error: "Ingrese IdEstatus",
       });
     }
-    if (IdClaveInscripcion == null || /^[\s]*$/.test(IdClaveInscripcion)) {
-      return res.status(409).send({
-        error: "Ingrese IdClaveInscripcion",
-      });
-    }
     if (
       MontoOriginalContratado == null ||
       /^[\s]*$/.test(MontoOriginalContratado)
@@ -332,8 +326,9 @@ module.exports = {
     }
 
     db.query(
-      `CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`,
+      `CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`,
       (err, result) => {
+        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
