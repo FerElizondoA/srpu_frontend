@@ -16,10 +16,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import {
-  IDataPrueba,
-  stringCapitalize,
-} from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
@@ -37,11 +33,12 @@ import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
 import { useResumenStore } from "../../../store/Resumen/main";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 type Props = {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IDataPrueba;
+  rowSolicitud: IData;
   rowId: string;
 };
 
@@ -301,8 +298,6 @@ export function VerBorradorDocumento(props: Props) {
         </Button>
 
         {reestructura === "con autorizacion" &&
-        stringCapitalize(props.rowSolicitud.TipoSolicitud) ===
-          "Crédito Simple A Largo Plazo" &&
         localStorage.getItem("IdUsuario") !== props.rowSolicitud.IdEditor &&
         props.rowSolicitud.Estatus === "Autorizado" &&
         localStorage.getItem("Rol") !== "Autorizador" ? (
@@ -468,8 +463,6 @@ export function VerBorradorDocumento(props: Props) {
             </Button>
           </Grid>
         ) : reestructura === "con autorizacion" &&
-          stringCapitalize(props.rowSolicitud.TipoSolicitud) ===
-            "Crédito Simple A Largo Plazo" &&
           localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
           props.rowSolicitud.Estatus === "En Reestructura" &&
           localStorage.getItem("Rol") === "Autorizador" ? (

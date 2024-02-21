@@ -553,8 +553,8 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalObligadoSolidario.Id,
-              Descripcion: generalObligadoSolidario.Descripcion,
+              Id: generalObligadoSolidario?.Id,
+              Descripcion: generalObligadoSolidario?.Descripcion,
             }}
             onChange={(event, text) => {
               if (
@@ -604,8 +604,8 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              generalObligadoSolidario?.Descripcion === "No Aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
@@ -620,8 +620,8 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalTipoEntePublico.Id || "",
-              Descripcion: generalTipoEntePublico.Descripcion || "",
+              Id: generalTipoEntePublico?.Id || "",
+              Descripcion: generalTipoEntePublico?.Descripcion || "",
             }}
             onChange={(event, text) =>
               changeObligadoSolidarioAval({
@@ -660,15 +660,15 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
+              generalObligadoSolidario?.Descripcion === "No Aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
+              /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             fullWidth
             options={catalogoOrganismos.filter(
-              (td: any) => td.IdTipoEntePublico === generalTipoEntePublico.Id
+              (td: any) => td.IdTipoEntePublico === generalTipoEntePublico?.Id
             )}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -679,8 +679,8 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalEntePublico.Id || "",
-              Descripcion: generalEntePublico.Descripcion || "",
+              Id: generalEntePublico?.Id || "",
+              Descripcion: generalEntePublico?.Descripcion || "",
             }}
             renderInput={(params) => (
               <TextField
@@ -711,10 +711,10 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
-              /^[\s]*$/.test(generalEntePublico.Descripcion) ||
+              generalObligadoSolidario?.Descripcion === "No Aplica" ||
+              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
+              /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
+              /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
@@ -774,7 +774,7 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No Aplica" &&
+                {generalObligadoSolidario?.Descripcion === "No Aplica" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />

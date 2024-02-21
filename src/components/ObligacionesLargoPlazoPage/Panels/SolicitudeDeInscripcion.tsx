@@ -24,7 +24,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { ConfirmacionBorradorSolicitud } from "../Dialog/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../Dialog/DialogGuardarBorrador";
 import { ConfirmacionEnviarSolicitud } from "../Dialog/DialogEnviarSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
@@ -616,7 +616,7 @@ export function SolicituDeInscripcion() {
                       </Button>
                     </Grid>
 
-                    <ConfirmacionBorradorSolicitud
+                    <DialogGuardarBorrador
                       handler={setOpenDialogBorrador}
                       openState={openDialogBorrador}
                     />

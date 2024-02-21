@@ -50,11 +50,15 @@ export function getObligadoSolidarioAval(setState: Function) {
     });
 }
 
-export function getSolicitudes(setState: Function) {
+export function getSolicitudes(tipoListado: string, setState: Function) {
   axios({
     method: "get",
     url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudes",
-    params: { IdUsuario: localStorage.getItem("IdUsuario") },
+    params: {
+      IdUsuario: localStorage.getItem("IdUsuario"),
+      TipoListado: tipoListado,
+      IdEntePublico: localStorage.getItem("IdEntePublicoObligado"),
+    },
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("jwtToken") || "",
@@ -124,14 +128,18 @@ export function getSolicitudesReestructura(setState: Function) {
     });
 }
 
-export async function getSolicitudesAdmin(Estado: string, setState: Function, tipoListado: string) {
+export async function getSolicitudesAdmin(
+  Estado: string,
+  setState: Function,
+  tipoListado: string
+) {
   await axios({
     method: "get",
     url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudesAdmin",
-    params: { 
+    params: {
       Estado: Estado,
-      tipoListado: tipoListado
-     },
+      tipoListado: tipoListado,
+    },
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("jwtToken") || "",

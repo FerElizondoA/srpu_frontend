@@ -15,7 +15,7 @@ type Props = {
   openState: boolean;
 };
 
-export function ConfirmacionBorradorSolicitud(props: Props) {
+export function DialogGuardarBorrador(props: Props) {
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
   );

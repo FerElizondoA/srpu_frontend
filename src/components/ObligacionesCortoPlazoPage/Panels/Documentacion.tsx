@@ -10,6 +10,7 @@ import {
   Divider,
   FormControl,
   Grid,
+  MenuItem,
   Select,
   Table,
   TableBody,
@@ -339,7 +340,13 @@ export function Documentacion() {
                             disabled={
                               index < catalogoTiposDocumentosObligatorios.length
                             }
-                          ></Select>
+                          >
+                            {catalogoTiposDocumentosObligatorios.map((tipo) => (
+                              <MenuItem key={tipo.Id} value={tipo.Id}>
+                                {tipo.Descripcion}
+                              </MenuItem>
+                            ))}
+                          </Select>
                         </FormControl>
                       )}
                     </StyledTableCell>
@@ -369,7 +376,6 @@ export function Documentacion() {
                           </Tooltip>
                         </Badge>
                       ) : (
-                        // <Badge badgeContent={"!"} color="primary">
                         <Tooltip title="Añadir comentario a este apartado">
                           <IconButton
                             color={
@@ -390,7 +396,6 @@ export function Documentacion() {
                             <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
                           </IconButton>
                         </Tooltip>
-                        // </Badge>
                       )}
                     </StyledTableCell>
                   </StyledTableRow>

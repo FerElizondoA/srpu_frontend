@@ -10,7 +10,7 @@ import { Encabezado } from "../../components/ObligacionesLargoPlazoPage/Panels/E
 import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
 import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
 //import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
-import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
 import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage/Panels/FuentePagoSecciones";
 import { InfoGeneralGastoCosto } from "../../components/ObligacionesLargoPlazoPage/Panels/InfoGeneralGastoCosto";
 import { queries } from "../../queries";
@@ -42,9 +42,7 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
-  const idSolicitud: string = useCortoPlazoStore(
-    (state) => state.idSolicitud
-  );
+  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   useEffect(() => {
     getTiposDocumentos();
@@ -205,10 +203,10 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 3 && <FuentePagoSecciones />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
-      {tabIndex === 6 && <Resumen coments={true}/>}
+      {tabIndex === 6 && <Resumen coments={true} />}
       {tabIndex === 7 && <SolicituDeInscripcion />}
 
-      <ConfirmacionBorradorSolicitud
+      <DialogGuardarBorrador
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
       />

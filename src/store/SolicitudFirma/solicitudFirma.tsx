@@ -4,8 +4,8 @@ import { es } from "date-fns/locale";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
-import { IDataPrueba } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -60,11 +60,9 @@ export interface SolicitudFirmaSlice {
   setArchivosCancelacion: (ArchivosCancelacion: ArchivosCancelacion) => void;
   cleanArchivosCancelacion: () => void;
 
-  rowSolicitud: IDataPrueba;
-  setRowSolicitud: (rowSolicitud: IDataPrueba) => void;
-  cleanRowSolicitud: () => void;
-
-  //borrarFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
+  rowSolicitud: IData;
+  setRowSolicitud: (rowSolicitud: IData) => void;
+  cleanSolicitud: () => void;
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
@@ -74,23 +72,25 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   idSolicitud: "",
 
   rowSolicitud: {
-    IdClaveInscripcion: "",
-    CreadoPor: "",
-    Estatus: "",
-    FechaContratacion: "",
-    FechaCreacion: "",
-    FechaRequerimientos: "",
     Id: "",
-    IdEditor: "",
-    IdPathDoc: "",
-    Institucion: "",
-    ModificadoPor: "",
-    MontoOriginalContratado: "",
+    NumeroRegistro: "",
     Nombre: "",
-    NumeroRegistro: 0,
-    Solicitud: "",
     TipoEntePublico: "",
     TipoSolicitud: "",
+    Institucion: "",
+    NoEstatus: "",
+    Estatus: "",
+    ControlInterno: "",
+    IdClaveInscripcion: "",
+    MontoOriginalContratado: "",
+    FechaContratacion: "",
+    Solicitud: "",
+    FechaCreacion: "",
+    CreadoPor: "",
+    ModificadoPor: "",
+    IdEditor: "",
+    FechaRequerimientos: "",
+    IdPathDoc: "",
     UltimaModificacion: new Date().toString(),
   },
 
@@ -113,7 +113,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       justificacionAnulacion: justificacionAnulacion,
     })),
 
-  setRowSolicitud: (rowSolicitud: IDataPrueba) =>
+  setRowSolicitud: (rowSolicitud: IData) =>
     set(() => ({
       rowSolicitud: rowSolicitud,
     })),
@@ -140,29 +140,68 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       },
     })),
 
-  cleanRowSolicitud: () =>
+  cleanSolicitud: () => {
+    let state = useCortoPlazoStore.getState();
+
+    state.changeEncabezado(
+      "Crédito Simple a Corto Plazo",
+      {
+        Solicitante: localStorage.getItem("IdCentral") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      {
+        Id: localStorage.getItem("IdTipoEntePublicoObligado") || "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      {
+        Id: localStorage.getItem("IdEntePublicoObligado") || "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      new Date().toString()
+    );
+
+    state.changeInformacionGeneral(
+      new Date().toString(),
+      new Date().toString(),
+      1,
+      { Id: "", Descripcion: "" },
+      0,
+      "Pesos",
+      { Id: "", Descripcion: "" }
+    );
+
+    state.cleanObligadoSolidarioAval();
+
+    state.cleanCondicionFinanciera();
+
+    state.getTiposDocumentos();
+
     set(() => ({
       rowSolicitud: {
-        IdClaveInscripcion: "",
-        CreadoPor: "",
-        Estatus: "",
-        FechaContratacion: "",
-        FechaCreacion: "",
-        FechaRequerimientos: "",
         Id: "",
-        IdEditor: "",
-        IdPathDoc: "",
-        Institucion: "",
-        ModificadoPor: "",
-        MontoOriginalContratado: "",
+        NumeroRegistro: "",
         Nombre: "",
-        NumeroRegistro: 0,
-        Solicitud: "",
         TipoEntePublico: "",
         TipoSolicitud: "",
+        Institucion: "",
+        NoEstatus: "",
+        Estatus: "",
+        ControlInterno: "",
+        IdClaveInscripcion: "",
+        MontoOriginalContratado: "",
+        FechaContratacion: "",
+        Solicitud: "",
+        FechaCreacion: "",
+        CreadoPor: "",
+        ModificadoPor: "",
+        IdEditor: "",
+        FechaRequerimientos: "",
+        IdPathDoc: "",
         UltimaModificacion: new Date().toString(),
       },
-    })),
+    }));
+  },
 
   estatus: "",
 
@@ -351,7 +390,6 @@ export async function GeneraAcuseRespuesta(
     .catch((err) => {}); // aqui
 }
 
-
 export async function GeneraFormatoReestructura(
   tipoSolicitud: string,
   noOficio: string,
@@ -360,7 +398,8 @@ export async function GeneraFormatoReestructura(
 ) {
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-provisional-reestructura",
+      process.env.REACT_APP_APPLICATION_BACK +
+        "/create-pdf-provisional-reestructura",
       {
         tipoSolicitud: tipoSolicitud,
         oficioConstancia: noOficio,
@@ -391,7 +430,6 @@ export async function GeneraFormatoReestructura(
     })
     .catch((err) => {}); // aqui
 }
-
 
 export async function ConsultaSolicitud(
   Solicitud: string,
@@ -732,7 +770,7 @@ export const getPdf = (
 
 export async function CancelacionSolicitud(
   Solicitud: string,
-  NumeroRegistro: number,
+  NumeroRegistro: string,
   Justificacion: string,
   archivosCancelacion: ArchivosCancelacion,
   UltimaModificacion: string,
@@ -884,7 +922,7 @@ export async function borrarFirmaDetalle(
 
 export async function AnularCancelacionSolicitud(
   Solicitud: string,
-  NumeroRegistro: number,
+  NumeroRegistro: string,
   causaAnulacion: string,
   UltimaModificacion: string,
   setUrl: Function

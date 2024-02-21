@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
@@ -150,10 +150,13 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 3 && <Documentacion />}
       {tabIndex === 4 && <Resumen coments={true} />}
       {tabIndex === 5 && <SolicitudInscripcion />}
-      <ConfirmacionBorradorSolicitud
-        handler={setOpenDialogBorrador}
-        openState={openDialogBorrador}
-      />
+
+      {openDialogBorrador && (
+        <DialogGuardarBorrador
+          handler={setOpenDialogBorrador}
+          openState={openDialogBorrador}
+        />
+      )}
     </>
   );
 }

@@ -368,11 +368,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
 
-    return await state.tablaDocumentos.map((file, index) => {
+    return await state.tablaDocumentos.map((file) => {
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
-
-        console.log(url);
 
         let dataArray = new FormData();
         dataArray.append("ROUTE", `${ruta}`);

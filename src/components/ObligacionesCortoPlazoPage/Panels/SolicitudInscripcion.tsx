@@ -26,7 +26,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { ConfirmacionEnviarSolicitud } from "../Dialogs/DialogEnviarSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
@@ -470,7 +470,6 @@ export function SolicitudInscripcion() {
                     </TableHead>
                     <TableBody>
                       {catalogoReglas.map((row, index) => {
-                        // const stringIndex = index.toString()
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell padding="checkbox">
@@ -510,10 +509,9 @@ export function SolicitudInscripcion() {
                   </Table>
                 </TableContainer>
               </Grid>
-              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+              {localStorage.getItem("Rol") !== "Administrador" ? (
                 <Grid
                   container
-                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
                   sx={{
                     width: "100%",
                     display: "flex",
@@ -602,14 +600,17 @@ export function SolicitudInscripcion() {
                     </Button>
                   </Grid>
 
-                  <ConfirmacionBorradorSolicitud
+                  <DialogGuardarBorrador
                     handler={setOpenDialogBorrador}
                     openState={openDialogBorrador}
                   />
-                  <ConfirmacionEnviarSolicitud
-                    handler={setOpenDialogEnviar}
-                    openState={openDialogEnviar}
-                  />
+                  {openDialogEnviar && (
+                    <ConfirmacionEnviarSolicitud
+                      handler={setOpenDialogEnviar}
+                      openState={openDialogEnviar}
+                    />
+                  )}
+
                   <ConfirmacionCancelarSolicitud
                     handler={setOpenDialogCancelar}
                     openState={openDialogCancelar}

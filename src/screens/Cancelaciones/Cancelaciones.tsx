@@ -48,60 +48,40 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import {
-  IData,
-  IDataPrueba,
-} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 interface Head {
-  id: keyof IData;
-  isNumeric: boolean;
   label: string;
 }
 const heads: readonly Head[] = [
   {
-    id: "NumeroRegistro",
-    isNumeric: true,
     label: "Número de Solicitud",
   },
   {
-    id: "Institucion",
-    isNumeric: true,
     label: "Institución financiera",
   },
   {
-    id: "TipoEntePublico",
-    isNumeric: true,
     label: "Tipo de Ente Público Obligado",
   },
   {
-    id: "Estatus",
-    isNumeric: true,
     label: "Estatus",
   },
   {
-    id: "IdClaveInscripcion",
-    isNumeric: true,
     label: "Clave de inscripción",
   },
   {
-    id: "MontoOriginalContratado",
-    isNumeric: true,
     label: "Monto original contratado",
   },
   {
-    id: "FechaContratacion",
-    isNumeric: true,
     label: "Fecha de contratación",
   },
   {
-    id: "tipoDocumento",
-    isNumeric: true,
+    label: "Fecha Requerimientos",
+  },
+  {
     label: "Tipo de Documento",
   },
   {
-    id: "Acciones",
-    isNumeric: true,
     label: "Acciones",
   },
 ];
@@ -258,7 +238,7 @@ export const Cancelaciones = () => {
 
   //START Row Solicitud
 
-  const rowSolicitud: IDataPrueba = useSolicitudFirmaStore(
+  const rowSolicitud: IData = useSolicitudFirmaStore(
     (state) => state.rowSolicitud
   );
 
@@ -723,7 +703,6 @@ export const Cancelaciones = () => {
                               }}
                             >
                               <VisibilityIcon />
-                              {row.Acciones}
                             </IconButton>
                           </Tooltip>
 
@@ -783,7 +762,6 @@ export const Cancelaciones = () => {
                                 }}
                               >
                                 <HistoryEduIcon />
-                                {row.Acciones}
                               </IconButton>
                             </Tooltip>
                           )}
@@ -812,7 +790,6 @@ export const Cancelaciones = () => {
                                   }}
                                 >
                                   <EditIcon />
-                                  {row.Acciones}
                                 </IconButton>
                               </Tooltip>
                             )}
@@ -832,7 +809,6 @@ export const Cancelaciones = () => {
                                   }}
                                 >
                                   <BrowserUpdatedIcon />
-                                  {row.Acciones}
                                 </IconButton>
                               </Tooltip>
                             )}
@@ -848,7 +824,6 @@ export const Cancelaciones = () => {
                                 }}
                               >
                                 <CommentIcon />
-                                {row.Acciones}
                               </IconButton>
                             </Tooltip>
                           )}
@@ -869,7 +844,6 @@ export const Cancelaciones = () => {
                                 }}
                               >
                                 <DoDisturbOnIcon />
-                                {row.Acciones}
                               </IconButton>
                             </Tooltip>
                           )}
@@ -903,7 +877,6 @@ export const Cancelaciones = () => {
                                   }}
                                 >
                                   <DeleteIcon />
-                                  {row.Acciones}
                                 </IconButton>
                               </Tooltip>
                             )}

@@ -57,6 +57,7 @@ export interface CondicionFinancieraSlice {
   updatecondicionFinancieraTable: (
     tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) => void;
+  cleanCondicionFinanciera: () => void;
 }
 
 export const createCondicionFinancieraSlice: StateCreator<
@@ -126,4 +127,7 @@ export const createCondicionFinancieraSlice: StateCreator<
     tablaCondicionesFinancieras: ICondicionFinanciera[]
   ) =>
     set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),
+
+  cleanCondicionFinanciera: () =>
+    set(() => ({ tablaCondicionesFinancieras: [] })),
 });

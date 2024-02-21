@@ -15,7 +15,7 @@ type Props = {
   openState: boolean;
 };
 
-export function ConfirmacionBorradorSolicitud(props: Props) {
+export function DialogGuardarBorrador(props: Props) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -74,61 +74,13 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   const navigate = useNavigate();
 
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
+  const cleanSolicitud: Function = useCortoPlazoStore(
+    (state) => state.cleanSolicitud
   );
 
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
-
-  const reset = () => {
-    cleanComentario();
-    changeEncabezado({
-      tipoDocumento: "Crédito simple a corto plazo",
-      solicitanteAutorizado: {
-        Solicitante: localStorage.getItem("IdUsuario") || "",
-        Cargo: localStorage.getItem("Puesto") || "",
-        Nombre: localStorage.getItem("NombreUsuario") || "",
-      },
-      tipoEntePublico: {
-        Id: "",
-        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
-      },
-      organismo: {
-        Id: "",
-        Organismo: localStorage.getItem("EntePublicoObligado") || "",
-      },
-      fechaContratacion: new Date().toString(),
-    });
-
-    changeInformacionGeneral({
-      fechaContratacion: new Date().toString(),
-      fechaVencimiento: new Date().toString(),
-      plazo: 1,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "Pesos",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-
-    cleanObligadoSolidarioAval();
-    updatecondicionFinancieraTable([]);
-    cleanComentario();
-  };
 
   const division = info.indexOf(":");
 
@@ -185,9 +137,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               modificaSolicitud(
                 editCreadoPor,
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
@@ -203,7 +153,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
-                  reset();
+                  cleanSolicitud();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
@@ -219,9 +169,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
@@ -272,9 +220,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               modificaSolicitud(
                 editCreadoPor,
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
@@ -299,9 +245,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then((r: any) => {

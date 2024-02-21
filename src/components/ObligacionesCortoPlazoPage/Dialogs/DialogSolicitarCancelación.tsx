@@ -15,13 +15,13 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../../queries";
-import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import {
   ArchivosCancelacion,
   CancelacionSolicitud,
 } from "../../../store/SolicitudFirma/solicitudFirma";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 export function DialogSolicitarCancelacion({
   handler,
@@ -30,7 +30,7 @@ export function DialogSolicitarCancelacion({
 }: {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IDataPrueba;
+  rowSolicitud: IData;
 }) {
   const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");

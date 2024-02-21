@@ -28,66 +28,40 @@ import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/A
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import {
-  IData,
-  IDataPrueba,
-  stringCapitalize,
-} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 interface Head {
-  id: keyof IData;
-  isNumeric: boolean;
   label: string;
 }
 const heads: readonly Head[] = [
   {
-    id: "NumeroRegistro",
-    isNumeric: true,
     label: "Número de Solicitud",
   },
   {
-    id: "Institucion",
-    isNumeric: true,
     label: "Institución financiera",
   },
   {
-    id: "TipoEntePublico",
-    isNumeric: true,
     label: "Tipo de Ente Público Obligado",
   },
   {
-    id: "Estatus",
-    isNumeric: true,
     label: "Estatus",
   },
   {
-    id: "IdClaveInscripcion",
-    isNumeric: true,
     label: "Clave de inscripción",
   },
   {
-    id: "MontoOriginalContratado",
-    isNumeric: true,
     label: "Monto original contratado",
   },
   {
-    id: "FechaContratacion",
-    isNumeric: true,
     label: "Fecha de contratación",
   },
   {
-    id: "FechaRequerimientos",
-    isNumeric: true,
     label: "Fecha Requerimientos",
   },
   {
-    id: "tipoDocumento",
-    isNumeric: true,
     label: "Tipo de Documento",
   },
   {
-    id: "Acciones",
-    isNumeric: true,
     label: "Acciones",
   },
 ];
@@ -127,32 +101,32 @@ export function Reestructura() {
 
   const [rowId] = useState("");
 
-  const rowSolicitud: IDataPrueba = useSolicitudFirmaStore(
+  const rowSolicitud: IData = useSolicitudFirmaStore(
     (state) => state.rowSolicitud
   );
 
-  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    // const state = useCortoPlazoStore.getState();
-    if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud);
+  // const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
+  //   // const state = useCortoPlazoStore.getState();
+  //   if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
+  //     let aux: any = JSON.parse(solicitud.Solicitud);
 
-      changeReglasAplicables(aux?.inscripcion.declaratorias);
-      changeEncabezado(aux?.encabezado);
-      changeInformacionGeneral(aux?.informacionGeneral);
+  //     changeReglasAplicables(aux?.inscripcion.declaratorias);
+  //     changeEncabezado(aux?.encabezado);
+  //     changeInformacionGeneral(aux?.informacionGeneral);
 
-      aux?.informacionGeneral.obligadosSolidarios.map(
-        (v: any, index: number) => {
-          return addObligadoSolidarioAval(v);
-        }
-      );
-      aux?.condicionesFinancieras.map((v: any, index: number) => {
-        return addCondicionFinanciera(v);
-      });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumento(v);
-      });
-    }
-  };
+  //     aux?.informacionGeneral.obligadosSolidarios.map(
+  //       (v: any, index: number) => {
+  //         return addObligadoSolidarioAval(v);
+  //       }
+  //     );
+  //     aux?.condicionesFinancieras.map((v: any, index: number) => {
+  //       return addCondicionFinanciera(v);
+  //     });
+  //     aux?.documentacion.map((v: any, index: number) => {
+  //       return addDocumento(v);
+  //     });
+  //   }
+  // };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
@@ -197,7 +171,7 @@ export function Reestructura() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            width: "100%"
+            width: "100%",
           }}
         >
           <Paper
@@ -287,52 +261,68 @@ export function Reestructura() {
               <TableRow>
                 {heads.map((head, index) => (
                   <StyledTableCell align="left" key={index}>
-                    <Typography sx={{
-                      fontSize: ".8rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      width: head.label === "Clave de inscripción" ||
-                        head.label === "Institución financiera" ||
-                        head.label === "Monto original contratado" ||
-                        head.label === "Tipo de Documento" ||
-                        head.label === "Tipo de Ente Público Obligado"
-                        ? "180px" : "100%",
-
-                      "@media (min-width: 480px)": {
-                        width: head.label === "Clave de inscripción" ||
+                    <Typography
+                      sx={{
+                        fontSize: ".8rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        width:
+                          head.label === "Clave de inscripción" ||
                           head.label === "Institución financiera" ||
                           head.label === "Monto original contratado" ||
                           head.label === "Tipo de Documento" ||
                           head.label === "Tipo de Ente Público Obligado"
-                          ? "180px" : "100%"
-                      },
+                            ? "180px"
+                            : "100%",
 
-                      "@media (min-width: 768px)": {
-                        width: head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
-                          ? "200x" : "100%"
-                      },
+                        "@media (min-width: 480px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "180px"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1140px)": {
-                        width: head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
-                          ? "180px" : "100%"
-                      },
+                        "@media (min-width: 768px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "200x"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1400px)": {
-                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
-                      },
+                        "@media (min-width: 1140px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "180px"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1870px)": {
-                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
-                      },
-                    }}>
+                        "@media (min-width: 1400px)": {
+                          width:
+                            head.label === "Clave de inscripción"
+                              ? "150px"
+                              : "100%",
+                        },
+
+                        "@media (min-width: 1870px)": {
+                          width:
+                            head.label === "Clave de inscripción"
+                              ? "150px"
+                              : "100%",
+                        },
+                      }}
+                    >
                       {head.label}
                     </Typography>
                   </StyledTableCell>
@@ -358,7 +348,7 @@ export function Reestructura() {
                       {row.NumeroRegistro}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row" >
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion}
                     </StyledTableCell>
 
@@ -396,7 +386,7 @@ export function Reestructura() {
                           type="button"
                           onClick={() => {
                             changeIdSolicitud(row?.Id);
-                            llenaSolicitud(row, row.TipoSolicitud);
+                            // llenaSolicitud(row, row.TipoSolicitud);
                             getComentariosSolicitudPlazo(
                               row.Id,
                               setDatosActualizar
