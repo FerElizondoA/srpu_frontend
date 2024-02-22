@@ -85,7 +85,7 @@ export function ConfirmacionEnviarSolicitud({
       </DialogTitle>
 
       <DialogContent>
-        {localStorage.getItem("Rol") === "Capturador" && (
+        {localStorage.getItem("Rol") === "Capturador" ? (
           <Grid>
             <Typography>
               Selecciona verificador al que deseas asignar esta solicitud{" "}
@@ -119,6 +119,12 @@ export function ConfirmacionEnviarSolicitud({
               </Select>
             </FormControl>
           </Grid>
+        ) : (
+          <Grid>
+            <Typography>
+              Al finalizar, la solicitud ya no estará disponible para modificar.
+            </Typography>
+          </Grid>
         )}
       </DialogContent>
 
@@ -138,7 +144,7 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   editCreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "Por Firmar"
+                  "3"
                 )
                   .then(() => {
                     addComentario(
@@ -171,11 +177,7 @@ export function ConfirmacionEnviarSolicitud({
                     });
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(
-                  editCreadoPor,
-                  idUsuarioAsignado,
-                  "Verificacion"
-                )
+                modificaSolicitud(editCreadoPor, idUsuarioAsignado, "2")
                   .then(() => {
                     addComentario(
                       idSolicitud,
@@ -212,7 +214,7 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("IdUsuario"),
-                  "Por Firmar"
+                  "3"
                 )
                   .then(() => {
                     addComentario(
@@ -248,7 +250,7 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   idUsuarioAsignado,
-                  "Verificacion"
+                  "2"
                 )
                   .then(() => {
                     addComentario(

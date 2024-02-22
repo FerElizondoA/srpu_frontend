@@ -143,24 +143,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   cleanSolicitud: () => {
     let state = useCortoPlazoStore.getState();
 
-    state.changeEncabezado(
-      "Crédito Simple a Corto Plazo",
-      {
-        Solicitante: localStorage.getItem("IdCentral") || "",
-        Cargo: localStorage.getItem("Puesto") || "",
-        Nombre: localStorage.getItem("NombreUsuario") || "",
-      },
-      {
-        Id: localStorage.getItem("IdTipoEntePublicoObligado") || "",
-        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
-      },
-      {
-        Id: localStorage.getItem("IdEntePublicoObligado") || "",
-        Organismo: localStorage.getItem("EntePublicoObligado") || "",
-      },
-      new Date().toString()
-    );
-
     state.changeInformacionGeneral(
       new Date().toString(),
       new Date().toString(),
@@ -877,12 +859,6 @@ export async function borrarFirmaDetalle(
   IdSolicitud: string,
   TipoFirma: string
 ) {
-  // const Toast = Swal.mixin({
-  //   toast: true,
-  //   timer: 3000,
-  //   timerProgressBar: true,
-  // });
-
   await axios
     .delete(process.env.REACT_APP_APPLICATION_BACK + "/delete-firma", {
       data: {

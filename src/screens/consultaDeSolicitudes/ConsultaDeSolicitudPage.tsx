@@ -168,15 +168,6 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const setTablaDocumentos: Function = useCortoPlazoStore(
-    (state) => state.setTablaDocumentos
-  );
-  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
   const addDocumento: Function = useCortoPlazoStore(
     (state) => state.addDocumento
   );

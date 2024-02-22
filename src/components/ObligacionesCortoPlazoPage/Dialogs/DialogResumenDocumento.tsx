@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
@@ -27,13 +28,11 @@ import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
-import { Resumen } from "../Panels/Resumen";
 import { Resumen as ResumenLP } from "../../ObligacionesLargoPlazoPage/Panels/Resumen";
+import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
-import { useResumenStore } from "../../../store/Resumen/main";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 type Props = {
   handler: Function;
@@ -54,9 +53,6 @@ export function VerBorradorDocumento(props: Props) {
   // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
   const estatus: string = useCortoPlazoStore((state) => state.estatus);
-
-  // ACCION
-  const accion: string = useResumenStore((state) => state.accion);
 
   // CANCELACIÓN
   const justificacionAnulacion: string = useCortoPlazoStore(

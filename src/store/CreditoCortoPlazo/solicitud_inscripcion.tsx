@@ -216,7 +216,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -243,10 +242,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      //position: "center",
-      //showConfirmButton: true,
-      //confirmButtonColor: "#15212f",
-      //cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });

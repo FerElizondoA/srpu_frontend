@@ -59,6 +59,10 @@ export function DialogSolicitarModificacion({
 
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
+  const editCreadoPor: string = useCortoPlazoStore(
+    (state) => state.editCreadoPor
+  );
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
@@ -72,13 +76,7 @@ export function DialogSolicitarModificacion({
       setErrorAsignacion(true);
     } else {
       if (idSolicitud !== "") {
-        modificaSolicitud(
-          localStorage.getItem("IdUsuario"),
-          idUsuarioAsignado,
-          rolesAdmin.includes(localStorage.getItem("Rol")!)
-            ? "Verificacion"
-            : "Captura"
-        )
+        modificaSolicitud(editCreadoPor, idUsuarioAsignado, "1")
           .then(() => {
             addComentario(idSolicitud, JSON.stringify(comentario), "Captura");
             Swal.fire({
@@ -108,7 +106,7 @@ export function DialogSolicitarModificacion({
         crearSolicitud(
           localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
-          "Captura",
+          "1",
           JSON.stringify(comentario)
         ).catch(() => {
           Swal.fire({
@@ -189,7 +187,10 @@ export function DialogSolicitarModificacion({
             </TextField>
           </FormControl>
         </Grid>
-        <Typography sx={queries.bold_text}>Comentarios</Typography>
+
+        {comentario.length > 0 && (
+          <Typography sx={queries.bold_text}>Comentarios</Typography>
+        )}
         {Object.entries(comentario).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography
@@ -215,7 +216,7 @@ export function DialogSolicitarModificacion({
         </Button>
 
         <Button
-          // disabled={idUsuarioAsignado===""}
+          disabled={idUsuarioAsignado === ""}
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {

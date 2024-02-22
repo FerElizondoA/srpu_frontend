@@ -600,10 +600,13 @@ export function SolicitudInscripcion() {
                     </Button>
                   </Grid>
 
-                  <DialogGuardarBorrador
-                    handler={setOpenDialogBorrador}
-                    openState={openDialogBorrador}
-                  />
+                  {openDialogBorrador && (
+                    <DialogGuardarBorrador
+                      handler={setOpenDialogBorrador}
+                      openState={openDialogBorrador}
+                    />
+                  )}
+
                   {openDialogEnviar && (
                     <ConfirmacionEnviarSolicitud
                       handler={setOpenDialogEnviar}
@@ -611,10 +614,13 @@ export function SolicitudInscripcion() {
                     />
                   )}
 
-                  <ConfirmacionCancelarSolicitud
-                    handler={setOpenDialogCancelar}
-                    openState={openDialogCancelar}
-                  />
+                  {openDialogCancelar && (
+                    <ConfirmacionCancelarSolicitud
+                      handler={setOpenDialogCancelar}
+                      openState={openDialogCancelar}
+                    />
+                  )}
+
                   {openDialogModificacion && (
                     <DialogSolicitarModificacion
                       handler={setOpenDialogModificacion}
