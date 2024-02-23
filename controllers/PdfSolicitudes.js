@@ -510,8 +510,6 @@ module.exports = {
   },
 
   createPdfAcuse: async (req, res) => {
-    console.log(req);
-    console.log(res);
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuse, "utf8");
 

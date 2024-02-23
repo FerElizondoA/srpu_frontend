@@ -328,7 +328,6 @@ module.exports = {
     db.query(
       `CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
@@ -433,12 +432,10 @@ module.exports = {
   },
 
   cambiaEstatus: (req, res) => {
-    const Id = req.body.Id;
-    const Estatus = req.body.Estatus;
-    const ModificadoPor = req.body.ModificadoPor;
+    const { Id, Estatus, ModificadoPor, IdEditor } = req.body;
 
     db.query(
-      `CALL sp_CambiaEstatusSolicitud('${Id}','${Estatus}','${ModificadoPor}')`,
+      `CALL sp_CambiaEstatusSolicitud('${Id}','${Estatus}','${ModificadoPor}','${IdEditor}')`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
