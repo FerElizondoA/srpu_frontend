@@ -23,7 +23,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -130,7 +130,7 @@ export interface IData {
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-      localStorage.getItem("Menu") !== null
+    localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
 
@@ -149,7 +149,6 @@ export function LateralMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  ////////Administración de Ayudas////////
 
   const logout = () => {
     localStorage.clear();
@@ -193,12 +192,6 @@ export function LateralMenu() {
 
   // let color = "#";
   let color = "#56636a";
-
-  // for (i = 0; i < 3; i += 1) {
-  //   const value = (hash >> (i * 5)) & 0xff;
-  //   color += `${value.toString(16)}`.slice(-2);
-  // }
-  /* eslint-enable no-bitwise */
 
   const [show, setShow] = useState(false);
 
@@ -353,9 +346,7 @@ export function LateralMenu() {
               MODIFICAR CONTRASEÑA
             </Typography>
           </Grid>
-
         </DialogTitle>
-
 
         <DialogContent>
           <Grid
@@ -422,9 +413,7 @@ export function LateralMenu() {
               </Typography>
             ) : null}
           </Grid>
-
         </DialogContent>
-
 
         <DialogActions>
           <Button
@@ -593,14 +582,6 @@ export function LateralMenu() {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              {/* <Grid item sx={{ alignSelf: "center" }}>
-                <img
-                  src={logo2}
-                  alt="Logo2"
-                  style={{ width: "100%", height: "70%" }}
-                />
-              </Grid> */}
-
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
@@ -644,7 +625,6 @@ export function LateralMenu() {
                       i === indexSelect && seccionesHover === true
                         ? "#AF8C55"
                         : "#ffff",
-                    //border: i === indexSelect ? "2px solid" : null,
                     ":hover": { backgroundColor: "#AF8C55" },
                   }}
                   onClick={() => {
@@ -654,14 +634,14 @@ export function LateralMenu() {
                   <ListItemIcon>
                     <BuildOutlinedIcon />
                   </ListItemIcon>
-                  <Typography sx={{
-                    ...queries.bold_text,
-                    ":hover": { backgroundColor: "#AF8C55" },
-                  }}>
+                  <Typography
+                    sx={{
+                      ...queries.bold_text,
+                      ":hover": { backgroundColor: "#AF8C55" },
+                    }}
+                  >
                     Reestructura
                   </Typography>
-
-
                 </ListItemButton>
                 {menu.length > 0 ? (
                   menu.map(
@@ -678,12 +658,8 @@ export function LateralMenu() {
                                 i === indexSelect && seccionesHover === true
                                   ? "#AF8C55"
                                   : "#ffff",
-                              //border: i === indexSelect ? "2px solid" : null,
                               ":hover": { backgroundColor: "#AF8C55" },
                             }}
-                            //CAMPOS PRINCIPALES
-                            // bg={seccionesHover === true ? "#AF8C55": "#AF8C55"}
-
                             onClick={() => {
                               setSeccionesHover(seccionesHover ? false : true);
                               setIndexSelect(i);

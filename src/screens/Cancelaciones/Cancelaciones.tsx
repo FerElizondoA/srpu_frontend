@@ -166,9 +166,7 @@ export const Cancelaciones = () => {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
-  const changeEstatus: Function = useCortoPlazoStore(
-    (state) => state.changeEstatus
-  );
+  const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
   const changeNoRegistro: Function = useCortoPlazoStore(
     (state) => state.changeNoRegistro
   );
@@ -382,7 +380,7 @@ export const Cancelaciones = () => {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    changeEstatus("Actualizacion");
+    setProceso("Actualizacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -694,7 +692,6 @@ export const Cancelaciones = () => {
                               onClick={() => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
-                                changeEstatus(row.Estatus);
                                 changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 
@@ -744,7 +741,6 @@ export const Cancelaciones = () => {
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus(row.Estatus);
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
@@ -754,7 +750,7 @@ export const Cancelaciones = () => {
                                         row.NumeroRegistro,
                                         setUrl
                                       );
-                                      changeEstatus("Autorizado");
+                                      setProceso("Autorizado");
                                       changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
@@ -835,12 +831,9 @@ export const Cancelaciones = () => {
                                 onClick={() => {
                                   llenaSolicitud(row, row.TipoSolicitud);
                                   changeIdSolicitud(row.Id);
-                                  changeEstatus(row.Estatus);
                                   changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
-
                                   setRowSolicitud(row);
-                                  //setRowSolicitud(row)
                                 }}
                               >
                                 <DoDisturbOnIcon />

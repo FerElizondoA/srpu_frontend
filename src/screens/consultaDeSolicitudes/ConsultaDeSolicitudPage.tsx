@@ -36,7 +36,6 @@ import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPag
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
@@ -147,9 +146,8 @@ export function ConsultaDeSolicitudPage() {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
-  const changeEstatus: Function = useCortoPlazoStore(
-    (state) => state.changeEstatus
-  );
+  const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
+
   const changeNoRegistro: Function = useCortoPlazoStore(
     (state) => state.changeNoRegistro
   );
@@ -209,6 +207,13 @@ export function ConsultaDeSolicitudPage() {
   );
 
   const setRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.setRowSolicitud
+  );
+
+  const solicitudFirma: IData = useCortoPlazoStore(
+    (state) => state.rowSolicitud
+  );
+  const setSolicitudFirma: Function = useCortoPlazoStore(
     (state) => state.setRowSolicitud
   );
 
@@ -283,7 +288,9 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     getSolicitudes(
-      !rolesAdmin.includes(localStorage.getItem("Rol")!) ? "Inscripcion" : "2",
+      !rolesAdmin.includes(localStorage.getItem("Rol")!)
+        ? "Inscripcion"
+        : "Revision",
       (e: IData[]) => {
         setDatos(e);
         setDatosFiltrados(e);
@@ -310,7 +317,7 @@ export function ConsultaDeSolicitudPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    changeEstatus("Actualizacion");
+    setProceso("Actualizacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -455,7 +462,7 @@ export function ConsultaDeSolicitudPage() {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
 
-                    if (row.ControlInterno === "Inscripcion") {
+                    if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -463,7 +470,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.ControlInterno === "Revision") {
+                    } else if (row.ControlInterno === "revision") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -471,7 +478,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.ControlInterno === "Autorizado") {
+                    } else if (row.ControlInterno === "autorizado") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -622,9 +629,8 @@ export function ConsultaDeSolicitudPage() {
                               onClick={() => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
-                                changeEstatus(row.Estatus);
                                 changeNoRegistro(row.NumeroRegistro);
-                                setRowSolicitud(row);
+                                setSolicitudFirma(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -633,8 +639,8 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {localStorage.getItem("IdCentral") === row.IdEditor &&
-                            row.Estatus.includes("Por Firmar") && (
+                          {localStorage.getItem("IdUsuario") === row.IdEditor &&
+                            ["3", "7"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
@@ -669,17 +675,17 @@ export function ConsultaDeSolicitudPage() {
                                             row.NumeroRegistro,
                                             setUrl
                                           );
-                                          changeEstatus(row.Estatus);
                                           changeIdSolicitud(row.Id);
                                           navigate("../firmaUrl");
                                         }
                                       } else {
+                                        setSolicitudFirma(row);
                                         ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeEstatus("Por Firmar");
+                                        setProceso("Por Firmar");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
@@ -691,29 +697,29 @@ export function ConsultaDeSolicitudPage() {
                               </Tooltip>
                             )}
 
-                          {localStorage.getItem("IdCentral") ===
-                            row.IdEditor && (
-                            <Tooltip title="Editar">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  llenaSolicitud(row, row.TipoSolicitud);
-                                  if (row.Estatus.includes("Actualizacion")) {
-                                    getComentariosSolicitudPlazo(
-                                      row.Id,
-                                      setDatosActualizar
-                                    );
-                                  }
-                                  changeIdSolicitud(row?.Id);
-                                  changeNoRegistro(row.NumeroRegistro);
-                                  changeEditCreadoPor(row?.CreadoPor);
-                                  editarSolicitud(row.TipoSolicitud);
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                          {localStorage.getItem("IdCentral") === row.IdEditor &&
+                            row.ControlInterno === "inscripcion" && (
+                              <Tooltip title="Editar">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    if (row.Estatus.includes("Actualizacion")) {
+                                      getComentariosSolicitudPlazo(
+                                        row.Id,
+                                        setDatosActualizar
+                                      );
+                                    }
+                                    changeIdSolicitud(row?.Id);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    changeEditCreadoPor(row?.CreadoPor);
+                                    editarSolicitud(row.TipoSolicitud);
+                                  }}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
 
                           {
                             <Tooltip title="Ver archivos">
@@ -748,7 +754,7 @@ export function ConsultaDeSolicitudPage() {
                             </Tooltip>
                           )}
 
-                          {row.Estatus === "Autorizado" &&
+                          {/* {row.Estatus === "Autorizado" &&
                             !rolesAdmin.includes(
                               localStorage.getItem("Rol")!
                             ) && (
@@ -758,7 +764,6 @@ export function ConsultaDeSolicitudPage() {
                                   onClick={() => {
                                     llenaSolicitud(row, row.TipoSolicitud);
                                     changeIdSolicitud(row.Id);
-                                    changeEstatus(row.Estatus);
                                     changeNoRegistro(row.NumeroRegistro);
                                     changeOpenDialogVer(!openDialogVer);
                                     setRowSolicitud(row);
@@ -767,7 +772,7 @@ export function ConsultaDeSolicitudPage() {
                                   <DoDisturbOnIcon />
                                 </IconButton>
                               </Tooltip>
-                            )}
+                            )} */}
 
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
@@ -800,7 +805,7 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
+          rowSolicitud={solicitudFirma}
           rowId={""}
         />
       )}

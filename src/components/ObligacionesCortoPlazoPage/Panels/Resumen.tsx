@@ -25,24 +25,24 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
-import {
-  headsComision,
-  headsDisposicion,
-  headsTasa,
-} from "./CondicionesFinancieras";
-import { IFile } from "./Documentacion";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import {
   IComisiones,
   ICondicionFinanciera,
   IDisposicion,
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import {
+  headsComision,
+  headsDisposicion,
+  headsTasa,
+} from "./CondicionesFinancieras";
+import { IFile } from "./Documentacion";
 
 interface Head {
   label: string;
@@ -96,6 +96,8 @@ const headsCondiciones: Head[] = [
 
 export function Resumen({ coments }: { coments: boolean }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
+
+  const rowSolicitud: IData = useCortoPlazoStore((state) => state.rowSolicitud);
 
   // IdSolicitud
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
@@ -253,16 +255,8 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
-  const estatus: string = useCortoPlazoStore((state) => state.estatus);
-
   const activaAccion =
-    (coments && estatus !== "Autorizado") ||
-    (rolesAdmin.includes(localStorage.getItem("Rol")!) &&
-      ((estatus === "Revision" && localStorage.getItem("Rol") === "Revisor") ||
-        (estatus === "Validacion" &&
-          localStorage.getItem("Rol") === "Validador") ||
-        (estatus === "Autorizacion" &&
-          localStorage.getItem("Rol") === "Autorizador")));
+    rowSolicitud.IdEditor === localStorage.getItem("IdUsuario");
 
   return (
     <Grid
@@ -483,8 +477,6 @@ export function Resumen({ coments }: { coments: boolean }) {
                     </TableBody>
                   </Table>
                 ) : (
-                  //Condicional
-
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>

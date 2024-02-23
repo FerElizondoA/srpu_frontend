@@ -13,20 +13,18 @@ import {
   TableRow,
   TextField,
   Typography,
-  ThemeProvider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
-import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
-import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface HeadSelect {
   Label: string;

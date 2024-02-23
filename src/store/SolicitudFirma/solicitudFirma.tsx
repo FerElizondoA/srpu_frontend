@@ -40,7 +40,7 @@ export interface IDataFirmaDetalle {
 
 export interface SolicitudFirmaSlice {
   idSolicitud: string;
-  estatus: string;
+  proceso: string;
   url: string;
   infoDoc: string;
   TipoFirma: string;
@@ -51,7 +51,7 @@ export interface SolicitudFirmaSlice {
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
 
   changeIdSolicitud: (id: string) => void;
-  changeEstatus: (estatus: string) => void;
+  setProceso: (estatus: string) => void;
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
   setUrl: (url: string) => void;
@@ -113,10 +113,33 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       justificacionAnulacion: justificacionAnulacion,
     })),
 
-  setRowSolicitud: (rowSolicitud: IData) =>
+  setRowSolicitud: (rowSolicitud: IData) => {
     set(() => ({
       rowSolicitud: rowSolicitud,
-    })),
+      // {
+      //   Id: rowSolicitud.Id,
+      //   NumeroRegistro: rowSolicitud.NumeroRegistro,
+      //   Nombre: rowSolicitud.Nombre,
+      //   TipoEntePublico: rowSolicitud.TipoEntePublico,
+      //   TipoSolicitud: rowSolicitud.TipoSolicitud,
+      //   Institucion: rowSolicitud.Institucion,
+      //   NoEstatus: rowSolicitud.NoEstatus,
+      //   Estatus: rowSolicitud.Estatus,
+      //   ControlInterno: rowSolicitud.ControlInterno,
+      //   IdClaveInscripcion: rowSolicitud.IdClaveInscripcion,
+      //   MontoOriginalContratado: rowSolicitud.MontoOriginalContratado,
+      //   FechaContratacion: rowSolicitud.FechaContratacion,
+      //   Solicitud: rowSolicitud.Solicitud,
+      //   FechaCreacion: rowSolicitud.FechaCreacion,
+      //   CreadoPor: rowSolicitud.CreadoPor,
+      //   ModificadoPor: rowSolicitud.ModificadoPor,
+      //   IdEditor: rowSolicitud.IdEditor,
+      //   FechaRequerimientos: rowSolicitud.FechaRequerimientos,
+      //   IdPathDoc: rowSolicitud.IdPathDoc,
+      //   UltimaModificacion: new Date().toString(),
+      // },
+    }));
+  },
 
   setArchivosCancelacion: (archivosCancelacion: ArchivosCancelacion) =>
     set(() => ({
@@ -159,33 +182,33 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     state.getTiposDocumentos();
 
-    set(() => ({
-      rowSolicitud: {
-        Id: "",
-        NumeroRegistro: "",
-        Nombre: "",
-        TipoEntePublico: "",
-        TipoSolicitud: "",
-        Institucion: "",
-        NoEstatus: "",
-        Estatus: "",
-        ControlInterno: "",
-        IdClaveInscripcion: "",
-        MontoOriginalContratado: "",
-        FechaContratacion: "",
-        Solicitud: "",
-        FechaCreacion: "",
-        CreadoPor: "",
-        ModificadoPor: "",
-        IdEditor: "",
-        FechaRequerimientos: "",
-        IdPathDoc: "",
-        UltimaModificacion: new Date().toString(),
-      },
-    }));
+    // set(() => ({
+    //   rowSolicitud: {
+    //     Id: "",
+    //     NumeroRegistro: "",
+    //     Nombre: "",
+    //     TipoEntePublico: "",
+    //     TipoSolicitud: "",
+    //     Institucion: "",
+    //     NoEstatus: "",
+    //     Estatus: "",
+    //     ControlInterno: "",
+    //     IdClaveInscripcion: "",
+    //     MontoOriginalContratado: "",
+    //     FechaContratacion: "",
+    //     Solicitud: "",
+    //     FechaCreacion: "",
+    //     CreadoPor: "",
+    //     ModificadoPor: "",
+    //     IdEditor: "",
+    //     FechaRequerimientos: "",
+    //     IdPathDoc: "",
+    //     UltimaModificacion: new Date().toString(),
+    //   },
+    // }));
   },
 
-  estatus: "",
+  proceso: "",
 
   url: "",
 
@@ -234,9 +257,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
 
-  changeEstatus: (estatus: any) => {
+  setProceso: (estatus: string) => {
     set(() => ({
-      estatus: estatus,
+      proceso: estatus,
     }));
   },
 
@@ -247,6 +270,12 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       const inf = JSON.parse(info);
 
       const state = useCortoPlazoStore.getState();
+
+      const estatusPrevio = {
+        NoEstatus: state.rowSolicitud.NoEstatus,
+        Estatus: state.rowSolicitud.Estatus,
+        ControlInterno: state.rowSolicitud.ControlInterno,
+      };
 
       axios
         .post(
@@ -273,55 +302,55 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          if (state.estatus === "En espera cancelación") {
-            GeneraAcuseEnvio(
-              "Solicitud de cancelación",
-              inf.NumeroOficio.replaceAll("/", "-"),
-              state.idSolicitud
-            );
-          } else if (state.estatus === "Cancelado") {
-            state.getCatalogoFirmaDetalle(state.idSolicitud, state.TipoFirma);
-            GeneraAcuseRespuesta(
-              "Solicitud de cancelación",
-              state.catalogoFirmaDetalle.NumeroOficio.replaceAll("/", "-"),
-              state.idSolicitud,
-              ""
-            );
-          } else if (state.estatus === "Anulación") {
-            borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
-            //AnularCancelacionSolicitud(state.idSolicitud, state.NumeroRegistro, state.justificacionAnulacion, state.rowSolicitud.UltimaModificacion, state.url)
-          } else if (
-            !state.estatus.includes("Autorizado") &&
-            state.estatus !== "Actualizacion"
-          ) {
-            GeneraAcuseEnvio(
-              state.estatus === "Actualizacion"
-                ? "Solicitud de requerimientos"
-                : "Constancia de inscripción",
-              inf.NumeroOficio.replaceAll("/", "-"),
-              state.idSolicitud
-            );
-          } else {
-            GeneraAcuseRespuesta(
-              "Solicitud de requerimientos",
-              inf.NumeroOficio.replaceAll("/", "-"),
-              state.idSolicitud,
-              "de respuesta prevención de inscripción"
-            );
-          }
+          let titulo =
+            estatusPrevio.ControlInterno === "inscripcion"
+              ? "Solicitud de Inscripción"
+              : estatusPrevio.ControlInterno === "revision"
+              ? "Solicitud de Requerimientos"
+              : "Constancia de Inscripción";
+          let mensaje =
+            estatusPrevio.ControlInterno === "inscripcion"
+              ? `Se recibe el ${new Date()} el documento ${titulo} con el identificador: ${
+                  state.rowSolicitud.IdClaveInscripcion
+                }`
+              : `Se envía el ${new Date()} el documento ${titulo} con el identificador: ${
+                  state.rowSolicitud.IdClaveInscripcion
+                }`;
+          let oficio = `Solicitud ${state.rowSolicitud.IdClaveInscripcion}`;
+
+          // else if (state.estatus === "Cancelacion") {
+          //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
+          // } else if (state.estatus === "Reestructura") {
+          //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
+          // }
+
+          GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud);
 
           cambiaEstatus(
-            state.estatus.includes("Actualizacion")
-              ? "Actualizacion"
-              : state.estatus.includes("Autorizado")
-              ? "Autorizado"
-              : state.estatus.includes("En espera cancelación")
-              ? "En espera cancelación"
-              : state.estatus.includes("Cancelado")
-              ? "Cancelado"
-              : state.estatus.includes("Anulación")
-              ? "Autorizado"
-              : "Revision",
+            estatusPrevio.ControlInterno === "inscripcion"
+              ? "4"
+              : estatusPrevio.ControlInterno === "revision" &&
+                state.proceso === "requerimientos"
+              ? "8"
+              : estatusPrevio.ControlInterno === "autorizado"
+              ? "10"
+              : estatusPrevio.ControlInterno === "cancelacion" &&
+                state.proceso === "solicitud"
+              ? "12"
+              : estatusPrevio.ControlInterno === "cancelacion" &&
+                state.proceso === "requerimientos"
+              ? "16"
+              : estatusPrevio.ControlInterno === "cancelado"
+              ? "18"
+              : estatusPrevio.ControlInterno === "reestructura" &&
+                state.proceso === "solicitud"
+              ? "20"
+              : estatusPrevio.ControlInterno === "reestructura" &&
+                state.proceso === "requerimientos"
+              ? "24"
+              : estatusPrevio.ControlInterno === "reestructurado"
+              ? "10"
+              : "101",
             state.idSolicitud
           );
         })
@@ -362,10 +391,7 @@ export async function GeneraAcuseRespuesta(
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File(
-          [response.data],
-          `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
-        )
+        new File([response.data], `Acuse-${noOficio}.pdf`)
       );
       // setUrl(url);
     })
@@ -679,10 +705,41 @@ export async function GeneraAcuseEnvio(
       state.guardaDocumentos(
         idRegistro,
         "/SRPU/CORTOPLAZO/ACUSE",
-        new File(
-          [response.data],
-          `Acuse-envio-${tipoSolicitud}-${noOficio}.pdf`
-        )
+        new File([response.data], `Acuse-envio-${noOficio}.pdf`)
+      );
+    })
+    .catch(() => {});
+}
+
+export async function GeneraAcuse(
+  titulo: string,
+  mensaje: string,
+  oficio: string,
+  idRegistro: string
+) {
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse",
+      {
+        titulo: titulo,
+        mensaje: mensaje,
+        oficio: oficio,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const state = useCortoPlazoStore.getState();
+
+      state.guardaDocumentos(
+        idRegistro,
+        "/SRPU/CORTOPLAZO/ACUSE",
+        new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
     .catch(() => {});
@@ -706,7 +763,6 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
       }
     )
     .then((response) => {
-      // window.location.reload();
       return true;
     })
     .catch((err) => {});
@@ -871,7 +927,6 @@ export async function borrarFirmaDetalle(
     })
     .then(function (response) {
       if (response.status === 200) {
-        //window.location.reload();
         Swal.fire({
           icon: "success",
           title: "Se anuló la solicitud de cancelación con éxito",

@@ -72,25 +72,6 @@ export function Reestructura() {
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
-  const changeReglasAplicables: Function = useCortoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.addObligadoSolidarioAval
-  );
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
-  );
-
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
   );
@@ -104,29 +85,6 @@ export function Reestructura() {
   const rowSolicitud: IData = useSolicitudFirmaStore(
     (state) => state.rowSolicitud
   );
-
-  // const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-  //   // const state = useCortoPlazoStore.getState();
-  //   if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
-  //     let aux: any = JSON.parse(solicitud.Solicitud);
-
-  //     changeReglasAplicables(aux?.inscripcion.declaratorias);
-  //     changeEncabezado(aux?.encabezado);
-  //     changeInformacionGeneral(aux?.informacionGeneral);
-
-  //     aux?.informacionGeneral.obligadosSolidarios.map(
-  //       (v: any, index: number) => {
-  //         return addObligadoSolidarioAval(v);
-  //       }
-  //     );
-  //     aux?.condicionesFinancieras.map((v: any, index: number) => {
-  //       return addCondicionFinanciera(v);
-  //     });
-  //     aux?.documentacion.map((v: any, index: number) => {
-  //       return addDocumento(v);
-  //     });
-  //   }
-  // };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
