@@ -274,6 +274,7 @@ const {
   createPdfSolicitudAnulacion,
   createPdfConstanciaReestructura,
   createPdfContestacionReestructura,
+  createPdfAcuse,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -1463,17 +1464,6 @@ router.get("/get-instruccion", verifyToken.verifyJWT, (req, res, express) => {
   getInstrucciones(req, res);
 });
 
-// router.get("/get-tiposDeGarantiaDePago", (req, res) => {
-//   getTiposDeGarantiaDePago(req, res);
-// });
-
-// router.put("/modify-mandato", (req, res) => {
-//   modifyMandato(req, res);
-// });
-
-// router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
-//   deleteTipoDeGarantiaDePago(req, res);
-// });
 //#endregion
 
 //#region Mandatos
@@ -1507,6 +1497,10 @@ router.post(
     createPdfAcuseCancelacion(req, res);
   }
 );
+router.post("/create-pdf-acuse", verifyToken.verifyJWT, (req, res) => {
+  createPdfAcuse(req, res);
+});
+
 router.post("/actualiza-descarga", verifyToken.verifyJWT, (req, res) => {
   actualizaDescarga(req, res);
 });

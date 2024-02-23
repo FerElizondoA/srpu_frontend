@@ -2,8 +2,6 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 const db = require("../config/db.js");
-// const pdfsig = require("pdfsig");
-
 const headerFolder = "controllers/templates/header.html";
 const footerFolder = "controllers/templates/footer.html";
 const templateSolicitudCorto = "controllers/templates/template_corto.html";
@@ -19,7 +17,8 @@ const templateCancelacion =
 const templateAnulacion =
   "controllers/templates/template_anular_cancelacion.html";
 const templateAcuseCancelacion =
-  "controllers/templates/template_acuse_cancelacion.html";
+  "controllers/templates/template_acuse_envio_respuesta.html";
+const templateAcuse = "controllers/templates/template_acuse.html";
 const templateConstanciaReestructura =
   "controllers/templates/template_constancia_reestructuracion.html";
 const templateContestacionReestructura =
@@ -422,50 +421,6 @@ module.exports = {
     res.send(pdfBuffer);
   },
 
-  // createPdfFormatoReesctructura: async (req, res) => {
-  //   callHeader();
-  //   const htmlTemplate = fs.readFileSync(templateAcuseProvisionalReestructura, "utf8");
-
-  //   const { tipoSolicitud, oficioConstancia, fecha, hora } =
-  //     req.body;
-
-  //   const html = htmlTemplate
-  //     .replaceAll("{{tipoSolicitud}}", tipoSolicitud || "'Tipo de solicitud'")
-  //     .replaceAll("{{oficioConstancia}}", oficioConstancia || "'No. Oficio'")
-  //     .replaceAll("{{fecha}}", fecha || "'fecha de entrega'")
-  //     .replaceAll("{{hora}}", hora || "'hora de entrega'")
-  //    // .replaceAll("{{fraccionTexto}}", fraccionTexto || "");
-  //   const browser = await puppeteer.launch({
-  //     headless: "false",
-  //     args: ["--no-sandbox"],
-  //   });
-  //   const page = await browser.newPage();
-
-  //   await page.setContent(html);
-
-  //   const pdfBuffer = await page.pdf({
-  //     format: "A4",
-  //     displayHeaderFooter: true,
-  //     headerTemplate: header,
-  //     footerTemplate: footer,
-  //     margin: {
-  //       top: "1in",
-  //       bottom: "1in",
-  //       right: "0.50in",
-  //       left: "0.50in",
-  //     },
-  //   });
-
-  //   await browser.close();
-
-  //   res.setHeader("Content-Type", "application/pdf");
-  //   res.setHeader(
-  //     "Content-Disposition",
-  //     `attachment; filename = ${oficioConstancia}-${fecha}.pdf`
-  //   );
-  //   res.send(pdfBuffer);
-  // },
-
   createPdfAcuseRespuesta: async (req, res) => {
     callHeader();
     const htmlTemplate = fs.readFileSync(templateAcuseRespuesta, "utf8");
@@ -550,6 +505,49 @@ module.exports = {
     res.setHeader(
       "Content-Disposition",
       `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
+    );
+    res.send(pdfBuffer);
+  },
+
+  createPdfAcuse: async (req, res) => {
+    console.log(req);
+    console.log(res);
+    callHeader();
+    const htmlTemplate = fs.readFileSync(templateAcuse, "utf8");
+
+    const { titulo, oficio, mensaje } = req.body;
+
+    const html = htmlTemplate
+      .replaceAll("{{titulo}}", titulo || " ")
+      .replaceAll("{{mensaje}}", mensaje || " ")
+      .replaceAll("{{oficio}}", oficio || " ");
+    const browser = await puppeteer.launch({
+      headless: "false",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(html);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      displayHeaderFooter: true,
+      headerTemplate: header,
+      footerTemplate: footer,
+      margin: {
+        top: "1in",
+        bottom: "1in",
+        right: "0.50in",
+        left: "0.50in",
+      },
+    });
+
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename = ${oficio}-${new Date().getFullYear}.pdf`
     );
     res.send(pdfBuffer);
   },
