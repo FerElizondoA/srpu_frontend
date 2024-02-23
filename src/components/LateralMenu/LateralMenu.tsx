@@ -24,6 +24,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
+import ExtensionIcon from "@mui/icons-material/Extension";
 
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -108,6 +109,8 @@ export const IconsMenu = (icon: string) => {
       return <DoNotDisturbAltIcon sx={queries.icon} />;
     case "BuildIcon":
       return <BuildOutlinedIcon sx={queries.icon} />;
+    case "ExtensionIcon":
+      return <ExtensionIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
@@ -619,30 +622,6 @@ export function LateralMenu() {
               <Divider />
 
               <List>
-                <ListItemButton
-                  sx={{
-                    backgroundColor:
-                      i === indexSelect && seccionesHover === true
-                        ? "#AF8C55"
-                        : "#ffff",
-                    ":hover": { backgroundColor: "#AF8C55" },
-                  }}
-                  onClick={() => {
-                    navigate("/reestructura");
-                  }}
-                >
-                  <ListItemIcon>
-                    <BuildOutlinedIcon />
-                  </ListItemIcon>
-                  <Typography
-                    sx={{
-                      ...queries.bold_text,
-                      ":hover": { backgroundColor: "#AF8C55" },
-                    }}
-                  >
-                    Reestructura
-                  </Typography>
-                </ListItemButton>
                 {menu.length > 0 ? (
                   menu.map(
                     (v: any, i: number) =>

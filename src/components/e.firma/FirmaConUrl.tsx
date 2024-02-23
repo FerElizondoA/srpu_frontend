@@ -8,7 +8,10 @@ import { getListadoUsuarioRol } from "../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../LateralMenu/APINotificaciones";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../LateralMenu/LateralMenuMobile";
-import { IUsuariosAsignables } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import {
+  IUsuariosAsignables,
+  rolesAdmin,
+} from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -28,10 +31,16 @@ export const FirmaConUrl = () => {
     getListadoUsuarioRol(setUsuarios);
   }, []);
 
-  const enviaNotificacion = (estatus: string, id: string) => {
+  const enviaNotificacion = (
+    estatus: string,
+    id: string,
+    idCreador: string,
+    oficio: string
+  ) => {
     let users: string[] = [];
+    let editor = "";
 
-    if (estatus === "En espera cancelación") {
+    if (estatus === "4") {
       usuarios
         .filter(
           (usr: any) =>
@@ -42,101 +51,45 @@ export const FirmaConUrl = () => {
           return users.push(usuario.Id);
         });
       createNotification(
-        "Crédito simple a corto plazo",
-        `La solicitud ha sido enviada para autorización de cancelación con fecha ${
+        "Crédito Simple a Corto Plazo",
+        `${oficio} enviada para autorización con fecha ${
           new Date().toLocaleString("es-MX").split(" ")[0]
         } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
         [localStorage.getItem("IdUsuario")!]
       );
       createNotification(
         "Crédito simple a corto plazo",
-        `Se te ha asignado una solicitud de cancelación`,
+        `Se ha registrado una solicitud de inscripción pendiente de revisión`,
         users
       );
-    } else if (estatus === "Cancelado") {
+    } else if (estatus === "8") {
+      editor = idCreador;
+      createNotification(
+        "Crédito Simple a Corto Plazo",
+        `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
+        [idCreador]
+      );
+    } else if (estatus === "10") {
+      editor = idCreador;
       usuarios
         .filter(
           (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "verificador"
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! ||
+            rolesAdmin.includes(usr.Rol)
         )
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
       createNotification(
-        "Crédito simple a corto plazo",
-        `Se ha aprobado la cancelación de un crédito a corto plazo`,
+        "Crédito Simple a Corto Plazo",
+        `${oficio} ha sido autorizado con fecha ${
+          new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
         users
       );
-    } else if (estatus === "Anulación") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "verificador"
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        `La cancelación de un crédito a corto plazo que solicitaste ha sido anulada.`,
-        users
-      );
-    } else if (!estatus.includes("Autorizado") && estatus !== "Actualizacion") {
-      if (estatus === "Revision") {
-        usuarios
-          .filter(
-            (usr: any) =>
-              usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-              usr.Rol.toLowerCase() === "revisor"
-          )
-          .map((usuario: any) => {
-            return users.push(usuario.Id);
-          });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `${"La solicitud de inscripción se ha enviado a autorización"}`,
-          [localStorage.getItem("IdUsuario")!]
-        );
-        createNotification(
-          "Crédito simple a corto plazo",
-          `${"Se te ha asignado una solicitud de inscripción"}`,
-          users
-        );
-      } else if (estatus === "Actualizacion") {
-        usuarios
-          .filter(
-            (usr: any) =>
-              usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-              usr.Rol.toLowerCase() === "verificador"
-          )
-          .map((usuario: any) => {
-            return users.push(usuario.Id);
-          });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `${"Se ha generado una solicitud de requerimientos para un crédito a corto plazo inscrito."}`,
-          users
-        );
-      } else {
-        usuarios
-          .filter(
-            (usr: any) =>
-              usr.Entidad === localStorage.getItem("EntePublicoObligado")!
-          )
-          .map((usuario: any) => {
-            return users.push(usuario.Id);
-          });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `${"Se ha autorizado un crédito a corto plazo"}`,
-          users
-        );
-      }
     }
 
-    CambiaEstatus(estatus, id);
+    CambiaEstatus(estatus, id, editor);
   };
 
   return (

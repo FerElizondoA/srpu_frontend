@@ -754,31 +754,11 @@ export function ConsultaDeSolicitudPage() {
                             </Tooltip>
                           )}
 
-                          {/* {row.Estatus === "Autorizado" &&
-                            !rolesAdmin.includes(
-                              localStorage.getItem("Rol")!
-                            ) && (
-                              <Tooltip title="Solicitar Cancelación">
-                                <IconButton
-                                  type="button"
-                                  onClick={() => {
-                                    llenaSolicitud(row, row.TipoSolicitud);
-                                    changeIdSolicitud(row.Id);
-                                    changeNoRegistro(row.NumeroRegistro);
-                                    changeOpenDialogVer(!openDialogVer);
-                                    setRowSolicitud(row);
-                                  }}
-                                >
-                                  <DoDisturbOnIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )} */}
-
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
                             (row.Estatus === "Captura" ||
                               row.Estatus === "Verificacion") && (
-                              <Tooltip title="Borrar">
+                              <Tooltip title="Eliminar">
                                 <IconButton
                                   type="button"
                                   onClick={() => {

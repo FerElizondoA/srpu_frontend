@@ -351,7 +351,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               : estatusPrevio.ControlInterno === "reestructurado"
               ? "10"
               : "101",
-            state.idSolicitud
+            state.idSolicitud,
+            inf.IdUsuario,
+            oficio
           );
         })
         .catch((err) => {});
@@ -745,7 +747,11 @@ export async function GeneraAcuse(
     .catch(() => {});
 }
 
-export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
+export const CambiaEstatus = (
+  Estatus: string,
+  IdSolicitud: string,
+  IdEditor: string
+) => {
   return axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/cambiaEstatus",
@@ -753,6 +759,7 @@ export const CambiaEstatus = (Estatus: string, IdSolicitud: string) => {
         Id: IdSolicitud,
         Estatus: Estatus,
         ModificadoPor: localStorage.getItem("IdCentral"),
+        IdEditor: IdEditor,
       },
       {
         headers: {

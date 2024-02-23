@@ -22,7 +22,11 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { Resumen as ResumenLP } from "../../ObligacionesLargoPlazoPage/Panels/Resumen";
 import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
-import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import {
+  DialogSolicitarModificacion,
+  IUsuariosAsignables,
+  rolesAdmin,
+} from "./DialogSolicitarModificacion";
 
 type Props = {
   handler: Function;
@@ -35,69 +39,8 @@ export function VerBorradorDocumento(props: Props) {
   const [openGuardaComentarios, setOpenGuardaComentarios] =
     React.useState(false);
 
-  // const [openDialogCancelacion, setOpenDialogCancelacion] =
-  //   React.useState(false);
-
-  // const [openDialogAnularConfirmacion, setOpenDialogAnularConfirmacion] =
-  //   React.useState(false);
-
   // // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
-  // // CANCELACIÓN
-  // const justificacionAnulacion: string = useCortoPlazoStore(
-  //   (state) => state.justificacionAnulacion
-  // );
-  // const setJustificacionAnulacion: Function = useCortoPlazoStore(
-  //   (state) => state.setJustificacionAnulacion
-  // );
-  // const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
-
-  // const AcuseRespuestaCancelacion = (
-  //   IdSolicitud: string,
-  //   estatusFirma: string
-  // ) => {
-  //   getCatalogoFirmaDetalle(IdSolicitud, estatusFirma);
-  // };
-
-  // const alertaConfirmacion = (Action: string) => {
-  //   if (Action === "Cancelado") {
-  //     AcuseRespuestaCancelacion(props.rowId, "En espera cancelación");
-  //     CambiaEstatus("Cancelado", props.rowId);
-  //     createNotificationCortoPlazo(
-  //       "Solicitud enviada",
-  //       `La solicitud de cancelación ha sido aceptada con fecha ${
-  //         new Date().toLocaleString("es-MX").split(" ")[0]
-  //       } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-  //       [localStorage.getItem("IdUsuario")!]
-  //     );
-  //     navigate("../cancelaciones");
-  //     window.location.reload();
-  //   } else if (Action === "Anulación") {
-  //     Swal.close();
-  //     AnularCancelacionSolicitud(
-  //       props.rowSolicitud.Solicitud,
-  //       props.rowSolicitud.NumeroRegistro,
-  //       justificacionAnulacion,
-  //       props.rowSolicitud.UltimaModificacion,
-  //       setUrl
-  //     );
-  //     navigate("../firmaUrl");
-  //   }
-  // };
-
-  // const [error, setError] = useState(false);
-
-  // const reestructura: string = useCortoPlazoStore(
-  //   (state) => state.reestructura
-  // );
-
-  // useEffect(() => {
-  //   if (openDialogAnularConfirmacion === false) {
-  //     setJustificacionAnulacion("");
-  //     setError(false);
-  //   }
-  // }, [openDialogAnularConfirmacion]);
 
   // REQUERIMIENTOS
   React.useEffect(() => {
@@ -146,7 +89,11 @@ export function VerBorradorDocumento(props: Props) {
     getListadoUsuarioRol(setUsuarios);
   }, [props.openState]);
 
-  const enviaNotificacion = (estatus: string) => {
+  const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
+
+  const [idEditor, setIdEditor] = useState("");
+
+  const enviaNotificacion = (estatus: string, idEditor: string) => {
     let users: string[] = [];
     if (estatus === "Revision") {
       usuarios
@@ -209,7 +156,7 @@ export function VerBorradorDocumento(props: Props) {
       );
     }
 
-    CambiaEstatus(estatus, props.rowId || IdSolicitud).then(() => {
+    CambiaEstatus(estatus, props.rowId || IdSolicitud, idEditor).then(() => {
       window.location.reload();
     });
   };
@@ -274,466 +221,90 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
-        {/* {reestructura === "con autorizacion" &&
-        localStorage.getItem("IdUsuario") !== props.rowSolicitud.IdEditor &&
-        props.rowSolicitud.Estatus === "Autorizado" &&
-        localStorage.getItem("Rol") !== "Autorizador" ? (
-          <Grid
-            container
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            alignItems={"center"}
-            sx={{
-              width: "65%",
-              "@media (min-width: 480px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 768px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 1140px)": {
-                width: "60%",
-              },
-
-              "@media (min-width: 1400px)": {
-                width: "50%",
-              },
-
-              "@media (min-width: 1870px)": {
-                width: "40%",
-              },
-            }}
-          >
-            <Button
-              sx={{
-                width: "45%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
-                "@media (min-width: 480px)": {
-                  width: "45%",
-                },
-
-                "@media (min-width: 768px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "42%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "40%",
-                },
-              }}
-              onClick={() => {
-                navigate("../ObligacionesLargoPlazo");
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
-                  "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
-                  },
-
-                  "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
-                  },
-
-                  "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
-                  },
-
-                  "@media (min-width: 1400px)": {
-                    fontSize: ".85rem",
-                  },
-                }}
-              >
-                {query.isTittle
-                  ? "Reest. con autorización"
-                  : "Reestructuración con autorización"}
-              </Typography>
-            </Button>
-
-            <Button
-              sx={{
-                width: "45%",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
-                "@media (min-width: 480px)": {
-                  width: "45%",
-                },
-
-                "@media (min-width: 768px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "40%",
-                },
-              }}
-              onClick={() => {
-                navigate("../ObligacionesLargoPlazo");
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
-                  "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
-                  },
-
-                  "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
-                  },
-
-                  "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
-                  },
-
-                  "@media (min-width: 1400px)": {
-                    fontSize: ".9rem",
-                  },
-                }}
-              >
-                {query.isTittle
-                  ? "Reest. sin autorización"
-                  : "Reestructuración sin autorización"}
-              </Typography>
-            </Button>
-          </Grid>
-        ) : reestructura === "con autorizacion" &&
-          localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-          props.rowSolicitud.Estatus === "En Reestructura" &&
-          localStorage.getItem("Rol") === "Autorizador" ? (
-          <Grid
-            container
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            alignItems={"center"}
-            sx={{
-              width: "65%",
-              "@media (min-width: 480px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 768px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 1140px)": {
-                width: "60%",
-              },
-
-              "@media (min-width: 1400px)": {
-                width: "50%",
-              },
-
-              "@media (min-width: 1870px)": {
-                width: "40%",
-              },
-            }}
-          >
-            <Button
-              sx={{
-                width: "45%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
-                "@media (min-width: 480px)": {
-                  width: "45%",
-                },
-
-                "@media (min-width: 768px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "42%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "40%",
-                },
-              }}
-              onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
-                  "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
-                  },
-
-                  "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
-                  },
-
-                  "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
-                  },
-
-                  "@media (min-width: 1400px)": {
-                    fontSize: ".85rem",
-                  },
-                }}
-              >
-                Rechazar Reestructuración
-              </Typography>
-            </Button>
-
-            <Button
-              sx={{
-                width: "45%",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                // fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
-                "@media (min-width: 480px)": {
-                  width: "45%",
-                },
-
-                "@media (min-width: 768px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "40%",
-                },
-              }}
-              onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
-                  "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
-                  },
-
-                  "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
-                  },
-
-                  "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
-                  },
-
-                  "@media (min-width: 1400px)": {
-                    fontSize: ".9rem",
-                  },
-                }}
-              >
-                Autorizar Reestructuración
-              </Typography>
-            </Button>
-          </Grid>
-        ) : null} */}
-
-        {localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor && (
-          <Grid
-            justifyContent={"space-evenly"}
-            sx={{ width: "40rem", display: "flex" }}
-          >
-            {localStorage.getItem("Rol") !== "Revisor" && (
-              <Button
-                sx={{
-                  ...queries.buttonCancelar,
-                  fontSize: "70%",
-                }}
-                disabled={!tieneComentarios}
-                onClick={() => {
-                  if (localStorage.getItem("Rol") === "Validador") {
-                    enviaNotificacion("4");
-                  } else {
-                    enviaNotificacion("5");
-                  }
-                  window.location.reload();
-                }}
-              >
-                {`Devolver para ${
-                  props.rowSolicitud.Estatus === "Validación"
-                    ? "Revisión"
-                    : "Validación"
-                }`}
-              </Button>
-            )}
-
-            <Button
-              sx={{
-                ...queries.buttonCancelar,
-                fontSize: "70%",
-              }}
-              onClick={() => {
-                setOpenGuardaComentarios(true);
-              }}
-            >
-              Guardar Comentarios
-            </Button>
-            <Button
-              sx={{
-                ...queries.buttonContinuar,
-                fontSize: "70%",
-              }}
-              onClick={() => {
-                localStorage.getItem("Rol") === "Revisor"
-                  ? enviaNotificacion("5")
-                  : localStorage.getItem("Rol") === "Validador"
-                  ? enviaNotificacion("6")
-                  : enviaNotificacion("Estatus requerimientos / solicitud");
-                addComentario(
-                  IdSolicitud,
-                  JSON.stringify(comentarios),
-                  "Requerimiento"
-                );
-                props.handler(false);
-                Swal.fire({
-                  confirmButtonColor: "#15212f",
-                  icon: "success",
-                  title: "Mensaje",
-                  text: "La solicitud se envió con éxito",
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    window.location.reload();
-                  }
-                });
-              }}
-            >
-              Confirmar{" "}
-              {localStorage.getItem("Rol") === "Revisor"
-                ? "revisión"
-                : localStorage.getItem("Rol") === "Validador"
-                ? "validación"
-                : "autorización"}
-            </Button>
-          </Grid>
-        )}
-
-        {/* {props.rowSolicitud.Estatus === "En espera cancelación" &&
-          (localStorage.getItem("Rol") === "Autorizador" ||
-            localStorage.getItem("Rol") === "Verificador") && (
+        {localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+          (rolesAdmin.includes(localStorage.getItem("Rol")!) ||
+            localStorage.getItem("Rol")?.toLowerCase() === "revisor") && (
             <Grid
-              display={"flex"}
-              width={"23rem"}
-              justifyContent={"space-between"}
+              justifyContent={"space-evenly"}
+              sx={{ width: "40rem", display: "flex" }}
             >
+              {localStorage.getItem("Rol") !== "Revisor" && (
+                <Button
+                  sx={{
+                    ...queries.buttonCancelar,
+                    fontSize: "70%",
+                  }}
+                  disabled={!tieneComentarios}
+                  onClick={() => {
+                    setOpenDialogRegresar(true);
+                    // if (localStorage.getItem("Rol") === "Validador") {
+                    //   enviaNotificacion("4");
+                    // } else {
+                    //   enviaNotificacion("5");
+                    // }
+                    // window.location.reload();
+                  }}
+                >
+                  {`Devolver para ${
+                    props.rowSolicitud.Estatus === "Validación"
+                      ? "Revisión"
+                      : "Validación"
+                  }`}
+                </Button>
+              )}
+
               <Button
                 sx={{
                   ...queries.buttonCancelar,
                   fontSize: "70%",
                 }}
                 onClick={() => {
-                  setOpenDialogAnularConfirmacion(true);
-                  //setTexto("anular")
-                  setProceso("Anulación");
+                  setOpenGuardaComentarios(true);
                 }}
               >
-                Anular Cancelación
+                Guardar Comentarios
               </Button>
-
               <Button
                 sx={{
                   ...queries.buttonContinuar,
                   fontSize: "70%",
                 }}
                 onClick={() => {
-                  setOpenDialogAnularConfirmacion(true);
-                  setProceso("Cancelado");
+                  localStorage.getItem("Rol") === "Revisor"
+                    ? enviaNotificacion("5", idEditor)
+                    : localStorage.getItem("Rol") === "Validador"
+                    ? enviaNotificacion("6", idEditor)
+                    : enviaNotificacion(
+                        "Estatus requerimientos / solicitud",
+                        idEditor
+                      );
+                  addComentario(
+                    IdSolicitud,
+                    JSON.stringify(comentarios),
+                    "Requerimiento"
+                  );
+                  props.handler(false);
+                  Swal.fire({
+                    confirmButtonColor: "#15212f",
+                    icon: "success",
+                    title: "Mensaje",
+                    text: "La solicitud se envió con éxito",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.reload();
+                    }
+                  });
                 }}
               >
-                Confirmar Cancelación
+                Confirmar{" "}
+                {localStorage.getItem("Rol") === "Revisor"
+                  ? "Revisión"
+                  : localStorage.getItem("Rol") === "Validador"
+                  ? "Validación"
+                  : "Autorización"}
               </Button>
             </Grid>
-          )} */}
-
-        {/* {props.rowSolicitud.Estatus === "Autorizado" &&
-          localStorage.getItem("Rol") === "Verificador" &&
-          reestructura === "" && (
-            <Button
-              sx={{
-                ...queries.buttonCancelar,
-                fontSize: "70%",
-              }}
-              onClick={() => {
-                setOpenDialogCancelacion(true);
-                setProceso("En espera cancelación");
-              }}
-            >
-              Solicitar Cancelación
-            </Button>
-          )} */}
+          )}
       </DialogTitle>
 
       <DialogContent
@@ -803,88 +374,12 @@ export function VerBorradorDocumento(props: Props) {
         </DialogActions>
       </Dialog>
 
-      {/* <Dialog
-        fullWidth
-        maxWidth={estatus === "Anulación" ? "md" : "sm"}
-        open={openDialogAnularConfirmacion}
-      >
-        <DialogTitle>
-          <Typography sx={queries.bold_text}>
-            ¿Desea {estatus === "Anulación" ? "anular" : "confirmar"} la
-            cancelación de la solicitud?
-          </Typography>
-        </DialogTitle>
-
-        {estatus === "Anulación" ? (
-          <DialogContent>
-            <Grid width={"100%"}>
-              <TextField
-                fullWidth
-                label="Justificación Escrita"
-                margin="dense"
-                variant="outlined"
-                multiline
-                value={justificacionAnulacion}
-                helperText={
-                  200 - justificacionAnulacion.length + " caracteres restantes"
-                }
-                error={error && !justificacionAnulacion ? true : false}
-                onChange={(v) => {
-                  const format = /[¬°`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
-                  if (
-                    v.target.value.length <= 200 &&
-                    !format.test(v.target.value)
-                  ) {
-                    setJustificacionAnulacion(v.target.value);
-                  }
-                }}
-              />
-            </Grid>
-          </DialogContent>
-        ) : null}
-
-        <DialogActions>
-          <Button
-            sx={{ ...queries.buttonCancelar }}
-            onClick={() => {
-              setOpenDialogAnularConfirmacion(false);
-            }}
-          >
-            <Typography sx={{ ...queries.medium_text }}>Cancelar</Typography>
-          </Button>
-
-          <Tooltip
-            title={
-              justificacionAnulacion === ""
-                ? "Favor de ingresar justificación escrita"
-                : null
-            }
-          >
-            <Button
-              sx={{ ...queries.buttonContinuar }}
-              onClick={() => {
-                if (estatus === "Anulación" && justificacionAnulacion !== "") {
-                  setOpenDialogAnularConfirmacion(false);
-                  alertaConfirmacion(estatus);
-                } else if (estatus === "Cancelado") {
-                  setOpenDialogAnularConfirmacion(false);
-                  alertaConfirmacion(estatus);
-                } else {
-                  setError(true);
-                }
-              }}
-            >
-              <Typography sx={{ ...queries.medium_text }}>Confirmar</Typography>
-            </Button>
-          </Tooltip>
-        </DialogActions>
-      </Dialog>
-
-      <DialogSolicitarCancelacion
-        handler={setOpenDialogCancelacion}
-        openState={openDialogCancelacion}
-        rowSolicitud={props.rowSolicitud}
-      /> */}
+      {openDialogRegresar && (
+        <DialogSolicitarModificacion
+          handler={setOpenDialogRegresar}
+          openState={openDialogRegresar}
+        />
+      )}
     </Dialog>
   );
 }

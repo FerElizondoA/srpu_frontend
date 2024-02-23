@@ -43,6 +43,7 @@ import {
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
+import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
   label: string;
@@ -256,7 +257,9 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   const activaAccion =
-    rowSolicitud.IdEditor === localStorage.getItem("IdUsuario");
+    localStorage.getItem("IdUsuario") === rowSolicitud.IdEditor &&
+    (rolesAdmin.includes(localStorage.getItem("Rol")!) ||
+      localStorage.getItem("Rol")?.toLowerCase() === "revisor");
 
   return (
     <Grid
