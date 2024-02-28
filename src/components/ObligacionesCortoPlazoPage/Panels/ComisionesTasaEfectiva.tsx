@@ -293,16 +293,25 @@ export function ComisionesTasaEfectiva() {
             fullWidth
             value={tasaEfectivaTasaEfectiva}
             onChange={(v) => {
-              if (
-                validator.isNumeric(v.target.value) ||
-                v.target.value === ""
-              ) {
+              const expRegular = /^\d*\.?\d*$/;
+
+              if (expRegular.test(v.target.value) || v.target.value === "") {
                 changeTasaEfectiva({
                   diasEjercicio: tasaEfectivaDiasEjercicio,
                   tasaEfectiva: v.target.value,
                 });
               }
+              // if (
+              //   validator.isNumeric(v.target.value) ||
+              //   v.target.value === ""
+              // ) {
+              //   changeTasaEfectiva({
+              //     diasEjercicio: tasaEfectivaDiasEjercicio,
+              //     tasaEfectiva: v.target.value,
+              //   });
+              // }
             }}
+            
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",

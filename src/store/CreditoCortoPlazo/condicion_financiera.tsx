@@ -75,6 +75,7 @@ export const createCondicionFinancieraSlice: StateCreator<
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useCortoPlazoStore.setState({
       tablaDisposicion: condicionFinanciera.disposicion,
+      disposicion: condicionFinanciera.disposicion[0]
     });
     useCortoPlazoStore.setState({
       pagosDeCapital: {

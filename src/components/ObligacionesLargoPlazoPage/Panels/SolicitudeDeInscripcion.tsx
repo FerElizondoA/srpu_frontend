@@ -253,7 +253,7 @@ export function SolicituDeInscripcion() {
       }
 
       if (err === 0) {
-        // setOpenDialogEnviar(!openDialogEnviar);
+         setOpenDialogEnviar(!openDialogEnviar);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
@@ -304,7 +304,7 @@ export function SolicituDeInscripcion() {
         );
       }
       if (err === 0) {
-        // setOpenDialogModificacion(!openDialogModificacion);
+        setOpenDialogModificacion(!openDialogModificacion);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
@@ -616,18 +616,24 @@ export function SolicituDeInscripcion() {
                       </Button>
                     </Grid>
 
+                    {openDialogBorrador && (
                     <DialogGuardarBorrador
                       handler={setOpenDialogBorrador}
                       openState={openDialogBorrador}
                     />
+                  )}
+                 {openDialogEnviar && (
                     <ConfirmacionEnviarSolicitud
                       handler={setOpenDialogEnviar}
                       openState={openDialogEnviar}
                     />
+                  )}
+                    {openDialogCancelar && (
                     <ConfirmacionCancelarSolicitud
                       handler={setOpenDialogCancelar}
                       openState={openDialogCancelar}
                     />
+                  )}
                     {openDialogModificacion && (
                       <DialogSolicitarModificacion
                         handler={setOpenDialogModificacion}
