@@ -23,7 +23,10 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import {
+  getSolicitudes,
+  getSolicitudesReestructura,
+} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
@@ -66,30 +69,16 @@ const heads: readonly Head[] = [
   },
 ];
 
-export function Reestructura() {
+export function SolicitudesReestructura() {
   const [datos, setDatos] = useState<Array<IData>>([]);
-
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const setDatosActualizar: Function = useCortoPlazoStore(
-    (state) => state.setDatosActualizar
-  );
-
-  const changeRestructura: Function = useCortoPlazoStore(
-    (state) => state.changeRestructura
-  );
-
-  const [rowId] = useState("");
-
-  const rowSolicitud: IData = useSolicitudFirmaStore(
-    (state) => state.rowSolicitud
-  );
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
-    getSolicitudesReestructura(setDatos);
-    changeRestructura("con autorizacion");
+    getSolicitudes("Reestructura", (e: IData[]) => {
+      setDatos(e);
+      setDatosFiltrados(e);
+    });
   }, []);
 
   return (
@@ -343,13 +332,6 @@ export function Reestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            changeIdSolicitud(row?.Id);
-                            // llenaSolicitud(row, row.TipoSolicitud);
-                            getComentariosSolicitudPlazo(
-                              row.Id,
-                              setDatosActualizar
-                            );
-                            changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
                           }}
                         >
@@ -357,6 +339,14 @@ export function Reestructura() {
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
+                    {openDialogVer && (
+                      <VerBorradorDocumento
+                        handler={changeOpenDialogVer}
+                        openState={openDialogVer}
+                        rowSolicitud={row}
+                        rowId={row.Id}
+                      />
+                    )}
                   </StyledTableRow>
                 );
               })}
@@ -364,15 +354,6 @@ export function Reestructura() {
           </Table>
         </TableContainer>
       </Paper>
-
-      {openDialogVer && (
-        <VerBorradorDocumento
-          handler={changeOpenDialogVer}
-          openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
-          rowId={rowId}
-        />
-      )}
     </Grid>
   );
 }
