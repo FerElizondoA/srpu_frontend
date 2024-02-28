@@ -796,8 +796,10 @@ export function GastoCostos() {
             disabled={
               /^[\s]*$/.test(destino.Descripcion) ||
               /^[\s]*$/.test(generalGCDetalleInversion.Descripcion) ||
-              /^[\s]*$/.test(generalGCDescripcion) ||
-              /^[\s]*$/.test(generalGCClaveInscripcionFinanciamiento) ||
+              /^[\s]*$/.test(generalGCDescripcion) 
+              // ||
+              // /^[\s]*$/.test(generalGCClaveInscripcionFinanciamiento) 
+              ||
               generalGCMonto < 1
             }
             onClick={() => {

@@ -223,6 +223,12 @@ export function InformacionGeneral() {
     (state) => state.datosActualizar
   );
 
+  useEffect(() => {
+    
+    console.log("fecha", fechaContratacion )
+  }, [fechaContratacion])
+  
+
   return (
     <Grid
       container

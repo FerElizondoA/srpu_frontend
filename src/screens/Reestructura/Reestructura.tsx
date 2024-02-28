@@ -19,7 +19,6 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -29,6 +28,8 @@ import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPag
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import {DialogVerDetalle} from  "./DialogVerDetalle";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 interface Head {
   label: string;
@@ -99,34 +100,70 @@ export function Reestructura() {
     (state) => state.changeRestructura
   );
 
+  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
+    (state) => state.changeReglasAplicables
+  );
+
+  const changeGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.changeGastosCostos
+  );
+
+  const changeInformacionGeneralLP: Function = useLargoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
   const [rowId] = useState("");
 
   const rowSolicitud: IData = useSolicitudFirmaStore(
     (state) => state.rowSolicitud
   );
 
-  // const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-  //   // const state = useCortoPlazoStore.getState();
-  //   if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
-  //     let aux: any = JSON.parse(solicitud.Solicitud);
+  const changeEncabezadoLP: Function = useLargoPlazoStore(
+    (state) => state.changeEncabezado
+  );
 
-  //     changeReglasAplicables(aux?.inscripcion.declaratorias);
-  //     changeEncabezado(aux?.encabezado);
-  //     changeInformacionGeneral(aux?.informacionGeneral);
+  const addObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
 
-  //     aux?.informacionGeneral.obligadosSolidarios.map(
-  //       (v: any, index: number) => {
-  //         return addObligadoSolidarioAval(v);
-  //       }
-  //     );
-  //     aux?.condicionesFinancieras.map((v: any, index: number) => {
-  //       return addCondicionFinanciera(v);
-  //     });
-  //     aux?.documentacion.map((v: any, index: number) => {
-  //       return addDocumento(v);
-  //     });
-  //   }
-  // };
+  const addGeneralGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.addGeneralGastosCostos
+  );
+
+  const addCondicionFinancieraLP: Function = useLargoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
+
+  const addDocumentoLP: Function = useLargoPlazoStore(
+    (state) => state.addDocumentoLP
+  );
+
+  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
+    // const state = useCortoPlazoStore.getState();
+    let aux: any = JSON.parse(solicitud.Solicitud!);
+
+    changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
+    changeEncabezadoLP(aux?.encabezado);
+    changeInformacionGeneralLP(aux?.informacionGeneral);
+    changeGastosCostos(aux?.GastosCostos);
+
+    aux?.informacionGeneral.obligadosSolidarios.map(
+      (v: any, index: number) => {
+        return addObligadoSolidarioAvalLP(v);
+      }
+    );
+
+    aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+      return addGeneralGastosCostos(v);
+    });
+
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      return addCondicionFinancieraLP(v);
+    });
+
+    aux?.documentacion.map((v: any, index: number) => {
+      return addDocumentoLP(v);
+    });
+  };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
@@ -386,7 +423,7 @@ export function Reestructura() {
                           type="button"
                           onClick={() => {
                             changeIdSolicitud(row?.Id);
-                            // llenaSolicitud(row, row.TipoSolicitud);
+                             llenaSolicitud(row, row.TipoSolicitud);
                             getComentariosSolicitudPlazo(
                               row.Id,
                               setDatosActualizar
@@ -408,7 +445,7 @@ export function Reestructura() {
       </Paper>
 
       {openDialogVer && (
-        <VerBorradorDocumento
+        <DialogVerDetalle
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           rowSolicitud={rowSolicitud}

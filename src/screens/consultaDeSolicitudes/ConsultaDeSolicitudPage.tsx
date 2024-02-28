@@ -455,7 +455,7 @@ export function ConsultaDeSolicitudPage() {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
 
-                    if (row.ControlInterno === "Inscripcion") {
+                    if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -463,7 +463,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.ControlInterno === "Revision") {
+                    } else if (row.ControlInterno === "revisión") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -471,7 +471,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.ControlInterno === "Autorizado") {
+                    } else if (row.ControlInterno === "Autorizador") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -634,7 +634,7 @@ export function ConsultaDeSolicitudPage() {
                           </Tooltip>
 
                           {localStorage.getItem("IdCentral") === row.IdEditor &&
-                            row.Estatus.includes("Por Firmar") && (
+                            (row.Estatus.includes("Por Firmar") || row.Estatus.includes("Solicitar Requerimientos, Por Firmar"))&& (//checar
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"

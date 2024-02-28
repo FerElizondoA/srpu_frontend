@@ -130,7 +130,7 @@ export function ConfirmacionEnviarSolicitud({
       </DialogTitle>
 
       <DialogContent>
-        {localStorage.getItem("Rol") === "Capturador" && (
+        {localStorage.getItem("Rol") === "Capturador" ? (
           <Grid>
             <Typography>
               Selecciona verificador al que deseas asignar esta solicitud{" "}
@@ -164,21 +164,13 @@ export function ConfirmacionEnviarSolicitud({
               </Select>
             </FormControl>
           </Grid>
+        ): (
+          <Grid>
+            <Typography>
+              Al finalizar, la solicitud ya no estará disponible para modificar.
+            </Typography>
+          </Grid>
         )}
-
-        {/* <TextField
-          fullWidth
-          label="Comentario"
-          multiline
-          variant="standard"
-          rows={4}
-          value={comentario}
-          onChange={(texto) => {
-            if (texto.target.value.length <= 200) {
-              setComentario(texto.target.value);
-            }
-          }}
-        /> */}
       </DialogContent>
 
       <DialogActions>
@@ -197,7 +189,7 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   editCreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "Por Firmar"
+                  "3"
                 )
                   .then(() => {
                     addComentario(
@@ -215,7 +207,7 @@ export function ConfirmacionEnviarSolicitud({
                     reset();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
+                      "Crédito simple a largo plazo",
                       "La solicitud de inscripción está lista para firmar",
                       [localStorage.getItem("IdUsuario") || ""]
                     );
@@ -233,7 +225,7 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   editCreadoPor,
                   idUsuarioAsignado,
-                  "Verificacion"
+                  "2"
                 )
                   .then(() => {
                     addComentario(
@@ -251,7 +243,7 @@ export function ConfirmacionEnviarSolicitud({
                     reset();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
+                      "Crédito simple a largo plazo",
                       "Se te ha asignado una solicitud de inscripción",
                       [idUsuarioAsignado]
                     );
@@ -307,7 +299,7 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   idUsuarioAsignado,
-                  "Verificacion"
+                  "2"
                 )
                   .then(() => {
                     addComentario(
