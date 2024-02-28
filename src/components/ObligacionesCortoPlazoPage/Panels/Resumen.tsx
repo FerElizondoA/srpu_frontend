@@ -231,7 +231,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const [fileSelected, setFileSelected] = useState<any>("");
 
-  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+  const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
 
   const [arr, setArr] = useState<any>([]);
 
@@ -257,9 +257,11 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   const activaAccion =
-    localStorage.getItem("IdUsuario") === rowSolicitud.IdEditor &&
-    (rolesAdmin.includes(localStorage.getItem("Rol")!) ||
-      localStorage.getItem("Rol")?.toLowerCase() === "revisor");
+    ((localStorage.getItem("IdUsuario") === rowSolicitud.IdEditor &&
+      rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      (rowSolicitud.NoEstatus === "4" &&
+        localStorage.getItem("Rol") === "Revisor")) &&
+    ["4", "5", "6"].includes(rowSolicitud.NoEstatus);
 
   return (
     <Grid
@@ -325,7 +327,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label]
+                        comentarios[head.label]
                           ? // ||
                             // comentariosRegistro[head.label]
                             "success"
@@ -374,7 +376,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label]
+                        comentarios[head.label]
                           ? // ||
                             // comentariosRegistro[head.label]
                             "success"
@@ -410,7 +412,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Obligado Solidario / Aval"]
+                      comentarios["Tabla Obligado Solidario / Aval"]
                         ? // ||
                           // comentariosRegistro["Tabla Obligado Solidario / Aval"]
                           "success"
@@ -523,7 +525,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Condiciones Financieras"]
+                      comentarios["Tabla Condiciones Financieras"]
                         ? // ||
                           // comentariosRegistro["Tabla Condiciones Financieras"]
                           "success"
@@ -931,7 +933,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                             <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
                                 color={
-                                  comentario[row.descripcionTipo]
+                                  comentarios[row.descripcionTipo]
                                     ? "success"
                                     : "primary"
                                 }

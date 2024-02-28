@@ -9,22 +9,18 @@ import {
   Typography,
 } from "@mui/material";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
-import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
-import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { Resumen as ResumenLP } from "../../ObligacionesLargoPlazoPage/Panels/Resumen";
 import { Resumen } from "../Panels/Resumen";
 import { IComentarios } from "./DialogComentariosSolicitud";
 import {
   DialogSolicitarModificacion,
-  IUsuariosAsignables,
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
 
@@ -47,7 +43,6 @@ export function VerBorradorDocumento(props: Props) {
     if (IdSolicitud !== "") {
       getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
-    console.log(props.rowSolicitud);
   }, [IdSolicitud]);
 
   const [datosComentario, setDatosComentarios] = React.useState<
@@ -74,92 +69,18 @@ export function VerBorradorDocumento(props: Props) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datosComentario]);
+
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+
   const setComentarios: Function = useCortoPlazoStore(
     (state) => state.setComentarios
   );
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
-  const tieneComentarios: boolean =
-    Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
-
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
-  useEffect(() => {
-    getListadoUsuarioRol(setUsuarios);
-  }, [props.openState]);
 
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
-
-  const [idEditor, setIdEditor] = useState("");
-
-  const enviaNotificacion = (estatus: string, idEditor: string) => {
-    let users: string[] = [];
-    if (estatus === "Revision") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "revisor"
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        "Se te ha asignado una solicitud de inscripción para revisión",
-        users
-      );
-    } else if (estatus === "Validacion") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "validador"
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        "Se te ha asignado una solicitud de inscripción para validación",
-        users
-      );
-    } else if (estatus === "Autorizacion") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-            usr.Rol.toLowerCase() === "autorizador"
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        "Se te ha asignado una solicitud de inscripción para autorización",
-        users
-      );
-    } else if (estatus === "Cancelado") {
-      usuarios
-        .filter(
-          (usr: any) =>
-            usr.Entidad === localStorage.getItem("EntePublicoObligado")!
-        )
-        .map((usuario: any) => {
-          return users.push(usuario.Id);
-        });
-      createNotification(
-        "Crédito simple a corto plazo",
-        "Una solicitud ha sido cancelada",
-        users
-      );
-    }
-
-    CambiaEstatus(estatus, props.rowId || IdSolicitud, idEditor).then(() => {
-      window.location.reload();
-    });
-  };
+  const [accion, setAccion] = useState("");
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -221,42 +142,19 @@ export function VerBorradorDocumento(props: Props) {
           Volver
         </Button>
 
-        {localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-          (rolesAdmin.includes(localStorage.getItem("Rol")!) ||
-            localStorage.getItem("Rol")?.toLowerCase() === "revisor") && (
+        {((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+          (props.rowSolicitud.NoEstatus === "4" &&
+            localStorage.getItem("Rol") === "Revisor")) &&
+          ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus) && (
             <Grid
               justifyContent={"space-evenly"}
-              sx={{ width: "40rem", display: "flex" }}
+              sx={{ width: "50rem", display: "flex" }}
             >
-              {localStorage.getItem("Rol") !== "Revisor" && (
-                <Button
-                  sx={{
-                    ...queries.buttonCancelar,
-                    fontSize: "70%",
-                  }}
-                  disabled={!tieneComentarios}
-                  onClick={() => {
-                    setOpenDialogRegresar(true);
-                    // if (localStorage.getItem("Rol") === "Validador") {
-                    //   enviaNotificacion("4");
-                    // } else {
-                    //   enviaNotificacion("5");
-                    // }
-                    // window.location.reload();
-                  }}
-                >
-                  {`Devolver para ${
-                    props.rowSolicitud.Estatus === "Validación"
-                      ? "Revisión"
-                      : "Validación"
-                  }`}
-                </Button>
-              )}
-
               <Button
                 sx={{
                   ...queries.buttonCancelar,
-                  fontSize: "70%",
+                  fontSize: "50%",
                 }}
                 onClick={() => {
                   setOpenGuardaComentarios(true);
@@ -264,43 +162,42 @@ export function VerBorradorDocumento(props: Props) {
               >
                 Guardar Comentarios
               </Button>
+              {localStorage.getItem("Rol") !== "Revisor" && (
+                <Button
+                  sx={{
+                    ...queries.buttonCancelar,
+                    fontSize: "50%",
+                  }}
+                  onClick={() => {
+                    setOpenDialogRegresar(true);
+                    setAccion("modificar");
+                  }}
+                >
+                  {`Devolver para ${
+                    localStorage.getItem("Rol") === "Autorizador"
+                      ? "validación"
+                      : "revisión"
+                  }`}
+                </Button>
+              )}
+
               <Button
                 sx={{
                   ...queries.buttonContinuar,
-                  fontSize: "70%",
+                  fontSize: "50%",
                 }}
                 onClick={() => {
-                  localStorage.getItem("Rol") === "Revisor"
-                    ? enviaNotificacion("5", idEditor)
-                    : localStorage.getItem("Rol") === "Validador"
-                    ? enviaNotificacion("6", idEditor)
-                    : enviaNotificacion(
-                        "Estatus requerimientos / solicitud",
-                        idEditor
-                      );
-                  addComentario(
-                    IdSolicitud,
-                    JSON.stringify(comentarios),
-                    "Requerimiento"
-                  );
-                  props.handler(false);
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se envió con éxito",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      window.location.reload();
-                    }
-                  });
+                  setOpenDialogRegresar(true);
+                  setAccion("enviar");
                 }}
               >
                 Confirmar{" "}
-                {localStorage.getItem("Rol") === "Revisor"
-                  ? "Revisión"
-                  : localStorage.getItem("Rol") === "Validador"
+                {localStorage.getItem("Rol") === "Validador"
                   ? "Validación"
+                  : localStorage.getItem("Rol") === "Revisor"
+                  ? "Revisión"
+                  : Object.keys(comentarios).length > 0
+                  ? "Solicitud de Requerimientos"
                   : "Autorización"}
               </Button>
             </Grid>
@@ -378,6 +275,7 @@ export function VerBorradorDocumento(props: Props) {
         <DialogSolicitarModificacion
           handler={setOpenDialogRegresar}
           openState={openDialogRegresar}
+          accion={accion}
         />
       )}
     </Dialog>

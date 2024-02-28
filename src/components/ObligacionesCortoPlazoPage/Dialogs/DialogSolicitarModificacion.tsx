@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
+import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -31,9 +32,11 @@ export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 export function DialogSolicitarModificacion({
   handler,
   openState,
+  accion,
 }: {
   handler: Function;
   openState: boolean;
+  accion: string;
 }) {
   const navigate = useNavigate();
 
@@ -55,9 +58,7 @@ export function DialogSolicitarModificacion({
     (state) => state.addComentario
   );
 
-  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
-
-  const [errorAsignacion, setErrorAsignacion] = useState(false);
+  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
   const editCreadoPor: string = useCortoPlazoStore(
     (state) => state.editCreadoPor
@@ -67,18 +68,66 @@ export function DialogSolicitarModificacion({
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
 
-  useEffect(() => {
-    setErrorAsignacion(false);
-  }, [idUsuarioAsignado]);
-
   const checkform = () => {
-    if (idUsuarioAsignado === "") {
-      setErrorAsignacion(true);
+    if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
+      addComentario(idSolicitud, JSON.stringify(comentarios), "Requerimiento");
+      CambiaEstatus(
+        localStorage.getItem("Rol") === "Autorizador"
+          ? accion === "enviar"
+            ? "7"
+            : "5"
+          : localStorage.getItem("Rol") === "Validador"
+          ? accion === "enviar"
+            ? "6"
+            : "4"
+          : "5",
+        idSolicitud,
+        localStorage.getItem("Rol") === "Autorizador"
+          ? localStorage.getItem("IdUsuario")!
+          : idUsuarioAsignado
+      ).then(() => {
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para  ${
+            localStorage.getItem("Rol") === "Autorizador"
+              ? accion === "enviar"
+                ? "firmar"
+                : "validación"
+              : localStorage.getItem("Rol") === "Validador"
+              ? accion === "enviar"
+                ? "autorización"
+                : "revisión"
+              : "validación"
+          }`,
+          [
+            localStorage.getItem("Rol") === "Autorizador"
+              ? localStorage.getItem("IdUsuario")!
+              : idUsuarioAsignado,
+          ]
+        );
+        window.location.reload();
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Mensaje",
+          text: "La solicitud se ha transferido con éxito",
+        });
+      });
     } else {
       if (idSolicitud !== "") {
-        modificaSolicitud(editCreadoPor, idUsuarioAsignado, "1")
+        modificaSolicitud(
+          editCreadoPor || localStorage.getItem("IdUsuario"),
+          idUsuarioAsignado,
+          "1"
+        )
           .then(() => {
-            addComentario(idSolicitud, JSON.stringify(comentario), "Captura");
+            !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
+              addComentario(
+                idSolicitud,
+                JSON.stringify(comentarios),
+                "Captura"
+              );
             Swal.fire({
               confirmButtonColor: "#15212f",
               cancelButtonColor: "rgb(175, 140, 85)",
@@ -98,7 +147,7 @@ export function DialogSolicitarModificacion({
           });
         createNotification(
           "Crédito simple a corto plazo",
-          "Se te ha asignado una solicitud para modificación.",
+          "Se te ha asignado una solicitud para modificación",
           [idUsuarioAsignado]
         );
         navigate("../ConsultaDeSolicitudes");
@@ -107,7 +156,7 @@ export function DialogSolicitarModificacion({
           localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1",
-          JSON.stringify(comentario)
+          JSON.stringify(comentarios)
         ).catch(() => {
           Swal.fire({
             confirmButtonColor: "#15212f",
@@ -117,11 +166,16 @@ export function DialogSolicitarModificacion({
             text: "Ocurrió un error, inténtelo de nuevo",
           });
         });
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para modificación`,
+          [idUsuarioAsignado]
+        );
         navigate("../ConsultaDeSolicitudes");
       }
-
-      handler(false);
     }
+
+    handler(false);
   };
 
   return (
@@ -133,65 +187,107 @@ export function DialogSolicitarModificacion({
         handler(false);
       }}
     >
-      <DialogTitle>
-        <Typography sx={queries.medium_text}>Asignar a: </Typography>
-      </DialogTitle>
+      {localStorage.getItem("Rol") === "Autorizador" && accion === "enviar" ? (
+        <DialogTitle>
+          <Typography sx={queries.bold_text}>
+            {Object.keys(comentarios).length > 0 ? "" : "Inscripción"}
+          </Typography>
+        </DialogTitle>
+      ) : (
+        <DialogTitle>
+          <Typography sx={queries.bold_text}>Asignar a: </Typography>
+        </DialogTitle>
+      )}
 
       <DialogContent>
-        <Grid mb={2}>
-          <FormControl fullWidth>
-            <TextField
-              select
-              value={idUsuarioAsignado}
-              onChange={(e) => {
-                setidUsuarioAsignado(e.target.value);
-              }}
-              helperText={
-                errorAsignacion === true
-                  ? "Debe de asigarle la solicitud a un usuario"
-                  : null
-              }
-              error={errorAsignacion}
-            >
-              {rolesAdmin.includes(localStorage.getItem("Rol")!)
-                ? usuarios
-                    .filter((usr) => usr.Rol === "Verificador")
-                    .map((usuario, index) => {
-                      return (
-                        <MenuItem value={usuario.Id} key={index}>
-                          {usuario.Nombre +
-                            " " +
-                            usuario.ApellidoPaterno +
-                            " " +
-                            usuario.ApellidoMaterno +
-                            " - " +
-                            (usuario.Rol || "")}
-                        </MenuItem>
-                      );
-                    })
-                : usuarios
-                    .filter((usr) => usr.Rol === "Capturador")
-                    .map((usuario, index) => {
-                      return (
-                        <MenuItem value={usuario.Id} key={index}>
-                          {usuario.Nombre +
-                            " " +
-                            usuario.ApellidoPaterno +
-                            " " +
-                            usuario.ApellidoMaterno +
-                            " - " +
-                            (usuario.Rol || "")}
-                        </MenuItem>
-                      );
-                    })}
-            </TextField>
-          </FormControl>
-        </Grid>
-
-        {comentario.length > 0 && (
-          <Typography sx={queries.bold_text}>Comentarios</Typography>
+        {localStorage.getItem("Rol") === "Autorizador" &&
+        accion === "enviar" ? null : (
+          <Grid mb={2}>
+            <FormControl fullWidth>
+              <TextField
+                select
+                value={idUsuarioAsignado}
+                onChange={(e) => {
+                  setidUsuarioAsignado(e.target.value);
+                }}
+              >
+                {localStorage.getItem("Rol")! === "Autorizador" ||
+                localStorage.getItem("Rol") === "Revisor"
+                  ? usuarios
+                      .filter((usr) => usr.Rol === "Validador")
+                      .map((usuario, index) => {
+                        return (
+                          <MenuItem value={usuario.Id} key={index}>
+                            {usuario.Nombre +
+                              " " +
+                              usuario.ApellidoPaterno +
+                              " " +
+                              usuario.ApellidoMaterno +
+                              " - " +
+                              (usuario.Rol || "")}
+                          </MenuItem>
+                        );
+                      })
+                  : localStorage.getItem("Rol")! === "Validador"
+                  ? accion === "enviar"
+                    ? usuarios
+                        .filter((usr) => usr.Rol === "Autorizador")
+                        .map((usuario, index) => {
+                          return (
+                            <MenuItem value={usuario.Id} key={index}>
+                              {usuario.Nombre +
+                                " " +
+                                usuario.ApellidoPaterno +
+                                " " +
+                                usuario.ApellidoMaterno +
+                                " - " +
+                                (usuario.Rol || "")}
+                            </MenuItem>
+                          );
+                        })
+                    : usuarios
+                        .filter((usr) => usr.Rol === "Revisor")
+                        .map((usuario, index) => {
+                          return (
+                            <MenuItem value={usuario.Id} key={index}>
+                              {usuario.Nombre +
+                                " " +
+                                usuario.ApellidoPaterno +
+                                " " +
+                                usuario.ApellidoMaterno +
+                                " - " +
+                                (usuario.Rol || "")}
+                            </MenuItem>
+                          );
+                        })
+                  : usuarios
+                      .filter((usr) => usr.Rol === "Capturador")
+                      .map((usuario, index) => {
+                        return (
+                          <MenuItem value={usuario.Id} key={index}>
+                            {usuario.Nombre +
+                              " " +
+                              usuario.ApellidoPaterno +
+                              " " +
+                              usuario.ApellidoMaterno +
+                              " - " +
+                              (usuario.Rol || "")}
+                          </MenuItem>
+                        );
+                      })}
+              </TextField>
+            </FormControl>
+          </Grid>
         )}
-        {Object.entries(comentario).map(([key, val], index) =>
+
+        {Object.entries(comentarios).length > 0 && (
+          <Typography sx={queries.bold_text}>
+            {rolesAdmin.includes(localStorage.getItem("Rol")!)
+              ? "Requerimientos"
+              : "Comentarios"}
+          </Typography>
+        )}
+        {Object.entries(comentarios).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography
               sx={{
@@ -216,7 +312,11 @@ export function DialogSolicitarModificacion({
         </Button>
 
         <Button
-          disabled={idUsuarioAsignado === ""}
+          disabled={
+            localStorage.getItem("Rol") === "Autorizador"
+              ? accion === "modificar" && idUsuarioAsignado === ""
+              : idUsuarioAsignado === ""
+          }
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {

@@ -99,6 +99,9 @@ const heads: Array<{ label: string }> = [
     label: "Tipo de Documento",
   },
   {
+    label: "Editor",
+  },
+  {
     label: "Acciones",
   },
 ];
@@ -200,14 +203,6 @@ export function ConsultaDeSolicitudPage() {
 
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
-  );
-
-  const rowSolicitud: IData = useSolicitudFirmaStore(
-    (state) => state.rowSolicitud
-  );
-
-  const setRowSolicitud: Function = useSolicitudFirmaStore(
-    (state) => state.setRowSolicitud
   );
 
   const solicitudFirma: IData = useCortoPlazoStore(
@@ -610,6 +605,15 @@ export function ConsultaDeSolicitudPage() {
                           scope="row"
                         >
                           {row.TipoSolicitud}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.IdEditor}
                         </StyledTableCell>
 
                         <StyledTableCell

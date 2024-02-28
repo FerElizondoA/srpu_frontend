@@ -625,6 +625,7 @@ export function SolicitudInscripcion() {
                     <DialogSolicitarModificacion
                       handler={setOpenDialogModificacion}
                       openState={openDialogModificacion}
+                      accion={"modificacion"}
                     />
                   )}
                 </Grid>
