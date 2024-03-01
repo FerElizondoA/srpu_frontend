@@ -702,7 +702,8 @@ export function ConsultaDeSolicitudPage() {
                             )}
 
                           {localStorage.getItem("IdCentral") === row.IdEditor &&
-                            row.ControlInterno === "inscripcion" && (
+                            row.ControlInterno === "inscripcion" &&
+                            !["3", "7"].includes(row.NoEstatus) && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"

@@ -29,7 +29,8 @@ import validator from "validator";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { queries } from "../../../queries";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -367,10 +368,7 @@ export function ComisionesTasaEfectiva() {
         </Grid>
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fecha de Comisión</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={noAplica}
               value={new Date(comisionFechaContratacion)}
@@ -386,9 +384,9 @@ export function ComisionesTasaEfectiva() {
                   iva: comisionIva,
                 });
               }}
-            // slots={{
-            //   textField: DateInput,
-            // }}
+              // slots={{
+              //   textField: DateInput,
+              // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -541,8 +539,8 @@ export function ComisionesTasaEfectiva() {
               radioValue === "Porcentaje Fijo"
                 ? comisionPorcentaje
                 : parseFloat(comisionMonto) <= 0
-                  ? ""
-                  : moneyMask(comisionMonto)
+                ? ""
+                : moneyMask(comisionMonto)
             }
             onChange={(v) => {
               if (
@@ -550,7 +548,7 @@ export function ComisionesTasaEfectiva() {
                 (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
                   v.target.value === "") &&
                 parseInt(v.target.value.replace(/\D/g, "")) <
-                9999999999999999 &&
+                  9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
                 changeComision({

@@ -15,7 +15,7 @@ import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -79,10 +79,10 @@ export function DatosGeneralesIntrucciones() {
           display: "flex",
           // gridTemplateColumns: "repeat(2,1fr)",
           justifyContent: "space-evenly",
-          height:"13rem"
+          height: "13rem",
         }}
       >
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>
             Número de Cuenta
           </InputLabel>
@@ -108,10 +108,7 @@ export function DatosGeneralesIntrucciones() {
           <InputLabel sx={{ ...queries.medium_text }}>
             Fecha de la Instrucción
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{
                 width: "100%",
@@ -128,8 +125,13 @@ export function DatosGeneralesIntrucciones() {
         </Grid>
       </Grid>
 
-      <Grid container height={"40%"} display={"flex"} justifyContent={"space-evenly"} >
-      <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
+      <Grid
+        container
+        height={"40%"}
+        display={"flex"}
+        justifyContent={"space-evenly"}
+      >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
             fullWidth

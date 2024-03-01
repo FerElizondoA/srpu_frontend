@@ -29,7 +29,8 @@ import validator from "validator";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { queries } from "../../../queries";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -311,7 +312,6 @@ export function ComisionesTasaEfectiva() {
               //   });
               // }
             }}
-            
             InputLabelProps={{
               style: {
                 fontFamily: "MontserratMedium",
@@ -367,10 +367,7 @@ export function ComisionesTasaEfectiva() {
         </Grid>
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fecha de Comisión</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{ width: "100%" }}
               disabled={noAplica}

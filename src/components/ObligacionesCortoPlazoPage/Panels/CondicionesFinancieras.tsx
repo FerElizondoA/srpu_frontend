@@ -91,7 +91,7 @@ export const headsDisposicion: readonly {
     label: "Fecha de Disposición",
   },
   {
-    label: "Importe",
+    label: "Importe de disposición",
   },
 ];
 
@@ -105,7 +105,7 @@ const heads: readonly {
     label: "Fecha Disposición",
   },
   {
-    label: "Importe",
+    label: "Importe de disposición",
   },
   {
     label: "Fecha de Primer Pago Capital",

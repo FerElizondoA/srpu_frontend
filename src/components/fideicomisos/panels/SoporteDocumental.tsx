@@ -27,7 +27,8 @@ import {
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
@@ -262,7 +263,7 @@ export function SoporteDocumentalFideicomiso() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{

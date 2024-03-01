@@ -24,7 +24,8 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
@@ -94,8 +95,12 @@ export function InformacionGeneral() {
   );
 
   // INFORMACION GENERAL
+
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
+  );
+  const fechaContratacionEncabezado: string = useCortoPlazoStore(
+    (state) => state.encabezado.fechaContratacion
   );
   const fechaVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
@@ -193,7 +198,7 @@ export function InformacionGeneral() {
     }
   }, [catalogoObligadoSolidarioAval]);
 
-  const [contratacion, setContratacion] = useState(fechaContratacion);
+  const [contratacion, setContratacion] = useState(fechaContratacionEncabezado);
 
   const [vencimiento, setVencimiento] = useState(fechaVencimiento);
 
@@ -265,10 +270,7 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
                 datosActualizar.length > 0 &&
@@ -368,10 +370,7 @@ export function InformacionGeneral() {
       >
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
                 datosActualizar.length > 0 &&

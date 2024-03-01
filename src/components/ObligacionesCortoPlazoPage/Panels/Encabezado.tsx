@@ -2,7 +2,7 @@ import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
-import enGB from "date-fns/locale/en-GB";
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -72,8 +72,6 @@ export function Encabezado() {
     (state) => state.datosActualizar
   );
 
-
-
   return (
     <Grid container height={"25rem"}>
       <Grid
@@ -89,8 +87,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Documento"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Documento")
             }
             fullWidth
             value={tipoDocumento}
@@ -116,8 +114,8 @@ export function Encabezado() {
           </InputLabel>
           <Select
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Solicitante Autorizado"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Solicitante Autorizado")
             }
             sx={queries.medium_text}
             fullWidth
@@ -153,8 +151,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Cargo del Solicitante")) 
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Cargo del Solicitante")
             }
             fullWidth
             value={solicitanteAutorizado.Cargo}
@@ -190,8 +188,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-             ( datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Ente Público")) 
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Ente Público")
             }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
@@ -218,8 +216,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Municipio u Organismo"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Municipio u Organismo")
             }
             fullWidth
             value={organismo.Organismo}
@@ -243,14 +241,11 @@ export function Encabezado() {
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación")) 
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Contratación")
               }
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
@@ -269,9 +264,6 @@ export function Encabezado() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
             />
           </LocalizationProvider>
         </Grid>

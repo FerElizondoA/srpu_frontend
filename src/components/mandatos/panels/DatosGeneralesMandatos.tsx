@@ -2,7 +2,7 @@
 import { Grid, InputLabel, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 import { useEffect } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -101,7 +101,7 @@ export function DatosGeneralesMandato() {
         <InputLabel sx={{ ...queries.medium_text }}>
           Fecha del Mandato
         </InputLabel>
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DesktopDatePicker
             sx={{
               width: "100%",

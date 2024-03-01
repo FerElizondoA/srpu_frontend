@@ -11,7 +11,7 @@ import {
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
@@ -278,7 +278,7 @@ export function RegistrarNuevaAutorizacion() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{ width: "100%" }}
