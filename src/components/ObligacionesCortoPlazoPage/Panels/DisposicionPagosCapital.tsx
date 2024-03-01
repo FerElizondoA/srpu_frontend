@@ -50,42 +50,42 @@ import { moneyMask } from "./InformacionGeneral";
 const heads: readonly {
   label: string;
 }[] = [
-    {
-      label: "Borrar",
-    },
-    {
-      label: "Fecha de Primer Pago",
-    },
-    {
-      label: "Tasa Interes",
-    },
-    {
-      label: "Periodicidad de Pago",
-    },
-    {
-      label: "Tasa de Referencia",
-    },
-    {
-      label: "Sobretasa",
-    },
-    {
-      label: "Dias del Ejercicio",
-    },
-  ];
+  {
+    label: "Borrar",
+  },
+  {
+    label: "Fecha de Primer Pago",
+  },
+  {
+    label: "Tasa Interes",
+  },
+  {
+    label: "Periodicidad de Pago",
+  },
+  {
+    label: "Tasa de Referencia",
+  },
+  {
+    label: "Sobretasa",
+  },
+  {
+    label: "Dias del Ejercicio",
+  },
+];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-    {
-      label: "Borrar",
-    },
-    {
-      label: "Fecha de Disposición",
-    },
-    {
-      label: `Importe`,
-    },
-  ];
+  {
+    label: "Borrar",
+  },
+  {
+    label: "Fecha de Disposición",
+  },
+  {
+    label: `Importe`,
+  },
+];
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -371,10 +371,6 @@ export function DisposicionPagosCapital() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
   };
 
-  useEffect(() => {
-    console.log("Fecha contratacion desde disposicion", fechaContratacion)
-  }, [])
-
   return (
     <Grid
       container
@@ -398,23 +394,23 @@ export function DisposicionPagosCapital() {
           ? disposicionesParciales === false && tasasParciales === false
             ? "32rem"
             : disposicionesParciales === true && tasasParciales === false
-              ? "44rem"
-              : disposicionesParciales === false && tasasParciales === true
-                ? "44rem"
-                : disposicionesParciales === true && tasasParciales === true
-                  ? "60rem"
-                  : "36rem"
-          : query.isMobile === true
-            ? disposicionesParciales === false && tasasParciales === false
-              ? "50rem"
-              : disposicionesParciales === true && tasasParciales === false
-                ? "65rem"
-                : disposicionesParciales === false && tasasParciales === true
-                  ? "65rem"
-                  : disposicionesParciales === true && tasasParciales === true
-                    ? "85rem"
-                    : "52rem"
+            ? "44rem"
+            : disposicionesParciales === false && tasasParciales === true
+            ? "44rem"
+            : disposicionesParciales === true && tasasParciales === true
+            ? "60rem"
             : "36rem"
+          : query.isMobile === true
+          ? disposicionesParciales === false && tasasParciales === false
+            ? "50rem"
+            : disposicionesParciales === true && tasasParciales === false
+            ? "65rem"
+            : disposicionesParciales === false && tasasParciales === true
+            ? "65rem"
+            : disposicionesParciales === true && tasasParciales === true
+            ? "85rem"
+            : "52rem"
+          : "36rem"
       }
     >
       <Grid item container mt={2} direction="column">
@@ -448,7 +444,7 @@ export function DisposicionPagosCapital() {
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
 
-              //slots={(props: any) => <TextField variant="standard" {...props} />}
+                //slots={(props: any) => <TextField variant="standard" {...props} />}
               />
 
               {/* <DatePicker
@@ -582,7 +578,7 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
-              { }
+              {}
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={enGB}
@@ -614,9 +610,9 @@ export function DisposicionPagosCapital() {
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
-                    monto +
-                    "; Monto restante: " +
-                    restante.toFixed(2)
+                      monto +
+                      "; Monto restante: " +
+                      restante.toFixed(2)
                     : ""
                 }
                 value={
@@ -629,9 +625,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseInt(v.target.value.replace(/\D/g, "")) <
-                    9999999999999999 &&
+                      9999999999999999 &&
                     parseInt(v.target.value.replace(/\D/g, "")) <=
-                    restante * 100
+                      restante * 100
                   ) {
                     changeDisposicion(
                       disposicionFechaDisposicion,
@@ -685,7 +681,7 @@ export function DisposicionPagosCapital() {
                       disposicionImporte.toString().replace(/\D/g, "")
                     ) === 0 ||
                     parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                    restante * 100
+                      restante * 100
                   }
                   variant="outlined"
                   onClick={() => {
@@ -1159,7 +1155,10 @@ export function DisposicionPagosCapital() {
                     onChange={(text) => {
                       const expRegular = /^\d*\.?\d*$/;
 
-                      if (expRegular.test(text.target.value) || text.target.value === "") {
+                      if (
+                        expRegular.test(text.target.value) ||
+                        text.target.value === ""
+                      ) {
                         changeTasaInteres({
                           tasaFija: tasaInteresTasaFija,
                           tasaVariable: tasaInteresTasaVariable,
@@ -1169,7 +1168,7 @@ export function DisposicionPagosCapital() {
                           periocidadPago: tasaInteresPeriocidadPago,
                           tasaReferencia: tasaInteresTasaReferencia,
                           sobreTasa: text.target.value || "",
-                        })
+                        });
                       }
                     }}
                     fullWidth
@@ -1188,7 +1187,6 @@ export function DisposicionPagosCapital() {
                     }}
                     variant="standard"
                   />
-
                 </Grid>
 
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>

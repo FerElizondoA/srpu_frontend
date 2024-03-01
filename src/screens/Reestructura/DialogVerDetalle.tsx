@@ -2,12 +2,9 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -15,23 +12,18 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { queries } from "../../queries";
-import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { Transition } from "../fuenteDePago/Mandatos";
-import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import {
-  CambiaEstatus,
-} from "../../store/SolicitudFirma/solicitudFirma";
 import { getListadoUsuarioRol } from "../../components/APIS/Config/Solicitudes-Usuarios";
-import { createNotificationCortoPlazo } from "../../components/APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
-import { createNotification } from "../../components/LateralMenu/APINotificaciones";
-import { Resumen as ResumenLP } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
-import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { IComentarios } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { DialogSolicitarCancelacion } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarCancelación";
 import { IUsuariosAsignables } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
+import { Resumen as ResumenLP } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { Transition } from "../fuenteDePago/Mandatos";
 
 type Props = {
   handler: Function;
@@ -45,7 +37,6 @@ export function DialogVerDetalle(props: Props) {
     React.useState(false);
   // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-  const estatus: string = useCortoPlazoStore((state) => state.estatus);
   // REQUERIMIENTOS
   React.useEffect(() => {
     if (IdSolicitud !== "") {
@@ -53,7 +44,8 @@ export function DialogVerDetalle(props: Props) {
     }
   }, [IdSolicitud]);
   const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>>([]);
+    Array<IComentarios>
+  >([]);
 
   React.useEffect(() => {
     let a: any = {};
@@ -464,7 +456,7 @@ export function DialogVerDetalle(props: Props) {
                 },
               }}
               onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
+                CambiaEstatus("Autorizado", props.rowId, "");
               }}
             >
               <Typography
@@ -527,7 +519,7 @@ export function DialogVerDetalle(props: Props) {
                 },
               }}
               onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
+                CambiaEstatus("Autorizado", props.rowId, "");
               }}
             >
               <Typography
@@ -557,7 +549,6 @@ export function DialogVerDetalle(props: Props) {
             </Button>
           </Grid>
         ) : null}
-        
       </DialogTitle>
 
       <DialogContent

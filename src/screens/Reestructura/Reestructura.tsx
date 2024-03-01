@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import FindInPageIcon from "@mui/icons-material/FindInPage";
 import {
   Chip,
   Grid,
@@ -14,25 +15,21 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import FindInPageIcon from "@mui/icons-material/FindInPage";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
-import {
-  getSolicitudes,
-  getSolicitudesReestructura,
-} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogVerDetalle } from "./DialogVerDetalle";
-import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 interface Head {
   label: string;
@@ -76,24 +73,6 @@ export function SolicitudesReestructura() {
 
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
-  );
-  const changeReglasAplicables: Function = useCortoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.addObligadoSolidarioAval
-  );
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
   );
 
   const setDatosActualizar: Function = useCortoPlazoStore(
