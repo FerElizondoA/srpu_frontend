@@ -110,6 +110,8 @@ module.exports = {
     const IdDescripcion = req.body.IdDescripcion;
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
+    const OCP = req.body.OCP;
+    const OLP = req.body.OLP;
 
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
@@ -129,7 +131,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_ModificaDestino('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}')`,
+        `CALL sp_ModificaDestino('${IdDescripcion}','${Descripcion}','${IdUsuarioModificador}','${OCP}','${OLP}')`,
         (err, result) => {
           if (err) {
             return res.status(500).send({

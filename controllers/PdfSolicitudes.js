@@ -794,42 +794,42 @@ module.exports = {
       cargoDirectorGeneral,
       modificaciones,
     } = req.body;
-
-    const tablaModificaciones =
-      '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 12px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
-      Object.keys(JSON.parse(modificaciones)).map((val) => {
-        return (
-          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
-          val +
-          '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
-          JSON.parse(modificaciones)[val] +
-          "</td> </tr>"
-        );
-      }) +
-      "</tbody> </table>";
+    const tablaModificaciones = modificaciones
+      ? '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 12px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
+        Object.keys(JSON.parse(modificaciones)).map((val) => {
+          return (
+            '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
+            val +
+            '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+            JSON.parse(modificaciones)[val] +
+            "</td> </tr>"
+          );
+        }) +
+        "</tbody> </table>"
+      : "";
 
     const html = htmlTemplate
-      .replaceAll("{{oficioNum}}", oficioNum)
-      .replaceAll("{{servidorPublico}}", servidorPublico)
-      .replaceAll("{{cargo}}", cargo)
-      .replaceAll("{{organismo}}", organismo)
-      .replaceAll("{{oficioSolicitud}}", oficioSolicitud)
-      .replaceAll("{{fechaSolicitud}}", fechaSolicitud)
-      .replaceAll("{{tipoDocumento}}", tipoDocumento)
-      .replaceAll("{{fechaContratacion}}", fechaContratacion)
-      .replaceAll("{{claveInscripcion}}", claveInscripcion)
-      .replaceAll("{{fechaClave}}", fechaClave)
-      .replaceAll("{{fechaReestructuracion}}", fechaReestructuracion)
-      .replaceAll("{{entePublicoObligado}}", entePublicoObligado)
-      .replaceAll("{{obligadoSolidarioAval}}", obligadoSolidarioAval)
-      .replaceAll("{{institucionFinanciera}}", institucionFinanciera)
-      .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado)
-      .replaceAll("{{saldoVigente}}", saldoVigente)
-      .replaceAll("{{mecanismoVehiculoDePago}}", mecanismoVehiculoDePago)
-      .replaceAll("{{fuentePago}}", fuentePago)
-      .replaceAll("{{directorGeneral}}", directorGeneral)
-      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
-      .replaceAll("{{tablaModificaciones}}", tablaModificaciones);
+      .replaceAll("{{oficioNum}}", oficioNum || "")
+      .replaceAll("{{servidorPublico}}", servidorPublico || "")
+      .replaceAll("{{cargo}}", cargo || "")
+      .replaceAll("{{organismo}}", organismo || "")
+      .replaceAll("{{oficioSolicitud}}", oficioSolicitud || "")
+      .replaceAll("{{fechaSolicitud}}", fechaSolicitud || "")
+      .replaceAll("{{tipoDocumento}}", tipoDocumento || "")
+      .replaceAll("{{fechaContratacion}}", fechaContratacion || "")
+      .replaceAll("{{claveInscripcion}}", claveInscripcion || "")
+      .replaceAll("{{fechaClave}}", fechaClave || "")
+      .replaceAll("{{fechaReestructuracion}}", fechaReestructuracion || "")
+      .replaceAll("{{entePublicoObligado}}", entePublicoObligado || "")
+      .replaceAll("{{obligadoSolidarioAval}}", obligadoSolidarioAval || "")
+      .replaceAll("{{institucionFinanciera}}", institucionFinanciera || "")
+      .replaceAll("{{montoOriginalContratado}}", montoOriginalContratado || "")
+      .replaceAll("{{saldoVigente}}", saldoVigente || "")
+      .replaceAll("{{mecanismoVehiculoDePago}}", mecanismoVehiculoDePago || "")
+      .replaceAll("{{fuentePago}}", fuentePago || "")
+      .replaceAll("{{directorGeneral}}", directorGeneral || "")
+      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral || "")
+      .replaceAll("{{tablaModificaciones}}", tablaModificaciones || "");
 
     const browser = await puppeteer.launch({
       headless: "false",
@@ -886,33 +886,34 @@ module.exports = {
       cargoDirectorGeneral,
     } = req.body;
 
-    const tablaModificaciones =
-      '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 10px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
-      Object.keys(JSON.parse(modificaciones)).map((val) => {
-        return (
-          '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
-          val +
-          '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
-          JSON.parse(modificaciones)[val] +
-          "</td> </tr>"
-        );
-      }) +
-      "</tbody> </table>";
+    const tablaModificaciones = modificaciones
+      ? '<table id="data-table" style=" border-collapse: collapse; font-family: Arial; font-size: 10px; text-align: justify; font-weight: 100; letter-spacing: 1px;"><tbody>' +
+        Object.keys(JSON.parse(modificaciones)).map((val) => {
+          return (
+            '<tr> <td style="width: 15%; vertical-align: -webkit-baseline-middle">' +
+            val +
+            '</td> <td style="width: 5%; vertical-align: -webkit-baseline-middle"></td><td style="width: 40%; vertical-align: -webkit-baseline-middle">' +
+            JSON.parse(modificaciones)[val] +
+            "</td> </tr>"
+          );
+        }) +
+        "</tbody> </table>"
+      : "";
 
     const html = htmlTemplate
-      .replaceAll("{{servidorPublico}}", servidorPublico)
-      .replaceAll("{{cargo}}", cargo)
-      .replaceAll("{{fechaSolicitud}}", fechaSolicitud)
-      .replaceAll("{{fechaRecepcion}}", fechaRecepcion)
-      .replaceAll("{{claseTitulo}}", claseTitulo)
-      .replaceAll("{{fechaContratacion}}", fechaContratacion)
-      .replaceAll("{{noInscripcionEstatal}}", noInscripcionEstatal)
-      .replaceAll("{{acreditado}}", acreditado)
-      .replaceAll("{{acreditante}}", acreditante)
-      .replaceAll("{{monto}}", monto)
-      .replaceAll("{{directorGeneral}}", directorGeneral)
-      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral)
-      .replaceAll("{{tablaModificaciones}}", tablaModificaciones);
+      .replaceAll("{{servidorPublico}}", servidorPublico || "")
+      .replaceAll("{{cargo}}", cargo || "")
+      .replaceAll("{{fechaSolicitud}}", fechaSolicitud || "")
+      .replaceAll("{{fechaRecepcion}}", fechaRecepcion || "")
+      .replaceAll("{{claseTitulo}}", claseTitulo || "")
+      .replaceAll("{{fechaContratacion}}", fechaContratacion || "")
+      .replaceAll("{{noInscripcionEstatal}}", noInscripcionEstatal || "")
+      .replaceAll("{{acreditado}}", acreditado || "")
+      .replaceAll("{{acreditante}}", acreditante || "")
+      .replaceAll("{{monto}}", monto || "")
+      .replaceAll("{{directorGeneral}}", directorGeneral || "")
+      .replaceAll("{{cargoDirectorGeneral}}", cargoDirectorGeneral || "")
+      .replaceAll("{{tablaModificaciones}}", tablaModificaciones || "");
 
     const browser = await puppeteer.launch({
       headless: "false",
