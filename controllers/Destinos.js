@@ -5,6 +5,8 @@ module.exports = {
   createDestino: (req, res) => {
     const IdUsuario = req.body.IdUsuario;
     const Descripcion = req.body.Descripcion;
+    const OCP = req.body.OCP;
+    const OLP = req.body.OLP;
 
     if (
       (Descripcion == null || /^[\s]*$/.test(Descripcion)) &&
@@ -23,7 +25,7 @@ module.exports = {
       });
     } else {
       db.query(
-        `CALL sp_AgregarDestino('${IdUsuario}', '${Descripcion}' )`,
+        `CALL sp_AgregarDestino('${IdUsuario}', '${Descripcion}','${OCP}','${OLP}' )`,
         (err, result) => {
           if (err) {
             return res.status(500).send({
