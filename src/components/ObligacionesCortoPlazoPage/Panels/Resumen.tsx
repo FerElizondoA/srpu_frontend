@@ -37,13 +37,13 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
   label: string;
@@ -63,9 +63,6 @@ export interface IPathDocumentos {
 }
 
 const heads: Head[] = [
-  {
-    label: "Obligado Solidario / Aval",
-  },
   {
     label: "Tipo de Ente Público Obligado",
   },
@@ -124,9 +121,6 @@ export function Resumen({ coments }: { coments: boolean }) {
   );
 
   // Informacion general
-  const gFechadeContratación: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.fechaContratacion
-  );
   const FechadeVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -201,7 +195,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   const infoGeneral: HeadLabels[] = [
     {
       label: "Fecha de Contratación (Informacion General)",
-      value: gFechadeContratación,
+      value: FechadeContratación,
     },
     {
       label: "Fecha de Vencimiento",
@@ -468,9 +462,6 @@ export function Resumen({ coments }: { coments: boolean }) {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell component="th">
-                              {row.obligadoSolidario}
-                            </StyledTableCell>
-                            <StyledTableCell component="th">
                               {row.tipoEntePublicoObligado}
                             </StyledTableCell>
                             <StyledTableCell component="th">
@@ -495,11 +486,9 @@ export function Resumen({ coments }: { coments: boolean }) {
 
                     <TableBody>
                       <StyledTableRow>
-                        <StyledTableCell component="th"></StyledTableCell>
-
                         <StyledTableCell component="th" align="left">
                           <Typography sx={{ padding: "1px 4px 1px 45px" }}>
-                            Sin contenido
+                            NO APLICA
                           </Typography>
                         </StyledTableCell>
 
@@ -882,7 +871,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                           <StyledTableCell align="center"></StyledTableCell>
 
                           <StyledTableCell>
-                            <Typography>Sin contenido</Typography>
+                            <Typography>NO APLICA</Typography>
                           </StyledTableCell>
 
                           <StyledTableCell align="center"></StyledTableCell>
@@ -966,6 +955,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                             {row.descripcionTipo}
                           </StyledTableCell>
                         )}
+
                         {row.nombreArchivo === undefined ? (
                           <StyledTableCell
                             sx={{
@@ -981,9 +971,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
                         {row.nombreArchivo === undefined ? null : (
                           <StyledTableCell>
-                            <Tooltip
-                              title={"Descargar documento para visualizar"}
-                            >
+                            <Tooltip title={"Ver Documento"}>
                               {cargados ? (
                                 <CircularProgress />
                               ) : (

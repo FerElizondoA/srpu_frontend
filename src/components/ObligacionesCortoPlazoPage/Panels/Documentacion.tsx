@@ -137,16 +137,16 @@ export function Documentacion() {
   );
 
   // IdSolicitud
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-  useEffect(() => {
-    if (IdSolicitud) {
-      getDocumentos(
-        `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-        () => {},
-        () => {}
-      );
-    }
-  }, []);
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  // useEffect(() => {
+  //   if (IdSolicitud) {
+  //     getDocumentos(
+  //       `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+  //       () => {},
+  //       () => {}
+  //     );
+  //   }
+  // }, []);
 
   return (
     <Grid
@@ -341,7 +341,7 @@ export function Documentacion() {
                               index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-                            {catalogoTiposDocumentosObligatorios.map((tipo) => (
+                            {tiposDocumentos.map((tipo) => (
                               <MenuItem key={tipo.Id} value={tipo.Id}>
                                 {tipo.Descripcion}
                               </MenuItem>

@@ -14,6 +14,7 @@ import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resu
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -23,6 +24,7 @@ export function ObligacionesCortoPlazoPage() {
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -35,6 +37,11 @@ export function ObligacionesCortoPlazoPage() {
   );
   useEffect(() => {
     getTiposDocumentos();
+    getDocumentos(
+      `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+      () => {},
+      () => {}
+    );
   }, []);
 
   const NumeroRegistro: string = useCortoPlazoStore(

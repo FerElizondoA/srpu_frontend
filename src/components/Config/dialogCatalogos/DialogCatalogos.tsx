@@ -57,7 +57,7 @@ export function DialogCatalogos({
       modDesc(
         modulos[edit.Id].fnc,
         edit.IdDesc,
-        element,
+        element || edit.Descripcion,
         ocp,
         olp,
         tipoEnte.Id
@@ -151,7 +151,7 @@ export function DialogCatalogos({
                   fontFamily: "MontserratMedium",
                 },
               }}
-              value={element || ""}
+              value={element || edit.Descripcion || ""}
               onChange={(v) => {
                 setElement(
                   /^[a-zA-Z0-9 ()$_,.-ñ]*$/.test(v.target.value)

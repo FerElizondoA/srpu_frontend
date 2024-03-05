@@ -4,6 +4,7 @@ import {
   ICatalogo,
   IEntePublico,
 } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { useCortoPlazoStore } from "./main";
 
 export interface EncabezadoSlice {
   encabezado: {
@@ -22,17 +23,7 @@ export interface EncabezadoSlice {
   catalogoOrganismos: IEntePublico[];
   catalogoTiposEntePublico: ICatalogo[];
 
-  changeEncabezado: (
-    tipoDocumento: string,
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    },
-    tipoEntePublico: { Id: string; TipoEntePublico: string },
-    organismo: { Id: string; Organismo: string },
-    fechaContratacion: string
-  ) => void;
+  changeEncabezado: (encabezado: any) => void;
 
   getOrganismos: () => void;
   getTiposEntesPublicos: () => void;
@@ -63,10 +54,17 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   catalogoOrganismos: [],
   catalogoTiposEntePublico: [],
 
-  changeEncabezado: (encabezado: any) =>
+  changeEncabezado: (encabezado: any) => {
+    const state = useCortoPlazoStore.getState();
+
+    state.changeInformacionGeneral({
+      ...state.informacionGeneral,
+      fechaContratacion: encabezado.fechaContratacion,
+    });
     set(() => ({
       encabezado: encabezado,
-    })),
+    }));
+  },
 
   getTiposEntesPublicos: async () => {
     await axios

@@ -367,14 +367,14 @@ export function Catalogos() {
                               <Tooltip title="Editar">
                                 <IconButton
                                   onClick={() => {
-                                    setEdit((edit) => ({
+                                    setEdit({
                                       ...edit,
-                                      ...{ IdDesc: item.Id },
-                                      ...{ Descripcion: item.Descripcion },
-                                      ...{ Crud: "edita" },
-                                      ...{ OCP: item.OCP },
-                                      ...{ OLP: item.OLP },
-                                    }));
+                                      IdDesc: item.Id,
+                                      Descripcion: item.Descripcion,
+                                      Crud: "edita",
+                                      OCP: item.OCP,
+                                      OLP: item.OLP,
+                                    });
                                     setOpenDialog(true);
                                   }}
                                 >
@@ -385,12 +385,12 @@ export function Catalogos() {
                                 <Tooltip title="Eliminar">
                                   <IconButton
                                     onClick={() => {
-                                      setEdit((edit) => ({
+                                      setEdit({
                                         ...edit,
-                                        ...{ IdDesc: item.Id },
-                                        ...{ Descripcion: item.Descripcion },
-                                        ...{ Crud: "elimina" },
-                                      }));
+                                        IdDesc: item.Id,
+                                        Descripcion: item.Descripcion,
+                                        Crud: "elimina",
+                                      });
                                       setOpenDialog(true);
                                     }}
                                   >

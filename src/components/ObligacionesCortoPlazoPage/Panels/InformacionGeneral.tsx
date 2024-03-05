@@ -41,9 +41,6 @@ const heads: {
     label: "Selección",
   },
   {
-    label: "Obligado Solidario / Aval",
-  },
-  {
     label: "Tipo de Ente Público Obligado",
   },
   {
@@ -81,9 +78,13 @@ export function InformacionGeneral() {
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoObligadoSolidarioAval
-  );
+  const catalogoObligadoSolidarioAval: Array<string> = [
+    "NO APLICA",
+    "SI APLICA",
+  ];
+  // useCortoPlazoStore(
+  //   (state) => state.catalogoObligadoSolidarioAval
+  // );
   const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
   );
@@ -99,9 +100,9 @@ export function InformacionGeneral() {
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
-  const fechaContratacionEncabezado: string = useCortoPlazoStore(
-    (state) => state.encabezado.fechaContratacion
-  );
+  // const fechaContratacionEncabezado: string = useCortoPlazoStore(
+  //   (state) => state.encabezado.fechaContratacion
+  // );
   const fechaVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -126,10 +127,9 @@ export function InformacionGeneral() {
   );
 
   // OBLIGADO SOLIDARIO AVAL
-  const generalObligadoSolidario: { Id: string; Descripcion: string } =
-    useCortoPlazoStore(
-      (state) => state.generalObligadoSolidarioAval.obligadoSolidario
-    );
+  const generalObligadoSolidario: string = useCortoPlazoStore(
+    (state) => state.generalObligadoSolidarioAval.obligadoSolidario
+  );
   const generalTipoEntePublico: { Id: string; Descripcion: string } =
     useCortoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
@@ -160,7 +160,7 @@ export function InformacionGeneral() {
 
   const addRows = () => {
     let tab = {
-      obligadoSolidario: generalObligadoSolidario.Descripcion,
+      obligadoSolidario: generalObligadoSolidario,
       tipoEntePublicoObligado: generalTipoEntePublico.Descripcion,
       entePublicoObligado: generalEntePublico.Descripcion,
     };
@@ -171,34 +171,12 @@ export function InformacionGeneral() {
 
   useEffect(() => {
     getInstituciones();
-    getDestinos();
+    getDestinos("CP");
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
   }, []);
 
-  useEffect(() => {
-    if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
-      let obligado = catalogoObligadoSolidarioAval.find(
-        (obligado) => obligado.Descripcion === "No Aplica"
-      );
-      changeObligadoSolidarioAval({
-        obligadoSolidario: {
-          Id: obligado?.Id || "",
-          Descripcion: obligado?.Descripcion || "",
-        },
-        tipoEntePublicoObligado: {
-          Id: "",
-          Descripcion: "",
-        },
-        entePublicoObligado: {
-          Id: "",
-          Descripcion: "",
-        },
-      });
-    }
-  }, [catalogoObligadoSolidarioAval]);
-
-  const [contratacion, setContratacion] = useState(fechaContratacionEncabezado);
+  const [contratacion, setContratacion] = useState(fechaContratacion);
 
   const [vencimiento, setVencimiento] = useState(fechaVencimiento);
 
@@ -272,10 +250,7 @@ export function InformacionGeneral() {
           </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación")
-              }
+              disabled
               disablePast={false}
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
@@ -543,31 +518,21 @@ export function InformacionGeneral() {
             openText="Abrir"
             fullWidth
             options={catalogoObligadoSolidarioAval}
-            getOptionLabel={(option) => option.Descripcion}
+            getOptionLabel={(option) => option}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Descripcion}>
-                  <Typography>{option.Descripcion}</Typography>
+                <li {...props}>
+                  <Typography>{option}</Typography>
                 </li>
               );
             }}
-            value={{
-              Id: generalObligadoSolidario?.Id,
-              Descripcion: generalObligadoSolidario?.Descripcion,
-            }}
+            value={generalObligadoSolidario}
             onChange={(event, text) => {
-              if (
-                text?.Descripcion === "No Aplica" ||
-                text?.Id === "" ||
-                text === null
-              ) {
+              if (text === "NO APLICA") {
                 cleanObligadoSolidarioAval();
               }
               changeObligadoSolidarioAval({
-                obligadoSolidario: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "No Aplica",
-                },
+                obligadoSolidario: text,
                 tipoEntePublicoObligado: {
                   Id: "",
                   Descripcion: "",
@@ -586,9 +551,7 @@ export function InformacionGeneral() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id ||
-              value.Descripcion === "" ||
-              value.Id === ""
+              option === value || value === ""
             }
           />
         </Grid>
@@ -603,8 +566,8 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario?.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
@@ -659,8 +622,8 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario?.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
               /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
@@ -710,8 +673,8 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario?.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario?.Descripcion) ||
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
               /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
               /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
@@ -720,10 +683,7 @@ export function InformacionGeneral() {
             variant="outlined"
             onClick={() => {
               changeObligadoSolidarioAval({
-                obligadoSolidario: {
-                  Id: "",
-                  Descripcion: "",
-                },
+                obligadoSolidario: "SI APLICA",
                 tipoEntePublicoObligado: "",
                 entePublicoObligado: {
                   Id: "",
@@ -773,12 +733,11 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario?.Descripcion === "No Aplica" &&
+                {generalObligadoSolidario === "NO APLICA" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell align="center">No Aplica</StyledTableCell>
+                    <StyledTableCell align="center">NO APLICA</StyledTableCell>
                     <StyledTableCell />
                   </StyledTableRow>
                 ) : (
@@ -794,13 +753,6 @@ export function InformacionGeneral() {
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.obligadoSolidario}
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">
                           {row.tipoEntePublicoObligado}

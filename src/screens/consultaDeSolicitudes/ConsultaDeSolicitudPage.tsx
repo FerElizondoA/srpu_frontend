@@ -99,9 +99,6 @@ const heads: Array<{ label: string }> = [
     label: "Tipo de Documento",
   },
   {
-    label: "Editor",
-  },
-  {
     label: "Acciones",
   },
 ];
@@ -169,8 +166,8 @@ export function ConsultaDeSolicitudPage() {
   const addCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.addCondicionFinanciera
   );
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
+  const setTablaDocumentos: Function = useCortoPlazoStore(
+    (state) => state.setTablaDocumentos
   );
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
@@ -228,9 +225,10 @@ export function ConsultaDeSolicitudPage() {
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinanciera(v);
       });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumento(v);
-      });
+      // aux?.documentacion.map((v: any, index: number) => {
+      //   return addDocumento(v);
+      // });
+      setTablaDocumentos(aux?.documentacion);
     } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
@@ -605,15 +603,6 @@ export function ConsultaDeSolicitudPage() {
                           scope="row"
                         >
                           {row.TipoSolicitud}
-                        </StyledTableCell>
-
-                        <StyledTableCell
-                          sx={{ padding: "1px 25px 1px 0" }}
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.IdEditor}
                         </StyledTableCell>
 
                         <StyledTableCell

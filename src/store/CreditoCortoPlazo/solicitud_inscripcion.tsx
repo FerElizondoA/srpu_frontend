@@ -356,7 +356,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((res) => {})
       .catch((e) => {});
   },
 
@@ -372,7 +371,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
 
-        if (file.archivo.size > 0) {
+        if (file.archivo) {
           return axios
             .post(
               process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",

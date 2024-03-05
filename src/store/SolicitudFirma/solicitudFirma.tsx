@@ -166,15 +166,15 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   cleanSolicitud: () => {
     let state = useCortoPlazoStore.getState();
 
-    state.changeInformacionGeneral(
-      new Date().toString(),
-      new Date().toString(),
-      1,
-      { Id: "", Descripcion: "" },
-      0,
-      "Pesos",
-      { Id: "", Descripcion: "" }
-    );
+    state.changeInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
 
     state.cleanObligadoSolidarioAval();
 
