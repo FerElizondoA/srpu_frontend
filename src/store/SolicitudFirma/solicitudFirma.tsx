@@ -180,7 +180,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     state.cleanCondicionFinanciera();
 
-    state.getTiposDocumentos();
+    // state.getTiposDocumentos();
 
     // set(() => ({
     //   rowSolicitud: {
@@ -310,10 +310,14 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               : "Constancia de Inscripción";
           let mensaje =
             estatusPrevio.ControlInterno === "inscripcion"
-              ? `Se recibe el ${new Date()} el documento ${titulo} con el identificador: ${
+              ? `Se recibe el ${new Date().toLocaleString(
+                  "es-MX"
+                )} el documento ${titulo} con el identificador: ${
                   state.rowSolicitud.IdClaveInscripcion
                 }`
-              : `Se envía el ${new Date()} el documento ${titulo} con el identificador: ${
+              : `Se envía el ${new Date().toLocaleString(
+                  "es-MX"
+                )} el documento ${titulo} con el identificador: ${
                   state.rowSolicitud.IdClaveInscripcion
                 }`;
           let oficio = `Solicitud ${state.rowSolicitud.IdClaveInscripcion}`;

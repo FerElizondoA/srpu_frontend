@@ -24,10 +24,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
