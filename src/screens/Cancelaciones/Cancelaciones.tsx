@@ -380,7 +380,7 @@ export const Cancelaciones = () => {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("Actualizacion");
+    setProceso("actualizacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -567,7 +567,7 @@ export const Cancelaciones = () => {
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus === "Actualizacion") {
+                    } else if (row.Estatus === "actualizacion") {
                       chip = (
                         <Tooltip
                           title={`${differenceInDays(
@@ -764,7 +764,7 @@ export const Cancelaciones = () => {
 
                           {((localStorage.getItem("Rol") === "Verificador" &&
                             (row.Estatus === "Verificacion" ||
-                              row.Estatus === "Actualizacion")) ||
+                              row.Estatus === "actualizacion")) ||
                             (localStorage.getItem("Rol") === "Capturador" &&
                               row.Estatus === "Captura")) &&
                             localStorage.getItem("Rol") !== "Administrador" && (
@@ -776,7 +776,7 @@ export const Cancelaciones = () => {
                                     changeNoRegistro(row.NumeroRegistro);
                                     changeEditCreadoPor(row?.CreadoPor);
                                     llenaSolicitud(row, row.TipoSolicitud);
-                                    if (row.Estatus === "Actualizacion") {
+                                    if (row.Estatus === "actualizacion") {
                                       getComentariosSolicitudPlazo(
                                         row.Id,
                                         setDatosActualizar

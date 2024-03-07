@@ -63,14 +63,16 @@ export const FirmaConUrl = () => {
         users
       );
     } else if (estatus === "8") {
-      editor = idCreador;
+      // editor = idCreador;
+      editor = "";
       createNotification(
         "Crédito Simple a Corto Plazo",
         `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
         [idCreador]
       );
     } else if (estatus === "10") {
-      editor = idCreador;
+      // editor = idCreador;
+      editor = "";
       usuarios
         .filter(
           (usr: any) =>

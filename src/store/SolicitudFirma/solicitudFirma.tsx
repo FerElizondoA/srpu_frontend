@@ -92,6 +92,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     FechaRequerimientos: "",
     IdPathDoc: "",
     UltimaModificacion: new Date().toString(),
+    Control: "",
   },
 
   archivosCancelacion: {
@@ -116,28 +117,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   setRowSolicitud: (rowSolicitud: IData) => {
     set(() => ({
       rowSolicitud: rowSolicitud,
-      // {
-      //   Id: rowSolicitud.Id,
-      //   NumeroRegistro: rowSolicitud.NumeroRegistro,
-      //   Nombre: rowSolicitud.Nombre,
-      //   TipoEntePublico: rowSolicitud.TipoEntePublico,
-      //   TipoSolicitud: rowSolicitud.TipoSolicitud,
-      //   Institucion: rowSolicitud.Institucion,
-      //   NoEstatus: rowSolicitud.NoEstatus,
-      //   Estatus: rowSolicitud.Estatus,
-      //   ControlInterno: rowSolicitud.ControlInterno,
-      //   IdClaveInscripcion: rowSolicitud.IdClaveInscripcion,
-      //   MontoOriginalContratado: rowSolicitud.MontoOriginalContratado,
-      //   FechaContratacion: rowSolicitud.FechaContratacion,
-      //   Solicitud: rowSolicitud.Solicitud,
-      //   FechaCreacion: rowSolicitud.FechaCreacion,
-      //   CreadoPor: rowSolicitud.CreadoPor,
-      //   ModificadoPor: rowSolicitud.ModificadoPor,
-      //   IdEditor: rowSolicitud.IdEditor,
-      //   FechaRequerimientos: rowSolicitud.FechaRequerimientos,
-      //   IdPathDoc: rowSolicitud.IdPathDoc,
-      //   UltimaModificacion: new Date().toString(),
-      // },
     }));
   },
 
@@ -329,12 +308,14 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           // }
 
           GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud);
+          console.log(estatusPrevio);
+          console.log(state.proceso);
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
               : estatusPrevio.ControlInterno === "revision" &&
-                state.proceso === "requerimientos"
+                state.proceso === "actualizacion"
               ? "8"
               : estatusPrevio.ControlInterno === "autorizado"
               ? "10"
@@ -342,7 +323,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                 state.proceso === "solicitud"
               ? "12"
               : estatusPrevio.ControlInterno === "cancelacion" &&
-                state.proceso === "requerimientos"
+                state.proceso === "actualizacion"
               ? "16"
               : estatusPrevio.ControlInterno === "cancelado"
               ? "18"
@@ -350,7 +331,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                 state.proceso === "solicitud"
               ? "20"
               : estatusPrevio.ControlInterno === "reestructura" &&
-                state.proceso === "requerimientos"
+                state.proceso === "actualizacion"
               ? "24"
               : estatusPrevio.ControlInterno === "reestructurado"
               ? "10"

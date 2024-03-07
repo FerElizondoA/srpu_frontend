@@ -68,6 +68,7 @@ export interface IData {
   IdEditor: string;
   FechaRequerimientos: string;
   IdPathDoc?: string;
+  Control: string;
 }
 
 const heads: Array<{ label: string }> = [
@@ -310,7 +311,7 @@ export function ConsultaDeSolicitudPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("Actualizacion");
+    setProceso("actualizacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -487,7 +488,7 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus === "Actualizacion") {
+                    } else if (row.Estatus === "actualizacion") {
                       chip = (
                         <Tooltip
                           title={`${differenceInDays(
@@ -497,7 +498,7 @@ export function ConsultaDeSolicitudPage() {
                         >
                           <Chip
                             label={
-                              row.Estatus === "Actualizacion"
+                              row.Estatus === "actualizacion"
                                 ? "Actualización"
                                 : row.Estatus
                             }
@@ -632,12 +633,16 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                            ["3", "7"].includes(row.NoEstatus) && (
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["3", "7", "9"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    changeIdSolicitud(row.Id);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    setSolicitudFirma(row);
                                     getComentariosSolicitudPlazo(
                                       row.Id,
                                       () => {}
@@ -690,15 +695,14 @@ export function ConsultaDeSolicitudPage() {
                               </Tooltip>
                             )}
 
-                          {localStorage.getItem("IdCentral") === row.IdEditor &&
-                            row.ControlInterno === "inscripcion" &&
-                            !["3", "7"].includes(row.NoEstatus) && (
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["1", "2", "8"].includes(row.NoEstatus) && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
                                     llenaSolicitud(row, row.TipoSolicitud);
-                                    if (row.Estatus.includes("Actualizacion")) {
+                                    if (row.NoEstatus === "8") {
                                       getComentariosSolicitudPlazo(
                                         row.Id,
                                         setDatosActualizar
