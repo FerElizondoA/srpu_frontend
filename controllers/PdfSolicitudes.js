@@ -154,7 +154,7 @@ module.exports = {
       .replaceAll("{{reglas}}", declaratorias)
       .replaceAll("{{documentos}}", docs);
 
-    const watermarkText = `DDPYPF-${oficioNum}/${new Date().getFullYear()}`;
+    const watermarkText = `DDPYPF-${oficioNum}/${fechaContratacion}`;
 
     const browser = await puppeteer.launch({
       headless: "false",
@@ -201,7 +201,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioNum}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -280,9 +280,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${
-        oficioRequerimiento - new Date().getFullYear
-      }.pdf`
+      `attachment; filename = ${oficioRequerimiento - fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -377,7 +375,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -416,7 +414,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${fecha}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -504,7 +502,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioConstancia}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioConstancia}-${fecha}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -545,7 +543,9 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficio}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficio}-${
+        new Date().toLocaleString("es-MX").split(" ")[0]
+      }.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -671,7 +671,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${numeroSolicitud}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${numeroSolicitud}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -759,7 +759,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${numeroSolicitud}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${numeroSolicitud}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -857,7 +857,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioNum}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
@@ -941,7 +941,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename = ${oficioNum}-${new Date().getFullYear}.pdf`
+      `attachment; filename = ${oficioNum}-${fechaContratacion}.pdf`
     );
     res.send(pdfBuffer);
   },
