@@ -12,7 +12,6 @@ import * as React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
@@ -23,11 +22,12 @@ import {
   DialogSolicitarModificacion,
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 
 type Props = {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IData;
+  rowSolicitud: IRegistroSolicitud;
   rowId: string;
 };
 
@@ -35,15 +35,12 @@ export function VerBorradorDocumento(props: Props) {
   const [openGuardaComentarios, setOpenGuardaComentarios] =
     React.useState(false);
 
-  // // SOLICITUD
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
   // REQUERIMIENTOS
   React.useEffect(() => {
-    if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    if (props.rowSolicitud.Id !== "") {
+      getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
     }
-  }, [IdSolicitud]);
+  }, [props.rowSolicitud.Id]);
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -250,7 +247,7 @@ export function VerBorradorDocumento(props: Props) {
             sx={queries.buttonContinuar}
             onClick={() => {
               addComentario(
-                IdSolicitud,
+                props.rowSolicitud.Id,
                 JSON.stringify(comentarios),
                 "Requerimiento"
               ).then(() => {

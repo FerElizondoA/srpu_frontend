@@ -34,41 +34,18 @@ import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazo
 import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-
-export interface IData {
-  Id: string;
-  NumeroRegistro: string;
-  Nombre: string;
-  TipoEntePublico: string;
-  TipoSolicitud: string;
-  Institucion: string;
-  NoEstatus: string;
-  Estatus: string;
-  ControlInterno: string;
-  IdClaveInscripcion: string;
-  MontoOriginalContratado: string;
-  FechaContratacion: string;
-  Solicitud: string;
-  FechaCreacion: string;
-  CreadoPor: string;
-  UltimaModificacion: string;
-  ModificadoPor: string;
-  IdEditor: string;
-  FechaRequerimientos: string;
-  IdPathDoc?: string;
-}
 
 const heads: Array<{ label: string }> = [
   {
@@ -107,9 +84,11 @@ const heads: Array<{ label: string }> = [
 ];
 
 export function ConsultaDeSolicitudPage() {
-  const [datos, setDatos] = useState<Array<IData>>([]);
+  const [datos, setDatos] = useState<Array<IRegistroSolicitud>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<
+    Array<IRegistroSolicitud>
+  >([]);
   const [busqueda, setBusqueda] = useState("");
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -146,118 +125,7 @@ export function ConsultaDeSolicitudPage() {
 
   const navigate = useNavigate();
 
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
-
-  const changeNoRegistro: Function = useCortoPlazoStore(
-    (state) => state.changeNoRegistro
-  );
-  const changeEditCreadoPor: Function = useCortoPlazoStore(
-    (state) => state.changeEditCreadoPor
-  );
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.addObligadoSolidarioAval
-  );
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
-  );
-  const changeReglasAplicables: Function = useCortoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-
-  // Largo plazo
-  const changeEncabezadoLP: Function = useLargoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneralLP: Function = useLargoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const addObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
-    (state) => state.addObligadoSolidarioAval
-  );
-  const addCondicionFinancieraLP: Function = useLargoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoLP
-  );
-
-  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-
-  const changeGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGastosCostos
-  );
-
-  const addGeneralGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.addGeneralGastosCostos
-  );
-
-  const solicitudFirma: IData = useCortoPlazoStore(
-    (state) => state.rowSolicitud
-  );
-  const setSolicitudFirma: Function = useCortoPlazoStore(
-    (state) => state.setRowSolicitud
-  );
-
-  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud);
-
-      changeReglasAplicables(aux?.inscripcion.declaratorias);
-      changeEncabezado(aux?.encabezado);
-      changeInformacionGeneral(aux?.informacionGeneral);
-
-      aux?.informacionGeneral.obligadosSolidarios.map(
-        (v: any, index: number) => {
-          return addObligadoSolidarioAval(v);
-        }
-      );
-      aux?.condicionesFinancieras.map((v: any, index: number) => {
-        return addCondicionFinanciera(v);
-      });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumento(v);
-      });
-    } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud!);
-
-      changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
-      changeEncabezadoLP(aux?.encabezado);
-      changeInformacionGeneralLP(aux?.informacionGeneral);
-      changeGastosCostos(aux?.GastosCostos);
-
-      aux?.informacionGeneral.obligadosSolidarios.map(
-        (v: any, index: number) => {
-          return addObligadoSolidarioAvalLP(v);
-        }
-      );
-
-      aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
-        return addGeneralGastosCostos(v);
-      });
-
-      aux?.condicionesFinancieras.map((v: any, index: number) => {
-        return addCondicionFinancieraLP(v);
-      });
-
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumentoLP(v);
-      });
-    }
-  };
 
   const editarSolicitud = (Tipo: string) => {
     if (Tipo === "Crédito Simple a Corto Plazo") {
@@ -275,7 +143,12 @@ export function ConsultaDeSolicitudPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
-  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
+  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
+  );
+  const setRegistroSolicitud: Function = useCortoPlazoStore(
+    (state) => state.setRegistroSolicitud
+  );
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -286,7 +159,7 @@ export function ConsultaDeSolicitudPage() {
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
         ? "Inscripcion"
         : "Revision",
-      (e: IData[]) => {
+      (e: IRegistroSolicitud[]) => {
         setDatos(e);
         setDatosFiltrados(e);
       }
@@ -313,7 +186,6 @@ export function ConsultaDeSolicitudPage() {
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
     setProceso("Actualizacion");
-    changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
 
@@ -631,10 +503,8 @@ export function ConsultaDeSolicitudPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                llenaSolicitud(row, row.TipoSolicitud);
-                                changeIdSolicitud(row.Id);
-                                changeNoRegistro(row.NumeroRegistro);
-                                setSolicitudFirma(row);
+                                // llenaSolicitud(row, row.TipoSolicitud);
+                                setRegistroSolicitud(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -679,18 +549,16 @@ export function ConsultaDeSolicitudPage() {
                                             row.NumeroRegistro,
                                             setUrl
                                           );
-                                          changeIdSolicitud(row.Id);
                                           navigate("../firmaUrl");
                                         }
                                       } else {
-                                        setSolicitudFirma(row);
+                                        setRegistroSolicitud(row);
                                         ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
                                         setProceso("Por Firmar");
-                                        changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
                                     });
@@ -707,16 +575,13 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    setRegistroSolicitud(row);
                                     if (row.Estatus.includes("Actualizacion")) {
                                       getComentariosSolicitudPlazo(
                                         row.Id,
                                         setDatosActualizar
                                       );
                                     }
-                                    changeIdSolicitud(row?.Id);
-                                    changeNoRegistro(row.NumeroRegistro);
-                                    changeEditCreadoPor(row?.CreadoPor);
                                     editarSolicitud(row.TipoSolicitud);
                                   }}
                                 >
@@ -730,11 +595,7 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  setSolicitud({
-                                    Id: row.Id,
-                                    noSolicitud: row.NumeroRegistro,
-                                  });
-
+                                  setRegistroSolicitud(row);
                                   setOpenDescargar(true);
                                 }}
                               >
@@ -748,8 +609,6 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  changeIdSolicitud(row?.Id);
-                                  changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenVerComentarios(!openVerComentarios);
                                 }}
                               >
@@ -766,8 +625,6 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    changeIdSolicitud(row?.Id || "");
-                                    changeEditCreadoPor(row?.CreadoPor);
                                     changeOpenEliminar(!openEliminar);
                                   }}
                                 >
@@ -789,7 +646,7 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={solicitudFirma}
+          rowSolicitud={registroSolicitud}
           rowId={""}
         />
       )}
@@ -797,8 +654,8 @@ export function ConsultaDeSolicitudPage() {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={solicitud.noSolicitud}
-          idSolicitud={solicitud.Id}
+          noSolicitud={registroSolicitud.NumeroRegistro}
+          idSolicitud={registroSolicitud.Id}
         />
       )}
 

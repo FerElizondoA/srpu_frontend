@@ -9,7 +9,6 @@ export type ObligadoSolidarioAval = {
 };
 
 export interface InformacionGeneralSlice {
-
   reestructura: string;
   changeRestructura: (restructura: string) => void;
 
@@ -49,6 +48,10 @@ export interface InformacionGeneralSlice {
     newObligadoSolidarioAval: ObligadoSolidarioAval
   ) => void;
 
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: ObligadoSolidarioAval[]
+  ) => void;
+
   changeObligadoSolidarioAval: (
     obligadoSolidario: { Id: string; Descripcion: string },
     tipoEntePublicoObligado: { Id: string; Descripcion: string },
@@ -69,10 +72,10 @@ export const createInformacionGeneralSlice: StateCreator<
   InformacionGeneralSlice
 > = (set, get) => ({
   reestructura: "",
-  changeRestructura:(reestructura: string) => {
+  changeRestructura: (reestructura: string) => {
     set(() => ({
-      reestructura: reestructura
-    }))
+      reestructura: reestructura,
+    }));
   },
 
   informacionGeneral: {
@@ -97,9 +100,28 @@ export const createInformacionGeneralSlice: StateCreator<
   catalogoObligadoSolidarioAval: [],
   catalogoTipoEntePublicoObligado: [],
 
-  changeInformacionGeneral: (informacionGeneral: any) =>
+  changeInformacionGeneral: (
+    fechaContratacion: string,
+    fechaVencimiento: string,
+    plazo: number,
+    destino: { Id: string; Descripcion: string },
+    monto: number,
+    denominacion: string,
+    institucionFinanciera: { Id: string; Descripcion: string }
+  ) =>
     set(() => ({
-      informacionGeneral: informacionGeneral,
+      informacionGeneral: {
+        fechaContratacion: fechaContratacion,
+        fechaVencimiento: fechaVencimiento,
+        plazo: plazo,
+        destino: { Id: destino.Id, Descripcion: destino.Descripcion },
+        monto: monto,
+        denominacion: denominacion,
+        institucionFinanciera: {
+          Id: institucionFinanciera.Id,
+          Descripcion: institucionFinanciera.Descripcion,
+        },
+      },
     })),
 
   changeObligadoSolidarioAval: (obligadoSolidario: any) => {
@@ -114,6 +136,13 @@ export const createInformacionGeneralSlice: StateCreator<
         ...state.tablaObligadoSolidarioAval,
         newObligadoSolidarioAval,
       ],
+    })),
+
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: ObligadoSolidarioAval[]
+  ) =>
+    set((state) => ({
+      tablaObligadoSolidarioAval: obligadoSolidarioAval,
     })),
 
   removeObligadoSolidarioAval: (index: number) =>

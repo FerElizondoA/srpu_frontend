@@ -70,7 +70,9 @@ export function VerComentariosSolicitud({
     []
   );
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const IdSolicitud: string = useCortoPlazoStore(
+    (state) => state.registroSolicitud.Id
+  );
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);

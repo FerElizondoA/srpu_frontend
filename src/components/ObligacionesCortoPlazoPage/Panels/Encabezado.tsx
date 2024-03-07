@@ -32,6 +32,7 @@ export function Encabezado() {
   );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
+
   const solicitanteAutorizado: {
     Solicitante: string;
     Cargo: string;
@@ -72,8 +73,6 @@ export function Encabezado() {
     (state) => state.datosActualizar
   );
 
-
-
   return (
     <Grid container height={"25rem"}>
       <Grid
@@ -89,8 +88,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Documento"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Documento")
             }
             fullWidth
             value={tipoDocumento}
@@ -116,8 +115,8 @@ export function Encabezado() {
           </InputLabel>
           <Select
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Solicitante Autorizado"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Solicitante Autorizado")
             }
             sx={queries.medium_text}
             fullWidth
@@ -153,8 +152,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Cargo del Solicitante")) 
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Cargo del Solicitante")
             }
             fullWidth
             value={solicitanteAutorizado.Cargo}
@@ -190,8 +189,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-             ( datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Ente Público")) 
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Ente Público")
             }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
@@ -218,8 +217,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Municipio u Organismo"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Municipio u Organismo")
             }
             fullWidth
             value={organismo.Organismo}
@@ -249,8 +248,8 @@ export function Encabezado() {
           >
             <DesktopDatePicker
               disabled={
-                (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación")) 
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Contratación")
               }
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}

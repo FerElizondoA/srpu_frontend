@@ -53,7 +53,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      if (state.idSolicitud !== "") {
+      if (state.registroSolicitud.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,
           catalogoTiposDocumentosObligatorios: data.data.filter(

@@ -21,7 +21,7 @@ import {
   CancelacionSolicitud,
 } from "../../../store/SolicitudFirma/solicitudFirma";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 
 export function DialogSolicitarCancelacion({
   handler,
@@ -30,7 +30,7 @@ export function DialogSolicitarCancelacion({
 }: {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IData;
+  rowSolicitud: IRegistroSolicitud;
 }) {
   const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");

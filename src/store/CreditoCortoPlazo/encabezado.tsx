@@ -63,9 +63,32 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   catalogoOrganismos: [],
   catalogoTiposEntePublico: [],
 
-  changeEncabezado: (encabezado: any) =>
+  changeEncabezado: (
+    tipoDocumento: string,
+    solicitanteAutorizado: {
+      Solicitante: string;
+      Cargo: string;
+      Nombre: string;
+    },
+    tipoEntePublico: { Id: string; TipoEntePublico: string },
+    organismo: { Id: string; Organismo: string },
+    fechaContratacion: string
+  ) =>
     set(() => ({
-      encabezado: encabezado,
+      encabezado: {
+        tipoDocumento: tipoDocumento,
+        solicitanteAutorizado: {
+          Solicitante: solicitanteAutorizado.Solicitante,
+          Cargo: solicitanteAutorizado.Cargo,
+          Nombre: solicitanteAutorizado.Nombre,
+        },
+        tipoEntePublico: {
+          Id: tipoEntePublico.Id,
+          TipoEntePublico: tipoEntePublico.TipoEntePublico,
+        },
+        organismo: { Id: organismo.Id, Organismo: organismo.Organismo },
+        fechaContratacion: fechaContratacion,
+      },
     })),
 
   getTiposEntesPublicos: async () => {

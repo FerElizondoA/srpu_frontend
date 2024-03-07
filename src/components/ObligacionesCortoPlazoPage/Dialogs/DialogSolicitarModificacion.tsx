@@ -18,6 +18,7 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -52,16 +53,14 @@ export function DialogSolicitarModificacion({
     (state) => state.modificaSolicitud
   );
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
-  const editCreadoPor: string = useCortoPlazoStore(
-    (state) => state.editCreadoPor
+  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
   );
 
   useEffect(() => {
@@ -70,7 +69,11 @@ export function DialogSolicitarModificacion({
 
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
-      addComentario(idSolicitud, JSON.stringify(comentarios), "Requerimiento");
+      addComentario(
+        registroSolicitud.Id,
+        JSON.stringify(comentarios),
+        "Requerimiento"
+      );
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
@@ -81,7 +84,7 @@ export function DialogSolicitarModificacion({
             ? "6"
             : "4"
           : "5",
-        idSolicitud,
+        registroSolicitud.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
@@ -115,16 +118,16 @@ export function DialogSolicitarModificacion({
         });
       });
     } else {
-      if (idSolicitud !== "") {
+      if (registroSolicitud.Id !== "") {
         modificaSolicitud(
-          editCreadoPor || localStorage.getItem("IdUsuario"),
+          registroSolicitud.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1"
         )
           .then(() => {
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
               addComentario(
-                idSolicitud,
+                registroSolicitud.Id,
                 JSON.stringify(comentarios),
                 "Captura"
               );

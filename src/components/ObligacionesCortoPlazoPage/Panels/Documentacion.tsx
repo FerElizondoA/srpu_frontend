@@ -137,7 +137,9 @@ export function Documentacion() {
   );
 
   // IdSolicitud
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const IdSolicitud: string = useCortoPlazoStore(
+    (state) => state.registroSolicitud.Id
+  );
   useEffect(() => {
     if (IdSolicitud) {
       getDocumentos(

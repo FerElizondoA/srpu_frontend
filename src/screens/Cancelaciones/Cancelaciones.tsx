@@ -48,7 +48,7 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
 
 interface Head {
   label: string;
@@ -87,9 +87,11 @@ const heads: readonly Head[] = [
 ];
 
 export const Cancelaciones = () => {
-  const [datos, setDatos] = useState<Array<IData>>([]);
+  const [datos, setDatos] = useState<Array<IRegistroSolicitud>>([]);
   const [busqueda, setBusqueda] = useState("");
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<
+    Array<IRegistroSolicitud>
+  >([]);
 
   const [rowId, setRowId] = useState("");
 
@@ -161,18 +163,8 @@ export const Cancelaciones = () => {
 
   const navigate = useNavigate();
 
-  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
-  const changeNoRegistro: Function = useCortoPlazoStore(
-    (state) => state.changeNoRegistro
-  );
-  const changeEditCreadoPor: Function = useCortoPlazoStore(
-    (state) => state.changeEditCreadoPor
-  );
+
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -234,21 +226,10 @@ export const Cancelaciones = () => {
     (state) => state.addGeneralGastosCostos
   );
 
-  //START Row Solicitud
-
-  const rowSolicitud: IData = useSolicitudFirmaStore(
-    (state) => state.rowSolicitud
-  );
-
-  const setRowSolicitud: Function = useSolicitudFirmaStore(
-    (state) => state.setRowSolicitud
-  );
-
-  //END Row Solicitud
-
-  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    // const state = useCortoPlazoStore.getState();
-
+  const llenaSolicitud = (
+    solicitud: IRegistroSolicitud,
+    TipoDocumento: string
+  ) => {
     if (TipoDocumento === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
@@ -296,7 +277,6 @@ export const Cancelaciones = () => {
   };
 
   const limpiaSolicitud = () => {
-    changeIdSolicitud("");
     changeEncabezado({
       tipoDocumento: "",
       solicitanteAutorizado: {
@@ -343,7 +323,12 @@ export const Cancelaciones = () => {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
-  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
+  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
+  );
+  const setRegistroSolicitud: Function = useCortoPlazoStore(
+    (state) => state.setRegistroSolicitud
+  );
 
   useEffect(() => {
     if (openDialogVer === false) {
@@ -381,7 +366,6 @@ export const Cancelaciones = () => {
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
     setProceso("Actualizacion");
-    changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
 
@@ -691,12 +675,10 @@ export const Cancelaciones = () => {
                               type="button"
                               onClick={() => {
                                 llenaSolicitud(row, row.TipoSolicitud);
-                                changeIdSolicitud(row.Id);
-                                changeNoRegistro(row.NumeroRegistro);
                                 changeOpenDialogVer(!openDialogVer);
 
                                 setRowId(row.Id);
-                                setRowSolicitud(row);
+                                setRegistroSolicitud(JSON.parse(row.Solicitud));
                               }}
                             >
                               <VisibilityIcon />
@@ -741,7 +723,6 @@ export const Cancelaciones = () => {
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
                                     } else {
@@ -751,7 +732,6 @@ export const Cancelaciones = () => {
                                         setUrl
                                       );
                                       setProceso("Autorizado");
-                                      changeIdSolicitud(row.Id);
                                       navigate("../firmaUrl");
                                     }
                                   });
@@ -772,9 +752,6 @@ export const Cancelaciones = () => {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    changeIdSolicitud(row?.Id);
-                                    changeNoRegistro(row.NumeroRegistro);
-                                    changeEditCreadoPor(row?.CreadoPor);
                                     llenaSolicitud(row, row.TipoSolicitud);
                                     if (row.Estatus === "Actualizacion") {
                                       getComentariosSolicitudPlazo(
@@ -796,7 +773,7 @@ export const Cancelaciones = () => {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    setSolicitud({
+                                    setRegistroSolicitud({
                                       Id: row.Id,
                                       noSolicitud: row.NumeroRegistro,
                                     });
@@ -814,8 +791,6 @@ export const Cancelaciones = () => {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  changeIdSolicitud(row?.Id);
-                                  changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenVerComentarios(!openVerComentarios);
                                 }}
                               >
@@ -830,10 +805,10 @@ export const Cancelaciones = () => {
                                 type="button"
                                 onClick={() => {
                                   llenaSolicitud(row, row.TipoSolicitud);
-                                  changeIdSolicitud(row.Id);
-                                  changeNoRegistro(row.NumeroRegistro);
                                   changeOpenDialogVer(!openDialogVer);
-                                  setRowSolicitud(row);
+                                  setRegistroSolicitud(
+                                    JSON.parse(row.Solicitud)
+                                  );
                                 }}
                               >
                                 <DoDisturbOnIcon />
@@ -850,8 +825,6 @@ export const Cancelaciones = () => {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    changeIdSolicitud(row?.Id || "");
-                                    changeEditCreadoPor(row?.CreadoPor);
                                     changeOpenEliminar(!openEliminar);
                                     if (
                                       localStorage.getItem("Rol") ===
@@ -887,7 +860,7 @@ export const Cancelaciones = () => {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
+          rowSolicitud={solicitud}
           rowId={rowId}
         />
       )}
@@ -895,7 +868,7 @@ export const Cancelaciones = () => {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={solicitud.noSolicitud}
+          noSolicitud={solicitud.NumeroRegistro}
           idSolicitud={solicitud.Id}
         />
       )}

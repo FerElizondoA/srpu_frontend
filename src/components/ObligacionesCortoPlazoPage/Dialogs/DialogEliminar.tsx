@@ -18,7 +18,9 @@ export function DialogEliminar({
   const borrarSolicitud: Function = useCortoPlazoStore(
     (state) => state.borrarSolicitud
   );
-  const idSolicitud: String = useCortoPlazoStore((state) => state.idSolicitud);
+  const idSolicitud: String = useCortoPlazoStore(
+    (state) => state.registroSolicitud.Id
+  );
 
   return (
     <Dialog

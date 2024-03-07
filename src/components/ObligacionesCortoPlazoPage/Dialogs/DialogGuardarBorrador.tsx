@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 
 type Props = {
   handler: Function;
@@ -33,8 +34,6 @@ export function DialogGuardarBorrador(props: Props) {
   );
 
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
-
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const [info, setInfo] = useState(
     "La solicitud se guardará como borrador y estará disponible para modificar"
@@ -68,10 +67,6 @@ export function DialogGuardarBorrador(props: Props) {
     notnull();
   }, [institucion, montoOriginal]);
 
-  const editCreadoPor: string = useCortoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   const navigate = useNavigate();
 
   const cleanSolicitud: Function = useCortoPlazoStore(
@@ -87,6 +82,10 @@ export function DialogGuardarBorrador(props: Props) {
   const markedText = division !== -1 ? info.substring(0, division + 1) : info;
 
   const restText = division !== -1 ? info.substring(division + 1) : "";
+
+  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
+  );
 
   return (
     <Dialog
@@ -133,16 +132,16 @@ export function DialogGuardarBorrador(props: Props) {
         <Button
           onClick={() => {
             props.handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
                   addComentario(
-                    idSolicitud,
+                    solicitud.Id,
                     JSON.stringify(comentario),
                     "Captura"
                   );
@@ -174,7 +173,7 @@ export function DialogGuardarBorrador(props: Props) {
               )
                 .then(() => {
                   addComentario(
-                    idSolicitud,
+                    solicitud.Id,
                     JSON.stringify(comentario),
                     "Captura"
                   );
@@ -216,9 +215,9 @@ export function DialogGuardarBorrador(props: Props) {
         <Button
           onClick={() => {
             props.handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)

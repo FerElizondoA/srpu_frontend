@@ -20,6 +20,7 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -36,8 +37,6 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.modificaSolicitud
   );
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
@@ -48,10 +47,6 @@ export function ConfirmacionEnviarSolicitud({
     []
   );
 
-  const editCreadoPor: string = useCortoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   React.useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
@@ -59,6 +54,9 @@ export function ConfirmacionEnviarSolicitud({
   const navigate = useNavigate();
 
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
+  );
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -139,16 +137,16 @@ export function ConfirmacionEnviarSolicitud({
         <Button
           onClick={() => {
             handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
-                  editCreadoPor,
+                  solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   "3"
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -177,10 +175,10 @@ export function ConfirmacionEnviarSolicitud({
                     });
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(editCreadoPor, idUsuarioAsignado, "2")
+                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -218,7 +216,7 @@ export function ConfirmacionEnviarSolicitud({
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -254,7 +252,7 @@ export function ConfirmacionEnviarSolicitud({
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );

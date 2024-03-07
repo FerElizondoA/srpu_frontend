@@ -24,6 +24,7 @@ import {
   SolicitudInscripcionSlice,
 } from "./solicitud_inscripcion";
 import { createTasaEfectivaSlice, TasaEfectivaSlice } from "./tasa_efectiva";
+import { createDatosSolicitudSlice, DatosSolicitud } from "./solicitud";
 
 export type SolicitudStore = EncabezadoSlice &
   InformacionGeneralSlice &
@@ -33,7 +34,8 @@ export type SolicitudStore = EncabezadoSlice &
   CondicionFinancieraSlice &
   DocumentosSlice &
   ComentarioApartadoSlice &
-  SolicitudFirmaSlice;
+  SolicitudFirmaSlice &
+  DatosSolicitud;
 
 export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createEncabezadoSlice(...x),
@@ -45,4 +47,5 @@ export const useCortoPlazoStore = create<SolicitudStore>()((...x) => ({
   ...createDocumentoSlice(...x),
   ...createComentarioSlice(...x),
   ...createSolicitudFirmaSlice(...x),
+  ...createDatosSolicitudSlice(...x),
 }));

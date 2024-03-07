@@ -25,7 +25,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import {
   IComisiones,
   ICondicionFinanciera,
@@ -34,6 +33,7 @@ import {
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
@@ -43,7 +43,6 @@ import {
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
   label: string;
@@ -98,27 +97,24 @@ const headsCondiciones: Head[] = [
 export function Resumen({ coments }: { coments: boolean }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const rowSolicitud: IData = useCortoPlazoStore((state) => state.rowSolicitud);
-
-  // IdSolicitud
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
+  );
 
   // Encabezado
   const TipodeDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
-  const SolicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Nombre
-  );
-  const CargodelSolicitante: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Cargo
-  );
-  const TipodeEntePúblico: string = useCortoPlazoStore(
-    (state) => state.encabezado.tipoEntePublico.TipoEntePublico
-  );
-  const MunicipiouOrganismo: string = useCortoPlazoStore(
-    (state) => state.encabezado.organismo.Organismo
-  );
+  const solicitanteAutorizado: {
+    Solicitante: string;
+    Cargo: string;
+    Nombre: string;
+  } = useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
+
+  const TipodeEntePúblico: { Id: string; TipoEntePublico: string } =
+    useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
+  const MunicipiouOrganismo: { Id: string; Organismo: string } =
+    useCortoPlazoStore((state) => state.encabezado.organismo);
   const FechadeContratación: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
@@ -178,15 +174,15 @@ export function Resumen({ coments }: { coments: boolean }) {
     },
     {
       label: "Tipo de Ente Público",
-      value: TipodeEntePúblico,
+      value: TipodeEntePúblico.TipoEntePublico,
     },
     {
       label: "Solicitante Autorizado",
-      value: SolicitanteAutorizado,
+      value: solicitanteAutorizado.Nombre,
     },
     {
       label: "Municipio u Organismo",
-      value: MunicipiouOrganismo,
+      value: MunicipiouOrganismo.Organismo,
     },
     {
       label: "Fecha de Contratación (Encabezado)",
@@ -194,7 +190,7 @@ export function Resumen({ coments }: { coments: boolean }) {
     },
     {
       label: "Cargo del Solicitante",
-      value: CargodelSolicitante,
+      value: solicitanteAutorizado.Cargo,
     },
   ];
 
@@ -239,10 +235,11 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   useEffect(() => {
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+      `/SRPU/CORTOPLAZO/DOCSOL/${registroSolicitud.Id}/`,
       setArr,
       setCargados
     );
+    console.log("solicitud", registroSolicitud);
   }, []);
 
   const toBase64 = (file: any) =>
@@ -257,11 +254,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   const activaAccion =
-    ((localStorage.getItem("IdUsuario") === rowSolicitud.IdEditor &&
-      rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-      (rowSolicitud.NoEstatus === "4" &&
-        localStorage.getItem("Rol") === "Revisor")) &&
-    ["4", "5", "6"].includes(rowSolicitud.NoEstatus);
+    localStorage.getItem("IdUsuario") === registroSolicitud.IdEditor;
 
   return (
     <Grid

@@ -42,7 +42,9 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const idSolicitud: string = useCortoPlazoStore(
+    (state) => state.registroSolicitud.Id
+  );
 
   useEffect(() => {
     getTiposDocumentos();

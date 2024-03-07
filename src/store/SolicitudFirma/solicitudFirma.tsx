@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -39,7 +38,6 @@ export interface IDataFirmaDetalle {
 }
 
 export interface SolicitudFirmaSlice {
-  idSolicitud: string;
   proceso: string;
   url: string;
   infoDoc: string;
@@ -50,7 +48,6 @@ export interface SolicitudFirmaSlice {
   catalogoFirmaDetalle: IDataFirmaDetalle;
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
 
-  changeIdSolicitud: (id: string) => void;
   setProceso: (estatus: string) => void;
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
@@ -60,8 +57,6 @@ export interface SolicitudFirmaSlice {
   setArchivosCancelacion: (ArchivosCancelacion: ArchivosCancelacion) => void;
   cleanArchivosCancelacion: () => void;
 
-  rowSolicitud: IData;
-  setRowSolicitud: (rowSolicitud: IData) => void;
   cleanSolicitud: () => void;
 }
 
@@ -69,31 +64,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
-  idSolicitud: "",
-
-  rowSolicitud: {
-    Id: "",
-    NumeroRegistro: "",
-    Nombre: "",
-    TipoEntePublico: "",
-    TipoSolicitud: "",
-    Institucion: "",
-    NoEstatus: "",
-    Estatus: "",
-    ControlInterno: "",
-    IdClaveInscripcion: "",
-    MontoOriginalContratado: "",
-    FechaContratacion: "",
-    Solicitud: "",
-    FechaCreacion: "",
-    CreadoPor: "",
-    ModificadoPor: "",
-    IdEditor: "",
-    FechaRequerimientos: "",
-    IdPathDoc: "",
-    UltimaModificacion: new Date().toString(),
-  },
-
   archivosCancelacion: {
     acreditacionCancelacion: {
       archivo: new File([], ""),
@@ -112,34 +82,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     set(() => ({
       justificacionAnulacion: justificacionAnulacion,
     })),
-
-  setRowSolicitud: (rowSolicitud: IData) => {
-    set(() => ({
-      rowSolicitud: rowSolicitud,
-      // {
-      //   Id: rowSolicitud.Id,
-      //   NumeroRegistro: rowSolicitud.NumeroRegistro,
-      //   Nombre: rowSolicitud.Nombre,
-      //   TipoEntePublico: rowSolicitud.TipoEntePublico,
-      //   TipoSolicitud: rowSolicitud.TipoSolicitud,
-      //   Institucion: rowSolicitud.Institucion,
-      //   NoEstatus: rowSolicitud.NoEstatus,
-      //   Estatus: rowSolicitud.Estatus,
-      //   ControlInterno: rowSolicitud.ControlInterno,
-      //   IdClaveInscripcion: rowSolicitud.IdClaveInscripcion,
-      //   MontoOriginalContratado: rowSolicitud.MontoOriginalContratado,
-      //   FechaContratacion: rowSolicitud.FechaContratacion,
-      //   Solicitud: rowSolicitud.Solicitud,
-      //   FechaCreacion: rowSolicitud.FechaCreacion,
-      //   CreadoPor: rowSolicitud.CreadoPor,
-      //   ModificadoPor: rowSolicitud.ModificadoPor,
-      //   IdEditor: rowSolicitud.IdEditor,
-      //   FechaRequerimientos: rowSolicitud.FechaRequerimientos,
-      //   IdPathDoc: rowSolicitud.IdPathDoc,
-      //   UltimaModificacion: new Date().toString(),
-      // },
-    }));
-  },
 
   setArchivosCancelacion: (archivosCancelacion: ArchivosCancelacion) =>
     set(() => ({
@@ -255,8 +197,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       });
   },
 
-  changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
-
   setProceso: (estatus: string) => {
     set(() => ({
       proceso: estatus,
@@ -272,9 +212,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       const state = useCortoPlazoStore.getState();
 
       const estatusPrevio = {
-        NoEstatus: state.rowSolicitud.NoEstatus,
-        Estatus: state.rowSolicitud.Estatus,
-        ControlInterno: state.rowSolicitud.ControlInterno,
+        NoEstatus: state.registroSolicitud.NoEstatus,
+        Estatus: state.registroSolicitud.Estatus,
+        ControlInterno: state.registroSolicitud.ControlInterno,
       };
 
       axios
@@ -283,7 +223,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           {
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
-            IdSolicitud: state.idSolicitud,
+            IdSolicitud: state.registroSolicitud.Id,
             NumeroOficio: `${inf.NumeroOficio}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
@@ -311,12 +251,12 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           let mensaje =
             estatusPrevio.ControlInterno === "inscripcion"
               ? `Se recibe el ${new Date()} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
+                  state.registroSolicitud.IdClaveInscripcion
                 }`
               : `Se envía el ${new Date()} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
+                  state.registroSolicitud.IdClaveInscripcion
                 }`;
-          let oficio = `Solicitud ${state.rowSolicitud.IdClaveInscripcion}`;
+          let oficio = `Solicitud ${state.registroSolicitud.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -324,7 +264,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud);
+          GeneraAcuse(titulo, mensaje, oficio, state.registroSolicitud.Id);
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -351,7 +291,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               : estatusPrevio.ControlInterno === "reestructurado"
               ? "10"
               : "101",
-            state.idSolicitud,
+            state.registroSolicitud.Id,
             inf.IdUsuario,
             oficio
           );

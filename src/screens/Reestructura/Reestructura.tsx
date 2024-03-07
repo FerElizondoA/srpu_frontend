@@ -27,8 +27,7 @@ import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/API
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
 
 interface Head {
   label: string;
@@ -67,11 +66,8 @@ const heads: readonly Head[] = [
 ];
 
 export function Reestructura() {
-  const [datos, setDatos] = useState<Array<IData>>([]);
+  const [datos, setDatos] = useState<Array<IRegistroSolicitud>>([]);
 
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
   );
@@ -82,8 +78,8 @@ export function Reestructura() {
 
   const [rowId] = useState("");
 
-  const rowSolicitud: IData = useSolicitudFirmaStore(
-    (state) => state.rowSolicitud
+  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
+    (state) => state.registroSolicitud
   );
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
@@ -343,8 +339,6 @@ export function Reestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            changeIdSolicitud(row?.Id);
-                            // llenaSolicitud(row, row.TipoSolicitud);
                             getComentariosSolicitudPlazo(
                               row.Id,
                               setDatosActualizar
@@ -369,7 +363,7 @@ export function Reestructura() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
+          rowSolicitud={solicitud}
           rowId={rowId}
         />
       )}
