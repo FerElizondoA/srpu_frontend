@@ -5,8 +5,6 @@ import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Docume
 import { useCortoPlazoStore } from "./main";
 
 export interface DocumentosSlice {
-  documentosObligatorios: [];
-
   tablaDocumentos: IFile[];
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
@@ -21,8 +19,6 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
-  documentosObligatorios: [],
-
   tablaDocumentos: [],
 
   catalogoTiposDocumentos: [],

@@ -117,7 +117,7 @@ export function SolicitudesReestructura() {
   );
 
   const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoLP
+    (state) => state.addDocumento
   );
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {

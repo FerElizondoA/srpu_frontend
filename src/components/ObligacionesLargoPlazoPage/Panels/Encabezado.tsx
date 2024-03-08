@@ -1,17 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
-
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
-export interface IUsuariosLargo {
+export interface IUsuariosCorto {
   Id: string;
   Nombre: string;
   ApellidoPaterno: string;
@@ -30,9 +28,11 @@ export function Encabezado() {
   const tipoDocumento: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
+
   const getTiposEntesPublicos: Function = useCortoPlazoStore(
     (state) => state.getTiposEntesPublicos
   );
+
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
 
@@ -45,16 +45,14 @@ export function Encabezado() {
   const organismo: { Id: string; Organismo: string } = useLargoPlazoStore(
     (state) => state.encabezado.organismo
   );
-
   const getOrganismos: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
-
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
 
-  const changeEncabezado: Function = useCortoPlazoStore(
+  const changeEncabezado: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
   );
 
@@ -65,7 +63,7 @@ export function Encabezado() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosLargo>>([]);
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
 
   const selectedValue =
     usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)
@@ -73,12 +71,8 @@ export function Encabezado() {
 
   const isValueValid = usuarios.some((usuario) => usuario.Id === selectedValue);
 
-  const datosActualizar: Array<string> = useCortoPlazoStore(
+  const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
-  );
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
   );
 
   return (
@@ -96,9 +90,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tipo de Documento")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Documento")
             }
             fullWidth
             value={tipoDocumento}
@@ -124,9 +117,8 @@ export function Encabezado() {
           </InputLabel>
           <Select
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Solicitante Autorizado")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Solicitante Autorizado")
             }
             sx={queries.medium_text}
             fullWidth
@@ -162,9 +154,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Cargo del Solicitante")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Cargo del Solicitante")
             }
             fullWidth
             value={solicitanteAutorizado.Cargo}
@@ -200,9 +191,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tipo de Ente Público")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tipo de Ente Público")
             }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
@@ -229,9 +219,8 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Municipio u Organismo")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Municipio u Organismo")
             }
             fullWidth
             value={organismo.Organismo}
@@ -258,9 +247,8 @@ export function Encabezado() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                (datosActualizar.length > 0 &&
-                  !datosActualizar.includes("Fecha de Contratación")) ||
-                reestructura === "con autorizacion"
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Contratación")
               }
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
@@ -279,9 +267,6 @@ export function Encabezado() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
             />
           </LocalizationProvider>
         </Grid>

@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  InputAdornment,
   InputLabel,
   Paper,
   Radio,
@@ -36,16 +37,17 @@ import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
   DateInput,
   StyledTableCell,
   StyledTableRow,
 } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+//import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 const heads: readonly {
   label: string;
@@ -83,7 +85,7 @@ const headsDisposicion: readonly {
     label: "Fecha de Disposición",
   },
   {
-    label: `Importe`,
+    label: `Importe de disposición`,
   },
 ];
 
@@ -187,6 +189,7 @@ export function DisposicionPagosCapital() {
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
+
   const cleanTasaInteres: Function = useLargoPlazoStore(
     (state) => state.cleanTasaInteres
   );
@@ -205,11 +208,6 @@ export function DisposicionPagosCapital() {
 
   const tasasParciales: boolean = useLargoPlazoStore(
     (state) => state.tasasParciales
-  );
-
-  //RESTRUCTURA
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
   );
 
   useEffect(() => {
@@ -437,7 +435,6 @@ export function DisposicionPagosCapital() {
               adapterLocale={es}
             >
               <DesktopDatePicker
-                disabled={reestructura === "con autorizacion"}
                 sx={{ width: "100%" }}
                 value={new Date(capitalFechaPrimerPago)}
                 onChange={(date) =>
@@ -449,25 +446,7 @@ export function DisposicionPagosCapital() {
                 }
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-
-                //slots={(props: any) => <TextField variant="standard" {...props} />}
               />
-
-              {/* <DatePicker
-                value={new Date(capitalFechaPrimerPago)}
-                onChange={(date) =>
-                  changeCapital(
-                    date?.toString(),
-                    capitalPeriocidadPago,
-                    capitalNumeroPago
-                  )
-                }
-                minDate={new Date(disposicionFechaDisposicion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                slots={{
-                  textField: DateInput,
-                }}
-              /> */}
             </LocalizationProvider>
           </Grid>
 
@@ -476,7 +455,6 @@ export function DisposicionPagosCapital() {
               Periodicidad de Pago
             </InputLabel>
             <Autocomplete
-              disabled={reestructura === "con autorizacion"}
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
@@ -519,7 +497,6 @@ export function DisposicionPagosCapital() {
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
             <InputLabel sx={queries.medium_text}>Número de Pagos</InputLabel>
             <TextField
-              disabled={reestructura === "con autorizacion"}
               placeholder="0"
               value={capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()}
               onChange={(v) => {
@@ -571,7 +548,6 @@ export function DisposicionPagosCapital() {
           >
             <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <FormControlLabel
-                disabled={reestructura === "con autorizacion"}
                 label="Disposiciones Parciales"
                 control={
                   <Checkbox
@@ -587,13 +563,11 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
-              {}
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={es}
               >
                 <DesktopDatePicker
-                  disabled={reestructura === "con autorizacion"}
                   sx={{ width: "100%" }}
                   // disabled={!disposicionesParciales}
                   value={new Date(disposicionFechaDisposicion)}
@@ -603,8 +577,8 @@ export function DisposicionPagosCapital() {
                       moneyMask(disposicionImporte.toString())
                     );
                   }}
-                  minDate={new Date()}
-                  maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                  minDate={new Date(fechaContratacion)}
+                  maxDate={new Date(addDays(new Date(), 365))}
                   slots={{
                     textField: DateInput,
                   }}
@@ -616,9 +590,7 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
               <TextField
-                disabled={
-                  !disposicionesParciales || reestructura === "con autorizacion"
-                }
+                disabled={!disposicionesParciales}
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
@@ -1162,20 +1134,27 @@ export function DisposicionPagosCapital() {
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
-                    type="number"
+                    //type="number"
                     value={tasaInteresSobreTasa}
-                    onChange={(text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: tasaInteresTasaReferencia,
-                        sobreTasa: text.target.value || "",
-                      })
-                    }
+                    onChange={(text) => {
+                      const expRegular = /^\d*\.?\d%*$/;
+
+                      if (
+                        expRegular.test(text.target.value) ||
+                        text.target.value === ""
+                      ) {
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: text.target.value || "",
+                        });
+                      }
+                    }}
                     fullWidth
                     InputLabelProps={{
                       style: {
@@ -1186,6 +1165,9 @@ export function DisposicionPagosCapital() {
                       style: {
                         fontFamily: "MontserratMedium",
                       },
+                      endAdornment: (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ),
                     }}
                     variant="standard"
                   />

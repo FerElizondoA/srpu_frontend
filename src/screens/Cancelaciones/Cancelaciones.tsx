@@ -219,7 +219,7 @@ export const Cancelaciones = () => {
     (state) => state.addCondicionFinanciera
   );
   const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoLP
+    (state) => state.addDocumento
   );
 
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(

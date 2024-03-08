@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
@@ -194,13 +195,12 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
 
   useEffect(() => {
-    if(tablaDisposicion.length > 1){
-      setDisposicionesParciales(true)
-    }else{
-      setDisposicionesParciales(false)
+    if (tablaDisposicion.length > 1) {
+      setDisposicionesParciales(true);
+    } else {
+      setDisposicionesParciales(false);
     }
-  }, [props.openState])
-  
+  }, [props.openState]);
 
   return (
     <>

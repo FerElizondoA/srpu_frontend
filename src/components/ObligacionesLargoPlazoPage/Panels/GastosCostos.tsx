@@ -186,8 +186,56 @@ export function GastoCostos() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-around",
+        alignItems: "center",
       }}
     >
+      <Grid item width={"30%"}>
+        <InputLabel sx={queries.medium_text}>Destino</InputLabel>
+        <Autocomplete
+          disabled={reestructura === "con autorizacion"}
+          clearText="Borrar"
+          noOptionsText="Sin opciones"
+          closeText="Cerrar"
+          openText="Abrir"
+          fullWidth
+          options={catalogoDestinos}
+          getOptionLabel={(option) => option.Descripcion}
+          renderOption={(props, option) => {
+            return (
+              <li {...props} key={option.Descripcion}>
+                <Typography>{option.Descripcion}</Typography>
+              </li>
+            );
+          }}
+          value={{
+            Id: destino.Id || "",
+            Descripcion: destino.Descripcion || "",
+          }}
+          onChange={(event, text) => {
+            changeGeneralGastosCostos({
+              destino: {
+                Id: text?.Id || "",
+                Descripcion: text?.Descripcion || "",
+              },
+              detalleInversion: generalGCDetalleInversion,
+              claveInscripcionFinanciamiento:
+                generalGCClaveInscripcionFinanciamiento,
+              descripcion: generalGCDescripcion,
+              monto: moneyMask(generalGCMonto.toString()),
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              sx={queries.medium_text}
+            />
+          )}
+          isOptionEqualToValue={(option, value) =>
+            option.Id === value.Id || value.Descripcion === ""
+          }
+        />
+      </Grid>
       {destino.Descripcion.toLowerCase().includes("refinanciamiento") ? (
         <Grid
           container
@@ -438,53 +486,6 @@ export function GastoCostos() {
             height: "25vh",
           }}
         >
-          <Grid item width={"90%"}>
-            <InputLabel sx={queries.medium_text}>Destino</InputLabel>
-            <Autocomplete
-              disabled={reestructura === "con autorizacion"}
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoDestinos}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Descripcion}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              value={{
-                Id: destino.Id || "",
-                Descripcion: destino.Descripcion || "",
-              }}
-              onChange={(event, text) => {
-                changeGeneralGastosCostos({
-                  destino: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  detalleInversion: generalGCDetalleInversion,
-                  claveInscripcionFinanciamiento:
-                    generalGCClaveInscripcionFinanciamiento,
-                  descripcion: generalGCDescripcion,
-                  monto: moneyMask(generalGCMonto.toString()),
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Id === value.Id || value.Descripcion === ""
-              }
-            />
-          </Grid>
           <Grid item width={"90%"}>
             <InputLabel sx={queries.medium_text}>
               Detalle de la Inversión
@@ -796,10 +797,9 @@ export function GastoCostos() {
             disabled={
               /^[\s]*$/.test(destino.Descripcion) ||
               /^[\s]*$/.test(generalGCDetalleInversion.Descripcion) ||
-              /^[\s]*$/.test(generalGCDescripcion) 
+              /^[\s]*$/.test(generalGCDescripcion) ||
               // ||
-              // /^[\s]*$/.test(generalGCClaveInscripcionFinanciamiento) 
-              ||
+              // /^[\s]*$/.test(generalGCClaveInscripcionFinanciamiento)
               generalGCMonto < 1
             }
             onClick={() => {

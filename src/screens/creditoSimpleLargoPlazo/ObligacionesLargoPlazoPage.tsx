@@ -17,6 +17,7 @@ import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { DialogSolicitarReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarReestructura";
+import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -29,6 +30,7 @@ export function ObligacionesLargoPlazoPage() {
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
+  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
@@ -46,6 +48,11 @@ export function ObligacionesLargoPlazoPage() {
 
   useEffect(() => {
     getTiposDocumentos();
+    getDocumentos(
+      `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+      () => {},
+      () => {}
+    );
   }, []);
 
   return (

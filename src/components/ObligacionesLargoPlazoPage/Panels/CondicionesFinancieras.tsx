@@ -12,20 +12,20 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  ThemeProvider,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
 
 import {
+  IComisiones,
   ICondicionFinanciera,
   IDisposicion,
-  IComisiones,
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,13 +34,14 @@ import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
 } from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 const heads: readonly {
   label: string;
@@ -52,7 +53,7 @@ const heads: readonly {
     label: "Fecha Disposición",
   },
   {
-    label: "Importe",
+    label: "Importe de disposición",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -73,10 +74,8 @@ const heads: readonly {
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
-
   const tablaCondicionesFinancieras: ICondicionFinanciera[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
-
   const loadCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );
@@ -113,10 +112,6 @@ export function CondicionesFinancieras() {
 
   const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
-  );
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
   );
 
   let disable =
@@ -194,7 +189,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
-                            disabled={reestructura === "con autorizacion"}
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               changeOpenAgregarState(!openAgregarCondicion);
@@ -240,9 +235,7 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
-                            disabled={
-                              disable || reestructura === "con autorizacion"
-                            }
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               updatecondicionFinancieraTable(
@@ -549,17 +542,19 @@ export function CondicionesFinancieras() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Button
-          disabled={disable}
-          sx={queries.buttonContinuar}
-          variant="outlined"
-          onClick={() => {
-            changeOpenAgregarState(!openAgregarCondicion);
-            setAccion("Agregar");
-          }}
-        >
-          Agregar
-        </Button>
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={disable}
+            sx={queries.buttonContinuar}
+            variant="outlined"
+            onClick={() => {
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
 
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
