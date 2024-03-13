@@ -298,6 +298,10 @@ const {
   listaMecanismosDePago,
 } = require("../controllers/Consultas.js");
 const { getDetailUsuario, getUsuarios } = require("../controllers/Usuarios.js");
+const {
+  getTrazabilidadSolicitud
+} = require("../controllers/TrazabilidadSolicitud.js");
+
 
 //#region Instituciones Financieras
 router.post(
@@ -1594,5 +1598,10 @@ router.get("/listaMecanismosDePago", verifyToken.verifyJWT, (req, res) => {
   listaMecanismosDePago(req, res);
 });
 // #endregion
+
+
+router.get("/get-TrazabilidadSolicitud", verifyToken.verifyJWT, (req, res) => {
+  getTrazabilidadSolicitud(req, res);
+});
 
 module.exports = router;

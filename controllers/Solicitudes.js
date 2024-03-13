@@ -328,7 +328,6 @@ module.exports = {
     db.query(
       `CALL sp_ModificaSolicitud( '${IdSolicitud}','${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${IdUsuario}' )`,
       (err, result) => {
-        console.log(err);
         if (err) {
           return res.status(500).send({
             error: "Error de servidor",
