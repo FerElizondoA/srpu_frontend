@@ -192,7 +192,7 @@ export function DialogNuevaAutorizacion(props: Props) {
               allowScrollButtonsMobile
             >
               <Tab
-                label="REGISTRAR NUEVA AUTORIZACIÓN DE LA LEGISLATURA LOCAL"
+                label="NUEVA AUTORIZACIÓN DE LA LEGISLATURA LOCAL"
                 sx={queries.bold_text}
               ></Tab>
               <Tab label="MONTO AUTORIZADO" sx={queries.bold_text}></Tab>

@@ -304,15 +304,6 @@ export function ComisionesTasaEfectiva() {
                   tasaEfectiva: v.target.value,
                 });
               }
-              // if (
-              //   validator.isNumeric(v.target.value) ||
-              //   v.target.value === ""
-              // ) {
-              //   changeTasaEfectiva({
-              //     diasEjercicio: tasaEfectivaDiasEjercicio,
-              //     tasaEfectiva: v.target.value,
-              //   });
-              // }
             }}
             InputLabelProps={{
               style: {

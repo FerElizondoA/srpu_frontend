@@ -477,7 +477,7 @@ export function AsignarFuente() {
       >
         <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
           <InputLabel sx={queries.medium_text}>
-            Tipo de garantía de pago
+            Tipo de Garantía de Pago
           </InputLabel>
           <Autocomplete
             clearText="Borrar"

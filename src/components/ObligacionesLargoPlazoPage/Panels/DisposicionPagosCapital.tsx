@@ -1137,7 +1137,7 @@ export function DisposicionPagosCapital() {
                     //type="number"
                     value={tasaInteresSobreTasa}
                     onChange={(text) => {
-                      const expRegular = /^\d*\.?\d%*$/;
+                      const expRegular = /^\d*\.?\d*$/;
 
                       if (
                         expRegular.test(text.target.value) ||

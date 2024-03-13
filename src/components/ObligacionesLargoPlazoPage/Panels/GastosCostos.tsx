@@ -657,51 +657,6 @@ export function GastoCostos() {
             />
           </Grid>
           <Grid item width={"90%"}>
-            <InputLabel disabled sx={queries.medium_text}>
-              Saldo Vigente
-            </InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              fullWidth
-              value={GCSaldoVigente <= 0 ? "" : GCSaldoVigente.toString()}
-              onChange={(v) => {
-                if (
-                  validator.isNumeric(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) &&
-                  parseInt(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) < 9999999999999999
-                ) {
-                  changeGastosCostos({
-                    gastosAdicionales: GCGastosAdicionales,
-                    saldoVigente: moneyMask(v.target.value.toString()),
-                    montoGastosAdicionales: moneyMask(
-                      GCMontoGastosAdicionales.toString()
-                    ),
-                  });
-                }
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              variant="standard"
-            />
-          </Grid>
-          <Grid item width={"90%"}>
             <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
             <TextField
               disabled={reestructura === "con autorizacion"}
@@ -776,6 +731,51 @@ export function GastoCostos() {
                   fontFamily: "MontserratMedium",
                 },
                 //startAdornment: <AttachMoneyIcon />,
+              }}
+              variant="standard"
+            />
+          </Grid>
+          <Grid item width={"90%"}>
+            <InputLabel disabled sx={queries.medium_text}>
+              Saldo Vigente
+            </InputLabel>
+            <TextField
+              disabled={reestructura === "con autorizacion"}
+              fullWidth
+              value={GCSaldoVigente <= 0 ? "" : GCSaldoVigente.toString()}
+              onChange={(v) => {
+                if (
+                  validator.isNumeric(
+                    v.target.value
+                      .replace(".", "")
+                      .replace(",", "")
+                      .replace(/\D/g, "")
+                  ) &&
+                  parseInt(
+                    v.target.value
+                      .replace(".", "")
+                      .replace(",", "")
+                      .replace(/\D/g, "")
+                  ) < 9999999999999999
+                ) {
+                  changeGastosCostos({
+                    gastosAdicionales: GCGastosAdicionales,
+                    saldoVigente: moneyMask(v.target.value.toString()),
+                    montoGastosAdicionales: moneyMask(
+                      GCMontoGastosAdicionales.toString()
+                    ),
+                  });
+                }
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
+              }}
+              InputProps={{
+                style: {
+                  fontFamily: "MontserratMedium",
+                },
               }}
               variant="standard"
             />

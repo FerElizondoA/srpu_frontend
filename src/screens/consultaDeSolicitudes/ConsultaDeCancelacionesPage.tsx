@@ -1,13 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
-import CommentIcon from "@mui/icons-material/Comment";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Chip,
   Grid,
+  InputBase,
   Table,
   TableBody,
   TableContainer,
@@ -16,30 +12,29 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import InputBase from "@mui/material/InputBase";
-import Paper from "@mui/material/Paper";
-import { differenceInDays, format } from "date-fns";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  getSolicitudesAdmin,
-  getSolicitudesCancelaciones,
-} from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
+
+import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
+import CommentIcon from "@mui/icons-material/Comment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import { differenceInDays, format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-import { DialogEliminar } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogEliminar";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { VerBorradorCancelacion } from "../../components/Cancelacion/Dialogs/DialogResumenCancelacion";
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
@@ -48,12 +43,32 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
-interface Head {
-  label: string;
+export interface IData {
+  Id: string;
+  NumeroRegistro: string;
+  Nombre: string;
+  TipoEntePublico: string;
+  TipoSolicitud: string;
+  Institucion: string;
+  NoEstatus: string;
+  Estatus: string;
+  ControlInterno: string;
+  IdClaveInscripcion: string;
+  MontoOriginalContratado: string;
+  FechaContratacion: string;
+  Solicitud: string;
+  FechaCreacion: string;
+  CreadoPor: string;
+  UltimaModificacion: string;
+  ModificadoPor: string;
+  IdEditor: string;
+  FechaRequerimientos: string;
+  IdPathDoc?: string;
+  Control: string;
 }
-const heads: readonly Head[] = [
+
+const heads: Array<{ label: string }> = [
   {
     label: "Número de Solicitud",
   },
@@ -86,20 +101,10 @@ const heads: readonly Head[] = [
   },
 ];
 
-export const Cancelaciones = () => {
+export function ConsultaDeCancelacionesPage() {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
-
-  const [rowId, setRowId] = useState("");
-
-  const handleChange = (dato: string) => {
-    setBusqueda(dato);
-  };
-
-  const handleSearch = () => {
-    filtrarDatos();
-  };
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -134,39 +139,13 @@ export const Cancelaciones = () => {
     setDatosFiltrados(ResultadoBusqueda);
   };
 
-  useEffect(() => {
-    if (
-      localStorage.getItem("Rol") === "Capturador" ||
-      localStorage.getItem("Rol") === "Verificador"
-    ) {
-      getSolicitudesCancelaciones(setDatos);
-    } else if (localStorage.getItem("Rol") === "Revisor") {
-      getSolicitudesAdmin("Revision", setDatos, "cancelacion");
-    } else if (localStorage.getItem("Rol") === "Validador") {
-      getSolicitudesAdmin("Validacion", setDatos, "cancelacion");
-    } else if (localStorage.getItem("Rol") === "Autorizador") {
-      getSolicitudesAdmin("Autorizacion", setDatos, "cancelacion");
-    }
-  }, []);
-
-  useEffect(() => {
-    setDatosFiltrados(datos);
-  }, [datos]);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    busqueda.length !== 0 ? setDatosFiltrados(datos) : null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busqueda]);
-
   const navigate = useNavigate();
-
-  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   const changeIdSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeIdSolicitud
   );
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
+
   const changeNoRegistro: Function = useCortoPlazoStore(
     (state) => state.changeNoRegistro
   );
@@ -188,19 +167,6 @@ export const Cancelaciones = () => {
   const setTablaDocumentos: Function = useCortoPlazoStore(
     (state) => state.setTablaDocumentos
   );
-
-  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
-  );
-
   const changeReglasAplicables: Function = useCortoPlazoStore(
     (state) => state.changeReglasAplicables
   );
@@ -234,21 +200,14 @@ export const Cancelaciones = () => {
     (state) => state.addGeneralGastosCostos
   );
 
-  //START Row Solicitud
-
-  const rowSolicitud: IData = useSolicitudFirmaStore(
+  const solicitudFirma: IData = useCortoPlazoStore(
     (state) => state.rowSolicitud
   );
-
-  const setRowSolicitud: Function = useSolicitudFirmaStore(
+  const setSolicitudFirma: Function = useCortoPlazoStore(
     (state) => state.setRowSolicitud
   );
 
-  //END Row Solicitud
-
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    // const state = useCortoPlazoStore.getState();
-
     if (TipoDocumento === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
@@ -264,9 +223,10 @@ export const Cancelaciones = () => {
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinanciera(v);
       });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumento(v);
-      });
+      // aux?.documentacion.map((v: any, index: number) => {
+      //   return addDocumento(v);
+      // });
+      setTablaDocumentos(aux?.documentacion);
     } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
@@ -295,72 +255,30 @@ export const Cancelaciones = () => {
     }
   };
 
-  const limpiaSolicitud = () => {
-    changeIdSolicitud("");
-    changeEncabezado({
-      tipoDocumento: "",
-      solicitanteAutorizado: {
-        Solicitante: "",
-        Cargo: "",
-        Nombre: "",
-      },
-      tipoEntePublico: { Id: "", TipoEntePublico: "" },
-      organismo: { Id: "", Organismo: "" },
-      fechaContratacion: new Date(),
-    });
-    changeInformacionGeneral({
-      fechaContratacion: new Date(),
-      fechaVencimiento: new Date(),
-      plazo: 0,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-    cleanObligadoSolidarioAval([]);
-    updatecondicionFinancieraTable([]);
-    setTablaDocumentos([]);
-
-    useCortoPlazoStore.setState({
-      comentarios: {},
-      idComentario: "",
-    });
-  };
-
-  const editarSolicitud = (Tipo: string) => {
-    if (Tipo === "Crédito Simple a Corto Plazo") {
-      navigate("../ObligacionesCortoPlazo");
-    } else {
-      navigate("../ObligacionesLargoPlazo");
-    }
-  };
-
   const [openDialogVer, changeOpenDialogVer] = useState(false);
 
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
-
-  const [openEliminar, changeOpenEliminar] = useState(false);
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
   const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
 
-  useEffect(() => {
-    if (openDialogVer === false) {
-      limpiaSolicitud();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openDialogVer]);
+  const cleanSolicitud: Function = useCortoPlazoStore(
+    (state) => state.cleanSolicitud
+  );
 
   useEffect(() => {
-    if (!openEliminar) {
-      if (!rolesAdmin.includes(localStorage.getItem("Rol")!)) {
-        getSolicitudesCancelaciones(setDatos);
-      } else {
-        getSolicitudesAdmin("Autorizacion", setDatos, "cancelacion");
+    getSolicitudes(
+      !rolesAdmin.includes(localStorage.getItem("Rol")!)
+        ? "SolicitaCancelacion"
+        : "Cancelacion",
+      (e: IData[]) => {
+        setDatos(e);
+        setDatosFiltrados(e);
       }
-    }
-  }, [openEliminar]);
+    );
+    cleanSolicitud();
+  }, []);
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
@@ -380,7 +298,7 @@ export const Cancelaciones = () => {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("actualizacion");
+    setProceso("cancelación");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -390,14 +308,13 @@ export const Cancelaciones = () => {
     return date;
   };
 
-  const setDatosActualizar: Function = useCortoPlazoStore(
-    (state) => state.setDatosActualizar
+  const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
+    (state) => state.getCatalogoFirmaDetalle
   );
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-        {/* {query.isMobile ? <LateralMenuMobile /> : <LateralMenu />} */}
         <LateralMenu />
       </Grid>
       <Grid
@@ -412,19 +329,17 @@ export const Cancelaciones = () => {
             fontFamily: "MontserratBold",
             color: "#AF8C55",
             "@media (max-width: 600px)": {
-              // XS (extra small) screen
               fontSize: "1rem",
             },
             "@media (min-width: 601px) and (max-width: 900px)": {
-              // SM (small) screen
               fontSize: "1.5ch",
             },
           }}
         >
-          Cancelaciones
+          Consulta de Solicitudes
         </Typography>
       </Grid>
-      <Grid item mb={5} lg={12} display="center" justifyContent="center">
+      <Grid item mb={3} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
@@ -437,11 +352,14 @@ export const Cancelaciones = () => {
             placeholder="Buscar"
             value={busqueda}
             onChange={(e) => {
-              handleChange(e.target.value);
+              setBusqueda(e.target.value);
+              if (e.target.value === "") {
+                setDatosFiltrados(datos);
+              }
             }}
             onKeyPress={(ev) => {
               if (ev.key === "Enter") {
-                handleSearch();
+                filtrarDatos();
                 ev.preventDefault();
                 return false;
               }
@@ -451,12 +369,13 @@ export const Cancelaciones = () => {
             type="button"
             sx={{ p: "10px" }}
             aria-label="search"
-            onClick={() => handleSearch()}
+            onClick={() => filtrarDatos()}
           >
             <SearchIcon />
           </IconButton>
         </Paper>
       </Grid>
+
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
           <TableContainer
@@ -509,7 +428,9 @@ export const Cancelaciones = () => {
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
+                    <StyledTableCell />
                     <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
                     <StyledTableCell />
@@ -518,40 +439,15 @@ export const Cancelaciones = () => {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
 
-                    if (
-                      row.Estatus === "Captura" ||
-                      row.Estatus === "Revision"
-                    ) {
+                    if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
-                          label={"En " + row.Estatus}
-                          // icon={<WarningAmberIcon />}
-                          color="default"
-                          variant="outlined"
-                        />
-                      );
-                    } else if (
-                      row.Estatus === "Verificacion" ||
-                      row.Estatus === "Validacion"
-                    ) {
-                      chip = (
-                        <Chip
-                          label={"En " + row.Estatus}
-                          // icon={<RateReviewSharpIcon />}
+                          label={row.Estatus}
                           color="info"
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus === "Autorizacion") {
-                      chip = (
-                        <Chip
-                          label={"En " + row.Estatus}
-                          // icon={<RateReviewSharpIcon />}
-                          color="warning"
-                          variant="outlined"
-                        />
-                      );
-                    } else if (row.Estatus.includes("Por Firmar")) {
+                    } else if (row.ControlInterno === "revision") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -559,11 +455,19 @@ export const Cancelaciones = () => {
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus === "Autorizado") {
+                    } else if (row.ControlInterno === "autorizado") {
                       chip = (
                         <Chip
                           label={row.Estatus}
                           color="success"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus.includes("Requerimientos")) {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="warning"
                           variant="outlined"
                         />
                       );
@@ -576,10 +480,14 @@ export const Cancelaciones = () => {
                           )} días restantes para cancelación automática`}
                         >
                           <Chip
-                            label={row.Estatus}
+                            label={
+                              row.Estatus === "actualizacion"
+                                ? "Actualización"
+                                : row.Estatus
+                            }
                             color={
                               differenceInDays(
-                                getDays(new Date(row.FechaRequerimientos), 10),
+                                getDays(new Date(row.FechaRequerimientos), 11),
                                 new Date()
                               ) > 5
                                 ? "warning"
@@ -588,14 +496,6 @@ export const Cancelaciones = () => {
                             variant="filled"
                           />
                         </Tooltip>
-                      );
-                    } else {
-                      chip = (
-                        <Chip
-                          label={row.Estatus}
-                          color="default"
-                          variant="outlined"
-                        />
                       );
                     }
 
@@ -615,7 +515,7 @@ export const Cancelaciones = () => {
                           component="th"
                           scope="row"
                         >
-                          {row.Institucion?.toString()}
+                          {row.Institucion}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -624,7 +524,7 @@ export const Cancelaciones = () => {
                           component="th"
                           scope="row"
                         >
-                          {row.TipoEntePublico?.toString()}
+                          {row.TipoEntePublico}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -642,7 +542,7 @@ export const Cancelaciones = () => {
                           component="th"
                           scope="row"
                         >
-                          {row.IdClaveInscripcion?.toString()}
+                          {row.IdClaveInscripcion}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -651,7 +551,7 @@ export const Cancelaciones = () => {
                           component="th"
                           scope="row"
                         >
-                          {row.MontoOriginalContratado?.toString()}
+                          {row.MontoOriginalContratado}
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -672,6 +572,20 @@ export const Cancelaciones = () => {
                           component="th"
                           scope="row"
                         >
+                          {row.Estatus.includes("Actualización")
+                            ? format(
+                                new Date(row.FechaRequerimientos),
+                                "dd/MM/yyyy"
+                              )
+                            : " "}
+                        </StyledTableCell>
+
+                        <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
                           {row.TipoSolicitud}
                         </StyledTableCell>
 
@@ -680,7 +594,7 @@ export const Cancelaciones = () => {
                             flexDirection: "row",
                             display: "grid",
                             height: "7rem",
-                            gridTemplateColumns: "repeat(4,1fr)",
+                            gridTemplateColumns: "repeat(3,1fr)",
                           }}
                           align="center"
                           component="th"
@@ -693,121 +607,94 @@ export const Cancelaciones = () => {
                                 llenaSolicitud(row, row.TipoSolicitud);
                                 changeIdSolicitud(row.Id);
                                 changeNoRegistro(row.NumeroRegistro);
+                                setSolicitudFirma(row);
                                 changeOpenDialogVer(!openDialogVer);
-
-                                setRowId(row.Id);
-                                setRowSolicitud(row);
+                                getCatalogoFirmaDetalle(row.Id);
                               }}
                             >
                               <VisibilityIcon />
                             </IconButton>
                           </Tooltip>
 
-                          {((localStorage.getItem("Rol") === "Verificador" &&
-                            row.Estatus.toLowerCase() === "por firmar" &&
-                            !row.Estatus.includes("Autorizado")) ||
-                            (localStorage.getItem("Rol") === "Autorizador" &&
-                              row.Estatus.includes("Por Firmar"))) && (
-                            <Tooltip title="Firmar documento">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  getComentariosSolicitudPlazo(
-                                    row.Id,
-                                    () => {}
-                                  ).then((data) => {
-                                    if (
-                                      rolesAdmin.includes(
-                                        localStorage.getItem("Rol")!
-                                      )
-                                    ) {
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["3", "7", "9"].includes(row.NoEstatus) && (
+                              <Tooltip title="Firmar documento">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    changeIdSolicitud(row.Id);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    setSolicitudFirma(row);
+                                    getComentariosSolicitudPlazo(
+                                      row.Id,
+                                      () => {}
+                                    ).then((data) => {
                                       if (
-                                        data.filter(
-                                          (a: any) => a.Tipo === "Requerimiento"
-                                        ).length > 0
+                                        rolesAdmin.includes(
+                                          localStorage.getItem("Rol")!
+                                        )
                                       ) {
-                                        requerimientos(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
+                                        if (
                                           data.filter(
                                             (a: any) =>
                                               a.Tipo === "Requerimiento"
-                                          )[0],
-                                          row.Id
-                                        );
+                                          ).length > 0
+                                        ) {
+                                          requerimientos(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            data.filter(
+                                              (a: any) =>
+                                                a.Tipo === "Requerimiento"
+                                            )[0],
+                                            row.Id
+                                          );
+                                        } else {
+                                          ConsultaConstancia(
+                                            row.Solicitud,
+                                            row.NumeroRegistro,
+                                            setUrl
+                                          );
+                                          changeIdSolicitud(row.Id);
+                                          navigate("../firmaUrl");
+                                        }
                                       } else {
-                                        ConsultaConstancia(
+                                        setSolicitudFirma(row);
+                                        ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
+                                        setProceso("Por Firmar");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
-                                    } else {
-                                      ConsultaSolicitud(
-                                        row.Solicitud,
-                                        row.NumeroRegistro,
-                                        setUrl
-                                      );
-                                      setProceso("Autorizado");
-                                      changeIdSolicitud(row.Id);
-                                      navigate("../firmaUrl");
-                                    }
+                                    });
+                                  }}
+                                >
+                                  <HistoryEduIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
+
+                          {
+                            <Tooltip title="Ver archivos">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  setSolicitud({
+                                    Id: row.Id,
+                                    noSolicitud: row.NumeroRegistro,
                                   });
+
+                                  setOpenDescargar(true);
                                 }}
                               >
-                                <HistoryEduIcon />
+                                <BrowserUpdatedIcon />
                               </IconButton>
                             </Tooltip>
-                          )}
-
-                          {((localStorage.getItem("Rol") === "Verificador" &&
-                            (row.Estatus === "Verificacion" ||
-                              row.Estatus === "actualizacion")) ||
-                            (localStorage.getItem("Rol") === "Capturador" &&
-                              row.Estatus === "Captura")) &&
-                            localStorage.getItem("Rol") !== "Administrador" && (
-                              <Tooltip title="Editar">
-                                <IconButton
-                                  type="button"
-                                  onClick={() => {
-                                    changeIdSolicitud(row?.Id);
-                                    changeNoRegistro(row.NumeroRegistro);
-                                    changeEditCreadoPor(row?.CreadoPor);
-                                    llenaSolicitud(row, row.TipoSolicitud);
-                                    if (row.Estatus === "actualizacion") {
-                                      getComentariosSolicitudPlazo(
-                                        row.Id,
-                                        setDatosActualizar
-                                      );
-                                    }
-                                    editarSolicitud(row.TipoSolicitud);
-                                  }}
-                                >
-                                  <EditIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-
-                          {row.Estatus !== "Captura" &&
-                            row.Estatus !== "Verificacion" && (
-                              <Tooltip title="Ver archivos">
-                                <IconButton
-                                  type="button"
-                                  onClick={() => {
-                                    setSolicitud({
-                                      Id: row.Id,
-                                      noSolicitud: row.NumeroRegistro,
-                                    });
-
-                                    setOpenDescargar(true);
-                                  }}
-                                >
-                                  <BrowserUpdatedIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )}
+                          }
 
                           {localStorage.getItem("Rol") !== "Administrador" && (
                             <Tooltip title="Comentarios">
@@ -823,56 +710,6 @@ export const Cancelaciones = () => {
                               </IconButton>
                             </Tooltip>
                           )}
-
-                          {row.Estatus === "Autorizado" && (
-                            <Tooltip title="Solicitar Cancelación">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  llenaSolicitud(row, row.TipoSolicitud);
-                                  changeIdSolicitud(row.Id);
-                                  changeNoRegistro(row.NumeroRegistro);
-                                  changeOpenDialogVer(!openDialogVer);
-                                  setRowSolicitud(row);
-                                }}
-                              >
-                                <DoDisturbOnIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-
-                          {localStorage.getItem("IdUsuario") ===
-                            row.CreadoPor &&
-                            localStorage.getItem("Rol") !== "Administrador" &&
-                            (row.Estatus === "Captura" ||
-                              row.Estatus === "Verificacion") && (
-                              <Tooltip title="Borrar">
-                                <IconButton
-                                  type="button"
-                                  onClick={() => {
-                                    changeIdSolicitud(row?.Id || "");
-                                    changeEditCreadoPor(row?.CreadoPor);
-                                    changeOpenEliminar(!openEliminar);
-                                    if (
-                                      localStorage.getItem("Rol") ===
-                                        "Capturador" ||
-                                      localStorage.getItem("Rol") ===
-                                        "Verificador"
-                                    ) {
-                                      getSolicitudesCancelaciones(setDatos);
-                                    } else {
-                                      getSolicitudesAdmin(
-                                        "Autorizacion",
-                                        setDatos,
-                                        "cancelacion"
-                                      );
-                                    }
-                                  }}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )}
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -884,11 +721,11 @@ export const Cancelaciones = () => {
         </Paper>
       </Grid>
       {openDialogVer && (
-        <VerBorradorDocumento
+        <VerBorradorCancelacion
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
-          rowId={rowId}
+          rowSolicitud={solicitudFirma}
+          rowId={""}
         />
       )}
       {openDescargar && (
@@ -899,18 +736,12 @@ export const Cancelaciones = () => {
           idSolicitud={solicitud.Id}
         />
       )}
-
       {openVerComentarios && (
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
         />
       )}
-      <DialogEliminar
-        handler={changeOpenEliminar}
-        openState={openEliminar}
-        texto={"Solicitud"}
-      />
     </Grid>
   );
-};
+}

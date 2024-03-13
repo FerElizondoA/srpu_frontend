@@ -61,7 +61,7 @@ interface Head {
 
 const heads: Head[] = [
   {
-    label: "Numero del Fideicomiso",
+    label: "Número del Fideicomiso",
   },
   {
     label: "Fecha",

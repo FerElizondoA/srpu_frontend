@@ -189,7 +189,7 @@ export function DetalleFideicomiso({
           <Divider color="lightGrey"></Divider>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong> Numero de Fideicomiso:</strong>{" "}
+            <strong> Número de Fideicomiso:</strong>{" "}
             {fideicomiso.NumeroFideicomiso}
           </Typography>
 

@@ -13,7 +13,6 @@ import { HomePage } from "./components/HomePage/HomePage";
 import { Bandeja } from "./components/e.firma/Bandeja";
 import { EnviarDocumento } from "./components/e.firma/EnviarDocumento";
 import { Firma } from "./components/e.firma/Firma";
-import { Cancelaciones } from "./screens/Cancelaciones/Cancelaciones";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Configuracion } from "./screens/Config/Configuracion";
 import { Usuarios } from "./screens/Config/Usuarios";
@@ -29,6 +28,7 @@ import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { SolicitudesReestructura } from "./screens/Reestructura/Reestructura";
+import { ConsultaDeCancelacionesPage } from "./screens/consultaDeSolicitudes/ConsultaDeCancelacionesPage";
 
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
@@ -99,7 +99,7 @@ function App() {
         />
         <Route path="fideicomisos" element={<Fideicomisos />} />
 
-        <Route path="cancelaciones" element={<Cancelaciones />} />
+        <Route path="cancelaciones" element={<ConsultaDeCancelacionesPage />} />
 
         <Route path="mandatos" element={<Mandatos />} />
         <Route

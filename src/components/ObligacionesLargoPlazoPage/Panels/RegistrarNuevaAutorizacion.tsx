@@ -188,7 +188,7 @@ export function RegistrarNuevaAutorizacion() {
 
           <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
-              Numero de autorización de la legislatura local
+              Número de autorización de la legislatura local
             </InputLabel>
             <TextField
               fullWidth
