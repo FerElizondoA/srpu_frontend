@@ -16,6 +16,7 @@ import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEnc
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { enGB } from "date-fns/locale";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -30,6 +31,10 @@ export function DatosGeneralesIntrucciones() {
 
   const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
+  );
+
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
   );
 
   useEffect(() => {
@@ -87,6 +92,7 @@ export function DatosGeneralesIntrucciones() {
             Número de Cuenta
           </InputLabel>
           <TextField
+            disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
             fullWidth
             variant="standard"
             value={datosGenerales.numeroCuenta}
@@ -113,6 +119,7 @@ export function DatosGeneralesIntrucciones() {
             adapterLocale={enGB}
           >
             <DesktopDatePicker
+              disabled={ tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
               sx={{
                 width: "100%",
               }}
@@ -132,6 +139,7 @@ export function DatosGeneralesIntrucciones() {
       <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
+            disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
             fullWidth
             variant="standard"
             value={datosGenerales.cuentaCLABE}
@@ -152,6 +160,7 @@ export function DatosGeneralesIntrucciones() {
         <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
           <Autocomplete
+            disabled={ tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"

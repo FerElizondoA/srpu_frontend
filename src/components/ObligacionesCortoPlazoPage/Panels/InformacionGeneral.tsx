@@ -222,11 +222,6 @@ export function InformacionGeneral() {
   const datosActualizar: Array<string> = useCortoPlazoStore(
     (state) => state.datosActualizar
   );
-
-  useEffect(() => {
-    
-    console.log("fecha", fechaContratacion )
-  }, [fechaContratacion])
   
 
   return (

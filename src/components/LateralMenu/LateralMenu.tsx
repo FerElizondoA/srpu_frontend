@@ -559,10 +559,10 @@ export function LateralMenu() {
           anchor="left"
           open={isDrawerOpen}
           sx={{
-            width: query.isXs ? "16rem" : "30vw",
+            width: query.isXs ? "20rem" : "30vw",
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               boxSizing: "border-box",
             },
           }}
@@ -571,7 +571,7 @@ export function LateralMenu() {
           <Grid
             container
             sx={{
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               height: "inherit",
               overflow: "auto",
               "&::-webkit-scrollbar": {

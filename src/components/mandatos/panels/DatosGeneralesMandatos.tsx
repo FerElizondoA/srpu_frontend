@@ -10,6 +10,7 @@ import { useMandatoStore } from "../../../store/Mandatos/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
 import { IDatosGeneralesMandato } from "../../../store/Mandatos/mandato";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function DatosGeneralesMandato() {
   const setDatosGenerales: Function = useMandatoStore(
@@ -26,6 +27,11 @@ export function DatosGeneralesMandato() {
 
   const tablaMandatos: IDatosMandatos[] = useMandatoStore(
     (state) => state.tablaMandatos
+  );
+
+  
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
   );
 
   useEffect(() => {
@@ -69,6 +75,7 @@ export function DatosGeneralesMandato() {
           Número de Mandato
         </InputLabel>
         <TextField
+        disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
           error={
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
@@ -103,6 +110,7 @@ export function DatosGeneralesMandato() {
         </InputLabel>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
           <DesktopDatePicker
+          disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
             sx={{
               width: "100%",
             }}

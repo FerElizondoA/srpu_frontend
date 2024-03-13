@@ -371,9 +371,6 @@ export function DisposicionPagosCapital() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
   };
 
-  useEffect(() => {
-    console.log("Fecha contratacion desde disposicion", fechaContratacion)
-  }, [])
 
   return (
     <Grid

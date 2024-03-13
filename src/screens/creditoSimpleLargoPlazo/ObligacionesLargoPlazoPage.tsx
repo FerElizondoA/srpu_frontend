@@ -42,6 +42,10 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
+  const NumeroRegistro: string = useCortoPlazoStore(
+    (state) => state.NumeroRegistro
+  );
+
   const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
 
   useEffect(() => {
@@ -59,23 +63,42 @@ export function ObligacionesLargoPlazoPage() {
           mt={2}
           width={"100%"}
           display={"flex"}
-          justifyContent={
-            reestructura === "con autorizacion" ? "end" : "center"
-          }
+          justifyContent={!NumeroRegistro ? "center" : "space-evenly"}
+        // justifyContent={
+        //   reestructura === "con autorizacion" ? "end" : "center"
+        // }
         >
+          {NumeroRegistro && (
+            <Grid
+              width={query.isTittle ? "20%" : "20%"}
+              display={"flex"}
+              justifyContent={"start"}
+              alignItems={"center"}
+            >
+              <Typography
+                sx={{
+                  ...queries.bold_text,
+                }}
+              >
+                <strong>{`Número de Registro: ${NumeroRegistro}`}</strong>
+              </Typography>
+            </Grid>
+          )}
           <Grid
-            width={reestructura === "con autorizacion" ? "60%" : "55%"}
-            sx={{
-              width: query.isMobile
-                ? reestructura === "con autorizacion"
-                  ? "60%"
-                  : "55%"
-                : "55%",
-            }}
+           width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
+            // width={reestructura === "con autorizacion" ? "60%" : "55%"}
+            // sx={{
+            //   width: query.isMobile
+            //     ? reestructura === "con autorizacion"
+            //       ? "60%"
+            //       : "55%"
+            //     : "55%",
+            // }}
             display={"flex"}
-            justifyContent={
-              reestructura === "con autorizacion" ? "center" : " end"
-            }
+            justifyContent={"center"}
+            // justifyContent={
+            //   reestructura === "con autorizacion" ? "center" : " end"
+            // }
           >
             <Typography
               sx={{
@@ -133,18 +156,22 @@ export function ObligacionesLargoPlazoPage() {
             </Grid>
           ) : (
             <Grid
-              display={"flex"}
-              justifyContent={"end"}
-              sx={{
-                width: "20%",
-                "@media (min-width: 480px)": {
-                  width: "20%",
-                },
+            width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+            display={"flex"}
+            justifyContent={"end"}
+            alignItems={"center"}
+              // display={"flex"}
+              // justifyContent={"end"}
+              // sx={{
+              //   width: "20%",
+              //   "@media (min-width: 480px)": {
+              //     width: "20%",
+              //   },
 
-                "@media (min-width: 768px)": {
-                  width: "35%",
-                },
-              }}
+              //   "@media (min-width: 768px)": {
+              //     width: "35%",
+              //   },
+              // }}
             >
               <Button
                 onClick={() => {

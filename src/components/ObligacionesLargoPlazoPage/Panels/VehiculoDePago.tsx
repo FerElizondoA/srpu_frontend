@@ -1,20 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
+  Button,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   TextField,
+  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { queries } from "../../../queries";
-
 import { format } from "date-fns";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IFideicomisario } from "../../../store/Fideicomiso/fideicomiso";
+import { useEffect, useState } from "react";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { AgregarMandatos } from "../../mandatos/dialog/AgregarMandatos";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { AgregarInstruccionesIrrevocables } from "../../instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
 
 interface Head {
   label: string;
@@ -31,6 +42,8 @@ const CatalogoMecanismo: Head[] = [
     label: "Instrucción Irrevocable",
   },
 ];
+
+
 
 export function VehiculoDePago() {
   const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
@@ -57,6 +70,93 @@ export function VehiculoDePago() {
   const cleanTablaAsignarFuente: Function = useLargoPlazoStore(
     (state) => state.cleanTablaAsignarFuente
   );
+
+  const editarMandato: Function = useMandatoStore(
+    (state) => state.editarMandato
+  );
+
+  const editarInstruccion: Function = useInstruccionesStore(
+    (state) => state.editarInstruccion
+  );
+
+  const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoOrganismos
+  );
+
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
+
+  const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
+  const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
+
+
+  const llenarFuentePago = (mecanismoPago: string) => {
+
+    let auxArray = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
+    auxArray.map((column: any) => {
+      return (
+        (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+          Number(
+            sumaPorcentajeAcumulado.SumaAcumuladoEstado
+          ).toString()),
+        (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+          Number(
+            sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+          ).toString()),
+        (column.acumuladoAfectacionOrganismoEntre100 =
+          Number(
+            sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+          ).toString())
+      );
+    });
+
+    if (mecanismoPago === "Mandato") {
+      editarMandato(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
+          fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
+          mandatario: catalogoOrganismos.filter(
+            (v, index) =>
+              v.Descripcion === mecanismoVehiculoPago.Mandatario
+          )[0],
+          mandante: catalogoOrganismos.filter(
+            (v, index) =>
+              v.Descripcion ===
+              mecanismoVehiculoPago.Mandante
+          )[0],
+        },
+        auxArray,
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
+
+      setOpenAgregarMandato(!openAgregarMandato);
+    } else {
+
+      editarInstruccion(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
+          cuentaCLABE: mecanismoVehiculoPago.CLABE,
+          banco: mecanismoVehiculoPago.Banco,
+          fechaInstruccion: new Date(
+            mecanismoVehiculoPago.FechaRegistro
+          ),
+        },
+        auxArray,
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
+
+      setOpenAgregarInstruccion(
+        !openAgregarInstruccion
+      );
+
+    }
+
+  }
 
   return (
     <Grid container direction={"column"} justifyContent={"space-around"}>
@@ -96,6 +196,7 @@ export function VehiculoDePago() {
                   // TipoEntePublicoObligado: "",
 
                   TipoMovimiento: "",
+                  SoporteDocumental: "",
                 });
                 getMecanismosVehiculosPago(e.target.value, () => { });
                 setTipoMecanismoVehiculoPago(e.target.value);
@@ -147,6 +248,30 @@ export function VehiculoDePago() {
           />
         </Grid>
       </Grid>
+
+      {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"
+        ?
+        <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} height={"5rem"}>
+          <ThemeProvider theme={buttonTheme}>
+            <Button sx={queries.buttonContinuar}
+              disabled={tablaMecanismoVehiculoPago === null}
+              onClick={() => {
+                llenarFuentePago(tipoMecanismoVehiculoPago)
+
+              }}
+            >
+              <Typography sx={{
+                fontSize: "1.3ch",
+                fontFamily: "MontserratMedium",
+                "@media (min-width: 480px)": {
+                  fontSize: ".8rem",
+                },
+              }}>Agregar</Typography>
+            </Button>
+          </ThemeProvider>
+        </Grid>
+        : null
+      }
 
       {mecanismoVehiculoPago.NumeroRegistro && (
         <Grid
@@ -442,7 +567,7 @@ export function VehiculoDePago() {
 
                 }}>CLABE</Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -462,7 +587,7 @@ export function VehiculoDePago() {
 
                 }}>Fecha de la Instrucción</Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -485,7 +610,7 @@ export function VehiculoDePago() {
 
                 }}>Tipo de Ente Público Obligado</Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -504,7 +629,7 @@ export function VehiculoDePago() {
 
                 }}>Ente Público Obligado</Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -515,6 +640,21 @@ export function VehiculoDePago() {
                 />
               </Grid>
             </Grid>
+          )}
+
+          {openAgregarInstruccion && (
+            <AgregarInstruccionesIrrevocables
+              handler={setOpenAgregarInstruccion}
+              openState={openAgregarInstruccion}
+            />
+          )}
+
+
+          {openAgregarMandato && (
+            <AgregarMandatos
+              handler={setOpenAgregarMandato}
+              openState={openAgregarMandato}
+            />
           )}
         </Grid>
       )}

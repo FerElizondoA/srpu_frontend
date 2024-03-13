@@ -45,7 +45,7 @@ export function DialogVerDetalle(props: Props) {
     React.useState(false);
   // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-  const estatus: string = useCortoPlazoStore((state) => state.estatus);
+  //const estatus: string = useCortoPlazoStore((state) => state.estatus);
   // REQUERIMIENTOS
   React.useEffect(() => {
     if (IdSolicitud !== "") {
@@ -464,7 +464,7 @@ export function DialogVerDetalle(props: Props) {
                 },
               }}
               onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
+                CambiaEstatus("Autorizado", props.rowId, "");
               }}
             >
               <Typography
@@ -527,7 +527,7 @@ export function DialogVerDetalle(props: Props) {
                 },
               }}
               onClick={() => {
-                CambiaEstatus("Autorizado", props.rowId);
+                CambiaEstatus("Autorizado", props.rowId, "");
               }}
             >
               <Typography

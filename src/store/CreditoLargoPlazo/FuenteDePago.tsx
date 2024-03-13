@@ -23,6 +23,7 @@ export interface IRegistro {
   EntePublicoObligado: string;
 
   TipoMovimiento: string;
+  SoporteDocumental: string
 }
 
 //ASIGNAR FUENTE
@@ -87,6 +88,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
+    SoporteDocumental: "",
   },
 
   garantiaPago: "",

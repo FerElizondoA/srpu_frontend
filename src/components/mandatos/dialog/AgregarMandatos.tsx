@@ -26,6 +26,7 @@ import { useMandatoStore } from "../../../store/Mandatos/main";
 import { DatosGeneralesMandato } from "../panels/DatosGeneralesMandatos";
 import { SoporteDocumentalMandato } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoMandato } from "../panels/TipoDeMovimiento";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export const DialogTransition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -84,6 +85,10 @@ export function AgregarMandatos({
     (state) => state.getTipoEntePublicoObligado
   );
 
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
   useEffect(() => {
     getTipoEntePublicoObligado();
   }, []);
@@ -108,13 +113,16 @@ export function AgregarMandatos({
 
           <Grid container>
             <Typography sx={queries.bold_text}>
-              {IdMandato === "" ? "Agregar" : "Editar"} Mandato
+              {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
+                : IdMandato === "" ? "Agregar" : "Editar"} Mandato
+              {/* {IdMandato === "" ? "Agregar" : "Editar"}  */}
             </Typography>
           </Grid>
 
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
+              disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   if (IdMandato === "") {
@@ -142,7 +150,9 @@ export function AgregarMandatos({
                     },
                   }}
                 >
-                  {IdMandato === "" ? "Agregar" : "Editar"} Mandato
+                    {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
+                : IdMandato === "" ? "Agregar" : "Editar"} Mandato
+                  {/* {IdMandato === "" ? "Agregar" : "Editar"} Mandato */}
                 </Typography>
               </Button>
             </ThemeProvider>

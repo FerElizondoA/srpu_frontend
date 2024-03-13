@@ -28,6 +28,7 @@ import {
 import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones";
 import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function AgregarInstruccionesIrrevocables({
   handler,
@@ -76,6 +77,11 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
+
   useEffect(() => {
     getTiposDeFuente();
     getOrganismos();
@@ -103,8 +109,9 @@ export function AgregarInstruccionesIrrevocables({
           <Grid container>
             <Grid item>
               <Typography sx={queries.bold_text}>
-                {IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
-                Irrevocable
+                {/* {IdInstruccion === "" ? "Agregar" : "Editar"}  */}
+                {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable" ? ""
+                : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción Irrevocable
               </Typography>
             </Grid>
           </Grid>
@@ -112,6 +119,7 @@ export function AgregarInstruccionesIrrevocables({
           <Grid item width={"4rem"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
+              disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
                 // disabled={
                 //   tablaTipoMovimientoInstrucciones.length <= 0 ||
                 //   numeroCuenta === "" ||
@@ -168,7 +176,9 @@ export function AgregarInstruccionesIrrevocables({
                     },
                   }}
                 >
-                  {IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
+                  {/* {IdInstruccion === "" ? "Agregar" : "Editar"}  */}
+                  {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable" ? ""
+                : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
                 </Typography>
               </Button>
             </ThemeProvider>
