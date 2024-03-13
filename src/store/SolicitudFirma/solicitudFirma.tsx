@@ -317,10 +317,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               : estatusPrevio.ControlInterno === "revision" &&
                 state.proceso === "actualizacion"
               ? "8"
-              : estatusPrevio.ControlInterno === "autorizado"
+              : estatusPrevio.NoEstatus === "9"
               ? "10"
-              : estatusPrevio.ControlInterno === "cancelacion" &&
-                state.proceso === "solicitud"
+              : estatusPrevio.NoEstatus === "10" &&
+                state.proceso === "cancelacion"
               ? "12"
               : estatusPrevio.ControlInterno === "cancelacion" &&
                 state.proceso === "actualizacion"
@@ -799,27 +799,23 @@ export const getPdf = (
 };
 
 export async function CancelacionSolicitud(
-  Solicitud: string,
-  NumeroRegistro: string,
+  Solicitud: IData,
   Justificacion: string,
   archivosCancelacion: ArchivosCancelacion,
-  UltimaModificacion: string,
   setUrl: Function
 ) {
-  let solicitud: any = JSON.parse(Solicitud);
+  let solicitud: any = JSON.parse(Solicitud.Solicitud);
+
   const SolicitudCancelacion: any = {
-    numeroSolicitud: NumeroRegistro,
+    numeroSolicitud: Solicitud.NumeroRegistro,
     UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
     EntidadDestinatario:
       solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
     UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
     EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
-    claveInscripcion:
-      solicitud.ClaveDeInscripcion === undefined
-        ? "Sin Clave de Inscripcion"
-        : solicitud.ClaveDeInscripcion,
+    claveInscripcion: Solicitud.IdClaveInscripcion,
 
-    fechaInscripcion: UltimaModificacion,
+    fechaInscripcion: Solicitud.UltimaModificacion,
 
     fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
     fechaContratacion: solicitud.informacionGeneral.fechaContratacion,

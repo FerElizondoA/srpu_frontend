@@ -200,15 +200,12 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.addGeneralGastosCostos
   );
 
-  const solicitudFirma: IData = useCortoPlazoStore(
-    (state) => state.rowSolicitud
-  );
   const setSolicitudFirma: Function = useCortoPlazoStore(
     (state) => state.setRowSolicitud
   );
 
-  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    if (TipoDocumento === "Crédito Simple a Corto Plazo") {
+  const llenaSolicitud = (solicitud: IData) => {
+    if (solicitud.TipoSolicitud === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
@@ -227,7 +224,7 @@ export function ConsultaDeCancelacionesPage() {
       //   return addDocumento(v);
       // });
       setTablaDocumentos(aux?.documentacion);
-    } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
+    } else if (solicitud.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
@@ -298,7 +295,7 @@ export function ConsultaDeCancelacionesPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("cancelación");
+    setProceso("cancelacion");
     changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
@@ -439,23 +436,7 @@ export function ConsultaDeCancelacionesPage() {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
 
-                    if (row.ControlInterno === "inscripcion") {
-                      chip = (
-                        <Chip
-                          label={row.Estatus}
-                          color="info"
-                          variant="outlined"
-                        />
-                      );
-                    } else if (row.ControlInterno === "revision") {
-                      chip = (
-                        <Chip
-                          label={row.Estatus}
-                          color="secondary"
-                          variant="outlined"
-                        />
-                      );
-                    } else if (row.ControlInterno === "autorizado") {
+                    if (row.NoEstatus === "10") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -463,7 +444,15 @@ export function ConsultaDeCancelacionesPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus.includes("Requerimientos")) {
+                    } else if (["12", "13", "14"].includes(row.NoEstatus)) {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="secondary"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (["15", "16"].includes(row.NoEstatus)) {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -471,17 +460,17 @@ export function ConsultaDeCancelacionesPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (row.Estatus === "actualizacion") {
+                    } else if (["16"].includes(row.NoEstatus)) {
                       chip = (
                         <Tooltip
                           title={`${differenceInDays(
                             getDays(new Date(row.FechaRequerimientos), 11),
                             new Date()
-                          )} días restantes para cancelación automática`}
+                          )} días restantes para denegar la solicitud automáticamente`}
                         >
                           <Chip
                             label={
-                              row.Estatus === "actualizacion"
+                              ["16"].includes(row.NoEstatus)
                                 ? "Actualización"
                                 : row.Estatus
                             }
@@ -496,6 +485,14 @@ export function ConsultaDeCancelacionesPage() {
                             variant="filled"
                           />
                         </Tooltip>
+                      );
+                    } else if (["18"].includes(row.NoEstatus)) {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="error"
+                          variant="outlined"
+                        />
                       );
                     }
 
@@ -604,9 +601,7 @@ export function ConsultaDeCancelacionesPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                llenaSolicitud(row, row.TipoSolicitud);
-                                changeIdSolicitud(row.Id);
-                                changeNoRegistro(row.NumeroRegistro);
+                                llenaSolicitud(row);
                                 setSolicitudFirma(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
@@ -617,12 +612,12 @@ export function ConsultaDeCancelacionesPage() {
                           </Tooltip>
 
                           {localStorage.getItem("Rol") === row.Control &&
-                            ["3", "7", "9"].includes(row.NoEstatus) && (
+                            ["11", "15", "17"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    llenaSolicitud(row);
                                     changeIdSolicitud(row.Id);
                                     changeNoRegistro(row.NumeroRegistro);
                                     setSolicitudFirma(row);
@@ -666,7 +661,7 @@ export function ConsultaDeCancelacionesPage() {
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        setProceso("Por Firmar");
+                                        setProceso("solicitud");
                                         changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
@@ -724,8 +719,6 @@ export function ConsultaDeCancelacionesPage() {
         <VerBorradorCancelacion
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={solicitudFirma}
-          rowId={""}
         />
       )}
       {openDescargar && (

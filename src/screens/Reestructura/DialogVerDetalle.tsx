@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { getListadoUsuarioRol } from "../../components/APIS/Config/Solicitudes-Usuarios";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { IComentarios } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-import { DialogSolicitarCancelacion } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarCancelación";
+import { DialogSolicitarCancelacion } from "../../components/Cancelacion/Dialogs/DialogSolicitarCancelacion";
 import { IUsuariosAsignables } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resumen";
 import { Resumen as ResumenLP } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
@@ -572,12 +572,6 @@ export function DialogVerDetalle(props: Props) {
           <ResumenLP coments={false} />
         )}
       </DialogContent>
-
-      <DialogSolicitarCancelacion
-        handler={setOpenDialogCancelacion}
-        openState={openDialogCancelacion}
-        rowSolicitud={props.rowSolicitud}
-      />
     </Dialog>
   );
 }

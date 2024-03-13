@@ -22,15 +22,14 @@ import {
 } from "../../../store/SolicitudFirma/solicitudFirma";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function DialogSolicitarCancelacion({
   handler,
   openState,
-  rowSolicitud,
 }: {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IData;
 }) {
   const navigate = useNavigate();
   const [justificacion, setJustificacion] = useState("");
@@ -47,6 +46,8 @@ export function DialogSolicitarCancelacion({
   const cleanArchivosCancelacion: Function = useSolicitudFirmaStore(
     (state) => state.cleanArchivosCancelacion
   );
+
+  const rowSolicitud: IData = useCortoPlazoStore((state) => state.rowSolicitud);
 
   function cargarArchivo(event: any, numero: number) {
     let file = event.target.files[0];
@@ -81,17 +82,9 @@ export function DialogSolicitarCancelacion({
   }, [openState]);
 
   return (
-    <Dialog
-      fullWidth
-      open={openState}
-      maxWidth={"md"}
-      keepMounted
-      onClose={() => {
-        handler(false);
-      }}
-    >
+    <Dialog fullWidth open={openState} maxWidth={"md"} keepMounted>
       <DialogTitle>
-        <Typography sx={queries.medium_text}>Justificación </Typography>
+        <Typography sx={queries.medium_text}>Justificación</Typography>
       </DialogTitle>
 
       <DialogContent
@@ -224,11 +217,9 @@ export function DialogSolicitarCancelacion({
                   justificacion !== ""
                 ) {
                   CancelacionSolicitud(
-                    rowSolicitud.Solicitud,
-                    rowSolicitud.NumeroRegistro,
+                    rowSolicitud,
                     justificacion,
                     archivosCancelacion,
-                    rowSolicitud.UltimaModificacion,
                     setUrl
                   );
                   handler(false);

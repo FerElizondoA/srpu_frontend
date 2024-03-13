@@ -23,6 +23,7 @@ import {
   DialogSolicitarModificacion,
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
+import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 
 type Props = {
   handler: Function;
@@ -226,50 +227,12 @@ export function VerBorradorDocumento(props: Props) {
         )}
       </DialogContent>
 
-      <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>
-        <DialogTitle>Guardar comentarios</DialogTitle>
-        <DialogContent>
-          {Object.entries(comentarios).map(([key, val], index) =>
-            (val as string) === "" ? null : (
-              <Typography key={index}>
-                <strong>{key}:</strong>
-                {val as string}
-              </Typography>
-            )
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button
-            sx={queries.buttonCancelar}
-            onClick={() => setOpenGuardaComentarios(false)}
-          >
-            Cancelar
-          </Button>
-          <Button
-            sx={queries.buttonContinuar}
-            onClick={() => {
-              addComentario(
-                IdSolicitud,
-                JSON.stringify(comentarios),
-                "Requerimiento"
-              ).then(() => {
-                Swal.fire({
-                  confirmButtonColor: "#15212f",
-                  cancelButtonColor: "rgb(175, 140, 85)",
-                  icon: "success",
-                  title: "Mensaje",
-                  text: "Comentarios guardados con éxito",
-                });
-                setOpenGuardaComentarios(false);
-                props.handler(false);
-              });
-            }}
-          >
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {openGuardaComentarios && (
+        <DialogGuardarComentarios
+          open={openGuardaComentarios}
+          handler={setOpenGuardaComentarios}
+        />
+      )}
 
       {openDialogRegresar && (
         <DialogSolicitarModificacion
