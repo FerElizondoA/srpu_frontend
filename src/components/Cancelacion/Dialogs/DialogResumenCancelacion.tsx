@@ -9,7 +9,6 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import * as React from "react";
 import { queries } from "../../../queries";
 import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
@@ -21,6 +20,8 @@ import { Resumen as ResumenLP } from "../../ObligacionesLargoPlazoPage/Panels/Re
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelacion";
 import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { DialogGuardarComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogGuardarComentarios";
+import { useEffect, useState } from "react";
+import { DatosCancelacion } from "../Panels/DatosCancelacion";
 
 export function VerBorradorCancelacion({
   handler,
@@ -30,9 +31,8 @@ export function VerBorradorCancelacion({
   openState: boolean;
 }) {
   const [openSolicitarCancelacion, setOpenSolicitarCancelacion] =
-    React.useState(false);
-  const [openGuardaComentarios, setOpenGuardaComentarios] =
-    React.useState(false);
+    useState(false);
+  const [openGuardaComentarios, setOpenGuardaComentarios] = useState(false);
 
   // // SOLICITUD
   const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
@@ -40,16 +40,16 @@ export function VerBorradorCancelacion({
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
   // REQUERIMIENTOS
-  React.useEffect(() => {
+  useEffect(() => {
     if (IdSolicitud !== "") {
       getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
     }
   }, [IdSolicitud]);
 
-  const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>
-  >([]);
-  React.useEffect(() => {
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
+    []
+  );
+  useEffect(() => {
     let a: any = {};
 
     datosComentario
@@ -81,7 +81,7 @@ export function VerBorradorCancelacion({
 
   const rowSolicitud: IData = useCortoPlazoStore((state) => state.rowSolicitud);
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(1);
 
   return (
     <Dialog
@@ -139,21 +139,26 @@ export function VerBorradorCancelacion({
           Volver
         </Button>
 
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
+        >
           <Tabs
+            variant={"standard"}
+            scrollButtons
+            allowScrollButtonsMobile
             value={value}
-            onChange={(e) => {
-              console.log(e);
+            onChange={(e, number) => {
+              setValue(number);
             }}
-            aria-label="basic tabs example"
           >
-            <Tab
-              label="Datos del Crédito"
-              value={"aaaaaaaaaaaaaaaaaaaaaaaaaa"}
-            />
+            <Tab label="Datos del Crédito" sx={queries.medium_text} value={1} />
             <Tab
               label="Datos de la Cancelación"
-              value={"bbbbbbbbbbbbbbbbbbbbbb"}
+              sx={queries.medium_text}
+              value={2}
             />
           </Tabs>
         </Box>
@@ -256,10 +261,14 @@ export function VerBorradorCancelacion({
           },
         }}
       >
-        {rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
-          <Resumen coments={false} />
+        {value === 1 ? (
+          rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
+            <Resumen coments={false} />
+          ) : (
+            <ResumenLP coments={false} />
+          )
         ) : (
-          <ResumenLP coments={false} />
+          <DatosCancelacion />
         )}
       </DialogContent>
       {openSolicitarCancelacion && (
