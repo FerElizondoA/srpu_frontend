@@ -308,9 +308,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           // }
 
           GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud);
-          console.log(estatusPrevio);
-          console.log(state.proceso);
-
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
