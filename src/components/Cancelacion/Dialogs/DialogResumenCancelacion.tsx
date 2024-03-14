@@ -37,16 +37,16 @@ export function VerBorradorCancelacion({
   const [openGuardaComentarios, setOpenGuardaComentarios] = useState(false);
 
   // // SOLICITUD
-  const solicitud: IData = useCancelacionStore((state) => state.solicitud);
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+  const credito: IData = useCancelacionStore((state) => state.credito);
 
   // REQUERIMIENTOS
   useEffect(() => {
-    if (solicitud.Id !== "") {
-      getComentariosSolicitudPlazo(solicitud.Id, setDatosComentarios);
+    if (credito.Id !== "") {
+      getComentariosSolicitudPlazo(credito.Id, setDatosComentarios);
     }
-  }, [solicitud]);
+  }, [credito]);
 
   const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
     []
@@ -81,8 +81,6 @@ export function VerBorradorCancelacion({
     (state) => state.cleanSolicitud
   );
 
-  const rowSolicitud: IData = useCortoPlazoStore((state) => state.rowSolicitud);
-
   const [value, setValue] = useState(1);
 
   return (
@@ -113,7 +111,7 @@ export function VerBorradorCancelacion({
             alignItems: "center",
             width: "40%",
             justifyContent:
-              rowSolicitud.NoEstatus !== "10" ? "space-around" : "flex-start",
+              credito.NoEstatus !== "10" ? "space-around" : "flex-start",
           }}
         >
           <Button
@@ -151,7 +149,7 @@ export function VerBorradorCancelacion({
             Volver
           </Button>
 
-          {rowSolicitud.NoEstatus !== "10" && (
+          {credito.NoEstatus !== "10" && (
             <Tabs
               variant={"standard"}
               scrollButtons
@@ -162,11 +160,13 @@ export function VerBorradorCancelacion({
               }}
             >
               <Tab
+                key={1}
                 label="Datos del Crédito"
                 sx={queries.medium_text}
                 value={1}
               />
               <Tab
+                key={2}
                 label="Datos de la Cancelación"
                 sx={queries.medium_text}
                 value={2}
@@ -176,7 +176,7 @@ export function VerBorradorCancelacion({
         </Box>
 
         {localStorage.getItem("Rol") === "Verificador" &&
-          rowSolicitud.NoEstatus === "10" && (
+          credito.NoEstatus === "10" && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -196,11 +196,11 @@ export function VerBorradorCancelacion({
             </Grid>
           )}
 
-        {((localStorage.getItem("IdUsuario") === rowSolicitud.IdEditor &&
+        {((localStorage.getItem("IdUsuario") === credito.IdEditor &&
           rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-          (rowSolicitud.NoEstatus === "12" &&
+          (credito.NoEstatus === "12" &&
             localStorage.getItem("Rol") === "Revisor")) &&
-          ["12", "13", "14"].includes(rowSolicitud.NoEstatus) && (
+          ["12", "13", "14"].includes(credito.NoEstatus) && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -274,7 +274,7 @@ export function VerBorradorCancelacion({
         }}
       >
         {value === 1 ? (
-          rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
+          credito.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
             <Resumen coments={false} />
           ) : (
             <ResumenLP coments={false} />

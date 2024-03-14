@@ -26,7 +26,7 @@ import {
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { Autorizaciones } from "../../../store/Autorizacion/agregarAutorizacion";
+import { Autorizaciones } from "../../../store/CreditoLargoPlazo/autorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
   getPathDocumentosAut,
@@ -215,7 +215,7 @@ export function Autorizacion() {
           display={"flex"}
           justifyContent={"space-evenly"}
           alignItems={"center"}
-          mt={{xs:4, md:0}}
+          mt={{ xs: 4, md: 0 }}
         >
           {/* <Grid item lg={3}>
             <Button sx={queries.buttonContinuar} variant="outlined">
@@ -228,24 +228,24 @@ export function Autorizacion() {
               <Button
                 disabled={reestructura === "con autorizacion"}
                 sx={{
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "75%",
-                "@media (min-width: 480px)": {
-                  fontSize: "80%",
-                },
-            
-                "@media (min-width: 768px)": {
-                  fontSize: "85%",
-                },}}
+                  backgroundColor: "#15212f",
+                  color: "white",
+                  "&&:hover": {
+                    backgroundColor: "rgba(47, 47, 47, 0.4)",
+                    color: "#000",
+                  },
+                  //fontSize: "90%",
+                  borderRadius: "0.8vh",
+                  textTransform: "capitalize",
+                  fontSize: "75%",
+                  "@media (min-width: 480px)": {
+                    fontSize: "80%",
+                  },
 
+                  "@media (min-width: 768px)": {
+                    fontSize: "85%",
+                  },
+                }}
                 variant="outlined"
                 onClick={() => {
                   setAccion("Agregar");

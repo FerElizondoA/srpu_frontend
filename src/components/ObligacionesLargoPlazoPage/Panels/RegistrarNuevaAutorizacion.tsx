@@ -21,31 +21,29 @@ import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGe
 
 export function RegistrarNuevaAutorizacion() {
   const entidad: { Id: string; Organismo: string } = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.entidad
+    (state) => state.autorizacion.entidad
   );
 
   const numeroAutorizacion: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.numeroAutorizacion
+    (state) => state.autorizacion.numeroAutorizacion
   );
 
   const medioPublicacion: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.medioPublicacion);
+    useLargoPlazoStore((state) => state.autorizacion.medioPublicacion);
 
   const fechaPublicacion: string = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.fechaPublicacion
+    (state) => state.autorizacion.fechaPublicacion
   );
 
   const montoAutorizado: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.montoAutorizado
+    (state) => state.autorizacion.montoAutorizado
   );
 
   const documentoSoporte: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.documentoSoporte);
+    useLargoPlazoStore((state) => state.autorizacion.documentoSoporte);
 
   const acreditacionQuorum: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore(
-      (state) => state.registrarAutorizacion.acreditacionQuorum
-    );
+    useLargoPlazoStore((state) => state.autorizacion.acreditacionQuorum);
 
   const changeAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setRegistrarAutorizacion
@@ -141,7 +139,7 @@ export function RegistrarNuevaAutorizacion() {
       <Grid
         container
         width={"100%"}
-        // sx={{...queries.contenedorAgregarAutorizacion.RegistrarAutorizacion,
+        // sx={{...queries.contenedorAgregarAutorizacion.autorizacion,
 
         //   flexDirection:"column",
         //   justifyContent:"space-between",

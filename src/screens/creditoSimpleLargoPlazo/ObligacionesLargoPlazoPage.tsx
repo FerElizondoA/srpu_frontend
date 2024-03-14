@@ -8,7 +8,6 @@ import { CondicionesFinancieras } from "../../components/ObligacionesLargoPlazoP
 import { Documentacion } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesLargoPlazoPage/Panels/Encabezado";
 import { Resumen } from "../../components/ObligacionesLargoPlazoPage/Panels/Resumen";
-import { SolicituDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudeDeInscripcion";
 //import { TablaDePagos } from "../../components/ObligacionesLargoPlazoPage/Panels/TablaDePagos";
 import { DialogGuardarBorrador } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarBorrador";
 import { FuentePagoSecciones } from "../../components/ObligacionesLargoPlazoPage/Panels/FuentePagoSecciones";
@@ -18,6 +17,7 @@ import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { DialogSolicitarReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarReestructura";
 import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudDeInscripcion";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -71,9 +71,9 @@ export function ObligacionesLargoPlazoPage() {
           width={"100%"}
           display={"flex"}
           justifyContent={!NumeroRegistro ? "center" : "space-evenly"}
-        // justifyContent={
-        //   reestructura === "con autorizacion" ? "end" : "center"
-        // }
+          // justifyContent={
+          //   reestructura === "con autorizacion" ? "end" : "center"
+          // }
         >
           {NumeroRegistro && (
             <Grid
@@ -92,7 +92,7 @@ export function ObligacionesLargoPlazoPage() {
             </Grid>
           )}
           <Grid
-           width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
+            width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
             // width={reestructura === "con autorizacion" ? "60%" : "55%"}
             // sx={{
             //   width: query.isMobile
@@ -163,10 +163,10 @@ export function ObligacionesLargoPlazoPage() {
             </Grid>
           ) : (
             <Grid
-            width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
-            display={"flex"}
-            justifyContent={"end"}
-            alignItems={"center"}
+              width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+              display={"flex"}
+              justifyContent={"end"}
+              alignItems={"center"}
               // display={"flex"}
               // justifyContent={"end"}
               // sx={{
@@ -238,7 +238,7 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
       {tabIndex === 6 && <Resumen coments={true} />}
-      {tabIndex === 7 && <SolicituDeInscripcion />}
+      {tabIndex === 7 && <SolicitudDeInscripcion />}
 
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}

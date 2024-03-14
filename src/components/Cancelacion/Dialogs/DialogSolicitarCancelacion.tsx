@@ -20,8 +20,8 @@ import {
   CancelacionSolicitud,
   ICancelacion,
 } from "../../../store/Cancelacion/solicitud";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function DialogSolicitarCancelacion({
   handler,
@@ -66,7 +66,7 @@ export function DialogSolicitarCancelacion({
     }
   }
 
-  const setUrl: Function = useCortoPlazoStore((state) => state.setUrl);
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
   useEffect(() => {
     if (openState === false) {
@@ -214,8 +214,8 @@ export function DialogSolicitarCancelacion({
                   cancelacion.Justificacion !== ""
                 ) {
                   CancelacionSolicitud(setUrl);
-                  // handler(false);
-                  // navigate("../firmaUrl");
+                  handler(false);
+                  navigate("../firmaUrl");
                 } else {
                   setError(true);
                 }

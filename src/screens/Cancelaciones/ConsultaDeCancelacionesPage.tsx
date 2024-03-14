@@ -44,6 +44,7 @@ import {
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { useCancelacionStore } from "../../store/Cancelacion/main";
 
 const heads: Array<{ label: string }> = [
   {
@@ -82,6 +83,9 @@ export function ConsultaDeCancelacionesPage() {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+
+  const credito: IData = useCancelacionStore((state) => state.credito);
+  const setCredito: Function = useCancelacionStore((state) => state.setCredito);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -165,6 +169,8 @@ export function ConsultaDeCancelacionesPage() {
   );
 
   const llenaSolicitud = (solicitud: IData) => {
+    setCredito(solicitud);
+
     if (solicitud.TipoSolicitud === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
@@ -216,8 +222,6 @@ export function ConsultaDeCancelacionesPage() {
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
   const [openDescargar, setOpenDescargar] = useState(false);
-
-  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -289,7 +293,7 @@ export function ConsultaDeCancelacionesPage() {
             },
           }}
         >
-          Consulta de Solicitudes
+          Cancelaciones
         </Typography>
       </Grid>
       <Grid item mb={3} lg={12} display="center" justifyContent="center">
@@ -625,11 +629,6 @@ export function ConsultaDeCancelacionesPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  setSolicitud({
-                                    Id: row.Id,
-                                    noSolicitud: row.NumeroRegistro,
-                                  });
-
                                   setOpenDescargar(true);
                                 }}
                               >
@@ -670,8 +669,8 @@ export function ConsultaDeCancelacionesPage() {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={solicitud.noSolicitud}
-          idSolicitud={solicitud.Id}
+          noSolicitud={credito.NumeroRegistro}
+          idSolicitud={credito.Id}
         />
       )}
       {openVerComentarios && (

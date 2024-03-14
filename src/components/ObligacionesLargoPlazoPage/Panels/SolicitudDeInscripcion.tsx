@@ -18,18 +18,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DialogGuardarBorrador } from "../Dialog/DialogGuardarBorrador";
 import { ConfirmacionEnviarSolicitud } from "../Dialog/DialogEnviarSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
-
-export let erroresValidacion: string[] = [];
 
 interface Head {
   label: string;
@@ -45,7 +43,7 @@ const heads: readonly Head[] = [
 ];
 export let errores: string[] = [];
 
-export function SolicituDeInscripcion() {
+export function SolicitudDeInscripcion() {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
@@ -76,17 +74,16 @@ export function SolicituDeInscripcion() {
   );
   const getReglas: Function = useLargoPlazoStore((state) => state.getReglas);
 
-  const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
-
   useEffect(() => {
     getReglas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
+  let err = 0;
 
   const infoValidaciones = (filtroValidacion: string) => {
-    let err = 0;
     if (filtroValidacion === "Enviar") {
-      erroresValidacion = [];
+      errores = [];
 
       const state = useLargoPlazoStore.getState();
       const solicitud: any = {
@@ -98,6 +95,8 @@ export function SolicituDeInscripcion() {
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
+
+      let importe = 0;
       let numeroDePago = 0;
       let PeriocidadDePago = "";
       let diasEjercicio = "";
@@ -105,20 +104,9 @@ export function SolicituDeInscripcion() {
       let comisiones: any = [];
       let TasaDeInteres: any = [];
 
-      const CostosGastos: any = {
-        destinoCG: state.generalGastosCostos.destino.Descripcion,
-        detalleInversion: state.generalGastosCostos.detalleInversion,
-        gastosAdicionales: state.GastosCostos.gastosAdicionales,
-        claveInscripcionFinanciamiento:
-          state.generalGastosCostos.claveInscripcionFinanciamiento,
-        descripcion: state.generalGastosCostos.descripcion,
-        monto: state.generalGastosCostos.monto,
-        saldoVigente: state.GastosCostos.saldoVigente,
-        montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
-      };
-
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
         const item = state.tablaCondicionesFinancieras[0];
+        importe = item.disposicion[0].importe;
         numeroDePago = item.pagosDeCapital.numeroDePago;
         PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
         TasaDeInteres = item.tasaInteres;
@@ -126,14 +114,13 @@ export function SolicituDeInscripcion() {
         tasaEfectiva = item.tasaEfectiva;
         comisiones = item.comisiones;
       }
-
       if (
         solicitud.PlazoDias === undefined ||
         solicitud.PlazoDias === 0 ||
         /^[\s]*$/.test(solicitud.PlazoDias)
       ) {
         err = 1;
-        erroresValidacion.push(
+        errores.push(
           "Sección Información General: El Plazo a Días no puede ser  0."
         );
       }
@@ -145,7 +132,7 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
+        errores.push(
           "Sección Información General: Ingrese un Monto original contratado valido."
         );
       }
@@ -156,9 +143,7 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Información General: Seleccione el Destino."
-        );
+        errores.push("Sección Información General: Seleccione  el Destino.");
       }
       if (
         solicitud.InstitucionFinanciera === undefined ||
@@ -167,7 +152,7 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
+        errores.push(
           "Sección Información General: Seleccione la Institución Financiera."
         );
       }
@@ -178,22 +163,27 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Condiciones Financieras: Agregar al menos una Condicion Financiera."
+        errores.push(
+          "Sección Condiciones Financieras :Agregar al menos una Condicion Financiera."
         );
       }
 
       if (TasaDeInteres[0] === undefined || TasaDeInteres[0].tasa === "") {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Condiciones Financieras: Agregar al menos una Tasa De Interés."
+        errores.push(
+          "Sección Condiciones Financieras:Agregar al menos una Tasa De Interés."
         );
+      }
+      if (importe === undefined || importe === 0 || importe === 0) {
+        err = 1;
+
+        errores.push("Sección Condiciones Financieras: Ingrese el Importe.");
       }
       if (numeroDePago === undefined || numeroDePago === 0) {
         err = 1;
 
-        erroresValidacion.push(
+        errores.push(
           "Sección Condiciones Financieras: Ingrese el Número de pagos."
         );
       }
@@ -204,8 +194,8 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Condiciones Financieras: Seleccione la periodicidad de pago."
+        errores.push(
+          "Sección Condiciones Financieras: Seleccione la Periodicidad de pago."
         );
       }
       if (
@@ -215,7 +205,7 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
+        errores.push(
           "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
         );
       }
@@ -225,40 +215,33 @@ export function SolicituDeInscripcion() {
         /^[\s]*$/.test(tasaEfectiva)
       ) {
         err = 1;
-        erroresValidacion.push(
+        errores.push(
           "Sección Condiciones Financieras: Ingrese la tasa Efectiva."
         );
       }
 
-      ///////////////////NUEVOOOOOOOSSS
-
-      if (
-        CostosGastos.destinoCG === undefined ||
-        CostosGastos.destinoCG === null ||
-        /^[\s]*$/.test(CostosGastos.destinoCG)
-      ) {
-        err = 1;
-        erroresValidacion.push(
-          "Sección Información General: Seleccione el Destino en costos y gastos"
-        );
-      }
-
-      /////////////////// FIN NUEVOOOOOOOSSS
-
       if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
-        err = 1;
-        erroresValidacion.push(
+        errores.push(
           "Sección Condiciones Financieras: Agregar al menos una comision."
         );
       }
 
+      if (
+        state.reglasAplicables[0] === undefined ||
+        state.reglasAplicables[0] === ""
+      ) {
+        errores.push(
+          "Sección Solicitud de Inscripción: Agregar al menos una regla."
+        );
+      }
+
       if (err === 0) {
-         setOpenDialogEnviar(!openDialogEnviar);
+        setOpenDialogEnviar(!openDialogEnviar);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
     } else if (filtroValidacion === "Modificacion") {
-      erroresValidacion = [];
+      errores = [];
 
       const state = useLargoPlazoStore.getState();
       const solicitud: any = {
@@ -277,8 +260,8 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Información General: Ingrese un Monto original contratado valido."
+        errores.push(
+          "Sección Información General:Ingrese un Monto original contratado valido."
         );
       }
       if (
@@ -288,9 +271,7 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Información General: Seleccione  el Destino."
-        );
+        errores.push("Sección Información General:Seleccione  el Destino.");
       }
       if (
         solicitud.InstitucionFinanciera === undefined ||
@@ -299,8 +280,8 @@ export function SolicituDeInscripcion() {
       ) {
         err = 1;
 
-        erroresValidacion.push(
-          "Sección Información General: Seleccione la Institución Financiera."
+        errores.push(
+          "Sección Información General:Seleccione la Institución Financiera."
         );
       }
       if (err === 0) {
@@ -310,10 +291,6 @@ export function SolicituDeInscripcion() {
       }
     }
   };
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  );
 
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
@@ -330,9 +307,11 @@ export function SolicituDeInscripcion() {
     arrReglas = aux;
     changeReglasAplicables(arrReglas);
   };
+
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
   };
+
   return (
     <Grid container>
       <Grid
@@ -371,6 +350,7 @@ export function SolicituDeInscripcion() {
             fullWidth
             variant="standard"
             value={cargoServidorPublico}
+            // onChange={(text) => changeCargo(text.target.value)}
             disabled
             sx={queries.medium_text}
             InputLabelProps={{
@@ -387,7 +367,7 @@ export function SolicituDeInscripcion() {
         </Grid>
       </Grid>
 
-      <Grid item container mt={2} mb={2} justifyContent={"center"}>
+      <Grid container mt={2} mb={2} justifyContent={"center"}>
         <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
@@ -399,6 +379,7 @@ export function SolicituDeInscripcion() {
             value={
               solicitanteAutorizado || localStorage.getItem("NombreUsuario")
             }
+            // onChange={(text) => changeSolicitanteAutorizado(text.target.value)}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -427,9 +408,11 @@ export function SolicituDeInscripcion() {
               fontFamily: "MontserratMedium",
               width: "100%",
               "@media (max-width: 600px)": {
+                // XS (extra small) screen
                 fontSize: "1.4ch",
               },
               "@media (min-width: 601px) and (max-width: 900px)": {
+                // SM (small) screen
                 fontSize: "1.5ch",
               },
             }}
@@ -439,6 +422,7 @@ export function SolicituDeInscripcion() {
         </Grid>
 
         <Grid
+          item
           container
           xs={10}
           sm={11}
@@ -452,16 +436,18 @@ export function SolicituDeInscripcion() {
             <Typography
               sx={{
                 "@media (max-width: 600px)": {
+                  // XS (extra small) screen
                   fontSize: "1.4ch",
                 },
                 "@media (min-width: 601px) and (max-width: 900px)": {
+                  // SM (small) screen
                   fontSize: "1.5ch",
                 },
               }}
             >
-              Al seleccionar alguna de las siguientes secciones, estará
-              manifestando bajo protesta de decir verdad que cumple con lo
-              señalado en cada apartado
+              Al seleccionar alguna de las declaratorias, se estará manifestando
+              bajo protesta en decir verdad que cumplen con lo señalado en cada
+              una de ellas
             </Typography>
 
             <Grid container={query.isMobile} display={"flex"} width={"100%"}>
@@ -523,81 +509,62 @@ export function SolicituDeInscripcion() {
                   </Table>
                 </TableContainer>
               </Grid>
-
-              {reestructura !== "con autorizacion" ? (
-                localStorage.getItem("Rol") !== "Administrador" ? (
-                  <Grid
-                    container
-                    sx={{
+              {localStorage.getItem("Rol") !== "Administrador" ? (
+                <Grid
+                  container
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    mb: 2,
+                    ml: 2,
+                    height: "7rem",
+                    "@media (max-width: 974px)": {
                       width: "100%",
                       display: "flex",
-                      justifyContent: "center",
-                      mb: 2,
-                      ml: 2,
-                      height: "7rem",
-                      "@media (max-width: 974px)": {
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-evenly",
-                      },
-                      "@media (min-width: 974.1px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
+                      justifyContent: "space-evenly",
+                    },
+                    "@media (min-width: 974.1px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1140px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
+                    "@media (min-width: 1140px)": {
+                      flexDirection: "column",
+                      justifyContent: "end",
+                      height: "22rem",
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1400px)": {
-                        width: "10%",
-                      },
+                    "@media (min-width: 1400px)": {
+                      width: "10%",
+                    },
 
-                      "@media (min-width: 1870px)": {
-                        width: "5%",
-                        height: "35rem",
-                      },
-                    }}
+                    "@media (min-width: 1870px)": {
+                      width: "5%",
+                      height: "35rem",
+                    },
+                  }}
+                >
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
                   >
-                    <Grid
-                      mb={2}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                    <Button
+                      onClick={() => {
+                        setOpenDialogCancelar(!openDialogCancelar);
+                      }}
+                      sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
                     >
-                      <Button
-                        onClick={() => {
-                          // setOpenDialogCancelar(!openDialogCancelar);
-                        }}
-                        sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
-                      >
-                        Cancelar
-                      </Button>
-                    </Grid>
+                      Cancelar
+                    </Button>
+                  </Grid>
 
-                    {localStorage.getItem("Rol") === "Verificador" ? (
-                      <Grid
-                        mb={2}
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <Button
-                          sx={queries.buttonContinuarSolicitudInscripcion}
-                          onClick={() => {
-                            infoValidaciones("Modificacion");
-                          }}
-                        >
-                          Solicitar Modificación
-                        </Button>
-                      </Grid>
-                    ) : null}
-
+                  {localStorage.getItem("Rol") === "Verificador" ? (
                     <Grid
                       mb={2}
                       display={"flex"}
@@ -607,41 +574,61 @@ export function SolicituDeInscripcion() {
                       <Button
                         sx={queries.buttonContinuarSolicitudInscripcion}
                         onClick={() => {
-                          infoValidaciones("Enviar");
+                          infoValidaciones("Modificacion");
                         }}
                       >
-                        {localStorage.getItem("Rol") === "Verificador"
-                          ? "Finalizar"
-                          : "Enviar"}
+                        Solicitar Modificación
                       </Button>
                     </Grid>
+                  ) : null}
 
-                    {openDialogBorrador && (
+                  <Grid
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        infoValidaciones("Enviar");
+                      }}
+                    >
+                      {localStorage.getItem("Rol") === "Verificador"
+                        ? "Finalizar"
+                        : "Enviar"}
+                    </Button>
+                  </Grid>
+
+                  {openDialogBorrador && (
                     <DialogGuardarBorrador
                       handler={setOpenDialogBorrador}
                       openState={openDialogBorrador}
                     />
                   )}
-                 {openDialogEnviar && (
+
+                  {openDialogEnviar && (
                     <ConfirmacionEnviarSolicitud
                       handler={setOpenDialogEnviar}
                       openState={openDialogEnviar}
                     />
                   )}
-                    {openDialogCancelar && (
+
+                  {openDialogCancelar && (
                     <ConfirmacionCancelarSolicitud
                       handler={setOpenDialogCancelar}
                       openState={openDialogCancelar}
                     />
                   )}
-                    {openDialogModificacion && (
-                      <DialogSolicitarModificacion
-                        handler={setOpenDialogModificacion}
-                        openState={openDialogModificacion}
-                      />
-                    )}
-                  </Grid>
-                ) : null
+
+                  {openDialogModificacion && (
+                    <DialogSolicitarModificacion
+                      handler={setOpenDialogModificacion}
+                      openState={openDialogModificacion}
+                      accion={"modificacion"}
+                    />
+                  )}
+                </Grid>
               ) : null}
             </Grid>
           </Grid>
@@ -654,6 +641,7 @@ export function SolicituDeInscripcion() {
             Favor de revisar los siguientes apartados:
           </Typography>
         </DialogTitle>
+
         <DialogContent
           sx={{
             overflow: "auto",
@@ -667,7 +655,7 @@ export function SolicituDeInscripcion() {
             },
           }}
         >
-          {erroresValidacion?.map((item, index) => {
+          {errores?.map((item, index) => {
             const division = item.indexOf(":");
 
             const markedText =
@@ -677,7 +665,7 @@ export function SolicituDeInscripcion() {
               division !== -1 ? item.substring(division + 1) : "";
 
             return (
-              <Typography color={"red"} sx={{ fontSize: ".9rem" }}>
+              <Typography color={"red"} sx={{ fontSize: ".9rem" }} key={index}>
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>

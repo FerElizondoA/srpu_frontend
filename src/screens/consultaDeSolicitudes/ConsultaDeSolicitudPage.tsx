@@ -233,7 +233,7 @@ export function ConsultaDeSolicitudPage() {
       // });
       setTablaDocumentos(aux?.documentacion);
     } else if (TipoDocumento === "Crédito Simple a Largo Plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud!);
+      let aux: any = JSON.parse(solicitud.Solicitud);
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
       changeEncabezadoLP(aux?.encabezado);
@@ -787,8 +787,8 @@ export function ConsultaDeSolicitudPage() {
 
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
-                            (row.Estatus === "Captura" ||
-                              row.Estatus === "Verificacion") && (
+                            (row.NoEstatus === "1" ||
+                              row.NoEstatus === "2") && (
                               <Tooltip title="Eliminar">
                                 <IconButton
                                   type="button"

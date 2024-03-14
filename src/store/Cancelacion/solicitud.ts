@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCancelacionStore } from "./main";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -17,8 +19,8 @@ export interface ICancelacion {
 }
 
 export interface SolicitudCancelacionSlice {
-  solicitud: IData;
-  setSolicitud: (solicitud: IData) => void;
+  credito: IData;
+  setCredito: (credito: IData) => void;
 
   cancelacion: ICancelacion;
 
@@ -55,7 +57,7 @@ export interface SolicitudCancelacionSlice {
 export const createSolicitudCancelacionSlice: StateCreator<
   SolicitudCancelacionSlice
 > = (set, get) => ({
-  solicitud: {
+  credito: {
     Id: "",
     NumeroRegistro: "",
     Nombre: "",
@@ -79,9 +81,9 @@ export const createSolicitudCancelacionSlice: StateCreator<
     Control: "",
   },
 
-  setSolicitud: (solicitud: IData) => {
+  setCredito: (credito: IData) => {
     set((state) => ({
-      solicitud: solicitud,
+      credito: credito,
     }));
   },
 
@@ -100,9 +102,9 @@ export const createSolicitudCancelacionSlice: StateCreator<
   },
 
   setCancelacion: (cancelacion: ICancelacion) => {
-    //     set(() => ({
-    //     cancelacion: archivosCancelacion,
-    // })),
+    set(() => ({
+      cancelacion: cancelacion,
+    }));
   },
 
   cleanCancelacion: () =>
@@ -372,70 +374,62 @@ export const createSolicitudCancelacionSlice: StateCreator<
 
 export async function CancelacionSolicitud(setUrl: Function) {
   const state = useCancelacionStore.getState();
-  let infoSolicitud: any = JSON.parse(state.solicitud.Solicitud);
+  let infoSolicitud: any = JSON.parse(state.credito.Solicitud);
+  let credito = state.credito;
+  let cancelacion = state.cancelacion;
 
-  console.log(infoSolicitud);
-  console.log(state.solicitud);
-  console.log(state.cancelacion);
+  console.log("infoSolicitud", infoSolicitud);
+  console.log("credito", state.credito);
+  console.log("cancelacion", state.cancelacion);
 
-  //   await axios
-  //     .post(
-  //       process.env.REACT_APP_APPLICATION_BACK +
-  //         "/create-pdf-solicitud-cancelacion",
-  //       {
-  //         numeroSolicitud: solicitud,
-  //         UsuarioDestinatario: "SolicitudCancelacion.UsuarioDestinatario",
-  //         EntidadDestinatario: "SolicitudCancelacion.EntidadDestinatario",
-  //         UsuarioRemitente: "SolicitudCancelacion.UsuarioRemitente",
-  //         EntidadRemitente: "SolicitudCancelacion.EntidadRemitente",
-  //         claveInscripcion: "SolicitudCancelacion.claveInscripcion",
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK +
+        "/create-pdf-solicitud-cancelacion",
+      {
+        numeroSolicitud: credito.NumeroRegistro,
+        UsuarioDestinatario: infoSolicitud.inscripcion.servidorPublicoDirigido,
+        EntidadDestinatario:
+          infoSolicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        UsuarioRemitente: infoSolicitud.encabezado.solicitanteAutorizado.Nombre,
+        EntidadRemitente: infoSolicitud.encabezado.organismo.Organismo,
+        claveInscripcion: credito.IdClaveInscripcion,
+        fechaInscripcion: format(new Date(credito.FechaCreacion), "PPP", {
+          locale: es,
+        }),
+        fechaLiquidacion: format(new Date(credito.FechaContratacion), "PPP", {
+          locale: es,
+        }),
+        fechaContratacion: format(new Date(credito.FechaContratacion), "PPP", {
+          locale: es,
+        }),
+        entePublicoObligado: credito.Nombre,
+        institucionFinanciera:
+          infoSolicitud.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: infoSolicitud.informacionGeneral.monto,
+        causaCancelacion: cancelacion.Justificacion,
+        documentoAcreditacionCancelacion:
+          cancelacion.AcreditacionDeLaCancelacion.nombreArchivo,
+        documentoBajaCreditoFederal:
+          cancelacion.BajaDeCreditoFederal.nombreArchivo,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      console.log(response);
 
-  //         //   fechaInscripcion: format(
-  //         //     new Date(SolicitudCancelacion.fechaInscripcion),
-  //         //     "PPP",
-  //         //     {
-  //         //       locale: es,
-  //         //     }
-  //         //   ),
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
 
-  //         //   fechaLiquidacion: format(
-  //         //     new Date(SolicitudCancelacion.fechaLiquidacion),
-  //         //     "PPP",
-  //         //     {
-  //         //       locale: es,
-  //         //     }
-  //         //   ),
-  //         //   fechaContratacion: format(
-  //         //     new Date(SolicitudCancelacion.fechaContratacion),
-  //         //     "PPP",
-  //         //     {
-  //         //       locale: es,
-  //         //     }
-  //         //   ),
-  //         //   entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
-  //         //   institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
-  //         //   montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
-  //         //   causaCancelacion: SolicitudCancelacion.causaCancelacion,
-  //         //   documentoAcreditacionCancelacion:
-  //         //     SolicitudCancelacion.documentoAcreditacionCancelacion,
-  //         //   documentoBajaCreditoFederal:
-  //         //     SolicitudCancelacion.documentoBajaCreditoFederal,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem("jwtToken"),
-  //           "Access-Control-Allow-Origin": "*",
-  //         },
-  //         responseType: "arraybuffer",
-  //       }
-  //     )
-  //     .then((response) => {
-  //       const a = window.URL || window.webkitURL;
-  //       const url = a.createObjectURL(
-  //         new Blob([response.data], { type: "application/pdf" })
-  //       );
-
-  //       setUrl(url);
-  //     })
-  //     .catch((err) => {});
+      setUrl(url);
+    })
+    .catch((err) => {});
 }

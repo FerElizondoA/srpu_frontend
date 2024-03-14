@@ -18,16 +18,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { forwardRef, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import {
-  DestinoA,
-  DetalleDestino,
-  GeneralAutorizado,
-} from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { DestalleDestino } from "../Panels/DetalleDestino";
 import { DestinoAutorizado } from "../Panels/MontoAutorizado";
 import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
+import {
+  IDetalleDestino,
+  IGeneralAutorizado,
+  IMontoAutorizado,
+} from "../../../store/CreditoLargoPlazo/autorizacion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -55,13 +55,13 @@ export function DialogNuevaAutorizacion(props: Props) {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const registrarAutorizacion: GeneralAutorizado = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion
+  const autorizacion: IGeneralAutorizado = useLargoPlazoStore(
+    (state) => state.autorizacion
   );
-  const tablaDestinoAutorizado: DestinoA[] = useLargoPlazoStore(
+  const tablaDestinoAutorizado: IMontoAutorizado[] = useLargoPlazoStore(
     (state) => state.tablaDestinoAutorizado
   );
-  const tablaDetalleDestino: DetalleDestino[] = useLargoPlazoStore(
+  const tablaDetalleDestino: IDetalleDestino[] = useLargoPlazoStore(
     (state) => state.tablaDetalleDestino
   );
   const createAutorizacion: Function = useLargoPlazoStore(
@@ -138,15 +138,13 @@ export function DialogNuevaAutorizacion(props: Props) {
               <ThemeProvider theme={buttonTheme}>
                 <Button
                   disabled={
-                    registrarAutorizacion.entidad.Organismo === "" ||
-                    registrarAutorizacion.numeroAutorizacion === 0 ||
-                    registrarAutorizacion.fechaPublicacion === "" ||
-                    registrarAutorizacion.medioPublicacion.Descripcion === "" ||
-                    registrarAutorizacion.montoAutorizado === 0 ||
-                    registrarAutorizacion.documentoSoporte.nombreArchivo ===
-                      "" ||
-                    registrarAutorizacion.acreditacionQuorum.nombreArchivo ===
-                      "" ||
+                    autorizacion.entidad.Organismo === "" ||
+                    autorizacion.numeroAutorizacion === 0 ||
+                    autorizacion.fechaPublicacion === "" ||
+                    autorizacion.medioPublicacion.Descripcion === "" ||
+                    autorizacion.montoAutorizado === 0 ||
+                    autorizacion.documentoSoporte.nombreArchivo === "" ||
+                    autorizacion.acreditacionQuorum.nombreArchivo === "" ||
                     tablaDestinoAutorizado.length === 0 ||
                     tablaDetalleDestino.length === 0
                   }
