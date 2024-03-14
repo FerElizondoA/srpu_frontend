@@ -7,17 +7,6 @@ import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocument
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
-export interface ArchivoCancelacion {
-  archivo: File;
-  nombreArchivo: string;
-  fechaArchivo: string;
-}
-
-export interface ArchivosCancelacion {
-  acreditacionCancelacion: ArchivoCancelacion;
-  bajaCreditoFederal: ArchivoCancelacion;
-}
-
 export interface IDataFirmaDetalle {
   Id: string;
   IdPathDoc: string;
@@ -44,8 +33,6 @@ export interface SolicitudFirmaSlice {
   url: string;
   infoDoc: string;
   TipoFirma: string;
-  justificacionAnulacion: string;
-  setJustificacionAnulacion: (justificacionAnulacion: string) => void;
 
   catalogoFirmaDetalle: IDataFirmaDetalle;
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
@@ -55,10 +42,6 @@ export interface SolicitudFirmaSlice {
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
   setUrl: (url: string) => void;
-
-  archivosCancelacion: ArchivosCancelacion;
-  setArchivosCancelacion: (ArchivosCancelacion: ArchivosCancelacion) => void;
-  cleanArchivosCancelacion: () => void;
 
   rowSolicitud: IData;
   setRowSolicitud: (rowSolicitud: IData) => void;
@@ -94,53 +77,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     UltimaModificacion: new Date().toString(),
     Control: "",
   },
-
-  archivosCancelacion: {
-    acreditacionCancelacion: {
-      archivo: new File([], ""),
-      nombreArchivo: "",
-      fechaArchivo: new Date().toString(),
-    },
-
-    bajaCreditoFederal: {
-      archivo: new File([], ""),
-      nombreArchivo: "",
-      fechaArchivo: new Date().toString(),
-    },
-  },
-  justificacionAnulacion: "",
-  setJustificacionAnulacion: (justificacionAnulacion: string) =>
-    set(() => ({
-      justificacionAnulacion: justificacionAnulacion,
-    })),
-
   setRowSolicitud: (rowSolicitud: IData) => {
     set(() => ({
       rowSolicitud: rowSolicitud,
     }));
   },
-
-  setArchivosCancelacion: (archivosCancelacion: ArchivosCancelacion) =>
-    set(() => ({
-      archivosCancelacion: archivosCancelacion,
-    })),
-
-  cleanArchivosCancelacion: () =>
-    set(() => ({
-      archivosCancelacion: {
-        acreditacionCancelacion: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-          fechaArchivo: new Date().toString(),
-        },
-
-        bajaCreditoFederal: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-          fechaArchivo: new Date().toString(),
-        },
-      },
-    })),
 
   cleanSolicitud: () => {
     let state = useCortoPlazoStore.getState();
@@ -794,107 +735,6 @@ export const getPdf = (
     })
     .catch((err) => {});
 };
-
-export async function CancelacionSolicitud(
-  Solicitud: IData,
-  Justificacion: string,
-  archivosCancelacion: ArchivosCancelacion,
-  setUrl: Function
-) {
-  let solicitud: any = JSON.parse(Solicitud.Solicitud);
-
-  const SolicitudCancelacion: any = {
-    numeroSolicitud: Solicitud.NumeroRegistro,
-    UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
-    EntidadDestinatario:
-      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
-    UsuarioRemitente: solicitud.encabezado.solicitanteAutorizado.Nombre,
-    EntidadRemitente: solicitud.encabezado.solicitanteAutorizado.Cargo,
-    claveInscripcion: Solicitud.IdClaveInscripcion,
-
-    fechaInscripcion: Solicitud.UltimaModificacion,
-
-    fechaLiquidacion: solicitud.informacionGeneral.fechaVencimiento,
-    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
-
-    entePublicoObligado:
-      solicitud.informacionGeneral.obligadosSolidarios.length > 0
-        ? solicitud.informacionGeneral.obligadosSolidarios[0]
-            .entePublicoObligado
-        : "No Aplica",
-    institucionFinanciera:
-      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-    montoOriginalContratado: solicitud.informacionGeneral.monto,
-    causaCancelacion: Justificacion,
-    documentoAcreditacionCancelacion: JSON.stringify(
-      archivosCancelacion.acreditacionCancelacion.nombreArchivo
-    ),
-    documentoBajaCreditoFederal: JSON.stringify(
-      archivosCancelacion.bajaCreditoFederal.nombreArchivo
-    ),
-  };
-
-  await axios
-    .post(
-      process.env.REACT_APP_APPLICATION_BACK +
-        "/create-pdf-solicitud-cancelacion",
-      {
-        numeroSolicitud: SolicitudCancelacion.numeroSolicitud,
-        UsuarioDestinatario: SolicitudCancelacion.UsuarioDestinatario,
-        EntidadDestinatario: SolicitudCancelacion.EntidadDestinatario,
-        UsuarioRemitente: SolicitudCancelacion.UsuarioRemitente,
-        EntidadRemitente: SolicitudCancelacion.EntidadRemitente,
-        claveInscripcion: SolicitudCancelacion.claveInscripcion,
-
-        fechaInscripcion: format(
-          new Date(SolicitudCancelacion.fechaInscripcion),
-          "PPP",
-          {
-            locale: es,
-          }
-        ),
-
-        fechaLiquidacion: format(
-          new Date(SolicitudCancelacion.fechaLiquidacion),
-          "PPP",
-          {
-            locale: es,
-          }
-        ),
-        fechaContratacion: format(
-          new Date(SolicitudCancelacion.fechaContratacion),
-          "PPP",
-          {
-            locale: es,
-          }
-        ),
-        entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
-        institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
-        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
-        causaCancelacion: SolicitudCancelacion.causaCancelacion,
-        documentoAcreditacionCancelacion:
-          SolicitudCancelacion.documentoAcreditacionCancelacion,
-        documentoBajaCreditoFederal:
-          SolicitudCancelacion.documentoBajaCreditoFederal,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("jwtToken"),
-          "Access-Control-Allow-Origin": "*",
-        },
-        responseType: "arraybuffer",
-      }
-    )
-    .then((response) => {
-      const a = window.URL || window.webkitURL;
-      const url = a.createObjectURL(
-        new Blob([response.data], { type: "application/pdf" })
-      );
-
-      setUrl(url);
-    })
-    .catch((err) => {});
-}
 
 export async function borrarFirmaDetalle(
   IdSolicitud: string,

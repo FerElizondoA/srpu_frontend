@@ -47,7 +47,6 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import { queries } from "../../queries";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
 
 export interface IData {

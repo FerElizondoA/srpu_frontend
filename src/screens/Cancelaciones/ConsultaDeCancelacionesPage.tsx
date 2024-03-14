@@ -43,30 +43,7 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-
-export interface IData {
-  Id: string;
-  NumeroRegistro: string;
-  Nombre: string;
-  TipoEntePublico: string;
-  TipoSolicitud: string;
-  Institucion: string;
-  NoEstatus: string;
-  Estatus: string;
-  ControlInterno: string;
-  IdClaveInscripcion: string;
-  MontoOriginalContratado: string;
-  FechaContratacion: string;
-  Solicitud: string;
-  FechaCreacion: string;
-  CreadoPor: string;
-  UltimaModificacion: string;
-  ModificadoPor: string;
-  IdEditor: string;
-  FechaRequerimientos: string;
-  IdPathDoc?: string;
-  Control: string;
-}
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 
 const heads: Array<{ label: string }> = [
   {
@@ -141,17 +118,7 @@ export function ConsultaDeCancelacionesPage() {
 
   const navigate = useNavigate();
 
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
-
-  const changeNoRegistro: Function = useCortoPlazoStore(
-    (state) => state.changeNoRegistro
-  );
-  const changeEditCreadoPor: Function = useCortoPlazoStore(
-    (state) => state.changeEditCreadoPor
-  );
+  // Corto plazo
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -187,21 +154,14 @@ export function ConsultaDeCancelacionesPage() {
   const addDocumentoLP: Function = useLargoPlazoStore(
     (state) => state.addDocumento
   );
-
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(
     (state) => state.changeReglasAplicables
   );
-
   const changeGastosCostos: Function = useLargoPlazoStore(
     (state) => state.changeGastosCostos
   );
-
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGeneralGastosCostos
-  );
-
-  const setSolicitudFirma: Function = useCortoPlazoStore(
-    (state) => state.setRowSolicitud
   );
 
   const llenaSolicitud = (solicitud: IData) => {
@@ -217,12 +177,11 @@ export function ConsultaDeCancelacionesPage() {
           return addObligadoSolidarioAval(v);
         }
       );
+
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return addCondicionFinanciera(v);
       });
-      // aux?.documentacion.map((v: any, index: number) => {
-      //   return addDocumento(v);
-      // });
+
       setTablaDocumentos(aux?.documentacion);
     } else if (solicitud.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
@@ -282,8 +241,7 @@ export function ConsultaDeCancelacionesPage() {
   const requerimientos = (
     Solicitud: string,
     noRegistro: string,
-    Requerimiento: any,
-    IdSolicitud: string
+    Requerimiento: any
   ) => {
     let a: any = {};
 
@@ -295,8 +253,6 @@ export function ConsultaDeCancelacionesPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("cancelacion");
-    changeIdSolicitud(IdSolicitud);
     navigate("../firmaUrl");
   };
 
@@ -602,7 +558,6 @@ export function ConsultaDeCancelacionesPage() {
                               type="button"
                               onClick={() => {
                                 llenaSolicitud(row);
-                                setSolicitudFirma(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -618,9 +573,6 @@ export function ConsultaDeCancelacionesPage() {
                                   type="button"
                                   onClick={() => {
                                     llenaSolicitud(row);
-                                    changeIdSolicitud(row.Id);
-                                    changeNoRegistro(row.NumeroRegistro);
-                                    setSolicitudFirma(row);
                                     getComentariosSolicitudPlazo(
                                       row.Id,
                                       () => {}
@@ -642,8 +594,7 @@ export function ConsultaDeCancelacionesPage() {
                                             data.filter(
                                               (a: any) =>
                                                 a.Tipo === "Requerimiento"
-                                            )[0],
-                                            row.Id
+                                            )[0]
                                           );
                                         } else {
                                           ConsultaConstancia(
@@ -651,18 +602,14 @@ export function ConsultaDeCancelacionesPage() {
                                             row.NumeroRegistro,
                                             setUrl
                                           );
-                                          changeIdSolicitud(row.Id);
                                           navigate("../firmaUrl");
                                         }
                                       } else {
-                                        setSolicitudFirma(row);
                                         ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
                                           setUrl
                                         );
-                                        setProceso("solicitud");
-                                        changeIdSolicitud(row.Id);
                                         navigate("../firmaUrl");
                                       }
                                     });
@@ -696,8 +643,6 @@ export function ConsultaDeCancelacionesPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  changeIdSolicitud(row?.Id);
-                                  changeEditCreadoPor(row?.CreadoPor);
                                   changeOpenVerComentarios(!openVerComentarios);
                                 }}
                               >

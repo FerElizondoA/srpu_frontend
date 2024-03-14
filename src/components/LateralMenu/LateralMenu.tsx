@@ -117,19 +117,6 @@ export const IconsMenu = (icon: string) => {
   }
 };
 
-export interface IData {
-  Id: string;
-  Institucion: string;
-  TipoEntePublico: string;
-  ClaveDeInscripcion: string;
-  Estatus: string;
-  FechaContratacion: Date;
-  MontoOriginalContratado: number;
-  Acciones: string;
-  Solicitud: string;
-  tipoDocumento: string;
-  TipoSolicitud: string;
-}
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&

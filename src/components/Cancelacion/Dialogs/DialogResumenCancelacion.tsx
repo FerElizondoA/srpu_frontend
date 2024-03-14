@@ -22,6 +22,7 @@ import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolic
 import { DialogGuardarComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogGuardarComentarios";
 import { useEffect, useState } from "react";
 import { DatosCancelacion } from "../Panels/DatosCancelacion";
+import { useCancelacionStore } from "../../../store/Cancelacion/main";
 
 export function VerBorradorCancelacion({
   handler,
@@ -32,19 +33,20 @@ export function VerBorradorCancelacion({
 }) {
   const [openSolicitarCancelacion, setOpenSolicitarCancelacion] =
     useState(false);
+
   const [openGuardaComentarios, setOpenGuardaComentarios] = useState(false);
 
   // // SOLICITUD
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const solicitud: IData = useCancelacionStore((state) => state.solicitud);
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
   // REQUERIMIENTOS
   useEffect(() => {
-    if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    if (solicitud.Id !== "") {
+      getComentariosSolicitudPlazo(solicitud.Id, setDatosComentarios);
     }
-  }, [IdSolicitud]);
+  }, [solicitud]);
 
   const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
     []
@@ -100,67 +102,77 @@ export function VerBorradorCancelacion({
           width: "100%",
           height: "8%",
           display: "flex",
+          flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
         }}
       >
-        <Button
-          sx={{
-            backgroundColor: "rgb(175, 140, 85)",
-            color: "white",
-            "&&:hover": {
-              backgroundColor: "rgba(175, 140, 85, 0.6)",
-              color: "#000",
-            },
-            height: "2rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: "0.8vh",
-            textTransform: "capitalize",
-            fontSize: "60%",
-            "@media (min-width: 480px)": {
-              fontSize: "70%",
-            },
-
-            "@media (min-width: 768px)": {
-              fontSize: "80%",
-            },
-          }}
-          onClick={() => {
-            handler(false);
-            useCortoPlazoStore.setState({
-              comentarios: {},
-              idComentario: "",
-            });
-            cleanSolicitud();
-          }}
-        >
-          Volver
-        </Button>
-
         <Box
           sx={{
-            borderBottom: 1,
-            borderColor: "divider",
+            display: "flex",
+            alignItems: "center",
+            width: "40%",
+            justifyContent:
+              rowSolicitud.NoEstatus !== "10" ? "space-around" : "flex-start",
           }}
         >
-          <Tabs
-            variant={"standard"}
-            scrollButtons
-            allowScrollButtonsMobile
-            value={value}
-            onChange={(e, number) => {
-              setValue(number);
+          <Button
+            sx={{
+              backgroundColor: "rgb(175, 140, 85)",
+              color: "white",
+              "&&:hover": {
+                backgroundColor: "rgba(175, 140, 85, 0.6)",
+                color: "#000",
+              },
+              height: "2rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "0.8vh",
+              textTransform: "capitalize",
+              fontSize: "60%",
+              "@media (min-width: 480px)": {
+                fontSize: "70%",
+              },
+
+              "@media (min-width: 768px)": {
+                fontSize: "80%",
+              },
+            }}
+            onClick={() => {
+              handler(false);
+              useCortoPlazoStore.setState({
+                comentarios: {},
+                idComentario: "",
+              });
+              cleanSolicitud();
             }}
           >
-            <Tab label="Datos del Crédito" sx={queries.medium_text} value={1} />
-            <Tab
-              label="Datos de la Cancelación"
-              sx={queries.medium_text}
-              value={2}
-            />
-          </Tabs>
+            Volver
+          </Button>
+
+          {rowSolicitud.NoEstatus !== "10" && (
+            <Tabs
+              variant={"standard"}
+              scrollButtons
+              allowScrollButtonsMobile
+              value={value}
+              onChange={(e, number) => {
+                setValue(number);
+              }}
+            >
+              <Tab
+                label="Datos del Crédito"
+                sx={queries.medium_text}
+                value={1}
+              />
+              <Tab
+                label="Datos de la Cancelación"
+                sx={queries.medium_text}
+                value={2}
+              />
+            </Tabs>
+          )}
         </Box>
 
         {localStorage.getItem("Rol") === "Verificador" &&

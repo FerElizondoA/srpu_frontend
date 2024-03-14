@@ -28,7 +28,7 @@ import Ayuda from "./screens/Ayuda/Ayuda";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { SolicitudesReestructura } from "./screens/Reestructura/Reestructura";
-import { ConsultaDeCancelacionesPage } from "./screens/consultaDeSolicitudes/ConsultaDeCancelacionesPage";
+import { ConsultaDeCancelacionesPage } from "./screens/Cancelaciones/ConsultaDeCancelacionesPage";
 
 export const getToken = () => {
   let token = localStorage.getItem("jwtToken");
