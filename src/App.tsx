@@ -16,6 +16,7 @@ import { Firma } from "./components/e.firma/Firma";
 import { Catalogos } from "./screens/Config/Catalogos";
 import { Configuracion } from "./screens/Config/Configuracion";
 import { Usuarios } from "./screens/Config/Usuarios";
+
 import { Notificaciones } from "./screens/Notificaciones/notificaciones";
 import { ConsultaDeSolicitudPage } from "./screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { ObligacionesCortoPlazoPage } from "./screens/creditoSimpleCortoPlazo/ObligacionesCortoPlazoPage";
