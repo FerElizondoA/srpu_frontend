@@ -208,6 +208,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         generalGastosCostos: state.tablaGastosCostos,
       },
 
+      autorizacion: {
+        Autorizacion: state.autorizaciones
+      },
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
       documentacion: state.tablaDocumentosLP.map((v: any, i: any) => {

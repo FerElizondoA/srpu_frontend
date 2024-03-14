@@ -6,16 +6,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDatosGeneralesInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { es } from "date-fns/locale";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -30,6 +31,10 @@ export function DatosGeneralesIntrucciones() {
 
   const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
+  );
+
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
   );
 
   useEffect(() => {
@@ -87,6 +92,7 @@ export function DatosGeneralesIntrucciones() {
             Número de Cuenta
           </InputLabel>
           <TextField
+            disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
             fullWidth
             variant="standard"
             value={datosGenerales.numeroCuenta}
@@ -110,6 +116,7 @@ export function DatosGeneralesIntrucciones() {
           </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
+              disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
               sx={{
                 width: "100%",
               }}
@@ -134,6 +141,10 @@ export function DatosGeneralesIntrucciones() {
         <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
+            disabled={
+              tipoMecanismoVehiculoPago === "Mandato" ||
+              tipoMecanismoVehiculoPago === "Instrucción Irrevocable"
+            }
             fullWidth
             variant="standard"
             value={datosGenerales.cuentaCLABE}
@@ -154,6 +165,7 @@ export function DatosGeneralesIntrucciones() {
         <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
           <Autocomplete
+            disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"

@@ -157,4 +157,35 @@ export async function getSolicitudesAdmin(
         text: "(" + error.response.status + ") " + error.response.data.msg,
       });
     });
+
+}
+
+export async function getTrazabilidad(
+  setState: Function,
+  IdUsuarioModificador: string
+  ) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-TrazabilidadSolicitud",
+    params: {
+      IdUsuarioModificador: IdUsuarioModificador
+    },
+    data: {},
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      setState(data.data);
+    })
+    .catch((error) => {
+      Swal.fire({
+        confirmButtonColor: "#15212f",
+        cancelButtonColor: "rgb(175, 140, 85)",
+        icon: "error",
+        title: "Mensaje",
+        text: "(" + error.response.status + ") " + error.response.data.msg,
+      });
+    });
 }

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Button,
   Chip,
   Grid,
   InputBase,
@@ -46,6 +47,8 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
+import { queries } from "../../queries";
+import { DialogTrazabilidad } from "./DialogTrazabilidad";
 
 export interface IData {
   Id: string;
@@ -274,6 +277,8 @@ export function ConsultaDeSolicitudPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
+  const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
+
   const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
 
   const cleanSolicitud: Function = useCortoPlazoStore(
@@ -489,6 +494,29 @@ export function ConsultaDeSolicitudPage() {
                         />
                       );
                     } else if (row.Estatus === "actualizacion") {
+                    }
+                    // else if (row.Estatus.includes("Inscrito")) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="warning"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // }
+                    else if (row.ControlInterno === "Inscrito") {
+                      chip = (
+                        <Tooltip title={"Registro de trazabilidad"}>
+                          <Button>
+                            <Chip
+                              label={row.Estatus}
+                              color="secondary"
+                              variant="outlined"
+                            />
+                          </Button>
+                        </Tooltip>
+                      );
+                    } else if (row.Estatus === "Actualizacion") {
                       chip = (
                         <Tooltip
                           title={`${differenceInDays(
@@ -498,7 +526,7 @@ export function ConsultaDeSolicitudPage() {
                         >
                           <Chip
                             label={
-                              row.Estatus === "actualizacion"
+                              row.Estatus === "Actualizacion"
                                 ? "Actualización"
                                 : row.Estatus
                             }
@@ -550,7 +578,13 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {chip}
+                          <Button
+                            onClick={() => {
+                              setOpenTrazabilidad(!openTrazabilidad);
+                            }}
+                          >
+                            {chip}
+                          </Button>
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -779,6 +813,13 @@ export function ConsultaDeSolicitudPage() {
           </TableContainer>
         </Paper>
       </Grid>
+
+      <DialogTrazabilidad
+        handler={setOpenTrazabilidad}
+        openState={openTrazabilidad}
+        rowSolicitud={solicitudFirma}
+        //rowId={""}
+      />
       {openDialogVer && (
         <VerBorradorDocumento
           handler={changeOpenDialogVer}

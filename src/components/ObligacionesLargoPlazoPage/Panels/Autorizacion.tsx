@@ -160,8 +160,8 @@ export function Autorizacion() {
       justifyContent={"space-evenly"}
       alignItems={"center"}
     >
-      <Grid display={"flex"} justifyContent={"center"} width={"100%"}>
-        <Grid item xs={7} sm={3} md={3} lg={4} xl={4}>
+      <Grid container display={"flex"} justifyContent={"center"} width={"100%"}>
+        <Grid item xs={10} sm={6} md={6} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Autorización de la legislatura local
           </InputLabel>
@@ -215,6 +215,7 @@ export function Autorizacion() {
           display={"flex"}
           justifyContent={"space-evenly"}
           alignItems={"center"}
+          mt={{xs:4, md:0}}
         >
           {/* <Grid item lg={3}>
             <Button sx={queries.buttonContinuar} variant="outlined">
@@ -226,7 +227,25 @@ export function Autorizacion() {
             <ThemeProvider theme={buttonTheme}>
               <Button
                 disabled={reestructura === "con autorizacion"}
-                sx={queries.buttonContinuar}
+                sx={{
+                backgroundColor: "#15212f",
+                color: "white",
+                "&&:hover": {
+                  backgroundColor: "rgba(47, 47, 47, 0.4)",
+                  color: "#000",
+                },
+                //fontSize: "90%",
+                borderRadius: "0.8vh",
+                textTransform: "capitalize",
+                fontSize: "75%",
+                "@media (min-width: 480px)": {
+                  fontSize: "80%",
+                },
+            
+                "@media (min-width: 768px)": {
+                  fontSize: "85%",
+                },}}
+
                 variant="outlined"
                 onClick={() => {
                   setAccion("Agregar");
