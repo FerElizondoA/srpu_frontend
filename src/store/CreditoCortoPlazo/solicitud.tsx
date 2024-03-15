@@ -13,6 +13,7 @@ export interface IRegistroSolicitud {
   NoEstatus: string;
   Estatus: string;
   ControlInterno: string;
+  Control: string;
   IdClaveInscripcion: string;
   MontoOriginalContratado: string;
   FechaContratacion: string;
@@ -83,6 +84,7 @@ export const createDatosSolicitudSlice: StateCreator<DatosSolicitud> = (
     NoEstatus: "",
     Estatus: "",
     ControlInterno: "",
+    Control: "",
     IdClaveInscripcion: "",
     MontoOriginalContratado: "",
     FechaContratacion: "",
@@ -104,27 +106,9 @@ export const createDatosSolicitudSlice: StateCreator<DatosSolicitud> = (
     let aux: any = JSON.parse(registroSolicitud.Solicitud);
     console.log(aux);
 
-    state.changeEncabezado(
-      aux?.encabezado.tipoDocumento,
-      {
-        Solicitante: aux?.encabezado.Solicitante,
-        Cargo: aux?.encabezado.Cargo,
-        Nombre: aux?.encabezado.Nombre,
-      },
-      aux?.encabezado.tipoEntePublico,
-      aux?.encabezado.organismo,
-      aux?.encabezado.fechaContratacion
-    );
+    state.changeEncabezado(aux?.encabezado);
 
-    state.changeInformacionGeneral(
-      aux?.informacionGeneral.fechaContratacion,
-      aux?.informacionGeneral.fechaVencimiento,
-      aux?.informacionGeneral.plazo,
-      aux?.informacionGeneral.destino,
-      aux?.informacionGeneral.monto,
-      aux?.informacionGeneral.denominacion,
-      aux?.informacionGeneral.institucionFinanciera
-    );
+    state.changeInformacionGeneral(aux?.informacionGeneral);
     state.setTablaObligadoSolidarioAval(
       aux?.informacionGeneral.obligadosSolidarios
     );
