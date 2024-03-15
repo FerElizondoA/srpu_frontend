@@ -18,7 +18,8 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
-import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -59,8 +60,8 @@ export function DialogSolicitarModificacion({
 
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
-  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export function DialogSolicitarModificacion({
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
       addComentario(
-        registroSolicitud.Id,
+        inscripcion.Id,
         JSON.stringify(comentarios),
         "Requerimiento"
       );
@@ -86,7 +87,7 @@ export function DialogSolicitarModificacion({
             ? "6"
             : "4"
           : "5",
-        registroSolicitud.Id,
+        inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
@@ -120,16 +121,16 @@ export function DialogSolicitarModificacion({
         });
       });
     } else {
-      if (registroSolicitud.Id !== "") {
+      if (inscripcion.Id !== "") {
         modificaSolicitud(
-          registroSolicitud.CreadoPor || localStorage.getItem("IdUsuario"),
+          inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1"
         )
           .then(() => {
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
               addComentario(
-                registroSolicitud.Id,
+                inscripcion.Id,
                 JSON.stringify(comentarios),
                 "Captura"
               );

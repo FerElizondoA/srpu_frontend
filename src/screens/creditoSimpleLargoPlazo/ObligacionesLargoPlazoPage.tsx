@@ -18,7 +18,8 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { DialogSolicitarReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarReestructura";
 import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudDeInscripcion";
-import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -44,18 +45,14 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
-  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
-  );
-
-  const NumeroRegistro = useCortoPlazoStore(
-    (state) => state.registroSolicitud.NumeroRegistro
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${registroSolicitud.Id}/`,
+      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => {},
       () => {}
     );
@@ -72,12 +69,11 @@ export function ObligacionesLargoPlazoPage() {
           mt={2}
           width={"100%"}
           display={"flex"}
-          justifyContent={!NumeroRegistro ? "center" : "space-evenly"}
-          // justifyContent={
-          //   reestructura === "con autorizacion" ? "end" : "center"
-          // }
+          justifyContent={
+            !inscripcion.NumeroRegistro ? "center" : "space-evenly"
+          }
         >
-          {NumeroRegistro && (
+          {inscripcion.NumeroRegistro && (
             <Grid
               width={query.isTittle ? "20%" : "20%"}
               display={"flex"}
@@ -89,25 +85,20 @@ export function ObligacionesLargoPlazoPage() {
                   ...queries.bold_text,
                 }}
               >
-                <strong>{`Número de Registro: ${NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
               </Typography>
             </Grid>
           )}
           <Grid
-            width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
-            // width={reestructura === "con autorizacion" ? "60%" : "55%"}
-            // sx={{
-            //   width: query.isMobile
-            //     ? reestructura === "con autorizacion"
-            //       ? "60%"
-            //       : "55%"
-            //     : "55%",
-            // }}
+            width={
+              !inscripcion.NumeroRegistro
+                ? "90%"
+                : query.isTittle
+                ? "60%"
+                : "50%"
+            }
             display={"flex"}
             justifyContent={"center"}
-            // justifyContent={
-            //   reestructura === "con autorizacion" ? "center" : " end"
-            // }
           >
             <Typography
               sx={{
@@ -165,7 +156,13 @@ export function ObligacionesLargoPlazoPage() {
             </Grid>
           ) : (
             <Grid
-              width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+              width={
+                !inscripcion.NumeroRegistro
+                  ? "0"
+                  : query.isTittle
+                  ? "10%"
+                  : "20%"
+              }
               display={"flex"}
               justifyContent={"end"}
               alignItems={"center"}
@@ -250,7 +247,7 @@ export function ObligacionesLargoPlazoPage() {
       <DialogSolicitarReestructura
         handler={setOpenDialogReestructura}
         openState={openDialogReestructura}
-        idSolicitud={registroSolicitud.Id}
+        idSolicitud={inscripcion.Id}
       />
     </>
   );

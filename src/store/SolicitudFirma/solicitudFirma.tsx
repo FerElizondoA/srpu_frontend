@@ -6,6 +6,7 @@ import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -185,12 +186,12 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     if (info) {
       const inf = JSON.parse(info);
 
-      const state = useCortoPlazoStore.getState();
+      const state = useInscripcionStore.getState();
 
       const estatusPrevio = {
-        NoEstatus: state.registroSolicitud.NoEstatus,
-        Estatus: state.registroSolicitud.Estatus,
-        ControlInterno: state.registroSolicitud.ControlInterno,
+        NoEstatus: state.inscripcion.NoEstatus,
+        Estatus: state.inscripcion.Estatus,
+        ControlInterno: state.inscripcion.ControlInterno,
       };
 
       axios
@@ -199,7 +200,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           {
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
-            IdSolicitud: state.registroSolicitud.Id,
+            IdSolicitud: state.inscripcion.Id,
             NumeroOficio: `${inf.NumeroOficio}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
@@ -229,14 +230,14 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               ? `Se recibe el ${new Date().toLocaleString(
                   "es-MX"
                 )} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
+                  state.inscripcion.IdClaveInscripcion
                 }`
               : `Se envía el ${new Date().toLocaleString(
                   "es-MX"
                 )} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
+                  state.inscripcion.IdClaveInscripcion
                 }`;
-          let oficio = `Solicitud ${state.registroSolicitud.IdClaveInscripcion}`;
+          let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -270,7 +271,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               : estatusPrevio.ControlInterno === "reestructurado"
               ? "10"
               : "101",
-            state.registroSolicitud.Id,
+            state.inscripcion.Id,
             inf.IdUsuario,
             oficio
           );

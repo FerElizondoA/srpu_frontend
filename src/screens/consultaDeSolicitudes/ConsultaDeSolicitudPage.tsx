@@ -40,7 +40,7 @@ import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
-import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaConstancia,
@@ -48,6 +48,7 @@ import {
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export interface IData {
   Id: string;
@@ -107,10 +108,8 @@ const heads: Array<{ label: string }> = [
 ];
 
 export function ConsultaDeSolicitudPage() {
-  const [datos, setDatos] = useState<Array<IRegistroSolicitud>>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<
-    Array<IRegistroSolicitud>
-  >([]);
+  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
   const [busqueda, setBusqueda] = useState("");
 
   const filtrarDatos = () => {
@@ -166,15 +165,13 @@ export function ConsultaDeSolicitudPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
-  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
-  const setRegistroSolicitud: Function = useCortoPlazoStore(
-    (state) => state.setRegistroSolicitud
+  const setInscripcion: Function = useInscripcionStore(
+    (state) => state.setInscripcion
   );
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
-
-  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -185,7 +182,7 @@ export function ConsultaDeSolicitudPage() {
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
         ? "Inscripcion"
         : "Revision",
-      (e: IRegistroSolicitud[]) => {
+      (e: IInscripcion[]) => {
         setDatos(e);
         setDatosFiltrados(e);
       }
@@ -198,8 +195,7 @@ export function ConsultaDeSolicitudPage() {
   const requerimientos = (
     Solicitud: string,
     noRegistro: string,
-    Requerimiento: any,
-    IdSolicitud: string
+    Requerimiento: any
   ) => {
     let a: any = {};
 
@@ -219,10 +215,6 @@ export function ConsultaDeSolicitudPage() {
     date.setDate(date.getDate() + days);
     return date;
   };
-
-  const setDatosActualizar: Function = useCortoPlazoStore(
-    (state) => state.setDatosActualizar
-  );
 
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
@@ -549,8 +541,7 @@ export function ConsultaDeSolicitudPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                // llenaSolicitud(row, row.TipoSolicitud);
-                                setRegistroSolicitud(row);
+                                setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -586,8 +577,7 @@ export function ConsultaDeSolicitudPage() {
                                             data.filter(
                                               (a: any) =>
                                                 a.Tipo === "Requerimiento"
-                                            )[0],
-                                            row.Id
+                                            )[0]
                                           );
                                         } else {
                                           ConsultaConstancia(
@@ -598,7 +588,7 @@ export function ConsultaDeSolicitudPage() {
                                           navigate("../firmaUrl");
                                         }
                                       } else {
-                                        setRegistroSolicitud(row);
+                                        setInscripcion(row);
                                         ConsultaSolicitud(
                                           row.Solicitud,
                                           row.NumeroRegistro,
@@ -621,8 +611,9 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    setRegistroSolicitud(row);
+                                    console.log(row.Solicitud);
 
+                                    setInscripcion(row);
                                     editarSolicitud(row.TipoSolicitud);
                                   }}
                                 >
@@ -636,7 +627,7 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
-                                  setRegistroSolicitud(row);
+                                  setInscripcion(row);
                                   setOpenDescargar(true);
                                 }}
                               >
@@ -694,7 +685,7 @@ export function ConsultaDeSolicitudPage() {
         <VerBorradorDocumento
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={registroSolicitud}
+          rowSolicitud={inscripcion}
           rowId={""}
         />
       )}
@@ -702,8 +693,8 @@ export function ConsultaDeSolicitudPage() {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={registroSolicitud.NumeroRegistro}
-          idSolicitud={registroSolicitud.Id}
+          noSolicitud={inscripcion.NumeroRegistro}
+          idSolicitud={inscripcion.Id}
         />
       )}
 

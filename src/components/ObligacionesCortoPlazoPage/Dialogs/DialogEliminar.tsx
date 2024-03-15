@@ -5,6 +5,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function DialogEliminar({
   handler,
@@ -18,8 +20,8 @@ export function DialogEliminar({
   const borrarSolicitud: Function = useCortoPlazoStore(
     (state) => state.borrarSolicitud
   );
-  const idSolicitud: String = useCortoPlazoStore(
-    (state) => state.registroSolicitud.Id
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   return (
@@ -49,7 +51,7 @@ export function DialogEliminar({
           sx={queries.buttonContinuar}
           onClick={() => {
             handler(false);
-            borrarSolicitud(idSolicitud);
+            borrarSolicitud(inscripcion.Id);
           }}
         >
           Confirmar

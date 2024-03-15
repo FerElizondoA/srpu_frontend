@@ -22,13 +22,13 @@ import {
   DialogSolicitarModificacion,
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
-import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 
 type Props = {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IRegistroSolicitud;
+  rowSolicitud: IInscripcion;
   rowId: string;
 };
 

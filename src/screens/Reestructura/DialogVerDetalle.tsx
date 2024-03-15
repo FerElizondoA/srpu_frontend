@@ -23,6 +23,8 @@ import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { CambiaEstatus } from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../fuenteDePago/Mandatos";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 type Props = {
   handler: Function;
@@ -34,14 +36,15 @@ type Props = {
 export function DialogVerDetalle(props: Props) {
   const [openDialogCancelacion, setOpenDialogCancelacion] =
     React.useState(false);
-  // SOLICITUD
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
   // REQUERIMIENTOS
   React.useEffect(() => {
-    if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id, setDatosComentarios);
     }
-  }, [IdSolicitud]);
+  }, [inscripcion.Id]);
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
   >([]);
@@ -148,7 +151,7 @@ export function DialogVerDetalle(props: Props) {
   //     );
   //   }
 
-  //   CambiaEstatus(estatus, props.rowId || IdSolicitud).then(() => {
+  //   CambiaEstatus(estatus, props.rowId || inscripcion.Id).then(() => {
   //     window.location.reload();
   //   });
   // };

@@ -33,7 +33,7 @@ import {
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
@@ -44,6 +44,7 @@ import {
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 interface Head {
   label: string;
@@ -95,8 +96,8 @@ const headsCondiciones: Head[] = [
 export function Resumen({ coments }: { coments: boolean }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   // Encabezado
@@ -230,11 +231,11 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   useEffect(() => {
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${registroSolicitud.Id}/`,
+      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       setArr,
       setCargados
     );
-    console.log("solicitud", registroSolicitud);
+    console.log("solicitud", inscripcion);
   }, []);
 
   const toBase64 = (file: any) =>
@@ -249,7 +250,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
   const activaAccion =
-    localStorage.getItem("IdUsuario") === registroSolicitud.IdEditor;
+    localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
 
   return (
     <Grid

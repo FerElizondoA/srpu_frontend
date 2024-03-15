@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -18,6 +19,42 @@ export interface SolicitudInscripcionSlice {
   changeReglasAplicables: (newReglas: string) => void;
 
   getReglas: () => void;
+
+  crearSolicitud: (
+    idEditor: string,
+    estatus: string,
+    comentario: string
+  ) => void;
+
+  modificaSolicitud: (
+    idCreador: string,
+    idEditor: string,
+    estatus: string,
+    comentario: string
+  ) => void;
+
+  borrarSolicitud: (Id: string) => void;
+
+  addComentario: (
+    idSolicitud: string,
+    comentario: string,
+    tipo: string
+  ) => void;
+
+  eliminarRequerimientos: (Id: string, setState: Function) => void;
+
+  deleteFiles: (ruta: string) => void;
+
+  saveFiles: (idRegistro: string, ruta: string) => void;
+
+  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
+
+  savePathDoc: (
+    idSolicitud: string,
+    Ruta: string,
+    NombreIdentificador: string,
+    NombreArchivo: string
+  ) => void;
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
@@ -58,12 +95,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   crearSolicitud: async (
-    idCreador: string,
     idEditor: string,
     estatus: string,
     comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
+    const inscripcionState = useInscripcionStore.getState();
+
+    console.log(state.encabezado);
+    console.log(state.informacionGeneral);
+    console.log(state.tablaCondicionesFinancieras);
+    console.log(state.tablaDocumentos);
+    console.log(state.inscripcion);
 
     const solicitud: any = {
       encabezado: state.encabezado,
@@ -101,7 +144,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
-          CreadoPor: idCreador,
+          CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -110,6 +153,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log(data);
+
+        inscripcionState.setInscripcion({
+          ...inscripcionState.inscripcion,
+          NumeroRegistro: data.NumeroRegistro,
+          Id: data.Id,
+        });
         state.addComentario(data.data.Id, comentario, "Captura");
         state.saveFiles(
           data.data.Id,
@@ -125,6 +175,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
+    const inscripcionState = useInscripcionStore.getState();
+
+    console.log(state.encabezado);
+    console.log(state.informacionGeneral);
+    console.log(state.tablaCondicionesFinancieras);
+    console.log(state.tablaDocumentos);
+    console.log(state.inscripcion);
 
     const solicitud: any = {
       encabezado: state.encabezado,
@@ -152,7 +209,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
-          IdSolicitud: "state.idSolicitud", // CORREGIR
+          IdSolicitud: inscripcionState.inscripcion.Id, //CORREGIR
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
@@ -172,11 +229,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
-        state.saveFiles(
-          data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        );
+        // state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        // state.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        // );
       });
   },
 

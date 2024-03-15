@@ -13,6 +13,8 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { IComentarios } from "./DialogComentariosSolicitud";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function DialogGuardarComentarios({
   open,
@@ -22,14 +24,16 @@ export function DialogGuardarComentarios({
   handler: Function;
 }) {
   // // SOLICITUD
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
   // REQUERIMIENTOS
   React.useEffect(() => {
-    if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id, setDatosComentarios);
     }
-  }, [IdSolicitud]);
+  }, [inscripcion.Id]);
 
   const [datosComentario, setDatosComentarios] = React.useState<
     Array<IComentarios>
@@ -87,7 +91,7 @@ export function DialogGuardarComentarios({
           sx={queries.buttonContinuar}
           onClick={() => {
             addComentario(
-              IdSolicitud,
+              inscripcion.Id,
               JSON.stringify(comentarios),
               "Requerimiento"
             ).then(() => {

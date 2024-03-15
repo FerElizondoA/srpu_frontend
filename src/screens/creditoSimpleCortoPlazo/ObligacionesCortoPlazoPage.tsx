@@ -14,8 +14,9 @@ import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resu
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -36,14 +37,14 @@ export function ObligacionesCortoPlazoPage() {
     (state) => state.getTiposDocumentos
   );
 
-  const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${registroSolicitud.Id}/`,
+      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => {},
       () => {}
     );
@@ -62,10 +63,10 @@ export function ObligacionesCortoPlazoPage() {
           display={"flex"}
           width={"100%"}
           justifyContent={
-            !registroSolicitud.NumeroRegistro ? "center" : "space-evenly"
+            !inscripcion.NumeroRegistro ? "center" : "space-evenly"
           }
         >
-          {registroSolicitud.NumeroRegistro && (
+          {inscripcion.NumeroRegistro && (
             <Grid
               width={query.isTittle ? "20%" : "20%"}
               display={"flex"}
@@ -77,14 +78,14 @@ export function ObligacionesCortoPlazoPage() {
                   ...queries.bold_text,
                 }}
               >
-                <strong>{`Número de Registro: ${registroSolicitud.NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
               </Typography>
             </Grid>
           )}
           <Grid
             mr={3}
             width={
-              !registroSolicitud.NumeroRegistro
+              !inscripcion.NumeroRegistro
                 ? "90%"
                 : query.isTittle
                 ? "60%"
@@ -106,11 +107,7 @@ export function ObligacionesCortoPlazoPage() {
 
           <Grid
             width={
-              !registroSolicitud.NumeroRegistro
-                ? "0"
-                : query.isTittle
-                ? "10%"
-                : "20%"
+              !inscripcion.NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"
             }
             display={"flex"}
             justifyContent={"end"}

@@ -26,11 +26,12 @@ import {
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogVerDetalle } from "./DialogVerDetalle";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 interface Head {
   label: string;
@@ -93,8 +94,8 @@ export function SolicitudesReestructura() {
   );
   const [rowId] = useState("");
 
-  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   const changeEncabezadoLP: Function = useLargoPlazoStore(

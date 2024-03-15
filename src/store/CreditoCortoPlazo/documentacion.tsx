@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { useCortoPlazoStore } from "./main";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface DocumentosSlice {
   tablaDocumentos: IFile[];
@@ -37,7 +38,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
 
   getTiposDocumentos: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useInscripcionStore.getState();
     await axios({
       method: "get",
       url:
@@ -49,7 +50,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      if (state.registroSolicitud.Id !== "") {
+      if (state.inscripcion.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,
           catalogoTiposDocumentosObligatorios: data.data.filter(
@@ -63,7 +64,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
             (td: any) => td.Obligatorio === 1
           ),
           tablaDocumentos: data.data
-            // .filter((td: any) => td.Obligatorio === 1)
+            .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
               return {
                 archivo: new File(

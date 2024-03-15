@@ -22,7 +22,7 @@ import {
 } from "../../../store/Cancelacion/solicitud";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function DialogSolicitarCancelacion({
   handler,

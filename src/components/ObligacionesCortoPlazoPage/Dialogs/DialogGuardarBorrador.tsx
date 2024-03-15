@@ -9,7 +9,8 @@ import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 type Props = {
   handler: Function;
@@ -83,8 +84,8 @@ export function DialogGuardarBorrador(props: Props) {
 
   const restText = division !== -1 ? info.substring(division + 1) : "";
 
-  const solicitud: IRegistroSolicitud = useCortoPlazoStore(
-    (state) => state.registroSolicitud
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   return (
@@ -242,7 +243,6 @@ export function DialogGuardarBorrador(props: Props) {
                 });
             } else {
               crearSolicitud(
-                localStorage.getItem("IdUsuario"),
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
