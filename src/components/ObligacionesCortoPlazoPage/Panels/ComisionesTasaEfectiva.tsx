@@ -29,7 +29,8 @@ import validator from "validator";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { queries } from "../../../queries";
 
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -154,13 +155,14 @@ export function ComisionesTasaEfectiva() {
       porcentaje: comisionPorcentaje || "N/A",
       iva: comisionIva,
     };
+
     addComision(tab);
   };
 
   const [radioValue, setRadioValue] = React.useState("Porcentaje Fijo");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadioValue((event.target as HTMLInputElement).value);
+    setRadioValue(event.target.value);
     changePercentageOrAmount();
   };
 
@@ -170,8 +172,8 @@ export function ComisionesTasaEfectiva() {
         fechaContratacion: comisionFechaContratacion,
         tipoDeComision: comisionTipoComision,
         periodicidadDePago: comisionPeriodicidadPago,
-        porcentajeFijo: false,
-        montoFijo: true,
+        porcentajeFijo: true,
+        montoFijo: false,
         porcentaje: comisionPorcentaje,
         monto: moneyMask(comisionMonto.toString()),
         iva: comisionIva,
@@ -181,8 +183,8 @@ export function ComisionesTasaEfectiva() {
         fechaContratacion: comisionFechaContratacion,
         tipoDeComision: comisionTipoComision,
         periodicidadDePago: comisionPeriodicidadPago,
-        porcentajeFijo: true,
-        montoFijo: false,
+        porcentajeFijo: false,
+        montoFijo: true,
         porcentaje: comisionPorcentaje,
         monto: moneyMask(comisionMonto.toString()),
         iva: comisionIva,
@@ -293,15 +295,23 @@ export function ComisionesTasaEfectiva() {
             fullWidth
             value={tasaEfectivaTasaEfectiva}
             onChange={(v) => {
-              if (
-                validator.isNumeric(v.target.value) ||
-                v.target.value === ""
-              ) {
+              const expRegular = /^\d*\.?\d*$/;
+
+              if (expRegular.test(v.target.value) || v.target.value === "") {
                 changeTasaEfectiva({
                   diasEjercicio: tasaEfectivaDiasEjercicio,
                   tasaEfectiva: v.target.value,
                 });
               }
+              // if (
+              //   validator.isNumeric(v.target.value) ||
+              //   v.target.value === ""
+              // ) {
+              //   changeTasaEfectiva({
+              //     diasEjercicio: tasaEfectivaDiasEjercicio,
+              //     tasaEfectiva: v.target.value,
+              //   });
+              // }
             }}
             InputLabelProps={{
               style: {
@@ -358,10 +368,7 @@ export function ComisionesTasaEfectiva() {
         </Grid>
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fecha de Comisión</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{ width: "100%" }}
               disabled={noAplica}
@@ -378,9 +385,6 @@ export function ComisionesTasaEfectiva() {
                   iva: comisionIva,
                 });
               }}
-              // slots={{
-              //   textField: DateInput,
-              // }}
             />
           </LocalizationProvider>
         </Grid>
@@ -581,15 +585,6 @@ export function ComisionesTasaEfectiva() {
               style: {
                 fontFamily: "MontserratMedium",
               },
-              // startAdornment: (
-              //   <>
-              //     {radioValue === "Porcentaje Fijo" ? (
-              //       <></>
-              //     ) : (
-              //       <InputAdornment position="start">$</InputAdornment>
-              //     )}
-              //   </>
-              // ),
               endAdornment: (
                 <>
                   {radioValue === "Porcentaje Fijo" ? (

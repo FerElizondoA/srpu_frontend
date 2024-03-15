@@ -5,8 +5,6 @@ import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Docume
 import { useCortoPlazoStore } from "./main";
 
 export interface DocumentosSlice {
-  documentosObligatorios: [];
-
   tablaDocumentos: IFile[];
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
@@ -21,8 +19,6 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
-  documentosObligatorios: [],
-
   tablaDocumentos: [],
 
   catalogoTiposDocumentos: [],
@@ -67,7 +63,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
             (td: any) => td.Obligatorio === 1
           ),
           tablaDocumentos: data.data
-            .filter((td: any) => td.Obligatorio === 1)
+            // .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
               return {
                 archivo: new File(

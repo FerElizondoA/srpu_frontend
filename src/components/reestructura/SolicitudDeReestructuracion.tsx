@@ -19,15 +19,12 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { DialogGuardarBorrador } from "../Dialog/DialogGuardarBorrador";
-import { ConfirmacionEnviarSolicitud } from "../Dialog/DialogEnviarSolicitud";
-import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
-import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
+import { queries } from "../../queries";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { ICatalogo } from "../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export let erroresValidacion: string[] = [];
 
@@ -35,17 +32,28 @@ interface Head {
   label: string;
 }
 
-const heads: readonly Head[] = [
+const headsClausulas: readonly Head[] = [
   {
-    label: "Selección",
+    label: "Anexo ó Cláusula Original",
   },
   {
-    label: "Regla",
+    label: "Anexo ó Clausula Modificada",
+  },
+  {
+    label: "Modificación",
+  },
+];
+const heads: readonly Head[] = [
+  {
+    label: " ",
+  },
+  {
+    label: "Declaratorias",
   },
 ];
 export let errores: string[] = [];
 
-export function SolicituDeInscripcion() {
+export function SolicitudDeReestructuracion() {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
@@ -253,7 +261,7 @@ export function SolicituDeInscripcion() {
       }
 
       if (err === 0) {
-        // setOpenDialogEnviar(!openDialogEnviar);
+        setOpenDialogEnviar(!openDialogEnviar);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
@@ -304,16 +312,12 @@ export function SolicituDeInscripcion() {
         );
       }
       if (err === 0) {
-        // setOpenDialogModificacion(!openDialogModificacion);
+        setOpenDialogModificacion(!openDialogModificacion);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);
       }
     }
   };
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  );
 
   let arrReglas: Array<string> = [];
   arrReglas = reglasAplicables;
@@ -336,59 +340,14 @@ export function SolicituDeInscripcion() {
   return (
     <Grid container>
       <Grid
-        width={"100%"}
-        item
         container
-        display={"flex"}
-        justifyContent={"space-evenly"}
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          justifyItems: "center",
+        }}
       >
-        <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
-          <InputLabel sx={queries.medium_text}>
-            Servidor público a quien va dirigido:
-          </InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            value={nombreServidorPublico}
-            disabled
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
-          <InputLabel sx={queries.medium_text}>Cargo</InputLabel>
-          <TextField
-            fullWidth
-            variant="standard"
-            value={cargoServidorPublico}
-            disabled
-            sx={queries.medium_text}
-            InputLabelProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-            InputProps={{
-              style: {
-                fontFamily: "MontserratMedium",
-              },
-            }}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid item container mt={2} mb={2} justifyContent={"center"}>
-        <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
+        <Grid item sx={{ width: "40%" }}>
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
@@ -399,6 +358,163 @@ export function SolicituDeInscripcion() {
             value={
               solicitanteAutorizado || localStorage.getItem("NombreUsuario")
             }
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>Tipo de Convenio</InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={"Convenio de Reestructura y Reconocimiento"}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>Fecha de Solicitud</InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={format(new Date("03/25/2023"), "PPP", {
+              locale: es,
+            })}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>Número de Solicitud</InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={"DDPYPF-50/2024"}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>
+            Fecha de firma del convenio
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={format(new Date("12/04/2023"), "PPP", {
+              locale: es,
+            })}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de administración (meses)
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={"30"}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>Saldo vigente</InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={"$3,212,040,512.00"}
+            sx={queries.medium_text}
+            InputLabelProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+            InputProps={{
+              style: {
+                fontFamily: "MontserratMedium",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item sx={{ width: "40%" }}>
+          <InputLabel sx={queries.medium_text}>
+            Periodo de financiamiento (meses)
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            variant="standard"
+            value={"123"}
             sx={queries.medium_text}
             InputLabelProps={{
               style: {
@@ -434,8 +550,67 @@ export function SolicituDeInscripcion() {
               },
             }}
           >
-            Declaratorias Aplicables al Financiamiento u Obligación:
+            Reestructura
           </Divider>
+        </Grid>
+
+        <Grid width={"100%"}>
+          <TableContainer
+            sx={{
+              width: "100%",
+            }}
+          >
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {headsClausulas.map((head, index) => (
+                    <StyledTableCell key={index}>
+                      <TableSortLabel>{head.label}</TableSortLabel>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <StyledTableRow>
+                  <StyledTableCell sx={{ width: "10%" }}>
+                    {"IX"}
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ width: "10%" }}>
+                    {"III"}
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ width: "80%" }}>
+                    {
+                      "En el caso de la amortización anticipada del crédito, se incluye la opción para que el Gobierno del Estado cubra el importe total del crédito con recursos propios, inclusive los provenientes de la contratación de nuevos financiamientos, en cuyo caso el Banco entregará al Estado el valor de la redención anticipada del bono cupón cero"
+                    }
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell sx={{ width: "10%" }}>{"X"}</StyledTableCell>
+                  <StyledTableCell sx={{ width: "10%" }}>
+                    {"III"}
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ width: "80%" }}>
+                    {
+                      "En el caso de la amortización anticipada del crédito, se incluye la opción para que el Gobierno del Estado cubra el importe total del crédito con recursos propios, inclusive los provenientes de la contratación de nuevos financiamientos, en cuyo caso el Banco entregará al Estado el valor de la redención anticipada del bono cupón cero"
+                    }
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell sx={{ width: "10%" }}>
+                    {"XVI"}
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ width: "10%" }}>
+                    {"III"}
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ width: "80%" }}>
+                    {
+                      "En el caso de la amortización anticipada del crédito, se incluye la opción para que el Gobierno del Estado cubra el importe total del crédito con recursos propios, inclusive los provenientes de la contratación de nuevos financiamientos, en cuyo caso el Banco entregará al Estado el valor de la redención anticipada del bono cupón cero"
+                    }
+                  </StyledTableCell>
+                </StyledTableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Grid>
 
         <Grid
@@ -459,9 +634,8 @@ export function SolicituDeInscripcion() {
                 },
               }}
             >
-              Al seleccionar alguna de las siguientes secciones, estará
-              manifestando bajo protesta de decir verdad que cumple con lo
-              señalado en cada apartado
+              De conformidad al reglamento, indique las declaratorias aplicables
+              al financiamiento u obligación
             </Typography>
 
             <Grid container={query.isMobile} display={"flex"} width={"100%"}>
@@ -483,160 +657,136 @@ export function SolicituDeInscripcion() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {catalogoReglas.map((row, index) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell padding="checkbox">
-                              <Checkbox
-                                checked={reglasAplicables.includes(
-                                  row.Descripcion
-                                )}
-                                disabled={
-                                  (checkObj[1] === true && index === 2) ||
-                                  (checkObj[2] === true && index === 1) ||
-                                  (checkObj[3] === true && index === 4) ||
-                                  (checkObj[4] === true && index === 3)
-                                }
-                                onChange={(v) => {
-                                  v.target.checked
-                                    ? setCheckObj({
-                                        ...checkObj,
-                                        [index]: true,
-                                      })
-                                    : setCheckObj({
-                                        ...checkObj,
-                                        [index]: false,
-                                      });
-
-                                  v.target.checked
-                                    ? arrReglas.push(row.Descripcion)
-                                    : removeRegla(row.Descripcion);
-                                  changeReglasAplicables(arrReglas);
-                                }}
-                              />
-                            </StyledTableCell>
-                            <StyledTableCell>{row.Descripcion}</StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
+                      <StyledTableRow>
+                        <StyledTableCell padding="checkbox">
+                          <Checkbox onChange={(v) => {}} />
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {
+                            "b) Cumple con las disposiciones jurídicas aplicables"
+                          }
+                        </StyledTableCell>
+                      </StyledTableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>
               </Grid>
 
-              {reestructura !== "con autorizacion" ? (
-                localStorage.getItem("Rol") !== "Administrador" ? (
+              <Grid
+                container
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  mb: 2,
+                  ml: 2,
+                  height: "7rem",
+                  "@media (max-width: 974px)": {
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                  },
+                  "@media (min-width: 974.1px)": {
+                    flexDirection: "column",
+                    justifyContent: "end",
+                    height: "22rem",
+                    width: "10%",
+                  },
+
+                  "@media (min-width: 1140px)": {
+                    flexDirection: "column",
+                    justifyContent: "end",
+                    height: "22rem",
+                    width: "10%",
+                  },
+
+                  "@media (min-width: 1400px)": {
+                    width: "10%",
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    width: "5%",
+                    height: "35rem",
+                  },
+                }}
+              >
+                <Grid
+                  mb={2}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Button
+                    onClick={() => {
+                      // setOpenDialogCancelar(!openDialogCancelar);
+                    }}
+                    sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
+                  >
+                    Cancelar
+                  </Button>
+                </Grid>
+
+                {localStorage.getItem("Rol") === "Verificador" ? (
                   <Grid
-                    container
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      mb: 2,
-                      ml: 2,
-                      height: "7rem",
-                      "@media (max-width: 974px)": {
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-evenly",
-                      },
-                      "@media (min-width: 974.1px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
+                    mb={2}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Button
+                      sx={queries.buttonContinuarSolicitudInscripcion}
+                      onClick={() => {
+                        infoValidaciones("Modificacion");
+                      }}
+                    >
+                      Solicitar Modificación
+                    </Button>
+                  </Grid>
+                ) : null}
 
-                      "@media (min-width: 1140px)": {
-                        flexDirection: "column",
-                        justifyContent: "end",
-                        height: "22rem",
-                        width: "10%",
-                      },
-
-                      "@media (min-width: 1400px)": {
-                        width: "10%",
-                      },
-
-                      "@media (min-width: 1870px)": {
-                        width: "5%",
-                        height: "35rem",
-                      },
+                <Grid
+                  mb={2}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Button
+                    sx={queries.buttonContinuarSolicitudInscripcion}
+                    onClick={() => {
+                      infoValidaciones("Enviar");
                     }}
                   >
-                    <Grid
-                      mb={2}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Button
-                        onClick={() => {
-                          // setOpenDialogCancelar(!openDialogCancelar);
-                        }}
-                        sx={{ ...queries.buttonCancelarSolicitudInscripcion }}
-                      >
-                        Cancelar
-                      </Button>
-                    </Grid>
+                    {localStorage.getItem("Rol") === "Verificador"
+                      ? "Finalizar"
+                      : "Enviar"}
+                  </Button>
+                </Grid>
 
-                    {localStorage.getItem("Rol") === "Verificador" ? (
-                      <Grid
-                        mb={2}
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <Button
-                          sx={queries.buttonContinuarSolicitudInscripcion}
-                          onClick={() => {
-                            infoValidaciones("Modificacion");
-                          }}
-                        >
-                          Solicitar Modificación
-                        </Button>
-                      </Grid>
-                    ) : null}
-
-                    <Grid
-                      mb={2}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Button
-                        sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {
-                          infoValidaciones("Enviar");
-                        }}
-                      >
-                        {localStorage.getItem("Rol") === "Verificador"
-                          ? "Finalizar"
-                          : "Enviar"}
-                      </Button>
-                    </Grid>
-
-                    <DialogGuardarBorrador
-                      handler={setOpenDialogBorrador}
-                      openState={openDialogBorrador}
-                    />
-                    <ConfirmacionEnviarSolicitud
-                      handler={setOpenDialogEnviar}
-                      openState={openDialogEnviar}
-                    />
-                    <ConfirmacionCancelarSolicitud
-                      handler={setOpenDialogCancelar}
-                      openState={openDialogCancelar}
-                    />
-                    {openDialogModificacion && (
-                      <DialogSolicitarModificacion
-                        handler={setOpenDialogModificacion}
-                        openState={openDialogModificacion}
+                {/* {openDialogBorrador && (
+                      <DialogGuardarBorrador
+                        handler={setOpenDialogBorrador}
+                        openState={openDialogBorrador}
                       />
                     )}
-                  </Grid>
-                ) : null
-              ) : null}
+                   {openDialogEnviar && (
+                      <ConfirmacionEnviarSolicitud
+                        handler={setOpenDialogEnviar}
+                        openState={openDialogEnviar}
+                      />
+                    )}
+                      {openDialogCancelar && (
+                      <ConfirmacionCancelarSolicitud
+                        handler={setOpenDialogCancelar}
+                        openState={openDialogCancelar}
+                      />
+                    )}
+                      {openDialogModificacion && (
+                        <DialogSolicitarModificacion
+                          handler={setOpenDialogModificacion}
+                          openState={openDialogModificacion}
+                        />
+                      )} */}
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

@@ -36,7 +36,8 @@ import {
 } from "../../../store/Mandatos/mandato";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { buttonTheme } from "../dialog/AgregarMandatos";
 
 interface HeadLabels {
@@ -211,12 +212,12 @@ export function TipoDeMovimientoMandato() {
               fondoIngreso: tipoMovimiento.fondoIngreso,
               fondoIngresoGobiernoEstatal:
                 tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
-                  "participaciones"
+                "participaciones"
                   ? "80.00"
                   : "100.00",
               fondoIngresoMunicipios:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
+                "municipio"
                   ? tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
                     "participaciones"
                     ? "20.00"
@@ -224,53 +225,53 @@ export function TipoDeMovimientoMandato() {
                   : "0.00",
               fondoIngresoAsignadoMunicipio:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
+                "municipio"
                   ? "100.00"
                   : "0.00",
               ingresoOrganismo:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? "0.00"
                   : "0.00",
               fondoIngresoAfectadoXGobiernoEstatal:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
+                "gobierno estatal"
                   ? ""
                   : "",
               afectacionGobiernoEstatalEntre100:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
+                "gobierno estatal"
                   ? "0.00"
                   : "",
               acumuladoAfectacionGobiernoEstatalEntre100:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
+                "gobierno estatal"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
                   : "",
               fondoIngresoAfectadoXMunicipio:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
+                "municipio"
                   ? "0"
                   : "0",
               acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
+                "municipio"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
                   : "",
 
               ingresoAfectadoXOrganismo:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? ""
                   : "",
               acumuladoAfectacionOrganismoEntre100:
                 tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
                   : "",
@@ -485,7 +486,7 @@ export function TipoDeMovimientoMandato() {
             openText="Abrir"
             disabled={
               tipoMovimiento.tipoEntePublicoObligado.Descripcion ===
-              "No Aplica" ||
+                "No Aplica" ||
               /^[\s]*$/.test(tipoMovimiento.tipoEntePublicoObligado.Descripcion)
             }
             fullWidth
@@ -529,7 +530,11 @@ export function TipoDeMovimientoMandato() {
       <Grid
         container
         display={{ xs: "flex", sm: "flex", md: "flex" }}
-        justifyContent={{ xs: "center", sm: "space-evenly", md: "space-evenly" }}
+        justifyContent={{
+          xs: "center",
+          sm: "space-evenly",
+          md: "space-evenly",
+        }}
         alignItems={"center"}
         mb={2}
         mt={{ xs: 11, sm: 0 }}
@@ -623,14 +628,15 @@ export function TipoDeMovimientoMandato() {
             onChange={(event, text) => {
               setTipoMovimiento({
                 ...tipoMovimiento,
-                id: `${tipoMovimiento.tipoFuente?.Descripcion
-                  }/${text.Descripcion.split(" ")
-                    .map((word) =>
-                      word.charAt(0) === word.charAt(0).toUpperCase()
-                        ? word.charAt(0)
-                        : ""
-                    )
-                    .join("")}/${tablaTipoMovimiento?.length + 1}`,
+                id: `${
+                  tipoMovimiento.tipoFuente?.Descripcion
+                }/${text.Descripcion.split(" ")
+                  .map((word) =>
+                    word.charAt(0) === word.charAt(0).toUpperCase()
+                      ? word.charAt(0)
+                      : ""
+                  )
+                  .join("")}/${tablaTipoMovimiento?.length + 1}`,
                 fondoIngreso: {
                   Id: text.Id,
                   Descripcion: text.Descripcion,
@@ -786,17 +792,25 @@ export function TipoDeMovimientoMandato() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={8} md={5} lg={3} xl={3} mt={{ xs: 2, sm: 2, md: 0 }}>
+          <Grid
+            item
+            xs={10}
+            sm={8}
+            md={5}
+            lg={3}
+            xl={3}
+            mt={{ xs: 2, sm: 2, md: 0 }}
+          >
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha de Alta
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{
-                  width: "100%"
+                  width: "100%",
                 }}
                 value={beneficiario.fechaAlta}
                 onChange={(v) => {
@@ -917,58 +931,58 @@ export function TipoDeMovimientoMandato() {
                         <StyledTableCell align="center">
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                             "gobierno estatal" && (
-                              <TextField
-                                inputProps={{
-                                  sx: {
-                                    fontSize: "0.7rem",
-                                  },
-                                }}
-                                size="small"
-                                value={row?.fondoIngresoAfectadoXGobiernoEstatal}
-                                onChange={(v) => {
-                                  let auxArray = [...tablaTipoMovimiento];
-                                  let val = Number(v.target.value);
+                            <TextField
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXGobiernoEstatal}
+                              onChange={(v) => {
+                                let auxArray = [...tablaTipoMovimiento];
+                                let val = Number(v.target.value);
 
-                                  if (
-                                    val <= 100 &&
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                    ) +
+                                if (
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                  ) +
                                     val <=
                                     Number(
                                       tablaTipoMovimiento[index]
                                         .fondoIngresoGobiernoEstatal
                                     )
-                                  ) {
-                                    let suma = 0;
+                                ) {
+                                  let suma = 0;
 
-                                    tablaTipoMovimiento.map((column) => {
-                                      return (suma += Number(
-                                        column.fondoIngresoAfectadoXGobiernoEstatal
-                                      ));
-                                    });
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXGobiernoEstatal
+                                    ));
+                                  });
 
-                                    auxArray.map((column) => {
-                                      return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                        (
-                                          suma +
-                                          val +
-                                          Number(
-                                            sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                          )
-                                        ).toString());
-                                    });
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                        )
+                                      ).toString());
+                                  });
 
-                                    auxArray[
-                                      index
-                                    ].fondoIngresoAfectadoXGobiernoEstatal =
-                                      val.toString();
+                                  auxArray[
+                                    index
+                                  ].fondoIngresoAfectadoXGobiernoEstatal =
+                                    val.toString();
 
-                                    addPorcentaje(auxArray);
-                                  }
-                                }}
-                              />
-                            )}
+                                  addPorcentaje(auxArray);
+                                }
+                              }}
+                            />
+                          )}
                         </StyledTableCell>
 
                         {/* AFECTACION GOBIERNO ESTATAL / 100 */}
@@ -989,71 +1003,71 @@ export function TipoDeMovimientoMandato() {
                         <StyledTableCell align="center">
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                             "municipio" && (
-                              <TextField
-                                type="number"
-                                inputProps={{
-                                  sx: {
-                                    fontSize: "0.7rem",
-                                  },
-                                }}
-                                size="small"
-                                value={row?.fondoIngresoAfectadoXMunicipio}
-                                onChange={(v) => {
-                                  let auxArray = [...tablaTipoMovimiento];
-                                  let val = Number(v.target.value);
+                            <TextField
+                              type="number"
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXMunicipio}
+                              onChange={(v) => {
+                                let auxArray = [...tablaTipoMovimiento];
+                                let val = Number(v.target.value);
 
-                                  if (
-                                    val <= 100 &&
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                    ) +
+                                if (
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                  ) +
                                     val <=
                                     Number(
                                       tablaTipoMovimiento[index]
                                         .fondoIngresoAsignadoMunicipio
                                     )
-                                  ) {
-                                    let suma = 0;
+                                ) {
+                                  let suma = 0;
 
-                                    tablaTipoMovimiento.map((column) => {
-                                      return (suma += Number(
-                                        column.fondoIngresoAfectadoXMunicipio
-                                      ));
-                                    });
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXMunicipio
+                                    ));
+                                  });
 
-                                    auxArray.map((column) => {
-                                      return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                        (
-                                          suma +
-                                          val +
-                                          Number(
-                                            sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                          )
-                                        ).toString());
-                                    });
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                        )
+                                      ).toString());
+                                  });
 
-                                    auxArray[
-                                      index
-                                    ].fondoIngresoAfectadoXMunicipio =
-                                      val.toString();
+                                  auxArray[
+                                    index
+                                  ].fondoIngresoAfectadoXMunicipio =
+                                    val.toString();
 
-                                    addPorcentaje(auxArray);
-                                  }
-                                }}
-                              />
-                            )}
+                                  addPorcentaje(auxArray);
+                                }
+                              }}
+                            />
+                          )}
                         </StyledTableCell>
 
                         {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
                         <StyledTableCell align="center">
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
                             "municipio" && (
-                              <Typography sx={{ fontSize: "0.7rem" }}>
-                                {
-                                  row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                                }
-                              </Typography>
-                            )}
+                            <Typography sx={{ fontSize: "0.7rem" }}>
+                              {
+                                row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                              }
+                            </Typography>
+                          )}
                         </StyledTableCell>
 
                         {/* AFECTADO POR ORGANISMO */}
@@ -1061,7 +1075,7 @@ export function TipoDeMovimientoMandato() {
                           {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
                             "gobierno estatal" &&
                             row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                            "municipio" && (
+                              "municipio" && (
                               <TextField
                                 type="number"
                                 inputProps={{
@@ -1080,11 +1094,11 @@ export function TipoDeMovimientoMandato() {
                                     Number(
                                       sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
                                     ) +
-                                    val <=
-                                    Number(
-                                      tablaTipoMovimiento[index]
-                                        .ingresoOrganismo
-                                    )
+                                      val <=
+                                      Number(
+                                        tablaTipoMovimiento[index]
+                                          .ingresoOrganismo
+                                      )
                                   ) {
                                     let suma = 0;
 

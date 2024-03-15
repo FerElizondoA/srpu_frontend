@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import FindInPageIcon from "@mui/icons-material/FindInPage";
 import {
   Chip,
   Grid,
@@ -14,20 +15,22 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-
-import FindInPageIcon from "@mui/icons-material/FindInPage";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
-import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { DialogVerDetalle } from "./DialogVerDetalle";
 
 interface Head {
   label: string;
@@ -65,8 +68,9 @@ const heads: readonly Head[] = [
   },
 ];
 
-export function Reestructura() {
-  const [datos, setDatos] = useState<Array<IRegistroSolicitud>>([]);
+export function SolicitudesReestructura() {
+  const [datos, setDatos] = useState<Array<IData>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
@@ -76,16 +80,75 @@ export function Reestructura() {
     (state) => state.changeRestructura
   );
 
+  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
+    (state) => state.changeReglasAplicables
+  );
+
+  const changeGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.changeGastosCostos
+  );
+
+  const changeInformacionGeneralLP: Function = useLargoPlazoStore(
+    (state) => state.changeInformacionGeneral
+  );
   const [rowId] = useState("");
 
   const solicitud: IRegistroSolicitud = useCortoPlazoStore(
     (state) => state.registroSolicitud
   );
 
+  const changeEncabezadoLP: Function = useLargoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+
+  const addObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
+
+  const addGeneralGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.addGeneralGastosCostos
+  );
+
+  const addCondicionFinancieraLP: Function = useLargoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
+
+  const addDocumentoLP: Function = useLargoPlazoStore(
+    (state) => state.addDocumento
+  );
+
+  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
+    // const state = useCortoPlazoStore.getState();
+    let aux: any = JSON.parse(solicitud.Solicitud!);
+
+    changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
+    changeEncabezadoLP(aux?.encabezado);
+    changeInformacionGeneralLP(aux?.informacionGeneral);
+    changeGastosCostos(aux?.GastosCostos);
+
+    aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
+      return addObligadoSolidarioAvalLP(v);
+    });
+
+    aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+      return addGeneralGastosCostos(v);
+    });
+
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      return addCondicionFinancieraLP(v);
+    });
+
+    aux?.documentacion.map((v: any, index: number) => {
+      return addDocumentoLP(v);
+    });
+  };
+
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
-    getSolicitudesReestructura(setDatos);
-    changeRestructura("con autorizacion");
+    getSolicitudes("Reestructura", (e: IData[]) => {
+      setDatos(e);
+      setDatosFiltrados(e);
+    });
   }, []);
 
   return (
@@ -339,6 +402,7 @@ export function Reestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
+                            llenaSolicitud(row, row.TipoSolicitud);
                             getComentariosSolicitudPlazo(
                               row.Id,
                               setDatosActualizar
@@ -351,6 +415,14 @@ export function Reestructura() {
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
+                    {openDialogVer && (
+                      <VerBorradorDocumento
+                        handler={changeOpenDialogVer}
+                        openState={openDialogVer}
+                        rowSolicitud={row}
+                        rowId={row.Id}
+                      />
+                    )}
                   </StyledTableRow>
                 );
               })}
@@ -360,7 +432,7 @@ export function Reestructura() {
       </Paper>
 
       {openDialogVer && (
-        <VerBorradorDocumento
+        <DialogVerDetalle
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           rowSolicitud={solicitud}

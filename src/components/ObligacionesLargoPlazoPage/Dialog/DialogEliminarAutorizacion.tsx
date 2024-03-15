@@ -44,7 +44,7 @@ export function DialogEliminarAutorizacion(props: Props) {
 
       <DialogContent>
         <Typography sx={{ ...queries.medium_text }}>
-          ¿Seguro que desea elimminar la autorizacion con este numero de
+          ¿Seguro que desea elimminar la autorizacion con este número de
           autorizacion : <strong style={{}}>{props.numeroAutorizacion}</strong>?
         </Typography>
       </DialogContent>

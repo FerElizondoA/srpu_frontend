@@ -24,16 +24,17 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 const heads: {
   label: string;
@@ -42,13 +43,10 @@ const heads: {
     label: "Selección",
   },
   {
-    label: "Obligado solidario / aval",
-  },
-  {
     label: "Tipo de Ente Público Obligado",
   },
   {
-    label: "Ente público obligado",
+    label: "Ente Público Obligado",
   },
 ];
 
@@ -71,9 +69,13 @@ export function InformacionGeneral() {
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
   );
-  const catalogoObligadoSolidarioAval: Array<ICatalogo> = useCortoPlazoStore(
-    (state) => state.catalogoObligadoSolidarioAval
-  );
+  const catalogoObligadoSolidarioAval: Array<string> = [
+    "NO APLICA",
+    "SI APLICA",
+  ];
+  // useCortoPlazoStore(
+  //   (state) => state.catalogoObligadoSolidarioAval
+  // );
   const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
   );
@@ -85,9 +87,13 @@ export function InformacionGeneral() {
   );
 
   // INFORMACION GENERAL
+
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
+  // const fechaContratacionEncabezado: string = useLargoPlazoStore(
+  //   (state) => state.encabezado.fechaContratacion
+  // );
   const fechaVencimiento: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -112,10 +118,9 @@ export function InformacionGeneral() {
   );
 
   // OBLIGADO SOLIDARIO AVAL
-  const generalObligadoSolidario: { Id: string; Descripcion: string } =
-    useLargoPlazoStore(
-      (state) => state.generalObligadoSolidarioAval.obligadoSolidario
-    );
+  const generalObligadoSolidario: string = useLargoPlazoStore(
+    (state) => state.generalObligadoSolidarioAval.obligadoSolidario
+  );
   const generalTipoEntePublico: { Id: string; Descripcion: string } =
     useLargoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
@@ -144,13 +149,9 @@ export function InformacionGeneral() {
     (state) => state.cleanObligadoSolidarioAval
   );
 
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  );
-
   const addRows = () => {
     let tab = {
-      obligadoSolidario: generalObligadoSolidario.Descripcion,
+      obligadoSolidario: generalObligadoSolidario,
       tipoEntePublicoObligado: generalTipoEntePublico.Descripcion,
       entePublicoObligado: generalEntePublico.Descripcion,
     };
@@ -161,32 +162,10 @@ export function InformacionGeneral() {
 
   useEffect(() => {
     getInstituciones();
-    getDestinos();
+    getDestinos("LP");
     getTipoEntePublicoObligado();
     getObligadoSolidarioAval();
   }, []);
-
-  useEffect(() => {
-    if (generalObligadoSolidario.Id === "" && tablaObligados.length === 0) {
-      let obligado = catalogoObligadoSolidarioAval.find(
-        (obligado) => obligado.Descripcion === "No Aplica"
-      );
-      changeObligadoSolidarioAval({
-        obligadoSolidario: {
-          Id: obligado?.Id || "",
-          Descripcion: obligado?.Descripcion || "",
-        },
-        tipoEntePublicoObligado: {
-          Id: "",
-          Descripcion: "",
-        },
-        entePublicoObligado: {
-          Id: "",
-          Descripcion: "",
-        },
-      });
-    }
-  }, [catalogoObligadoSolidarioAval]);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);
 
@@ -221,12 +200,33 @@ export function InformacionGeneral() {
   return (
     <Grid
       container
-      width={"100%"}
+      height={{ xs: "35rem" }}
       sx={{
-        ...queries.contenedorInformacionGeneral,
         display: "flex",
+
         flexDirection: "column",
         justifyContent: "space-evenly",
+        width: "100%",
+        height: "60rem",
+        "@media (min-width: 480px)": {
+          height: "60rem",
+        },
+
+        "@media (min-width: 768px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1140px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1400px)": {
+          height: "35rem",
+        },
+
+        "@media (min-width: 1870px)": {
+          height: "49rem",
+        },
       }}
     >
       <Grid
@@ -239,16 +239,10 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              disabled={
-                (datosActualizar.length > 0 &&
-                  !datosActualizar.includes("Fecha de Contratación")) ||
-                reestructura === "con autorizacion"
-              }
+              disabled
+              disablePast={false}
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
               onChange={(date) => {
@@ -287,13 +281,12 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Monto Original Contratado")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Monto Original Contratado")
             }
             fullWidth
             placeholder="0"
-            value={monto <= 0 ? "" : monto.toString()}
+            value={monto <= 0 ? "" : monto}
             onChange={(v) => {
               if (
                 validator.isNumeric(
@@ -334,20 +327,22 @@ export function InformacionGeneral() {
           />
         </Grid>
       </Grid>
-      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              sx={{ width: "100%" }}
               disabled={
-                (datosActualizar.length > 0 &&
-                  !datosActualizar.includes("Fecha de Vencimiento")) ||
-                reestructura === "con autorizacion"
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento")
               }
+              sx={{ width: "100%" }}
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))}
@@ -359,9 +354,7 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Destino")) ||
-              reestructura === "con autorizacion"
+              datosActualizar.length > 0 && !datosActualizar.includes("Destino")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -412,9 +405,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Denominación")) 
-                || reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Denominación")
             }
             fullWidth
             variant="standard"
@@ -440,16 +432,15 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid container display={"flex"} justifyContent={"center"}>
+      <Grid item display={"flex"} justifyContent={"center"} width={"100%"}>
         <Grid item xs={10} sm={10.5} md={10.5} lg={10.5} xl={10.5}>
           <InputLabel sx={queries.medium_text}>
             Institución Financiera
           </InputLabel>
           <Autocomplete
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Institución Financiera")) 
-                 || reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Institución Financiera")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -497,16 +488,20 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid container display={"flex"} justifyContent={"space-evenly"}>
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        width={"100%"}
+      >
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Obligado Solidario / Aval
           </InputLabel>
           <Autocomplete
             disabled={
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval")) 
-                // || reestructura === "con autorizacion"
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -514,31 +509,21 @@ export function InformacionGeneral() {
             openText="Abrir"
             fullWidth
             options={catalogoObligadoSolidarioAval}
-            getOptionLabel={(option) => option.Descripcion}
+            getOptionLabel={(option) => option}
             renderOption={(props, option) => {
               return (
-                <li {...props} key={option.Descripcion}>
-                  <Typography>{option.Descripcion}</Typography>
+                <li {...props}>
+                  <Typography>{option}</Typography>
                 </li>
               );
             }}
-            value={{
-              Id: generalObligadoSolidario.Id,
-              Descripcion: generalObligadoSolidario.Descripcion,
-            }}
+            value={generalObligadoSolidario}
             onChange={(event, text) => {
-              if (
-                text?.Descripcion === "No Aplica" ||
-                text?.Id === "" ||
-                text === null
-              ) {
+              if (text === "NO APLICA") {
                 cleanObligadoSolidarioAval();
               }
               changeObligadoSolidarioAval({
-                obligadoSolidario: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "No Aplica",
-                },
+                obligadoSolidario: text,
                 tipoEntePublicoObligado: {
                   Id: "",
                   Descripcion: "",
@@ -557,9 +542,7 @@ export function InformacionGeneral() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id ||
-              value.Descripcion === "" ||
-              value.Id === ""
+              option === value || value === ""
             }
           />
         </Grid>
@@ -574,11 +557,10 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
-                 // || reestructura === "con autorizacion"
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -591,8 +573,8 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalTipoEntePublico.Id || "",
-              Descripcion: generalTipoEntePublico.Descripcion || "",
+              Id: generalTipoEntePublico?.Id || "",
+              Descripcion: generalTipoEntePublico?.Descripcion || "",
             }}
             onChange={(event, text) =>
               changeObligadoSolidarioAval({
@@ -623,7 +605,7 @@ export function InformacionGeneral() {
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
-            Ente público Obligado
+            Ente Público Obligado
           </InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -631,13 +613,15 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              /^[\s]*$/.test(generalTipoEntePublico.Descripcion)
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
+              /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             fullWidth
             options={catalogoOrganismos.filter(
-              (td: any) => td.IdTipoEntePublico === generalTipoEntePublico.Id
+              (td: any) => td.IdTipoEntePublico === generalTipoEntePublico?.Id
             )}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -648,8 +632,8 @@ export function InformacionGeneral() {
               );
             }}
             value={{
-              Id: generalEntePublico.Id || "",
-              Descripcion: generalEntePublico.Descripcion || "",
+              Id: generalEntePublico?.Id || "",
+              Descripcion: generalEntePublico?.Descripcion || "",
             }}
             renderInput={(params) => (
               <TextField
@@ -680,18 +664,17 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario.Descripcion === "No Aplica" ||
-              /^[\s]*$/.test(generalObligadoSolidario.Descripcion) ||
-              /^[\s]*$/.test(generalTipoEntePublico.Descripcion) ||
-              /^[\s]*$/.test(generalEntePublico.Descripcion)
+              generalObligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(generalObligadoSolidario) ||
+              /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
+              /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             variant="outlined"
             onClick={() => {
               changeObligadoSolidarioAval({
-                obligadoSolidario: {
-                  Id: "",
-                  Descripcion: "",
-                },
+                obligadoSolidario: "SI APLICA",
                 tipoEntePublicoObligado: "",
                 entePublicoObligado: {
                   Id: "",
@@ -719,7 +702,7 @@ export function InformacionGeneral() {
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
-                height: ".5vh",
+                height: ".3rem",
                 mt: 1,
               },
               "&::-webkit-scrollbar-thumb": {
@@ -741,12 +724,11 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario.Descripcion === "No Aplica" &&
+                {generalObligadoSolidario === "NO APLICA" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell align="center">No Aplica</StyledTableCell>
+                    <StyledTableCell align="center">NO APLICA</StyledTableCell>
                     <StyledTableCell />
                   </StyledTableRow>
                 ) : (
@@ -757,19 +739,11 @@ export function InformacionGeneral() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              disabled={reestructura === "con autorizacion"}
                               onClick={() => removeObligadoSolidarioAval(index)}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.obligadoSolidario}
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">
                           {row.tipoEntePublicoObligado}

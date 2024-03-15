@@ -177,7 +177,9 @@ export function DetalleFideicomiso({
         }}
       >
         <Grid
+        mt={{xs:4, sm:8, md:2}}
           sx={{
+           
             height: "20%",
             display: "flex",
             flexDirection: "column",
@@ -189,7 +191,7 @@ export function DetalleFideicomiso({
           <Divider color="lightGrey"></Divider>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong> Numero de Fideicomiso:</strong>{" "}
+            <strong> Número de Fideicomiso:</strong>{" "}
             {fideicomiso.NumeroFideicomiso}
           </Typography>
 

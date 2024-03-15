@@ -23,6 +23,7 @@ import {
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
 import { IRegistroSolicitud } from "../../../store/CreditoCortoPlazo/solicitud";
+import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 
 type Props = {
   handler: Function;
@@ -267,6 +268,12 @@ export function VerBorradorDocumento(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
+      {openGuardaComentarios && (
+        <DialogGuardarComentarios
+          open={openGuardaComentarios}
+          handler={setOpenGuardaComentarios}
+        />
+      )}
 
       {openDialogRegresar && (
         <DialogSolicitarModificacion

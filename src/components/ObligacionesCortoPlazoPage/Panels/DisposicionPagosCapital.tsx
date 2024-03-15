@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  InputAdornment,
   InputLabel,
   Paper,
   Radio,
@@ -31,7 +32,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { addDays, lightFormat } from "date-fns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
@@ -82,7 +84,7 @@ const headsDisposicion: readonly {
     label: "Fecha de Disposición",
   },
   {
-    label: `Importe`,
+    label: `Importe de disposición`,
   },
 ];
 
@@ -186,6 +188,7 @@ export function DisposicionPagosCapital() {
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
+
   const cleanTasaInteres: Function = useCortoPlazoStore(
     (state) => state.cleanTasaInteres
   );
@@ -428,7 +431,7 @@ export function DisposicionPagosCapital() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{ width: "100%" }}
@@ -442,25 +445,7 @@ export function DisposicionPagosCapital() {
                 }
                 minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-
-                //slots={(props: any) => <TextField variant="standard" {...props} />}
               />
-
-              {/* <DatePicker
-                value={new Date(capitalFechaPrimerPago)}
-                onChange={(date) =>
-                  changeCapital(
-                    date?.toString(),
-                    capitalPeriocidadPago,
-                    capitalNumeroPago
-                  )
-                }
-                minDate={new Date(disposicionFechaDisposicion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
-                slots={{
-                  textField: DateInput,
-                }}
-              /> */}
             </LocalizationProvider>
           </Grid>
 
@@ -509,7 +494,7 @@ export function DisposicionPagosCapital() {
           </Grid>
 
           <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Número de Pago</InputLabel>
+            <InputLabel sx={queries.medium_text}>Número de Pagos</InputLabel>
             <TextField
               placeholder="0"
               value={capitalNumeroPago <= 0 ? "" : capitalNumeroPago.toString()}
@@ -577,10 +562,9 @@ export function DisposicionPagosCapital() {
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
-              {}
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
-                adapterLocale={enGB}
+                adapterLocale={es}
               >
                 <DesktopDatePicker
                   sx={{ width: "100%" }}
@@ -592,8 +576,8 @@ export function DisposicionPagosCapital() {
                       moneyMask(disposicionImporte.toString())
                     );
                   }}
-                  minDate={new Date()}
-                  maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                  minDate={new Date(fechaContratacion)}
+                  maxDate={new Date(addDays(new Date(), 365))}
                   slots={{
                     textField: DateInput,
                   }}
@@ -845,7 +829,7 @@ export function DisposicionPagosCapital() {
                   </InputLabel>
                   <LocalizationProvider
                     dateAdapter={AdapterDateFns}
-                    adapterLocale={enGB}
+                    adapterLocale={es}
                   >
                     <DesktopDatePicker
                       sx={{ width: "100%" }}
@@ -1026,7 +1010,7 @@ export function DisposicionPagosCapital() {
                   </InputLabel>
                   <LocalizationProvider
                     dateAdapter={AdapterDateFns}
-                    adapterLocale={enGB}
+                    adapterLocale={es}
                   >
                     <DesktopDatePicker
                       value={new Date(tasaInteresFechaPrimerPago)}
@@ -1149,20 +1133,27 @@ export function DisposicionPagosCapital() {
                 <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
-                    type="number"
+                    //type="number"
                     value={tasaInteresSobreTasa}
-                    onChange={(text) =>
-                      changeTasaInteres({
-                        tasaFija: tasaInteresTasaFija,
-                        tasaVariable: tasaInteresTasaVariable,
-                        tasa: "",
-                        fechaPrimerPago: tasaInteresFechaPrimerPago,
-                        diasEjercicio: tasaInteresDiasEjercicio,
-                        periocidadPago: tasaInteresPeriocidadPago,
-                        tasaReferencia: tasaInteresTasaReferencia,
-                        sobreTasa: text.target.value || "",
-                      })
-                    }
+                    onChange={(text) => {
+                      const expRegular = /^\d*\.?\d%*$/;
+
+                      if (
+                        expRegular.test(text.target.value) ||
+                        text.target.value === ""
+                      ) {
+                        changeTasaInteres({
+                          tasaFija: tasaInteresTasaFija,
+                          tasaVariable: tasaInteresTasaVariable,
+                          tasa: "",
+                          fechaPrimerPago: tasaInteresFechaPrimerPago,
+                          diasEjercicio: tasaInteresDiasEjercicio,
+                          periocidadPago: tasaInteresPeriocidadPago,
+                          tasaReferencia: tasaInteresTasaReferencia,
+                          sobreTasa: text.target.value || "",
+                        });
+                      }
+                    }}
                     fullWidth
                     InputLabelProps={{
                       style: {
@@ -1173,6 +1164,9 @@ export function DisposicionPagosCapital() {
                       style: {
                         fontFamily: "MontserratMedium",
                       },
+                      endAdornment: (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ),
                     }}
                     variant="standard"
                   />

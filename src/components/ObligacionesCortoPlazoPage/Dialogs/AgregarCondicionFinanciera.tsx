@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from "@mui/icons-material/Close";
 import {
   AppBar,
@@ -18,7 +19,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -188,6 +189,18 @@ export function AgregarCondicionFinanciera(props: Props) {
 
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [dialogValidacion, setDialogValidacion] = useState("");
+
+  const setDisposicionesParciales: Function = useCortoPlazoStore(
+    (state) => state.setDisposicionesParciales
+  );
+
+  useEffect(() => {
+    if (tablaDisposicion.length > 1) {
+      setDisposicionesParciales(true);
+    } else {
+      setDisposicionesParciales(false);
+    }
+  }, [props.openState]);
 
   return (
     <>

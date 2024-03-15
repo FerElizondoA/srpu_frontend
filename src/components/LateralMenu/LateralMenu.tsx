@@ -117,19 +117,6 @@ export const IconsMenu = (icon: string) => {
   }
 };
 
-export interface IData {
-  Id: string;
-  Institucion: string;
-  TipoEntePublico: string;
-  ClaveDeInscripcion: string;
-  Estatus: string;
-  FechaContratacion: Date;
-  MontoOriginalContratado: number;
-  Acciones: string;
-  Solicitud: string;
-  tipoDocumento: string;
-  TipoSolicitud: string;
-}
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
@@ -559,10 +546,10 @@ export function LateralMenu() {
           anchor="left"
           open={isDrawerOpen}
           sx={{
-            width: query.isXs ? "16rem" : "30vw",
+            width: query.isXs ? "20rem" : "30vw",
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               boxSizing: "border-box",
             },
           }}
@@ -571,7 +558,7 @@ export function LateralMenu() {
           <Grid
             container
             sx={{
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               height: "inherit",
               overflow: "auto",
               "&::-webkit-scrollbar": {

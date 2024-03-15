@@ -77,7 +77,9 @@ export function DialogSolicitarModificacion({
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
-            ? "7"
+            ? Object.keys(comentarios).length > 0
+              ? "7"
+              : "9"
             : "5"
           : localStorage.getItem("Rol") === "Validador"
           ? accion === "enviar"

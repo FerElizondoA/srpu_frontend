@@ -22,7 +22,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -460,7 +461,7 @@ export function TipoDeMovimientoFideicomiso() {
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : {  sm: 0 }
+            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : { sm: 0 }
           }
         >
           <InputLabel sx={queries.medium_text}>Fideicomitente</InputLabel>
@@ -779,18 +780,25 @@ export function TipoDeMovimientoFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={8} md={5} lg={3} xl={3} 
-          mt={{xs:2, sm:2, md:0}}>
+          <Grid
+            item
+            xs={10}
+            sm={8}
+            md={5}
+            lg={3}
+            xl={3}
+            mt={{ xs: 2, sm: 2, md: 0 }}
+          >
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha de Alta
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{
-                  width: "100%"
+                  width: "100%",
                 }}
                 value={beneficiario.fechaAlta}
                 onChange={(v) => {

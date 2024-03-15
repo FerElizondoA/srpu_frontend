@@ -1,12 +1,7 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-
-export type ObligadoSolidarioAval = {
-  obligadoSolidario: string;
-  tipoEntePublicoObligado: string;
-  entePublicoObligado: string;
-};
+import { ObligadoSolidarioAval } from "../CreditoCortoPlazo/informacion_general";
 
 export type GeneralGastosCostos = {
   destino: string;
@@ -29,7 +24,7 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   tablaObligadoSolidarioAval: ObligadoSolidarioAval[];
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: string; Descripcion: string };
+    obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
@@ -54,15 +49,7 @@ export interface InformacionGeneralLargoPlazoSlice {
     monto: number;
   };
 
-  changeInformacionGeneral: (
-    fechaContratacion: string,
-    fechaVencimiento: string,
-    plazo: number,
-    destino: { Id: string; Descripcion: string },
-    monto: number,
-    denominacion: string,
-    institucionFinanciera: { Id: string; Descripcion: string }
-  ) => void;
+  changeInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: ObligadoSolidarioAval
@@ -120,7 +107,7 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
 
   tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
+    obligadoSolidario: "NO APLICA",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
     entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
   },

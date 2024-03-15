@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import enGB from "date-fns/locale/en-GB";
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { ICatalogo } from "../../../screens/Config/Catalogos";
@@ -142,9 +142,7 @@ export function DatoGeneralesFideicomiso() {
       }}
     >
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-          mb={{ xs: 2, sm: 0 }}
-        >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
           <InputLabel sx={queries.medium_text}>
             Número del Fideicomiso
           </InputLabel>
@@ -173,9 +171,7 @@ export function DatoGeneralesFideicomiso() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-          mb={{ xs: 2, sm: 0 }}
-        >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
           <InputLabel sx={queries.medium_text}>Tipo de Fideicomiso</InputLabel>
           <Autocomplete
             disableClearable
@@ -218,16 +214,11 @@ export function DatoGeneralesFideicomiso() {
       </Grid>
 
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-          mb={{ xs: 2, sm: 0 }}
-        >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
           <InputLabel sx={{ ...queries.medium_text }}>
             Fecha del Fideicomiso
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{ width: "100%" }}
               value={datosGenerales.fechaFideicomiso}
@@ -241,9 +232,7 @@ export function DatoGeneralesFideicomiso() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-          mb={{ xs: 2, sm: 0 }}
-        >
+        <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
           <InputLabel sx={queries.medium_text}>Fiduciario</InputLabel>
           <Autocomplete
             disableClearable
@@ -305,9 +294,7 @@ export function DatoGeneralesFideicomiso() {
           justifyItems={"center"}
           justifyContent={"space-evenly"}
         >
-          <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-            mb={{ xs: 2, sm: 0 }}
-          >
+          <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
             <InputLabel sx={queries.medium_text}>Fideicomisario</InputLabel>
             <Autocomplete
               disableClearable
@@ -345,9 +332,7 @@ export function DatoGeneralesFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={4} md={5} lg={5} xl={5}
-            mb={{ xs: 2, sm: 0 }}
-          >
+          <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
             <InputLabel sx={queries.medium_text}>
               Orden fideicomisario
             </InputLabel>
@@ -388,7 +373,7 @@ export function DatoGeneralesFideicomiso() {
           </Grid>
         </Grid>
 
-        <Grid mt={{xs:0, sm:2}}>
+        <Grid mt={{ xs: 0, sm: 2 }}>
           <ThemeProvider theme={buttonTheme}>
             <Button
               sx={{

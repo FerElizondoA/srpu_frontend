@@ -24,10 +24,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
@@ -137,18 +136,16 @@ export function Documentacion() {
   );
 
   // IdSolicitud
-  const IdSolicitud: string = useCortoPlazoStore(
-    (state) => state.registroSolicitud.Id
-  );
-  useEffect(() => {
-    if (IdSolicitud) {
-      getDocumentos(
-        `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-        () => {},
-        () => {}
-      );
-    }
-  }, []);
+  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  // useEffect(() => {
+  //   if (IdSolicitud) {
+  //     getDocumentos(
+  //       `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+  //       () => {},
+  //       () => {}
+  //     );
+  //   }
+  // }, []);
 
   return (
     <Grid
@@ -343,7 +340,7 @@ export function Documentacion() {
                               index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-                            {catalogoTiposDocumentosObligatorios.map((tipo) => (
+                            {tiposDocumentos.map((tipo) => (
                               <MenuItem key={tipo.Id} value={tipo.Id}>
                                 {tipo.Descripcion}
                               </MenuItem>

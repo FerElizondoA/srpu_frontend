@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Button,
   Chip,
   Grid,
   InputBase,
@@ -46,6 +47,31 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
+import { DialogTrazabilidad } from "./DialogTrazabilidad";
+
+export interface IData {
+  Id: string;
+  NumeroRegistro: string;
+  Nombre: string;
+  TipoEntePublico: string;
+  TipoSolicitud: string;
+  Institucion: string;
+  NoEstatus: string;
+  Estatus: string;
+  ControlInterno: string;
+  IdClaveInscripcion: string;
+  MontoOriginalContratado: string;
+  FechaContratacion: string;
+  Solicitud: string;
+  FechaCreacion: string;
+  CreadoPor: string;
+  UltimaModificacion: string;
+  ModificadoPor: string;
+  IdEditor: string;
+  FechaRequerimientos: string;
+  IdPathDoc?: string;
+  Control: string;
+}
 
 const heads: Array<{ label: string }> = [
   {
@@ -74,9 +100,6 @@ const heads: Array<{ label: string }> = [
   },
   {
     label: "Tipo de Documento",
-  },
-  {
-    label: "Editor",
   },
   {
     label: "Acciones",
@@ -149,6 +172,9 @@ export function ConsultaDeSolicitudPage() {
   const setRegistroSolicitud: Function = useCortoPlazoStore(
     (state) => state.setRegistroSolicitud
   );
+  const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
+
+  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -185,7 +211,7 @@ export function ConsultaDeSolicitudPage() {
 
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("Actualizacion");
+    setProceso("actualizacion");
     navigate("../firmaUrl");
   };
 
@@ -361,6 +387,29 @@ export function ConsultaDeSolicitudPage() {
                           variant="outlined"
                         />
                       );
+                    } else if (row.Estatus === "actualizacion") {
+                    }
+                    // else if (row.Estatus.includes("Inscrito")) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="warning"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // }
+                    else if (row.ControlInterno === "Inscrito") {
+                      chip = (
+                        <Tooltip title={"Registro de trazabilidad"}>
+                          <Button>
+                            <Chip
+                              label={row.Estatus}
+                              color="secondary"
+                              variant="outlined"
+                            />
+                          </Button>
+                        </Tooltip>
+                      );
                     } else if (row.Estatus === "Actualizacion") {
                       chip = (
                         <Tooltip
@@ -423,7 +472,13 @@ export function ConsultaDeSolicitudPage() {
                           component="th"
                           scope="row"
                         >
-                          {chip}
+                          <Button
+                            onClick={() => {
+                              setOpenTrazabilidad(!openTrazabilidad);
+                            }}
+                          >
+                            {chip}
+                          </Button>
                         </StyledTableCell>
 
                         <StyledTableCell
@@ -480,15 +535,6 @@ export function ConsultaDeSolicitudPage() {
                         </StyledTableCell>
 
                         <StyledTableCell
-                          sx={{ padding: "1px 25px 1px 0" }}
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.IdEditor}
-                        </StyledTableCell>
-
-                        <StyledTableCell
                           sx={{
                             flexDirection: "row",
                             display: "grid",
@@ -513,8 +559,8 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {localStorage.getItem("IdUsuario") === row.IdEditor &&
-                            ["3", "7"].includes(row.NoEstatus) && (
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["3", "7", "9"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
@@ -569,19 +615,14 @@ export function ConsultaDeSolicitudPage() {
                               </Tooltip>
                             )}
 
-                          {localStorage.getItem("IdCentral") === row.IdEditor &&
-                            row.ControlInterno === "inscripcion" && (
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["1", "2", "8"].includes(row.NoEstatus) && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
                                     setRegistroSolicitud(row);
-                                    if (row.Estatus.includes("Actualizacion")) {
-                                      getComentariosSolicitudPlazo(
-                                        row.Id,
-                                        setDatosActualizar
-                                      );
-                                    }
+
                                     editarSolicitud(row.TipoSolicitud);
                                   }}
                                 >
@@ -619,8 +660,8 @@ export function ConsultaDeSolicitudPage() {
 
                           {localStorage.getItem("IdUsuario") ===
                             row.CreadoPor &&
-                            (row.Estatus === "Captura" ||
-                              row.Estatus === "Verificacion") && (
+                            (row.NoEstatus === "1" ||
+                              row.NoEstatus === "2") && (
                               <Tooltip title="Eliminar">
                                 <IconButton
                                   type="button"
@@ -642,6 +683,13 @@ export function ConsultaDeSolicitudPage() {
           </TableContainer>
         </Paper>
       </Grid>
+
+      {/* <DialogTrazabilidad
+        handler={setOpenTrazabilidad}
+        openState={openTrazabilidad}
+        rowSolicitud={solicitudFirma}
+        //rowId={""}
+      /> */}
       {openDialogVer && (
         <VerBorradorDocumento
           handler={changeOpenDialogVer}

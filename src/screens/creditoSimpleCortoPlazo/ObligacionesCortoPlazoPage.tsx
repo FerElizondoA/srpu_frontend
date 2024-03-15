@@ -15,6 +15,7 @@ import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPag
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { IRegistroSolicitud } from "../../store/CreditoCortoPlazo/solicitud";
+import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -34,13 +35,19 @@ export function ObligacionesCortoPlazoPage() {
   const getTiposDocumentos: Function = useCortoPlazoStore(
     (state) => state.getTiposDocumentos
   );
-  useEffect(() => {
-    getTiposDocumentos();
-  }, []);
 
   const registroSolicitud: IRegistroSolicitud = useCortoPlazoStore(
     (state) => state.registroSolicitud
   );
+
+  useEffect(() => {
+    getTiposDocumentos();
+    getDocumentos(
+      `/SRPU/CORTOPLAZO/DOCSOL/${registroSolicitud.Id}/`,
+      () => {},
+      () => {}
+    );
+  }, []);
 
   return (
     <>

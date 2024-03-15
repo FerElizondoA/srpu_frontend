@@ -25,7 +25,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
@@ -228,19 +229,12 @@ export function SoporteDocumentalInstrucciones() {
             }}
           />
         </Grid>
-
-
-
-
       </Grid>
 
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
         <Grid item xs={10} sm={10} md={5} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>Fecha del Documento</InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{
                 width: "100%",
@@ -256,9 +250,16 @@ export function SoporteDocumentalInstrucciones() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid xs={10} sm={10} md={5} lg={4} xl={4}
-          display={"flex"} justifyContent={"center"} alignItems={"center"}
-          mt={{xs:2, sm:2 , md:0}}
+        <Grid
+          xs={10}
+          sm={10}
+          md={5}
+          lg={4}
+          xl={4}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          mt={{ xs: 2, sm: 2, md: 0 }}
         >
           <ThemeProvider theme={buttonTheme}>
             <Button
@@ -359,11 +360,12 @@ export function SoporteDocumentalInstrucciones() {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
+                                        `data:application/pdf;base64,${
+                                          arr.filter((td: any) =>
+                                            td.NOMBREFORMATEADO.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].FILE
                                         }`
                                       );
                                     });

@@ -74,12 +74,15 @@ export function ConfirmacionEnviarSolicitud({
       maxWidth="sm"
     >
       <DialogTitle>
-        <Typography sx={queries.medium_text}>
-          {localStorage.getItem("Rol") === "Capturador"
-            ? "Enviar"
-            : "Finalizar"}{" "}
-          Documento
-        </Typography>
+        <Grid display={"flex"} justifyContent={"center"}>
+          <Typography sx={queries.bold_text}>
+            {localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"}{" "}
+            Documento
+          </Typography>
+        </Grid>
+
       </DialogTitle>
 
       <DialogContent>
@@ -120,7 +123,8 @@ export function ConfirmacionEnviarSolicitud({
         ) : (
           <Grid>
             <Typography>
-              Al finalizar, la solicitud ya no estará disponible para modificar.
+              {/* Al finalizar, la solicitud ya no estará disponible para modificar. */}
+              Está a punto de finalizar la solicitud. Una vez lo haga, <strong>ya no estará disponible para realizar modificaciones.</strong> ¿Desea proceder?
             </Typography>
           </Grid>
         )}
@@ -282,17 +286,15 @@ export function ConfirmacionEnviarSolicitud({
           sx={queries.buttonContinuar}
         >
           {JSON.stringify(comentarios) == null ||
-          /^[\s]*$/.test(JSON.stringify(comentarios))
-            ? `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `
-            : `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `}
+            /^[\s]*$/.test(JSON.stringify(comentarios))
+            ? `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `
+            : `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `}
         </Button>
       </DialogActions>
     </Dialog>

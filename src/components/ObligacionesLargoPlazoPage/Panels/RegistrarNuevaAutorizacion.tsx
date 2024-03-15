@@ -11,7 +11,7 @@ import {
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
@@ -21,31 +21,29 @@ import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGe
 
 export function RegistrarNuevaAutorizacion() {
   const entidad: { Id: string; Organismo: string } = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.entidad
+    (state) => state.autorizacion.entidad
   );
 
   const numeroAutorizacion: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.numeroAutorizacion
+    (state) => state.autorizacion.numeroAutorizacion
   );
 
   const medioPublicacion: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.medioPublicacion);
+    useLargoPlazoStore((state) => state.autorizacion.medioPublicacion);
 
   const fechaPublicacion: string = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.fechaPublicacion
+    (state) => state.autorizacion.fechaPublicacion
   );
 
   const montoAutorizado: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.montoAutorizado
+    (state) => state.autorizacion.montoAutorizado
   );
 
   const documentoSoporte: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.documentoSoporte);
+    useLargoPlazoStore((state) => state.autorizacion.documentoSoporte);
 
   const acreditacionQuorum: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore(
-      (state) => state.registrarAutorizacion.acreditacionQuorum
-    );
+    useLargoPlazoStore((state) => state.autorizacion.acreditacionQuorum);
 
   const changeAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setRegistrarAutorizacion
@@ -141,7 +139,7 @@ export function RegistrarNuevaAutorizacion() {
       <Grid
         container
         width={"100%"}
-        // sx={{...queries.contenedorAgregarAutorizacion.RegistrarAutorizacion,
+        // sx={{...queries.contenedorAgregarAutorizacion.autorizacion,
 
         //   flexDirection:"column",
         //   justifyContent:"space-between",
@@ -188,7 +186,7 @@ export function RegistrarNuevaAutorizacion() {
 
           <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
-              Numero de autorización de la legislatura local
+              Número de autorización de la legislatura local
             </InputLabel>
             <TextField
               fullWidth
@@ -278,7 +276,7 @@ export function RegistrarNuevaAutorizacion() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{ width: "100%" }}

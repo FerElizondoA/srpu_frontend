@@ -4,6 +4,7 @@ import {
   ICatalogo,
   IEntePublico,
 } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { useCortoPlazoStore } from "./main";
 
 export interface EncabezadoSlice {
   encabezado: {
@@ -22,17 +23,7 @@ export interface EncabezadoSlice {
   catalogoOrganismos: IEntePublico[];
   catalogoTiposEntePublico: ICatalogo[];
 
-  changeEncabezado: (
-    tipoDocumento: string,
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    },
-    tipoEntePublico: { Id: string; TipoEntePublico: string },
-    organismo: { Id: string; Organismo: string },
-    fechaContratacion: string
-  ) => void;
+  changeEncabezado: (encabezado: any) => void;
 
   getOrganismos: () => void;
   getTiposEntesPublicos: () => void;
@@ -63,33 +54,17 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   catalogoOrganismos: [],
   catalogoTiposEntePublico: [],
 
-  changeEncabezado: (
-    tipoDocumento: string,
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    },
-    tipoEntePublico: { Id: string; TipoEntePublico: string },
-    organismo: { Id: string; Organismo: string },
-    fechaContratacion: string
-  ) =>
+  changeEncabezado: (encabezado: any) => {
+    const state = useCortoPlazoStore.getState();
+
+    state.changeInformacionGeneral({
+      ...state.informacionGeneral,
+      fechaContratacion: encabezado.fechaContratacion,
+    });
     set(() => ({
-      encabezado: {
-        tipoDocumento: tipoDocumento,
-        solicitanteAutorizado: {
-          Solicitante: solicitanteAutorizado.Solicitante,
-          Cargo: solicitanteAutorizado.Cargo,
-          Nombre: solicitanteAutorizado.Nombre,
-        },
-        tipoEntePublico: {
-          Id: tipoEntePublico.Id,
-          TipoEntePublico: tipoEntePublico.TipoEntePublico,
-        },
-        organismo: { Id: organismo.Id, Organismo: organismo.Organismo },
-        fechaContratacion: fechaContratacion,
-      },
-    })),
+      encabezado: encabezado,
+    }));
+  },
 
   getTiposEntesPublicos: async () => {
     await axios

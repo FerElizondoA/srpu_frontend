@@ -1,5 +1,5 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
+import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export type ObligadoSolidarioAval = {
@@ -24,7 +24,7 @@ export interface InformacionGeneralSlice {
 
   tablaObligadoSolidarioAval: ObligadoSolidarioAval[];
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: string; Descripcion: string };
+    obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
@@ -34,15 +34,7 @@ export interface InformacionGeneralSlice {
   catalogoObligadoSolidarioAval: ICatalogo[];
   catalogoTipoEntePublicoObligado: ICatalogo[];
 
-  changeInformacionGeneral: (
-    fechaContratacion: string,
-    fechaVencimiento: string,
-    plazo: number,
-    destino: { Id: string; Descripcion: string },
-    monto: number,
-    denominacion: string,
-    institucionFinanciera: { Id: string; Descripcion: string }
-  ) => void;
+  changeInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: ObligadoSolidarioAval
@@ -62,7 +54,7 @@ export interface InformacionGeneralSlice {
 
   removeObligadoSolidarioAval: (index: number) => void;
 
-  getDestinos: () => void;
+  getDestinos: (tipoSolicitud: string) => void;
   getInstituciones: () => void;
   getTipoEntePublicoObligado: () => void;
   getObligadoSolidarioAval: () => void;
@@ -90,9 +82,9 @@ export const createInformacionGeneralSlice: StateCreator<
 
   tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
-    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
-    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
+    obligadoSolidario: "NO APLICA",
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
+    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
   },
 
   catalogoInstituciones: [],
@@ -100,29 +92,11 @@ export const createInformacionGeneralSlice: StateCreator<
   catalogoObligadoSolidarioAval: [],
   catalogoTipoEntePublicoObligado: [],
 
-  changeInformacionGeneral: (
-    fechaContratacion: string,
-    fechaVencimiento: string,
-    plazo: number,
-    destino: { Id: string; Descripcion: string },
-    monto: number,
-    denominacion: string,
-    institucionFinanciera: { Id: string; Descripcion: string }
-  ) =>
+  changeInformacionGeneral: (informacionGeneral: any) => {
     set(() => ({
-      informacionGeneral: {
-        fechaContratacion: fechaContratacion,
-        fechaVencimiento: fechaVencimiento,
-        plazo: plazo,
-        destino: { Id: destino.Id, Descripcion: destino.Descripcion },
-        monto: monto,
-        denominacion: denominacion,
-        institucionFinanciera: {
-          Id: institucionFinanciera.Id,
-          Descripcion: institucionFinanciera.Descripcion,
-        },
-      },
-    })),
+      informacionGeneral: informacionGeneral,
+    }));
+  },
 
   changeObligadoSolidarioAval: (obligadoSolidario: any) => {
     set(() => ({
@@ -155,7 +129,7 @@ export const createInformacionGeneralSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-  getDestinos: async () => {
+  getDestinos: async (tipoSolicitud: string) => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-destinos", {
         headers: {
@@ -164,6 +138,13 @@ export const createInformacionGeneralSlice: StateCreator<
       })
       .then(({ data }) => {
         let r = data.data;
+        if (tipoSolicitud === "CP") {
+          r = r.filter((v: any) => v.OCP === 1);
+        } else if (tipoSolicitud === "LP") {
+          r = r.filter((v: any) => v.OLP === 1);
+        } else {
+        }
+
         set((state) => ({
           catalogoDestinos: r,
         }));

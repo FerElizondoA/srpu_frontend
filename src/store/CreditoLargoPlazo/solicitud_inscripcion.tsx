@@ -99,12 +99,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }));
       });
   },
-  crearSolicitud: async (
-    idCreador: string,
-    idEditor: string,
-    estatus: string,
-    comentario: string
-  ) => {
+
+  crearSolicitud: async (estatus: string, comentario: string) => {
     const state = useLargoPlazoStore.getState();
 
     const solicitud: any = {
@@ -123,18 +119,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         ...state.archivoDetalleInversion,
       },
 
-      //registrarAutorizacion: state.autorizacionSelect,
-
-      registrarAutorizacion: {
-        registrarAutorizacion: state.autorizacionSelect,
-
-        //  numeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
-
-        //  fechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
-
-        //  montoAutorizado: state.registrarAutorizacion.montoAutorizado,
-
-        //  medioPublicacion: state.registrarAutorizacion.medioPublicacion,
+      autorizacion: {
+        ...state.autorizacionSelect,
       },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
@@ -168,8 +154,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
-          IdEditor: idEditor,
-          CreadoPor: idCreador,
+          IdEditor: localStorage.getItem("IdUsuario"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -206,6 +192,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       GastosCostos: {
         ...state.GastosCostos,
         generalGastosCostos: state.tablaGastosCostos,
+      },
+
+      autorizacion: {
+        Autorizacion: state.autorizaciones,
       },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,

@@ -1,13 +1,9 @@
 import { create } from "zustand";
 
 import {
-  AgregarAutorizacionLargoPlazoSlice,
-  createAgregarAutorizacionLargoPlazoSlice,
-} from "../Autorizacion/agregarAutorizacion";
-import {
-  FuenteDePagoLargoPlazoSlice,
-  createFuentePagoLargoPLazoSlice,
-} from "./FuenteDePago";
+  AutorizacionLargoPlazoSlice,
+  createAutorizacionLargoPlazoSlice,
+} from "./autorizacion";
 import {
   ComentarioApartadoLargoPlazoSlice,
   createComentarioLargoPlazoSlice,
@@ -40,6 +36,10 @@ import {
   CondicionFinancieraSlice,
   createCondicionFinancieraSlice,
 } from "./condicion_financiera";
+import {
+  FuenteDePagoLargoPlazoSlice,
+  createFuentePagoLargoPLazoSlice,
+} from "./fuenteDePago";
 
 export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   InformacionGeneralLargoPlazoSlice &
@@ -50,7 +50,7 @@ export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   ComentarioApartadoLargoPlazoSlice &
   DocumentosLargoPlazoSlice &
   FuenteDePagoLargoPlazoSlice &
-  AgregarAutorizacionLargoPlazoSlice;
+  AutorizacionLargoPlazoSlice;
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createEncabezadoLargoPlazoSlice(...x),
@@ -62,5 +62,5 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createComentarioLargoPlazoSlice(...x),
   ...createDocumentoLargoPlazoSlice(...x),
   ...createFuentePagoLargoPLazoSlice(...x),
-  ...createAgregarAutorizacionLargoPlazoSlice(...x),
+  ...createAutorizacionLargoPlazoSlice(...x),
 }));

@@ -1,4 +1,5 @@
 import { StateCreator } from "zustand";
+import { useLargoPlazoStore } from "./main";
 
 export interface EncabezadoLargoPlazoSlice {
   encabezado: {
@@ -14,17 +15,7 @@ export interface EncabezadoLargoPlazoSlice {
     fechaContratacion: string;
   };
 
-  changeEncabezado: (
-    tipoDocumento: string,
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    },
-    tipoEntePublico: { Id: string; TipoEntePublico: string },
-    organismo: { Id: string; Organismo: string },
-    fechaContratacion: string
-  ) => void;
+  changeEncabezado: (encabezado: any) => void;
 }
 
 export const createEncabezadoLargoPlazoSlice: StateCreator<
@@ -48,8 +39,15 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
     fechaContratacion: new Date().toString(),
   },
 
-  changeEncabezado: (encabezado: any) =>
+  changeEncabezado: (encabezado: any) => {
+    const state = useLargoPlazoStore.getState();
+
+    state.changeInformacionGeneral({
+      ...state.informacionGeneral,
+      fechaContratacion: encabezado.fechaContratacion,
+    });
     set(() => ({
       encabezado: encabezado,
-    })),
+    }));
+  },
 });

@@ -2,7 +2,7 @@ import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
-import enGB from "date-fns/locale/en-GB";
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -242,10 +242,7 @@ export function Encabezado() {
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={enGB}
-          >
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
                 datosActualizar.length > 0 &&
@@ -268,9 +265,6 @@ export function Encabezado() {
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
-              // slots={{
-              //   textField: DateInput,
-              // }}
             />
           </LocalizationProvider>
         </Grid>

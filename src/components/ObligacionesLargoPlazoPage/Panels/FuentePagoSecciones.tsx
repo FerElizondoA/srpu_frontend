@@ -5,7 +5,7 @@ import { queries } from "../../../queries";
 import { VehiculoDePago } from "./VehiculoDePago";
 import { AsignarFuente } from "./AsignarFuente";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 
 export function FuentePagoSecciones() {
   const query = {

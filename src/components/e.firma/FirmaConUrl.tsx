@@ -63,14 +63,35 @@ export const FirmaConUrl = () => {
         users
       );
     } else if (estatus === "8") {
-      editor = idCreador;
+      // editor = idCreador;
+      editor = "";
       createNotification(
         "Crédito Simple a Corto Plazo",
         `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
         [idCreador]
       );
     } else if (estatus === "10") {
-      editor = idCreador;
+      // editor = idCreador;
+      editor = "";
+      usuarios
+        .filter(
+          (usr: any) =>
+            usr.Entidad === localStorage.getItem("EntePublicoObligado")! ||
+            rolesAdmin.includes(usr.Rol)
+        )
+        .map((usuario: any) => {
+          return users.push(usuario.Id);
+        });
+      createNotification(
+        "Crédito Simple a Corto Plazo",
+        `${oficio} ha sido autorizado con fecha ${
+          new Date().toLocaleString("es-MX").split(" ")[0]
+        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+        users
+      );
+    } else if (estatus === "10") {
+      // editor = idCreador;
+      editor = "";
       usuarios
         .filter(
           (usr: any) =>
