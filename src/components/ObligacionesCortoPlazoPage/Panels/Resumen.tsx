@@ -31,20 +31,19 @@ import {
   IDisposicion,
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
-import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 interface Head {
   label: string;
@@ -105,7 +104,7 @@ export function Resumen({ coments }: { coments: boolean }) {
     (state) => state.encabezado.tipoDocumento
   );
   const solicitanteAutorizado: {
-    Solicitante: string;
+    IdSolicitante: string;
     Cargo: string;
     Nombre: string;
   } = useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
@@ -138,7 +137,7 @@ export function Resumen({ coments }: { coments: boolean }) {
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
 
-  const tablaObligados: ObligadoSolidarioAval[] = useCortoPlazoStore(
+  const tablaObligados: IObligadoSolidarioAval[] = useCortoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
   );
 
@@ -230,12 +229,12 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-    getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
-      setArr,
-      setCargados
-    );
-    console.log("solicitud", inscripcion);
+    inscripcion.Id &&
+      getDocumentos(
+        `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        setArr,
+        setCargados
+      );
   }, []);
 
   const toBase64 = (file: any) =>
@@ -496,7 +495,6 @@ export function Resumen({ coments }: { coments: boolean }) {
             </Paper>
           </Grid>
         </Grid>
-        {/* <Divider color="lightGrey"></Divider> */}
 
         <Grid mt={3} width={"100%"}>
           <Typography sx={queries.bold_text}>

@@ -44,9 +44,9 @@ import {
 } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { moneyMask } from "./InformacionGeneral";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 const heads: readonly {
@@ -211,9 +211,9 @@ export function DisposicionPagosCapital() {
   );
 
   useEffect(() => {
-    getPeriocidadPago();
-    getTasaReferencia();
-    getDiasEjercicio();
+    catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
+    catalogoTasaReferencia.length <= 0 && getTasaReferencia();
+    catalogoDiasEjercicio.length <= 0 && getDiasEjercicio();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -444,7 +444,7 @@ export function DisposicionPagosCapital() {
                     capitalNumeroPago
                   )
                 }
-                minDate={new Date(disposicionFechaDisposicion)}
+                // minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
               />
             </LocalizationProvider>
@@ -1137,7 +1137,7 @@ export function DisposicionPagosCapital() {
                     //type="number"
                     value={tasaInteresSobreTasa}
                     onChange={(text) => {
-                      const expRegular = /^\d*\.?\d*$/;
+                      const expRegular = /^\d*\.?\d%*$/;
 
                       if (
                         expRegular.test(text.target.value) ||

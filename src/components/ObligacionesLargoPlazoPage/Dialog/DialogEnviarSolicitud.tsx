@@ -18,8 +18,11 @@ import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
-import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -36,8 +39,6 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.modificaSolicitud
   );
 
-  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
-
   const addComentario: Function = useLargoPlazoStore(
     (state) => state.addComentario
   );
@@ -48,10 +49,6 @@ export function ConfirmacionEnviarSolicitud({
     []
   );
 
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   React.useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
@@ -59,10 +56,13 @@ export function ConfirmacionEnviarSolicitud({
   const navigate = useNavigate();
 
   const comentarios: {} = useLargoPlazoStore((state) => state.comentarios);
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
-  // const cleanSolicitud: Function = useLargoPlazoStore(
-  //   (state) => state.cleanSolicitud
-  // );
+  const cleanSolicitud: Function = useCortoPlazoStore(
+    (state) => state.cleanSolicitud
+  );
 
   return (
     <Dialog
@@ -146,16 +146,16 @@ export function ConfirmacionEnviarSolicitud({
         <Button
           onClick={() => {
             handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
-                  editCreadoPor,
+                  solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   "3"
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -166,7 +166,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
@@ -184,10 +184,10 @@ export function ConfirmacionEnviarSolicitud({
                     });
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(editCreadoPor, idUsuarioAsignado, "2")
+                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -198,7 +198,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
@@ -225,7 +225,7 @@ export function ConfirmacionEnviarSolicitud({
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -236,7 +236,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -261,7 +261,7 @@ export function ConfirmacionEnviarSolicitud({
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -272,7 +272,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {

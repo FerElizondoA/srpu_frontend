@@ -3,71 +3,44 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
 import es from "date-fns/locale/es";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { queries } from "../../../queries";
+import {
+  IEncabezado,
+  IUsuarios,
+} from "../../../store/CreditoCortoPlazo/encabezado";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-
-export interface IUsuariosCorto {
-  Id: string;
-  Nombre: string;
-  ApellidoPaterno: string;
-  ApellidoMaterno: string;
-  IdEntidad: string;
-  IdRol: string;
-  Puesto: string;
-}
-
-export interface IRoles {
-  Id: string;
-  Descripcion: string;
-}
 
 export function Encabezado() {
   const tipoDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
-  const getTiposEntesPublicos: Function = useCortoPlazoStore(
-    (state) => state.getTiposEntesPublicos
-  );
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
-
-  const solicitanteAutorizado: {
-    Solicitante: string;
-    Cargo: string;
-    Nombre: string;
-  } = useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
 
   const organismo: { Id: string; Organismo: string } = useCortoPlazoStore(
     (state) => state.encabezado.organismo
   );
-  const getOrganismos: Function = useCortoPlazoStore(
-    (state) => state.getOrganismos
-  );
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
-
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
 
-  useEffect(() => {
-    getListadoUsuarios(setUsuarios);
-    getTiposEntesPublicos();
-    getOrganismos();
+  const encabezado: IEncabezado = useCortoPlazoStore(
+    (state) => state.encabezado
+  );
 
+  const listadoUsuarios: Array<IUsuarios> = useCortoPlazoStore(
+    (state) => state.listadoUsuarios
+  );
+
+  useEffect(() => {
+    listadoUsuarios.length <= 0 && getListadoUsuarios();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosCorto>>([]);
-
-  const selectedValue =
-    usuarios.find((usuario) => usuario.Id === solicitanteAutorizado.Solicitante)
-      ?.Id || "";
-
-  const isValueValid = usuarios.some((usuario) => usuario.Id === selectedValue);
 
   const datosActualizar: Array<string> = useCortoPlazoStore(
     (state) => state.datosActualizar
@@ -120,13 +93,19 @@ export function Encabezado() {
             }
             sx={queries.medium_text}
             fullWidth
-            value={isValueValid ? selectedValue : ""}
+            value={
+              listadoUsuarios.length <= 0
+                ? ""
+                : encabezado.solicitanteAutorizado.IdSolicitante
+            }
             onChange={(e) => {
-              let x = usuarios.find((usuario) => usuario.Id === e.target.value);
+              let x = listadoUsuarios.find(
+                (usuario) => usuario.Id === e.target.value
+              );
               changeEncabezado({
                 tipoDocumento: tipoDocumento,
                 solicitanteAutorizado: {
-                  Solicitante: x?.Id || "",
+                  IdSolicitante: x?.Id || "",
                   Cargo: x?.Puesto || "",
                   Nombre: `${x?.Nombre} ${x?.ApellidoPaterno} ${x?.ApellidoMaterno}`,
                 },
@@ -137,7 +116,7 @@ export function Encabezado() {
             }}
             variant="standard"
           >
-            {usuarios.map((usuario) => (
+            {listadoUsuarios.map((usuario) => (
               <MenuItem key={usuario.Id} value={usuario.Id}>
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
@@ -156,7 +135,7 @@ export function Encabezado() {
               !datosActualizar.includes("Cargo del Solicitante")
             }
             fullWidth
-            value={solicitanteAutorizado.Cargo}
+            value={encabezado.solicitanteAutorizado.Cargo}
             variant="standard"
             sx={queries.medium_text}
             InputLabelProps={{
@@ -177,9 +156,6 @@ export function Encabezado() {
       <Grid
         item
         container
-        // mt={{ xs: 10, sm: 10, md: 20, lg: 10 }}
-        // ml={{ xs: 5, sm: 10, md: 7, lg: window.innerWidth / 50 }}
-        // spacing={{ xs: 2, md: 5, lg: 10 }}
         display={"flex"}
         justifyContent={"space-evenly"}
         alignItems={"center"}
@@ -220,6 +196,7 @@ export function Encabezado() {
               datosActualizar.length > 0 &&
               !datosActualizar.includes("Municipio u Organismo")
             }
+            multiline
             fullWidth
             value={organismo.Organismo}
             variant="standard"
@@ -251,17 +228,7 @@ export function Encabezado() {
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
               onChange={(date) => {
-                changeEncabezado({
-                  tipoDocumento: tipoDocumento,
-                  solicitanteAutorizado: {
-                    Solicitante: solicitanteAutorizado.Solicitante || "",
-                    Cargo: solicitanteAutorizado?.Cargo || "",
-                    Nombre: solicitanteAutorizado.Nombre,
-                  },
-                  tipoEntePublico: tipoEntePublico,
-                  organismo: organismo,
-                  fechaContratacion: date,
-                });
+                changeEncabezado({ ...encabezado, fechaContratacion: date });
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}

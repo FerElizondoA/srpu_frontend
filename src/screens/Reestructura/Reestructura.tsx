@@ -107,7 +107,7 @@ export function SolicitudesReestructura() {
   );
 
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.addGeneralGastosCostos
+    (state) => state.addGastosCostos
   );
 
   const addCondicionFinancieraLP: Function = useLargoPlazoStore(
@@ -131,7 +131,7 @@ export function SolicitudesReestructura() {
       return addObligadoSolidarioAvalLP(v);
     });
 
-    aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+    aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
       return addGeneralGastosCostos(v);
     });
 

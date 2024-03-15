@@ -210,9 +210,9 @@ export function DisposicionPagosCapital() {
   );
 
   useEffect(() => {
-    getPeriocidadPago();
-    getTasaReferencia();
-    getDiasEjercicio();
+    catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
+    catalogoTasaReferencia.length <= 0 && getTasaReferencia();
+    catalogoDiasEjercicio.length <= 0 && getDiasEjercicio();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -443,7 +443,7 @@ export function DisposicionPagosCapital() {
                     capitalNumeroPago
                   )
                 }
-                minDate={new Date(disposicionFechaDisposicion)}
+                // minDate={new Date(disposicionFechaDisposicion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
               />
             </LocalizationProvider>

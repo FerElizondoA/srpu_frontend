@@ -9,10 +9,6 @@ import {
   createComentarioLargoPlazoSlice,
 } from "./comentarios_apartado";
 import {
-  DocumentosLargoPlazoSlice,
-  createDocumentoLargoPlazoSlice,
-} from "./documentacion";
-import {
   EncabezadoLargoPlazoSlice,
   createEncabezadoLargoPlazoSlice,
 } from "./encabezado";
@@ -40,6 +36,10 @@ import {
   FuenteDePagoLargoPlazoSlice,
   createFuentePagoLargoPLazoSlice,
 } from "./fuenteDePago";
+import {
+  DocumentosLargoPlazoSlice,
+  createDocumentoLargoPlazoSlice,
+} from "./documentacion";
 
 export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
   InformacionGeneralLargoPlazoSlice &

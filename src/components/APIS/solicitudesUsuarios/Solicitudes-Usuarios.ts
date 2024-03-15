@@ -1,5 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -15,7 +16,7 @@ const Toast = Swal.mixin({
   },
 });
 
-export const getListadoUsuarios = (setState: Function) => {
+export const getListadoUsuarios = () => {
   axios
     .get(process.env.REACT_APP_APPLICATION_LOGIN + "/api/users-app", {
       params: {
@@ -28,7 +29,9 @@ export const getListadoUsuarios = (setState: Function) => {
       },
     })
     .then(({ data }) => {
-      setState(data.data);
+      const state = useCortoPlazoStore.getState();
+
+      state.setListadoUsuarios(data.data);
     })
     .catch((r) => {
       Toast.fire({

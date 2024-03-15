@@ -6,24 +6,44 @@ import {
 } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useCortoPlazoStore } from "./main";
 
-export interface EncabezadoSlice {
-  encabezado: {
-    tipoDocumento: string;
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    };
-
-    tipoEntePublico: { Id: string; TipoEntePublico: string };
-    organismo: { Id: string; Organismo: string };
-    fechaContratacion: string;
+export interface IEncabezado {
+  tipoDocumento: string;
+  solicitanteAutorizado: {
+    IdSolicitante: string;
+    Cargo: string;
+    Nombre: string;
   };
+  tipoEntePublico: { Id: string; TipoEntePublico: string };
+  organismo: { Id: string; Organismo: string };
+  fechaContratacion: string;
+}
+
+export interface IUsuarios {
+  Id: string;
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  IdEntidad: string;
+  IdRol: string;
+  Puesto: string;
+  NombreUsuario: string;
+  CorreoElectronico: string;
+  Dependencia: string;
+  Telefono: string;
+  Celular: string;
+  Ext: string;
+}
+
+export interface EncabezadoSlice {
+  encabezado: IEncabezado;
 
   catalogoOrganismos: IEntePublico[];
   catalogoTiposEntePublico: ICatalogo[];
 
   changeEncabezado: (encabezado: any) => void;
+
+  listadoUsuarios: Array<IUsuarios>;
+  setListadoUsuarios: (usuarios: IUsuarios[]) => void;
 
   getOrganismos: () => void;
   getTiposEntesPublicos: () => void;
@@ -36,7 +56,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   encabezado: {
     tipoDocumento: "Crédito Simple a Corto Plazo",
     solicitanteAutorizado: {
-      Solicitante: localStorage.getItem("IdCentral") || "",
+      IdSolicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",
       Nombre: localStorage.getItem("NombreUsuario") || "",
     },
@@ -63,6 +83,14 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
     });
     set(() => ({
       encabezado: encabezado,
+    }));
+  },
+
+  listadoUsuarios: [],
+
+  setListadoUsuarios: (usuarios: IUsuarios[]) => {
+    set(() => ({
+      listadoUsuarios: usuarios,
     }));
   },
 

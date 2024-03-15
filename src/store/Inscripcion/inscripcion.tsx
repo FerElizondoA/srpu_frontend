@@ -1,5 +1,3 @@
-import axios from "axios";
-import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
@@ -64,13 +62,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   },
 
   setInscripcion: (inscripcion: IInscripcion) => {
-    console.log(inscripcion);
-
     const state = useCortoPlazoStore.getState();
 
     let aux: any = JSON.parse(inscripcion.Solicitud);
-    console.log(aux);
-
     state.changeEncabezado(aux?.encabezado);
 
     state.changeInformacionGeneral(aux?.informacionGeneral);

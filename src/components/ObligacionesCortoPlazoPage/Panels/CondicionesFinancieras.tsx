@@ -126,8 +126,10 @@ const heads: readonly {
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
+
   const tablaCondicionesFinancieras: ICondicionFinanciera[] =
     useCortoPlazoStore((state) => state.tablaCondicionesFinancieras);
+
   const loadCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );

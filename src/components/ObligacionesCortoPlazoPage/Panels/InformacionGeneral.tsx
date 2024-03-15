@@ -70,9 +70,12 @@ export function InformacionGeneral() {
   const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
-  const getObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.getObligadoSolidarioAval
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
   );
+  // const getObligadoSolidarioAval: Function = useCortoPlazoStore(
+  //   (state) => state.getObligadoSolidarioAval
+  // );
 
   // CATALOGOS
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
@@ -170,10 +173,11 @@ export function InformacionGeneral() {
   const Denominaciones = ["Pesos", "UDIS"];
 
   useEffect(() => {
-    getInstituciones();
-    getDestinos("CP");
-    getTipoEntePublicoObligado();
-    getObligadoSolidarioAval();
+    catalogoInstituciones.length <= 0 && getInstituciones();
+    catalogoDestinos.length <= 0 && getDestinos("CP");
+    catalogoTipoEntePublicoObligado.length <= 0 && getTipoEntePublicoObligado();
+    catalogoOrganismos.length <= 0 && getOrganismos();
+    // getObligadoSolidarioAval();
   }, []);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);

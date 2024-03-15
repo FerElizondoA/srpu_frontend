@@ -38,7 +38,7 @@ export function ObligacionesLargoPlazoPage() {
   const [openDialogReestructura, setOpenDialogReestructura] = useState(false);
 
   const getTiposDocumentos: Function = useLargoPlazoStore(
-    (state) => state.getTiposDocumentos
+    (state) => state.getTiposDocumentosLp
   );
 
   const reestructura: string = useCortoPlazoStore(

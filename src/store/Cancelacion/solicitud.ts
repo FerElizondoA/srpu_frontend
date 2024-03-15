@@ -378,10 +378,6 @@ export async function CancelacionSolicitud(setUrl: Function) {
   let credito = state.credito;
   let cancelacion = state.cancelacion;
 
-  console.log("infoSolicitud", infoSolicitud);
-  console.log("credito", state.credito);
-  console.log("cancelacion", state.cancelacion);
-
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
@@ -422,8 +418,6 @@ export async function CancelacionSolicitud(setUrl: Function) {
       }
     )
     .then((response) => {
-      console.log(response);
-
       const a = window.URL || window.webkitURL;
       const url = a.createObjectURL(
         new Blob([response.data], { type: "application/pdf" })

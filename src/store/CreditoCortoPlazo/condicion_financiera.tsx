@@ -28,7 +28,7 @@ export interface IComisiones {
   iva: boolean;
 }
 
-export type ICondicionFinanciera = {
+export interface ICondicionFinanciera {
   id: number;
   disposicion: IDisposicion[];
   pagosDeCapital: {
@@ -41,7 +41,7 @@ export type ICondicionFinanciera = {
   comisiones: IComisiones[];
   tasaEfectiva: string;
   diasEjercicio: string;
-};
+}
 
 export interface CondicionFinancieraSlice {
   tablaCondicionesFinancieras: ICondicionFinanciera[];
@@ -75,7 +75,7 @@ export const createCondicionFinancieraSlice: StateCreator<
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useCortoPlazoStore.setState({
       tablaDisposicion: condicionFinanciera.disposicion,
-      disposicion: condicionFinanciera.disposicion[0]
+      disposicion: condicionFinanciera.disposicion[0],
     });
     useCortoPlazoStore.setState({
       pagosDeCapital: {

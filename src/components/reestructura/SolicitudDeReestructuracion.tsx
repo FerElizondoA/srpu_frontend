@@ -114,15 +114,15 @@ export function SolicitudDeReestructuracion() {
       let TasaDeInteres: any = [];
 
       const CostosGastos: any = {
-        destinoCG: state.generalGastosCostos.destino.Descripcion,
-        detalleInversion: state.generalGastosCostos.detalleInversion,
-        gastosAdicionales: state.GastosCostos.gastosAdicionales,
+        destinoCG: state.gastosCostos.destino.Descripcion,
+        detalleInversion: state.gastosCostos.detalleInversion,
+        gastosAdicionales: state.gastosCostos.gastosAdicionales,
         claveInscripcionFinanciamiento:
-          state.generalGastosCostos.claveInscripcionFinanciamiento,
-        descripcion: state.generalGastosCostos.descripcion,
-        monto: state.generalGastosCostos.monto,
-        saldoVigente: state.GastosCostos.saldoVigente,
-        montoGastosAdicionales: state.GastosCostos.montoGastosAdicionales,
+          state.gastosCostos.claveInscripcionFinanciamiento,
+        descripcion: state.gastosCostos.descripcion,
+        monto: state.gastosCostos.monto,
+        saldoVigente: state.gastosCostos.saldoVigente,
+        montoGastosAdicionales: state.gastosCostos.montoGastosAdicionales,
       };
 
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {

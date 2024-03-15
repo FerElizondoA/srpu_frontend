@@ -25,15 +25,15 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
-import { IUsuarios } from "../../components/Interfaces/InterfacesUsuario/IUsuarios";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { queries } from "../../queries";
 import { useSolicitudUsuarioStore } from "../../store/SolicitudUsuario/main";
 import IFrame from "./AgregarNuevoUsuarios/AgregarUsuarios";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { IUsuarios } from "../../store/CreditoCortoPlazo/encabezado";
 
 export const Usuarios = () => {
   const navigate = useNavigate();
-  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
   const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>(
     []
   );
@@ -93,10 +93,13 @@ export const Usuarios = () => {
   // const handleSearch = () => {
   //   filtrarDatos();
   // };
+  const listadoUsuarios: IUsuarios[] = useCortoPlazoStore(
+    (state) => state.listadoUsuarios
+  );
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
-    let ResultadoBusqueda = usuarios.filter((elemento) => {
+    let ResultadoBusqueda = listadoUsuarios.filter((elemento) => {
       if (
         elemento.Nombre?.toLocaleLowerCase().includes(
           busqueda?.toLocaleLowerCase()
@@ -133,15 +136,15 @@ export const Usuarios = () => {
   };
 
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios();
   }, []);
 
   useEffect(() => {
-    setUsuariosFiltrados(usuarios);
-  }, [usuarios]);
+    setUsuariosFiltrados(listadoUsuarios);
+  }, [listadoUsuarios]);
 
   useEffect(() => {
-    busqueda.length !== 0 && setUsuariosFiltrados(usuarios);
+    busqueda.length !== 0 && setUsuariosFiltrados(listadoUsuarios);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 

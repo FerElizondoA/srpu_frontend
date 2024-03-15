@@ -102,12 +102,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    console.log(state.encabezado);
-    console.log(state.informacionGeneral);
-    console.log(state.tablaCondicionesFinancieras);
-    console.log(state.tablaDocumentos);
-    console.log(state.inscripcion);
-
     const solicitud: any = {
       encabezado: state.encabezado,
       informacionGeneral: {
@@ -153,12 +147,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data);
-
         inscripcionState.setInscripcion({
           ...inscripcionState.inscripcion,
-          NumeroRegistro: data.NumeroRegistro,
-          Id: data.Id,
+          NumeroRegistro: data.data.NumeroRegistro,
+          Id: data.data.Id,
         });
         state.addComentario(data.data.Id, comentario, "Captura");
         state.saveFiles(
@@ -176,12 +168,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
-
-    console.log(state.encabezado);
-    console.log(state.informacionGeneral);
-    console.log(state.tablaCondicionesFinancieras);
-    console.log(state.tablaDocumentos);
-    console.log(state.inscripcion);
 
     const solicitud: any = {
       encabezado: state.encabezado,
@@ -209,7 +195,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
-          IdSolicitud: inscripcionState.inscripcion.Id, //CORREGIR
+          IdSolicitud: inscripcionState.inscripcion.Id,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
@@ -229,11 +215,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        // state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
-        // state.saveFiles(
-        //   data.data.Id,
-        //   `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        // );
+        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        state.saveFiles(
+          data.data.Id,
+          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
       });
   },
 

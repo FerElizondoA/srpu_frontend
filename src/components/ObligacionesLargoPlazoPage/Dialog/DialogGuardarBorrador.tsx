@@ -8,7 +8,10 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 type Props = {
   handler: Function;
@@ -33,8 +36,6 @@ export function DialogGuardarBorrador(props: Props) {
   );
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
-
-  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
   const [info, setInfo] = useState(
     "La solicitud se guardará como borrador y estará disponible para modificar"
@@ -68,15 +69,11 @@ export function DialogGuardarBorrador(props: Props) {
     notnull();
   }, [institucion, montoOriginal]);
 
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   const navigate = useNavigate();
 
-  // const cleanSolicitud: Function = useLargoPlazoStore(
-  //   (state) => state.cleanSolicitud
-  // );
+  const cleanSolicitud: Function = useCortoPlazoStore(
+    (state) => state.cleanSolicitud
+  );
 
   const addComentario: Function = useLargoPlazoStore(
     (state) => state.addComentario
@@ -87,6 +84,10 @@ export function DialogGuardarBorrador(props: Props) {
   const markedText = division !== -1 ? info.substring(0, division + 1) : info;
 
   const restText = division !== -1 ? info.substring(division + 1) : "";
+
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
   return (
     <Dialog
@@ -133,16 +134,16 @@ export function DialogGuardarBorrador(props: Props) {
         <Button
           onClick={() => {
             props.handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
                   addComentario(
-                    idSolicitud,
+                    solicitud.Id,
                     JSON.stringify(comentario),
                     "Captura"
                   );
@@ -153,7 +154,7 @@ export function DialogGuardarBorrador(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
-                  // cleanSolicitud();
+                  cleanSolicitud();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
@@ -174,7 +175,7 @@ export function DialogGuardarBorrador(props: Props) {
               )
                 .then(() => {
                   addComentario(
-                    idSolicitud,
+                    solicitud.Id,
                     JSON.stringify(comentario),
                     "Captura"
                   );
@@ -216,9 +217,9 @@ export function DialogGuardarBorrador(props: Props) {
         <Button
           onClick={() => {
             props.handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
@@ -243,7 +244,6 @@ export function DialogGuardarBorrador(props: Props) {
                 });
             } else {
               crearSolicitud(
-                localStorage.getItem("IdUsuario"),
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)

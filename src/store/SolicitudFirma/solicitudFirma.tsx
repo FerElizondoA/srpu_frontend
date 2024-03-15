@@ -101,30 +101,33 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     // state.getTiposDocumentos();
 
-    // set(() => ({
-    //   rowSolicitud: {
-    //     Id: "",
-    //     NumeroRegistro: "",
-    //     Nombre: "",
-    //     TipoEntePublico: "",
-    //     TipoSolicitud: "",
-    //     Institucion: "",
-    //     NoEstatus: "",
-    //     Estatus: "",
-    //     ControlInterno: "",
-    //     IdClaveInscripcion: "",
-    //     MontoOriginalContratado: "",
-    //     FechaContratacion: "",
-    //     Solicitud: "",
-    //     FechaCreacion: "",
-    //     CreadoPor: "",
-    //     ModificadoPor: "",
-    //     IdEditor: "",
-    //     FechaRequerimientos: "",
-    //     IdPathDoc: "",
-    //     UltimaModificacion: new Date().toString(),
-    //   },
-    // }));
+    state.setTablaDocumentos([]);
+
+    set(() => ({
+      rowSolicitud: {
+        Id: "",
+        NumeroRegistro: "",
+        Nombre: "",
+        TipoEntePublico: "",
+        TipoSolicitud: "",
+        Institucion: "",
+        NoEstatus: "",
+        Estatus: "",
+        ControlInterno: "",
+        IdClaveInscripcion: "",
+        MontoOriginalContratado: "",
+        FechaContratacion: "",
+        Solicitud: "",
+        FechaCreacion: "",
+        CreadoPor: "",
+        ModificadoPor: "",
+        IdEditor: "",
+        FechaRequerimientos: "",
+        IdPathDoc: "",
+        UltimaModificacion: new Date().toString(),
+        Control: "",
+      },
+    }));
   },
 
   proceso: "",

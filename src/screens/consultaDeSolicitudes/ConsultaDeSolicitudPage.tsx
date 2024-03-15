@@ -41,14 +41,13 @@ import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/A
 import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/DialogDescargaArchivos";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
-import { DialogTrazabilidad } from "./DialogTrazabilidad";
-import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export interface IData {
   Id: string;
@@ -556,6 +555,7 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    setInscripcion(row);
                                     getComentariosSolicitudPlazo(
                                       row.Id,
                                       () => {}
@@ -611,8 +611,6 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    console.log(row.Solicitud);
-
                                     setInscripcion(row);
                                     editarSolicitud(row.TipoSolicitud);
                                   }}
@@ -657,6 +655,7 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    setInscripcion(row);
                                     changeOpenEliminar(!openEliminar);
                                   }}
                                 >
@@ -693,8 +692,6 @@ export function ConsultaDeSolicitudPage() {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={inscripcion.NumeroRegistro}
-          idSolicitud={inscripcion.Id}
         />
       )}
 

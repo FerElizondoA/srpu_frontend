@@ -1,19 +1,9 @@
 import { StateCreator } from "zustand";
+import { IEncabezado } from "../CreditoCortoPlazo/encabezado";
 import { useLargoPlazoStore } from "./main";
 
 export interface EncabezadoLargoPlazoSlice {
-  encabezado: {
-    tipoDocumento: string;
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    };
-
-    tipoEntePublico: { Id: string; TipoEntePublico: string };
-    organismo: { Id: string; Organismo: string };
-    fechaContratacion: string;
-  };
+  encabezado: IEncabezado;
 
   changeEncabezado: (encabezado: any) => void;
 }
@@ -24,7 +14,7 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
   encabezado: {
     tipoDocumento: "Crédito Simple a Largo Plazo",
     solicitanteAutorizado: {
-      Solicitante: localStorage.getItem("IdCentral") || "",
+      IdSolicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",
       Nombre: localStorage.getItem("NombreUsuario") || "",
     },
@@ -46,6 +36,7 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
       ...state.informacionGeneral,
       fechaContratacion: encabezado.fechaContratacion,
     });
+
     set(() => ({
       encabezado: encabezado,
     }));

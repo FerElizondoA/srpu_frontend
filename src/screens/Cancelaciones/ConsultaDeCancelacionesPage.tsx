@@ -169,7 +169,7 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.changeGastosCostos
   );
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.addGeneralGastosCostos
+    (state) => state.addGastosCostos
   );
 
   const llenaSolicitud = (solicitud: IData) => {
@@ -207,7 +207,7 @@ export function ConsultaDeCancelacionesPage() {
         }
       );
 
-      aux?.GastosCostos.generalGastosCostos.map((v: any, index: number) => {
+      aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
         return addGeneralGastosCostos(v);
       });
 
@@ -680,8 +680,6 @@ export function ConsultaDeCancelacionesPage() {
         <DialogDescargaArchivos
           open={openDescargar}
           setOpen={setOpenDescargar}
-          noSolicitud={credito.NumeroRegistro}
-          idSolicitud={credito.Id}
         />
       )}
       {openVerComentarios && (

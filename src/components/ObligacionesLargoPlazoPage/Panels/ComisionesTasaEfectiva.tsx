@@ -40,9 +40,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { moneyMask } from "./InformacionGeneral";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 const heads: readonly {
   label: string;
@@ -54,7 +54,7 @@ const heads: readonly {
     label: "Tipo de Comisión",
   },
   {
-    label: "Fecha de Primer Pago",
+    label: "Fecha de Comisión",
   },
   {
     label: "Periodicidad de Pago",
@@ -140,7 +140,8 @@ export function ComisionesTasaEfectiva() {
   const [noAplica, setNoAplica] = React.useState(false);
 
   React.useEffect(() => {
-    getTiposComision();
+    catalogoTiposComision.length <= 0 && getTiposComision();
+
     if (tablaComisiones[0]?.tipoDeComision === "N/A") {
       setNoAplica(true);
     }
@@ -304,6 +305,15 @@ export function ComisionesTasaEfectiva() {
                   tasaEfectiva: v.target.value,
                 });
               }
+              // if (
+              //   validator.isNumeric(v.target.value) ||
+              //   v.target.value === ""
+              // ) {
+              //   changeTasaEfectiva({
+              //     diasEjercicio: tasaEfectivaDiasEjercicio,
+              //     tasaEfectiva: v.target.value,
+              //   });
+              // }
             }}
             InputLabelProps={{
               style: {

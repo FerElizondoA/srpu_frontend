@@ -34,7 +34,6 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 const heads: {
   label: string;
@@ -50,6 +49,17 @@ const heads: {
   },
 ];
 
+export const moneyMask = (value: string) => {
+  value = value.replace(/\D/g, "");
+
+  const options = { minimumFractionDigits: 2 };
+
+  const result = new Intl.NumberFormat("en-US", options).format(
+    parseInt(value) / 100
+  );
+  return "$ " + result;
+};
+
 export function InformacionGeneral() {
   // GET CATALOGOS
   const getDestinos: Function = useCortoPlazoStore(
@@ -61,9 +71,12 @@ export function InformacionGeneral() {
   const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
     (state) => state.getTipoEntePublicoObligado
   );
-  const getObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.getObligadoSolidarioAval
+  const getOrganismos: Function = useCortoPlazoStore(
+    (state) => state.getOrganismos
   );
+  // const getObligadoSolidarioAval: Function = useLargoPlazoStore(
+  //   (state) => state.getObligadoSolidarioAval
+  // );
 
   // CATALOGOS
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
@@ -73,7 +86,7 @@ export function InformacionGeneral() {
     "NO APLICA",
     "SI APLICA",
   ];
-  // useCortoPlazoStore(
+  // useLargoPlazoStore(
   //   (state) => state.catalogoObligadoSolidarioAval
   // );
   const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
@@ -91,9 +104,6 @@ export function InformacionGeneral() {
   const fechaContratacion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
-  // const fechaContratacionEncabezado: string = useLargoPlazoStore(
-  //   (state) => state.encabezado.fechaContratacion
-  // );
   const fechaVencimiento: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -161,10 +171,11 @@ export function InformacionGeneral() {
   const Denominaciones = ["Pesos", "UDIS"];
 
   useEffect(() => {
-    getInstituciones();
-    getDestinos("LP");
-    getTipoEntePublicoObligado();
-    getObligadoSolidarioAval();
+    catalogoInstituciones.length <= 0 && getInstituciones();
+    catalogoDestinos.length <= 0 && getDestinos("LP");
+    catalogoTipoEntePublicoObligado.length <= 0 && getTipoEntePublicoObligado();
+    catalogoOrganismos.length <= 0 && getOrganismos();
+    // getObligadoSolidarioAval();
   }, []);
 
   const [contratacion, setContratacion] = useState(fechaContratacion);

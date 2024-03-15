@@ -72,12 +72,14 @@ export function SolicitudInscripcion() {
   const reglasAplicables: string[] = useCortoPlazoStore(
     (state) => state.reglasAplicables
   );
+
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   useEffect(() => {
-    getReglas();
+    catalogoReglas.length <= 0 && getReglas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
   let err = 0;
 

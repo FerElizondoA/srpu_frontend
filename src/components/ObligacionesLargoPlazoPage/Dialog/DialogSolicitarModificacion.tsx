@@ -17,11 +17,19 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
-import {
-  IUsuariosAsignables,
-  rolesAdmin,
-} from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+
+export interface IUsuariosAsignables {
+  Id: string;
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  Rol: string;
+}
+
+export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 
 export function DialogSolicitarModificacion({
   handler,
@@ -46,16 +54,14 @@ export function DialogSolicitarModificacion({
     (state) => state.modificaSolicitud
   );
 
-  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
-
   const addComentario: Function = useLargoPlazoStore(
     (state) => state.addComentario
   );
 
   const comentarios: {} = useLargoPlazoStore((state) => state.comentarios);
 
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   useEffect(() => {
@@ -64,7 +70,11 @@ export function DialogSolicitarModificacion({
 
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
-      addComentario(idSolicitud, JSON.stringify(comentarios), "Requerimiento");
+      addComentario(
+        inscripcion.Id,
+        JSON.stringify(comentarios),
+        "Requerimiento"
+      );
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
@@ -77,7 +87,7 @@ export function DialogSolicitarModificacion({
             ? "6"
             : "4"
           : "5",
-        idSolicitud,
+        inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
@@ -111,16 +121,16 @@ export function DialogSolicitarModificacion({
         });
       });
     } else {
-      if (idSolicitud !== "") {
+      if (inscripcion.Id !== "") {
         modificaSolicitud(
-          editCreadoPor || localStorage.getItem("IdUsuario"),
+          inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1"
         )
           .then(() => {
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
               addComentario(
-                idSolicitud,
+                inscripcion.Id,
                 JSON.stringify(comentarios),
                 "Captura"
               );

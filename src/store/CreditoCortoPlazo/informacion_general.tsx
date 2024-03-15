@@ -2,32 +2,34 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
-export type ObligadoSolidarioAval = {
+export interface IInformacionGeneral {
+  fechaContratacion: string;
+  fechaVencimiento: string;
+  plazo: number;
+  destino: { Id: string; Descripcion: string };
+  monto: number;
+  denominacion: string;
+  institucionFinanciera: { Id: string; Descripcion: string };
+}
+
+export interface IObligadoSolidarioAval {
   obligadoSolidario: string;
   tipoEntePublicoObligado: string;
   entePublicoObligado: string;
-};
+}
 
 export interface InformacionGeneralSlice {
   reestructura: string;
   changeRestructura: (restructura: string) => void;
 
-  informacionGeneral: {
-    fechaContratacion: string;
-    fechaVencimiento: string;
-    plazo: number;
-    destino: { Id: string; Descripcion: string };
-    monto: number;
-    denominacion: string;
-    institucionFinanciera: { Id: string; Descripcion: string };
-  };
+  informacionGeneral: IInformacionGeneral;
 
-  tablaObligadoSolidarioAval: ObligadoSolidarioAval[];
   generalObligadoSolidarioAval: {
     obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
+  tablaObligadoSolidarioAval: IObligadoSolidarioAval[];
 
   catalogoInstituciones: ICatalogo[];
   catalogoDestinos: ICatalogo[];
@@ -37,11 +39,11 @@ export interface InformacionGeneralSlice {
   changeInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
-    newObligadoSolidarioAval: ObligadoSolidarioAval
+    newObligadoSolidarioAval: IObligadoSolidarioAval
   ) => void;
 
   setTablaObligadoSolidarioAval: (
-    obligadoSolidarioAval: ObligadoSolidarioAval[]
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
   ) => void;
 
   changeObligadoSolidarioAval: (
@@ -104,7 +106,9 @@ export const createInformacionGeneralSlice: StateCreator<
     }));
   },
 
-  addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
+  addObligadoSolidarioAval: (
+    newObligadoSolidarioAval: IObligadoSolidarioAval
+  ) =>
     set((state) => ({
       tablaObligadoSolidarioAval: [
         ...state.tablaObligadoSolidarioAval,
@@ -113,7 +117,7 @@ export const createInformacionGeneralSlice: StateCreator<
     })),
 
   setTablaObligadoSolidarioAval: (
-    obligadoSolidarioAval: ObligadoSolidarioAval[]
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
   ) =>
     set((state) => ({
       tablaObligadoSolidarioAval: obligadoSolidarioAval,

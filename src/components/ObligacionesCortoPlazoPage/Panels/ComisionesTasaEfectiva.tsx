@@ -53,7 +53,7 @@ const heads: readonly {
     label: "Tipo de Comisión",
   },
   {
-    label: "Fecha de Primer Pago",
+    label: "Fecha de Comisión",
   },
   {
     label: "Periodicidad de Pago",
@@ -139,7 +139,8 @@ export function ComisionesTasaEfectiva() {
   const [noAplica, setNoAplica] = React.useState(false);
 
   React.useEffect(() => {
-    getTiposComision();
+    catalogoTiposComision.length <= 0 && getTiposComision();
+
     if (tablaComisiones[0]?.tipoDeComision === "N/A") {
       setNoAplica(true);
     }

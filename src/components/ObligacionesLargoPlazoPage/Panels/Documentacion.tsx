@@ -29,7 +29,6 @@ import { queries } from "../../../queries";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
 
 interface Head {
@@ -64,22 +63,22 @@ const heads: readonly Head[] = [
 export function Documentacion() {
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
-    (state) => state.catalogoTiposDocumentos
+    (state) => state.catalogoTiposDocumentosLp
   );
 
   const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
-    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
+    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatoriosLp);
 
   const tablaDocumentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLP
+    (state) => state.tablaDocumentosLp
   );
 
   const addDocumento: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoLP
+    (state) => state.addDocumento
   );
 
   const setTablaDocumentos: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosLP
+    (state) => state.setTablaDocumentosLp
   );
 
   function cargarArchivo(event: any, index: number) {

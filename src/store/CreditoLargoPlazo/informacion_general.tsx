@@ -1,58 +1,45 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { ObligadoSolidarioAval } from "../CreditoCortoPlazo/informacion_general";
+import {
+  IInformacionGeneral,
+  IObligadoSolidarioAval,
+} from "../CreditoCortoPlazo/informacion_general";
+import { useLargoPlazoStore } from "./main";
 
-export type GeneralGastosCostos = {
-  destino: string;
-  detalleInversion: string;
-  descripcion: string;
+export interface IGastosCostos {
+  destino: { Id: string; Descripcion: string };
+  detalleInversion: { Id: string; Descripcion: string };
+  archivoDetalleInversion: {
+    archivo: File;
+    nombreArchivo: string;
+  };
   claveInscripcionFinanciamiento: string;
+  descripcion: string;
   monto: number;
-};
+  gastosAdicionales: string;
+  montoGastosAdicionales: number;
+  saldoVigente: number;
+}
 
 export interface InformacionGeneralLargoPlazoSlice {
-  informacionGeneral: {
-    fechaContratacion: string;
-    fechaVencimiento: string;
-    plazo: number;
-    destino: { Id: string; Descripcion: string };
-    monto: number;
-    denominacion: string;
-    institucionFinanciera: { Id: string; Descripcion: string };
-  };
+  informacionGeneral: IInformacionGeneral;
 
-  tablaObligadoSolidarioAval: ObligadoSolidarioAval[];
   generalObligadoSolidarioAval: {
     obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
+  tablaObligadoSolidarioAval: IObligadoSolidarioAval[];
 
-  archivoDetalleInversion: {
-    archivo: File;
-    nombreArchivo: string;
-  };
+  gastosCostos: IGastosCostos;
 
-  GastosCostos: {
-    gastosAdicionales: string;
-    saldoVigente: number;
-    montoGastosAdicionales: number;
-  };
-
-  tablaGastosCostos: GeneralGastosCostos[];
-  generalGastosCostos: {
-    destino: { Id: string; Descripcion: string };
-    detalleInversion: { Id: string; Descripcion: string };
-    descripcion: string;
-    claveInscripcionFinanciamiento: string;
-    monto: number;
-  };
+  tablaGastosCostos: IGastosCostos[];
 
   changeInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
-    newObligadoSolidarioAval: ObligadoSolidarioAval
+    newObligadoSolidarioAval: IObligadoSolidarioAval
   ) => void;
 
   changeObligadoSolidarioAval: (
@@ -65,30 +52,19 @@ export interface InformacionGeneralLargoPlazoSlice {
 
   removeObligadoSolidarioAval: (index: number) => void;
 
-  changeGastosCostos: (GastosCostos: {
-    gastosAdicionales: "";
-    saldoVigente: 0;
-    montoGastosAdicionales: 0;
-  }) => void;
+  changeGastosCostos: (GastosCostos: IGastosCostos) => void;
 
-  //NUEVA TABLA CREDITO LARGO PLAZO
-  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) => void;
+  addGastosCostos: (GastosCostos: IGastosCostos) => void;
 
-  changeGeneralGastosCostos: (
-    destino: { Id: string; Descripcion: string },
-    detalleInversion: { Id: string; Descripcion: string },
-    claveInscripcionFinanciamiento: string,
-    descripcion: string,
-    monto: number
-  ) => void;
-  cleanGeneralGastosCostos: () => void;
-  removeGeneralGastosCostos: (index: number) => void;
+  cleanGastosCostos: () => void;
+  cleanTablaGastosCostos: () => void;
+
+  removeGastosCostos: (index: number) => void;
 
   addDocumento: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
 
   catalogoDetallesInversion: ICatalogo[];
-
   getDetallesInversion: () => void;
 }
 
@@ -105,37 +81,43 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
     institucionFinanciera: { Id: "", Descripcion: "" },
   },
 
-  tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
     obligadoSolidario: "NO APLICA",
-    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
-    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
+    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
   },
+  tablaObligadoSolidarioAval: [],
 
-  GastosCostos: {
+  gastosCostos: {
+    destino: { Id: "", Descripcion: "" },
+    detalleInversion: { Id: "", Descripcion: "" },
+    archivoDetalleInversion: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+    },
+    claveInscripcionFinanciamiento: "",
+    descripcion: "",
+    monto: 0,
     gastosAdicionales: "",
-    saldoVigente: 0,
     montoGastosAdicionales: 0,
-  },
-
-  archivoDetalleInversion: {
-    archivo: new File([], ""),
-    nombreArchivo: "",
+    saldoVigente: 0,
   },
 
   tablaGastosCostos: [],
 
-  generalGastosCostos: {
-    destino: { Id: "", Descripcion: "" },
-    detalleInversion: { Id: "", Descripcion: "" },
-    descripcion: "",
-    claveInscripcionFinanciamiento: "",
-    monto: 0,
-  },
-
   changeInformacionGeneral: (informacionGeneral: any) =>
     set(() => ({
       informacionGeneral: informacionGeneral,
+    })),
+
+  addObligadoSolidarioAval: (
+    newObligadoSolidarioAval: IObligadoSolidarioAval
+  ) =>
+    set((state) => ({
+      tablaObligadoSolidarioAval: [
+        ...state.tablaObligadoSolidarioAval,
+        newObligadoSolidarioAval,
+      ],
     })),
 
   changeObligadoSolidarioAval: (obligadoSolidario: any) =>
@@ -143,13 +125,8 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       generalObligadoSolidarioAval: obligadoSolidario,
     })),
 
-  addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
-    set((state) => ({
-      tablaObligadoSolidarioAval: [
-        ...state.tablaObligadoSolidarioAval,
-        newObligadoSolidarioAval,
-      ],
-    })),
+  cleanObligadoSolidarioAval: () =>
+    set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
   removeObligadoSolidarioAval: (index: number) =>
     set((state) => ({
@@ -158,54 +135,69 @@ export const createInformacionGeneralLargoPlazoSlice: StateCreator<
       ),
     })),
 
-  cleanObligadoSolidarioAval: () =>
-    set((state) => ({ tablaObligadoSolidarioAval: [] })),
-
-  changeGastosCostos: (GastosCostos: {
-    gastosAdicionales: string;
-    saldoVigente: number;
-    montoGastosAdicionales: number;
-  }) =>
+  changeGastosCostos: (GastosCostos: IGastosCostos) =>
     set(() => ({
-      GastosCostos: GastosCostos,
+      gastosCostos: GastosCostos,
     })),
 
-  // NUEVA TABLA LARGO PLAZO
-  changeGeneralGastosCostos: (GastosCostos: any) =>
-    set(() => ({
-      generalGastosCostos: GastosCostos,
-    })),
-
-  addGeneralGastosCostos: (newGeneralGastosCostos: GeneralGastosCostos) =>
+  addGastosCostos: (newGeneralGastosCostos: IGastosCostos) =>
     set((state) => ({
       tablaGastosCostos: [...state.tablaGastosCostos, newGeneralGastosCostos],
     })),
 
-  removeGeneralGastosCostos: (index: number) =>
-    set((state) => ({
-      tablaGastosCostos: state.tablaGastosCostos.filter((_, i) => i !== index),
+  cleanGastosCostos: () =>
+    set(() => ({
+      gastosCostos: {
+        destino: { Id: "", Descripcion: "" },
+        detalleInversion: { Id: "", Descripcion: "" },
+        archivoDetalleInversion: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+        claveInscripcionFinanciamiento: "",
+        descripcion: "",
+        monto: 0,
+        gastosAdicionales: "",
+        montoGastosAdicionales: 0,
+        saldoVigente: 0,
+      },
     })),
 
-  cleanGeneralGastosCostos: () =>
+  cleanTablaGastosCostos: () =>
     set(() => ({
       tablaGastosCostos: [],
     })),
 
-  addDocumento: (newDocument: File, nombreArchivo: string) =>
-    set(() => ({
-      archivoDetalleInversion: {
-        archivo: newDocument,
-        nombreArchivo: nombreArchivo,
-      },
+  removeGastosCostos: (index: number) =>
+    set((state) => ({
+      tablaGastosCostos: state.tablaGastosCostos.filter((_, i) => i !== index),
     })),
 
-  removeDocumento: () =>
+  addDocumento: (newDocument: File, nombreArchivo: string) => {
+    let state = useLargoPlazoStore.getState();
     set(() => ({
-      archivoDetalleInversion: {
-        archivo: new File([], ""),
-        nombreArchivo: "",
+      gastosCostos: {
+        ...state.gastosCostos,
+        archivoDetalleInversion: {
+          archivo: newDocument,
+          nombreArchivo: nombreArchivo,
+        },
       },
-    })),
+    }));
+  },
+
+  removeDocumento: () => {
+    let state = useLargoPlazoStore.getState();
+    set(() => ({
+      gastosCostos: {
+        ...state.gastosCostos,
+        archivoDetalleInversion: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+      },
+    }));
+  },
 
   catalogoDetallesInversion: [],
 
