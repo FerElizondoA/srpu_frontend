@@ -1,5 +1,11 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { IEncabezado } from "../CreditoCortoPlazo/encabezado";
+import {
+  IInformacionGeneral,
+  IObligadoSolidarioAval,
+} from "../CreditoCortoPlazo/informacion_general";
+import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 
 export interface IInscripcion {
   Id: string;
@@ -23,6 +29,15 @@ export interface IInscripcion {
   IdEditor: string;
   FechaRequerimientos: string;
   IdPathDoc?: string;
+}
+
+export interface ICredito {
+  encabezado: IEncabezado;
+  informacionGeneral: {
+    informacionGeneral: IInformacionGeneral;
+    obligadosSolidarios: IObligadoSolidarioAval[];
+  };
+  condicionesFinancieras: ICondicionFinanciera[];
 }
 
 export interface InscripcionSlice {

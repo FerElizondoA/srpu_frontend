@@ -1,71 +1,50 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { IDisposicion, ITasaInteres } from "./condicion_financiera";
+
+export interface IPagosDeCapital {
+  fechaPrimerPago: string;
+  periodicidadDePago: { Id: string; Descripcion: string };
+  numeroDePago: number;
+}
+export interface IDisposicion {
+  fechaDisposicion: string;
+  importe: string;
+}
+export interface ITasaInteres {
+  fechaPrimerPago: string;
+  tasaFija: string;
+  diasEjercicio: { Id: string; Descripcion: string };
+  periocidadPago: { Id: string; Descripcion: string };
+  tasaReferencia: { Id: string; Descripcion: string };
+  sobreTasa: number;
+}
 
 export interface PagosCapitalSlice {
-  disposicionesParciales: boolean;
-  setDisposicionesParciales: (bol: boolean) => void;
-  tasasParciales: boolean;
-  setTasasParciales: (bol: boolean) => void;
+  pagosDeCapital: IPagosDeCapital;
+  setPagosDeCapital: (pagosDeCapital: IPagosDeCapital) => void;
 
+  disposicion: IDisposicion;
+  setDisposicion: (disposicion: IDisposicion) => void;
   tablaDisposicion: IDisposicion[];
-  disposicion: {
-    fechaDisposicion: string;
-    importe: number;
-  };
 
-  pagosDeCapital: {
-    fechaPrimerPago: string;
-    periodicidadDePago: { Id: string; Descripcion: string };
-    numeroDePago: number;
-  };
-
+  tasaDeInteres: ITasaInteres;
+  setTasaInteres: (tasaDeInteres: ITasaInteres) => void;
   tablaTasaInteres: ITasaInteres[];
-  tasaInteres: {
-    tasaFija: boolean;
-    tasaVariable: boolean;
-    tasa: number;
-    fechaPrimerPago: string;
-    diasEjercicio: { Id: string; Descripcion: string };
-    periocidadPago: { Id: string; Descripcion: string };
-    tasaReferencia: { Id: string; Descripcion: string };
-    sobreTasa: string;
-  };
+
+  addDisposicion: (Disposicion: IDisposicion) => void;
+  setTablaDisposicion: (Disposicion: IDisposicion[]) => void;
+  cleanDisposicion: (monto: string) => void;
+  removeDisposicion: (index: number) => void;
+
+  addTasaInteres: (newTasaInteres: ITasaInteres) => void;
+  setTablaTasaInteres: (tasaInteresTable: ITasaInteres[]) => void;
+  cleanTasaInteres: () => void;
+  removeTasaInteres: (index: number) => void;
 
   catalogoPeriocidadDePago: ICatalogo[];
   catalogoTasaReferencia: ICatalogo[];
   catalogoDiasEjercicio: ICatalogo[];
-
-  changeDisposicion: (fechaDisposicion: string, importe: number) => void;
-
-  addDisposicion: (Disposicion: IDisposicion) => void;
-  updateDisposicion: (Disposicion: IDisposicion[]) => void;
-  cleanDisposicion: (monto: number) => void;
-  removeDisposicion: (index: number) => void;
-
-  changeCapital: (
-    fechaPrimerPago: string,
-    periodicidadDePago: { Id: string; Descripcion: string },
-    numeroDePago: number
-  ) => void;
-
-  changeTasaInteres: (
-    tasaFija: boolean,
-    tasaVariable: boolean,
-    tasa: string,
-    fechaPrimerPago: string,
-    diasEjercicio: { Id: string; Descripcion: string },
-    periocidadPago: { Id: string; Descripcion: string },
-    tasaReferencia: { Id: string; Descripcion: string },
-    sobreTasa: string
-  ) => void;
-
-  addTasaInteres: (newTasaInteres: ITasaInteres) => void;
-  updatePagosCapitalTable: (tasaInteresTable: ITasaInteres[]) => void;
-  cleanTasaInteres: () => void;
-  removeTasaInteres: (index: number) => void;
-
   getPeriocidadPago: () => void;
   getTasaReferencia: () => void;
   getDiasEjercicio: () => void;
@@ -75,66 +54,51 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   set,
   get
 ) => ({
-  disposicionesParciales: false,
-  setDisposicionesParciales: (bol: boolean) =>
-    set(() => ({
-      disposicionesParciales: bol,
-    })),
-  tasasParciales: false,
-  setTasasParciales: (bol: boolean) =>
-    set(() => ({
-      tasasParciales: bol,
-    })),
-  tablaDisposicion: [],
-  disposicion: {
-    fechaDisposicion: new Date().toString(),
-    importe: 0,
-  },
   pagosDeCapital: {
     fechaPrimerPago: new Date().toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
     numeroDePago: 1,
   },
-  tablaTasaInteres: [],
-  tasaInteres: {
-    tasaFija: false,
-    tasaVariable: false,
-    tasa: 0,
+  setPagosDeCapital: (pagosDeCapital: IPagosDeCapital) => {
+    set((state) => ({
+      pagosDeCapital: pagosDeCapital,
+    }));
+  },
+  disposicion: {
+    fechaDisposicion: new Date().toString(),
+    importe: "$ 0.00",
+  },
+  setDisposicion: (disposicion: IDisposicion) => {
+    set((state) => ({
+      disposicion: disposicion,
+    }));
+  },
+  tablaDisposicion: [],
+
+  tasaDeInteres: {
+    tasaFija: "",
     fechaPrimerPago: new Date().toString(),
     diasEjercicio: { Id: "", Descripcion: "" },
     periocidadPago: { Id: "", Descripcion: "" },
     tasaReferencia: { Id: "", Descripcion: "" },
-    sobreTasa: "",
+    sobreTasa: 0,
   },
-  tasaEfectiva: "",
-  diasEjercicio: { Id: "", Descripcion: "" },
-
-  catalogoPeriocidadDePago: [],
-  catalogoTasaReferencia: [],
-  catalogoDiasEjercicio: [],
-
-  changeDisposicion: (fechaDisposicion: string, importe: number) =>
-    set(() => ({
-      disposicion: {
-        fechaDisposicion: fechaDisposicion,
-        importe: importe,
-      },
-    })),
+  setTasaInteres: (tasaDeInteres: ITasaInteres) => {
+    set((state) => ({
+      tasaDeInteres: tasaDeInteres,
+    }));
+  },
+  tablaTasaInteres: [],
 
   addDisposicion: (Disposicion: IDisposicion) =>
     set((state) => ({
       tablaDisposicion: [...state.tablaDisposicion, Disposicion],
     })),
 
-  updateDisposicion: (Disposicion: IDisposicion[]) =>
+  setTablaDisposicion: (Disposicion: IDisposicion[]) =>
     set(() => ({ tablaDisposicion: Disposicion })),
 
-  removeDisposicion: (index: number) =>
-    set((state) => ({
-      tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
-    })),
-
-  cleanDisposicion: (monto: number) =>
+  cleanDisposicion: (monto: string) =>
     set((state) => ({
       tablaDisposicion: [
         {
@@ -143,43 +107,26 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         },
       ],
     })),
-
-  changeCapital: (
-    fechaPrimerPago: string,
-    periodicidadDePago: { Id: string; Descripcion: string },
-    numeroDePago: number
-  ) =>
-    set(() => ({
-      pagosDeCapital: {
-        fechaPrimerPago: fechaPrimerPago,
-        periodicidadDePago: {
-          Id: periodicidadDePago.Id,
-          Descripcion: periodicidadDePago.Descripcion,
-        },
-        numeroDePago: numeroDePago,
-      },
-    })),
-
-  changeTasaInteres: (tasaInteres: any) =>
-    set(() => ({
-      tasaInteres: tasaInteres,
+  removeDisposicion: (index: number) =>
+    set((state) => ({
+      tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
     })),
 
   addTasaInteres: (newTasaInteres: ITasaInteres) =>
     set((state) => ({
       tablaTasaInteres: [...state.tablaTasaInteres, newTasaInteres],
     })),
-
-  updatePagosCapitalTable: (tasaInteres: ITasaInteres[]) =>
+  setTablaTasaInteres: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
-
+  cleanTasaInteres: () => set((state) => ({ tablaTasaInteres: [] })),
   removeTasaInteres: (index: number) =>
     set((state) => ({
       tablaTasaInteres: state.tablaTasaInteres.filter((_, i) => i !== index),
     })),
 
-  cleanTasaInteres: () => set((state) => ({ tablaTasaInteres: [] })),
-
+  catalogoPeriocidadDePago: [],
+  catalogoTasaReferencia: [],
+  catalogoDiasEjercicio: [],
   getPeriocidadPago: async () => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-periodicidadDePago", {

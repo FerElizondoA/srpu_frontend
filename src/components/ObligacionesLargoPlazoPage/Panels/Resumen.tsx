@@ -21,29 +21,28 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
+import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import {
-  IComisiones,
-  ICondicionFinanciera,
   IDisposicion,
   ITasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+} from "../../../store/CreditoCortoPlazo/pagos_capital";
+import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import { IFile } from "./Documentacion";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
   headsComision,
   headsDisposicion,
   headsTasa,
 } from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
+import { IFile } from "./Documentacion";
 
 interface Head {
   label: string;
@@ -218,14 +217,15 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const [arr, setArr] = useState<any>([]);
 
-  const [cargados, setCargados] = useState(true);
+  // const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
     inscripcion.Id &&
       getDocumentos(
         `/SRPU/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        () => {}
+        // setCargados
       );
   }, []);
 
@@ -571,7 +571,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.pagosDeCapital.periodicidadDePago}
+                                {
+                                  row.pagosDeCapital.periodicidadDePago
+                                    .Descripcion
+                                }
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {format(
@@ -656,19 +659,19 @@ export function Resumen({ coments }: { coments: boolean }) {
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasa}
+                                        {row.tasaFija}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.periocidadPago}
+                                        {row.periocidadPago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaReferencia}
+                                        {row.tasaReferencia.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.sobreTasa}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.diasEjercicio}
+                                        {row.diasEjercicio.Descripcion}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -725,16 +728,16 @@ export function Resumen({ coments }: { coments: boolean }) {
                                         component="th"
                                         scope="row"
                                       >
-                                        {row.tipoDeComision}
+                                        {row.tipoDeComision.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {lightFormat(
-                                          new Date(row.fechaContratacion),
+                                          new Date(row.fechaComision),
                                           "dd-MM-yyyy"
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.periodicidadDePago}
+                                        {row.periodicidadDePago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.porcentaje}

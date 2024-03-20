@@ -96,7 +96,7 @@ export function SolicitudDeInscripcion() {
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
 
-      let importe = 0;
+      let importe = "$ 0.00";
       let numeroDePago = 0;
       let PeriocidadDePago = "";
       let diasEjercicio = "";
@@ -108,10 +108,10 @@ export function SolicitudDeInscripcion() {
         const item = state.tablaCondicionesFinancieras[0];
         importe = item.disposicion[0].importe;
         numeroDePago = item.pagosDeCapital.numeroDePago;
-        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
+        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;
-        diasEjercicio = item.diasEjercicio;
-        tasaEfectiva = item.tasaEfectiva;
+        diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
+        tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
       if (
@@ -175,7 +175,11 @@ export function SolicitudDeInscripcion() {
           "Sección Condiciones Financieras:Agregar al menos una Tasa De Interés."
         );
       }
-      if (importe === undefined || importe === 0 || importe === 0) {
+      if (
+        importe === undefined ||
+        importe === "$ 0.00" ||
+        importe === "$ 0.00"
+      ) {
         err = 1;
 
         errores.push("Sección Condiciones Financieras: Ingrese el Importe.");

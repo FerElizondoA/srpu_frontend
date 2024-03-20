@@ -99,7 +99,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     comentario: string
   ) => {
     const state = useLargoPlazoStore.getState();
-    const inscripcionState = useInscripcionStore.getState();
+    // const inscripcionState = useInscripcionStore.getState();
 
     console.log(state.encabezado);
     console.log(state.informacionGeneral);

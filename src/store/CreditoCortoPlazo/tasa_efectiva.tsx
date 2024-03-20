@@ -1,34 +1,31 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { IComisiones } from "./condicion_financiera";
+
+export interface ITasaEfectiva {
+  tasaEfectiva: string;
+  diasEjercicio: { Id: string; Descripcion: string };
+}
+export interface IComisiones {
+  fechaComision: string;
+  tipoDeComision: { Id: string; Descripcion: string };
+  periodicidadDePago: { Id: string; Descripcion: string };
+  porcentajeFijo: boolean;
+  montoFijo: boolean;
+  porcentaje: string;
+  monto: string;
+  iva: boolean;
+}
 
 export interface TasaEfectivaSlice {
-  tablaComisiones: IComisiones[];
-  comision: {
-    fechaContratacion: string;
-    tipoDeComision: { Id: string; Descripcion: string };
-    periodicidadDePago: { Id: string; Descripcion: string };
-    porcentajeFijo: boolean;
-    montoFijo: boolean;
-    porcentaje: string;
-    monto: string;
-    iva: string;
-  };
+  tasaEfectiva: ITasaEfectiva;
+  setTasaEfectiva: (tasaEfectiva: ITasaEfectiva) => void;
 
-  tasaEfectiva: {
-    diasEjercicio: { Id: string; Descripcion: string };
-    tasaEfectiva: string;
-  };
+  comision: IComisiones;
+  setComision: (comisiones: IComisiones) => void;
+  tablaComisiones: IComisiones[];
 
   catalogoTiposComision: ICatalogo[];
-
-  changeComision: (comision: any) => void;
-
-  changeTasaEfectiva: (
-    diasEjercicio: { Id: string; Descripcion: string },
-    tasaEfectiva: string
-  ) => void;
 
   addComision: (newComision: IComisiones) => void;
   updateTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
@@ -42,33 +39,32 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
   set,
   get
 ) => ({
-  tablaComisiones: [],
+  tasaEfectiva: {
+    tasaEfectiva: "",
+    diasEjercicio: { Id: "", Descripcion: "" },
+  },
+  setTasaEfectiva: (tasaEfectiva: ITasaEfectiva) =>
+    set(() => ({
+      tasaEfectiva: tasaEfectiva,
+    })),
+
   comision: {
-    fechaContratacion: new Date().toString(),
+    fechaComision: new Date().toString(),
     tipoDeComision: { Id: "", Descripcion: "" },
     periodicidadDePago: { Id: "", Descripcion: "" },
     porcentajeFijo: false,
     montoFijo: false,
     monto: "0",
     porcentaje: "",
-    iva: "NO",
+    iva: false,
   },
-  tasaEfectiva: {
-    diasEjercicio: { Id: "", Descripcion: "" },
-    tasaEfectiva: "",
-  },
-
-  catalogoTiposComision: [],
-
-  changeComision: (comision: any) =>
+  setComision: (comision: IComisiones) =>
     set(() => ({
       comision: comision,
     })),
+  tablaComisiones: [],
 
-  changeTasaEfectiva: (tasaEfectiva: any) =>
-    set(() => ({
-      tasaEfectiva: tasaEfectiva,
-    })),
+  catalogoTiposComision: [],
 
   addComision: (newComision: IComisiones) =>
     set((state) => ({
@@ -78,12 +74,12 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
   updateTablaComisiones: (newTablaComisiones: IComisiones[]) =>
     set(() => ({ tablaComisiones: newTablaComisiones })),
 
+  cleanComision: () => set((state) => ({ tablaComisiones: [] })),
+
   removeComision: (index: number) =>
     set((state) => ({
       tablaComisiones: state.tablaComisiones.filter((_, i) => i !== index),
     })),
-
-  cleanComision: () => set((state) => ({ tablaComisiones: [] })),
 
   getTiposComision: async () => {
     await axios

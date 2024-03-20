@@ -14,8 +14,8 @@ export interface IInformacionGeneral {
 
 export interface IObligadoSolidarioAval {
   obligadoSolidario: string;
-  tipoEntePublicoObligado: string;
-  entePublicoObligado: string;
+  tipoEntePublicoObligado: { Id: string; Descripcion: string };
+  entePublicoObligado: { Id: string; Descripcion: string };
 }
 
 export interface InformacionGeneralSlice {

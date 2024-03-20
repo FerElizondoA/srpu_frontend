@@ -46,7 +46,6 @@ import {
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCancelacionStore } from "../../store/Cancelacion/main";
-import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 const heads: Array<{ label: string }> = [
   {
@@ -86,7 +85,6 @@ export function ConsultaDeCancelacionesPage() {
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
-  const credito: IData = useCancelacionStore((state) => state.credito);
   const setCredito: Function = useCancelacionStore((state) => state.setCredito);
 
   const filtrarDatos = () => {
@@ -227,12 +225,12 @@ export function ConsultaDeCancelacionesPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
-  const solicitud: IInscripcion = useInscripcionStore(
-    (state) => state.inscripcion
-  );
-  const setinscripcion: Function = useInscripcionStore(
-    (state) => state.setInscripcion
-  );
+  // const solicitud: IInscripcion = useInscripcionStore(
+  //   (state) => state.inscripcion
+  // );
+  // const setinscripcion: Function = useInscripcionStore(
+  //   (state) => state.setInscripcion
+  // );
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
   );

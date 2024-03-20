@@ -105,17 +105,22 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const solicitud: any = {
       encabezado: state.encabezado,
       informacionGeneral: {
-        ...state.informacionGeneral,
-        obligadosSolidarios: state.tablaObligadoSolidarioAval,
+        informacionGeneral: state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
       },
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      documentacion: state.tablaDocumentos.map((v, i) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+      documentacion: state.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+        })
+      ),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,

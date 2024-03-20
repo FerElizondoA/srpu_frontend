@@ -22,18 +22,15 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 
-import { hashFunctionCYRB53 } from "../../CustomComponents";
-
 import {
-  IComisiones,
-  ICondicionFinanciera,
   IDisposicion,
   ITasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
-import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+} from "../../../store/CreditoCortoPlazo/pagos_capital";
+import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
+import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -66,28 +63,11 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.tablaDisposicion
   );
 
-  // PAGOS DE CAPITAL
-  const capitalFechaPrimerPago: string = useLargoPlazoStore(
-    (state) => state.pagosDeCapital.fechaPrimerPago
-  );
-  const capitalPeriocidadPago: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.pagosDeCapital.periodicidadDePago);
-  const capitalNumeroPago: number = useLargoPlazoStore(
-    (state) => state.pagosDeCapital.numeroDePago
-  );
-
   // TASA DE INTERES
   const tablaTasaInteres: ITasaInteres[] = useLargoPlazoStore(
     (state) => state.tablaTasaInteres
   );
 
-  // TASA EFECTIVA
-  const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
-
-  const tasaEfectivaTasaEfectiva: string = useLargoPlazoStore(
-    (state) => state.tasaEfectiva.tasaEfectiva
-  );
   const changeTasaEfectiva: Function = useLargoPlazoStore(
     (state) => state.changeTasaEfectiva
   );
@@ -115,12 +95,6 @@ export function AgregarCondicionFinanciera(props: Props) {
   );
 
   // CONDICION FINANCIERA
-  const addCondicionFinanciera: Function = useLargoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const upDataCondicionFinanciera: Function = useLargoPlazoStore(
-    (state) => state.upDataCondicionFinanciera
-  );
   const changeTasaInteres: Function = useLargoPlazoStore(
     (state) => state.changeTasaInteres
   );
@@ -129,39 +103,37 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.informacionGeneral.monto
   );
 
-  const addRow = () => {
-    const CF: ICondicionFinanciera = {
-      id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: tablaDisposicion,
-      pagosDeCapital: {
-        fechaPrimerPago: capitalFechaPrimerPago,
-        periodicidadDePago: capitalPeriocidadPago.Descripcion,
-        numeroDePago: capitalNumeroPago,
-      },
-      tasaInteres: tablaTasaInteres,
-      comisiones: tablaComisiones,
-      tasaEfectiva: tasaEfectivaTasaEfectiva,
-      diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
-    };
-    addCondicionFinanciera(CF);
-  };
+  // const addRow = () => {
+  //   const CF: ICondicionFinanciera = {
+  //     disposicion: tablaDisposicion,
+  //     pagosDeCapital: {
+  //       fechaPrimerPago: capitalFechaPrimerPago,
+  //       periodicidadDePago: capitalPeriocidadPago.Descripcion,
+  //       numeroDePago: capitalNumeroPago,
+  //     },
+  //     tasaInteres: tablaTasaInteres,
+  //     comisiones: tablaComisiones,
+  //     tasaEfectiva: tasaEfectivaTasaEfectiva,
+  //     diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
+  //   };
+  //   addCondicionFinanciera(CF);
+  // };
 
-  const updateRow = (indexA: number) => {
-    const CF: ICondicionFinanciera = {
-      id: hashFunctionCYRB53(new Date().getTime().toString()),
-      disposicion: tablaDisposicion,
-      pagosDeCapital: {
-        fechaPrimerPago: capitalFechaPrimerPago,
-        periodicidadDePago: capitalPeriocidadPago.Descripcion,
-        numeroDePago: capitalNumeroPago,
-      },
-      tasaInteres: tablaTasaInteres,
-      comisiones: tablaComisiones,
-      tasaEfectiva: tasaEfectivaTasaEfectiva,
-      diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
-    };
-    upDataCondicionFinanciera(CF, indexA);
-  };
+  // const updateRow = (indexA: number) => {
+  //   const CF: ICondicionFinanciera = {
+  //     disposicion: tablaDisposicion,
+  //     pagosDeCapital: {
+  //       fechaPrimerPago: capitalFechaPrimerPago,
+  //       periodicidadDePago: capitalPeriocidadPago.Descripcion,
+  //       numeroDePago: capitalNumeroPago,
+  //     },
+  //     tasaInteres: tablaTasaInteres,
+  //     comisiones: tablaComisiones,
+  //     tasaEfectiva: tasaEfectivaTasaEfectiva,
+  //     diasEjercicio: tasaEfectivaDiasEjercicio.Descripcion,
+  //   };
+  //   upDataCondicionFinanciera(CF, indexA);
+  // };
 
   const reset = () => {
     changeDisposicion(new Date().toString(), 0);
@@ -245,11 +217,11 @@ export function AgregarCondicionFinanciera(props: Props) {
                       setOpenDialogConfirm(!openDialogConfirm);
                     } else {
                       if (props.accion === "Agregar") {
-                        addRow();
+                        // addRow();
                         props.handler(false);
                         reset();
                       } else if (props.accion === "Editar") {
-                        updateRow(props.indexA);
+                        // updateRow(props.indexA);
                         props.handler(false);
                         reset();
                       }

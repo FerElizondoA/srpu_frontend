@@ -26,12 +26,11 @@ import {
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogVerDetalle } from "./DialogVerDetalle";
-import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 interface Head {
   label: string;
@@ -71,7 +70,7 @@ const heads: readonly Head[] = [
 
 export function SolicitudesReestructura() {
   const [datos, setDatos] = useState<Array<IData>>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
+  // const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
@@ -148,7 +147,7 @@ export function SolicitudesReestructura() {
   useEffect(() => {
     getSolicitudes("Reestructura", (e: IData[]) => {
       setDatos(e);
-      setDatosFiltrados(e);
+      // setDatosFiltrados(e);
     });
   }, []);
 

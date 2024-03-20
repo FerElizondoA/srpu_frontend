@@ -1,8 +1,5 @@
 import { StateCreator } from "zustand";
-import {
-  IDisposicion,
-  ITasaInteres,
-} from "../CreditoCortoPlazo/condicion_financiera";
+import { IDisposicion, ITasaInteres } from "../CreditoCortoPlazo/pagos_capital";
 
 export interface PagosCapitalLargoPlazoSlice {
   disposicionesParciales: boolean;
@@ -37,7 +34,7 @@ export interface PagosCapitalLargoPlazoSlice {
 
   addDisposicion: (Disposicion: IDisposicion) => void;
   updateDisposicion: (Disposicion: IDisposicion[]) => void;
-  cleanDisposicion: (monto: number) => void;
+  cleanDisposicion: (monto: string) => void;
   removeDisposicion: (index: number) => void;
 
   changeCapital: (
@@ -125,7 +122,7 @@ export const createPagosCapitalLargoPlazoSlice: StateCreator<
       tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
     })),
 
-  cleanDisposicion: (monto: number) =>
+  cleanDisposicion: (monto: string) =>
     set(() => ({
       tablaDisposicion: [
         {

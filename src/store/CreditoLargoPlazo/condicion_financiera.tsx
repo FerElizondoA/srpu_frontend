@@ -13,9 +13,6 @@ export interface CondicionFinancieraSlice {
     index: number
   ) => void;
   removeCondicionFinanciera: (index: number) => void;
-  updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: ICondicionFinanciera[]
-  ) => void;
 }
 
 export const createCondicionFinancieraSlice: StateCreator<
@@ -37,10 +34,8 @@ export const createCondicionFinancieraSlice: StateCreator<
     useLargoPlazoStore.setState({
       pagosDeCapital: {
         fechaPrimerPago: condicionFinanciera.pagosDeCapital.fechaPrimerPago,
-        periodicidadDePago: {
-          Id: "0",
-          Descripcion: condicionFinanciera.pagosDeCapital.periodicidadDePago,
-        },
+        periodicidadDePago:
+          condicionFinanciera.pagosDeCapital.periodicidadDePago,
         numeroDePago: condicionFinanciera.pagosDeCapital.numeroDePago,
       },
     });
@@ -52,11 +47,8 @@ export const createCondicionFinancieraSlice: StateCreator<
     });
     useLargoPlazoStore.setState({
       tasaEfectiva: {
-        diasEjercicio: {
-          Id: "",
-          Descripcion: condicionFinanciera.diasEjercicio,
-        },
-        tasaEfectiva: condicionFinanciera.tasaEfectiva,
+        diasEjercicio: condicionFinanciera.tasaEfectiva.diasEjercicio,
+        tasaEfectiva: condicionFinanciera.tasaEfectiva.tasaEfectiva,
       },
     });
   },

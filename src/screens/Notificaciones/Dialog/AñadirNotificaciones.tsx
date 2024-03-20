@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getListadoUsuarios } from "../../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { IUsuarios } from "../../../store/CreditoCortoPlazo/encabezado";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";

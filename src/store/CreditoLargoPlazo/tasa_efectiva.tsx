@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { IComisiones } from "../CreditoCortoPlazo/condicion_financiera";
+import { IComisiones } from "../CreditoCortoPlazo/tasa_efectiva";
 
 export interface TasaEfectivaLargoPlazoSlice {
   tablaComisiones: IComisiones[];

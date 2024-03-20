@@ -1,62 +1,31 @@
 import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
-
-export interface ITasaInteres {
-  tasaFija: boolean;
-  tasaVariable: boolean;
-  tasa: string;
-  fechaPrimerPago: string;
-  diasEjercicio: string;
-  periocidadPago: string;
-  tasaReferencia: string;
-  sobreTasa: string;
-}
-
-export interface IDisposicion {
-  fechaDisposicion: string;
-  importe: number;
-}
-
-export interface IComisiones {
-  fechaContratacion: string;
-  tipoDeComision: string;
-  periodicidadDePago: string;
-  porcentajeFijo: boolean;
-  montoFijo: boolean;
-  porcentaje: string;
-  monto: string;
-  iva: boolean;
-}
+import { IDisposicion, IPagosDeCapital, ITasaInteres } from "./pagos_capital";
+import { IComisiones, ITasaEfectiva } from "./tasa_efectiva";
 
 export interface ICondicionFinanciera {
-  id: number;
+  pagosDeCapital: IPagosDeCapital;
   disposicion: IDisposicion[];
-  pagosDeCapital: {
-    fechaPrimerPago: string;
-    periodicidadDePago: string;
-    numeroDePago: number;
-  };
-
   tasaInteres: ITasaInteres[];
+
+  tasaEfectiva: ITasaEfectiva;
   comisiones: IComisiones[];
-  tasaEfectiva: string;
-  diasEjercicio: string;
 }
 
 export interface CondicionFinancieraSlice {
   tablaCondicionesFinancieras: ICondicionFinanciera[];
-  addCondicionFinanciera: (
-    newCondicionFinanciera: ICondicionFinanciera
-  ) => void;
+
+  addCondicionFinanciera: (condicion: ICondicionFinanciera) => void;
+
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => void;
-  upDataCondicionFinanciera: (
+
+  updateCondicionFinanciera: (
     condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => void;
+
   removeCondicionFinanciera: (index: number) => void;
-  updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: ICondicionFinanciera[]
-  ) => void;
+
   cleanCondicionFinanciera: () => void;
 }
 
@@ -64,13 +33,15 @@ export const createCondicionFinancieraSlice: StateCreator<
   CondicionFinancieraSlice
 > = (set, get) => ({
   tablaCondicionesFinancieras: [],
-  addCondicionFinanciera: (newCondicionFinanciera: ICondicionFinanciera) =>
+
+  addCondicionFinanciera: (condicion: ICondicionFinanciera) => {
     set((state) => ({
       tablaCondicionesFinancieras: [
         ...state.tablaCondicionesFinancieras,
-        newCondicionFinanciera,
+        condicion,
       ],
-    })),
+    }));
+  },
 
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useCortoPlazoStore.setState({
@@ -80,10 +51,8 @@ export const createCondicionFinancieraSlice: StateCreator<
     useCortoPlazoStore.setState({
       pagosDeCapital: {
         fechaPrimerPago: condicionFinanciera.pagosDeCapital.fechaPrimerPago,
-        periodicidadDePago: {
-          Id: "0",
-          Descripcion: condicionFinanciera.pagosDeCapital.periodicidadDePago,
-        },
+        periodicidadDePago:
+          condicionFinanciera.pagosDeCapital.periodicidadDePago,
         numeroDePago: condicionFinanciera.pagosDeCapital.numeroDePago,
       },
     });
@@ -95,15 +64,13 @@ export const createCondicionFinancieraSlice: StateCreator<
     });
     useCortoPlazoStore.setState({
       tasaEfectiva: {
-        diasEjercicio: {
-          Id: "",
-          Descripcion: condicionFinanciera.diasEjercicio,
-        },
-        tasaEfectiva: condicionFinanciera.tasaEfectiva,
+        diasEjercicio: condicionFinanciera.tasaEfectiva.diasEjercicio,
+        tasaEfectiva: condicionFinanciera.tasaEfectiva.tasaEfectiva,
       },
     });
   },
-  upDataCondicionFinanciera: (
+
+  updateCondicionFinanciera: (
     condicionFinanciera: ICondicionFinanciera,
     index: number
   ) => {
@@ -123,11 +90,6 @@ export const createCondicionFinancieraSlice: StateCreator<
         (_, i) => i !== index
       ),
     })),
-
-  updatecondicionFinancieraTable: (
-    tablaCondicionesFinancieras: ICondicionFinanciera[]
-  ) =>
-    set(() => ({ tablaCondicionesFinancieras: tablaCondicionesFinancieras })),
 
   cleanCondicionFinanciera: () =>
     set(() => ({ tablaCondicionesFinancieras: [] })),

@@ -12,12 +12,13 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
-type Props = {
+export function DialogGuardarBorrador({
+  handler,
+  openState,
+}: {
   handler: Function;
   openState: boolean;
-};
-
-export function DialogGuardarBorrador(props: Props) {
+}) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -90,11 +91,11 @@ export function DialogGuardarBorrador(props: Props) {
 
   return (
     <Dialog
-      open={props.openState}
+      open={openState}
       keepMounted
       TransitionComponent={Transition}
       onClose={() => {
-        props.handler(false);
+        handler(false);
       }}
     >
       <DialogTitle>
@@ -125,14 +126,14 @@ export function DialogGuardarBorrador(props: Props) {
       <DialogActions>
         <Button
           variant="text"
-          onClick={() => props.handler(false)}
+          onClick={() => handler(false)}
           sx={queries.buttonCancelar}
         >
           Cancelar
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
+            handler(false);
             if (solicitud.Id !== "") {
               modificaSolicitud(
                 solicitud.CreadoPor,
@@ -215,7 +216,7 @@ export function DialogGuardarBorrador(props: Props) {
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
+            handler(false);
             if (solicitud.Id !== "") {
               modificaSolicitud(
                 solicitud.CreadoPor,

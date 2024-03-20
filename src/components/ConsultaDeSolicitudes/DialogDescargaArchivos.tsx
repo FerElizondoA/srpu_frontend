@@ -5,8 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
-  Grid,
   IconButton,
   Table,
   TableBody,
@@ -16,14 +14,14 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { getPdf } from "../../store/SolicitudFirma/solicitudFirma";
 import {
   descargaDocumento,
   getPathDocumentos,
 } from "../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
-import { IInscripcion } from "../../store/Inscripcion/inscripcion";
-import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export interface IDocumentos {
   Id: string;

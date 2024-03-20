@@ -18,13 +18,12 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
-import { ICatalogo } from "../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 
 export let erroresValidacion: string[] = [];
 
@@ -54,33 +53,12 @@ const heads: readonly Head[] = [
 export let errores: string[] = [];
 
 export function SolicitudDeReestructuracion() {
-  const [checkObj, setCheckObj] = useState<checkBoxType>({});
-
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
-
-  const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
-
-  const [openDialogCancelar, setOpenDialogCancelar] = useState(false);
 
   const [openDialogModificacion, setOpenDialogModificacion] = useState(false);
 
-  const nombreServidorPublico: string = useLargoPlazoStore(
-    (state) => state.inscripcion.servidorPublicoDirigido
-  );
-  const cargoServidorPublico: string = useLargoPlazoStore(
-    (state) => state.inscripcion.cargo
-  );
   const solicitanteAutorizado: string = useLargoPlazoStore(
     (state) => state.encabezado.solicitanteAutorizado.Nombre
-  );
-  const catalogoReglas: ICatalogo[] = useLargoPlazoStore(
-    (state) => state.catalogoReglas
-  );
-  const changeReglasAplicables: Function = useLargoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-  const reglasAplicables: string[] = useLargoPlazoStore(
-    (state) => state.reglasAplicables
   );
   const getReglas: Function = useLargoPlazoStore((state) => state.getReglas);
 
@@ -128,10 +106,10 @@ export function SolicitudDeReestructuracion() {
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
         const item = state.tablaCondicionesFinancieras[0];
         numeroDePago = item.pagosDeCapital.numeroDePago;
-        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
+        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;
-        diasEjercicio = item.diasEjercicio;
-        tasaEfectiva = item.tasaEfectiva;
+        diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
+        tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
 
@@ -319,21 +297,6 @@ export function SolicitudDeReestructuracion() {
     }
   };
 
-  let arrReglas: Array<string> = [];
-  arrReglas = reglasAplicables;
-
-  const removeRegla = (descripcion: string) => {
-    let aux: Array<string> = [];
-    arrReglas.map((regla, index) => {
-      if (regla !== descripcion) {
-        return aux.push(regla);
-      } else {
-        return null;
-      }
-    });
-    arrReglas = aux;
-    changeReglasAplicables(arrReglas);
-  };
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
   };
