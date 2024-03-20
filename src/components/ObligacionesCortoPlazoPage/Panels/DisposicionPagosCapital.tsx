@@ -191,7 +191,7 @@ export function DisposicionPagosCapital() {
     if ((event.target as HTMLInputElement).value === "Tasa Fija") {
       setTasaInteres({
         ...tasaDeInteres,
-        tasaReferencia: { Id: "", Descripcion: "" },
+        tasaReferencia: "N/A",
         sobreTasa: "N/A",
         tasaFija: "",
       });
@@ -208,35 +208,27 @@ export function DisposicionPagosCapital() {
   useEffect(() => {
     if (tasasParciales === false) {
       if (radioValue === "Tasa Fija") {
-        setTasaInteres({
-          ...tasaDeInteres,
-          tasaReferencia: { Id: "", Descripcion: "" },
-          sobreTasa: "N/A",
-          tasaFija: "",
-        });
-        setTablaTasaInteres({
-          fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
-          tasaFija: tasaDeInteres.tasaFija,
-          diasEjercicio: tasaDeInteres.diasEjercicio,
-          periocidadPago: tasaDeInteres.periocidadPago,
-          tasaReferencia: { Id: "", Descripcion: "" },
-          sobreTasa: "N/A",
-        });
+        setTablaTasaInteres([
+          {
+            fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
+            tasaFija: tasaDeInteres.tasaFija,
+            diasEjercicio: tasaDeInteres.diasEjercicio,
+            periocidadPago: tasaDeInteres.periocidadPago,
+            tasaReferencia: "N/A",
+            sobreTasa: "N/A",
+          },
+        ]);
       } else {
-        setTasaInteres({
-          ...tasaDeInteres,
-          tasaFija: "N/A",
-          tasaReferencia: { Id: "", Descripcion: "" },
-          sobreTasa: "",
-        });
-        setTablaTasaInteres({
-          fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
-          tasaFija: "N/A",
-          diasEjercicio: tasaDeInteres.diasEjercicio,
-          periocidadPago: tasaDeInteres.periocidadPago,
-          tasaReferencia: tasaDeInteres.tasaReferencia,
-          sobreTasa: tasaDeInteres.sobreTasa,
-        });
+        setTablaTasaInteres([
+          {
+            fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
+            tasaFija: "N/A",
+            diasEjercicio: tasaDeInteres.diasEjercicio,
+            periocidadPago: tasaDeInteres.periocidadPago,
+            tasaReferencia: tasaDeInteres.tasaReferencia,
+            sobreTasa: tasaDeInteres.sobreTasa,
+          },
+        ]);
       }
     }
   }, [monto, tasasParciales]);
@@ -343,7 +335,7 @@ export function DisposicionPagosCapital() {
                     fechaPrimerPago: date?.toString(),
                   })
                 }
-                // minDate={new Date(disposicionFechaDisposicion)}
+                minDate={new Date(fechaContratacion)}
                 maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
               />
             </LocalizationProvider>
@@ -689,7 +681,7 @@ export function DisposicionPagosCapital() {
                     onChange={(v) => {
                       console.log(tasaDeInteres);
                       console.log(tablaTasaInteres);
-                      // setTasasParciales(!tasasParciales);
+                      setTasasParciales(!tasasParciales);
                     }}
                   />
                 }
@@ -939,16 +931,16 @@ export function DisposicionPagosCapital() {
                   <TextField
                     //type="number"
                     value={tasaDeInteres.sobreTasa}
-                    onChange={(text) => {
-                      const expRegular = /^\d*\.?\d%*$/;
+                    onChange={(v) => {
+                      const expRegular = /^\d*\.?\d*$/;
 
                       if (
-                        expRegular.test(text.target.value) ||
-                        text.target.value === ""
+                        expRegular.test(v.target.value) ||
+                        v.target.value === ""
                       ) {
                         setTasaInteres({
                           ...tasaDeInteres,
-                          sobreTasa: text.target.value || "",
+                          sobreTasa: v.target.value || "",
                         });
                       }
                     }}
@@ -1036,7 +1028,7 @@ export function DisposicionPagosCapital() {
                     }
                     variant="outlined"
                     onClick={() => {
-                      // addTasaInteres(tasaDeInteres);
+                      addTasaInteres(tasaDeInteres);
                     }}
                   >
                     Agregar

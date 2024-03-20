@@ -10,8 +10,6 @@ export interface IComisiones {
   fechaComision: string;
   tipoDeComision: { Id: string; Descripcion: string };
   periodicidadDePago: { Id: string; Descripcion: string };
-  porcentajeFijo: boolean;
-  montoFijo: boolean;
   porcentaje: string;
   monto: string;
   iva: boolean;
@@ -25,13 +23,12 @@ export interface TasaEfectivaSlice {
   setComision: (comisiones: IComisiones) => void;
   tablaComisiones: IComisiones[];
 
-  catalogoTiposComision: ICatalogo[];
-
   addComision: (newComision: IComisiones) => void;
-  updateTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
+  setTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
   cleanComision: () => void;
   removeComision: (index: number) => void;
 
+  catalogoTiposComision: ICatalogo[];
   getTiposComision: () => void;
 }
 
@@ -71,7 +68,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
       tablaComisiones: [...state.tablaComisiones, newComision],
     })),
 
-  updateTablaComisiones: (newTablaComisiones: IComisiones[]) =>
+  setTablaComisiones: (newTablaComisiones: IComisiones[]) =>
     set(() => ({ tablaComisiones: newTablaComisiones })),
 
   cleanComision: () => set((state) => ({ tablaComisiones: [] })),
