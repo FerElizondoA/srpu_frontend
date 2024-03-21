@@ -73,9 +73,6 @@ export function InformacionGeneral() {
   const getOrganismos: Function = useCortoPlazoStore(
     (state) => state.getOrganismos
   );
-  // const getObligadoSolidarioAval: Function = useCortoPlazoStore(
-  //   (state) => state.getObligadoSolidarioAval
-  // );
 
   // CATALOGOS
   const catalogoOrganismos: Array<ICatalogo> = useCortoPlazoStore(
@@ -85,9 +82,6 @@ export function InformacionGeneral() {
     "NO APLICA",
     "SI APLICA",
   ];
-  // useCortoPlazoStore(
-  //   (state) => state.catalogoObligadoSolidarioAval
-  // );
   const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
   );
@@ -103,9 +97,6 @@ export function InformacionGeneral() {
   const fechaContratacion: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaContratacion
   );
-  // const fechaContratacionEncabezado: string = useCortoPlazoStore(
-  //   (state) => state.encabezado.fechaContratacion
-  // );
   const fechaVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -125,8 +116,8 @@ export function InformacionGeneral() {
     useCortoPlazoStore(
       (state) => state.informacionGeneral.institucionFinanciera
     );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
+  const setInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.setInformacionGeneral
   );
 
   // OBLIGADO SOLIDARIO AVAL
@@ -149,8 +140,8 @@ export function InformacionGeneral() {
   const addObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.addObligadoSolidarioAval
   );
-  const changeObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.changeObligadoSolidarioAval
+  const setObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.setObligadoSolidarioAval
   );
 
   const removeObligadoSolidarioAval: Function = useCortoPlazoStore(
@@ -195,7 +186,7 @@ export function InformacionGeneral() {
 
     setPlazo(res);
 
-    changeInformacionGeneral({
+    setInformacionGeneral({
       fechaContratacion: contratacion,
       fechaVencimiento: vencimiento,
       plazo: res,
@@ -315,7 +306,7 @@ export function InformacionGeneral() {
                     .replace(/\D/g, "")
                 ) < 9999999999999999
               ) {
-                changeInformacionGeneral({
+                setInformacionGeneral({
                   fechaContratacion: contratacion,
                   fechaVencimiento: vencimiento,
                   plazo: plazo,
@@ -388,7 +379,7 @@ export function InformacionGeneral() {
               Descripcion: destino.Descripcion || "",
             }}
             onChange={(event, text) => {
-              changeInformacionGeneral({
+              setInformacionGeneral({
                 fechaContratacion: contratacion,
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
@@ -425,7 +416,7 @@ export function InformacionGeneral() {
             variant="standard"
             value={denominacion || ""}
             onChange={(v) =>
-              changeInformacionGeneral({
+              setInformacionGeneral({
                 fechaContratacion: contratacion,
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
@@ -474,7 +465,7 @@ export function InformacionGeneral() {
               Descripcion: institucionFinanciera.Descripcion || "",
             }}
             onChange={(event, text) =>
-              changeInformacionGeneral({
+              setInformacionGeneral({
                 fechaContratacion: contratacion,
                 fechaVencimiento: vencimiento,
                 plazo: plazo,
@@ -535,7 +526,7 @@ export function InformacionGeneral() {
               if (text === "NO APLICA") {
                 cleanObligadoSolidarioAval();
               }
-              changeObligadoSolidarioAval({
+              setObligadoSolidarioAval({
                 obligadoSolidario: text,
                 tipoEntePublicoObligado: {
                   Id: "",
@@ -590,7 +581,7 @@ export function InformacionGeneral() {
               Descripcion: generalTipoEntePublico?.Descripcion || "",
             }}
             onChange={(event, text) =>
-              changeObligadoSolidarioAval({
+              setObligadoSolidarioAval({
                 obligadoSolidario: generalObligadoSolidario,
                 tipoEntePublicoObligado: {
                   Id: text?.Id || "",
@@ -659,7 +650,7 @@ export function InformacionGeneral() {
               option.Id === value.Id || value.Descripcion === ""
             }
             onChange={(event, text) =>
-              changeObligadoSolidarioAval({
+              setObligadoSolidarioAval({
                 obligadoSolidario: generalObligadoSolidario,
                 tipoEntePublicoObligado: generalTipoEntePublico,
                 entePublicoObligado: {
@@ -686,7 +677,7 @@ export function InformacionGeneral() {
             }
             variant="outlined"
             onClick={() => {
-              changeObligadoSolidarioAval({
+              setObligadoSolidarioAval({
                 obligadoSolidario: "SI APLICA",
                 tipoEntePublicoObligado: "",
                 entePublicoObligado: {

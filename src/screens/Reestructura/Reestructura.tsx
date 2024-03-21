@@ -88,8 +88,8 @@ export function SolicitudesReestructura() {
     (state) => state.setGastosCostos
   );
 
-  const changeInformacionGeneralLP: Function = useLargoPlazoStore(
-    (state) => state.changeInformacionGeneral
+  const setInformacionGeneralLP: Function = useLargoPlazoStore(
+    (state) => state.setInformacionGeneral
   );
   const [rowId] = useState("");
 
@@ -123,7 +123,7 @@ export function SolicitudesReestructura() {
 
     changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
     changeEncabezadoLP(aux?.encabezado);
-    changeInformacionGeneralLP(aux?.informacionGeneral);
+    setInformacionGeneralLP(aux?.informacionGeneral);
     setGastosCostos(aux?.GastosCostos);
 
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {

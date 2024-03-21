@@ -241,8 +241,6 @@ export function CondicionesFinancieras() {
                             disabled={disable}
                             type="button"
                             onClick={() => {
-                              console.log(row);
-
                               setAccion("Editar");
                               changeOpenAgregarState(!openAgregarCondicion);
                               setIndexRegistro(index);

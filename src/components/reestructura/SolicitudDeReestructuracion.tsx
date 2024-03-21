@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 
 export let erroresValidacion: string[] = [];
 
@@ -60,7 +61,7 @@ export function SolicitudDeReestructuracion() {
   const solicitanteAutorizado: string = useLargoPlazoStore(
     (state) => state.encabezado.solicitanteAutorizado.Nombre
   );
-  const getReglas: Function = useLargoPlazoStore((state) => state.getReglas);
+  const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
 

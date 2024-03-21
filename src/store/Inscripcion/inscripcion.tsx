@@ -6,6 +6,7 @@ import {
   IObligadoSolidarioAval,
 } from "../CreditoCortoPlazo/informacion_general";
 import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
+import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 
 export interface IInscripcion {
   Id: string;
@@ -77,22 +78,47 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   },
 
   setInscripcion: (inscripcion: IInscripcion) => {
-    const state = useCortoPlazoStore.getState();
+    console.log(inscripcion);
+
+    const cpState = useCortoPlazoStore.getState();
+    const lpState = useLargoPlazoStore.getState();
 
     let aux: any = JSON.parse(inscripcion.Solicitud);
-    state.changeEncabezado(aux?.encabezado);
 
-    state.changeInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
-    state.setTablaObligadoSolidarioAval(
-      aux?.informacionGeneral.obligadosSolidarios
-    );
-    aux?.condicionesFinancieras.map((v: any, index: number) => {
-      return state.addCondicionFinanciera(v);
-    });
-    aux?.documentacion.map((v: any, index: number) => {
-      return state.addDocumento(v);
-    });
-    state.changeReglasAplicables(aux?.inscripcion.declaratorias);
+    if (inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo") {
+      cpState.changeEncabezado(aux?.encabezado);
+
+      cpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
+      cpState.setTablaObligadoSolidarioAval(
+        aux?.informacionGeneral.obligadosSolidarios
+      );
+      aux?.condicionesFinancieras.map((v: any, index: number) => {
+        return cpState.addCondicionFinanciera(v);
+      });
+      aux?.documentacion.map((v: any, index: number) => {
+        return cpState.addDocumento(v);
+      });
+      cpState.changeReglasAplicables(aux?.inscripcion.declaratorias);
+    } else {
+      lpState.changeEncabezado(aux?.encabezado);
+
+      lpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
+
+      lpState.setTablaObligadoSolidarioAval(
+        aux?.informacionGeneral.obligadosSolidarios
+      );
+      console.log(aux);
+
+      lpState.setTablaGastosCostos([aux?.GastosCostos]);
+
+      aux?.condicionesFinancieras.map((v: any, index: number) => {
+        return lpState.addCondicionFinanciera(v);
+      });
+      aux?.documentacion.map((v: any, index: number) => {
+        return lpState.addDocumento(v);
+      });
+      lpState.changeReglasAplicables(aux?.inscripcion.declaratorias);
+    }
 
     set(() => ({ inscripcion: inscripcion }));
   },

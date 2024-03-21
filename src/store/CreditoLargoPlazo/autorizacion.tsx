@@ -30,10 +30,10 @@ export type IAutorizacion = {
   detallesDestino: IDetalleDestino[];
 };
 
-export type Autorizaciones = {
+export type IAutorizaciones = {
   Id: string;
   IdEntidad: string;
-  Entidad: any;
+  Entidad: string;
   NumeroAutorizacion: string;
   FechaPublicacion: string;
   DescripcionMedioPublicacion: string;
@@ -43,32 +43,12 @@ export type Autorizaciones = {
   AcreditacionQuorum: string;
   DestinoAutorizado: string;
   DetalleDestino: string;
-  FechaCreacion: string;
   CreadoPor: string;
-  UltimaModificacion: string;
-  ModificadoPor: string;
 };
 
 export interface AutorizacionLargoPlazoSlice {
   autorizacion: IGeneralAutorizado;
-
-  montoAutorizado: IMontoAutorizado;
-  tablaDestinoAutorizado: IMontoAutorizado[];
-
-  detalleDestino: IDetalleDestino;
-  tablaDetalleDestino: IDetalleDestino[];
-
-  catalogoMediosDePublicacion: ICatalogo[];
-  catalogoDestinosAutorizados: ICatalogo[];
-  catalogoDetalleDestinosAutorizados: ICatalogo[];
-
-  borrarAutorizacion: (Id: string) => void;
-  changeIdAutorizacion: (Id: string) => void;
-  idAutorizacion: string;
-
-  setRegistrarAutorizacion: (autorizacion: any) => void;
-  setDestinoAutorizado: (montoAutorizado: IMontoAutorizado) => void;
-  setDetalleDestino: (detalleDestino: IDetalleDestino) => void;
+  setRegistrarAutorizacion: (autorizacion: IGeneralAutorizado) => void;
 
   setAutorizacion: (
     autorizacion: IGeneralAutorizado,
@@ -76,38 +56,51 @@ export interface AutorizacionLargoPlazoSlice {
     detalleDestino: IDetalleDestino[]
   ) => void;
 
-  addDestinoAutorizado: (newDestinoAutorizado: IMontoAutorizado) => void;
+  borrarAutorizacion: (Id: string) => void;
+
+  montoAutorizado: IMontoAutorizado;
+  setMontoAutorizado: (montoAutorizado: IMontoAutorizado) => void;
+  tablaMontoAutorizado: IMontoAutorizado[];
+  addMontoAutorizado: (newDestinoAutorizado: IMontoAutorizado) => void;
+
+  detalleDestino: IDetalleDestino;
+  setDetalleDestino: (detalleDestino: IDetalleDestino) => void;
+  tablaDetalleDestino: IDetalleDestino[];
   addDetalleDestino: (newDetalleDestino: IDetalleDestino) => void;
+
+  catalogoMediosDePublicacion: ICatalogo[];
+  catalogoDestinosAutorizados: ICatalogo[];
+  catalogoDetalleDestinosAutorizados: ICatalogo[];
 
   removeDestinoAutorizado: (index: number) => void;
   removeDetalleDestino: (index: number) => void;
 
-  cleanDestinoAutorizado: () => void;
-  cleanDetalleDestino: () => void;
+  cleanAutorizacion: () => void;
 
   getMediosDePublicacion: () => void;
   getDestinosAutorizados: () => void;
   getDetalleDestinosAutorizados: () => void;
 
   createAutorizacion: () => void;
+
   savePathDocAut: (
     idAut: string,
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string
   ) => void;
+
   saveFilesAutorizacion: (
     idRegistro: string,
     ruta: string,
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[];
+  autorizaciones: IAutorizaciones[];
   getAutorizaciones: () => void;
 
-  autorizacionSelect: Autorizaciones[];
-  setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
-  removeAutorizacionesSelect: (index: number) => void;
+  autorizacionSelect: IAutorizaciones;
+  setAutorizacionSelect: (autorizacion: IAutorizaciones) => void;
 
   modificarAutorizacion: () => void;
 }
@@ -142,23 +135,21 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
     montoAutorizado: 0,
   },
 
-  tablaDestinoAutorizado: [],
+  tablaMontoAutorizado: [],
   tablaDetalleDestino: [],
+
   tablaAutorizacion: [],
 
   catalogoMediosDePublicacion: [],
   catalogoDestinosAutorizados: [],
   catalogoDetalleDestinosAutorizados: [],
 
-  idAutorizacion: "",
-
-  changeIdAutorizacion: (id: any) => set(() => ({ idAutorizacion: id })),
-
   setRegistrarAutorizacion: (autorizacion: IGeneralAutorizado) =>
     set(() => ({
       autorizacion: autorizacion,
     })),
-  setDestinoAutorizado: (montoAutorizado: IMontoAutorizado) =>
+
+  setMontoAutorizado: (montoAutorizado: IMontoAutorizado) =>
     set(() => ({
       montoAutorizado: {
         destinoAutorizado: montoAutorizado.destinoAutorizado,
@@ -177,14 +168,14 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
   ) =>
     set(() => ({
       autorizacion: autorizacion,
-      tablaDestinoAutorizado: montoAutorizado,
+      tablaMontoAutorizado: montoAutorizado,
       tablaDetalleDestino: detalleDestino,
     })),
 
-  addDestinoAutorizado: (newDestinoAutorizado: IMontoAutorizado) =>
+  addMontoAutorizado: (newDestinoAutorizado: IMontoAutorizado) =>
     set((state) => ({
-      tablaDestinoAutorizado: [
-        ...state.tablaDestinoAutorizado,
+      tablaMontoAutorizado: [
+        ...state.tablaMontoAutorizado,
         newDestinoAutorizado,
       ],
     })),
@@ -195,7 +186,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
 
   removeDestinoAutorizado: (index: number) =>
     set((state) => ({
-      tablaDestinoAutorizado: state.tablaDestinoAutorizado.filter(
+      tablaMontoAutorizado: state.tablaMontoAutorizado.filter(
         (_, i) => i !== index
       ),
     })),
@@ -206,12 +197,36 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
       ),
     })),
 
-  cleanDestinoAutorizado: () =>
+  cleanAutorizacion: () =>
     set(() => ({
-      tablaDestinoAutorizado: [],
-    })),
-  cleanDetalleDestino: () =>
-    set(() => ({
+      autorizacion: {
+        entidad: {
+          Id: localStorage.getItem("IdEntePublicoObligado") || "",
+          Organismo: localStorage.getItem("EntePublicoObligado") || "",
+        },
+        numeroAutorizacion: 0,
+        fechaPublicacion: new Date().toString(),
+        medioPublicacion: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+        documentoSoporte: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+        acreditacionQuorum: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+      },
+      montoAutorizado: {
+        destinoAutorizado: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+      },
+      detalleDestino: {
+        detalleDestino: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+      },
+
+      tablaMontoAutorizado: [],
       tablaDetalleDestino: [],
     })),
 
@@ -276,11 +291,9 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           FechaPublicacion: state.autorizacion.fechaPublicacion,
           MedioPublicacion: state.autorizacion.medioPublicacion.Id,
           MontoAutorizado: state.autorizacion.montoAutorizado,
-          DocumentoSoporte: JSON.stringify(state.autorizacion.documentoSoporte),
-          AcreditacionQuorum: JSON.stringify(
-            state.autorizacion.acreditacionQuorum
-          ),
-          DestinoAutorizado: JSON.stringify(state.tablaDestinoAutorizado),
+          DocumentoSoporte: state.autorizacion.documentoSoporte,
+          AcreditacionQuorum: state.autorizacion.acreditacionQuorum,
+          DestinoAutorizado: JSON.stringify(state.tablaMontoAutorizado),
           DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
         },
         {
@@ -290,7 +303,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.changeIdAutorizacion(data.data.id);
+        state.setAutorizacionSelect(data.data);
         state.saveFilesAutorizacion(
           data.data.Id,
           `/SRPU/AUTORIZACIONES/${data.data.Id}`,
@@ -315,22 +328,23 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
 
   modificarAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
+    console.log(state.autorizacion);
+
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-autorizacion",
         {
-          IdAutorizacion: state.idAutorizacion,
+          IdAutorizacion: state.autorizacionSelect.Id,
           IdUsuario: localStorage.getItem("IdUsuario"),
           Entidad: state.autorizacion.entidad.Id,
           NumeroAutorizacion: state.autorizacion.numeroAutorizacion,
           FechaPublicacion: state.autorizacion.fechaPublicacion,
           MedioPublicacion: state.autorizacion.medioPublicacion.Id,
           MontoAutorizado: state.autorizacion.montoAutorizado,
-          DocumentoSoporte: JSON.stringify(state.autorizacion.documentoSoporte),
-          AcreditacionQuorum: JSON.stringify(
-            state.autorizacion.acreditacionQuorum
-          ),
-          DestinoAutorizado: JSON.stringify(state.tablaDestinoAutorizado),
+          DocumentoSoporte: state.autorizacion.documentoSoporte.nombreArchivo,
+          AcreditacionQuorum:
+            state.autorizacion.acreditacionQuorum.nombreArchivo,
+          DestinoAutorizado: JSON.stringify(state.tablaMontoAutorizado),
           DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
         },
         {
@@ -340,12 +354,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        Swal.fire({
-          icon: "success",
-          //title: "Éxito",
-          text: "El fideicomiso se ha modificado exitosamente",
-        });
-        state.changeIdAutorizacion(data.result.id);
+        state.setAutorizacionSelect(data.result);
         state.saveFilesAutorizacion(
           data.result.Id,
           `/SRPU/AUTORIZACIONES/${data.result.Id}`,
@@ -356,7 +365,6 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           `/SRPU/AUTORIZACIONES/${data.result.Id}`,
           state.autorizacion.acreditacionQuorum
         );
-        state.setAutorizacionSelect([]);
       })
       .catch(function (error) {
         Swal.fire({
@@ -386,6 +394,22 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         },
       })
       .then(function (response) {
+        let state = useLargoPlazoStore.getState();
+        state.autorizacionSelect = {
+          Id: "",
+          IdEntidad: "",
+          Entidad: "",
+          NumeroAutorizacion: "",
+          FechaPublicacion: "",
+          DescripcionMedioPublicacion: "",
+          IdMedioPublicacion: "",
+          MontoAutorizado: "",
+          DocumentoSoporte: "",
+          AcreditacionQuorum: "",
+          DestinoAutorizado: "",
+          DetalleDestino: "",
+          CreadoPor: "",
+        };
         if (response.status === 200) {
           // window.location.reload()
           Toast.fire({
@@ -487,18 +511,25 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
     });
   },
 
-  autorizacionSelect: [],
+  autorizacionSelect: {
+    Id: "",
+    IdEntidad: "",
+    Entidad: "",
+    NumeroAutorizacion: "",
+    FechaPublicacion: "",
+    DescripcionMedioPublicacion: "",
+    IdMedioPublicacion: "",
+    MontoAutorizado: "",
+    DocumentoSoporte: "",
+    AcreditacionQuorum: "",
+    DestinoAutorizado: "",
+    DetalleDestino: "",
+    CreadoPor: "",
+  },
 
-  setAutorizacionSelect: (autorizacion: Autorizaciones[]) => {
+  setAutorizacionSelect: (autorizacion: IAutorizaciones) => {
     set((state) => ({
       autorizacionSelect: autorizacion,
     }));
   },
-
-  removeAutorizacionesSelect: (index: number) =>
-    set((state) => ({
-      autorizacionSelect: state.autorizacionSelect.filter(
-        (_, i) => i !== index
-      ),
-    })),
 });

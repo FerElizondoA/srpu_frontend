@@ -13,12 +13,13 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
-type Props = {
+export function DialogGuardarBorrador({
+  handler,
+  openState,
+}: {
   handler: Function;
   openState: boolean;
-};
-
-export function DialogGuardarBorrador(props: Props) {
+}) {
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -71,11 +72,11 @@ export function DialogGuardarBorrador(props: Props) {
 
   const navigate = useNavigate();
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
-  );
+  // const cleanSolicitud: Function = useLargoPlazoStore(
+  //   (state) => state.cleanSolicitud
+  // );
 
-  const addComentario: Function = useLargoPlazoStore(
+  const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 
@@ -91,11 +92,11 @@ export function DialogGuardarBorrador(props: Props) {
 
   return (
     <Dialog
-      open={props.openState}
+      open={openState}
       keepMounted
       TransitionComponent={Transition}
       onClose={() => {
-        props.handler(false);
+        handler(false);
       }}
     >
       <DialogTitle>
@@ -126,14 +127,14 @@ export function DialogGuardarBorrador(props: Props) {
       <DialogActions>
         <Button
           variant="text"
-          onClick={() => props.handler(false)}
+          onClick={() => handler(false)}
           sx={queries.buttonCancelar}
         >
           Cancelar
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
+            handler(false);
             if (solicitud.Id !== "") {
               modificaSolicitud(
                 solicitud.CreadoPor,
@@ -154,7 +155,7 @@ export function DialogGuardarBorrador(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
-                  cleanSolicitud();
+                  // cleanSolicitud();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
@@ -169,16 +170,15 @@ export function DialogGuardarBorrador(props: Props) {
             } else {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
-                  addComentario(
-                    solicitud.Id,
-                    JSON.stringify(comentario),
-                    "Captura"
-                  );
+                  // addComentario(
+                  //   solicitud.Id,
+                  //   JSON.stringify(comentario),
+                  //   "Captura"
+                  // );
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",
@@ -216,7 +216,7 @@ export function DialogGuardarBorrador(props: Props) {
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
+            handler(false);
             if (solicitud.Id !== "") {
               modificaSolicitud(
                 solicitud.CreadoPor,

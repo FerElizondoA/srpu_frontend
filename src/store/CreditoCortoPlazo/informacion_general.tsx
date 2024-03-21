@@ -36,7 +36,7 @@ export interface InformacionGeneralSlice {
   catalogoObligadoSolidarioAval: ICatalogo[];
   catalogoTipoEntePublicoObligado: ICatalogo[];
 
-  changeInformacionGeneral: (informacionGeneral: any) => void;
+  setInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: IObligadoSolidarioAval
@@ -46,7 +46,7 @@ export interface InformacionGeneralSlice {
     obligadoSolidarioAval: IObligadoSolidarioAval[]
   ) => void;
 
-  changeObligadoSolidarioAval: (
+  setObligadoSolidarioAval: (
     obligadoSolidario: { Id: string; Descripcion: string },
     tipoEntePublicoObligado: { Id: string; Descripcion: string },
     entePublicoObligado: { Id: string; Descripcion: string }
@@ -94,13 +94,13 @@ export const createInformacionGeneralSlice: StateCreator<
   catalogoObligadoSolidarioAval: [],
   catalogoTipoEntePublicoObligado: [],
 
-  changeInformacionGeneral: (informacionGeneral: any) => {
+  setInformacionGeneral: (informacionGeneral: any) => {
     set(() => ({
       informacionGeneral: informacionGeneral,
     }));
   },
 
-  changeObligadoSolidarioAval: (obligadoSolidario: any) => {
+  setObligadoSolidarioAval: (obligadoSolidario: any) => {
     set(() => ({
       generalObligadoSolidarioAval: obligadoSolidario,
     }));

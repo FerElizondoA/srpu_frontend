@@ -85,7 +85,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   cleanSolicitud: () => {
     let state = useCortoPlazoStore.getState();
 
-    state.changeInformacionGeneral({
+    state.setInformacionGeneral({
       fechaContratacion: new Date().toString(),
       fechaVencimiento: new Date().toString(),
       plazo: 1,

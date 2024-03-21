@@ -126,12 +126,6 @@ export function AgregarCondicionFinanciera(props: Props) {
                 onClick={() => {
                   // setTabIndex(0);
                   if (props.accion === "Agregar") {
-                    console.log("pagosDeCapital", pagosDeCapital);
-                    console.log("disposicion", tablaDisposicion);
-                    console.log("tasaInteres", tablaTasaInteres);
-                    console.log("tasaEfectiva", tasaEfectiva);
-                    console.log("comisiones", tablaComisiones);
-
                     addCondicionFinanciera({
                       pagosDeCapital: pagosDeCapital,
                       disposicion: tablaDisposicion,

@@ -42,7 +42,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/get-tiposDocumentosCortoPlazo",
+        "/get-tiposDocumentosLargoPlazo",
       data: {},
       headers: {
         "Content-Type": "application/json",

@@ -611,9 +611,6 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    console.log(row);
-                                    console.log(JSON.parse(row.Solicitud));
-
                                     setInscripcion(row);
                                     editarSolicitud(row.TipoSolicitud);
                                   }}

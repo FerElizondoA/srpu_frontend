@@ -75,8 +75,8 @@ export function GastoCostos() {
   const addGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGastosCostos
   );
-  const changeGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGastosCostos
+  const setGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.setGastosCostos
   );
   const removeGastosCostos: Function = useLargoPlazoStore(
     (state) => state.removeGastosCostos
@@ -111,7 +111,7 @@ export function GastoCostos() {
 
   useEffect(() => {
     getDetallesInversion();
-    changeGastosCostos({
+    setGastosCostos({
       ...gastosCostos,
       monto: moneyMask("0"),
       montoGastosAdicionales: moneyMask("0"),
@@ -156,7 +156,7 @@ export function GastoCostos() {
           }}
           value={gastosCostos.destino}
           onChange={(event, text) => {
-            changeGastosCostos({
+            setGastosCostos({
               ...gastosCostos,
               destino: {
                 Id: text?.Id || "",
@@ -198,7 +198,7 @@ export function GastoCostos() {
               fullWidth
               value={gastosCostos.claveInscripcionFinanciamiento}
               onChange={(v) => {
-                changeGastosCostos({
+                setGastosCostos({
                   ...gastosCostos,
                   claveInscripcionFinanciamiento: v.target.value,
                 });
@@ -243,7 +243,7 @@ export function GastoCostos() {
               }}
               value={gastosCostos.detalleInversion}
               onChange={(event, text) => {
-                changeGastosCostos({
+                setGastosCostos({
                   ...gastosCostos,
                   detalleInversion: {
                     Id: text?.Id || "",
@@ -320,7 +320,7 @@ export function GastoCostos() {
             disabled={reestructura === "con autorizacion"}
             value={gastosCostos.descripcion}
             onChange={(v) =>
-              changeGastosCostos({
+              setGastosCostos({
                 ...gastosCostos,
                 descripcion: v.target.value,
               })
@@ -362,7 +362,7 @@ export function GastoCostos() {
                     .replace(/\D/g, "")
                 ) < 9999999999999999
               ) {
-                changeGastosCostos({
+                setGastosCostos({
                   ...gastosCostos,
                   monto: moneyMask(v.target.value),
                 });
@@ -390,7 +390,7 @@ export function GastoCostos() {
             fullWidth
             value={gastosCostos.gastosAdicionales}
             onChange={(v) => {
-              changeGastosCostos({
+              setGastosCostos({
                 ...gastosCostos,
                 gastosAdicionales: v.target.value,
               });
@@ -436,7 +436,7 @@ export function GastoCostos() {
                     .replace(/\D/g, "")
                 ) < 9999999999999999
               ) {
-                changeGastosCostos({
+                setGastosCostos({
                   ...gastosCostos,
                   montoGastosAdicionales: moneyMask(v.target.value),
                 });
@@ -483,7 +483,7 @@ export function GastoCostos() {
                     .replace(/\D/g, "")
                 ) < 9999999999999999
               ) {
-                changeGastosCostos({
+                setGastosCostos({
                   ...gastosCostos,
                   saldoVigente: moneyMask(v.target.value.toString()),
                 });

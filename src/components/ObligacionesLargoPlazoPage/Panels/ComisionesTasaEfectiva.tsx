@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 
 import {
@@ -40,9 +41,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { moneyMask } from "./InformacionGeneral";
+import {
+  IComisiones,
+  ITasaEfectiva,
+} from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 const heads: readonly {
   label: string;
@@ -72,140 +76,108 @@ const heads: readonly {
 
 export function ComisionesTasaEfectiva() {
   // GET CATALOGOS
-  const getTiposComision: Function = useCortoPlazoStore(
+  const getTiposComision: Function = useLargoPlazoStore(
     (state) => state.getTiposComision
   );
 
   // CATALOGOS
-  const catalogoPeriocidadDePago: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoPeriocidadDePago: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoPeriocidadDePago
   );
-  const catalogoDiasEjercicio: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoDiasEjercicio: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoDiasEjercicio
   );
-  const catalogoTiposComision: Array<ICatalogo> = useCortoPlazoStore(
+  const catalogoTiposComision: Array<ICatalogo> = useLargoPlazoStore(
     (state) => state.catalogoTiposComision
   );
 
   // TASA EFECTIVA
-  const tasaEfectivaDiasEjercicio: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.tasaEfectiva.diasEjercicio);
-  const tasaEfectivaTasaEfectiva: string = useLargoPlazoStore(
-    (state) => state.tasaEfectiva.tasaEfectiva
+  const tasaEfectiva: ITasaEfectiva = useLargoPlazoStore(
+    (state) => state.tasaEfectiva
   );
-  const changeTasaEfectiva: Function = useLargoPlazoStore(
-    (state) => state.changeTasaEfectiva
+  const setTasaEfectiva: Function = useLargoPlazoStore(
+    (state) => state.setTasaEfectiva
   );
 
   // COMISIONES
-  const comisionFechaContratacion: string = useLargoPlazoStore(
-    (state) => state.comision.fechaContratacion
+  const comision: IComisiones = useLargoPlazoStore((state) => state.comision);
+  const setComision: Function = useLargoPlazoStore(
+    (state) => state.setComision
   );
-  const comisionTipoComision: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.comision.tipoDeComision);
-  const comisionPeriodicidadPago: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.comision.periodicidadDePago);
-  const comisionPorcentajeFijo: boolean = useLargoPlazoStore(
-    (state) => state.comision.porcentajeFijo
-  );
-  const comisionMontoFijo: boolean = useLargoPlazoStore(
-    (state) => state.comision.montoFijo
-  );
-  const comisionPorcentaje: string = useLargoPlazoStore(
-    (state) => state.comision.porcentaje
-  );
-  const comisionMonto: string = useLargoPlazoStore(
-    (state) => state.comision.monto
-  );
-  const comisionIva: string = useLargoPlazoStore((state) => state.comision.iva);
 
   // TABLA COMISIONES
-  const tablaComisiones: any = useLargoPlazoStore(
+  const tablaComisiones: IComisiones[] = useLargoPlazoStore(
     (state) => state.tablaComisiones
   );
   const addComision: Function = useLargoPlazoStore(
     (state) => state.addComision
   );
-  const changeComision: Function = useLargoPlazoStore(
-    (state) => state.changeComision
+  const setTablaComisiones: Function = useLargoPlazoStore(
+    (state) => state.setTablaComisiones
   );
   const removeComision: Function = useLargoPlazoStore(
     (state) => state.removeComision
   );
-
-  const cleanComision: Function = useLargoPlazoStore(
-    (state) => state.cleanComision
+  const noAplica: boolean = useLargoPlazoStore((state) => state.noAplica);
+  const setNoAplica: Function = useLargoPlazoStore(
+    (state) => state.setNoAplica
   );
-
-  const [noAplica, setNoAplica] = React.useState(false);
 
   React.useEffect(() => {
     catalogoTiposComision.length <= 0 && getTiposComision();
-
-    if (tablaComisiones[0]?.tipoDeComision === "N/A") {
-      setNoAplica(true);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const addRows = () => {
-    let tab = {
-      fechaContratacion: comisionFechaContratacion,
-      tipoDeComision: comisionTipoComision.Descripcion,
-      periodicidadDePago: comisionPeriodicidadPago.Descripcion,
-      monto: comisionMontoFijo ? moneyMask(comisionMonto) : moneyMask("0"),
-      porcentaje: comisionPorcentaje || "N/A",
-      iva: comisionIva,
-    };
-
-    addComision(tab);
-  };
 
   const [radioValue, setRadioValue] = React.useState("Porcentaje Fijo");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadioValue(event.target.value);
-    changePercentageOrAmount();
+    setRadioValue((event.target as HTMLInputElement).value);
   };
 
-  const changePercentageOrAmount = () => {
-    if (radioValue !== "Porcentaje Fijo") {
-      changeComision({
-        fechaContratacion: comisionFechaContratacion,
-        tipoDeComision: comisionTipoComision,
-        periodicidadDePago: comisionPeriodicidadPago,
-        porcentajeFijo: true,
-        montoFijo: false,
-        porcentaje: comisionPorcentaje,
-        monto: moneyMask(comisionMonto.toString()),
-        iva: comisionIva,
-      });
+  // React.useEffect(() => {
+  //   if (noAplica === false) {
+  //     setTablaComisiones([]);
+  //   } else {
+  //     if (radioValue === "Porcentaje Fijo") {
+  //       setTablaComisiones([
+  //         {
+  //           fechaComision: "N/A",
+  //           tipoDeComision: "N/A",
+  //           periodicidadPago: "N/A",
+  //           porcentaje: "N/A",
+  //           monto: "N/A",
+  //           iva: "N/A",
+  //         },
+  //       ]);
+  //     } else {
+  //       setTablaComisiones([{ ...comision, porcentaje: "N/A" }]);
+  //     }
+  //   }
+  // }, [noAplica]);
+
+  React.useEffect(() => {
+    if (noAplica === false) {
     } else {
-      changeComision({
-        fechaContratacion: comisionFechaContratacion,
-        tipoDeComision: comisionTipoComision,
-        periodicidadDePago: comisionPeriodicidadPago,
-        porcentajeFijo: false,
-        montoFijo: true,
-        porcentaje: comisionPorcentaje,
-        monto: moneyMask(comisionMonto.toString()),
-        iva: comisionIva,
-      });
+      setTablaComisiones([
+        {
+          fechaComision: "N/A",
+          tipoDeComision: "N/A",
+          periodicidadPago: "N/A",
+          porcentaje: "N/A",
+          monto: "N/A",
+          iva: "N/A",
+        },
+      ]);
     }
-  };
+  }, [noAplica]);
 
-  const reset = () => {
-    changeComision({
-      fechaContratacion: new Date().toString(),
-      tipoDeComision: { Id: "", Descripcion: "" },
-      periodicidadDePago: { Id: "", Descripcion: "" },
-      porcentajeFijo: true,
-      montoFijo: false,
-      porcentaje: "",
-      monto: moneyMask("0"),
-      iva: "NO",
-    });
-  };
+  React.useEffect(() => {
+    if (radioValue === "Porcentaje Fijo") {
+      setComision({ ...comision, porcentaje: "", monto: "N/A" });
+    } else {
+      setComision({ ...comision, porcentaje: "N/A", monto: "$ 0.00" });
+    }
+  }, [radioValue]);
 
   return (
     <Grid
@@ -267,14 +239,14 @@ export function ComisionesTasaEfectiva() {
                 </li>
               );
             }}
-            value={tasaEfectivaDiasEjercicio}
+            value={tasaEfectiva.diasEjercicio}
             onChange={(event, text) =>
-              changeTasaEfectiva({
-                diasEjercicio: text || {
-                  Id: "",
-                  Descripcion: "",
+              setTasaEfectiva({
+                ...tasaEfectiva,
+                diasEjercicio: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
                 },
-                tasaEfectiva: tasaEfectivaTasaEfectiva,
               })
             }
             renderInput={(params) => (
@@ -295,25 +267,16 @@ export function ComisionesTasaEfectiva() {
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
           <TextField
             fullWidth
-            value={tasaEfectivaTasaEfectiva}
+            value={tasaEfectiva.tasaEfectiva}
             onChange={(v) => {
               const expRegular = /^\d*\.?\d*$/;
 
               if (expRegular.test(v.target.value) || v.target.value === "") {
-                changeTasaEfectiva({
-                  diasEjercicio: tasaEfectivaDiasEjercicio,
+                setTasaEfectiva({
+                  ...tasaEfectiva,
                   tasaEfectiva: v.target.value,
                 });
               }
-              // if (
-              //   validator.isNumeric(v.target.value) ||
-              //   v.target.value === ""
-              // ) {
-              //   changeTasaEfectiva({
-              //     diasEjercicio: tasaEfectivaDiasEjercicio,
-              //     tasaEfectiva: v.target.value,
-              //   });
-              // }
             }}
             InputLabelProps={{
               style: {
@@ -347,22 +310,8 @@ export function ComisionesTasaEfectiva() {
               <Checkbox
                 checked={noAplica}
                 onChange={(v) => {
-                  cleanComision();
-                  setNoAplica(!noAplica);
-                  if (!noAplica) {
-                    let tab = {
-                      fechaContratacion: new Date().toString(),
-                      tipoDeComision: "N/A",
-                      periodicidadDePago: "N/A",
-                      porcentajeFijo: "N/A",
-                      montoFijo: "N/A",
-                      porcentaje: "N/A",
-                      monto: "N/A",
-                      iva: "N/A",
-                    };
-                    addComision(tab);
-                  }
-                  reset();
+                  setNoAplica();
+                  setTablaComisiones([]);
                 }}
               />
             }
@@ -374,17 +323,11 @@ export function ComisionesTasaEfectiva() {
             <DesktopDatePicker
               sx={{ width: "100%" }}
               disabled={noAplica}
-              value={new Date(comisionFechaContratacion)}
+              value={new Date(comision.fechaComision)}
               onChange={(date) => {
-                changeComision({
-                  fechaContratacion: date?.toString(),
-                  tipoDeComision: comisionTipoComision,
-                  periodicidadDePago: comisionPeriodicidadPago,
-                  porcentajeFijo: comisionPorcentajeFijo,
-                  montoFijo: comisionMontoFijo,
-                  porcentaje: comisionPorcentaje,
-                  monto: moneyMask(comisionMonto.toString()),
-                  iva: comisionIva,
+                setComision({
+                  ...comision,
+                  fechaComision: date?.toString(),
                 });
               }}
             />
@@ -409,20 +352,14 @@ export function ComisionesTasaEfectiva() {
                 </li>
               );
             }}
-            value={comisionTipoComision}
-            onChange={(event, v) => {
-              changeComision({
-                fechaContratacion: comisionFechaContratacion,
+            value={comision.tipoDeComision}
+            onChange={(event, text) => {
+              setComision({
+                ...comision,
                 tipoDeComision: {
-                  Id: v?.Id || "",
-                  Descripcion: v?.Descripcion || "",
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
                 },
-                periodicidadDePago: comisionPeriodicidadPago,
-                porcentajeFijo: comisionPorcentajeFijo,
-                montoFijo: comisionMontoFijo,
-                porcentaje: comisionPorcentaje,
-                monto: moneyMask(comisionMonto.toString()),
-                iva: comisionIva,
               });
             }}
             renderInput={(params) => (
@@ -456,20 +393,14 @@ export function ComisionesTasaEfectiva() {
                 </li>
               );
             }}
-            value={comisionPeriodicidadPago}
+            value={comision.periodicidadDePago}
             onChange={(event, text) =>
-              changeComision({
-                fechaContratacion: comisionFechaContratacion,
-                tipoDeComision: comisionTipoComision,
+              setComision({
+                ...comision,
                 periodicidadDePago: {
-                  Id: text?.Id || "",
-                  Descripcion: text?.Descripcion || "",
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
                 },
-                porcentajeFijo: comisionPorcentajeFijo,
-                montoFijo: comisionMontoFijo,
-                porcentaje: comisionPorcentaje,
-                monto: moneyMask(comisionMonto.toString()),
-                iva: comisionIva,
               })
             }
             renderInput={(params) => (
@@ -537,10 +468,10 @@ export function ComisionesTasaEfectiva() {
             fullWidth
             value={
               radioValue === "Porcentaje Fijo"
-                ? comisionPorcentaje
-                : parseFloat(comisionMonto) <= 0
+                ? comision.porcentaje
+                : parseFloat(comision.monto) <= 0
                 ? ""
-                : moneyMask(comisionMonto)
+                : moneyMask(comision.monto)
             }
             onChange={(v) => {
               if (
@@ -551,30 +482,20 @@ export function ComisionesTasaEfectiva() {
                   9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
-                changeComision({
-                  fechaContratacion: comisionFechaContratacion,
-                  tipoDeComision: comisionTipoComision,
-                  periodicidadDePago: comisionPeriodicidadPago,
-                  porcentajeFijo: comisionPorcentajeFijo,
-                  montoFijo: comisionMontoFijo,
+                setComision({
+                  ...comision,
                   porcentaje: v.target.value,
                   monto: moneyMask("0"),
-                  iva: comisionIva,
                 });
               } else {
-                changeComision({
-                  fechaContratacion: comisionFechaContratacion,
-                  tipoDeComision: comisionTipoComision,
-                  periodicidadDePago: comisionPeriodicidadPago,
-                  porcentajeFijo: comisionPorcentajeFijo,
-                  montoFijo: comisionMontoFijo,
+                setComision({
+                  ...comision,
                   porcentaje: "",
                   monto: moneyMask(
                     v.target.value.toString() === ""
                       ? "0"
                       : v.target.value.toString()
                   ),
-                  iva: comisionIva,
                 });
               }
             }}
@@ -617,18 +538,9 @@ export function ComisionesTasaEfectiva() {
             control={
               <Checkbox
                 disabled={noAplica}
-                checked={comisionIva === "SI"}
+                checked={comision.iva}
                 onChange={(v) => {
-                  changeComision({
-                    fechaContratacion: comisionFechaContratacion,
-                    tipoDeComision: comisionTipoComision,
-                    periodicidadDePago: comisionPeriodicidadPago,
-                    porcentajeFijo: comisionPorcentajeFijo,
-                    montoFijo: comisionMontoFijo,
-                    porcentaje: comisionPorcentaje,
-                    monto: moneyMask(comisionMonto.toString()),
-                    iva: v.target.checked ? "SI" : "NO",
-                  });
+                  setComision({ ...comision, iva: v.target.checked });
                 }}
               />
             }
@@ -667,17 +579,16 @@ export function ComisionesTasaEfectiva() {
                 },
               }}
               disabled={
-                comisionFechaContratacion === "" ||
-                comisionTipoComision.Descripcion === "" ||
-                comisionPeriodicidadPago.Descripcion === "" ||
+                comision.fechaComision === "" ||
+                comision.tipoDeComision.Descripcion === "" ||
+                comision.periodicidadDePago.Descripcion === "" ||
                 (radioValue === "Porcentaje Fijo" &&
-                  comisionPorcentaje === "") ||
-                (radioValue === "Monto Fijo" && comisionMonto === "")
+                  comision.porcentaje === "") ||
+                (radioValue === "Monto Fijo" && comision.monto === "")
               }
               variant="outlined"
               onClick={() => {
-                addRows();
-                reset();
+                addComision(comision);
               }}
             >
               Agregar
@@ -715,7 +626,7 @@ export function ComisionesTasaEfectiva() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaComisiones.map((row: any, index: number) => {
+                {tablaComisiones.map((row: IComisiones, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
@@ -731,18 +642,18 @@ export function ComisionesTasaEfectiva() {
                         )}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {row.tipoDeComision}
+                        {row.tipoDeComision?.Descripcion || "N/A"}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {format(new Date(row.fechaContratacion), "dd/MM/yyyy")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.periodicidadDePago}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row.porcentaje > 0
-                          ? row.porcentaje.toString() + "%"
+                        {row?.fechaComision !== "N/A"
+                          ? format(new Date(row?.fechaComision), "dd/MM/yyyy")
                           : "N/A"}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.periodicidadDePago?.Descripcion || "N/A"}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {row.porcentaje}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         {row.monto.toString()}

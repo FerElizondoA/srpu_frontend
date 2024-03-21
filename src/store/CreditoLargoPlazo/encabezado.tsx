@@ -50,7 +50,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   changeEncabezado: (encabezado: any) => {
     const state = useLargoPlazoStore.getState();
 
-    state.changeInformacionGeneral({
+    state.setInformacionGeneral({
       ...state.informacionGeneral,
       fechaContratacion: encabezado.fechaContratacion,
     });

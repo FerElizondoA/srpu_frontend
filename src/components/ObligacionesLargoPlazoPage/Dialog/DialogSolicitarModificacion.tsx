@@ -20,6 +20,7 @@ import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -54,7 +55,7 @@ export function DialogSolicitarModificacion({
     (state) => state.modificaSolicitud
   );
 
-  const addComentario: Function = useLargoPlazoStore(
+  const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 

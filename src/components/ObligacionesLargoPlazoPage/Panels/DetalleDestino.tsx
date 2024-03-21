@@ -187,6 +187,7 @@ export function DestalleDestino() {
           </Grid>
 
           <Grid
+            item
             xs={10}
             sm={2}
             md={2}

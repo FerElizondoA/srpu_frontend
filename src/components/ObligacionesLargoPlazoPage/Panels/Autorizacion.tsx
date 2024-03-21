@@ -26,9 +26,10 @@ import {
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { Autorizaciones } from "../../../store/CreditoLargoPlazo/autorizacion";
+import { IAutorizaciones } from "../../../store/CreditoLargoPlazo/autorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import {
+  getDocumentos,
   getPathDocumentosAut,
   listFile,
 } from "../../APIS/pathDocSol/APISDocumentos";
@@ -44,9 +45,6 @@ interface Head {
 }
 
 const heads: Head[] = [
-  {
-    label: "Tipo de autorización",
-  },
   {
     label: "Número de autorización",
   },
@@ -74,7 +72,7 @@ export function Autorizacion() {
   const [openDialogNuevaAutorizacion, setOpenNuevaAutorizacion] =
     useState(false);
 
-  const autorizaciones: Autorizaciones[] = useLargoPlazoStore(
+  const autorizaciones: IAutorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizaciones
   );
 
@@ -82,27 +80,17 @@ export function Autorizacion() {
     (state) => state.getAutorizaciones
   );
 
-  const idAutorizacion: string = useLargoPlazoStore(
-    (state) => state.idAutorizacion
-  );
-
-  const changeIdAutorizacion: Function = useLargoPlazoStore(
-    (state) => state.changeIdAutorizacion
-  );
-
   const setAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setAutorizacion
   );
 
-  const autorizacionSelect: Autorizaciones[] = useLargoPlazoStore(
+  const autorizacionSelect: IAutorizaciones = useLargoPlazoStore(
     (state) => state.autorizacionSelect
   );
 
   const setAutorizacionSelect: Function = useLargoPlazoStore(
     (state) => state.setAutorizacionSelect
   );
-
-  const [indexTabla, setIndexTabla] = useState(0);
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -126,25 +114,25 @@ export function Autorizacion() {
   const [fileSelected, setFileSelected] = useState<any>("");
 
   useEffect(() => {
-    if (autorizacionSelect.length !== 0) {
-      getPathDocumentosAut(autorizacionSelect[0]?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect[0]?.Id}`, () => {});
+    if (autorizacionSelect?.Id !== "") {
+      getPathDocumentosAut(autorizacionSelect?.Id, setPathDocumentos);
+      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => {});
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
   useEffect(() => {
     if (pathDocumentos.length > 0) {
-      // let loc: any = [...arrDocs];
-      // pathDocumentos?.map((val: any) => {
-      //   return getDocumento(
-      //     val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-      //     val?.NombreIdentificador,
-      //     (res: any, index: number) => {
-      //       loc.push({ file: res, nombre: val.NombreArchivo });
-      //     }
-      //   );
-      // });
-      // setArrDocs(loc);
+      let loc: any = [...arrDocs];
+      pathDocumentos?.map((val: any) => {
+        return getDocumentos(
+          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+          val?.NombreIdentificador,
+          (res: any, index: number) => {
+            loc.push({ file: res, nombre: val.NombreArchivo });
+          }
+        );
+      });
+      setArrDocs(loc);
     }
   }, [pathDocumentos]);
 
@@ -174,12 +162,11 @@ export function Autorizacion() {
             openText="Abrir"
             fullWidth
             options={autorizaciones}
-            value={autorizacionSelect[0]}
+            value={autorizacionSelect}
             getOptionLabel={(option) =>
-              `${option.NumeroAutorizacion} - ${format(
-                new Date(option.FechaPublicacion),
-                "dd/MM/yyyy"
-              )}`
+              option.NumeroAutorizacion
+                ? `${option.NumeroAutorizacion} - ${option.FechaPublicacion}`
+                : ""
             }
             renderOption={(props, option) => {
               return (
@@ -191,11 +178,8 @@ export function Autorizacion() {
                 </li>
               );
             }}
-            onChange={(event, text) => {
-              let loc = autorizaciones.filter(
-                (_i, index) => _i.Id === text?.Id
-              );
-              setAutorizacionSelect(loc!);
+            onChange={(event, text: IAutorizaciones) => {
+              setAutorizacionSelect(text);
             }}
             renderInput={(params) => (
               <TextField
@@ -205,7 +189,9 @@ export function Autorizacion() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.Id === value.Id || value.NumeroAutorizacion === ""
+              option.Id === value.Id ||
+              value.NumeroAutorizacion === "" ||
+              value.Id === ""
             }
           />
         </Grid>
@@ -217,12 +203,6 @@ export function Autorizacion() {
           alignItems={"center"}
           mt={{ xs: 4, md: 0 }}
         >
-          {/* <Grid item lg={3}>
-            <Button sx={queries.buttonContinuar} variant="outlined">
-              Asignar
-            </Button>
-          </Grid> */}
-
           <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
@@ -234,7 +214,6 @@ export function Autorizacion() {
                     backgroundColor: "rgba(47, 47, 47, 0.4)",
                     color: "#000",
                   },
-                  //fontSize: "90%",
                   borderRadius: "0.8vh",
                   textTransform: "capitalize",
                   fontSize: "75%",
@@ -259,190 +238,182 @@ export function Autorizacion() {
         </Grid>
       </Grid>
 
-      <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
-        <Paper
-          sx={{
-            width: "95%",
-          }}
-        >
-          <TableContainer
+      {autorizacionSelect?.NumeroAutorizacion && (
+        <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
+          <Paper
             sx={{
-              width: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                height: ".6vh",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
+              width: "95%",
             }}
           >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {heads.map((head, index) => (
-                    <StyledTableCell align="center" key={index}>
-                      {head.label}
+            <TableContainer
+              sx={{
+                width: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: ".6vh",
+                  mt: 1,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell align="center" key={index}>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell align="center" component="th">
+                      <Typography>
+                        {autorizacionSelect?.NumeroAutorizacion}
+                      </Typography>
                     </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
+                    <StyledTableCell align="center" component="th">
+                      <Typography>
+                        {autorizacionSelect?.FechaPublicacion}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      component="th"
+                      sx={{ width: 200 }}
+                    >
+                      <Typography>
+                        {autorizacionSelect?.MontoAutorizado}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th">
+                      <Typography>
+                        {autorizacionSelect?.DescripcionMedioPublicacion}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th">
+                      <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                        <IconButton
+                          onClick={() => {
+                            setFileSelected(
+                              `data:application/pdf;base64,${
+                                arrDocs.filter((td: any) =>
+                                  td.nombre.includes(
+                                    autorizacionSelect?.DocumentoSoporte
+                                  )
+                                )[0].file
+                              }`
+                            );
 
-              <TableBody>
-                {autorizacionSelect &&
-                  autorizacionSelect.map((row: any, index: number) => {
-                    return (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell align="center" component="th">
-                          <Typography>{"row.destinoAutorizado"}</Typography>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          <Typography>{row.NumeroAutorizacion}</Typography>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          <Typography>
-                            {format(
-                              new Date(row.FechaPublicacion),
-                              "dd/MM/yyyy"
-                            )}
-                          </Typography>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          sx={{ width: 200 }}
-                        >
-                          <Typography>{row.MontoAutorizado}</Typography>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          <Typography>
-                            {row.DescripcionMedioPublicacion}
-                          </Typography>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          <Tooltip
-                            title={
-                              JSON.parse(row.DocumentoSoporte)?.nombreArchivo
-                            }
-                          >
-                            <IconButton
-                              onClick={() => {
-                                setFileSelected(
-                                  `data:application/pdf;base64,${
-                                    arrDocs.filter((td: any) =>
-                                      td.nombre.includes(
-                                        JSON.parse(row.DocumentoSoporte)
-                                          ?.nombreArchivo
-                                      )
-                                    )[0].file
-                                  }`
-                                );
-
-                                setShowModalPrevia(true);
-                              }}
-                            >
-                              <FileOpenIcon></FileOpenIcon>
-                            </IconButton>
-                          </Tooltip>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          <Typography>
-                            {JSON.parse(row.DetalleDestino)[0].detalleDestino}
-                          </Typography>
-                        </StyledTableCell>
-
-                        <StyledTableCell
-                          sx={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2,1fr)",
+                            setShowModalPrevia(true);
                           }}
-                          align="center"
                         >
-                          <Tooltip title="Eliminar">
-                            <IconButton
-                              disabled={reestructura === "con autorizacion"}
-                              type="button"
-                              onClick={() => {
-                                setIndexTabla(index);
-                                changeIdAutorizacion(row.Id || "");
-                                setDialogNumAutorizacion(
-                                  row.NumeroAutorizacion
-                                );
-                                setOpenDialogEliminarAutorizacion(
-                                  !openDialogEliminarAutorizacion
-                                );
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
+                          <FileOpenIcon></FileOpenIcon>
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th">
+                      <Typography>
+                        {autorizacionSelect?.DetalleDestino &&
+                          JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                            .detalleDestino}
+                      </Typography>
+                    </StyledTableCell>
 
-                          <Tooltip title="Editar">
-                            <IconButton
-                              disabled={reestructura === "con autorizacion"}
-                              type="button"
-                              onClick={() => {
-                                setAccion("Editar");
-                                changeIdAutorizacion(row?.Id);
-                                setAutorizacion(
-                                  {
-                                    entidad: {
-                                      Id: row.IdEntidad,
-                                      Organismo: row.DescripcionEntidad,
-                                    },
-                                    numeroAutorizacion: row.NumeroAutorizacion,
-                                    fechaPublicacion: row.FechaPublicacion,
-                                    medioPublicacion: {
-                                      Id: row.IdMedioPublicacion,
-                                      Descripcion:
-                                        row.DescripcionMedioPublicacion,
-                                    },
-                                    montoAutorizado: row.MontoAutorizado,
-                                    documentoSoporte: JSON.parse(
-                                      row.DocumentoSoporte
-                                    ),
-                                    acreditacionQuorum: JSON.parse(
-                                      row.AcreditacionQuorum
-                                    ),
-                                  },
-                                  JSON.parse(row.DestinoAutorizado),
-                                  JSON.parse(row.DetalleDestino)
-                                );
-                                setOpenNuevaAutorizacion(
-                                  !openDialogNuevaAutorizacion
-                                );
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Grid>
+                    <StyledTableCell
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2,1fr)",
+                      }}
+                      align="center"
+                    >
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          disabled={reestructura === "con autorizacion"}
+                          type="button"
+                          onClick={() => {
+                            setDialogNumAutorizacion(
+                              autorizacionSelect?.NumeroAutorizacion
+                            );
+                            setOpenDialogEliminarAutorizacion(
+                              !openDialogEliminarAutorizacion
+                            );
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
 
-      <DialogEliminarAutorizacion
-        idAutorizacion={idAutorizacion}
-        handler={setOpenDialogEliminarAutorizacion}
-        openState={openDialogEliminarAutorizacion}
-        numeroAutorizacion={dialogNumAutorizacion}
-        index={indexTabla}
-      />
+                      <Tooltip title="Editar">
+                        <IconButton
+                          disabled={reestructura === "con autorizacion"}
+                          type="button"
+                          onClick={() => {
+                            setAccion("Editar");
+                            setAutorizacion(
+                              {
+                                entidad: {
+                                  Id: autorizacionSelect?.IdEntidad,
+                                  Organismo: autorizacionSelect?.Entidad,
+                                },
+                                numeroAutorizacion:
+                                  autorizacionSelect?.NumeroAutorizacion,
+                                fechaPublicacion:
+                                  autorizacionSelect?.FechaPublicacion,
+                                medioPublicacion: {
+                                  Id: autorizacionSelect?.IdMedioPublicacion,
+                                  Descripcion:
+                                    autorizacionSelect?.DescripcionMedioPublicacion,
+                                },
+                                montoAutorizado:
+                                  autorizacionSelect?.MontoAutorizado,
+                                documentoSoporte:
+                                  autorizacionSelect?.DocumentoSoporte,
+                                acreditacionQuorum:
+                                  autorizacionSelect?.AcreditacionQuorum,
+                              },
+                              JSON.parse(autorizacionSelect?.DestinoAutorizado),
+                              JSON.parse(autorizacionSelect?.DetalleDestino)
+                            );
+                            setOpenNuevaAutorizacion(
+                              !openDialogNuevaAutorizacion
+                            );
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+      )}
 
-      <DialogNuevaAutorizacion
-        handler={setOpenNuevaAutorizacion}
-        openState={openDialogNuevaAutorizacion}
-        accion={accion}
-      />
+      {openDialogEliminarAutorizacion && (
+        <DialogEliminarAutorizacion
+          handler={setOpenDialogEliminarAutorizacion}
+          openState={openDialogEliminarAutorizacion}
+          numeroAutorizacion={dialogNumAutorizacion}
+        />
+      )}
+
+      {openDialogNuevaAutorizacion && (
+        <DialogNuevaAutorizacion
+          handler={setOpenNuevaAutorizacion}
+          openState={openDialogNuevaAutorizacion}
+          accion={accion}
+        />
+      )}
 
       <Dialog
         open={showModalPrevia}

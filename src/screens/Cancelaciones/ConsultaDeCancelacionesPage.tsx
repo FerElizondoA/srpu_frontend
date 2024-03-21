@@ -128,8 +128,8 @@ export function ConsultaDeCancelacionesPage() {
   const changeEncabezado: Function = useCortoPlazoStore(
     (state) => state.changeEncabezado
   );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
+  const setInformacionGeneral: Function = useCortoPlazoStore(
+    (state) => state.setInformacionGeneral
   );
   const addObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.addObligadoSolidarioAval
@@ -148,8 +148,8 @@ export function ConsultaDeCancelacionesPage() {
   const changeEncabezadoLP: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
   );
-  const changeInformacionGeneralLP: Function = useLargoPlazoStore(
-    (state) => state.changeInformacionGeneral
+  const setInformacionGeneralLP: Function = useLargoPlazoStore(
+    (state) => state.setInformacionGeneral
   );
   const addObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
     (state) => state.addObligadoSolidarioAval
@@ -163,8 +163,8 @@ export function ConsultaDeCancelacionesPage() {
   const changeReglasAplicablesLP: Function = useLargoPlazoStore(
     (state) => state.changeReglasAplicables
   );
-  const changeGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGastosCostos
+  const setGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.setGastosCostos
   );
   const addGeneralGastosCostos: Function = useLargoPlazoStore(
     (state) => state.addGastosCostos
@@ -178,7 +178,7 @@ export function ConsultaDeCancelacionesPage() {
 
       changeReglasAplicables(aux?.inscripcion.declaratorias);
       changeEncabezado(aux?.encabezado);
-      changeInformacionGeneral(aux?.informacionGeneral);
+      setInformacionGeneral(aux?.informacionGeneral);
 
       aux?.informacionGeneral.obligadosSolidarios.map(
         (v: any, index: number) => {
@@ -196,8 +196,8 @@ export function ConsultaDeCancelacionesPage() {
 
       changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
       changeEncabezadoLP(aux?.encabezado);
-      changeInformacionGeneralLP(aux?.informacionGeneral);
-      changeGastosCostos(aux?.GastosCostos);
+      setInformacionGeneralLP(aux?.informacionGeneral);
+      setGastosCostos(aux?.GastosCostos);
 
       aux?.informacionGeneral.obligadosSolidarios.map(
         (v: any, index: number) => {

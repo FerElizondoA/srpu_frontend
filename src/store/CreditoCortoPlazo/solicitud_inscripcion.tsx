@@ -102,15 +102,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    console.log(state.encabezado);
-    console.log(state.informacionGeneral);
-    console.log(state.tablaCondicionesFinancieras);
-    console.log(state.tablaDocumentos);
-    console.log(state.inscripcion);
-    console.log(state.reglasAplicables);
-
     const solicitud: any = {
       encabezado: state.encabezado,
+
       informacionGeneral: {
         informacionGeneral: state.informacionGeneral,
         obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
@@ -120,7 +114,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
           })
         ),
       },
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
+
       documentacion: state.tablaDocumentos.map(
         ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
           descripcionTipo,
@@ -134,8 +130,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         declaratorias: state.reglasAplicables,
       },
     };
-
-    console.log(solicitud);
 
     return await axios
       .post(
@@ -161,8 +155,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log(data.data);
-
         inscripcionState.setInscripcion(data.data);
         state.addComentario(data.data.Id, comentario, "Captura");
         state.saveFiles(

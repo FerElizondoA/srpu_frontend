@@ -1,11 +1,11 @@
-import axios from "axios";
 import { StateCreator } from "zustand";
-import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import {
   IInformacionGeneral,
   IObligadoSolidarioAval,
 } from "../CreditoCortoPlazo/informacion_general";
 import { useLargoPlazoStore } from "./main";
+import { ICatalogo } from "../../screens/Config/Catalogos";
+import axios from "axios";
 
 export interface IGastosCostos {
   destino: { Id: string; Descripcion: string };
@@ -22,7 +22,7 @@ export interface IGastosCostos {
   saldoVigente: number;
 }
 
-export interface InformacionGeneralSlice {
+export interface InformacionGeneralLpSlice {
   informacionGeneral: IInformacionGeneral;
 
   generalObligadoSolidarioAval: {
@@ -36,23 +36,24 @@ export interface InformacionGeneralSlice {
 
   tablaGastosCostos: IGastosCostos[];
 
-  changeInformacionGeneral: (informacionGeneral: any) => void;
+  setInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
     newObligadoSolidarioAval: IObligadoSolidarioAval
   ) => void;
 
-  changeObligadoSolidarioAval: (
-    obligadoSolidario: { Id: string; Descripcion: string },
-    tipoEntePublicoObligado: { Id: string; Descripcion: string },
-    entePublicoObligado: { Id: string; Descripcion: string }
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
   ) => void;
+  setTablaGastosCostos: (gastosCostos: IGastosCostos[]) => void;
+
+  setObligadoSolidarioAval: (obligadoSolidario: any) => void;
 
   cleanObligadoSolidarioAval: () => void;
 
   removeObligadoSolidarioAval: (index: number) => void;
 
-  changeGastosCostos: (GastosCostos: IGastosCostos) => void;
+  setGastosCostos: (GastosCostos: IGastosCostos) => void;
 
   addGastosCostos: (GastosCostos: IGastosCostos) => void;
 
@@ -61,15 +62,16 @@ export interface InformacionGeneralSlice {
 
   removeGastosCostos: (index: number) => void;
 
-  addDocumento: (newDocumento: File, nombreArchivo: string) => void;
+  addDocumentoLp: (newDocumento: File, nombreArchivo: string) => void;
   removeDocumento: (index: number) => void;
 
   catalogoDetallesInversion: ICatalogo[];
+
   getDetallesInversion: () => void;
 }
 
-export const createInformacionGeneralSlice: StateCreator<
-  InformacionGeneralSlice
+export const createInformacionGeneralLpSlice: StateCreator<
+  InformacionGeneralLpSlice
 > = (set, get) => ({
   informacionGeneral: {
     fechaContratacion: new Date().toString(),
@@ -105,7 +107,7 @@ export const createInformacionGeneralSlice: StateCreator<
 
   tablaGastosCostos: [],
 
-  changeInformacionGeneral: (informacionGeneral: any) =>
+  setInformacionGeneral: (informacionGeneral: any) =>
     set(() => ({
       informacionGeneral: informacionGeneral,
     })),
@@ -120,7 +122,19 @@ export const createInformacionGeneralSlice: StateCreator<
       ],
     })),
 
-  changeObligadoSolidarioAval: (obligadoSolidario: any) =>
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
+  ) =>
+    set((state) => ({
+      tablaObligadoSolidarioAval: obligadoSolidarioAval,
+    })),
+
+  setTablaGastosCostos: (gastosCostos: IGastosCostos[]) =>
+    set((state) => ({
+      tablaGastosCostos: gastosCostos,
+    })),
+
+  setObligadoSolidarioAval: (obligadoSolidario: any) =>
     set(() => ({
       generalObligadoSolidarioAval: obligadoSolidario,
     })),
@@ -135,7 +149,7 @@ export const createInformacionGeneralSlice: StateCreator<
       ),
     })),
 
-  changeGastosCostos: (GastosCostos: IGastosCostos) =>
+  setGastosCostos: (GastosCostos: IGastosCostos) =>
     set(() => ({
       gastosCostos: GastosCostos,
     })),
@@ -173,7 +187,7 @@ export const createInformacionGeneralSlice: StateCreator<
       tablaGastosCostos: state.tablaGastosCostos.filter((_, i) => i !== index),
     })),
 
-  addDocumento: (newDocument: File, nombreArchivo: string) => {
+  addDocumentoLp: (newDocument: File, nombreArchivo: string) => {
     let state = useLargoPlazoStore.getState();
     set(() => ({
       gastosCostos: {

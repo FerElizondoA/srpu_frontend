@@ -25,12 +25,12 @@ import {
 import { TasaEfectivaSlice, createTasaEfectivaSlice } from "./tasa_efectiva";
 import { DocumentosSlice, createDocumentoSlice } from "./documentacion";
 import {
-  InformacionGeneralSlice,
-  createInformacionGeneralSlice,
+  InformacionGeneralLpSlice,
+  createInformacionGeneralLpSlice,
 } from "./informacion_general";
 
 export type SolicitudStoreCSLP = EncabezadoSlice &
-  InformacionGeneralSlice &
+  InformacionGeneralLpSlice &
   CondicionFinancieraSlice &
   PagosCapitalSlice &
   TasaEfectivaSlice &
@@ -42,7 +42,7 @@ export type SolicitudStoreCSLP = EncabezadoSlice &
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createEncabezadoSlice(...x),
-  ...createInformacionGeneralSlice(...x),
+  ...createInformacionGeneralLpSlice(...x),
   ...createCondicionFinancieraSlice(...x),
   ...createPagosCapitalSlice(...x),
   ...createTasaEfectivaSlice(...x),

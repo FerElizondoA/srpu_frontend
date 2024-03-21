@@ -58,12 +58,13 @@ export function DialogNuevaAutorizacion(props: Props) {
   const autorizacion: IGeneralAutorizado = useLargoPlazoStore(
     (state) => state.autorizacion
   );
-  const tablaDestinoAutorizado: IMontoAutorizado[] = useLargoPlazoStore(
-    (state) => state.tablaDestinoAutorizado
+  const tablaMontoAutorizado: IMontoAutorizado[] = useLargoPlazoStore(
+    (state) => state.tablaMontoAutorizado
   );
   const tablaDetalleDestino: IDetalleDestino[] = useLargoPlazoStore(
     (state) => state.tablaDetalleDestino
   );
+
   const createAutorizacion: Function = useLargoPlazoStore(
     (state) => state.createAutorizacion
   );
@@ -71,37 +72,12 @@ export function DialogNuevaAutorizacion(props: Props) {
   const setAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setAutorizacion
   );
-
   const modificarAutorizacion: Function = useLargoPlazoStore(
     (state) => state.modificarAutorizacion
   );
-
-  const cleanAutorizacion = () => {
-    setAutorizacion(
-      {
-        entidad: {
-          Id: localStorage.getItem("IdEntePublicoObligado") || "",
-          Organismo: localStorage.getItem("EntePublicoObligado") || "",
-        },
-        numeroAutorizacion: 0,
-        fechaPublicacion: new Date().toString(),
-        medioPublicacion: { Id: "", Descripcion: "" },
-        montoAutorizado: 0,
-        documentoSoporte: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-        },
-        acreditacionQuorum: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-        },
-      },
-      [],
-      []
-    );
-  };
-
-  useEffect(() => {}, []);
+  const cleanAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.cleanAutorizacion
+  );
 
   return (
     <>
@@ -145,7 +121,7 @@ export function DialogNuevaAutorizacion(props: Props) {
                     autorizacion.montoAutorizado === 0 ||
                     autorizacion.documentoSoporte.nombreArchivo === "" ||
                     autorizacion.acreditacionQuorum.nombreArchivo === "" ||
-                    tablaDestinoAutorizado.length === 0 ||
+                    tablaMontoAutorizado.length === 0 ||
                     tablaDetalleDestino.length === 0
                   }
                   sx={queries.buttonContinuar}

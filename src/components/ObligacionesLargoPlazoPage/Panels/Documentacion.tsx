@@ -63,14 +63,14 @@ const heads: readonly Head[] = [
 export function Documentacion() {
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
-    (state) => state.catalogoTiposDocumentosLp
+    (state) => state.catalogoTiposDocumentos
   );
 
   const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
-    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatoriosLp);
+    useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
   const tablaDocumentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLp
+    (state) => state.tablaDocumentos
   );
 
   const addDocumento: Function = useLargoPlazoStore(
@@ -78,7 +78,7 @@ export function Documentacion() {
   );
 
   const setTablaDocumentos: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosLp
+    (state) => state.setTablaDocumentos
   );
 
   function cargarArchivo(event: any, index: number) {

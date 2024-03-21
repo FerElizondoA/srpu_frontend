@@ -39,7 +39,7 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.modificaSolicitud
   );
 
-  const addComentario: Function = useLargoPlazoStore(
+  const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 

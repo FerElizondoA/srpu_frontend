@@ -138,7 +138,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   // Documentación
   const documentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLp
+    (state) => state.tablaDocumentos
   );
 
   const [openTasa, setOpenTasa] = useState(false);

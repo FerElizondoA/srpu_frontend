@@ -28,6 +28,7 @@ import { DialogGuardarBorrador } from "../Dialog/DialogGuardarBorrador";
 import { ConfirmacionEnviarSolicitud } from "../Dialog/DialogEnviarSolicitud";
 import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud";
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -63,7 +64,7 @@ export function SolicitudDeInscripcion() {
   const solicitanteAutorizado: string = useLargoPlazoStore(
     (state) => state.encabezado.solicitanteAutorizado.Nombre
   );
-  const catalogoReglas: ICatalogo[] = useLargoPlazoStore(
+  const catalogoReglas: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoReglas
   );
   const changeReglasAplicables: Function = useLargoPlazoStore(
@@ -72,7 +73,7 @@ export function SolicitudDeInscripcion() {
   const reglasAplicables: string[] = useLargoPlazoStore(
     (state) => state.reglasAplicables
   );
-  const getReglas: Function = useLargoPlazoStore((state) => state.getReglas);
+  const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   useEffect(() => {
     getReglas();

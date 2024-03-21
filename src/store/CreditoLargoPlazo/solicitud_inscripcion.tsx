@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLargoPlazoStore } from "./main";
 import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface SolicitudInscripcionLargoPlazoSlice {
   inscripcion: {
@@ -29,12 +30,6 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
-
-  addComentario: (
-    idSolicitud: string,
-    comentario: string,
-    tipo: string
-  ) => void;
 
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
@@ -74,106 +69,91 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     comentario: string
   ) => {
     const state = useLargoPlazoStore.getState();
+    const cpState = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
     console.log(state.encabezado);
     console.log(state.informacionGeneral);
+    console.log(state.gastosCostos);
+    console.log(state.tablaGastosCostos);
+    console.log(state.autorizacionSelect);
+    console.log(state.tablaAsignarFuente);
+    console.log(state.mecanismoVehiculoPago);
     console.log(state.tablaCondicionesFinancieras);
     console.log(state.tablaDocumentos);
     console.log(state.inscripcion);
-    console.log(state.reglasAplicables);
 
-    // const solicitud: any = {
-    //   encabezado: state.encabezado,
-    //   informacionGeneral: {
-    //     informacionGeneral: state.informacionGeneral,
-    //     obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
-    //       ({
-    //         entePublicoObligado,
-    //         tipoEntePublicoObligado,
-    //       }: {
-    //         entePublicoObligado: { Id: string; Descripcion: string };
-    //         tipoEntePublicoObligado: { Id: string; Descripcion: string };
-    //       }) => ({
-    //         entePublicoObligado,
-    //         tipoEntePublicoObligado,
-    //       })
-    //     ),
-    //   },
+    const solicitud: any = {
+      encabezado: state.encabezado,
 
-    //   GastosCostos: {
-    //     ...state.GastosCostos,
-    //     gastosCostos: state.tablaGastosCostos,
-    //   },
-    //   detalleInversion: {
-    //     ...state.archivoDetalleInversion,
-    //   },
-    //   autorizacion: {
-    //     ...state.autorizacionSelect,
-    //   },
+      informacionGeneral: {
+        informacionGeneral: state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
+      },
 
-    //   condicionesFinancieras: state.tablaCondicionesFinancieras,
+      gastosCostos: state.tablaGastosCostos,
+      detalleInversion: {
+        ...state.tablaDetalleDestino,
+      },
 
-    //   documentacion: state.tablaDocumentos.map(
-    //     ({
-    //       descripcionTipo,
-    //       nombreArchivo,
-    //       tipoArchivo,
-    //     }: {
-    //       descripcionTipo: string;
-    //       nombreArchivo: string;
-    //       tipoArchivo: string;
-    //     }) => ({
-    //       descripcionTipo,
-    //       nombreArchivo,
-    //       tipoArchivo,
-    //     })
-    //   ),
+      autorizacion: state.autorizacionSelect,
 
-    //   inscripcion: {
-    //     servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
-    //     cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
-    //     declaratorias: state.reglasAplicables,
-    //   },
-    // };
+      condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-    // return await axios
-    //   .post(
-    //     process.env.REACT_APP_APPLICATION_BACK + "/create-solicitud",
-    //     {
-    //       IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
-    //       IdEntePublico: state.encabezado.organismo.Id,
-    //       TipoSolicitud: state.encabezado.tipoDocumento,
-    //       IdInstitucionFinanciera:
-    //         state.informacionGeneral.institucionFinanciera.Id,
-    //       Estatus: estatus,
-    //       IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
-    //       MontoOriginalContratado: state.informacionGeneral.monto,
-    //       FechaContratacion: state.encabezado.fechaContratacion,
-    //       Solicitud: JSON.stringify(solicitud),
-    //       IdEditor: localStorage.getItem("IdUsuario"),
-    //       CreadoPor: localStorage.getItem("IdUsuario"),
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: localStorage.getItem("jwtToken"),
-    //       },
-    //     }
-    //   )
-    //   .then(({ data }) => {
-    //     console.log(data);
+      documentacion: state.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+        })
+      ),
 
-    //     inscripcionState.setInscripcion({
-    //       ...inscripcionState.inscripcion,
-    //       NumeroRegistro: data.data.NumeroRegistro,
-    //       Id: data.data.Id,
-    //     });
-    //     state.addComentario(data.data.Id, comentario, "Captura");
-    //     state.saveFiles(
-    //       data.data.Id,
-    //       `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-    //     );
-    //   });
+      inscripcion: {
+        servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
+        cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
+        declaratorias: state.reglasAplicables,
+      },
+    };
+
+    console.log(solicitud);
+    console.log(JSON.stringify(solicitud));
+
+    return await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-solicitud",
+        {
+          IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
+          IdEntePublico: state.encabezado.organismo.Id,
+          TipoSolicitud: state.encabezado.tipoDocumento,
+          IdInstitucionFinanciera:
+            state.informacionGeneral.institucionFinanciera.Id,
+          Estatus: estatus,
+          IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
+          MontoOriginalContratado: state.informacionGeneral.monto,
+          FechaContratacion: state.encabezado.fechaContratacion,
+          Solicitud: JSON.stringify(solicitud),
+          IdEditor: localStorage.getItem("IdUsuario"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        inscripcionState.setInscripcion(data.data);
+        // cpState.addComentario(data.data.Id, comentario, "Captura");
+        // state.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        // );
+      });
   },
   modificaSolicitud: async (
     idCreador: string,
@@ -184,38 +164,45 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     const state = useLargoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    // const solicitud: any = {
-    //   encabezado: state.encabezado,
-    //   informacionGeneral: {
-    //     ...state.informacionGeneral,
-    //     obligadosSolidarios: state.tablaObligadoSolidarioAval,
-    //   },
+    const solicitud: any = {
+      encabezado: state.encabezado,
 
-    //   GastosCostos: {
-    //     ...state.gastosCostos,
-    //     gastosCostos: state.tablaGastosCostos,
-    //   },
+      informacionGeneral: {
+        informacionGeneral: state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
+      },
 
-    //   autorizacion: {
-    //     Autorizacion: state.autorizaciones,
-    //   },
+      GastosCostos: {
+        ...state.gastosCostos,
+        gastosCostos: state.tablaGastosCostos,
+      },
+      detalleInversion: {
+        ...state.tablaDetalleDestino,
+      },
 
-    //   condicionesFinancieras: state.tablaCondicionesFinancieras,
+      autorizacion: state.autorizacionSelect,
 
-    //   documentacion: state.tablaDocumentosLp.map((v: any, i: any) => {
-    //     return {
-    //       nombreArchivo: v.nombreArchivo,
-    //       tipoArchivo: v.tipoArchivo,
-    //       descripcionTipo: v.descripcionTipo,
-    //     };
-    //   }),
+      condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-    //   inscripcion: {
-    //     servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
-    //     cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
-    //     declaratorias: state.reglasAplicables,
-    //   },
-    // };
+      documentacion: state.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+        })
+      ),
+
+      inscripcion: {
+        servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
+        cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
+        declaratorias: state.reglasAplicables,
+      },
+    };
 
     await axios
       .put(
@@ -231,7 +218,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
-          // Solicitud: JSON.stringify(solicitud),
+          Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
           IdUsuario: idCreador,
         },
@@ -286,27 +273,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         });
       });
     return false;
-  },
-  addComentario: async (Id: string, comentario: any, tipo: string) => {
-    if (comentario.length !== 2) {
-      await axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
-          {
-            IdSolicitud: Id,
-            Comentario: comentario,
-            Tipo: "Captura",
-            IdUsuario: localStorage.getItem("IdUsuario"),
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {})
-        .catch((e) => {});
-    }
   },
   eliminarRequerimientos: async (Id: string, setState: Function) => {
     const Toast = Swal.mixin({

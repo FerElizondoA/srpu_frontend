@@ -29,19 +29,71 @@ import { format, lightFormat } from "date-fns";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
-import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import {
-  headsComision,
-  headsDisposicion,
-  headsTasa,
-} from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
-import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
 import {
   IDisposicion,
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/pagos_capital";
 import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+
+export const headsTasa: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Fecha de Primer Pago",
+  },
+  {
+    label: "Tasa Fija",
+  },
+  {
+    label: "Periodicidad de Pago",
+  },
+  {
+    label: "Tasa de Referencia",
+  },
+  {
+    label: "Sobretasa",
+  },
+  {
+    label: "Dias del Ejercicio",
+  },
+];
+
+export const headsComision: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Tipo de comisión",
+  },
+  {
+    label: "Fecha de primer pago",
+  },
+  {
+    label: "Periodicidad de Pago",
+  },
+  {
+    label: "Porcentaje",
+  },
+  {
+    label: "Monto",
+  },
+  {
+    label: "IVA",
+  },
+];
+
+export const headsDisposicion: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Fecha de Disposición",
+  },
+  {
+    label: "Importe de disposición",
+  },
+];
 
 const heads: readonly {
   label: string;
@@ -74,14 +126,22 @@ const heads: readonly {
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
+
   const tablaCondicionesFinancieras: ICondicionFinanciera[] =
     useLargoPlazoStore((state) => state.tablaCondicionesFinancieras);
+
   const loadCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.loadCondicionFinanciera
   );
 
+  const indexRegistro: number = useLargoPlazoStore(
+    (state) => state.indexRegistro
+  );
+  const setIndexRegistro: Function = useLargoPlazoStore(
+    (state) => state.setIndexRegistro
+  );
+
   const [accion, setAccion] = useState("Agregar");
-  const [indexA, setIndexA] = useState(0);
 
   const changeOpenAgregarState = (open: boolean) => {
     changeAgregarCondicion(open);
@@ -98,17 +158,6 @@ export function CondicionesFinancieras() {
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
   const [openDisposicion, setOpenDisposicion] = useState(false);
-
-  const setDisposicionesParciales: Function = useLargoPlazoStore(
-    (state) => state.setDisposicionesParciales
-  );
-  const setTasasParciales: Function = useLargoPlazoStore(
-    (state) => state.setTasasParciales
-  );
-
-  const changeTasaInteres: Function = useLargoPlazoStore(
-    (state) => state.changeTasaInteres
-  );
 
   const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
@@ -192,40 +241,10 @@ export function CondicionesFinancieras() {
                             disabled={disable}
                             type="button"
                             onClick={() => {
-                              changeOpenAgregarState(!openAgregarCondicion);
                               setAccion("Editar");
-                              setIndexA(index);
+                              changeOpenAgregarState(!openAgregarCondicion);
+                              setIndexRegistro(index);
                               loadCondicionFinanciera(row);
-
-                              if (row.disposicion.length > 1) {
-                                setDisposicionesParciales(true);
-                              }
-                              if (row.tasaInteres.length > 1) {
-                                setTasasParciales(true);
-                              } else {
-                                changeTasaInteres({
-                                  tasa: row.tasaInteres[0].tasaFija,
-                                  fechaPrimerPago:
-                                    row.tasaInteres[0].fechaPrimerPago ||
-                                    new Date().toString(),
-                                  diasEjercicio: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].diasEjercicio,
-                                  },
-                                  periocidadPago: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].periocidadPago,
-                                  },
-                                  tasaReferencia: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].tasaReferencia,
-                                  },
-                                  sobreTasa: row.tasaInteres[0].sobreTasa,
-                                });
-                              }
                             }}
                           >
                             <EditIcon />
@@ -317,14 +336,16 @@ export function CondicionesFinancieras() {
                         sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                       >
-                        <Button
-                          onClick={() => {
-                            setRowComision(row.comisiones);
-                            setOpenComision(true);
-                          }}
-                        >
-                          <InfoOutlinedIcon />
-                        </Button>
+                        {
+                          <Button
+                            onClick={() => {
+                              setRowComision(row.comisiones);
+                              setOpenComision(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
+                        }
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -437,16 +458,18 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell component="th" scope="row">
-                                {row.tipoDeComision.Descripcion}
+                                {row.tipoDeComision?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaComision),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row?.fechaComision !== "N/A"
+                                  ? format(
+                                      new Date(row?.fechaComision),
+                                      "dd/MM/yyyy"
+                                    )
+                                  : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periodicidadDePago.Descripcion}
+                                {row.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.porcentaje}
@@ -505,10 +528,7 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaDisposicion),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row.fechaDisposicion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.importe}
@@ -554,7 +574,7 @@ export function CondicionesFinancieras() {
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}
           accion={accion}
-          indexA={indexA}
+          indexA={indexRegistro}
         />
       </Grid>
     </Grid>
