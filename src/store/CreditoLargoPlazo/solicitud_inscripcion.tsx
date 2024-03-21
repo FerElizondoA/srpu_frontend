@@ -101,7 +101,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         ...state.tablaDetalleDestino,
       },
 
-      autorizacion: state.autorizacionSelect,
+      autorizacion: {
+        Id: state.autorizacionSelect.Id,
+        MontoAutorizado: state.autorizacionSelect.MontoAutorizado,
+        NumeroAutorizacion: state.autorizacionSelect.NumeroAutorizacion,
+      },
 
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
