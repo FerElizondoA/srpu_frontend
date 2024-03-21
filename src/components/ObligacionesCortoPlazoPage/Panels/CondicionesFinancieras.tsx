@@ -134,8 +134,14 @@ export function CondicionesFinancieras() {
     (state) => state.loadCondicionFinanciera
   );
 
+  const indexRegistro: number = useCortoPlazoStore(
+    (state) => state.indexRegistro
+  );
+  const setIndexRegistro: Function = useCortoPlazoStore(
+    (state) => state.setIndexRegistro
+  );
+
   const [accion, setAccion] = useState("Agregar");
-  const [indexA, setIndexA] = useState(0);
 
   const changeOpenAgregarState = (open: boolean) => {
     changeAgregarCondicion(open);
@@ -235,9 +241,11 @@ export function CondicionesFinancieras() {
                             disabled={disable}
                             type="button"
                             onClick={() => {
-                              changeOpenAgregarState(!openAgregarCondicion);
+                              console.log(row);
+
                               setAccion("Editar");
-                              setIndexA(index);
+                              changeOpenAgregarState(!openAgregarCondicion);
+                              setIndexRegistro(index);
                               loadCondicionFinanciera(row);
                             }}
                           >
@@ -330,14 +338,16 @@ export function CondicionesFinancieras() {
                         sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                       >
-                        <Button
-                          onClick={() => {
-                            setRowComision(row.comisiones);
-                            setOpenComision(true);
-                          }}
-                        >
-                          <InfoOutlinedIcon />
-                        </Button>
+                        {
+                          <Button
+                            onClick={() => {
+                              setRowComision(row.comisiones);
+                              setOpenComision(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
+                        }
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -450,16 +460,18 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell component="th" scope="row">
-                                {row.tipoDeComision.Descripcion}
+                                {row.tipoDeComision?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaComision),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row?.fechaComision !== "N/A"
+                                  ? format(
+                                      new Date(row?.fechaComision),
+                                      "dd/MM/yyyy"
+                                    )
+                                  : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periodicidadDePago.Descripcion}
+                                {row.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.porcentaje}
@@ -518,10 +530,7 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaDisposicion),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row.fechaDisposicion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.importe}
@@ -567,7 +576,7 @@ export function CondicionesFinancieras() {
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}
           accion={accion}
-          indexA={indexA}
+          indexA={indexRegistro}
         />
       </Grid>
     </Grid>

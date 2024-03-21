@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 
 import {
@@ -117,12 +118,13 @@ export function ComisionesTasaEfectiva() {
   const removeComision: Function = useCortoPlazoStore(
     (state) => state.removeComision
   );
-
-  const [noAplica, setNoAplica] = React.useState(false);
+  const noAplica: boolean = useCortoPlazoStore((state) => state.noAplica);
+  const setNoAplica: Function = useCortoPlazoStore(
+    (state) => state.setNoAplica
+  );
 
   React.useEffect(() => {
     catalogoTiposComision.length <= 0 && getTiposComision();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -132,24 +134,40 @@ export function ComisionesTasaEfectiva() {
     setRadioValue((event.target as HTMLInputElement).value);
   };
 
+  // React.useEffect(() => {
+  //   if (noAplica === false) {
+  //     setTablaComisiones([]);
+  //   } else {
+  //     if (radioValue === "Porcentaje Fijo") {
+  //       setTablaComisiones([
+  //         {
+  //           fechaComision: "N/A",
+  //           tipoDeComision: "N/A",
+  //           periodicidadPago: "N/A",
+  //           porcentaje: "N/A",
+  //           monto: "N/A",
+  //           iva: "N/A",
+  //         },
+  //       ]);
+  //     } else {
+  //       setTablaComisiones([{ ...comision, porcentaje: "N/A" }]);
+  //     }
+  //   }
+  // }, [noAplica]);
+
   React.useEffect(() => {
     if (noAplica === false) {
-      setTablaComisiones([]);
     } else {
-      if (radioValue === "Porcentaje Fijo") {
-        setTablaComisiones([
-          {
-            fechaComision: "N/A",
-            tipoDeComision: "N/A",
-            periodicidadPago: "N/A",
-            porcentaje: "N/A",
-            monto: "N/A",
-            iva: "N/A",
-          },
-        ]);
-      } else {
-        setTablaComisiones([{ ...comision, porcentaje: "N/A" }]);
-      }
+      setTablaComisiones([
+        {
+          fechaComision: "N/A",
+          tipoDeComision: "N/A",
+          periodicidadPago: "N/A",
+          porcentaje: "N/A",
+          monto: "N/A",
+          iva: "N/A",
+        },
+      ]);
     }
   }, [noAplica]);
 
@@ -223,7 +241,13 @@ export function ComisionesTasaEfectiva() {
             }}
             value={tasaEfectiva.diasEjercicio}
             onChange={(event, text) =>
-              setTasaEfectiva({ ...tasaEfectiva, diasEjercicio: text })
+              setTasaEfectiva({
+                ...tasaEfectiva,
+                diasEjercicio: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
+                },
+              })
             }
             renderInput={(params) => (
               <TextField
@@ -286,7 +310,8 @@ export function ComisionesTasaEfectiva() {
               <Checkbox
                 checked={noAplica}
                 onChange={(v) => {
-                  setNoAplica(!noAplica);
+                  setNoAplica();
+                  setTablaComisiones([]);
                 }}
               />
             }
@@ -328,8 +353,14 @@ export function ComisionesTasaEfectiva() {
               );
             }}
             value={comision.tipoDeComision}
-            onChange={(event, v) => {
-              setComision({ ...comision, tipoDeComision: v });
+            onChange={(event, text) => {
+              setComision({
+                ...comision,
+                tipoDeComision: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
+                },
+              });
             }}
             renderInput={(params) => (
               <TextField
@@ -364,7 +395,13 @@ export function ComisionesTasaEfectiva() {
             }}
             value={comision.periodicidadDePago}
             onChange={(event, text) =>
-              setComision({ ...comision, periodicidadDePago: text })
+              setComision({
+                ...comision,
+                periodicidadDePago: {
+                  Id: text?.Id,
+                  Descripcion: text?.Descripcion,
+                },
+              })
             }
             renderInput={(params) => (
               <TextField

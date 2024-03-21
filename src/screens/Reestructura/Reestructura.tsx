@@ -84,8 +84,8 @@ export function SolicitudesReestructura() {
     (state) => state.changeReglasAplicables
   );
 
-  const changeGastosCostos: Function = useLargoPlazoStore(
-    (state) => state.changeGastosCostos
+  const setGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.setGastosCostos
   );
 
   const changeInformacionGeneralLP: Function = useLargoPlazoStore(
@@ -124,7 +124,7 @@ export function SolicitudesReestructura() {
     changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
     changeEncabezadoLP(aux?.encabezado);
     changeInformacionGeneralLP(aux?.informacionGeneral);
-    changeGastosCostos(aux?.GastosCostos);
+    setGastosCostos(aux?.GastosCostos);
 
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       return addObligadoSolidarioAvalLP(v);

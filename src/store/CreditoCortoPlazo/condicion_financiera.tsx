@@ -2,6 +2,7 @@ import { StateCreator } from "zustand";
 import { useCortoPlazoStore } from "./main";
 import { IDisposicion, IPagosDeCapital, ITasaInteres } from "./pagos_capital";
 import { IComisiones, ITasaEfectiva } from "./tasa_efectiva";
+import { format } from "date-fns";
 
 export interface ICondicionFinanciera {
   pagosDeCapital: IPagosDeCapital;
@@ -13,6 +14,9 @@ export interface ICondicionFinanciera {
 }
 
 export interface CondicionFinancieraSlice {
+  indexRegistro: number;
+  setIndexRegistro: (index: number) => void;
+
   tablaCondicionesFinancieras: ICondicionFinanciera[];
 
   addCondicionFinanciera: (condicion: ICondicionFinanciera) => void;
@@ -20,8 +24,7 @@ export interface CondicionFinancieraSlice {
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => void;
 
   updateCondicionFinanciera: (
-    condicionFinanciera: ICondicionFinanciera,
-    index: number
+    condicionFinanciera: ICondicionFinanciera
   ) => void;
 
   removeCondicionFinanciera: (index: number) => void;
@@ -32,6 +35,13 @@ export interface CondicionFinancieraSlice {
 export const createCondicionFinancieraSlice: StateCreator<
   CondicionFinancieraSlice
 > = (set, get) => ({
+  indexRegistro: 0,
+  setIndexRegistro: (index: number) => {
+    set((state) => ({
+      indexRegistro: index,
+    }));
+  },
+
   tablaCondicionesFinancieras: [],
 
   addCondicionFinanciera: (condicion: ICondicionFinanciera) => {
@@ -45,39 +55,37 @@ export const createCondicionFinancieraSlice: StateCreator<
 
   loadCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     useCortoPlazoStore.setState({
+      radioValue: 1,
+      tasasParciales: condicionFinanciera.tasaInteres.length > 1,
+      disposicionesParciales: condicionFinanciera.disposicion.length > 1,
+
+      noAplica: condicionFinanciera.comisiones[0]?.monto === "N/A",
+
+      pagosDeCapital: condicionFinanciera.pagosDeCapital,
       tablaDisposicion: condicionFinanciera.disposicion,
-      disposicion: condicionFinanciera.disposicion[0],
-    });
-    useCortoPlazoStore.setState({
-      pagosDeCapital: {
-        fechaPrimerPago: condicionFinanciera.pagosDeCapital.fechaPrimerPago,
-        periodicidadDePago:
-          condicionFinanciera.pagosDeCapital.periodicidadDePago,
-        numeroDePago: condicionFinanciera.pagosDeCapital.numeroDePago,
-      },
-    });
-    useCortoPlazoStore.setState({
+      tasaDeInteres:
+        condicionFinanciera.tasaInteres.length === 1
+          ? condicionFinanciera.tasaInteres[0]
+          : {
+              tasaFija: "",
+              fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+              diasEjercicio: { Id: "", Descripcion: "" },
+              periocidadPago: { Id: "", Descripcion: "" },
+              tasaReferencia: { Id: "", Descripcion: "" },
+              sobreTasa: 0,
+            },
       tablaTasaInteres: condicionFinanciera.tasaInteres,
-    });
-    useCortoPlazoStore.setState({
+
+      tasaEfectiva: condicionFinanciera.tasaEfectiva,
       tablaComisiones: condicionFinanciera.comisiones,
-    });
-    useCortoPlazoStore.setState({
-      tasaEfectiva: {
-        diasEjercicio: condicionFinanciera.tasaEfectiva.diasEjercicio,
-        tasaEfectiva: condicionFinanciera.tasaEfectiva.tasaEfectiva,
-      },
     });
   },
 
-  updateCondicionFinanciera: (
-    condicionFinanciera: ICondicionFinanciera,
-    index: number
-  ) => {
+  updateCondicionFinanciera: (condicionFinanciera: ICondicionFinanciera) => {
     set((state) => {
       const nuevaTabla = [...state.tablaCondicionesFinancieras];
 
-      nuevaTabla[index] = condicionFinanciera;
+      nuevaTabla[state.indexRegistro] = condicionFinanciera;
 
       return {
         tablaCondicionesFinancieras: nuevaTabla,
@@ -91,6 +99,50 @@ export const createCondicionFinancieraSlice: StateCreator<
       ),
     })),
 
-  cleanCondicionFinanciera: () =>
+  cleanCondicionFinanciera: () => {
+    useCortoPlazoStore.setState({
+      radioValue: 1,
+      tasasParciales: false,
+      disposicionesParciales: false,
+
+      noAplica: false,
+
+      pagosDeCapital: {
+        fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+        periodicidadDePago: { Id: "", Descripcion: "" },
+        numeroDePago: 1,
+      },
+      disposicion: {
+        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        importe: "$ 0.00",
+      },
+      tablaDisposicion: [],
+      tasaDeInteres: {
+        tasaFija: "",
+        fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+        diasEjercicio: { Id: "", Descripcion: "" },
+        periocidadPago: { Id: "", Descripcion: "" },
+        tasaReferencia: { Id: "", Descripcion: "" },
+        sobreTasa: 0,
+      },
+      tablaTasaInteres: [],
+
+      tasaEfectiva: {
+        tasaEfectiva: "",
+        diasEjercicio: { Id: "", Descripcion: "" },
+      },
+      comision: {
+        fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
+        tipoDeComision: { Id: "", Descripcion: "" },
+        periodicidadDePago: { Id: "", Descripcion: "" },
+        monto: "0",
+        porcentaje: "",
+        iva: false,
+      },
+      tablaComisiones: [],
+    });
+  },
+
+  cleanTablaCondicionesFinancieras: () =>
     set(() => ({ tablaCondicionesFinancieras: [] })),
 });

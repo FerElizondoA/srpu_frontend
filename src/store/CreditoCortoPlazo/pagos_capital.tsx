@@ -1,6 +1,7 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { format } from "date-fns";
 
 export interface IPagosDeCapital {
   fechaPrimerPago: string;
@@ -21,6 +22,15 @@ export interface ITasaInteres {
 }
 
 export interface PagosCapitalSlice {
+  radioValue: number;
+  setRadioValue: (radioValue: number) => void;
+
+  tasasParciales: boolean;
+  setTasasParciales: () => void;
+
+  disposicionesParciales: boolean;
+  setDisposicionesParciales: () => void;
+
   pagosDeCapital: IPagosDeCapital;
   setPagosDeCapital: (pagosDeCapital: IPagosDeCapital) => void;
 
@@ -54,8 +64,29 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   set,
   get
 ) => ({
+  radioValue: 1,
+  setRadioValue: (radioValue: number) => {
+    set((state) => ({
+      radioValue: radioValue,
+    }));
+  },
+
+  tasasParciales: false,
+  setTasasParciales: () => {
+    set((state) => ({
+      tasasParciales: !state.tasasParciales,
+    }));
+  },
+
+  disposicionesParciales: false,
+  setDisposicionesParciales: () => {
+    set((state) => ({
+      disposicionesParciales: !state.disposicionesParciales,
+    }));
+  },
+
   pagosDeCapital: {
-    fechaPrimerPago: new Date().toString(),
+    fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
     numeroDePago: 1,
   },
@@ -65,7 +96,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     }));
   },
   disposicion: {
-    fechaDisposicion: new Date().toString(),
+    fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
     importe: "$ 0.00",
   },
   setDisposicion: (disposicion: IDisposicion) => {
@@ -77,7 +108,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
 
   tasaDeInteres: {
     tasaFija: "",
-    fechaPrimerPago: new Date().toString(),
+    fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
     diasEjercicio: { Id: "", Descripcion: "" },
     periocidadPago: { Id: "", Descripcion: "" },
     tasaReferencia: { Id: "", Descripcion: "" },
@@ -102,7 +133,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     set((state) => ({
       tablaDisposicion: [
         {
-          fechaDisposicion: new Date().toString(),
+          fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
           importe: monto,
         },
       ],

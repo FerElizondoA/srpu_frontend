@@ -1,66 +1,54 @@
 import { create } from "zustand";
-
+import { EncabezadoSlice, createEncabezadoSlice } from "./encabezado";
 import {
   AutorizacionLargoPlazoSlice,
   createAutorizacionLargoPlazoSlice,
 } from "./autorizacion";
 import {
+  CondicionFinancieraSlice,
+  createCondicionFinancieraSlice,
+} from "./condicion_financiera";
+import { PagosCapitalSlice, createPagosCapitalSlice } from "./pagos_capital";
+import {
   ComentarioApartadoLargoPlazoSlice,
   createComentarioLargoPlazoSlice,
 } from "./comentarios_apartado";
-import {
-  EncabezadoLargoPlazoSlice,
-  createEncabezadoLargoPlazoSlice,
-} from "./encabezado";
-import {
-  InformacionGeneralLargoPlazoSlice,
-  createInformacionGeneralLargoPlazoSlice,
-} from "./informacion_general";
-import {
-  PagosCapitalLargoPlazoSlice,
-  createPagosCapitalLargoPlazoSlice,
-} from "./pagos_capital";
+
 import {
   SolicitudInscripcionLargoPlazoSlice,
   createSolicitudInscripcionLargoPlazoSlice,
 } from "./solicitud_inscripcion";
 import {
-  TasaEfectivaLargoPlazoSlice,
-  createTasaEfectivaLargoPlazoSlice,
-} from "./tasa_efectiva";
-import {
-  CondicionFinancieraSlice,
-  createCondicionFinancieraSlice,
-} from "./condicion_financiera";
-import {
   FuenteDePagoLargoPlazoSlice,
   createFuentePagoLargoPLazoSlice,
 } from "./fuenteDePago";
+import { TasaEfectivaSlice, createTasaEfectivaSlice } from "./tasa_efectiva";
+import { DocumentosSlice, createDocumentoSlice } from "./documentacion";
 import {
-  DocumentosLargoPlazoSlice,
-  createDocumentoLargoPlazoSlice,
-} from "./documentacion";
+  InformacionGeneralSlice,
+  createInformacionGeneralSlice,
+} from "./informacion_general";
 
-export type SolicitudStoreCSLP = EncabezadoLargoPlazoSlice &
-  InformacionGeneralLargoPlazoSlice &
+export type SolicitudStoreCSLP = EncabezadoSlice &
+  InformacionGeneralSlice &
   CondicionFinancieraSlice &
-  PagosCapitalLargoPlazoSlice &
-  TasaEfectivaLargoPlazoSlice &
+  PagosCapitalSlice &
+  TasaEfectivaSlice &
   SolicitudInscripcionLargoPlazoSlice &
   ComentarioApartadoLargoPlazoSlice &
-  DocumentosLargoPlazoSlice &
+  DocumentosSlice &
   FuenteDePagoLargoPlazoSlice &
   AutorizacionLargoPlazoSlice;
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
-  ...createEncabezadoLargoPlazoSlice(...x),
-  ...createInformacionGeneralLargoPlazoSlice(...x),
+  ...createEncabezadoSlice(...x),
+  ...createInformacionGeneralSlice(...x),
   ...createCondicionFinancieraSlice(...x),
-  ...createPagosCapitalLargoPlazoSlice(...x),
-  ...createTasaEfectivaLargoPlazoSlice(...x),
+  ...createPagosCapitalSlice(...x),
+  ...createTasaEfectivaSlice(...x),
   ...createSolicitudInscripcionLargoPlazoSlice(...x),
   ...createComentarioLargoPlazoSlice(...x),
-  ...createDocumentoLargoPlazoSlice(...x),
+  ...createDocumentoSlice(...x),
   ...createFuentePagoLargoPLazoSlice(...x),
   ...createAutorizacionLargoPlazoSlice(...x),
 }));

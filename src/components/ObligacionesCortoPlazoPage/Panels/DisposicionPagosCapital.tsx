@@ -31,8 +31,9 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { addDays, lightFormat } from "date-fns";
+import { addDays } from "date-fns";
 
+import { format } from "date-fns";
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
@@ -175,20 +176,35 @@ export function DisposicionPagosCapital() {
     (state) => state.encabezado.fechaContratacion
   );
 
+  const tasasParciales: boolean = useCortoPlazoStore(
+    (state) => state.tasasParciales
+  );
+  const disposicionesParciales: boolean = useCortoPlazoStore(
+    (state) => state.disposicionesParciales
+  );
+
+  const setTasasParciales: Function = useCortoPlazoStore(
+    (state) => state.setTasasParciales
+  );
+  const setDisposicionesParciales: Function = useCortoPlazoStore(
+    (state) => state.setDisposicionesParciales
+  );
+
   useEffect(() => {
     catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
     catalogoTasaReferencia.length <= 0 && getTasaReferencia();
     catalogoDiasEjercicio.length <= 0 && getDiasEjercicio();
   }, []);
 
-  const [tasasParciales, setTasasParciales] = useState(false);
-  const [disposicionesParciales, setDisposicionesParciales] = useState(false);
-  const [radioValue, setRadioValue] = useState("Tasa Fija");
+  const radioValue: number = useCortoPlazoStore((state) => state.radioValue);
+  const setRadioValue: Function = useCortoPlazoStore(
+    (state) => state.setRadioValue
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadioValue((event.target as HTMLInputElement).value);
+    setRadioValue(parseInt((event.target as HTMLInputElement).value));
 
-    if ((event.target as HTMLInputElement).value === "Tasa Fija") {
+    if ((event.target as HTMLInputElement).value === "1") {
       setTasaInteres({
         ...tasaDeInteres,
         tasaReferencia: "N/A",
@@ -207,31 +223,10 @@ export function DisposicionPagosCapital() {
 
   useEffect(() => {
     if (tasasParciales === false) {
-      if (radioValue === "Tasa Fija") {
-        setTablaTasaInteres([
-          {
-            fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
-            tasaFija: tasaDeInteres.tasaFija,
-            diasEjercicio: tasaDeInteres.diasEjercicio,
-            periocidadPago: tasaDeInteres.periocidadPago,
-            tasaReferencia: "N/A",
-            sobreTasa: "N/A",
-          },
-        ]);
-      } else {
-        setTablaTasaInteres([
-          {
-            fechaPrimerPago: tasaDeInteres.fechaPrimerPago,
-            tasaFija: "N/A",
-            diasEjercicio: tasaDeInteres.diasEjercicio,
-            periocidadPago: tasaDeInteres.periocidadPago,
-            tasaReferencia: tasaDeInteres.tasaReferencia,
-            sobreTasa: tasaDeInteres.sobreTasa,
-          },
-        ]);
-      }
+      // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
+      setTablaTasaInteres([tasaDeInteres]);
     }
-  }, [monto, tasasParciales]);
+  }, [tasasParciales, tasaDeInteres]);
 
   useEffect(() => {
     if (disposicionesParciales === false) {
@@ -327,16 +322,16 @@ export function DisposicionPagosCapital() {
               adapterLocale={es}
             >
               <DesktopDatePicker
+                minDate={new Date(fechaContratacion)}
+                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                 sx={{ width: "100%" }}
                 value={new Date(pagosDeCapital.fechaPrimerPago)}
                 onChange={(date) =>
                   setPagosDeCapital({
                     ...pagosDeCapital,
-                    fechaPrimerPago: date?.toString(),
+                    fechaPrimerPago: format(date!, "MM/dd/yyyy"),
                   })
                 }
-                minDate={new Date(fechaContratacion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
               />
             </LocalizationProvider>
           </Grid>
@@ -346,6 +341,7 @@ export function DisposicionPagosCapital() {
               Periodicidad de Pago
             </InputLabel>
             <Autocomplete
+              disableClearable
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
@@ -364,7 +360,10 @@ export function DisposicionPagosCapital() {
               onChange={(event, text) =>
                 setPagosDeCapital({
                   ...pagosDeCapital,
-                  periodicidadDePago: text,
+                  periodicidadDePago: {
+                    Id: text?.Id,
+                    Descripcion: text?.Descripcion,
+                  },
                 })
               }
               renderInput={(params) => (
@@ -435,7 +434,7 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
-                      setDisposicionesParciales(!disposicionesParciales);
+                      setDisposicionesParciales();
                     }}
                   />
                 }
@@ -455,14 +454,11 @@ export function DisposicionPagosCapital() {
                   onChange={(date) => {
                     setDisposicion({
                       ...disposicion,
-                      fechaDisposicion: date?.toString(),
+                      fechaDisposicion: format(date!, "MM/dd/yyyy"),
                     });
                   }}
                   minDate={new Date(fechaContratacion)}
                   maxDate={new Date(addDays(new Date(), 365))}
-                  slots={{
-                    textField: DateInput,
-                  }}
                 />
               </LocalizationProvider>
             </Grid>
@@ -603,10 +599,7 @@ export function DisposicionPagosCapital() {
                                   </Tooltip>
                                 </StyledTableCell>
                                 <StyledTableCell align="center" component="th">
-                                  {lightFormat(
-                                    new Date(row?.fechaDisposicion),
-                                    "dd-MM-yyyy"
-                                  )}
+                                  {row.fechaDisposicion}
                                 </StyledTableCell>
                                 <StyledTableCell align="center" component="th">
                                   {row.importe}
@@ -650,21 +643,21 @@ export function DisposicionPagosCapital() {
           >
             <FormControl>
               <RadioGroup
-                defaultValue="Tasa Fija"
+                defaultValue={1}
                 value={radioValue}
                 onChange={handleChange}
               >
                 <Grid container>
                   <Grid item>
                     <FormControlLabel
-                      value="Tasa Fija"
+                      value={1}
                       control={<Radio />}
                       label="Tasa Fija"
                     />
                   </Grid>
                   <Grid item>
                     <FormControlLabel
-                      value="Tasa Variable"
+                      value={2}
                       control={<Radio />}
                       label="Tasa Variable"
                     />
@@ -679,9 +672,8 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={tasasParciales}
                     onChange={(v) => {
-                      console.log(tasaDeInteres);
-                      console.log(tablaTasaInteres);
-                      setTasasParciales(!tasasParciales);
+                      setTablaTasaInteres([]);
+                      setTasasParciales();
                     }}
                   />
                 }
@@ -690,7 +682,7 @@ export function DisposicionPagosCapital() {
           </Grid>
 
           <Grid container display={"flex"} justifyContent={"center"} mb={2}>
-            {radioValue === "Tasa Fija" ? (
+            {radioValue === 1 ? (
               <Grid item container display="flex" justifyContent="space-evenly">
                 <Grid
                   item
@@ -711,14 +703,11 @@ export function DisposicionPagosCapital() {
                     <DesktopDatePicker
                       sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
-                      onChange={(date) =>
+                      onChange={(date) => {
                         setTasaInteres({
                           ...tasaDeInteres,
-                          fechaPrimerPago: date?.toString(),
-                        })
-                      }
-                      slots={{
-                        textField: DateInput,
+                          fechaPrimerPago: format(date!, "MM/dd/yyyy"),
+                        });
                       }}
                     />
                   </LocalizationProvider>
@@ -754,6 +743,7 @@ export function DisposicionPagosCapital() {
                     Días del Ejercicio
                   </InputLabel>
                   <Autocomplete
+                    disableClearable
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -770,7 +760,13 @@ export function DisposicionPagosCapital() {
                     }}
                     value={tasaDeInteres.diasEjercicio}
                     onChange={(event, text) =>
-                      setTasaInteres({ ...tasaDeInteres, diasEjercicio: text })
+                      setTasaInteres({
+                        ...tasaDeInteres,
+                        diasEjercicio: {
+                          Id: text?.Id,
+                          Descripcion: text?.Descripcion,
+                        },
+                      })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -790,6 +786,7 @@ export function DisposicionPagosCapital() {
                     Periodicidad de Pago
                   </InputLabel>
                   <Autocomplete
+                    disableClearable
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -806,7 +803,13 @@ export function DisposicionPagosCapital() {
                     }}
                     value={tasaDeInteres.periocidadPago}
                     onChange={(event, text) =>
-                      setTasaInteres({ ...tasaDeInteres, periocidadPago: text })
+                      setTasaInteres({
+                        ...tasaDeInteres,
+                        periocidadPago: {
+                          Id: text?.Id,
+                          Descripcion: text?.Descripcion,
+                        },
+                      })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -843,12 +846,9 @@ export function DisposicionPagosCapital() {
                       onChange={(date) =>
                         setTasaInteres({
                           ...tasaDeInteres,
-                          fechaPrimerPago: date?.toString(),
+                          fechaPrimerPago: format(date!, "MM/dd/yyyy"),
                         })
                       }
-                      slots={{
-                        textField: DateInput,
-                      }}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -857,6 +857,7 @@ export function DisposicionPagosCapital() {
                     Periodicidad de Pago
                   </InputLabel>
                   <Autocomplete
+                    disableClearable
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -873,7 +874,13 @@ export function DisposicionPagosCapital() {
                     }}
                     value={tasaDeInteres.periocidadPago}
                     onChange={(event, text) =>
-                      setTasaInteres({ ...tasaDeInteres, periocidadPago: text })
+                      setTasaInteres({
+                        ...tasaDeInteres,
+                        periocidadPago: {
+                          Id: text?.Id,
+                          Descripcion: text?.Descripcion,
+                        },
+                      })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -894,6 +901,7 @@ export function DisposicionPagosCapital() {
                     Tasa de Referencia
                   </InputLabel>
                   <Autocomplete
+                    disableClearable
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -910,7 +918,13 @@ export function DisposicionPagosCapital() {
                     }}
                     value={tasaDeInteres.tasaReferencia}
                     onChange={(event, text) =>
-                      setTasaInteres({ ...tasaDeInteres, tasaReferencia: text })
+                      setTasaInteres({
+                        ...tasaDeInteres,
+                        tasaReferencia: {
+                          Id: text?.Id,
+                          Descripcion: text?.Descripcion,
+                        },
+                      })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -967,6 +981,7 @@ export function DisposicionPagosCapital() {
                     Días del Ejercicio
                   </InputLabel>
                   <Autocomplete
+                    disableClearable
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -983,7 +998,13 @@ export function DisposicionPagosCapital() {
                     }}
                     value={tasaDeInteres.diasEjercicio}
                     onChange={(event, text) =>
-                      setTasaInteres({ ...tasaDeInteres, diasEjercicio: text })
+                      setTasaInteres({
+                        ...tasaDeInteres,
+                        diasEjercicio: {
+                          Id: text?.Id,
+                          Descripcion: text?.Descripcion,
+                        },
+                      })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -1019,11 +1040,11 @@ export function DisposicionPagosCapital() {
                       tasaDeInteres.fechaPrimerPago === "" ||
                       tasaDeInteres.diasEjercicio.Descripcion === "" ||
                       tasaDeInteres.periocidadPago.Descripcion === "" ||
-                      (radioValue === "Tasa Fija" &&
+                      (radioValue === 1 &&
                         tasaDeInteres.tasaFija.toString() === "") ||
-                      (radioValue === "Tasa Variable" &&
+                      (radioValue === 2 &&
                         tasaDeInteres.tasaReferencia.toString() === "") ||
-                      (radioValue === "Tasa Variable" &&
+                      (radioValue === 2 &&
                         tasaDeInteres.sobreTasa.toString() === "")
                     }
                     variant="outlined"
@@ -1089,10 +1110,7 @@ export function DisposicionPagosCapital() {
                                     align="center"
                                     component="th"
                                   >
-                                    {lightFormat(
-                                      new Date(row?.fechaPrimerPago),
-                                      "dd-MM-yyyy"
-                                    )}
+                                    {row.fechaPrimerPago}
                                   </StyledTableCell>
                                   <StyledTableCell
                                     align="center"
@@ -1104,7 +1122,7 @@ export function DisposicionPagosCapital() {
                                     {row.periocidadPago.Descripcion}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.tasaReferencia.Descripcion}
+                                    {row.tasaReferencia.Descripcion || "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {row.sobreTasa}

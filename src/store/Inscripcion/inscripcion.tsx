@@ -82,7 +82,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     let aux: any = JSON.parse(inscripcion.Solicitud);
     state.changeEncabezado(aux?.encabezado);
 
-    state.changeInformacionGeneral(aux?.informacionGeneral);
+    state.changeInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
     state.setTablaObligadoSolidarioAval(
       aux?.informacionGeneral.obligadosSolidarios
     );

@@ -4,44 +4,45 @@ import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/Co
 import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { useInscripcionStore } from "../Inscripcion/main";
 
-export interface DocumentosLargoPlazoSlice {
-  tablaDocumentosLp: IFile[];
-  catalogoTiposDocumentosLp: ITiposDocumento[];
-  catalogoTiposDocumentosObligatoriosLp: ITiposDocumento[];
+export interface DocumentosSlice {
+  tablaDocumentos: IFile[];
+  catalogoTiposDocumentos: ITiposDocumento[];
+  catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
-  addDocumentoLp: (newDocumento: IFile) => void;
-  removeDocumentoLp: (index: number) => void;
-  setTablaDocumentosLp: (docs: any) => any;
-  getTiposDocumentosLp: () => void;
+  addDocumento: (newDocumento: IFile) => void;
+  removeDocumento: (index: number) => void;
+  setTablaDocumentos: (docs: any) => any;
+  getTiposDocumentos: () => void;
 }
 
-export const createDocumentoLargoPlazoSlice: StateCreator<
-  DocumentosLargoPlazoSlice
-> = (set, get) => ({
-  tablaDocumentosLp: [],
+export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
+  set,
+  get
+) => ({
+  tablaDocumentos: [],
 
-  catalogoTiposDocumentosLp: [],
-  catalogoTiposDocumentosObligatoriosLp: [],
+  catalogoTiposDocumentos: [],
+  catalogoTiposDocumentosObligatorios: [],
 
-  addDocumentoLp: (newDocumento: IFile) =>
+  addDocumento: (newDocumento: IFile) =>
     set((state) => ({
-      tablaDocumentosLp: [...state.tablaDocumentosLp, newDocumento],
+      tablaDocumentos: [...state.tablaDocumentos, newDocumento],
     })),
 
-  removeDocumentoLp: (index: number) =>
+  removeDocumento: (index: number) =>
     set((state) => ({
-      tablaDocumentosLp: state.tablaDocumentosLp.filter((_, i) => i !== index),
+      tablaDocumentos: state.tablaDocumentos.filter((_, i) => i !== index),
     })),
 
-  setTablaDocumentosLp: (docs: any) => set(() => ({ tablaDocumentosLp: docs })),
+  setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
 
-  getTiposDocumentosLp: async () => {
+  getTiposDocumentos: async () => {
     const state = useInscripcionStore.getState();
     await axios({
       method: "get",
       url:
         process.env.REACT_APP_APPLICATION_BACK +
-        "/get-tiposDocumentosLargoPlazo",
+        "/get-tiposDocumentosCortoPlazo",
       data: {},
       headers: {
         "Content-Type": "application/json",
@@ -50,18 +51,18 @@ export const createDocumentoLargoPlazoSlice: StateCreator<
     }).then(({ data }) => {
       if (state.inscripcion.Id !== "") {
         set((state) => ({
-          catalogoTiposDocumentosLp: data.data,
-          catalogoTiposDocumentosObligatoriosLp: data.data.filter(
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
         }));
       } else {
         set((state) => ({
-          catalogoTiposDocumentosLp: data.data,
-          catalogoTiposDocumentosObligatoriosLp: data.data.filter(
+          catalogoTiposDocumentos: data.data,
+          catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
-          tablaDocumentosLp: data.data
+          tablaDocumentos: data.data
             .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
               return {

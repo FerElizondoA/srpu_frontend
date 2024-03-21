@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import axios from "axios";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { format } from "date-fns";
 
 export interface ITasaEfectiva {
   tasaEfectiva: string;
@@ -16,6 +17,9 @@ export interface IComisiones {
 }
 
 export interface TasaEfectivaSlice {
+  noAplica: boolean;
+  setNoAplica: () => void;
+
   tasaEfectiva: ITasaEfectiva;
   setTasaEfectiva: (tasaEfectiva: ITasaEfectiva) => void;
 
@@ -36,6 +40,13 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
   set,
   get
 ) => ({
+  noAplica: false,
+  setNoAplica: () => {
+    set((state) => ({
+      noAplica: !state.noAplica,
+    }));
+  },
+
   tasaEfectiva: {
     tasaEfectiva: "",
     diasEjercicio: { Id: "", Descripcion: "" },
@@ -46,11 +57,9 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
     })),
 
   comision: {
-    fechaComision: new Date().toString(),
+    fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
     tipoDeComision: { Id: "", Descripcion: "" },
     periodicidadDePago: { Id: "", Descripcion: "" },
-    porcentajeFijo: false,
-    montoFijo: false,
     monto: "0",
     porcentaje: "",
     iva: false,

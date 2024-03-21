@@ -2,7 +2,6 @@ import { StateCreator } from "zustand";
 import axios from "axios";
 import { useLargoPlazoStore } from "./main";
 import Swal from "sweetalert2";
-import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface SolicitudInscripcionLargoPlazoSlice {
@@ -13,12 +12,8 @@ export interface SolicitudInscripcionLargoPlazoSlice {
 
   reglasAplicables: string[];
 
-  catalogoReglas: ICatalogo[];
-
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
   changeReglasAplicables: (newReglas: string) => void;
-
-  getReglas: () => void;
 
   crearSolicitud: (
     idEditor: string,
@@ -67,31 +62,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
   reglasAplicables: [],
 
-  catalogoReglas: [],
-
   changeInscripcion: (inscripcion: any) =>
     set(() => ({ inscripcion: inscripcion })),
 
   changeReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
-
-  getReglas: async () => {
-    await axios
-      .get(
-        process.env.REACT_APP_APPLICATION_BACK + "/get-reglaDeFinanciamiento",
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then(({ data }) => {
-        let r = data.data;
-        set((state) => ({
-          catalogoReglas: r,
-        }));
-      });
-  },
 
   crearSolicitud: async (
     idEditor: string,
@@ -99,45 +74,61 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     comentario: string
   ) => {
     const state = useLargoPlazoStore.getState();
-    // const inscripcionState = useInscripcionStore.getState();
+    const inscripcionState = useInscripcionStore.getState();
 
     console.log(state.encabezado);
     console.log(state.informacionGeneral);
-    console.log(state.tablaObligadoSolidarioAval);
-    console.log(state.encabezado);
-    console.log(state.encabezado);
-    console.log(state.encabezado);
-    console.log(state.encabezado);
+    console.log(state.tablaCondicionesFinancieras);
+    console.log(state.tablaDocumentos);
+    console.log(state.inscripcion);
+    console.log(state.reglasAplicables);
 
     // const solicitud: any = {
     //   encabezado: state.encabezado,
     //   informacionGeneral: {
-    //     ...state.informacionGeneral,
-    //     obligadosSolidarios: state.tablaObligadoSolidarioAval,
+    //     informacionGeneral: state.informacionGeneral,
+    //     obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+    //       ({
+    //         entePublicoObligado,
+    //         tipoEntePublicoObligado,
+    //       }: {
+    //         entePublicoObligado: { Id: string; Descripcion: string };
+    //         tipoEntePublicoObligado: { Id: string; Descripcion: string };
+    //       }) => ({
+    //         entePublicoObligado,
+    //         tipoEntePublicoObligado,
+    //       })
+    //     ),
     //   },
 
     //   GastosCostos: {
     //     ...state.GastosCostos,
     //     gastosCostos: state.tablaGastosCostos,
     //   },
-
     //   detalleInversion: {
     //     ...state.archivoDetalleInversion,
     //   },
-
     //   autorizacion: {
     //     ...state.autorizacionSelect,
     //   },
 
     //   condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-    //   documentacion: state.tablaDocumentosLp.map((v: any, i: any) => {
-    //     return {
-    //       nombreArchivo: v.nombreArchivo,
-    //       tipoArchivo: v.tipoArchivo,
-    //       descripcionTipo: v.descripcionTipo,
-    //     };
-    //   }),
+    //   documentacion: state.tablaDocumentos.map(
+    //     ({
+    //       descripcionTipo,
+    //       nombreArchivo,
+    //       tipoArchivo,
+    //     }: {
+    //       descripcionTipo: string;
+    //       nombreArchivo: string;
+    //       tipoArchivo: string;
+    //     }) => ({
+    //       descripcionTipo,
+    //       nombreArchivo,
+    //       tipoArchivo,
+    //     })
+    //   ),
 
     //   inscripcion: {
     //     servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
@@ -193,38 +184,38 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     const state = useLargoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    const solicitud: any = {
-      encabezado: state.encabezado,
-      informacionGeneral: {
-        ...state.informacionGeneral,
-        obligadosSolidarios: state.tablaObligadoSolidarioAval,
-      },
+    // const solicitud: any = {
+    //   encabezado: state.encabezado,
+    //   informacionGeneral: {
+    //     ...state.informacionGeneral,
+    //     obligadosSolidarios: state.tablaObligadoSolidarioAval,
+    //   },
 
-      GastosCostos: {
-        ...state.gastosCostos,
-        gastosCostos: state.tablaGastosCostos,
-      },
+    //   GastosCostos: {
+    //     ...state.gastosCostos,
+    //     gastosCostos: state.tablaGastosCostos,
+    //   },
 
-      autorizacion: {
-        Autorizacion: state.autorizaciones,
-      },
+    //   autorizacion: {
+    //     Autorizacion: state.autorizaciones,
+    //   },
 
-      condicionesFinancieras: state.tablaCondicionesFinancieras,
+    //   condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-      documentacion: state.tablaDocumentosLp.map((v: any, i: any) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+    //   documentacion: state.tablaDocumentosLp.map((v: any, i: any) => {
+    //     return {
+    //       nombreArchivo: v.nombreArchivo,
+    //       tipoArchivo: v.tipoArchivo,
+    //       descripcionTipo: v.descripcionTipo,
+    //     };
+    //   }),
 
-      inscripcion: {
-        servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
-        cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
-        declaratorias: state.reglasAplicables,
-      },
-    };
+    //   inscripcion: {
+    //     servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
+    //     cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
+    //     declaratorias: state.reglasAplicables,
+    //   },
+    // };
 
     await axios
       .put(
@@ -240,7 +231,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
-          Solicitud: JSON.stringify(solicitud),
+          // Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
           IdUsuario: idCreador,
         },
@@ -371,7 +362,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useLargoPlazoStore.getState();
 
-    return await state.tablaDocumentosLp.map((file) => {
+    return await state.tablaDocumentos.map((file: any) => {
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 

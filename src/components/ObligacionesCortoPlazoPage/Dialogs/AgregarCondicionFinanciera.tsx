@@ -54,6 +54,7 @@ export function AgregarCondicionFinanciera(props: Props) {
   const handleChange = (event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
@@ -90,6 +91,9 @@ export function AgregarCondicionFinanciera(props: Props) {
   const updateCondicionFinanciera: Function = useCortoPlazoStore(
     (state) => state.updateCondicionFinanciera
   );
+  const cleanCondicionFinanciera: Function = useCortoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
 
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
@@ -99,7 +103,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             edge="start"
             onClick={() => {
               props.handler(false);
-              setTabIndex(0);
+              cleanCondicionFinanciera();
             }}
             sx={{ color: "white" }}
           >
@@ -120,7 +124,14 @@ export function AgregarCondicionFinanciera(props: Props) {
                 }
                 sx={queries.buttonContinuar}
                 onClick={() => {
+                  // setTabIndex(0);
                   if (props.accion === "Agregar") {
+                    console.log("pagosDeCapital", pagosDeCapital);
+                    console.log("disposicion", tablaDisposicion);
+                    console.log("tasaInteres", tablaTasaInteres);
+                    console.log("tasaEfectiva", tasaEfectiva);
+                    console.log("comisiones", tablaComisiones);
+
                     addCondicionFinanciera({
                       pagosDeCapital: pagosDeCapital,
                       disposicion: tablaDisposicion,
@@ -130,6 +141,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                       comisiones: tablaComisiones,
                     });
                     props.handler(false);
+                    cleanCondicionFinanciera();
                   } else if (props.accion === "Editar") {
                     updateCondicionFinanciera({
                       pagosDeCapital: pagosDeCapital,
@@ -139,8 +151,8 @@ export function AgregarCondicionFinanciera(props: Props) {
                       comisiones: tablaComisiones,
                     });
                     props.handler(false);
+                    cleanCondicionFinanciera();
                   }
-                  setTabIndex(0);
                 }}
               >
                 <Typography sx={queries.medium_text}>{props.accion}</Typography>

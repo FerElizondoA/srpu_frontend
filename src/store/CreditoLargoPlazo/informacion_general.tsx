@@ -22,7 +22,7 @@ export interface IGastosCostos {
   saldoVigente: number;
 }
 
-export interface InformacionGeneralLargoPlazoSlice {
+export interface InformacionGeneralSlice {
   informacionGeneral: IInformacionGeneral;
 
   generalObligadoSolidarioAval: {
@@ -68,8 +68,8 @@ export interface InformacionGeneralLargoPlazoSlice {
   getDetallesInversion: () => void;
 }
 
-export const createInformacionGeneralLargoPlazoSlice: StateCreator<
-  InformacionGeneralLargoPlazoSlice
+export const createInformacionGeneralSlice: StateCreator<
+  InformacionGeneralSlice
 > = (set, get) => ({
   informacionGeneral: {
     fechaContratacion: new Date().toString(),
