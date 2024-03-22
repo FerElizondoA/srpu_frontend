@@ -7,6 +7,8 @@ import {
 } from "../CreditoCortoPlazo/informacion_general";
 import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
+import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
+import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
 
 export interface IInscripcion {
   Id: string;
@@ -49,6 +51,44 @@ export interface InscripcionSlice {
   setProceso: (proceso: string) => void;
 }
 
+export interface ISolicitudLargoPlazo {
+  encabezado: IEncabezado;
+  informacionGeneral: {
+    informacionGeneral: IInformacionGeneral;
+    obligadosSolidarios: {
+      entePublicoObligado: { Id: string; Descripcion: string };
+      tipoEntePublicoObligado: { Id: string; Descripcion: string };
+    }[];
+    destinoGastosCostos: IGastosCostos[];
+  };
+  autorizacion: {
+    Id: string;
+    MontoAutorizado: string;
+    NumeroAutorizacion: string;
+  };
+  fuenteDePago: {
+    fuente: IDeudorFideicomiso[];
+    garantiaDePago: string;
+    mecanismoVehiculoDePago: {
+      Id: string;
+      NumeroRegistro: string;
+      TipoFideicomiso: string;
+      Fiduciario: string;
+    };
+  };
+  condicionesFinancieras: ICondicionFinanciera[];
+  documentacion: {
+    descripcionTipo: string;
+    nombreArchivo: string;
+    tipoArchivo: string;
+  }[];
+  inscripcion: {
+    servidorPublicoDirigido: string;
+    cargoServidorPublicoServidorPublicoDirigido: string;
+    declaratorias: string[];
+  };
+}
+
 export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   set,
   get
@@ -78,12 +118,10 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   },
 
   setInscripcion: (inscripcion: IInscripcion) => {
-    console.log(inscripcion);
-
     const cpState = useCortoPlazoStore.getState();
     const lpState = useLargoPlazoStore.getState();
 
-    let aux: any = JSON.parse(inscripcion.Solicitud);
+    let aux: ISolicitudLargoPlazo = JSON.parse(inscripcion.Solicitud);
 
     if (inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo") {
       cpState.changeEncabezado(aux?.encabezado);
@@ -99,7 +137,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         return cpState.addDocumento(v);
       });
       cpState.changeReglasAplicables(aux?.inscripcion.declaratorias);
-    } else {
+    } else if (inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       lpState.changeEncabezado(aux?.encabezado);
 
       lpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
@@ -107,9 +145,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       lpState.setTablaObligadoSolidarioAval(
         aux?.informacionGeneral.obligadosSolidarios
       );
-      console.log(aux);
+      lpState.getDetalleAutorizacion(aux?.autorizacion.Id);
 
-      lpState.setTablaGastosCostos([aux?.GastosCostos]);
+      lpState.setTablaGastosCostos(aux?.informacionGeneral.destinoGastosCostos);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);

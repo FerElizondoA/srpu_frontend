@@ -11,21 +11,22 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { queries } from "../../../queries";
 import { format } from "date-fns";
+import { useState } from "react";
+import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IFideicomisario } from "../../../store/Fideicomiso/fideicomiso";
-import { useEffect, useState } from "react";
-import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
-import { AgregarMandatos } from "../../mandatos/dialog/AgregarMandatos";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
-import { useMandatoStore } from "../../../store/Mandatos/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
-import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { AgregarInstruccionesIrrevocables } from "../../instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
+import {
+  AgregarMandatos,
+  buttonTheme,
+} from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -301,6 +302,7 @@ export function VehiculoDePago() {
               >
                 <Grid
                   container
+                  item
                   xs={10}
                   sm={10}
                   md={3}
@@ -370,6 +372,7 @@ export function VehiculoDePago() {
 
                 <Grid
                   container
+                  item
                   xs={10}
                   sm={10}
                   md={3}
@@ -387,7 +390,7 @@ export function VehiculoDePago() {
                     {mecanismoVehiculoPago.Fideicomisario &&
                       JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
                         (fideicomisario: IFideicomisario, index: number) => (
-                          <Grid mb={2}>
+                          <Grid mb={2} key={index}>
                             <TextField
                               fullWidth
                               key={index}
@@ -407,6 +410,7 @@ export function VehiculoDePago() {
                 </Grid>
 
                 <Grid
+                  item
                   container
                   flexDirection={"column"}
                   xs={10}
@@ -426,7 +430,7 @@ export function VehiculoDePago() {
                     {mecanismoVehiculoPago.Fideicomisario &&
                       JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
                         (fideicomisario: IFideicomisario, index: number) => (
-                          <Grid mb={2}>
+                          <Grid mb={2} key={index}>
                             <TextField
                               key={index}
                               size="small"

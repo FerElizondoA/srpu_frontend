@@ -13,7 +13,6 @@ export interface IInformacionGeneral {
 }
 
 export interface IObligadoSolidarioAval {
-  obligadoSolidario: string;
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
   entePublicoObligado: { Id: string; Descripcion: string };
 }
@@ -25,7 +24,6 @@ export interface InformacionGeneralSlice {
   informacionGeneral: IInformacionGeneral;
 
   generalObligadoSolidarioAval: {
-    obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
@@ -82,12 +80,11 @@ export const createInformacionGeneralSlice: StateCreator<
     institucionFinanciera: { Id: "", Descripcion: "" },
   },
 
-  tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: "NO APLICA",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
     entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
   },
+  tablaObligadoSolidarioAval: [],
 
   catalogoInstituciones: [],
   catalogoDestinos: [],

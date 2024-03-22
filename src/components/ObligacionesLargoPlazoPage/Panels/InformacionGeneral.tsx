@@ -111,9 +111,6 @@ export function InformacionGeneral() {
   );
 
   // OBLIGADO SOLIDARIO AVAL
-  const generalObligadoSolidario: string = useLargoPlazoStore(
-    (state) => state.generalObligadoSolidarioAval.obligadoSolidario
-  );
   const generalTipoEntePublico: { Id: string; Descripcion: string } =
     useLargoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
@@ -142,9 +139,12 @@ export function InformacionGeneral() {
     (state) => state.cleanObligadoSolidarioAval
   );
 
+  const [obligadoSolidario, setObligadoSolidario] = useState(
+    tablaObligados.length >= 1 ? "SI APLICA" : "NO APLICA"
+  );
+
   const addRows = () => {
     let tab = {
-      obligadoSolidario: generalObligadoSolidario,
       tipoEntePublicoObligado: generalTipoEntePublico.Descripcion,
       entePublicoObligado: generalEntePublico.Descripcion,
     };
@@ -511,22 +511,12 @@ export function InformacionGeneral() {
                 </li>
               );
             }}
-            value={generalObligadoSolidario}
+            value={obligadoSolidario}
             onChange={(event, text) => {
               if (text === "NO APLICA") {
                 cleanObligadoSolidarioAval();
               }
-              setObligadoSolidarioAval({
-                obligadoSolidario: text,
-                tipoEntePublicoObligado: {
-                  Id: "",
-                  Descripcion: "",
-                },
-                entePublicoObligado: {
-                  Id: "",
-                  Descripcion: "",
-                },
-              });
+              setObligadoSolidario(text!);
             }}
             renderInput={(params) => (
               <TextField
@@ -551,8 +541,8 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario === "NO APLICA" ||
-              /^[\s]*$/.test(generalObligadoSolidario) ||
+              obligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(obligadoSolidario) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
@@ -572,7 +562,7 @@ export function InformacionGeneral() {
             }}
             onChange={(event, text) =>
               setObligadoSolidarioAval({
-                obligadoSolidario: generalObligadoSolidario,
+                obligadoSolidario: obligadoSolidario,
                 tipoEntePublicoObligado: {
                   Id: text?.Id || "",
                   Descripcion: text?.Descripcion || "",
@@ -607,8 +597,8 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              generalObligadoSolidario === "NO APLICA" ||
-              /^[\s]*$/.test(generalObligadoSolidario) ||
+              obligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(obligadoSolidario) ||
               /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
@@ -641,7 +631,7 @@ export function InformacionGeneral() {
             }
             onChange={(event, text) =>
               setObligadoSolidarioAval({
-                obligadoSolidario: generalObligadoSolidario,
+                obligadoSolidario: obligadoSolidario,
                 tipoEntePublicoObligado: generalTipoEntePublico,
                 entePublicoObligado: {
                   Id: text?.Id || "",
@@ -658,8 +648,8 @@ export function InformacionGeneral() {
           <Button
             sx={queries.buttonContinuar}
             disabled={
-              generalObligadoSolidario === "NO APLICA" ||
-              /^[\s]*$/.test(generalObligadoSolidario) ||
+              obligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(obligadoSolidario) ||
               /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
               /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
               (datosActualizar.length > 0 &&
@@ -718,7 +708,7 @@ export function InformacionGeneral() {
               </TableHead>
 
               <TableBody>
-                {generalObligadoSolidario === "NO APLICA" &&
+                {obligadoSolidario === "NO APLICA" &&
                 tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />

@@ -16,17 +16,16 @@ export interface IGastosCostos {
   };
   claveInscripcionFinanciamiento: string;
   descripcion: string;
-  monto: number;
+  monto: string;
   gastosAdicionales: string;
-  montoGastosAdicionales: number;
-  saldoVigente: number;
+  montoGastosAdicionales: string;
+  saldoVigente: string;
 }
 
 export interface InformacionGeneralLpSlice {
   informacionGeneral: IInformacionGeneral;
 
   generalObligadoSolidarioAval: {
-    obligadoSolidario: string;
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
@@ -84,7 +83,6 @@ export const createInformacionGeneralLpSlice: StateCreator<
   },
 
   generalObligadoSolidarioAval: {
-    obligadoSolidario: "NO APLICA",
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
     entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
   },
@@ -99,10 +97,10 @@ export const createInformacionGeneralLpSlice: StateCreator<
     },
     claveInscripcionFinanciamiento: "",
     descripcion: "",
-    monto: 0,
+    monto: "$ 0.00",
     gastosAdicionales: "",
-    montoGastosAdicionales: 0,
-    saldoVigente: 0,
+    montoGastosAdicionales: "$ 0.00",
+    saldoVigente: "$ 0.00",
   },
 
   tablaGastosCostos: [],
@@ -110,6 +108,11 @@ export const createInformacionGeneralLpSlice: StateCreator<
   setInformacionGeneral: (informacionGeneral: any) =>
     set(() => ({
       informacionGeneral: informacionGeneral,
+    })),
+
+  setObligadoSolidarioAval: (obligadoSolidario: any) =>
+    set(() => ({
+      generalObligadoSolidarioAval: obligadoSolidario,
     })),
 
   addObligadoSolidarioAval: (
@@ -129,24 +132,19 @@ export const createInformacionGeneralLpSlice: StateCreator<
       tablaObligadoSolidarioAval: obligadoSolidarioAval,
     })),
 
-  setTablaGastosCostos: (gastosCostos: IGastosCostos[]) =>
-    set((state) => ({
-      tablaGastosCostos: gastosCostos,
-    })),
-
-  setObligadoSolidarioAval: (obligadoSolidario: any) =>
-    set(() => ({
-      generalObligadoSolidarioAval: obligadoSolidario,
-    })),
-
-  cleanObligadoSolidarioAval: () =>
-    set((state) => ({ tablaObligadoSolidarioAval: [] })),
-
   removeObligadoSolidarioAval: (index: number) =>
     set((state) => ({
       tablaObligadoSolidarioAval: state.tablaObligadoSolidarioAval.filter(
         (_, i) => i !== index
       ),
+    })),
+
+  cleanObligadoSolidarioAval: () =>
+    set((state) => ({ tablaObligadoSolidarioAval: [] })),
+
+  setTablaGastosCostos: (gastosCostos: IGastosCostos[]) =>
+    set((state) => ({
+      tablaGastosCostos: gastosCostos,
     })),
 
   setGastosCostos: (GastosCostos: IGastosCostos) =>
@@ -170,10 +168,10 @@ export const createInformacionGeneralLpSlice: StateCreator<
         },
         claveInscripcionFinanciamiento: "",
         descripcion: "",
-        monto: 0,
+        monto: "$ 0.00",
         gastosAdicionales: "",
-        montoGastosAdicionales: 0,
-        saldoVigente: 0,
+        montoGastosAdicionales: "$ 0.00",
+        saldoVigente: "$ 0.00",
       },
     })),
 

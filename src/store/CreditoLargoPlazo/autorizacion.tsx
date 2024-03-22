@@ -81,6 +81,8 @@ export interface AutorizacionLargoPlazoSlice {
   getDestinosAutorizados: () => void;
   getDetalleDestinosAutorizados: () => void;
 
+  getDetalleAutorizacion: (Id: string) => void;
+
   createAutorizacion: () => void;
 
   savePathDocAut: (
@@ -278,6 +280,22 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
     });
   },
 
+  getDetalleAutorizacion: async (Id: string) => {
+    const state = useLargoPlazoStore.getState();
+
+    return await axios({
+      method: "get",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/detail-autorizacion",
+      params: { IdDescripcion: Id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+      state.setAutorizacionSelect(data.data);
+    });
+  },
+
   createAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
 
@@ -328,7 +346,6 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
 
   modificarAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
-    console.log(state.autorizacion);
 
     await axios
       .put(

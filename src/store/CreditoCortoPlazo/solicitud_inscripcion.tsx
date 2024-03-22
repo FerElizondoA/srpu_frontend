@@ -16,7 +16,7 @@ export interface SolicitudInscripcionSlice {
   catalogoReglas: ICatalogo[];
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
-  changeReglasAplicables: (newReglas: string) => void;
+  changeReglasAplicables: (newReglas: string[]) => void;
 
   getReglas: () => void;
 
