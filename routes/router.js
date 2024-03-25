@@ -3,13 +3,6 @@ const verifyToken = require("../controllers/auth/verifyToken.js");
 const router = express.Router();
 
 const {
-  createClaveDeInscripcion,
-  getClavesDeInscripcion,
-  getDetailClaveDeInscripcion,
-  modifyClaveDeInscripcion,
-  deleteClaveDeInscripcion,
-} = require("../controllers/ClaveDeInscripcion.js");
-const {
   createDestino,
   getDestinos,
   getDetailDestino,
@@ -30,13 +23,6 @@ const {
   modifyEntePublicoObligado,
   deleteEntePublicoObligado,
 } = require("../controllers/EntesPublicosObligados.js");
-const {
-  createEstatus,
-  getDetailEstatus,
-  modifyEstatus,
-  deleteEstatus,
-  getEstatus,
-} = require("../controllers/Estatus.js");
 const {
   deleteFuenteAlternaDePago,
   createFuenteAlternaDePago,
@@ -81,13 +67,6 @@ const {
   deleteReglaDeFinanciamiento,
 } = require("../controllers/ReglaDeFinanciamiento.js");
 const {
-  createRol,
-  getRoles,
-  getDetailRol,
-  modifyRol,
-  deleteRol,
-} = require("../controllers/Roles.js");
-const {
   createTasaDeReferencia,
   getTasasDeReferencia,
   getDetailTasaDeReferencia,
@@ -129,12 +108,6 @@ const {
   deleteTipoDeDocumento,
   modifyTipoDocumento,
 } = require("../controllers/TipoDeDocumentos.js");
-const {
-  getDetailUsuario,
-  getUsuarios,
-  createUsuario,
-  getUsuariosAsignables,
-} = require("../controllers/Usuarios.js");
 const {
   createNotificacion,
   getNotificaciones,
@@ -301,6 +274,7 @@ const {
   createPdfSolicitudAnulacion,
   createPdfConstanciaReestructura,
   createPdfContestacionReestructura,
+  createPdfAcuse,
 } = require("../controllers/PdfSolicitudes.js");
 const {
   createPreguntaFrecuente,
@@ -324,6 +298,11 @@ const {
   sumaPorcentajeAcumulado,
   listaMecanismosDePago,
 } = require("../controllers/Consultas.js");
+const { getDetailUsuario, getUsuarios } = require("../controllers/Usuarios.js");
+const {
+  getTrazabilidadSolicitud
+} = require("../controllers/TrazabilidadSolicitud.js");
+
 
 //#region Instituciones Financieras
 router.post(
@@ -365,28 +344,6 @@ router.delete(
     deleteInstitucionFinanciera(req, res);
   }
 );
-//#endregion
-
-//#region Estatus
-router.post("/create-estatus", verifyToken.verifyJWT, (req, res, express) => {
-  createEstatus(req, res);
-});
-
-router.get("/get-estatus", verifyToken.verifyJWT, (req, res) => {
-  getEstatus(req, res);
-});
-
-router.get("/detail-estatus", verifyToken.verifyJWT, (req, res) => {
-  getDetailEstatus(req, res);
-});
-
-router.put("/modify-estatus", verifyToken.verifyJWT, (req, res) => {
-  modifyEstatus(req, res);
-});
-
-router.delete("/delete-estatus", verifyToken.verifyJWT, (req, res) => {
-  deleteEstatus(req, res);
-});
 //#endregion
 
 //#region EntePublicoObligado
@@ -534,37 +491,6 @@ router.delete(
   }
 );
 
-//Clave de Inscripcion
-router.post(
-  "/create-claveDeInscripcion",
-  verifyToken.verifyJWT,
-  (req, res, express) => {
-    createClaveDeInscripcion(req, res);
-  }
-);
-
-router.get("/get-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
-  getClavesDeInscripcion(req, res);
-});
-
-router.get("/detail-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
-  getDetailClaveDeInscripcion(req, res);
-});
-
-router.put("/modify-claveDeInscripcion", verifyToken.verifyJWT, (req, res) => {
-  modifyClaveDeInscripcion(req, res);
-});
-
-router.delete(
-  "/delete-claveDeInscripcion",
-  verifyToken.verifyJWT,
-  (req, res) => {
-    deleteClaveDeInscripcion(req, res);
-  }
-);
-
-//#endregion
-
 //#region Destinos
 router.post("/create-destinos", verifyToken.verifyJWT, (req, res, express) => {
   createDestino(req, res);
@@ -606,28 +532,6 @@ router.put("/modify-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
 
 router.delete("/delete-tipoBeneficiario", verifyToken.verifyJWT, (req, res) => {
   deleteTipoBeneficiario(req, res);
-});
-//#endregion
-
-//#region Roles
-router.post("/create-roles", verifyToken.verifyJWT, (req, res, express) => {
-  createRol(req, res);
-});
-
-router.get("/get-roles", verifyToken.verifyJWT, (req, res) => {
-  getRoles(req, res);
-});
-
-router.get("/detail-roles", verifyToken.verifyJWT, (req, res) => {
-  getDetailRol(req, res);
-});
-
-router.put("/modify-roles", verifyToken.verifyJWT, (req, res) => {
-  modifyRol(req, res);
-});
-
-router.delete("/delete-roles", verifyToken.verifyJWT, (req, res) => {
-  deleteRol(req, res);
 });
 //#endregion
 
@@ -881,11 +785,6 @@ router.post("/delete-comentario", verifyToken.verifyJWT, (req, res) => {
 
 //#endregion
 
-//#region  Usuarios
-router.post("/create-usuario", verifyToken.verifyJWT, (req, res) => {
-  createUsuario(req, res);
-});
-
 router.post("/create-notificacion", verifyToken.verifyJWT, (req, res) => {
   createNotificacion(req, res);
 });
@@ -904,10 +803,6 @@ router.get("/get-notificaciones-creadas", verifyToken.verifyJWT, (req, res) => {
 
 router.get("/get-info-notificacion", verifyToken.verifyJWT, (req, res) => {
   getInfoNotificacion(req, res);
-});
-
-router.get("/get-usuarios-asignables", verifyToken.verifyJWT, (req, res) => {
-  getUsuariosAsignables(req, res);
 });
 //#endregion
 
@@ -1573,17 +1468,6 @@ router.get("/get-instruccion", verifyToken.verifyJWT, (req, res, express) => {
   getInstrucciones(req, res);
 });
 
-// router.get("/get-tiposDeGarantiaDePago", (req, res) => {
-//   getTiposDeGarantiaDePago(req, res);
-// });
-
-// router.put("/modify-mandato", (req, res) => {
-//   modifyMandato(req, res);
-// });
-
-// router.delete("/delete-tiposDeGarantiaDePago", (req, res) => {
-//   deleteTipoDeGarantiaDePago(req, res);
-// });
 //#endregion
 
 //#region Mandatos
@@ -1617,6 +1501,10 @@ router.post(
     createPdfAcuseCancelacion(req, res);
   }
 );
+router.post("/create-pdf-acuse", verifyToken.verifyJWT, (req, res) => {
+  createPdfAcuse(req, res);
+});
+
 router.post("/actualiza-descarga", verifyToken.verifyJWT, (req, res) => {
   actualizaDescarga(req, res);
 });
@@ -1704,5 +1592,10 @@ router.get("/listaMecanismosDePago", verifyToken.verifyJWT, (req, res) => {
   listaMecanismosDePago(req, res);
 });
 // #endregion
+
+
+router.get("/get-TrazabilidadSolicitud", verifyToken.verifyJWT, (req, res) => {
+  getTrazabilidadSolicitud(req, res);
+});
 
 module.exports = router;

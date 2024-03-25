@@ -74,7 +74,7 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailAutorizacion: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
+    const IdDescripcion = req.query.IdDescripcion;
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese IdDescripcion.",
