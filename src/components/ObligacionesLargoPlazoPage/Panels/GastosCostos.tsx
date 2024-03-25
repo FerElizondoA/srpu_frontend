@@ -104,13 +104,18 @@ export function GastoCostos() {
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
-    if (file !== undefined) {
-      addDocumento(file, file.name);
-    }
+
+    setGastosCostos({
+      ...gastosCostos,
+      archivoDetalleInversion: {
+        archivo: file,
+        nombreArchivo: `DIPP-${file.name}`,
+      },
+    });
   }
 
   useEffect(() => {
-    getDetallesInversion();
+    catalogoDetallesInversion.length < 1 && getDetallesInversion();
     setGastosCostos({
       ...gastosCostos,
       monto: "$ 0.00",
@@ -323,7 +328,18 @@ export function GastoCostos() {
 
                 <Grid display={"flex"} justifyContent={"end"}>
                   <Tooltip title={"Remover Archivo"}>
-                    <Button onClick={() => removeDocumento()}>
+                    <Button
+                      onClick={() => {
+                        removeDocumento();
+                        setGastosCostos({
+                          ...gastosCostos,
+                          archivoDetalleInversion: {
+                            archivo: new File([], ""),
+                            nombreArchivo: ``,
+                          },
+                        });
+                      }}
+                    >
                       <CloseIcon />
                     </Button>
                   </Tooltip>
@@ -535,6 +551,15 @@ export function GastoCostos() {
               }
               onClick={() => {
                 addRows();
+                if (gastosCostos.archivoDetalleInversion.nombreArchivo !== "") {
+                  addDocumento({
+                    archivo: gastosCostos.archivoDetalleInversion.archivo,
+                    nombreArchivo:
+                      gastosCostos.archivoDetalleInversion.nombreArchivo,
+                    tipoArchivo: "",
+                    descripcionTipo: "",
+                  });
+                }
                 cleanGastosCostos();
               }}
             >

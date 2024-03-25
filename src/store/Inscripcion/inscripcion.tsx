@@ -70,6 +70,7 @@ export interface ISolicitudLargoPlazo {
     fuente: IDeudorFideicomiso[];
     garantiaDePago: string;
     mecanismoVehiculoDePago: {
+      Tipo: string;
       Id: string;
       NumeroRegistro: string;
       TipoFideicomiso: string;
@@ -141,13 +142,16 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       lpState.changeEncabezado(aux?.encabezado);
 
       lpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
-
       lpState.setTablaObligadoSolidarioAval(
         aux?.informacionGeneral.obligadosSolidarios
       );
+      lpState.setTablaGastosCostos(aux?.informacionGeneral.destinoGastosCostos);
+
       lpState.getDetalleAutorizacion(aux?.autorizacion.Id);
 
-      lpState.setTablaGastosCostos(aux?.informacionGeneral.destinoGastosCostos);
+      // lpState.setTipoMecanismoVehiculoPago(
+      //   aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo
+      // );
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);

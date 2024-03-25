@@ -93,6 +93,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
       fuenteDePago: {
         mecanismoVehiculoDePago: {
+          Tipo: lpState.mecanismoVehiculoPago.MecanismoPago,
           Id: lpState.mecanismoVehiculoPago.Id,
           NumeroRegistro: lpState.mecanismoVehiculoPago.NumeroRegistro,
           TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
@@ -161,7 +162,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     const cpState = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    const solicitud: any = {
+    const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
 
       informacionGeneral: {
@@ -180,9 +181,9 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         MontoAutorizado: lpState.autorizacionSelect.MontoAutorizado,
         NumeroAutorizacion: lpState.autorizacionSelect.NumeroAutorizacion,
       },
-
       fuenteDePago: {
         mecanismoVehiculoDePago: {
+          Tipo: lpState.mecanismoVehiculoPago.MecanismoPago,
           Id: lpState.mecanismoVehiculoPago.Id,
           NumeroRegistro: lpState.mecanismoVehiculoPago.NumeroRegistro,
           TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
