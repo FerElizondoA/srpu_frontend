@@ -10,33 +10,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
-import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
-import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 
 type Props = {
   handler: Function;
   openState: boolean;
-  idSolicitud:string;
+  idSolicitud: string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
-  const navigate = useNavigate();
-
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
-
-  const modificaSolicitud: Function = useLargoPlazoStore(
-    (state) => state.modificaSolicitud
-  );
-
-  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
@@ -52,46 +39,6 @@ export function DialogSolicitarReestructura(props: Props) {
   useEffect(() => {
     setErrorAsignacion(false);
   }, []);
-
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
-  const reestriccionReestructura = () => {
-   //if (idUsuarioAsignado === "") {
-   //  setErrorAsignacion(true);
-   //}
-    //if (idSolicitud !== "") {
-      // modificaSolicitud(editCreadoPor, idUsuarioAsignado, "En Reestructura")
-      //   .then(() => {
-      //     //addComentario(idSolicitud);
-      //     //CambiaEstatus("En Reestructura", props.Solicitud);
-      //     Swal.fire({
-      //       confirmButtonColor: "#15212f",
-      //       cancelButtonColor: "rgb(175, 140, 85)",
-      //       icon: "success",
-      //       title: "Mensaje",
-      //       text: "La solicitud de autorización se envió con éxito",
-      //     });
-      //   })
-      //   .catch(() => {
-      //     Swal.fire({
-      //       confirmButtonColor: "#15212f",
-      //       cancelButtonColor: "rgb(175, 140, 85)",
-      //       icon: "error",
-      //       title: "Mensaje",
-      //       text: "Ocurrió un error, inténtelo de nuevo",
-      //     });
-      //   });
-      createNotification(
-        "Crédito simple a largo plazo",
-        "Su solicitud fue aprobada para reestructuración.",
-        ["a6860b44-3087-11ed-aed0-040300000000"]
-      );
-     // CambiaEstatus("En Reestructura", props.rowId) //// revisar!! 11/01/2024
-      //navigate("../reestructura");
-   // }
-  };
 
   return (
     <Dialog open={props.openState} fullWidth>
@@ -144,14 +91,7 @@ export function DialogSolicitarReestructura(props: Props) {
           Cancelar
         </Button>
 
-        <Button
-          // disabled={idUsuarioAsignado===""}
-          variant="text"
-          sx={queries.buttonContinuar}
-          onClick={() => {
-            reestriccionReestructura();
-          }}
-        >
+        <Button variant="text" sx={queries.buttonContinuar} onClick={() => {}}>
           {"Enviar"}
         </Button>
       </DialogActions>

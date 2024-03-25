@@ -3,9 +3,8 @@ import { StateCreator } from "zustand";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
-
 export interface IRegistro {
-  MecanismoPago: String;
+  MecanismoPago: string;
   Id: string;
   NumeroRegistro: string;
   FechaRegistro: string;
@@ -23,6 +22,7 @@ export interface IRegistro {
   EntePublicoObligado: string;
 
   TipoMovimiento: string;
+  SoporteDocumental: string;
 }
 
 //ASIGNAR FUENTE
@@ -87,6 +87,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
+    SoporteDocumental: "",
   },
 
   garantiaPago: "",

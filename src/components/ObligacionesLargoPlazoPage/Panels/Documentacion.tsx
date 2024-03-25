@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Badge,
   Button,
@@ -22,15 +23,13 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
-import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { queries } from "../../../queries";
+import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -70,33 +69,29 @@ export function Documentacion() {
   const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
     useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
-  const tablaDocumentosLP: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentosLP
+  const tablaDocumentos: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentos
   );
 
-  const addDocumentoLP: Function = useLargoPlazoStore(
-    (state) => state.addDocumentoLP
+  const addDocumento: Function = useLargoPlazoStore(
+    (state) => state.addDocumento
   );
 
-  const setTablaDocumentosLP: Function = useLargoPlazoStore(
-    (state) => state.setTablaDocumentosLP
-  );
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
+  const setTablaDocumentos: Function = useLargoPlazoStore(
+    (state) => state.setTablaDocumentos
   );
 
   function cargarArchivo(event: any, index: number) {
     let file = event.target.files[0];
 
     if (file !== undefined) {
-      if (index < tablaDocumentosLP.length) {
-        let auxArrayArchivos = [...tablaDocumentosLP];
+      if (index < tablaDocumentos.length) {
+        let auxArrayArchivos = [...tablaDocumentos];
         auxArrayArchivos[index].archivo = file;
         auxArrayArchivos[index].nombreArchivo = file.name;
-        setTablaDocumentosLP(auxArrayArchivos);
+        setTablaDocumentos(auxArrayArchivos);
       } else {
-        addDocumentoLP({
+        addDocumento({
           archivo: file,
           nombreArchivo: file.name,
         });
@@ -105,18 +100,21 @@ export function Documentacion() {
   }
 
   const quitDocument: Function = useLargoPlazoStore(
-    (state) => state.removeDocumentoLP
-  );
-
-  const datosActualizar: Array<string> = useCortoPlazoStore(
-    (state) => state.datosActualizar
+    (state) => state.removeDocumento
   );
 
   const asignarTpoDoc = (index: number, valor: string, descripcion: string) => {
-    let aux = [...tablaDocumentosLP];
+    let aux = [...tablaDocumentos];
     aux[index].tipoArchivo = valor;
     aux[index].descripcionTipo = descripcion;
-    setTablaDocumentosLP(aux);
+    setTablaDocumentos(aux);
+  };
+
+  const scroll = () => {
+    const element = document.getElementById("divider");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
@@ -127,42 +125,33 @@ export function Documentacion() {
   });
 
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
-  const [opciones, setOpciones] = useState(tiposDocumentos);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
   };
 
-  const handleBotonClick = () => {
-    // Filtrar y mostrar solo la opción de justificación
-    //let justificacion = tiposDocumentos.filter((opcion: any) => opcion.Descripcion = 'Justificacion para Reestructurar')[0].Descripcion;
+  const datosActualizar: Array<string> = useLargoPlazoStore(
+    (state) => state.datosActualizar
+  );
 
-    if (reestructura === "con autorizacion") {
-      let justificacion = tiposDocumentos.filter(
-        (opcion: ITiposDocumento) =>
-          (opcion.Descripcion = "Justificacion para Reestructurar")
-      );
-      setOpciones(justificacion);
-    } else {
-      let justificacion = tiposDocumentos.filter(
-        (opcion: ITiposDocumento) =>
-          opcion.Descripcion !== "Justificacion para Reestructurar"
-      );
-      setOpciones(justificacion);
-    }
-  };
-
-  useEffect(() => {
-    handleBotonClick();
-  }, []);
+  // IdSolicitud
+  // const IdSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
+  // useEffect(() => {
+  //   if (IdSolicitud) {
+  //     getDocumentos(
+  //       `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
+  //       () => {},
+  //       () => {}
+  //     );
+  //   }
+  // }, []);
 
   return (
     <Grid
       item
       container
       display="flex"
-      //height={"30rem"}
       width={"100%"}
       sx={{
         height: "27rem",
@@ -216,14 +205,13 @@ export function Documentacion() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaDocumentosLP.map((val, index) => (
+                {tablaDocumentos.map((val, index) => (
                   <StyledTableRow key={index} id={`${index + 1}`}>
                     <StyledTableCell scope="row">
                       {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography>Obligatorio</Typography>
                       ) : (
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
                           onClick={() => {
                             setOpenEliminar({ open: true, index: index });
                           }}
@@ -235,28 +223,25 @@ export function Documentacion() {
 
                     <StyledTableCell scope="row">
                       <TextField
-                        sx={{
-                          width: "250px",
-                        }}
+                        sx={{ width: "250px" }}
                         disabled={
                           val.archivo?.name ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           (datosActualizar.length > 0 &&
-                            !datosActualizar.includes(val.tipoArchivo)) ||
-                          reestructura === "con autorizacion"
+                            !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
                         multiline={!query.isMobile}
                         value={val.nombreArchivo}
                         onChange={(v) => {
-                          let auxArrayArchivos = [...tablaDocumentosLP];
+                          let auxArrayArchivos = [...tablaDocumentos];
                           auxArrayArchivos[index].nombreArchivo = v.target.value
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
-                          setTablaDocumentosLP(auxArrayArchivos);
+                          setTablaDocumentos(auxArrayArchivos);
                         }}
                       ></TextField>
                     </StyledTableCell>
@@ -281,9 +266,9 @@ export function Documentacion() {
                             textAlign: "center",
                             justifyContent: "center",
                             alignItems: "center",
-                            width: "90%",
-                            height: "60%",
-                            fontSize: "80%",
+                            width: "95%",
+                            height: "65%",
+                            fontSize: "70%",
                             border:
                               val.archivo?.name !==
                               "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
@@ -297,9 +282,8 @@ export function Documentacion() {
                         </Typography>
                         <input
                           disabled={
-                            (datosActualizar.length > 0 &&
-                              !datosActualizar.includes(val.tipoArchivo)) ||
-                            reestructura === "con autorizacion"
+                            datosActualizar.length > 0 &&
+                            !datosActualizar.includes(val.tipoArchivo)
                           }
                           type="file"
                           accept="application/pdf"
@@ -310,20 +294,24 @@ export function Documentacion() {
                             opacity: 0,
                             width: "100%",
                             height: "5vh",
-                            cursor: reestructura ? "" : "pointer",
+                            cursor: "pointer",
                           }}
                         />
                       </Grid>
                     </StyledTableCell>
                     <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
-                        <Typography>
-                          {tablaDocumentosLP[index]?.descripcionTipo}
+                        <Typography width={query.isMobile ? "350px" : "100%"}>
+                          {tablaDocumentos[index]?.descripcionTipo || ""}
                         </Typography>
                       ) : (
                         <FormControl required variant="standard" fullWidth>
                           <Select
-                            value={tablaDocumentosLP[index]?.tipoArchivo || ""}
+                            error={
+                              tablaDocumentos[index]?.tipoArchivo === "" ||
+                              tablaDocumentos[index]?.tipoArchivo === undefined
+                            }
+                            value={tablaDocumentos[index]?.tipoArchivo || ""}
                             onChange={(v) => {
                               asignarTpoDoc(
                                 index,
@@ -333,7 +321,16 @@ export function Documentacion() {
                                 )[0].Descripcion
                               );
                             }}
-                            sx={{ display: "flex", pt: 1 }}
+                            sx={{
+                              display: "flex",
+                              pt: 1,
+                              backgroundColor:
+                                tablaDocumentos[index]?.tipoArchivo === "" ||
+                                tablaDocumentos[index]?.tipoArchivo ===
+                                  undefined
+                                  ? "#ff000057"
+                                  : null,
+                            }}
                             inputProps={{
                               readOnly:
                                 index <
@@ -343,20 +340,11 @@ export function Documentacion() {
                               index < catalogoTiposDocumentosObligatorios.length
                             }
                           >
-                            {reestructura === "con autorizacion" ? (
-                              <MenuItem
-                                key={opciones[5].Id}
-                                value={opciones[5].Id}
-                              >
-                                {opciones[5].Descripcion}
+                            {tiposDocumentos.map((tipo) => (
+                              <MenuItem key={tipo.Id} value={tipo.Id}>
+                                {tipo.Descripcion}
                               </MenuItem>
-                            ) : (
-                              opciones.map((tipo) => (
-                                <MenuItem key={tipo.Id} value={tipo.Id}>
-                                  {tipo.Descripcion}
-                                </MenuItem>
-                              ))
-                            )}
+                            ))}
                           </Select>
                         </FormControl>
                       )}
@@ -387,7 +375,6 @@ export function Documentacion() {
                           </Tooltip>
                         </Badge>
                       ) : (
-                        // <Badge badgeContent={"!"} color="primary">
                         <Tooltip title="Añadir comentario a este apartado">
                           <IconButton
                             color={
@@ -408,7 +395,6 @@ export function Documentacion() {
                             <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
                           </IconButton>
                         </Tooltip>
-                        // </Badge>
                       )}
                     </StyledTableCell>
                   </StyledTableRow>
@@ -476,28 +462,21 @@ export function Documentacion() {
             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
           </Typography>
           <input
-            // disabled={reestructura}
+            //disabled={reestructura}
             type="file"
             accept="application/pdf"
             onChange={(v) => {
-              cargarArchivo(v, tablaDocumentosLP.length);
+              scroll();
+              cargarArchivo(v, tablaDocumentos.length);
             }}
             style={{
               opacity: 0,
               width: "60%",
               height: "3vh",
-              cursor: reestructura ? "" : "pointer",
+              cursor: "pointer",
             }}
           />
         </Grid>
-
-        {/* <Grid display={"flex"} justifyContent={"end"}>
-          <Tooltip title={"Remover Archivo"}>
-            <Button onClick={() => removeDocumento()}>
-              <GridCloseIcon />
-            </Button>
-          </Tooltip>
-        </Grid> */}
       </Grid>
 
       <ComentarioApartado

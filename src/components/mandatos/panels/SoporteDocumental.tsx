@@ -28,7 +28,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
-import enGB from "date-fns/locale/en-GB";
+
+import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
@@ -243,7 +244,7 @@ export function SoporteDocumentalMandato() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{

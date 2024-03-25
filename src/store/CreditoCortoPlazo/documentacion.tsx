@@ -2,11 +2,9 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { IFile } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
-import { useCortoPlazoStore } from "./main";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface DocumentosSlice {
-  documentosObligatorios: [];
-
   tablaDocumentos: IFile[];
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
@@ -21,8 +19,6 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
-  documentosObligatorios: [],
-
   tablaDocumentos: [],
 
   catalogoTiposDocumentos: [],
@@ -41,7 +37,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   setTablaDocumentos: (docs: any) => set(() => ({ tablaDocumentos: docs })),
 
   getTiposDocumentos: async () => {
-    const state = useCortoPlazoStore.getState();
+    const state = useInscripcionStore.getState();
     await axios({
       method: "get",
       url:
@@ -53,7 +49,7 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      if (state.idSolicitud !== "") {
+      if (state.inscripcion.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,
           catalogoTiposDocumentosObligatorios: data.data.filter(

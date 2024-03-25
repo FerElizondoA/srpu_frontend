@@ -11,43 +11,22 @@ import {
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { enGB } from "date-fns/locale";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { useEffect } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
+import { IGeneralAutorizado } from "../../../store/CreditoLargoPlazo/autorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 export function RegistrarNuevaAutorizacion() {
-  const entidad: { Id: string; Organismo: string } = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.entidad
+  const autorizacion: IGeneralAutorizado = useLargoPlazoStore(
+    (state) => state.autorizacion
   );
 
-  const numeroAutorizacion: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.numeroAutorizacion
-  );
-
-  const medioPublicacion: { Id: string; Descripcion: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.medioPublicacion);
-
-  const fechaPublicacion: string = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.fechaPublicacion
-  );
-
-  const montoAutorizado: number = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion.montoAutorizado
-  );
-
-  const documentoSoporte: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore((state) => state.registrarAutorizacion.documentoSoporte);
-
-  const acreditacionQuorum: { archivo: File; nombreArchivo: string } =
-    useLargoPlazoStore(
-      (state) => state.registrarAutorizacion.acreditacionQuorum
-    );
-
-  const changeAutorizacion: Function = useLargoPlazoStore(
+  const setRegistrarAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setRegistrarAutorizacion
   );
 
@@ -62,31 +41,21 @@ export function RegistrarNuevaAutorizacion() {
     let file = event.target.files[0];
     if (tipoDocumento === "Soporte") {
       if (file !== undefined) {
-        changeAutorizacion({
-          entidad: entidad,
-          numeroAutorizacion: numeroAutorizacion,
-          fechaPublicacion: fechaPublicacion,
-          medioPublicacion: medioPublicacion,
-          montoAutorizado: montoAutorizado,
+        setRegistrarAutorizacion({
+          ...autorizacion,
           documentoSoporte: {
             archivo: file,
-            nombreArchivo: numeroAutorizacion + file.name,
+            nombreArchivo: file.name,
           },
-          acreditacionQuorum: acreditacionQuorum,
         });
       }
     } else if (tipoDocumento === "Quorum") {
       if (file !== undefined) {
-        changeAutorizacion({
-          entidad: entidad,
-          numeroAutorizacion: numeroAutorizacion,
-          fechaPublicacion: fechaPublicacion,
-          medioPublicacion: medioPublicacion,
-          montoAutorizado: montoAutorizado,
-          documentoSoporte: documentoSoporte,
+        setRegistrarAutorizacion({
+          ...autorizacion,
           acreditacionQuorum: {
             archivo: file,
-            nombreArchivo: numeroAutorizacion + file.name,
+            nombreArchivo: file.name,
           },
         });
       }
@@ -94,40 +63,21 @@ export function RegistrarNuevaAutorizacion() {
   }
 
   useEffect(() => {
-    changeAutorizacion({
-      entidad: entidad,
-      numeroAutorizacion: numeroAutorizacion,
-      fechaPublicacion: fechaPublicacion,
-      medioPublicacion: medioPublicacion,
-      montoAutorizado: montoAutorizado,
-      documentoSoporte: documentoSoporte,
-      acreditacionQuorum: acreditacionQuorum,
-    });
     getMediosDePublicacion();
   }, []);
 
   const removeDocumentoSoporte = (tipoDocumento: string) => {
     if (tipoDocumento === "Soporte") {
-      changeAutorizacion({
-        entidad: entidad,
-        numeroAutorizacion: numeroAutorizacion,
-        fechaPublicacion: fechaPublicacion,
-        medioPublicacion: medioPublicacion,
-        montoAutorizado: montoAutorizado,
+      setRegistrarAutorizacion({
+        ...autorizacion,
         documentoSoporte: {
           archivo: new File([], ""),
           nombreArchivo: "",
         },
-        acreditacionQuorum: acreditacionQuorum,
       });
     } else if (tipoDocumento === "Quorum") {
-      changeAutorizacion({
-        entidad: entidad,
-        numeroAutorizacion: numeroAutorizacion,
-        fechaPublicacion: fechaPublicacion,
-        medioPublicacion: medioPublicacion,
-        montoAutorizado: montoAutorizado,
-        documentoSoporte: documentoSoporte,
+      setRegistrarAutorizacion({
+        ...autorizacion,
         acreditacionQuorum: {
           archivo: new File([], ""),
           nombreArchivo: "",
@@ -138,26 +88,9 @@ export function RegistrarNuevaAutorizacion() {
 
   return (
     <>
-      <Grid
-        container
-        width={"100%"}
-        // sx={{...queries.contenedorAgregarAutorizacion.RegistrarAutorizacion,
-
-        //   flexDirection:"column",
-        //   justifyContent:"space-between",
-        //   alignItems:"center",
-        //   justifyItems:"center",
-        //   "@media (min-width: 480px)": {
-        //     height: "20rem",
-        //   },
-        //   "@media (min-width: 768px)": {
-        //     height: "20rem",
-        //   },
-        // }}
-      >
+      <Grid container width={"100%"}>
         <Grid
           container
-          //sx={{ ...queries.RegistrarNuevaAutorizacion }}
           display={"flex"}
           justifyContent={"space-evenly"}
           alignItems={"center"}
@@ -170,7 +103,7 @@ export function RegistrarNuevaAutorizacion() {
               fullWidth
               placeholder="Nuevo León"
               variant="standard"
-              value={entidad.Organismo}
+              value={autorizacion.entidad.Organismo}
               sx={queries.medium_text}
               InputLabelProps={{
                 style: {
@@ -188,34 +121,26 @@ export function RegistrarNuevaAutorizacion() {
 
           <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
             <InputLabel sx={queries.medium_text}>
-              Numero de autorización de la legislatura local
+              Número de autorización de la legislatura local
             </InputLabel>
             <TextField
               fullWidth
               variant="standard"
               value={
-                numeroAutorizacion <= 0 ? "" : numeroAutorizacion.toString()
+                autorizacion.numeroAutorizacion <= 0
+                  ? ""
+                  : autorizacion.numeroAutorizacion.toString()
               }
               onChange={(v) => {
                 if (validator.isNumeric(v.target.value)) {
-                  changeAutorizacion({
-                    entidad: entidad,
+                  setRegistrarAutorizacion({
+                    ...autorizacion,
                     numeroAutorizacion: v.target.value,
-                    fechaPublicacion: fechaPublicacion,
-                    medioPublicacion: medioPublicacion,
-                    montoAutorizado: montoAutorizado,
-                    documentoSoporte: documentoSoporte,
-                    acreditacionQuorum: acreditacionQuorum,
                   });
                 } else if (v.target.value === "") {
-                  changeAutorizacion({
-                    entidad: entidad,
+                  setRegistrarAutorizacion({
+                    ...autorizacion,
                     numeroAutorizacion: 0,
-                    fechaPublicacion: fechaPublicacion,
-                    medioPublicacion: medioPublicacion,
-                    montoAutorizado: montoAutorizado,
-                    documentoSoporte: documentoSoporte,
-                    acreditacionQuorum: acreditacionQuorum,
                   });
                 }
               }}
@@ -241,22 +166,14 @@ export function RegistrarNuevaAutorizacion() {
                   </li>
                 );
               }}
-              value={{
-                Id: medioPublicacion.Id || "",
-                Descripcion: medioPublicacion.Descripcion || "",
-              }}
+              value={autorizacion.medioPublicacion}
               onChange={(event, text) =>
-                changeAutorizacion({
-                  entidad: entidad,
-                  numeroAutorizacion: numeroAutorizacion,
-                  fechaPublicacion: fechaPublicacion,
+                setRegistrarAutorizacion({
+                  ...autorizacion,
                   medioPublicacion: {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
                   },
-                  montoAutorizado: montoAutorizado,
-                  documentoSoporte: documentoSoporte,
-                  acreditacionQuorum: acreditacionQuorum,
                 })
               }
               renderInput={(params) => (
@@ -278,25 +195,17 @@ export function RegistrarNuevaAutorizacion() {
             </InputLabel>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
               <DesktopDatePicker
                 sx={{ width: "100%" }}
-                value={new Date(fechaPublicacion)}
+                value={new Date(autorizacion.fechaPublicacion)}
                 onChange={(date) =>
-                  changeAutorizacion({
-                    entidad: entidad,
-                    numeroAutorizacion: numeroAutorizacion,
-                    fechaPublicacion: date?.toString(),
-                    medioPublicacion: medioPublicacion,
-                    montoAutorizado: montoAutorizado,
-                    documentoSoporte: documentoSoporte,
-                    acreditacionQuorum: acreditacionQuorum,
+                  setRegistrarAutorizacion({
+                    ...autorizacion,
+                    fechaPublicacion: format(date!, "MM/dd/yyyy"),
                   })
                 }
-                // slots={{
-                //   textField: DateInput,
-                // }}
               />
             </LocalizationProvider>
           </Grid>
@@ -307,39 +216,28 @@ export function RegistrarNuevaAutorizacion() {
           display={"flex"}
           justifyContent={"space-evenly"}
           alignItems={"center"}
-          //sx={{ ...queries.RegistrarNuevaAutorizacion }}
         >
           <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
             <InputLabel sx={queries.medium_text}>Monto Autorizado</InputLabel>
             <TextField
               value={
-                montoAutorizado <= 0
+                autorizacion.montoAutorizado <= 0
                   ? moneyMask("0")
-                  : moneyMask(montoAutorizado.toString())
+                  : moneyMask(autorizacion.montoAutorizado.toString())
               }
               onChange={(v) => {
                 if (
                   validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                   parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
                 ) {
-                  changeAutorizacion({
-                    entidad: entidad,
-                    numeroAutorizacion: numeroAutorizacion,
-                    fechaPublicacion: fechaPublicacion,
-                    medioPublicacion: medioPublicacion,
+                  setRegistrarAutorizacion({
+                    ...autorizacion,
                     montoAutorizado: moneyMask(v.target.value),
-                    documentoSoporte: documentoSoporte,
-                    acreditacionQuorum: acreditacionQuorum,
                   });
                 } else if (v.target.value === "") {
-                  changeAutorizacion({
-                    entidad: entidad,
-                    numeroAutorizacion: numeroAutorizacion,
-                    fechaPublicacion: fechaPublicacion,
-                    medioPublicacion: medioPublicacion,
+                  setRegistrarAutorizacion({
+                    ...autorizacion,
                     montoAutorizado: moneyMask("0"),
-                    documentoSoporte: documentoSoporte,
-                    acreditacionQuorum: acreditacionQuorum,
                   });
                 }
               }}
@@ -378,13 +276,13 @@ export function RegistrarNuevaAutorizacion() {
                   sx={{
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
-                      documentoSoporte.nombreArchivo !==
+                      autorizacion.documentoSoporte.nombreArchivo !==
                       "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
                 >
-                  {documentoSoporte.nombreArchivo ||
+                  {autorizacion.documentoSoporte.nombreArchivo ||
                     "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                 </Typography>
                 <input
@@ -458,13 +356,13 @@ export function RegistrarNuevaAutorizacion() {
                   sx={{
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
-                      acreditacionQuorum.nombreArchivo !==
+                      autorizacion.acreditacionQuorum.nombreArchivo !==
                       "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
                 >
-                  {acreditacionQuorum.nombreArchivo ||
+                  {autorizacion.acreditacionQuorum.nombreArchivo ||
                     "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                 </Typography>
                 <input

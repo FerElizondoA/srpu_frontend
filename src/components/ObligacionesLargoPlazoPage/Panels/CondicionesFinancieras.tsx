@@ -12,20 +12,15 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  ThemeProvider,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
 
-import {
-  ICondicionFinanciera,
-  IDisposicion,
-  IComisiones,
-  ITasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -35,12 +30,70 @@ import { format, lightFormat } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import { queries } from "../../../queries";
 import {
-  headsComision,
-  headsDisposicion,
-  headsTasa,
-} from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
-import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+  IDisposicion,
+  ITasaInteres,
+} from "../../../store/CreditoCortoPlazo/pagos_capital";
+import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+
+export const headsTasa: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Fecha de Primer Pago",
+  },
+  {
+    label: "Tasa Fija",
+  },
+  {
+    label: "Periodicidad de Pago",
+  },
+  {
+    label: "Tasa de Referencia",
+  },
+  {
+    label: "Sobretasa",
+  },
+  {
+    label: "Dias del Ejercicio",
+  },
+];
+
+export const headsComision: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Tipo de comisión",
+  },
+  {
+    label: "Fecha de primer pago",
+  },
+  {
+    label: "Periodicidad de Pago",
+  },
+  {
+    label: "Porcentaje",
+  },
+  {
+    label: "Monto",
+  },
+  {
+    label: "IVA",
+  },
+];
+
+export const headsDisposicion: readonly {
+  label: string;
+}[] = [
+  {
+    label: "Fecha de Disposición",
+  },
+  {
+    label: "Importe de disposición",
+  },
+];
 
 const heads: readonly {
   label: string;
@@ -52,7 +105,7 @@ const heads: readonly {
     label: "Fecha Disposición",
   },
   {
-    label: "Importe",
+    label: "Importe de disposición",
   },
   {
     label: "Fecha de Primer Pago Capital",
@@ -81,15 +134,21 @@ export function CondicionesFinancieras() {
     (state) => state.loadCondicionFinanciera
   );
 
+  const indexRegistro: number = useLargoPlazoStore(
+    (state) => state.indexRegistro
+  );
+  const setIndexRegistro: Function = useLargoPlazoStore(
+    (state) => state.setIndexRegistro
+  );
+
   const [accion, setAccion] = useState("Agregar");
-  const [indexA, setIndexA] = useState(0);
 
   const changeOpenAgregarState = (open: boolean) => {
     changeAgregarCondicion(open);
   };
 
-  const updatecondicionFinancieraTable: Function = useLargoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
+  const removeCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.removeCondicionFinanciera
   );
 
   const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
@@ -100,23 +159,8 @@ export function CondicionesFinancieras() {
   const [openComision, setOpenComision] = useState(false);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
-  const setDisposicionesParciales: Function = useLargoPlazoStore(
-    (state) => state.setDisposicionesParciales
-  );
-  const setTasasParciales: Function = useLargoPlazoStore(
-    (state) => state.setTasasParciales
-  );
-
-  const changeTasaInteres: Function = useLargoPlazoStore(
-    (state) => state.changeTasaInteres
-  );
-
   const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
-  );
-
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
   );
 
   let disable =
@@ -194,45 +238,13 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
-                            disabled={reestructura === "con autorizacion"}
+                            disabled={disable}
                             type="button"
                             onClick={() => {
-                              changeOpenAgregarState(!openAgregarCondicion);
                               setAccion("Editar");
-                              setIndexA(index);
+                              changeOpenAgregarState(!openAgregarCondicion);
+                              setIndexRegistro(index);
                               loadCondicionFinanciera(row);
-
-                              if (row.disposicion.length > 1) {
-                                setDisposicionesParciales(true);
-                              }
-                              if (row.tasaInteres.length > 1) {
-                                setTasasParciales(true);
-                              } else {
-                                changeTasaInteres({
-                                  tasaFija: row.tasaInteres[0].tasaFija,
-                                  tasaVariable: row.tasaInteres[0].tasaVariable,
-                                  tasa: row.tasaInteres[0].tasa,
-                                  fechaPrimerPago:
-                                    row.tasaInteres[0].fechaPrimerPago ||
-                                    new Date().toString(),
-                                  diasEjercicio: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].diasEjercicio,
-                                  },
-                                  periocidadPago: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].periocidadPago,
-                                  },
-                                  tasaReferencia: {
-                                    Id: "",
-                                    Descripcion:
-                                      row.tasaInteres[0].tasaReferencia,
-                                  },
-                                  sobreTasa: row.tasaInteres[0].sobreTasa,
-                                });
-                              }
                             }}
                           >
                             <EditIcon />
@@ -240,16 +252,10 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
-                            disabled={
-                              disable || reestructura === "con autorizacion"
-                            }
+                            disabled={disable}
                             type="button"
                             onClick={() => {
-                              updatecondicionFinancieraTable(
-                                tablaCondicionesFinancieras.filter(
-                                  (item) => item.id !== row.id
-                                )
-                              );
+                              removeCondicionFinanciera(index);
                             }}
                           >
                             <DeleteIcon />
@@ -302,7 +308,7 @@ export function CondicionesFinancieras() {
                         sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                       >
-                        {row.pagosDeCapital.periodicidadDePago}
+                        {row.pagosDeCapital.periodicidadDePago.Descripcion}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -330,14 +336,16 @@ export function CondicionesFinancieras() {
                         sx={{ padding: "1px 30px 1px 0" }}
                         align="center"
                       >
-                        <Button
-                          onClick={() => {
-                            setRowComision(row.comisiones);
-                            setOpenComision(true);
-                          }}
-                        >
-                          <InfoOutlinedIcon />
-                        </Button>
+                        {
+                          <Button
+                            onClick={() => {
+                              setRowComision(row.comisiones);
+                              setOpenComision(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </Button>
+                        }
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -388,19 +396,19 @@ export function CondicionesFinancieras() {
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasa}
+                                {row.tasaFija}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periocidadPago}
+                                {row.periocidadPago.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaReferencia}
+                                {row.tasaReferencia.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.sobreTasa}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.diasEjercicio}
+                                {row.diasEjercicio.Descripcion}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -450,16 +458,18 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell component="th" scope="row">
-                                {row.tipoDeComision}
+                                {row.tipoDeComision?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaContratacion),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row?.fechaComision !== "N/A"
+                                  ? format(
+                                      new Date(row?.fechaComision),
+                                      "dd/MM/yyyy"
+                                    )
+                                  : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periodicidadDePago}
+                                {row.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.porcentaje}
@@ -518,10 +528,7 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {lightFormat(
-                                  new Date(row.fechaDisposicion),
-                                  "dd-MM-yyyy"
-                                )}
+                                {row.fechaDisposicion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.importe}
@@ -549,23 +556,25 @@ export function CondicionesFinancieras() {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Button
-          disabled={disable}
-          sx={queries.buttonContinuar}
-          variant="outlined"
-          onClick={() => {
-            changeOpenAgregarState(!openAgregarCondicion);
-            setAccion("Agregar");
-          }}
-        >
-          Agregar
-        </Button>
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={disable}
+            sx={queries.buttonContinuar}
+            variant="outlined"
+            onClick={() => {
+              changeOpenAgregarState(!openAgregarCondicion);
+              setAccion("Agregar");
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
 
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}
           openState={openAgregarCondicion}
           accion={accion}
-          indexA={indexA}
+          indexA={indexRegistro}
         />
       </Grid>
     </Grid>

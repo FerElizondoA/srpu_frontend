@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { ConfirmacionBorradorSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
 import { Documentacion } from "../../components/ObligacionesCortoPlazoPage/Panels/Documentacion";
 import { Encabezado } from "../../components/ObligacionesCortoPlazoPage/Panels/Encabezado";
@@ -14,6 +14,9 @@ import { Resumen } from "../../components/ObligacionesCortoPlazoPage/Panels/Resu
 import { SolicitudInscripcion } from "../../components/ObligacionesCortoPlazoPage/Panels/SolicitudInscripcion";
 import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export function ObligacionesCortoPlazoPage() {
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -33,13 +36,19 @@ export function ObligacionesCortoPlazoPage() {
   const getTiposDocumentos: Function = useCortoPlazoStore(
     (state) => state.getTiposDocumentos
   );
+
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
   useEffect(() => {
     getTiposDocumentos();
+    getDocumentos(
+      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+      () => {},
+      () => {}
+    );
   }, []);
-
-  const NumeroRegistro: string = useCortoPlazoStore(
-    (state) => state.NumeroRegistro
-  );
 
   return (
     <>
@@ -53,9 +62,11 @@ export function ObligacionesCortoPlazoPage() {
           mt={2}
           display={"flex"}
           width={"100%"}
-          justifyContent={!NumeroRegistro ? "center" : "space-evenly"}
+          justifyContent={
+            !inscripcion.NumeroRegistro ? "center" : "space-evenly"
+          }
         >
-          {NumeroRegistro && (
+          {inscripcion.NumeroRegistro && (
             <Grid
               width={query.isTittle ? "20%" : "20%"}
               display={"flex"}
@@ -67,13 +78,19 @@ export function ObligacionesCortoPlazoPage() {
                   ...queries.bold_text,
                 }}
               >
-                <strong>{`Número de Registro: ${NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
               </Typography>
             </Grid>
           )}
           <Grid
             mr={3}
-            width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
+            width={
+              !inscripcion.NumeroRegistro
+                ? "90%"
+                : query.isTittle
+                ? "60%"
+                : "50%"
+            }
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
@@ -89,7 +106,9 @@ export function ObligacionesCortoPlazoPage() {
           </Grid>
 
           <Grid
-            width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+            width={
+              !inscripcion.NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"
+            }
             display={"flex"}
             justifyContent={"end"}
             alignItems={"center"}
@@ -150,10 +169,13 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 3 && <Documentacion />}
       {tabIndex === 4 && <Resumen coments={true} />}
       {tabIndex === 5 && <SolicitudInscripcion />}
-      <ConfirmacionBorradorSolicitud
-        handler={setOpenDialogBorrador}
-        openState={openDialogBorrador}
-      />
+
+      {openDialogBorrador && (
+        <DialogGuardarBorrador
+          handler={setOpenDialogBorrador}
+          openState={openDialogBorrador}
+        />
+      )}
     </>
   );
 }

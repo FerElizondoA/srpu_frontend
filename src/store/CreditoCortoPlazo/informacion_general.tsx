@@ -1,55 +1,50 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
+import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
-export type ObligadoSolidarioAval = {
-  obligadoSolidario: string;
-  tipoEntePublicoObligado: string;
-  entePublicoObligado: string;
-};
+export interface IInformacionGeneral {
+  fechaContratacion: string;
+  fechaVencimiento: string;
+  plazo: number;
+  destino: { Id: string; Descripcion: string };
+  monto: number;
+  denominacion: string;
+  institucionFinanciera: { Id: string; Descripcion: string };
+}
+
+export interface IObligadoSolidarioAval {
+  tipoEntePublicoObligado: { Id: string; Descripcion: string };
+  entePublicoObligado: { Id: string; Descripcion: string };
+}
 
 export interface InformacionGeneralSlice {
-
   reestructura: string;
   changeRestructura: (restructura: string) => void;
 
-  informacionGeneral: {
-    fechaContratacion: string;
-    fechaVencimiento: string;
-    plazo: number;
-    destino: { Id: string; Descripcion: string };
-    monto: number;
-    denominacion: string;
-    institucionFinanciera: { Id: string; Descripcion: string };
-  };
+  informacionGeneral: IInformacionGeneral;
 
-  tablaObligadoSolidarioAval: ObligadoSolidarioAval[];
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: string; Descripcion: string };
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
   };
+  tablaObligadoSolidarioAval: IObligadoSolidarioAval[];
 
   catalogoInstituciones: ICatalogo[];
   catalogoDestinos: ICatalogo[];
   catalogoObligadoSolidarioAval: ICatalogo[];
   catalogoTipoEntePublicoObligado: ICatalogo[];
 
-  changeInformacionGeneral: (
-    fechaContratacion: string,
-    fechaVencimiento: string,
-    plazo: number,
-    destino: { Id: string; Descripcion: string },
-    monto: number,
-    denominacion: string,
-    institucionFinanciera: { Id: string; Descripcion: string }
-  ) => void;
+  setInformacionGeneral: (informacionGeneral: any) => void;
 
   addObligadoSolidarioAval: (
-    newObligadoSolidarioAval: ObligadoSolidarioAval
+    newObligadoSolidarioAval: IObligadoSolidarioAval
   ) => void;
 
-  changeObligadoSolidarioAval: (
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
+  ) => void;
+
+  setObligadoSolidarioAval: (
     obligadoSolidario: { Id: string; Descripcion: string },
     tipoEntePublicoObligado: { Id: string; Descripcion: string },
     entePublicoObligado: { Id: string; Descripcion: string }
@@ -59,7 +54,7 @@ export interface InformacionGeneralSlice {
 
   removeObligadoSolidarioAval: (index: number) => void;
 
-  getDestinos: () => void;
+  getDestinos: (tipoSolicitud: string) => void;
   getInstituciones: () => void;
   getTipoEntePublicoObligado: () => void;
   getObligadoSolidarioAval: () => void;
@@ -69,10 +64,10 @@ export const createInformacionGeneralSlice: StateCreator<
   InformacionGeneralSlice
 > = (set, get) => ({
   reestructura: "",
-  changeRestructura:(reestructura: string) => {
+  changeRestructura: (reestructura: string) => {
     set(() => ({
-      reestructura: reestructura
-    }))
+      reestructura: reestructura,
+    }));
   },
 
   informacionGeneral: {
@@ -85,35 +80,44 @@ export const createInformacionGeneralSlice: StateCreator<
     institucionFinanciera: { Id: "", Descripcion: "" },
   },
 
-  tablaObligadoSolidarioAval: [],
   generalObligadoSolidarioAval: {
-    obligadoSolidario: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
-    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
-    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "No Aplica"
+    tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
+    entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
   },
+  tablaObligadoSolidarioAval: [],
 
   catalogoInstituciones: [],
   catalogoDestinos: [],
   catalogoObligadoSolidarioAval: [],
   catalogoTipoEntePublicoObligado: [],
 
-  changeInformacionGeneral: (informacionGeneral: any) =>
+  setInformacionGeneral: (informacionGeneral: any) => {
     set(() => ({
       informacionGeneral: informacionGeneral,
-    })),
+    }));
+  },
 
-  changeObligadoSolidarioAval: (obligadoSolidario: any) => {
+  setObligadoSolidarioAval: (obligadoSolidario: any) => {
     set(() => ({
       generalObligadoSolidarioAval: obligadoSolidario,
     }));
   },
 
-  addObligadoSolidarioAval: (newObligadoSolidarioAval: ObligadoSolidarioAval) =>
+  addObligadoSolidarioAval: (
+    newObligadoSolidarioAval: IObligadoSolidarioAval
+  ) =>
     set((state) => ({
       tablaObligadoSolidarioAval: [
         ...state.tablaObligadoSolidarioAval,
         newObligadoSolidarioAval,
       ],
+    })),
+
+  setTablaObligadoSolidarioAval: (
+    obligadoSolidarioAval: IObligadoSolidarioAval[]
+  ) =>
+    set((state) => ({
+      tablaObligadoSolidarioAval: obligadoSolidarioAval,
     })),
 
   removeObligadoSolidarioAval: (index: number) =>
@@ -126,7 +130,7 @@ export const createInformacionGeneralSlice: StateCreator<
   cleanObligadoSolidarioAval: () =>
     set((state) => ({ tablaObligadoSolidarioAval: [] })),
 
-  getDestinos: async () => {
+  getDestinos: async (tipoSolicitud: string) => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-destinos", {
         headers: {
@@ -135,6 +139,13 @@ export const createInformacionGeneralSlice: StateCreator<
       })
       .then(({ data }) => {
         let r = data.data;
+        if (tipoSolicitud === "CP") {
+          r = r.filter((v: any) => v.OCP === 1);
+        } else if (tipoSolicitud === "LP") {
+          r = r.filter((v: any) => v.OLP === 1);
+        } else {
+        }
+
         set((state) => ({
           catalogoDestinos: r,
         }));

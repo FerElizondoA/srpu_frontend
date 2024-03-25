@@ -6,10 +6,6 @@ import { queries } from "../../queries";
 
 export const modulos = [
   {
-    label: "Claves de Inscripción",
-    fnc: "claveDeInscripcion",
-  },
-  {
     label: "Destinos",
     fnc: "destinos",
   },

@@ -1,7 +1,8 @@
 import { Dialog, DialogTitle, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getListadoUsuarios } from "../../../components/APIS/solicitudesUsuarios/Solicitudes-Usuarios";
-import { IUsuarios } from "../../../components/Interfaces/InterfacesUsuario/IUsuarios";
+import { IUsuarios } from "../../../store/CreditoCortoPlazo/encabezado";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export const AñadirNotificaciones = ({
   open,
@@ -12,7 +13,6 @@ export const AñadirNotificaciones = ({
 }) => {
   //Declaraciones
   // const [usuariosFiltrados, setUsuariosFiltrados] = useState<Array<IUsuarios>>([]);
-  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
 
   // const [registroNotificaciones, setRegistroNotificaciones] =
   //   useState<INotificaciones>({
@@ -40,14 +40,18 @@ export const AñadirNotificaciones = ({
 
   //useEffect
   useEffect(() => {
-    getListadoUsuarios(setUsuarios);
+    getListadoUsuarios();
   }, []);
+
+  const listadoUsuarios: IUsuarios[] = useCortoPlazoStore(
+    (state) => state.listadoUsuarios
+  );
 
   // const [destinatarios, setDestinatarios] = useState<Array<IDestinatarios>>([]);
 
   // const [idDestinatarios, setIdDestinatarios] = useState([]);
 
-  return usuarios.length > 0 ? (
+  return listadoUsuarios.length > 0 ? (
     <Dialog fullWidth maxWidth={"sm"} open={open} onClose={() => handleClose()}>
       <DialogTitle>
         <Typography textAlign={"center"} fontSize={"20px"} fontWeight={"bold"}>

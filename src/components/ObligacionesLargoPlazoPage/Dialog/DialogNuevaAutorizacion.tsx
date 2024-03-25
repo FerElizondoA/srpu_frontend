@@ -18,16 +18,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { forwardRef, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
-import {
-  DestinoA,
-  DetalleDestino,
-  GeneralAutorizado,
-} from "../../../store/Autorizacion/agregarAutorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { DestalleDestino } from "../Panels/DetalleDestino";
 import { DestinoAutorizado } from "../Panels/MontoAutorizado";
 import { RegistrarNuevaAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
+import {
+  IDetalleDestino,
+  IGeneralAutorizado,
+  IMontoAutorizado,
+} from "../../../store/CreditoLargoPlazo/autorizacion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -55,15 +55,16 @@ export function DialogNuevaAutorizacion(props: Props) {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
-  const registrarAutorizacion: GeneralAutorizado = useLargoPlazoStore(
-    (state) => state.registrarAutorizacion
+  const autorizacion: IGeneralAutorizado = useLargoPlazoStore(
+    (state) => state.autorizacion
   );
-  const tablaDestinoAutorizado: DestinoA[] = useLargoPlazoStore(
-    (state) => state.tablaDestinoAutorizado
+  const tablaMontoAutorizado: IMontoAutorizado[] = useLargoPlazoStore(
+    (state) => state.tablaMontoAutorizado
   );
-  const tablaDetalleDestino: DetalleDestino[] = useLargoPlazoStore(
+  const tablaDetalleDestino: IDetalleDestino[] = useLargoPlazoStore(
     (state) => state.tablaDetalleDestino
   );
+
   const createAutorizacion: Function = useLargoPlazoStore(
     (state) => state.createAutorizacion
   );
@@ -71,37 +72,12 @@ export function DialogNuevaAutorizacion(props: Props) {
   const setAutorizacion: Function = useLargoPlazoStore(
     (state) => state.setAutorizacion
   );
-
   const modificarAutorizacion: Function = useLargoPlazoStore(
     (state) => state.modificarAutorizacion
   );
-
-  const cleanAutorizacion = () => {
-    setAutorizacion(
-      {
-        entidad: {
-          Id: localStorage.getItem("IdEntePublicoObligado") || "",
-          Organismo: localStorage.getItem("EntePublicoObligado") || "",
-        },
-        numeroAutorizacion: 0,
-        fechaPublicacion: new Date().toString(),
-        medioPublicacion: { Id: "", Descripcion: "" },
-        montoAutorizado: 0,
-        documentoSoporte: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-        },
-        acreditacionQuorum: {
-          archivo: new File([], ""),
-          nombreArchivo: "",
-        },
-      },
-      [],
-      []
-    );
-  };
-
-  useEffect(() => {}, []);
+  const cleanAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.cleanAutorizacion
+  );
 
   return (
     <>
@@ -138,16 +114,14 @@ export function DialogNuevaAutorizacion(props: Props) {
               <ThemeProvider theme={buttonTheme}>
                 <Button
                   disabled={
-                    registrarAutorizacion.entidad.Organismo === "" ||
-                    registrarAutorizacion.numeroAutorizacion === 0 ||
-                    registrarAutorizacion.fechaPublicacion === "" ||
-                    registrarAutorizacion.medioPublicacion.Descripcion === "" ||
-                    registrarAutorizacion.montoAutorizado === 0 ||
-                    registrarAutorizacion.documentoSoporte.nombreArchivo ===
-                      "" ||
-                    registrarAutorizacion.acreditacionQuorum.nombreArchivo ===
-                      "" ||
-                    tablaDestinoAutorizado.length === 0 ||
+                    autorizacion.entidad.Organismo === "" ||
+                    autorizacion.numeroAutorizacion === 0 ||
+                    autorizacion.fechaPublicacion === "" ||
+                    autorizacion.medioPublicacion.Descripcion === "" ||
+                    autorizacion.montoAutorizado === 0 ||
+                    autorizacion.documentoSoporte.nombreArchivo === "" ||
+                    autorizacion.acreditacionQuorum.nombreArchivo === "" ||
+                    tablaMontoAutorizado.length === 0 ||
                     tablaDetalleDestino.length === 0
                   }
                   sx={queries.buttonContinuar}
@@ -192,7 +166,7 @@ export function DialogNuevaAutorizacion(props: Props) {
               allowScrollButtonsMobile
             >
               <Tab
-                label="REGISTRAR NUEVA AUTORIZACIÓN DE LA LEGISLATURA LOCAL"
+                label="NUEVA AUTORIZACIÓN DE LA LEGISLATURA LOCAL"
                 sx={queries.bold_text}
               ></Tab>
               <Tab label="MONTO AUTORIZADO" sx={queries.bold_text}></Tab>

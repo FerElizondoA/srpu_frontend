@@ -12,11 +12,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { queries } from "../../../queries";
 import { createNotificationCortoPlazo } from "../../APIS/cortoplazo/APISCreateNotificacionCortoPlazo";
-import { IUsuarios } from "../../Config/Interfaces/IUsuarios";
 import {
   IDestinatarios,
   INotificaciones,
 } from "../../Interfaces/Notificaciones/NotificaconesUsuariosCortoPlazo";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IUsuarios } from "../../../store/CreditoCortoPlazo/encabezado";
 
 export function DialogCatalogoUsuarios({
   openState,
@@ -25,7 +26,9 @@ export function DialogCatalogoUsuarios({
   openState: boolean;
   handler: Function;
 }) {
-  const [usuarios, setUsuarios] = useState<Array<IUsuarios>>([]);
+  const listadoUsuarios: Array<IUsuarios> = useCortoPlazoStore(
+    (state) => state.listadoUsuarios
+  );
 
   const [registroNotificaciones, setRegistroNotificaciones] =
     useState<INotificaciones>({
@@ -56,7 +59,7 @@ export function DialogCatalogoUsuarios({
 
   const [idDestinatarios, setIdDestinatarios] = useState([]);
 
-  return usuarios.length > 0 ? (
+  return listadoUsuarios.length > 0 ? (
     <Dialog
       fullWidth
       maxWidth={"sm"}
@@ -88,7 +91,7 @@ export function DialogCatalogoUsuarios({
             " " +
             usuarios.ApellidoMaterno
           }
-          options={usuarios}
+          options={listadoUsuarios}
           isOptionEqualToValue={(option, value) =>
             option.Nombre === value.Nombre
           }
@@ -106,7 +109,7 @@ export function DialogCatalogoUsuarios({
           onChange={(event, v) => {
             setDestinatarios(v);
             let x: any = [];
-            v.map((y: IDestinatarios) => x.push(y.id));
+            v.map((y: IDestinatarios) => x.push(y.Id));
             setIdDestinatarios(x);
           }}
           renderInput={(params) => (

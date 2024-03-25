@@ -2,109 +2,115 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
-import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
+import { useLargoPlazoStore } from "./main";
 
-export type GeneralAutorizado = {
+export type IGeneralAutorizado = {
   entidad: { Id: string; Organismo: string };
   numeroAutorizacion: number;
-  fechaPublicacion: string;
   medioPublicacion: { Id: string; Descripcion: string };
+  fechaPublicacion: string;
   montoAutorizado: number;
   documentoSoporte: { archivo: File; nombreArchivo: string };
   acreditacionQuorum: { archivo: File; nombreArchivo: string };
 };
 
-export type DestinoA = {
+export type IMontoAutorizado = {
   destinoAutorizado: { Id: string; Descripcion: string };
   montoAutorizado: number;
 };
 
-export type DetalleDestino = {
+export type IDetalleDestino = {
   detalleDestino: { Id: string; Descripcion: string };
   montoAutorizado: number;
 };
 
-export type Autorizaciones = {
-  Id: string;
-  Entidad: { Id: string; Organismo: string };
-  DescripcionEntidad: string;
-  NumeroAutorizacion: string;
-  FechaPublicacion: string;
-  MedioPublicacion: { Id: string; Descripcion: string };
-  MontoAutorizado: number;
-  DocumentoSoporte: { archivo: File; nombreArchivo: string };
-  AcreditacionQuorum: { archivo: File; nombreArchivo: string };
-  DestinoAutorizado: DestinoA[];
-  DetalleDestino: DetalleDestino[];
+export type IAutorizacion = {
+  datosGenerales: IGeneralAutorizado;
+  montoAutorizado: IMontoAutorizado[];
+  detallesDestino: IDetalleDestino[];
 };
 
-export interface AgregarAutorizacionLargoPlazoSlice {
-  registrarAutorizacion: GeneralAutorizado;
+export type IAutorizaciones = {
+  Id: string;
+  IdEntidad: string;
+  Entidad: string;
+  NumeroAutorizacion: string;
+  FechaPublicacion: string;
+  DescripcionMedioPublicacion: string;
+  IdMedioPublicacion: string;
+  MontoAutorizado: string;
+  DocumentoSoporte: string;
+  AcreditacionQuorum: string;
+  DestinoAutorizado: string;
+  DetalleDestino: string;
+  CreadoPor: string;
+};
 
-  montoAutorizado: DestinoA;
-  tablaDestinoAutorizado: DestinoA[];
+export interface AutorizacionLargoPlazoSlice {
+  autorizacion: IGeneralAutorizado;
+  setRegistrarAutorizacion: (autorizacion: IGeneralAutorizado) => void;
 
-  detalleDestino: DetalleDestino;
-  tablaDetalleDestino: DetalleDestino[];
+  setAutorizacion: (
+    autorizacion: IGeneralAutorizado,
+    montoAutorizado: IMontoAutorizado[],
+    detalleDestino: IDetalleDestino[]
+  ) => void;
+
+  borrarAutorizacion: (Id: string) => void;
+
+  montoAutorizado: IMontoAutorizado;
+  setMontoAutorizado: (montoAutorizado: IMontoAutorizado) => void;
+  tablaMontoAutorizado: IMontoAutorizado[];
+  addMontoAutorizado: (newDestinoAutorizado: IMontoAutorizado) => void;
+
+  detalleDestino: IDetalleDestino;
+  setDetalleDestino: (detalleDestino: IDetalleDestino) => void;
+  tablaDetalleDestino: IDetalleDestino[];
+  addDetalleDestino: (newDetalleDestino: IDetalleDestino) => void;
 
   catalogoMediosDePublicacion: ICatalogo[];
   catalogoDestinosAutorizados: ICatalogo[];
   catalogoDetalleDestinosAutorizados: ICatalogo[];
 
-  borrarAutorizacion: (Id: string) => void;
-  changeIdAutorizacion: (Id: string) => void;
-  idAutorizacion: string;
-
-  setRegistrarAutorizacion: (autorizacion: any) => void;
-  setDestinoAutorizado: (montoAutorizado: DestinoA) => void;
-  setDetalleDestino: (detalleDestino: DetalleDestino) => void;
-
-  setAutorizacion: (
-    registrarAutorizacion: GeneralAutorizado,
-    montoAutorizado: DestinoA[],
-    detalleDestino: DetalleDestino[]
-  ) => void;
-
-  addDestinoAutorizado: (newDestinoAutorizado: DestinoA) => void;
-  addDetalleDestino: (newDetalleDestino: DetalleDestino) => void;
-
   removeDestinoAutorizado: (index: number) => void;
   removeDetalleDestino: (index: number) => void;
 
-  cleanDestinoAutorizado: () => void;
-  cleanDetalleDestino: () => void;
+  cleanAutorizacion: () => void;
 
   getMediosDePublicacion: () => void;
   getDestinosAutorizados: () => void;
   getDetalleDestinosAutorizados: () => void;
 
+  getDetalleAutorizacion: (Id: string) => void;
+
   createAutorizacion: () => void;
+
   savePathDocAut: (
     idAut: string,
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string
   ) => void;
+
   saveFilesAutorizacion: (
     idRegistro: string,
     ruta: string,
     archivo: { archivo: File; nombreArchivo: string }
   ) => void;
 
-  autorizaciones: Autorizaciones[];
+  autorizaciones: IAutorizaciones[];
   getAutorizaciones: () => void;
 
-  autorizacionSelect: Autorizaciones[];
-  setAutorizacionSelect: (autorizacion: Autorizaciones[]) => void;
-  removeAutorizacionesSelect: (index: number) => void;
+  autorizacionSelect: IAutorizaciones;
+  setAutorizacionSelect: (autorizacion: IAutorizaciones) => void;
 
   modificarAutorizacion: () => void;
 }
 
-export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
-  AgregarAutorizacionLargoPlazoSlice
+export const createAutorizacionLargoPlazoSlice: StateCreator<
+  AutorizacionLargoPlazoSlice
 > = (set, get) => ({
-  registrarAutorizacion: {
+  autorizacion: {
     entidad: {
       Id: localStorage.getItem("IdEntePublicoObligado") || "",
       Organismo: localStorage.getItem("EntePublicoObligado") || "",
@@ -131,60 +137,58 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
     montoAutorizado: 0,
   },
 
-  tablaDestinoAutorizado: [],
+  tablaMontoAutorizado: [],
   tablaDetalleDestino: [],
+
   tablaAutorizacion: [],
 
   catalogoMediosDePublicacion: [],
   catalogoDestinosAutorizados: [],
   catalogoDetalleDestinosAutorizados: [],
 
-  idAutorizacion: "",
-
-  changeIdAutorizacion: (id: any) => set(() => ({ idAutorizacion: id })),
-
-  setRegistrarAutorizacion: (registrarAutorizacion: GeneralAutorizado) =>
+  setRegistrarAutorizacion: (autorizacion: IGeneralAutorizado) =>
     set(() => ({
-      registrarAutorizacion: registrarAutorizacion,
+      autorizacion: autorizacion,
     })),
-  setDestinoAutorizado: (montoAutorizado: DestinoA) =>
+
+  setMontoAutorizado: (montoAutorizado: IMontoAutorizado) =>
     set(() => ({
       montoAutorizado: {
         destinoAutorizado: montoAutorizado.destinoAutorizado,
         montoAutorizado: montoAutorizado.montoAutorizado,
       },
     })),
-  setDetalleDestino: (detalleDestino: DetalleDestino) =>
+  setDetalleDestino: (detalleDestino: IDetalleDestino) =>
     set(() => ({
       detalleDestino: detalleDestino,
     })),
 
   setAutorizacion: (
-    registrarAutorizacion: GeneralAutorizado,
-    montoAutorizado: DestinoA[],
-    detalleDestino: DetalleDestino[]
+    autorizacion: IGeneralAutorizado,
+    montoAutorizado: IMontoAutorizado[],
+    detalleDestino: IDetalleDestino[]
   ) =>
     set(() => ({
-      registrarAutorizacion: registrarAutorizacion,
-      tablaDestinoAutorizado: montoAutorizado,
+      autorizacion: autorizacion,
+      tablaMontoAutorizado: montoAutorizado,
       tablaDetalleDestino: detalleDestino,
     })),
 
-  addDestinoAutorizado: (newDestinoAutorizado: DestinoA) =>
+  addMontoAutorizado: (newDestinoAutorizado: IMontoAutorizado) =>
     set((state) => ({
-      tablaDestinoAutorizado: [
-        ...state.tablaDestinoAutorizado,
+      tablaMontoAutorizado: [
+        ...state.tablaMontoAutorizado,
         newDestinoAutorizado,
       ],
     })),
-  addDetalleDestino: (newDetalleDestino: DetalleDestino) =>
+  addDetalleDestino: (newDetalleDestino: IDetalleDestino) =>
     set((state) => ({
       tablaDetalleDestino: [...state.tablaDetalleDestino, newDetalleDestino],
     })),
 
   removeDestinoAutorizado: (index: number) =>
     set((state) => ({
-      tablaDestinoAutorizado: state.tablaDestinoAutorizado.filter(
+      tablaMontoAutorizado: state.tablaMontoAutorizado.filter(
         (_, i) => i !== index
       ),
     })),
@@ -195,12 +199,36 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
       ),
     })),
 
-  cleanDestinoAutorizado: () =>
+  cleanAutorizacion: () =>
     set(() => ({
-      tablaDestinoAutorizado: [],
-    })),
-  cleanDetalleDestino: () =>
-    set(() => ({
+      autorizacion: {
+        entidad: {
+          Id: localStorage.getItem("IdEntePublicoObligado") || "",
+          Organismo: localStorage.getItem("EntePublicoObligado") || "",
+        },
+        numeroAutorizacion: 0,
+        fechaPublicacion: new Date().toString(),
+        medioPublicacion: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+        documentoSoporte: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+        acreditacionQuorum: {
+          archivo: new File([], ""),
+          nombreArchivo: "",
+        },
+      },
+      montoAutorizado: {
+        destinoAutorizado: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+      },
+      detalleDestino: {
+        detalleDestino: { Id: "", Descripcion: "" },
+        montoAutorizado: 0,
+      },
+
+      tablaMontoAutorizado: [],
       tablaDetalleDestino: [],
     })),
 
@@ -252,6 +280,22 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
     });
   },
 
+  getDetalleAutorizacion: async (Id: string) => {
+    const state = useLargoPlazoStore.getState();
+
+    return await axios({
+      method: "get",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/detail-autorizacion",
+      params: { IdDescripcion: Id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+      state.setAutorizacionSelect(data.data);
+    });
+  },
+
   createAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
 
@@ -260,18 +304,14 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         process.env.REACT_APP_APPLICATION_BACK + "/create-autorizacion",
         {
           IdUsuario: localStorage.getItem("IdUsuario"),
-          Entidad: state.registrarAutorizacion.entidad.Id,
-          NumeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
-          FechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
-          MedioPublicacion: state.registrarAutorizacion.medioPublicacion.Id,
-          MontoAutorizado: state.registrarAutorizacion.montoAutorizado,
-          DocumentoSoporte: JSON.stringify(
-            state.registrarAutorizacion.documentoSoporte
-          ),
-          AcreditacionQuorum: JSON.stringify(
-            state.registrarAutorizacion.acreditacionQuorum
-          ),
-          DestinoAutorizado: JSON.stringify(state.tablaDestinoAutorizado),
+          Entidad: state.autorizacion.entidad.Id,
+          NumeroAutorizacion: state.autorizacion.numeroAutorizacion,
+          FechaPublicacion: state.autorizacion.fechaPublicacion,
+          MedioPublicacion: state.autorizacion.medioPublicacion.Id,
+          MontoAutorizado: state.autorizacion.montoAutorizado,
+          DocumentoSoporte: state.autorizacion.documentoSoporte,
+          AcreditacionQuorum: state.autorizacion.acreditacionQuorum,
+          DestinoAutorizado: JSON.stringify(state.tablaMontoAutorizado),
           DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
         },
         {
@@ -281,16 +321,16 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.changeIdAutorizacion(data.data.id);
+        state.setAutorizacionSelect(data.data);
         state.saveFilesAutorizacion(
           data.data.Id,
           `/SRPU/AUTORIZACIONES/${data.data.Id}`,
-          state.registrarAutorizacion.documentoSoporte
+          state.autorizacion.documentoSoporte
         );
         state.saveFilesAutorizacion(
           data.data.Id,
           `/SRPU/AUTORIZACIONES/${data.data.Id}`,
-          state.registrarAutorizacion.acreditacionQuorum
+          state.autorizacion.acreditacionQuorum
         );
       })
       .catch(() => {
@@ -306,24 +346,22 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
 
   modificarAutorizacion: async () => {
     const state = useLargoPlazoStore.getState();
+
     await axios
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-autorizacion",
         {
-          IdAutorizacion: state.idAutorizacion,
+          IdAutorizacion: state.autorizacionSelect.Id,
           IdUsuario: localStorage.getItem("IdUsuario"),
-          Entidad: state.registrarAutorizacion.entidad.Id,
-          NumeroAutorizacion: state.registrarAutorizacion.numeroAutorizacion,
-          FechaPublicacion: state.registrarAutorizacion.fechaPublicacion,
-          MedioPublicacion: state.registrarAutorizacion.medioPublicacion.Id,
-          MontoAutorizado: state.registrarAutorizacion.montoAutorizado,
-          DocumentoSoporte: JSON.stringify(
-            state.registrarAutorizacion.documentoSoporte
-          ),
-          AcreditacionQuorum: JSON.stringify(
-            state.registrarAutorizacion.acreditacionQuorum
-          ),
-          DestinoAutorizado: JSON.stringify(state.tablaDestinoAutorizado),
+          Entidad: state.autorizacion.entidad.Id,
+          NumeroAutorizacion: state.autorizacion.numeroAutorizacion,
+          FechaPublicacion: state.autorizacion.fechaPublicacion,
+          MedioPublicacion: state.autorizacion.medioPublicacion.Id,
+          MontoAutorizado: state.autorizacion.montoAutorizado,
+          DocumentoSoporte: state.autorizacion.documentoSoporte.nombreArchivo,
+          AcreditacionQuorum:
+            state.autorizacion.acreditacionQuorum.nombreArchivo,
+          DestinoAutorizado: JSON.stringify(state.tablaMontoAutorizado),
           DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
         },
         {
@@ -333,23 +371,17 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        Swal.fire({
-          icon: "success",
-          //title: "Éxito",
-          text: "El fideicomiso se ha modificado exitosamente",
-        });
-        state.changeIdAutorizacion(data.result.id);
+        state.setAutorizacionSelect(data.result);
         state.saveFilesAutorizacion(
           data.result.Id,
           `/SRPU/AUTORIZACIONES/${data.result.Id}`,
-          state.registrarAutorizacion.documentoSoporte
+          state.autorizacion.documentoSoporte
         );
         state.saveFilesAutorizacion(
           data.result.Id,
           `/SRPU/AUTORIZACIONES/${data.result.Id}`,
-          state.registrarAutorizacion.acreditacionQuorum
+          state.autorizacion.acreditacionQuorum
         );
-        state.setAutorizacionSelect([]);
       })
       .catch(function (error) {
         Swal.fire({
@@ -379,6 +411,22 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
         },
       })
       .then(function (response) {
+        let state = useLargoPlazoStore.getState();
+        state.autorizacionSelect = {
+          Id: "",
+          IdEntidad: "",
+          Entidad: "",
+          NumeroAutorizacion: "",
+          FechaPublicacion: "",
+          DescripcionMedioPublicacion: "",
+          IdMedioPublicacion: "",
+          MontoAutorizado: "",
+          DocumentoSoporte: "",
+          AcreditacionQuorum: "",
+          DestinoAutorizado: "",
+          DetalleDestino: "",
+          CreadoPor: "",
+        };
         if (response.status === 200) {
           // window.location.reload()
           Toast.fire({
@@ -480,18 +528,25 @@ export const createAgregarAutorizacionLargoPlazoSlice: StateCreator<
     });
   },
 
-  autorizacionSelect: [],
+  autorizacionSelect: {
+    Id: "",
+    IdEntidad: "",
+    Entidad: "",
+    NumeroAutorizacion: "",
+    FechaPublicacion: "",
+    DescripcionMedioPublicacion: "",
+    IdMedioPublicacion: "",
+    MontoAutorizado: "",
+    DocumentoSoporte: "",
+    AcreditacionQuorum: "",
+    DestinoAutorizado: "",
+    DetalleDestino: "",
+    CreadoPor: "",
+  },
 
-  setAutorizacionSelect: (autorizacion: Autorizaciones[]) => {
+  setAutorizacionSelect: (autorizacion: IAutorizaciones) => {
     set((state) => ({
       autorizacionSelect: autorizacion,
     }));
   },
-
-  removeAutorizacionesSelect: (index: number) =>
-    set((state) => ({
-      autorizacionSelect: state.autorizacionSelect.filter(
-        (_, i) => i !== index
-      ),
-    })),
 });

@@ -25,12 +25,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { ObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
+import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
+import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
-import { rolesAdmin } from "../Dialogs/DialogSolicitarModificacion";
 import {
   headsComision,
   headsDisposicion,
@@ -38,11 +40,10 @@ import {
 } from "./CondicionesFinancieras";
 import { IFile } from "./Documentacion";
 import {
-  IComisiones,
-  ICondicionFinanciera,
   IDisposicion,
   ITasaInteres,
-} from "../../../store/CreditoCortoPlazo/condicion_financiera";
+} from "../../../store/CreditoCortoPlazo/pagos_capital";
+import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 
 interface Head {
   label: string;
@@ -62,9 +63,6 @@ export interface IPathDocumentos {
 }
 
 const heads: Head[] = [
-  {
-    label: "Obligado Solidario / Aval",
-  },
   {
     label: "Tipo de Ente Público Obligado",
   },
@@ -97,33 +95,29 @@ const headsCondiciones: Head[] = [
 export function Resumen({ coments }: { coments: boolean }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  // IdSolicitud
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
   // Encabezado
   const TipodeDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
-  const SolicitanteAutorizado: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Nombre
-  );
-  const CargodelSolicitante: string = useCortoPlazoStore(
-    (state) => state.encabezado.solicitanteAutorizado.Cargo
-  );
-  const TipodeEntePúblico: string = useCortoPlazoStore(
-    (state) => state.encabezado.tipoEntePublico.TipoEntePublico
-  );
-  const MunicipiouOrganismo: string = useCortoPlazoStore(
-    (state) => state.encabezado.organismo.Organismo
-  );
+  const solicitanteAutorizado: {
+    IdSolicitante: string;
+    Cargo: string;
+    Nombre: string;
+  } = useCortoPlazoStore((state) => state.encabezado.solicitanteAutorizado);
+
+  const TipodeEntePúblico: { Id: string; TipoEntePublico: string } =
+    useCortoPlazoStore((state) => state.encabezado.tipoEntePublico);
+  const MunicipiouOrganismo: { Id: string; Organismo: string } =
+    useCortoPlazoStore((state) => state.encabezado.organismo);
   const FechadeContratación: string = useCortoPlazoStore(
     (state) => state.encabezado.fechaContratacion
   );
 
   // Informacion general
-  const gFechadeContratación: string = useCortoPlazoStore(
-    (state) => state.informacionGeneral.fechaContratacion
-  );
   const FechadeVencimiento: string = useCortoPlazoStore(
     (state) => state.informacionGeneral.fechaVencimiento
   );
@@ -143,7 +137,7 @@ export function Resumen({ coments }: { coments: boolean }) {
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
 
-  const tablaObligados: ObligadoSolidarioAval[] = useCortoPlazoStore(
+  const tablaObligados: IObligadoSolidarioAval[] = useCortoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
   );
 
@@ -175,15 +169,15 @@ export function Resumen({ coments }: { coments: boolean }) {
     },
     {
       label: "Tipo de Ente Público",
-      value: TipodeEntePúblico,
+      value: TipodeEntePúblico.TipoEntePublico,
     },
     {
       label: "Solicitante Autorizado",
-      value: SolicitanteAutorizado,
+      value: solicitanteAutorizado.Nombre,
     },
     {
       label: "Municipio u Organismo",
-      value: MunicipiouOrganismo,
+      value: MunicipiouOrganismo.Organismo,
     },
     {
       label: "Fecha de Contratación (Encabezado)",
@@ -191,14 +185,14 @@ export function Resumen({ coments }: { coments: boolean }) {
     },
     {
       label: "Cargo del Solicitante",
-      value: CargodelSolicitante,
+      value: solicitanteAutorizado.Cargo,
     },
   ];
 
   const infoGeneral: HeadLabels[] = [
     {
       label: "Fecha de Contratación (Informacion General)",
-      value: gFechadeContratación,
+      value: FechadeContratación,
     },
     {
       label: "Fecha de Vencimiento",
@@ -228,18 +222,19 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const [fileSelected, setFileSelected] = useState<any>("");
 
-  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+  const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
 
   const [arr, setArr] = useState<any>([]);
 
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-    getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-      setArr,
-      setCargados
-    );
+    inscripcion.Id &&
+      getDocumentos(
+        `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        setArr,
+        setCargados
+      );
   }, []);
 
   const toBase64 = (file: any) =>
@@ -253,16 +248,8 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
-  const estatus: string = useCortoPlazoStore((state) => state.estatus);
-
   const activaAccion =
-    (coments && estatus !== "Autorizado") ||
-    (rolesAdmin.includes(localStorage.getItem("Rol")!) &&
-      ((estatus === "Revision" && localStorage.getItem("Rol") === "Revisor") ||
-        (estatus === "Validacion" &&
-          localStorage.getItem("Rol") === "Validador") ||
-        (estatus === "Autorizacion" &&
-          localStorage.getItem("Rol") === "Autorizador")));
+    localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
 
   return (
     <Grid
@@ -328,7 +315,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label]
+                        comentarios[head.label]
                           ? // ||
                             // comentariosRegistro[head.label]
                             "success"
@@ -377,7 +364,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
-                        comentario[head.label]
+                        comentarios[head.label]
                           ? // ||
                             // comentariosRegistro[head.label]
                             "success"
@@ -413,7 +400,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Obligado Solidario / Aval"]
+                      comentarios["Tabla Obligado Solidario / Aval"]
                         ? // ||
                           // comentariosRegistro["Tabla Obligado Solidario / Aval"]
                           "success"
@@ -469,9 +456,6 @@ export function Resumen({ coments }: { coments: boolean }) {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell component="th">
-                              {row.obligadoSolidario}
-                            </StyledTableCell>
-                            <StyledTableCell component="th">
                               {row.tipoEntePublicoObligado}
                             </StyledTableCell>
                             <StyledTableCell component="th">
@@ -483,8 +467,6 @@ export function Resumen({ coments }: { coments: boolean }) {
                     </TableBody>
                   </Table>
                 ) : (
-                  //Condicional
-
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
@@ -498,11 +480,9 @@ export function Resumen({ coments }: { coments: boolean }) {
 
                     <TableBody>
                       <StyledTableRow>
-                        <StyledTableCell component="th"></StyledTableCell>
-
                         <StyledTableCell component="th" align="left">
                           <Typography sx={{ padding: "1px 4px 1px 45px" }}>
-                            Sin contenido
+                            NO APLICA
                           </Typography>
                         </StyledTableCell>
 
@@ -515,7 +495,6 @@ export function Resumen({ coments }: { coments: boolean }) {
             </Paper>
           </Grid>
         </Grid>
-        {/* <Divider color="lightGrey"></Divider> */}
 
         <Grid mt={3} width={"100%"}>
           <Typography sx={queries.bold_text}>
@@ -528,7 +507,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
-                      comentario["Tabla Condiciones Financieras"]
+                      comentarios["Tabla Condiciones Financieras"]
                         ? // ||
                           // comentariosRegistro["Tabla Condiciones Financieras"]
                           "success"
@@ -600,7 +579,10 @@ export function Resumen({ coments }: { coments: boolean }) {
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.pagosDeCapital.periodicidadDePago}
+                                {
+                                  row.pagosDeCapital.periodicidadDePago
+                                    .Descripcion
+                                }
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {format(
@@ -685,19 +667,19 @@ export function Resumen({ coments }: { coments: boolean }) {
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasa}
+                                        {row.tasaFija}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.periocidadPago}
+                                        {row.periocidadPago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaReferencia}
+                                        {row.tasaReferencia.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.sobreTasa}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.diasEjercicio}
+                                        {row.diasEjercicio.Descripcion}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -754,16 +736,16 @@ export function Resumen({ coments }: { coments: boolean }) {
                                         component="th"
                                         scope="row"
                                       >
-                                        {row.tipoDeComision}
+                                        {row.tipoDeComision.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {lightFormat(
-                                          new Date(row.fechaContratacion),
+                                          new Date(row.fechaComision),
                                           "dd-MM-yyyy"
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.periodicidadDePago}
+                                        {row.periodicidadDePago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.porcentaje}
@@ -885,7 +867,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                           <StyledTableCell align="center"></StyledTableCell>
 
                           <StyledTableCell>
-                            <Typography>Sin contenido</Typography>
+                            <Typography>NO APLICA</Typography>
                           </StyledTableCell>
 
                           <StyledTableCell align="center"></StyledTableCell>
@@ -936,7 +918,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                             <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
                                 color={
-                                  comentario[row.descripcionTipo]
+                                  comentarios[row.descripcionTipo]
                                     ? "success"
                                     : "primary"
                                 }
@@ -969,6 +951,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                             {row.descripcionTipo}
                           </StyledTableCell>
                         )}
+
                         {row.nombreArchivo === undefined ? (
                           <StyledTableCell
                             sx={{
@@ -984,9 +967,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
                         {row.nombreArchivo === undefined ? null : (
                           <StyledTableCell>
-                            <Tooltip
-                              title={"Descargar documento para visualizar"}
-                            >
+                            <Tooltip title={"Ver Documento"}>
                               {cargados ? (
                                 <CircularProgress />
                               ) : (

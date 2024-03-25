@@ -11,6 +11,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import { forwardRef } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { IAutorizaciones } from "../../../store/CreditoLargoPlazo/autorizacion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -22,11 +23,9 @@ const Transition = forwardRef(function Transition(
 });
 
 type Props = {
-  idAutorizacion: string;
   handler: Function;
   openState: boolean;
   numeroAutorizacion: string;
-  index: number;
 };
 
 export function DialogEliminarAutorizacion(props: Props) {
@@ -34,8 +33,8 @@ export function DialogEliminarAutorizacion(props: Props) {
     (state) => state.borrarAutorizacion
   );
 
-  const removeAutorizacionesSelect: Function = useLargoPlazoStore(
-    (state) => state.removeAutorizacionesSelect
+  const autorizacionSelect: IAutorizaciones = useLargoPlazoStore(
+    (state) => state.autorizacionSelect
   );
 
   return (
@@ -44,7 +43,7 @@ export function DialogEliminarAutorizacion(props: Props) {
 
       <DialogContent>
         <Typography sx={{ ...queries.medium_text }}>
-          ¿Seguro que desea elimminar la autorizacion con este numero de
+          ¿Seguro que desea elimminar la autorizacion con este número de
           autorizacion : <strong style={{}}>{props.numeroAutorizacion}</strong>?
         </Typography>
       </DialogContent>
@@ -54,8 +53,7 @@ export function DialogEliminarAutorizacion(props: Props) {
           sx={{ ...queries.buttonContinuar }}
           onClick={() => {
             props.handler(false);
-            borrarAutorizacion(props.idAutorizacion);
-            removeAutorizacionesSelect(props.index);
+            borrarAutorizacion(autorizacionSelect.Id);
           }}
         >
           Aceptar

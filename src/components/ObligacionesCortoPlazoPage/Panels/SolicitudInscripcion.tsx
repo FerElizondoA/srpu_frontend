@@ -26,7 +26,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitud";
 import { ConfirmacionEnviarSolicitud } from "../Dialogs/DialogEnviarSolicitud";
-import { ConfirmacionBorradorSolicitud } from "../Dialogs/DialogGuardarBorrador";
+import { DialogGuardarBorrador } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 
 interface Head {
@@ -72,12 +72,14 @@ export function SolicitudInscripcion() {
   const reglasAplicables: string[] = useCortoPlazoStore(
     (state) => state.reglasAplicables
   );
+
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   useEffect(() => {
-    getReglas();
+    catalogoReglas.length <= 0 && getReglas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [openDialogValidacion, setOpenDialogValidacion] = useState(false);
   let err = 0;
 
@@ -96,7 +98,7 @@ export function SolicitudInscripcion() {
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
 
-      let importe = 0;
+      let importe = "$ 0.00";
       let numeroDePago = 0;
       let PeriocidadDePago = "";
       let diasEjercicio = "";
@@ -108,10 +110,10 @@ export function SolicitudInscripcion() {
         const item = state.tablaCondicionesFinancieras[0];
         importe = item.disposicion[0].importe;
         numeroDePago = item.pagosDeCapital.numeroDePago;
-        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago;
+        PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;
-        diasEjercicio = item.diasEjercicio;
-        tasaEfectiva = item.tasaEfectiva;
+        diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
+        tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
       if (
@@ -175,9 +177,12 @@ export function SolicitudInscripcion() {
           "Sección Condiciones Financieras:Agregar al menos una Tasa De Interés."
         );
       }
-      if (importe === undefined || importe === 0 || importe === 0) {
+      if (
+        importe === undefined ||
+        importe === "$ 0.00" ||
+        importe === "$ 0.00"
+      ) {
         err = 1;
-
         errores.push("Sección Condiciones Financieras: Ingrese el Importe.");
       }
       if (numeroDePago === undefined || numeroDePago === 0) {
@@ -470,7 +475,6 @@ export function SolicitudInscripcion() {
                     </TableHead>
                     <TableBody>
                       {catalogoReglas.map((row, index) => {
-                        // const stringIndex = index.toString()
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell padding="checkbox">
@@ -510,10 +514,9 @@ export function SolicitudInscripcion() {
                   </Table>
                 </TableContainer>
               </Grid>
-              {localStorage.getItem("Rol") !== "Administrador" ? ( //BOTONES**************
+              {localStorage.getItem("Rol") !== "Administrador" ? (
                 <Grid
                   container
-                  //mt={{xs:2, sm:2, md:10, lg:10, xl:18}} 974px
                   sx={{
                     width: "100%",
                     display: "flex",
@@ -602,22 +605,32 @@ export function SolicitudInscripcion() {
                     </Button>
                   </Grid>
 
-                  <ConfirmacionBorradorSolicitud
-                    handler={setOpenDialogBorrador}
-                    openState={openDialogBorrador}
-                  />
-                  <ConfirmacionEnviarSolicitud
-                    handler={setOpenDialogEnviar}
-                    openState={openDialogEnviar}
-                  />
-                  <ConfirmacionCancelarSolicitud
-                    handler={setOpenDialogCancelar}
-                    openState={openDialogCancelar}
-                  />
+                  {openDialogBorrador && (
+                    <DialogGuardarBorrador
+                      handler={setOpenDialogBorrador}
+                      openState={openDialogBorrador}
+                    />
+                  )}
+
+                  {openDialogEnviar && (
+                    <ConfirmacionEnviarSolicitud
+                      handler={setOpenDialogEnviar}
+                      openState={openDialogEnviar}
+                    />
+                  )}
+
+                  {openDialogCancelar && (
+                    <ConfirmacionCancelarSolicitud
+                      handler={setOpenDialogCancelar}
+                      openState={openDialogCancelar}
+                    />
+                  )}
+
                   {openDialogModificacion && (
                     <DialogSolicitarModificacion
                       handler={setOpenDialogModificacion}
                       openState={openDialogModificacion}
+                      accion={"modificacion"}
                     />
                   )}
                 </Grid>

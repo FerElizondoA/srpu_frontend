@@ -23,7 +23,8 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
+import ExtensionIcon from "@mui/icons-material/Extension";
 
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -108,29 +109,18 @@ export const IconsMenu = (icon: string) => {
       return <DoNotDisturbAltIcon sx={queries.icon} />;
     case "BuildIcon":
       return <BuildOutlinedIcon sx={queries.icon} />;
+    case "ExtensionIcon":
+      return <ExtensionIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
   }
 };
 
-export interface IData {
-  Id: string;
-  Institucion: string;
-  TipoEntePublico: string;
-  ClaveDeInscripcion: string;
-  Estatus: string;
-  FechaContratacion: Date;
-  MontoOriginalContratado: number;
-  Acciones: string;
-  Solicitud: string;
-  tipoDocumento: string;
-  TipoSolicitud: string;
-}
 export function LateralMenu() {
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-      localStorage.getItem("Menu") !== null
+    localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
 
@@ -149,7 +139,6 @@ export function LateralMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  ////////Administración de Ayudas////////
 
   const logout = () => {
     localStorage.clear();
@@ -193,12 +182,6 @@ export function LateralMenu() {
 
   // let color = "#";
   let color = "#56636a";
-
-  // for (i = 0; i < 3; i += 1) {
-  //   const value = (hash >> (i * 5)) & 0xff;
-  //   color += `${value.toString(16)}`.slice(-2);
-  // }
-  /* eslint-enable no-bitwise */
 
   const [show, setShow] = useState(false);
 
@@ -353,9 +336,7 @@ export function LateralMenu() {
               MODIFICAR CONTRASEÑA
             </Typography>
           </Grid>
-
         </DialogTitle>
-
 
         <DialogContent>
           <Grid
@@ -422,9 +403,7 @@ export function LateralMenu() {
               </Typography>
             ) : null}
           </Grid>
-
         </DialogContent>
-
 
         <DialogActions>
           <Button
@@ -567,10 +546,10 @@ export function LateralMenu() {
           anchor="left"
           open={isDrawerOpen}
           sx={{
-            width: query.isXs ? "16rem" : "30vw",
+            width: query.isXs ? "20rem" : "30vw",
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               boxSizing: "border-box",
             },
           }}
@@ -579,7 +558,7 @@ export function LateralMenu() {
           <Grid
             container
             sx={{
-              width: query.isXs ? "16rem" : "30vw",
+              width: query.isXs ? "20rem" : "30vw",
               height: "inherit",
               overflow: "auto",
               "&::-webkit-scrollbar": {
@@ -593,14 +572,6 @@ export function LateralMenu() {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              {/* <Grid item sx={{ alignSelf: "center" }}>
-                <img
-                  src={logo2}
-                  alt="Logo2"
-                  style={{ width: "100%", height: "70%" }}
-                />
-              </Grid> */}
-
               <Grid item sx={{ alignSelf: "center" }}>
                 <Typography sx={queries.bold_text}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
@@ -638,31 +609,6 @@ export function LateralMenu() {
               <Divider />
 
               <List>
-                <ListItemButton
-                  sx={{
-                    backgroundColor:
-                      i === indexSelect && seccionesHover === true
-                        ? "#AF8C55"
-                        : "#ffff",
-                    //border: i === indexSelect ? "2px solid" : null,
-                    ":hover": { backgroundColor: "#AF8C55" },
-                  }}
-                  onClick={() => {
-                    navigate("/reestructura");
-                  }}
-                >
-                  <ListItemIcon>
-                    <BuildOutlinedIcon />
-                  </ListItemIcon>
-                  <Typography sx={{
-                    ...queries.bold_text,
-                    ":hover": { backgroundColor: "#AF8C55" },
-                  }}>
-                    Reestructura
-                  </Typography>
-
-
-                </ListItemButton>
                 {menu.length > 0 ? (
                   menu.map(
                     (v: any, i: number) =>
@@ -678,12 +624,8 @@ export function LateralMenu() {
                                 i === indexSelect && seccionesHover === true
                                   ? "#AF8C55"
                                   : "#ffff",
-                              //border: i === indexSelect ? "2px solid" : null,
                               ":hover": { backgroundColor: "#AF8C55" },
                             }}
-                            //CAMPOS PRINCIPALES
-                            // bg={seccionesHover === true ? "#AF8C55": "#AF8C55"}
-
                             onClick={() => {
                               setSeccionesHover(seccionesHover ? false : true);
                               setIndexSelect(i);

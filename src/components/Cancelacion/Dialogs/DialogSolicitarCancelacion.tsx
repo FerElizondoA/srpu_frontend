@@ -15,55 +15,50 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../../queries";
-import { IDataPrueba } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
+import { useCancelacionStore } from "../../../store/Cancelacion/main";
 import {
-  ArchivosCancelacion,
   CancelacionSolicitud,
-} from "../../../store/SolicitudFirma/solicitudFirma";
+  ICancelacion,
+} from "../../../store/Cancelacion/solicitud";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function DialogSolicitarCancelacion({
   handler,
   openState,
-  rowSolicitud,
 }: {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IDataPrueba;
 }) {
   const navigate = useNavigate();
-  const [justificacion, setJustificacion] = useState("");
+
   const [error, setError] = useState(false);
 
-  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+  const cancelacion: ICancelacion = useCancelacionStore(
+    (state) => state.cancelacion
+  );
 
-  const archivosCancelacion: ArchivosCancelacion = useSolicitudFirmaStore(
-    (state) => state.archivosCancelacion
-  );
-  const setArchivosCancelacion: Function = useSolicitudFirmaStore(
-    (state) => state.setArchivosCancelacion
-  );
-  const cleanArchivosCancelacion: Function = useSolicitudFirmaStore(
-    (state) => state.cleanArchivosCancelacion
+  const setCancelacion: Function = useCancelacionStore(
+    (state) => state.setCancelacion
   );
 
   function cargarArchivo(event: any, numero: number) {
     let file = event.target.files[0];
 
     if (file !== undefined && numero === 1) {
-      setArchivosCancelacion({
-        ...archivosCancelacion,
-        acreditacionCancelacion: {
+      setCancelacion({
+        ...cancelacion,
+        AcreditacionDeLaCancelacion: {
           archivo: file,
           nombreArchivo: file.name,
           fechaArchivo: new Date().toString(),
         },
       });
     } else if (file !== undefined && numero === 2) {
-      setArchivosCancelacion({
-        ...archivosCancelacion,
-        bajaCreditoFederal: {
+      setCancelacion({
+        ...cancelacion,
+        BajaDeCreditoFederal: {
           archivo: file,
           nombreArchivo: file.name,
           fechaArchivo: new Date().toString(),
@@ -72,26 +67,18 @@ export function DialogSolicitarCancelacion({
     }
   }
 
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
   useEffect(() => {
     if (openState === false) {
-      cleanArchivosCancelacion();
-      setJustificacion("");
       setError(false);
     }
   }, [openState]);
 
   return (
-    <Dialog
-      fullWidth
-      open={openState}
-      maxWidth={"md"}
-      keepMounted
-      onClose={() => {
-        handler(false);
-      }}
-    >
+    <Dialog fullWidth open={openState} maxWidth={"md"} keepMounted>
       <DialogTitle>
-        <Typography sx={queries.medium_text}>Justificación </Typography>
+        <Typography sx={queries.medium_text}>Justificación</Typography>
       </DialogTitle>
 
       <DialogContent
@@ -108,7 +95,7 @@ export function DialogSolicitarCancelacion({
             position={"absolute"}
             border={
               error === true &&
-              archivosCancelacion.acreditacionCancelacion.nombreArchivo === ""
+              cancelacion.AcreditacionDeLaCancelacion.nombreArchivo === ""
                 ? "2px dotted red"
                 : "2px dotted black"
             }
@@ -119,7 +106,7 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {archivosCancelacion.acreditacionCancelacion.nombreArchivo ||
+            {cancelacion.AcreditacionDeLaCancelacion.nombreArchivo ||
               "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
@@ -142,7 +129,7 @@ export function DialogSolicitarCancelacion({
             position={"absolute"}
             border={
               error === true &&
-              archivosCancelacion.bajaCreditoFederal.nombreArchivo === ""
+              cancelacion.BajaDeCreditoFederal.nombreArchivo === ""
                 ? "2px dotted red"
                 : "2px dotted black"
             }
@@ -153,7 +140,7 @@ export function DialogSolicitarCancelacion({
               fontSize: "80%",
             }}
           >
-            {archivosCancelacion.bajaCreditoFederal.nombreArchivo ||
+            {cancelacion.BajaDeCreditoFederal.nombreArchivo ||
               "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
           </Typography>
           <input
@@ -183,12 +170,17 @@ export function DialogSolicitarCancelacion({
                 e.target.value.length <= 200 &&
                 !format.test(e.target.value)
               ) {
-                setJustificacion(e.target.value);
+                setCancelacion({
+                  ...cancelacion,
+                  Justificacion: e.target.value,
+                });
               }
             }}
-            value={justificacion}
-            helperText={200 - justificacion.length + " caracteres restantes"}
-            error={error && !justificacion ? true : false}
+            value={cancelacion.Justificacion}
+            helperText={
+              200 - cancelacion.Justificacion.length + " caracteres restantes"
+            }
+            error={error && !cancelacion.Justificacion ? true : false}
           />
         </Grid>
       </DialogContent>
@@ -205,10 +197,9 @@ export function DialogSolicitarCancelacion({
         <ThemeProvider theme={buttonTheme}>
           <Tooltip
             title={
-              archivosCancelacion.bajaCreditoFederal.nombreArchivo === "" ||
-              archivosCancelacion.acreditacionCancelacion.nombreArchivo ===
-                "" ||
-              justificacion === ""
+              cancelacion.BajaDeCreditoFederal.nombreArchivo === "" ||
+              cancelacion.AcreditacionDeLaCancelacion.nombreArchivo === "" ||
+              cancelacion.Justificacion === ""
                 ? "Favor de llenar todos los campos"
                 : null
             }
@@ -218,19 +209,12 @@ export function DialogSolicitarCancelacion({
               sx={{ ...queries.buttonContinuar, cursor: "-moz-initial" }}
               onClick={() => {
                 if (
-                  archivosCancelacion.bajaCreditoFederal.nombreArchivo !== "" &&
-                  archivosCancelacion.acreditacionCancelacion.nombreArchivo !==
+                  cancelacion.BajaDeCreditoFederal.nombreArchivo !== "" &&
+                  cancelacion.AcreditacionDeLaCancelacion.nombreArchivo !==
                     "" &&
-                  justificacion !== ""
+                  cancelacion.Justificacion !== ""
                 ) {
-                  CancelacionSolicitud(
-                    rowSolicitud.Solicitud,
-                    rowSolicitud.NumeroRegistro,
-                    justificacion,
-                    archivosCancelacion,
-                    rowSolicitud.UltimaModificacion,
-                    setUrl
-                  );
+                  CancelacionSolicitud(setUrl);
                   handler(false);
                   navigate("../firmaUrl");
                 } else {

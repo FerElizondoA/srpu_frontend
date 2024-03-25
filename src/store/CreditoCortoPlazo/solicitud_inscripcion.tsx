@@ -1,14 +1,11 @@
-import { StateCreator } from "zustand";
 import axios from "axios";
+import { StateCreator } from "zustand";
+import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
-import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface SolicitudInscripcionSlice {
-  idSolicitud: string;
-  NumeroRegistro: string;
-  editCreadoPor: string;
-
   inscripcion: {
     servidorPublicoDirigido: string;
     cargo: string;
@@ -19,17 +16,11 @@ export interface SolicitudInscripcionSlice {
   catalogoReglas: ICatalogo[];
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
-  changeReglasAplicables: (newReglas: string) => void;
-
-  changeIdSolicitud: (id: string) => void;
-
-  changeNoRegistro: (id: string) => void;
-  changeEditCreadoPor: (id: string) => void;
+  changeReglasAplicables: (newReglas: string[]) => void;
 
   getReglas: () => void;
 
   crearSolicitud: (
-    idCreador: string,
     idEditor: string,
     estatus: string,
     comentario: string
@@ -53,6 +44,7 @@ export interface SolicitudInscripcionSlice {
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
   deleteFiles: (ruta: string) => void;
+
   saveFiles: (idRegistro: string, ruta: string) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
@@ -68,9 +60,6 @@ export interface SolicitudInscripcionSlice {
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-  idSolicitud: "",
-  NumeroRegistro: "",
-  editCreadoPor: "",
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública y Planeación Financiera",
@@ -83,12 +72,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
   changeInscripcion: (inscripcion: any) => {
     set(() => ({ inscripcion: inscripcion }));
   },
-
-  changeIdSolicitud: (id: any) => set(() => ({ idSolicitud: id })),
-
-  changeNoRegistro: (num: any) => set(() => ({ NumeroRegistro: num })),
-
-  changeEditCreadoPor: (id: any) => set(() => ({ editCreadoPor: id })),
 
   changeReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
@@ -112,27 +95,35 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   crearSolicitud: async (
-    idCreador: string,
     idEditor: string,
     estatus: string,
     comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
+    const inscripcionState = useInscripcionStore.getState();
 
     const solicitud: any = {
       encabezado: state.encabezado,
+
       informacionGeneral: {
-        ...state.informacionGeneral,
-        obligadosSolidarios: state.tablaObligadoSolidarioAval,
+        informacionGeneral: state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
       },
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
-      documentacion: state.tablaDocumentos.map((v, i) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+
+      documentacion: state.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+        })
+      ),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,
@@ -155,7 +146,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
-          CreadoPor: idCreador,
+          CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -164,9 +155,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.changeIdSolicitud(data.data.Id);
-        state.changeNoRegistro(data.data.NumeroRegistro);
-        state.changeEditCreadoPor(localStorage.getItem("IdUsuario")!);
+        inscripcionState.setInscripcion(data.data);
         state.addComentario(data.data.Id, comentario, "Captura");
         state.saveFiles(
           data.data.Id,
@@ -182,6 +171,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     comentario: string
   ) => {
     const state = useCortoPlazoStore.getState();
+    const inscripcionState = useInscripcionStore.getState();
 
     const solicitud: any = {
       encabezado: state.encabezado,
@@ -209,14 +199,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
-          IdSolicitud: state.idSolicitud,
+          IdSolicitud: inscripcionState.inscripcion.Id,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: "1",
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -230,8 +219,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.changeIdSolicitud(data.data.Id);
-        state.changeNoRegistro(data.data.NumeroRegistro);
         state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         state.saveFiles(
           data.data.Id,
@@ -243,10 +230,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
-      //position: "center",
-      //showConfirmButton: true,
-      //confirmButtonColor: "#15212f",
-      //cancelButtonColor: "rgb(175, 140, 85)",
       timer: 3000,
       timerProgressBar: true,
     });
@@ -361,25 +344,22 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((res) => {})
       .catch((e) => {});
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
 
-    return await state.tablaDocumentos.map((file, index) => {
+    return await state.tablaDocumentos.map((file) => {
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
-
-        console.log(url);
 
         let dataArray = new FormData();
         dataArray.append("ROUTE", `${ruta}`);
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
 
-        if (file.archivo.size > 0) {
+        if (file.archivo) {
           return axios
             .post(
               process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
@@ -464,29 +444,3 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .catch((e) => {});
   },
 });
-
-export const getUsuariosAsignables = async (
-  setState: Function,
-  numero: number
-) => {
-  await axios
-    .get(process.env.REACT_APP_APPLICATION_BACK + "/get-usuarios-asignables", {
-      params: {
-        IdUsuario: localStorage.getItem("IdUsuario"),
-        Rol: localStorage.getItem("Rol"),
-      },
-      headers: {
-        Authorization: localStorage.getItem("jwtToken"),
-        "Content-Type": "application/json",
-      },
-    })
-    .then(({ data }) => {
-      if (data.data[0].ERROR !== "Permisos Denegados") {
-        setState(data.data);
-      }
-    })
-    .catch((r) => {
-      if (r.response.status === 409) {
-      }
-    });
-};

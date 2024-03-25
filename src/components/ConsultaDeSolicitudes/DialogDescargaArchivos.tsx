@@ -5,18 +5,23 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
-  Grid,
   IconButton,
+  Table,
+  TableBody,
+  TableHead,
+  TableSortLabel,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { getPdf } from "../../store/SolicitudFirma/solicitudFirma";
 import {
   descargaDocumento,
   getPathDocumentos,
 } from "../APIS/pathDocSol/APISDocumentos";
+import { StyledTableCell, StyledTableRow } from "../CustomComponents";
 
 export interface IDocumentos {
   Id: string;
@@ -30,71 +35,110 @@ export interface IDocumentos {
   FechaDescarga: string;
 }
 
+const heads: Array<{ label: string }> = [
+  {
+    label: "Nombre del archivo",
+  },
+  {
+    label: "Descargar",
+  },
+];
+
 export function DialogDescargaArchivos({
   open,
   setOpen,
-  noSolicitud,
-  idSolicitud,
 }: {
   open: boolean;
   setOpen: Function;
-  noSolicitud: string;
-  idSolicitud: string;
 }) {
   const [archivos, setArchivos] = useState<Array<IDocumentos>>([]);
 
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
   useEffect(() => {
-    getPathDocumentos(idSolicitud, setArchivos);
-  }, []);
+    getPathDocumentos(inscripcion.Id, setArchivos);
+  }, [inscripcion]);
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>
-        Descarga de archivos de la solicitud: {noSolicitud}
+        Descarga de archivos de la solicitud:{" "}
+        <strong>{inscripcion.NumeroRegistro}</strong>
       </DialogTitle>
       <DialogContent>
-        {archivos.length > 0 ? (
-          archivos.map((e, i) => (
-            <Grid key={i}>
-              <Grid
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "4fr 1fr",
-                  alignItems: "center",
-                }}
-              >
-                <Typography> {e.NombreArchivo} </Typography>
+        <Table>
+          <TableHead>
+            <StyledTableRow>
+              {heads.map((head, index) => (
+                <StyledTableCell align="center" key={index}>
+                  <TableSortLabel>
+                    {" "}
+                    <strong>{head.label}</strong>{" "}
+                  </TableSortLabel>
+                </StyledTableCell>
+              ))}
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {archivos.length > 0 ? (
+              archivos.map((e, i) => (
+                <StyledTableRow>
+                  <StyledTableCell>
+                    <Typography> {e.NombreArchivo} </Typography>
+                  </StyledTableCell>
 
-                <Tooltip title="Descargar">
-                  <IconButton
-                    type="button"
-                    onClick={() => {
-                      if (e.Tipo === "oficio") {
-                        descargaDocumento(
-                          e.Ruta.replaceAll(`${e.NombreIdentificador}`, "/"),
-                          e.NombreIdentificador,
-                          e.Descargas === 0 ? e.Id : ""
-                        );
-                      } else {
-                        getPdf(
-                          e.IdPathDoc,
-                          noSolicitud,
-                          new Date().toString(),
-                          e.Descargas === 0 ? e.Id : ""
-                        );
-                      }
-                    }}
-                  >
-                    <DownloadIcon />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Divider />
-            </Grid>
-          ))
-        ) : (
-          <Typography> Sin archivos disponibles para descargar </Typography>
-        )}
+                  <StyledTableCell>
+                    <Typography>
+                      {" "}
+                      <Tooltip title="Descargar">
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            if (e.Tipo === "oficio") {
+                              descargaDocumento(
+                                e.Ruta.replaceAll(
+                                  `${e.NombreIdentificador}`,
+                                  "/"
+                                ),
+                                e.NombreIdentificador,
+                                e.Descargas === 0 ? e.Id : ""
+                              );
+                            } else {
+                              getPdf(
+                                e.IdPathDoc,
+                                inscripcion.NumeroRegistro,
+                                new Date().toString(),
+                                e.Descargas === 0 ? e.Id : ""
+                              );
+                            }
+                          }}
+                        >
+                          <DownloadIcon />
+                        </IconButton>
+                      </Tooltip>{" "}
+                    </Typography>
+                  </StyledTableCell>
+                </StyledTableRow>
+                // <Grid key={i}>
+                //   <Grid
+                //     sx={{
+                //       display: "grid",
+                //       gridTemplateColumns: "4fr 1fr",
+                //       alignItems: "center",
+                //     }}
+                //   >
+
+                //   </Grid>
+                //   <Divider />
+                // </Grid>
+              ))
+            ) : (
+              <Typography> Sin archivos disponibles para descargar </Typography>
+            )}
+          </TableBody>
+        </Table>
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>

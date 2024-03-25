@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import FindInPageIcon from "@mui/icons-material/FindInPage";
 import {
   Chip,
   Grid,
@@ -14,108 +15,62 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-
-import FindInPageIcon from "@mui/icons-material/FindInPage";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
-import { getSolicitudesReestructura } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
-import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
-import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
-import {
-  IData,
-  IDataPrueba,
-  stringCapitalize,
-} from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { DialogVerDetalle } from "./DialogVerDetalle";
 
 interface Head {
-  id: keyof IData;
-  isNumeric: boolean;
   label: string;
 }
 const heads: readonly Head[] = [
   {
-    id: "NumeroRegistro",
-    isNumeric: true,
     label: "Número de Solicitud",
   },
   {
-    id: "Institucion",
-    isNumeric: true,
     label: "Institución financiera",
   },
   {
-    id: "TipoEntePublico",
-    isNumeric: true,
     label: "Tipo de Ente Público Obligado",
   },
   {
-    id: "Estatus",
-    isNumeric: true,
     label: "Estatus",
   },
   {
-    id: "IdClaveInscripcion",
-    isNumeric: true,
     label: "Clave de inscripción",
   },
   {
-    id: "MontoOriginalContratado",
-    isNumeric: true,
     label: "Monto original contratado",
   },
   {
-    id: "FechaContratacion",
-    isNumeric: true,
     label: "Fecha de contratación",
   },
   {
-    id: "FechaRequerimientos",
-    isNumeric: true,
     label: "Fecha Requerimientos",
   },
   {
-    id: "tipoDocumento",
-    isNumeric: true,
     label: "Tipo de Documento",
   },
   {
-    id: "Acciones",
-    isNumeric: true,
     label: "Acciones",
   },
 ];
 
-export function Reestructura() {
+export function SolicitudesReestructura() {
   const [datos, setDatos] = useState<Array<IData>>([]);
-
-  const changeIdSolicitud: Function = useCortoPlazoStore(
-    (state) => state.changeIdSolicitud
-  );
-  const changeReglasAplicables: Function = useCortoPlazoStore(
-    (state) => state.changeReglasAplicables
-  );
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const addObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.addObligadoSolidarioAval
-  );
-  const addCondicionFinanciera: Function = useCortoPlazoStore(
-    (state) => state.addCondicionFinanciera
-  );
-  const addDocumento: Function = useCortoPlazoStore(
-    (state) => state.addDocumento
-  );
+  // const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
@@ -125,39 +80,75 @@ export function Reestructura() {
     (state) => state.changeRestructura
   );
 
+  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
+    (state) => state.changeReglasAplicables
+  );
+
+  const setGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.setGastosCostos
+  );
+
+  const setInformacionGeneralLP: Function = useLargoPlazoStore(
+    (state) => state.setInformacionGeneral
+  );
   const [rowId] = useState("");
 
-  const rowSolicitud: IDataPrueba = useSolicitudFirmaStore(
-    (state) => state.rowSolicitud
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
+  const changeEncabezadoLP: Function = useLargoPlazoStore(
+    (state) => state.changeEncabezado
+  );
+
+  const addObligadoSolidarioAvalLP: Function = useLargoPlazoStore(
+    (state) => state.addObligadoSolidarioAval
+  );
+
+  const addGeneralGastosCostos: Function = useLargoPlazoStore(
+    (state) => state.addGastosCostos
+  );
+
+  const addCondicionFinancieraLP: Function = useLargoPlazoStore(
+    (state) => state.addCondicionFinanciera
+  );
+
+  const addDocumentoLP: Function = useLargoPlazoStore(
+    (state) => state.addDocumento
   );
 
   const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
     // const state = useCortoPlazoStore.getState();
-    if (stringCapitalize(TipoDocumento) === "Crédito Simple A Corto Plazo") {
-      let aux: any = JSON.parse(solicitud.Solicitud);
+    let aux: any = JSON.parse(solicitud.Solicitud!);
 
-      changeReglasAplicables(aux?.inscripcion.declaratorias);
-      changeEncabezado(aux?.encabezado);
-      changeInformacionGeneral(aux?.informacionGeneral);
+    changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
+    changeEncabezadoLP(aux?.encabezado);
+    setInformacionGeneralLP(aux?.informacionGeneral);
+    setGastosCostos(aux?.GastosCostos);
 
-      aux?.informacionGeneral.obligadosSolidarios.map(
-        (v: any, index: number) => {
-          return addObligadoSolidarioAval(v);
-        }
-      );
-      aux?.condicionesFinancieras.map((v: any, index: number) => {
-        return addCondicionFinanciera(v);
-      });
-      aux?.documentacion.map((v: any, index: number) => {
-        return addDocumento(v);
-      });
-    }
+    aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
+      return addObligadoSolidarioAvalLP(v);
+    });
+
+    aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
+      return addGeneralGastosCostos(v);
+    });
+
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      return addCondicionFinancieraLP(v);
+    });
+
+    aux?.documentacion.map((v: any, index: number) => {
+      return addDocumentoLP(v);
+    });
   };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   useEffect(() => {
-    getSolicitudesReestructura(setDatos);
-    changeRestructura("con autorizacion");
+    getSolicitudes("Reestructura", (e: IData[]) => {
+      setDatos(e);
+      // setDatosFiltrados(e);
+    });
   }, []);
 
   return (
@@ -197,7 +188,7 @@ export function Reestructura() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            width: "100%"
+            width: "100%",
           }}
         >
           <Paper
@@ -287,52 +278,68 @@ export function Reestructura() {
               <TableRow>
                 {heads.map((head, index) => (
                   <StyledTableCell align="left" key={index}>
-                    <Typography sx={{
-                      fontSize: ".8rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      width: head.label === "Clave de inscripción" ||
-                        head.label === "Institución financiera" ||
-                        head.label === "Monto original contratado" ||
-                        head.label === "Tipo de Documento" ||
-                        head.label === "Tipo de Ente Público Obligado"
-                        ? "180px" : "100%",
-
-                      "@media (min-width: 480px)": {
-                        width: head.label === "Clave de inscripción" ||
+                    <Typography
+                      sx={{
+                        fontSize: ".8rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        width:
+                          head.label === "Clave de inscripción" ||
                           head.label === "Institución financiera" ||
                           head.label === "Monto original contratado" ||
                           head.label === "Tipo de Documento" ||
                           head.label === "Tipo de Ente Público Obligado"
-                          ? "180px" : "100%"
-                      },
+                            ? "180px"
+                            : "100%",
 
-                      "@media (min-width: 768px)": {
-                        width: head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
-                          ? "200x" : "100%"
-                      },
+                        "@media (min-width: 480px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "180px"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1140px)": {
-                        width: head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
-                          ? "180px" : "100%"
-                      },
+                        "@media (min-width: 768px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "200x"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1400px)": {
-                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
-                      },
+                        "@media (min-width: 1140px)": {
+                          width:
+                            head.label === "Clave de inscripción" ||
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
+                              ? "180px"
+                              : "100%",
+                        },
 
-                      "@media (min-width: 1870px)": {
-                        width: head.label === "Clave de inscripción" ? "150px" : "100%"
-                      },
-                    }}>
+                        "@media (min-width: 1400px)": {
+                          width:
+                            head.label === "Clave de inscripción"
+                              ? "150px"
+                              : "100%",
+                        },
+
+                        "@media (min-width: 1870px)": {
+                          width:
+                            head.label === "Clave de inscripción"
+                              ? "150px"
+                              : "100%",
+                        },
+                      }}
+                    >
                       {head.label}
                     </Typography>
                   </StyledTableCell>
@@ -358,7 +365,7 @@ export function Reestructura() {
                       {row.NumeroRegistro}
                     </StyledTableCell>
 
-                    <StyledTableCell align="center" component="th" scope="row" >
+                    <StyledTableCell align="center" component="th" scope="row">
                       {row.Institucion}
                     </StyledTableCell>
 
@@ -395,7 +402,6 @@ export function Reestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            changeIdSolicitud(row?.Id);
                             llenaSolicitud(row, row.TipoSolicitud);
                             getComentariosSolicitudPlazo(
                               row.Id,
@@ -409,6 +415,14 @@ export function Reestructura() {
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
+                    {openDialogVer && (
+                      <VerBorradorDocumento
+                        handler={changeOpenDialogVer}
+                        openState={openDialogVer}
+                        rowSolicitud={row}
+                        rowId={row.Id}
+                      />
+                    )}
                   </StyledTableRow>
                 );
               })}
@@ -418,10 +432,10 @@ export function Reestructura() {
       </Paper>
 
       {openDialogVer && (
-        <VerBorradorDocumento
+        <DialogVerDetalle
           handler={changeOpenDialogVer}
           openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
+          rowSolicitud={solicitud}
           rowId={rowId}
         />
       )}

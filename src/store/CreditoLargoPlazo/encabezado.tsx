@@ -1,39 +1,35 @@
 import { StateCreator } from "zustand";
+import axios from "axios";
+import {
+  ICatalogo,
+  IEntePublico,
+} from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { IEncabezado, IUsuarios } from "../CreditoCortoPlazo/encabezado";
+import { useLargoPlazoStore } from "./main";
 
-export interface EncabezadoLargoPlazoSlice {
-  encabezado: {
-    tipoDocumento: string;
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    };
+export interface EncabezadoSlice {
+  encabezado: IEncabezado;
 
-    tipoEntePublico: { Id: string; TipoEntePublico: string };
-    organismo: { Id: string; Organismo: string };
-    fechaContratacion: string;
-  };
+  catalogoOrganismos: IEntePublico[];
+  catalogoTiposEntePublico: ICatalogo[];
 
-  changeEncabezado: (
-    tipoDocumento: string,
-    solicitanteAutorizado: {
-      Solicitante: string;
-      Cargo: string;
-      Nombre: string;
-    },
-    tipoEntePublico: { Id: string; TipoEntePublico: string },
-    organismo: { Id: string; Organismo: string },
-    fechaContratacion: string
-  ) => void;
+  changeEncabezado: (encabezado: any) => void;
+
+  listadoUsuarios: Array<IUsuarios>;
+  setListadoUsuarios: (usuarios: IUsuarios[]) => void;
+
+  getOrganismos: () => void;
+  getTiposEntesPublicos: () => void;
 }
 
-export const createEncabezadoLargoPlazoSlice: StateCreator<
-  EncabezadoLargoPlazoSlice
-> = (set, get) => ({
+export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
+  set,
+  get
+) => ({
   encabezado: {
     tipoDocumento: "Crédito Simple a Largo Plazo",
     solicitanteAutorizado: {
-      Solicitante: localStorage.getItem("IdCentral") || "",
+      IdSolicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",
       Nombre: localStorage.getItem("NombreUsuario") || "",
     },
@@ -48,8 +44,57 @@ export const createEncabezadoLargoPlazoSlice: StateCreator<
     fechaContratacion: new Date().toString(),
   },
 
-  changeEncabezado: (encabezado: any) =>
+  catalogoOrganismos: [],
+  catalogoTiposEntePublico: [],
+
+  changeEncabezado: (encabezado: any) => {
+    const state = useLargoPlazoStore.getState();
+
+    state.setInformacionGeneral({
+      ...state.informacionGeneral,
+      fechaContratacion: encabezado.fechaContratacion,
+    });
     set(() => ({
       encabezado: encabezado,
-    })),
+    }));
+  },
+
+  listadoUsuarios: [],
+
+  setListadoUsuarios: (usuarios: IUsuarios[]) => {
+    set(() => ({
+      listadoUsuarios: usuarios,
+    }));
+  },
+
+  getTiposEntesPublicos: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-tiposEntePublico", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        set((state) => ({
+          catalogoTiposEntePublico: data.data,
+        }));
+      });
+  },
+  getOrganismos: async () => {
+    await axios
+      .get(
+        process.env.REACT_APP_APPLICATION_BACK + "/get-entePublicoObligado",
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoOrganismos: r,
+        }));
+      });
+  },
 });

@@ -25,6 +25,8 @@ import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolici
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { AgregarComentario } from "./DialogAgregarComentario";
 import { rolesAdmin } from "./DialogSolicitarModificacion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export interface IComentarios {
   Id: string;
@@ -70,7 +72,9 @@ export function VerComentariosSolicitud({
     []
   );
 
-  const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
@@ -86,10 +90,10 @@ export function VerComentariosSolicitud({
   );
 
   useEffect(() => {
-    if (IdSolicitud !== "") {
-      getComentariosSolicitudPlazo(IdSolicitud, setDatosComentarios);
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id, setDatosComentarios);
     }
-  }, [IdSolicitud, openDialogCrear]);
+  }, [inscripcion.Id, openDialogCrear]);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -285,7 +289,7 @@ export function VerComentariosSolicitud({
       <AgregarComentario
         handler={changeOpenDialogCrear}
         openState={openDialogCrear}
-        IdSolicitud={IdSolicitud}
+        IdSolicitud={inscripcion.Id}
       />
       <Dialog
         open={openDialogEliminar}

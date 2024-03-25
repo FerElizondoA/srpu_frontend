@@ -49,16 +49,16 @@ export function DestinoAutorizado() {
     (state) => state.montoAutorizado.montoAutorizado
   );
 
-  const tablaDestinoAutorizado: any = useLargoPlazoStore(
-    (state) => state.tablaDestinoAutorizado
+  const tablaMontoAutorizado: any = useLargoPlazoStore(
+    (state) => state.tablaMontoAutorizado
   );
 
-  const setDestinoAutorizado: Function = useLargoPlazoStore(
-    (state) => state.setDestinoAutorizado
+  const setMontoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.setMontoAutorizado
   );
 
-  const addDestinoAutorizado: Function = useLargoPlazoStore(
-    (state) => state.addDestinoAutorizado
+  const addMontoAutorizado: Function = useLargoPlazoStore(
+    (state) => state.addMontoAutorizado
   );
 
   const removeDestinoAutorizado: Function = useLargoPlazoStore(
@@ -77,7 +77,7 @@ export function DestinoAutorizado() {
       destinoAutorizado: destinoAutorizado.Descripcion,
       montoAutorizado: montoAutorizado,
     };
-    addDestinoAutorizado(tab);
+    addMontoAutorizado(tab);
   };
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export function DestinoAutorizado() {
                 Descripcion: destinoAutorizado.Descripcion || "",
               }}
               onChange={(event, text) =>
-                setDestinoAutorizado({
+                setMontoAutorizado({
                   destinoAutorizado: {
                     Id: text?.Id || "",
                     Descripcion: text?.Descripcion || "",
@@ -150,12 +150,12 @@ export function DestinoAutorizado() {
                   validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                   parseInt(v.target.value.replace(/\D/g, "")) < 9999999999999999
                 ) {
-                  setDestinoAutorizado({
+                  setMontoAutorizado({
                     destinoAutorizado: destinoAutorizado,
                     montoAutorizado: moneyMask(v.target.value),
                   });
                 } else if (v.target.value === "") {
-                  setDestinoAutorizado({
+                  setMontoAutorizado({
                     destinoAutorizado: destinoAutorizado,
                     montoAutorizado: moneyMask("0"),
                   });
@@ -177,6 +177,7 @@ export function DestinoAutorizado() {
           </Grid>
 
           <Grid
+            item
             xs={10}
             sm={2}
             md={2}
@@ -197,7 +198,7 @@ export function DestinoAutorizado() {
                   montoAutorizado === 0
                 }
                 onClick={() => {
-                  setDestinoAutorizado({
+                  setMontoAutorizado({
                     destinoAutorizado: "",
                     montoAutorizado: null,
                   });
@@ -239,7 +240,7 @@ export function DestinoAutorizado() {
                 </TableHead>
 
                 <TableBody>
-                  {tablaDestinoAutorizado.map((row: any, index: number) => {
+                  {tablaMontoAutorizado.map((row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center" component="th">

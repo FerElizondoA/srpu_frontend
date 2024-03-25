@@ -8,14 +8,18 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
-type Props = {
+export function DialogGuardarBorrador({
+  handler,
+  openState,
+}: {
   handler: Function;
   openState: boolean;
-};
-
-export function ConfirmacionBorradorSolicitud(props: Props) {
+}) {
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -33,8 +37,6 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
   );
 
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
-
-  const idSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
 
   const [info, setInfo] = useState(
     "La solicitud se guardará como borrador y estará disponible para modificar"
@@ -68,67 +70,15 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
     notnull();
   }, [institucion, montoOriginal]);
 
-  const editCreadoPor: string = useLargoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   const navigate = useNavigate();
 
-  const changeEncabezado: Function = useLargoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useLargoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const cleanObligadoSolidarioAval: Function = useLargoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-  const updatecondicionFinancieraTable: Function = useLargoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
+  // const cleanSolicitud: Function = useLargoPlazoStore(
+  //   (state) => state.cleanSolicitud
+  // );
 
-  const cleanComentario: Function = useLargoPlazoStore(
-    (state) => state.cleanComentario
-  );
-
-  const addComentario: Function = useLargoPlazoStore(
+  const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
-
-  const reset = () => {
-    cleanComentario();
-    changeEncabezado({
-      tipoDocumento: "Crédito simple a corto plazo",
-      solicitanteAutorizado: {
-        Solicitante: localStorage.getItem("IdUsuario") || "",
-        Cargo: localStorage.getItem("Puesto") || "",
-        Nombre: localStorage.getItem("NombreUsuario") || "",
-      },
-      tipoEntePublico: {
-        Id: "",
-        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
-      },
-      organismo: {
-        Id: "",
-        Organismo: localStorage.getItem("EntePublicoObligado") || "",
-      },
-      fechaContratacion: new Date().toString(),
-    });
-
-    changeInformacionGeneral({
-      fechaContratacion: new Date().toString(),
-      fechaVencimiento: new Date().toString(),
-      plazo: 1,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "Pesos",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-
-    cleanObligadoSolidarioAval();
-    updatecondicionFinancieraTable([]);
-    cleanComentario();
-  };
 
   const division = info.indexOf(":");
 
@@ -136,13 +86,17 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
 
   const restText = division !== -1 ? info.substring(division + 1) : "";
 
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
   return (
     <Dialog
-      open={props.openState}
+      open={openState}
       keepMounted
       TransitionComponent={Transition}
       onClose={() => {
-        props.handler(false);
+        handler(false);
       }}
     >
       <DialogTitle>
@@ -173,26 +127,24 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
       <DialogActions>
         <Button
           variant="text"
-          onClick={() => props.handler(false)}
+          onClick={() => handler(false)}
           sx={queries.buttonCancelar}
         >
           Cancelar
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
-            if (idSolicitud !== "") {
+            handler(false);
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
                   addComentario(
-                    idSolicitud,
+                    solicitud.Id,
                     JSON.stringify(comentario),
                     "Captura"
                   );
@@ -203,7 +155,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
                     title: "Mensaje",
                     text: "La solicitud se guardó con éxito",
                   });
-                  reset();
+                  // cleanSolicitud();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
@@ -218,18 +170,15 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             } else {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
-                  addComentario(
-                    idSolicitud,
-                    JSON.stringify(comentario),
-                    "Captura"
-                  );
+                  // addComentario(
+                  //   solicitud.Id,
+                  //   JSON.stringify(comentario),
+                  //   "Captura"
+                  // );
                   Swal.fire({
                     confirmButtonColor: "#15212f",
                     cancelButtonColor: "rgb(175, 140, 85)",
@@ -267,14 +216,12 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
         </Button>
         <Button
           onClick={() => {
-            props.handler(false);
-            if (idSolicitud !== "") {
+            handler(false);
+            if (solicitud.Id !== "") {
               modificaSolicitud(
-                editCreadoPor,
+                solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then(() => {
@@ -298,10 +245,7 @@ export function ConfirmacionBorradorSolicitud(props: Props) {
             } else {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Captura"
-                  : "Verificacion",
+                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
                 .then((r: any) => {

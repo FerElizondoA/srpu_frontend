@@ -20,6 +20,8 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -36,8 +38,6 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.modificaSolicitud
   );
 
-  const idSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
@@ -48,67 +48,21 @@ export function ConfirmacionEnviarSolicitud({
     []
   );
 
-  const editCreadoPor: string = useCortoPlazoStore(
-    (state) => state.editCreadoPor
-  );
-
   React.useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
 
   const navigate = useNavigate();
 
-  const changeEncabezado: Function = useCortoPlazoStore(
-    (state) => state.changeEncabezado
-  );
-  const changeInformacionGeneral: Function = useCortoPlazoStore(
-    (state) => state.changeInformacionGeneral
-  );
-  const cleanObligadoSolidarioAval: Function = useCortoPlazoStore(
-    (state) => state.cleanObligadoSolidarioAval
-  );
-  const updatecondicionFinancieraTable: Function = useCortoPlazoStore(
-    (state) => state.updatecondicionFinancieraTable
-  );
-  const cleanComentario: Function = useCortoPlazoStore(
-    (state) => state.cleanComentario
-  );
-
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+  const solicitud: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
-  const reset = () => {
-    changeEncabezado({
-      tipoDocumento: "Crédito simple a corto plazo",
-      solicitanteAutorizado: {
-        Solicitante: localStorage.getItem("IdUsuario") || "",
-        Cargo: localStorage.getItem("Puesto") || "",
-        Nombre: localStorage.getItem("NombreUsuario") || "",
-      },
-      tipoEntePublico: {
-        Id: "",
-        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
-      },
-      organismo: {
-        Id: "",
-        Organismo: localStorage.getItem("EntePublicoObligado") || "",
-      },
-      fechaContratacion: new Date().toString(),
-    });
+  const cleanSolicitud: Function = useCortoPlazoStore(
+    (state) => state.cleanSolicitud
+  );
 
-    changeInformacionGeneral({
-      fechaContratacion: new Date().toString(),
-      fechaVencimiento: new Date().toString(),
-      plazo: 1,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "Pesos",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-
-    cleanObligadoSolidarioAval();
-    updatecondicionFinancieraTable([]);
-    cleanComentario();
-  };
   return (
     <Dialog
       open={openState}
@@ -121,16 +75,18 @@ export function ConfirmacionEnviarSolicitud({
       maxWidth="sm"
     >
       <DialogTitle>
-        <Typography sx={queries.medium_text}>
-          {localStorage.getItem("Rol") === "Capturador"
-            ? "Enviar"
-            : "Finalizar"}{" "}
-          Documento
-        </Typography>
+        <Grid display={"flex"} justifyContent={"center"}>
+          <Typography sx={queries.bold_text}>
+            {localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"}{" "}
+            Documento
+          </Typography>
+        </Grid>
       </DialogTitle>
 
       <DialogContent>
-        {localStorage.getItem("Rol") === "Capturador" && (
+        {localStorage.getItem("Rol") === "Capturador" ? (
           <Grid>
             <Typography>
               Selecciona verificador al que deseas asignar esta solicitud{" "}
@@ -164,21 +120,18 @@ export function ConfirmacionEnviarSolicitud({
               </Select>
             </FormControl>
           </Grid>
+        ) : (
+          <Grid>
+            <Typography>
+              {/* Al finalizar, la solicitud ya no estará disponible para modificar. */}
+              Está a punto de finalizar la solicitud. Una vez lo haga,{" "}
+              <strong>
+                ya no estará disponible para realizar modificaciones.
+              </strong>{" "}
+              ¿Desea proceder?
+            </Typography>
+          </Grid>
         )}
-
-        {/* <TextField
-          fullWidth
-          label="Comentario"
-          multiline
-          variant="standard"
-          rows={4}
-          value={comentario}
-          onChange={(texto) => {
-            if (texto.target.value.length <= 200) {
-              setComentario(texto.target.value);
-            }
-          }}
-        /> */}
       </DialogContent>
 
       <DialogActions>
@@ -192,16 +145,16 @@ export function ConfirmacionEnviarSolicitud({
         <Button
           onClick={() => {
             handler(false);
-            if (idSolicitud !== "") {
+            if (solicitud.Id !== "") {
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
-                  editCreadoPor,
+                  solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "Por Firmar"
+                  "3"
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -212,7 +165,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    reset();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
@@ -230,14 +183,10 @@ export function ConfirmacionEnviarSolicitud({
                     });
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(
-                  editCreadoPor,
-                  idUsuarioAsignado,
-                  "Verificacion"
-                )
+                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -248,7 +197,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    reset();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
@@ -271,11 +220,11 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("IdUsuario"),
-                  "Por Firmar"
+                  "3"
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -286,7 +235,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    reset();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -307,11 +256,11 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   idUsuarioAsignado,
-                  "Verificacion"
+                  "2"
                 )
                   .then(() => {
                     addComentario(
-                      idSolicitud,
+                      solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
@@ -322,7 +271,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    reset();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
