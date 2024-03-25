@@ -7,6 +7,7 @@ import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocument
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useInscripcionStore } from "../Inscripcion/main";
+import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -98,8 +99,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     state.cleanObligadoSolidarioAval();
 
     state.cleanCondicionFinanciera();
-
-    // state.getTiposDocumentos();
 
     state.setTablaDocumentos([]);
 
@@ -364,92 +363,68 @@ export async function GeneraFormatoReestructura(
     .catch((err) => {}); // aqui
 }
 
-export async function ConsultaSolicitud(
-  Solicitud: string,
-  NoOficio: string,
-  setUrl: Function
-) {
-  let solicitud: any = JSON.parse(Solicitud);
-  const SolicitudDescarga: any = {
-    oficioNum: NoOficio,
+export async function ConsultaSolicitud(setUrl: Function) {
+  let inscripcion: IInscripcion = useInscripcionStore.getState().inscripcion;
 
-    directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
-    cargoDirectorGeneral:
-      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+  let solicitud: ISolicitudLargoPlazo = JSON.parse(inscripcion.Solicitud);
 
-    servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
-    cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
-
-    organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
-
-    institucionFinanciera:
-      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
-    montoOriginalContratado: solicitud.informacionGeneral.monto,
-    entePublicoObligado:
-      solicitud.informacionGeneral.obligadosSolidarios.length > 0
-        ? solicitud.informacionGeneral.obligadosSolidarios
-        : "No Aplica",
-    destino: solicitud.informacionGeneral.destino.Descripcion,
-    plazo: solicitud.informacionGeneral.plazo,
-
-    tasaInteres:
-      solicitud.condicionesFinancieras[0].tasaInteres[0].tasa +
-      (solicitud.condicionesFinancieras[0].tasaInteres[0].sobreTasa === "N/A"
-        ? " "
-        : " + " + solicitud.condicionesFinancieras[0].tasaInteres[0].sobreTasa),
-    comisiones:
-      solicitud.condicionesFinancieras[0].comisiones[0].porcentaje !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].porcentaje +
-          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
-            ? " "
-            : " más IVA")
-        : solicitud.condicionesFinancieras[0].comisiones[0].montoFijo !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
-          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
-            ? " "
-            : " más IVA")
-        : "N/A",
-    gastosAdicionales: "No Aplica",
-    tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
-    mecanismoVehiculoDePago: "No Aplica",
-    fuentePago: "No Aplica",
-    garantiaDePago: "No Aplica",
-    reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
-    documentos: JSON.stringify(solicitud.documentacion),
-  };
+  console.log(solicitud);
 
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
       {
-        oficioNum: SolicitudDescarga.oficioNum,
-        directorGeneral: SolicitudDescarga.directorGeneral,
-        cargoDirectorGeneral: SolicitudDescarga.cargoDirectorGeneral,
-        servidorPublico: SolicitudDescarga.servidorPublico,
-        cargoServidorPublico: SolicitudDescarga.cargoServidorPublico,
-        organismoServidorPublico: SolicitudDescarga.organismoServidorPublico,
-        institucionFinanciera: SolicitudDescarga.institucionFinanciera,
+        oficioNum: inscripcion.NumeroRegistro,
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral:
+          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+        organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
+        institucionFinanciera:
+          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera
+            .Descripcion,
         fechaContratacion: format(
-          new Date(SolicitudDescarga.fechaContratacion),
+          new Date(
+            solicitud.informacionGeneral.informacionGeneral.fechaContratacion
+          ),
           "PPP",
           {
             locale: es,
           }
         ),
-        montoOriginalContratado: SolicitudDescarga.montoOriginalContratado,
-        entePublicoObligado: SolicitudDescarga.entePublicoObligado,
-        destino: SolicitudDescarga.destino,
-        plazo: SolicitudDescarga.plazo,
-        tasaInteres: SolicitudDescarga.tasaInteres,
-        comisiones: SolicitudDescarga.comisiones,
-        gastosAdicionales: SolicitudDescarga.gastosAdicionales,
-        tasaEfectiva: SolicitudDescarga.tasaEfectiva,
-        mecanismoVehiculoDePago: SolicitudDescarga.mecanismoVehiculoDePago,
-        fuentePago: SolicitudDescarga.fuentePago,
-        garantiaDePago: SolicitudDescarga.garantiaDePago,
-        reglas: SolicitudDescarga.reglas,
-        documentos: SolicitudDescarga.documentos,
+        montoOriginalContratado:
+          solicitud.informacionGeneral.informacionGeneral.monto,
+        entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
+        destino:
+          solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+        tasaInteres:
+          solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
+        comisiones:
+          solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
+        gastosAdicionales: inscripcion.TipoSolicitud.toLowerCase().includes(
+          "largo"
+        )
+          ? solicitud.informacionGeneral?.destinoGastosCostos[0]
+              ?.gastosAdicionales
+          : "N/A",
+        tasaEfectiva:
+          solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
+        mecanismoVehiculoDePago:
+          inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo
+            : "N/A",
+        fuentePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+          ? solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro
+          : "N/A",
+        garantiaDePago: inscripcion.TipoSolicitud.toLowerCase().includes(
+          "largo"
+        )
+          ? solicitud.fuenteDePago?.garantiaDePago
+          : "N/A",
+        reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
+        documentos: JSON.stringify(solicitud.documentacion),
       },
       {
         headers: {

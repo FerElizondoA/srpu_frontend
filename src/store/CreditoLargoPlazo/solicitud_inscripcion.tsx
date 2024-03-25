@@ -181,6 +181,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         MontoAutorizado: lpState.autorizacionSelect.MontoAutorizado,
         NumeroAutorizacion: lpState.autorizacionSelect.NumeroAutorizacion,
       },
+
       fuenteDePago: {
         mecanismoVehiculoDePago: {
           Tipo: lpState.mecanismoVehiculoPago.MecanismoPago,

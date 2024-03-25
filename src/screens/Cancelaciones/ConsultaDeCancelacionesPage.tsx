@@ -618,11 +618,7 @@ export function ConsultaDeCancelacionesPage() {
                                           navigate("../firmaUrl");
                                         }
                                       } else {
-                                        ConsultaSolicitud(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
-                                          setUrl
-                                        );
+                                        ConsultaSolicitud(setUrl);
                                         navigate("../firmaUrl");
                                       }
                                     });

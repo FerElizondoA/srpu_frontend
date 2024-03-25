@@ -43,14 +43,6 @@ export interface ICredito {
   condicionesFinancieras: ICondicionFinanciera[];
 }
 
-export interface InscripcionSlice {
-  inscripcion: IInscripcion;
-  setInscripcion: (solicitud: IInscripcion) => void;
-
-  proceso: string;
-  setProceso: (proceso: string) => void;
-}
-
 export interface ISolicitudLargoPlazo {
   encabezado: IEncabezado;
   informacionGeneral: {
@@ -88,6 +80,36 @@ export interface ISolicitudLargoPlazo {
     cargoServidorPublicoServidorPublicoDirigido: string;
     declaratorias: string[];
   };
+}
+
+export interface ISolicitudCortoPlazo {
+  encabezado: IEncabezado;
+  informacionGeneral: {
+    informacionGeneral: IInformacionGeneral;
+    obligadosSolidarios: {
+      entePublicoObligado: { Id: string; Descripcion: string };
+      tipoEntePublicoObligado: { Id: string; Descripcion: string };
+    }[];
+  };
+  condicionesFinancieras: ICondicionFinanciera[];
+  documentacion: {
+    descripcionTipo: string;
+    nombreArchivo: string;
+    tipoArchivo: string;
+  }[];
+  inscripcion: {
+    servidorPublicoDirigido: string;
+    cargoServidorPublicoServidorPublicoDirigido: string;
+    declaratorias: string[];
+  };
+}
+
+export interface InscripcionSlice {
+  inscripcion: IInscripcion;
+  setInscripcion: (solicitud: IInscripcion) => void;
+
+  proceso: string;
+  setProceso: (proceso: string) => void;
 }
 
 export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
@@ -149,9 +171,14 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
 
       lpState.getDetalleAutorizacion(aux?.autorizacion.Id);
 
-      // lpState.setTipoMecanismoVehiculoPago(
-      //   aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo
-      // );
+      lpState.setTipoMecanismoVehiculoPago(
+        aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo
+      );
+      lpState.getDetalleFuenteDePago(
+        aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+        aux?.fuenteDePago.mecanismoVehiculoDePago.Id
+      );
+      lpState.setTablaAsignarFuente(aux?.fuenteDePago.fuente);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
+import { useLargoPlazoStore } from "./main";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
 export interface IRegistro {
@@ -55,6 +56,8 @@ export interface FuenteDePagoLargoPlazoSlice {
 
   garantiaPago: string;
   changeGarantiaPago: (garantiaPago: string) => void;
+
+  getDetalleFuenteDePago: (Tabla: string, Id: string) => void;
 }
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
@@ -136,5 +139,21 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
         setState(r);
       });
+  },
+
+  getDetalleFuenteDePago: async (Tabla: string, Id: string) => {
+    const state = useLargoPlazoStore.getState();
+
+    return await axios({
+      method: "get",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/detail-fuenteDePago",
+      params: { Tabla: Tabla, Id: Id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+      state.setMecanismoVehiculoPago(data.data);
+    });
   },
 });

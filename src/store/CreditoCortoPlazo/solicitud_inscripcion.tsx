@@ -4,6 +4,7 @@ import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPla
 import { useCortoPlazoStore } from "./main";
 import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
+import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -102,7 +103,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    const solicitud: any = {
+    const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
       informacionGeneral: {
@@ -173,21 +174,28 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-    const solicitud: any = {
+    const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
+
       informacionGeneral: {
-        ...state.informacionGeneral,
-        obligadosSolidarios: state.tablaObligadoSolidarioAval,
+        informacionGeneral: state.informacionGeneral,
+        obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
       },
+
       condicionesFinancieras: state.tablaCondicionesFinancieras,
 
-      documentacion: state.tablaDocumentos.map((v, i) => {
-        return {
-          nombreArchivo: v.nombreArchivo,
-          tipoArchivo: v.tipoArchivo,
-          descripcionTipo: v.descripcionTipo,
-        };
-      }),
+      documentacion: state.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+        })
+      ),
       inscripcion: {
         servidorPublicoDirigido: state.inscripcion.servidorPublicoDirigido,
         cargoServidorPublicoServidorPublicoDirigido: state.inscripcion.cargo,

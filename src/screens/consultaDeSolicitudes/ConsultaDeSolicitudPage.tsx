@@ -556,15 +556,17 @@ export function ConsultaDeSolicitudPage() {
                                   type="button"
                                   onClick={() => {
                                     setInscripcion(row);
-                                    getComentariosSolicitudPlazo(
-                                      row.Id,
-                                      () => {}
-                                    ).then((data) => {
-                                      if (
-                                        rolesAdmin.includes(
-                                          localStorage.getItem("Rol")!
-                                        )
-                                      ) {
+
+                                    if (row.NoEstatus === "3") {
+                                      setInscripcion(row);
+                                      ConsultaSolicitud(setUrl);
+                                      setProceso("Por Firmar");
+                                      navigate("../firmaUrl");
+                                    } else {
+                                      getComentariosSolicitudPlazo(
+                                        row.Id,
+                                        () => {}
+                                      ).then((data) => {
                                         if (
                                           data.filter(
                                             (a: any) =>
@@ -587,17 +589,8 @@ export function ConsultaDeSolicitudPage() {
                                           );
                                           navigate("../firmaUrl");
                                         }
-                                      } else {
-                                        setInscripcion(row);
-                                        ConsultaSolicitud(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
-                                          setUrl
-                                        );
-                                        setProceso("Por Firmar");
-                                        navigate("../firmaUrl");
-                                      }
-                                    });
+                                      });
+                                    }
                                   }}
                                 >
                                   <HistoryEduIcon />
