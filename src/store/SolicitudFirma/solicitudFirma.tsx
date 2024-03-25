@@ -368,8 +368,6 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
   let solicitud: ISolicitudLargoPlazo = JSON.parse(inscripcion.Solicitud);
 
-  console.log(solicitud);
-
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
