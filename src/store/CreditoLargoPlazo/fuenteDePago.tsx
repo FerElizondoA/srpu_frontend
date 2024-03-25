@@ -3,7 +3,6 @@ import { StateCreator } from "zustand";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
-
 export interface IRegistro {
   MecanismoPago: string;
   Id: string;
