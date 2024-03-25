@@ -24,7 +24,7 @@ import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 

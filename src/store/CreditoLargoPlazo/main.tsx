@@ -7,7 +7,7 @@ import {
 import {
   FuenteDePagoLargoPlazoSlice,
   createFuentePagoLargoPLazoSlice,
-} from "./FuenteDePago";
+} from "./fuenteDePago";
 import {
   ComentarioApartadoLargoPlazoSlice,
   createComentarioLargoPlazoSlice,

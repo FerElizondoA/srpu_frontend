@@ -12,7 +12,7 @@ import {
 import { queries } from "../../../queries";
 
 import { format } from "date-fns";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IFideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 
@@ -67,7 +67,7 @@ export function VehiculoDePago() {
         justifyContent={"space-evenly"}
         mt={2}
       >
-        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3} >
+        <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>
             Mecanismo o vehículo de pago
           </InputLabel>
@@ -97,7 +97,7 @@ export function VehiculoDePago() {
 
                   TipoMovimiento: "",
                 });
-                getMecanismosVehiculosPago(e.target.value, () => { });
+                getMecanismosVehiculosPago(e.target.value, () => {});
                 setTipoMecanismoVehiculoPago(e.target.value);
                 cleanTablaAsignarFuente();
               }}
@@ -174,28 +174,34 @@ export function VehiculoDePago() {
             },
           }}
         >
-
           <Grid display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
             {tipoMecanismoVehiculoPago === "Fideicomiso" && (
-
-              <Grid container
+              <Grid
+                container
                 display={"flex"}
                 justifyContent={"space-evenly"}
                 width={"100%"}
               >
-                <Grid container xs={10} sm={10} md={3} lg={4} xl={3}
+                <Grid
+                  container
+                  xs={10}
+                  sm={10}
+                  md={3}
+                  lg={4}
+                  xl={3}
                   mb={{ xs: 4, sm: 4, md: 0 }}
                   flexDirection={"column"}
                 >
-
-                  <Grid item display={"flex"} justifyContent={"center"} >
+                  <Grid item display={"flex"} justifyContent={"center"}>
                     <InputLabel sx={{ ...queries.bold_text, mb: 2 }}>
                       {tipoMecanismoVehiculoPago}
                     </InputLabel>
                   </Grid>
 
                   <Grid display={"flex"} mb={2}>
-                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Tipo de Fideicomiso</Typography>
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>
+                      Tipo de Fideicomiso
+                    </Typography>
                     <TextField
                       fullWidth
                       inputProps={{
@@ -210,7 +216,9 @@ export function VehiculoDePago() {
 
                   <Grid display={"flex"} mb={2}>
                     {/* <Typography sx={{ width: "85%", fontSize: ".9rem" }}>Fecha del Fideicomiso</Typography> */}
-                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Fecha del Fideicomiso</Typography>
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>
+                      Fecha del Fideicomiso
+                    </Typography>
                     <TextField
                       fullWidth
                       inputProps={{
@@ -226,8 +234,10 @@ export function VehiculoDePago() {
                     />
                   </Grid>
 
-                  <Grid display={"flex"} >
-                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>Fiduciario</Typography>
+                  <Grid display={"flex"}>
+                    <Typography sx={{ width: "90%", fontSize: ".9rem" }}>
+                      Fiduciario
+                    </Typography>
                     <TextField
                       fullWidth
                       inputProps={{
@@ -239,14 +249,19 @@ export function VehiculoDePago() {
                       value={mecanismoVehiculoPago.Fiduciario}
                     />
                   </Grid>
-
                 </Grid>
 
-                <Grid container xs={10} sm={10} md={3} lg={3} xl={3}
+                <Grid
+                  container
+                  xs={10}
+                  sm={10}
+                  md={3}
+                  lg={3}
+                  xl={3}
                   flexDirection={"column"}
                 >
-                  <Grid item display={"flex"} justifyContent={"center"} mb={2} >
-                    <InputLabel sx={queries.bold_text} >
+                  <Grid item display={"flex"} justifyContent={"center"} mb={2}>
+                    <InputLabel sx={queries.bold_text}>
                       Fideicomisario
                     </InputLabel>
                   </Grid>
@@ -269,30 +284,31 @@ export function VehiculoDePago() {
                               value={fideicomisario.fideicomisario.Descripcion}
                             />
                           </Grid>
-
                         )
                       )}
                   </Grid>
                 </Grid>
 
-
-                <Grid container
+                <Grid
+                  container
                   flexDirection={"column"}
-                  xs={10} sm={10} md={3} lg={3} xl={3}
+                  xs={10}
+                  sm={10}
+                  md={3}
+                  lg={3}
+                  xl={3}
                   mt={{ xs: 4, sm: 4, md: 0 }}
                 >
-                  <Grid item display={"flex"} justifyContent={"center"} mb={2} >
+                  <Grid item display={"flex"} justifyContent={"center"} mb={2}>
                     <InputLabel sx={queries.bold_text}>
                       Fideicomisario
                     </InputLabel>
-
                   </Grid>
 
-                  <Grid width={"100%"} >
+                  <Grid width={"100%"}>
                     {mecanismoVehiculoPago.Fideicomisario &&
                       JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
                         (fideicomisario: IFideicomisario, index: number) => (
-
                           <Grid mb={2}>
                             <TextField
                               key={index}
@@ -303,10 +319,11 @@ export function VehiculoDePago() {
                                   fontSize: "0.7rem",
                                 },
                               }}
-                              value={fideicomisario.ordenFideicomisario.Descripcion}
+                              value={
+                                fideicomisario.ordenFideicomisario.Descripcion
+                              }
                             />
                           </Grid>
-
                         )
                       )}
                   </Grid>
@@ -316,19 +333,23 @@ export function VehiculoDePago() {
           </Grid>
 
           {tipoMecanismoVehiculoPago === "Mandato" && (
-            <Grid container
+            <Grid
+              container
               flexDirection={"column"}
               justifyContent={"space-evenly"}
               width={{ xs: "100%", sm: "100%", md: "50%" }}
               height={"18rem"}
             >
               <Grid display={"flex"} justifyContent={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Fecha del Mandato</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Fecha del Mandato
+                </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
@@ -344,14 +365,16 @@ export function VehiculoDePago() {
                 />
               </Grid>
 
-              <Grid display={"flex"} justifyContent={"center"} >
+              <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
                   sx={{
                     fontSize: ".9rem",
                     width: "50%",
-                    justifyContent: "start"
+                    justifyContent: "start",
                   }}
-                >Tipo de Ente Público Obligado</Typography>
+                >
+                  Tipo de Ente Público Obligado
+                </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
@@ -364,14 +387,16 @@ export function VehiculoDePago() {
                 />
               </Grid>
 
-
               <Grid display={"flex"} justifyContent={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Mandatario</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Mandatario
+                </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
@@ -384,16 +409,20 @@ export function VehiculoDePago() {
                 />
               </Grid>
 
-
-              <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start",
-
-
-
-                }}>Organismo / Municipio Mandante</Typography>
+              <Grid
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Organismo / Municipio Mandante
+                </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
@@ -409,19 +438,23 @@ export function VehiculoDePago() {
           )}
 
           {tipoMecanismoVehiculoPago === "Instrucción Irrevocable" && (
-            <Grid container
+            <Grid
+              container
               flexDirection={"column"}
               justifyContent={"space-evenly"}
               width={{ xs: "100%", sm: "100%", md: "50%" }}
               height={"18rem"}
             >
               <Grid display={"flex"} justifyContent={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Banco</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Banco
+                </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
@@ -435,14 +468,17 @@ export function VehiculoDePago() {
               </Grid>
 
               <Grid display={"flex"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>CLABE</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  CLABE
+                </Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -454,15 +490,17 @@ export function VehiculoDePago() {
               </Grid>
 
               <Grid display={"flex"} justifyContent={"center"}>
-
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Fecha de la Instrucción</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Fecha de la Instrucción
+                </Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -476,16 +514,18 @@ export function VehiculoDePago() {
                 />
               </Grid>
 
-
               <Grid display={"flex"} justifyContent={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Tipo de Ente Público Obligado</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Tipo de Ente Público Obligado
+                </Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
@@ -497,14 +537,17 @@ export function VehiculoDePago() {
               </Grid>
 
               <Grid display={"flex"} justifyContent={"center"}>
-                <Typography sx={{
-                  fontSize: ".9rem",
-                  width: "50%",
-                  justifyContent: "start"
-
-                }}>Ente Público Obligado</Typography>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "50%",
+                    justifyContent: "start",
+                  }}
+                >
+                  Ente Público Obligado
+                </Typography>
                 <TextField
-                fullWidth
+                  fullWidth
                   inputProps={{
                     sx: {
                       fontSize: "0.7rem",
