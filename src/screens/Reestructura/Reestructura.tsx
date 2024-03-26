@@ -80,8 +80,8 @@ export function SolicitudesReestructura() {
     (state) => state.changeRestructura
   );
 
-  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
-    (state) => state.changeReglasAplicables
+  const setReglasAplicablesLP: Function = useLargoPlazoStore(
+    (state) => state.setReglasAplicables
   );
 
   const setGastosCostos: Function = useLargoPlazoStore(
@@ -121,7 +121,7 @@ export function SolicitudesReestructura() {
     // const state = useCortoPlazoStore.getState();
     let aux: any = JSON.parse(solicitud.Solicitud!);
 
-    changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
+    setReglasAplicablesLP(aux?.inscripcion.declaratorias);
     changeEncabezadoLP(aux?.encabezado);
     setInformacionGeneralLP(aux?.informacionGeneral);
     setGastosCostos(aux?.GastosCostos);

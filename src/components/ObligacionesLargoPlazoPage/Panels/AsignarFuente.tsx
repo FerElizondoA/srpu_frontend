@@ -77,8 +77,8 @@ export function AsignarFuente() {
   const garantiaPago: string = useLargoPlazoStore(
     (state) => state.garantiaPago
   );
-  const changeGarantiaPago: Function = useLargoPlazoStore(
-    (state) => state.changeGarantiaPago
+  const setGarantiaPago: Function = useLargoPlazoStore(
+    (state) => state.setGarantiaPago
   );
 
   const getTiposDeFuente: Function = useFideicomisoStore(
@@ -496,7 +496,7 @@ export function AsignarFuente() {
                 </li>
               );
             }}
-            onChange={(event, text) => changeGarantiaPago(text)}
+            onChange={(event, text) => setGarantiaPago(text)}
             renderInput={(params) => (
               <TextField
                 {...params}

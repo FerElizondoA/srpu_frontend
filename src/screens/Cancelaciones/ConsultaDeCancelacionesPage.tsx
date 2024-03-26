@@ -46,6 +46,7 @@ import {
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCancelacionStore } from "../../store/Cancelacion/main";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 const heads: Array<{ label: string }> = [
   {
@@ -140,8 +141,8 @@ export function ConsultaDeCancelacionesPage() {
   const setTablaDocumentos: Function = useCortoPlazoStore(
     (state) => state.setTablaDocumentos
   );
-  const changeReglasAplicables: Function = useCortoPlazoStore(
-    (state) => state.changeReglasAplicables
+  const setReglasAplicables: Function = useCortoPlazoStore(
+    (state) => state.setReglasAplicables
   );
 
   // Largo plazo
@@ -160,8 +161,8 @@ export function ConsultaDeCancelacionesPage() {
   const addDocumentoLP: Function = useLargoPlazoStore(
     (state) => state.addDocumento
   );
-  const changeReglasAplicablesLP: Function = useLargoPlazoStore(
-    (state) => state.changeReglasAplicables
+  const setReglasAplicablesLP: Function = useLargoPlazoStore(
+    (state) => state.setReglasAplicables
   );
   const setGastosCostos: Function = useLargoPlazoStore(
     (state) => state.setGastosCostos
@@ -176,7 +177,7 @@ export function ConsultaDeCancelacionesPage() {
     if (solicitud.TipoSolicitud === "Crédito Simple a Corto Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud);
 
-      changeReglasAplicables(aux?.inscripcion.declaratorias);
+      setReglasAplicables(aux?.inscripcion.declaratorias);
       changeEncabezado(aux?.encabezado);
       setInformacionGeneral(aux?.informacionGeneral);
 
@@ -194,7 +195,7 @@ export function ConsultaDeCancelacionesPage() {
     } else if (solicitud.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
-      changeReglasAplicablesLP(aux?.inscripcion.declaratorias);
+      setReglasAplicablesLP(aux?.inscripcion.declaratorias);
       changeEncabezadoLP(aux?.encabezado);
       setInformacionGeneralLP(aux?.informacionGeneral);
       setGastosCostos(aux?.GastosCostos);
@@ -231,8 +232,8 @@ export function ConsultaDeCancelacionesPage() {
   // const setinscripcion: Function = useInscripcionStore(
   //   (state) => state.setInscripcion
   // );
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   useEffect(() => {

@@ -71,8 +71,8 @@ export function DialogGuardarBorrador({
 
   const navigate = useNavigate();
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   const addComentario: Function = useCortoPlazoStore(

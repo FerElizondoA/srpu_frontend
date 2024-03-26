@@ -5,9 +5,8 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
-import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
-import { useInscripcionStore } from "../Inscripcion/main";
 import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
+import { useInscripcionStore } from "../Inscripcion/main";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -33,7 +32,6 @@ export interface SolicitudFirmaSlice {
   proceso: string;
   url: string;
   infoDoc: string;
-  TipoFirma: string;
 
   catalogoFirmaDetalle: IDataFirmaDetalle;
   getCatalogoFirmaDetalle: (IdSolicitud: string, TipoFirma: string) => void;
@@ -42,100 +40,17 @@ export interface SolicitudFirmaSlice {
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
   setUrl: (url: string) => void;
-
-  rowSolicitud: IData;
-  setRowSolicitud: (rowSolicitud: IData) => void;
-  cleanSolicitud: () => void;
 }
 
 export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
-  idSolicitud: "",
-
-  rowSolicitud: {
-    Id: "",
-    NumeroRegistro: "",
-    Nombre: "",
-    TipoEntePublico: "",
-    TipoSolicitud: "",
-    Institucion: "",
-    NoEstatus: "",
-    Estatus: "",
-    ControlInterno: "",
-    IdClaveInscripcion: "",
-    MontoOriginalContratado: "",
-    FechaContratacion: "",
-    Solicitud: "",
-    FechaCreacion: "",
-    CreadoPor: "",
-    ModificadoPor: "",
-    IdEditor: "",
-    FechaRequerimientos: "",
-    IdPathDoc: "",
-    UltimaModificacion: new Date().toString(),
-    Control: "",
-  },
-  setRowSolicitud: (rowSolicitud: IData) => {
-    set(() => ({
-      rowSolicitud: rowSolicitud,
-    }));
-  },
-
-  cleanSolicitud: () => {
-    let state = useCortoPlazoStore.getState();
-
-    state.setInformacionGeneral({
-      fechaContratacion: new Date().toString(),
-      fechaVencimiento: new Date().toString(),
-      plazo: 1,
-      destino: { Id: "", Descripcion: "" },
-      monto: 0,
-      denominacion: "Pesos",
-      institucionFinanciera: { Id: "", Descripcion: "" },
-    });
-
-    state.cleanObligadoSolidarioAval();
-
-    state.cleanCondicionFinanciera();
-
-    state.setTablaDocumentos([]);
-
-    set(() => ({
-      rowSolicitud: {
-        Id: "",
-        NumeroRegistro: "",
-        Nombre: "",
-        TipoEntePublico: "",
-        TipoSolicitud: "",
-        Institucion: "",
-        NoEstatus: "",
-        Estatus: "",
-        ControlInterno: "",
-        IdClaveInscripcion: "",
-        MontoOriginalContratado: "",
-        FechaContratacion: "",
-        Solicitud: "",
-        FechaCreacion: "",
-        CreadoPor: "",
-        ModificadoPor: "",
-        IdEditor: "",
-        FechaRequerimientos: "",
-        IdPathDoc: "",
-        UltimaModificacion: new Date().toString(),
-        Control: "",
-      },
-    }));
-  },
-
   proceso: "",
 
   url: "",
 
   infoDoc: "",
-
-  TipoFirma: "",
 
   catalogoFirmaDetalle: {
     Id: "",

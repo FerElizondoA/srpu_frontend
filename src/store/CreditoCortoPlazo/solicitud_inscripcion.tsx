@@ -17,7 +17,7 @@ export interface SolicitudInscripcionSlice {
   catalogoReglas: ICatalogo[];
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
-  changeReglasAplicables: (newReglas: string[]) => void;
+  setReglasAplicables: (newReglas: string[]) => void;
 
   getReglas: () => void;
 
@@ -74,7 +74,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     set(() => ({ inscripcion: inscripcion }));
   },
 
-  changeReglasAplicables: (newReglas: any) =>
+  setReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
 
   getReglas: async () => {

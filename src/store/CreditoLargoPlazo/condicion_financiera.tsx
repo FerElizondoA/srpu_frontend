@@ -1,21 +1,7 @@
-import { StateCreator } from "zustand";
 import { format } from "date-fns";
-import {
-  IDisposicion,
-  IPagosDeCapital,
-  ITasaInteres,
-} from "../CreditoCortoPlazo/pagos_capital";
-import { IComisiones, ITasaEfectiva } from "../CreditoCortoPlazo/tasa_efectiva";
+import { StateCreator } from "zustand";
+import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "./main";
-
-export interface ICondicionFinanciera {
-  pagosDeCapital: IPagosDeCapital;
-  disposicion: IDisposicion[];
-  tasaInteres: ITasaInteres[];
-
-  tasaEfectiva: ITasaEfectiva;
-  comisiones: IComisiones[];
-}
 
 export interface CondicionFinancieraSlice {
   indexRegistro: number;
@@ -34,6 +20,7 @@ export interface CondicionFinancieraSlice {
   removeCondicionFinanciera: (index: number) => void;
 
   cleanCondicionFinanciera: () => void;
+  setTablaCondicionesFinancieras: (condiciones: ICondicionFinanciera[]) => void;
 }
 
 export const createCondicionFinancieraSlice: StateCreator<
@@ -149,4 +136,7 @@ export const createCondicionFinancieraSlice: StateCreator<
 
   cleanTablaCondicionesFinancieras: () =>
     set(() => ({ tablaCondicionesFinancieras: [] })),
+
+  setTablaCondicionesFinancieras: (condiciones: ICondicionFinanciera[]) =>
+    set(() => ({ tablaCondicionesFinancieras: condiciones })),
 });

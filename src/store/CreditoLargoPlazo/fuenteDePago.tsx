@@ -55,7 +55,7 @@ export interface FuenteDePagoLargoPlazoSlice {
   addPorcentaje: (tablaAsignarFuente: IDeudorFideicomiso) => void;
 
   garantiaPago: string;
-  changeGarantiaPago: (garantiaPago: string) => void;
+  setGarantiaPago: (garantiaPago: string) => void;
 
   getDetalleFuenteDePago: (Tabla: string, Id: string) => void;
 }
@@ -116,7 +116,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     set(() => ({ tablaAsignarFuente: tablaAsignarFuente }));
   },
 
-  changeGarantiaPago: (garantiaPago: string) => {
+  setGarantiaPago: (garantiaPago: string) => {
     set(() => ({
       garantiaPago: garantiaPago,
     }));

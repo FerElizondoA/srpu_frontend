@@ -110,6 +110,9 @@ export interface InscripcionSlice {
 
   proceso: string;
   setProceso: (proceso: string) => void;
+
+  cleanSolicitudCortoPlazo: () => void;
+  cleanSolicitudLargoPlazo: () => void;
 }
 
 export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
@@ -159,7 +162,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       aux?.documentacion.map((v: any, index: number) => {
         return cpState.addDocumento(v);
       });
-      cpState.changeReglasAplicables(aux?.inscripcion.declaratorias);
+      cpState.setReglasAplicables(aux?.inscripcion.declaratorias);
     } else if (inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       lpState.changeEncabezado(aux?.encabezado);
 
@@ -186,7 +189,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       aux?.documentacion.map((v: any, index: number) => {
         return lpState.addDocumento(v);
       });
-      lpState.changeReglasAplicables(aux?.inscripcion.declaratorias);
+      lpState.setReglasAplicables(aux?.inscripcion.declaratorias);
     }
 
     set(() => ({ inscripcion: inscripcion }));
@@ -195,5 +198,119 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   proceso: "",
   setProceso: (proceso: string) => {
     set(() => ({ proceso: proceso }));
+  },
+
+  cleanSolicitudCortoPlazo: () => {
+    let state = useCortoPlazoStore.getState();
+
+    state.changeEncabezado({
+      tipoDocumento: "Crédito Simple a Corto Plazo",
+      solicitanteAutorizado: {
+        IdSolicitante: localStorage.getItem("IdCentral") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      tipoEntePublico: {
+        Id: localStorage.getItem("IdTipoEntePublicoObligado") || "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      organismo: {
+        Id: localStorage.getItem("IdEntePublicoObligado") || "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      fechaContratacion: new Date().toString(),
+    });
+
+    state.setInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+    state.setTablaObligadoSolidarioAval([]);
+    state.setTablaCondicionesFinancieras([]);
+    state.setTablaDocumentos([]);
+    state.setReglasAplicables([]);
+  },
+
+  cleanSolicitudLargoPlazo: () => {
+    let state = useLargoPlazoStore.getState();
+
+    state.changeEncabezado({
+      tipoDocumento: "Crédito Simple a Corto Plazo",
+      solicitanteAutorizado: {
+        IdSolicitante: localStorage.getItem("IdCentral") || "",
+        Cargo: localStorage.getItem("Puesto") || "",
+        Nombre: localStorage.getItem("NombreUsuario") || "",
+      },
+      tipoEntePublico: {
+        Id: localStorage.getItem("IdTipoEntePublicoObligado") || "",
+        TipoEntePublico: localStorage.getItem("TipoEntePublicoObligado") || "",
+      },
+      organismo: {
+        Id: localStorage.getItem("IdEntePublicoObligado") || "",
+        Organismo: localStorage.getItem("EntePublicoObligado") || "",
+      },
+      fechaContratacion: new Date().toString(),
+    });
+
+    state.setInformacionGeneral({
+      fechaContratacion: new Date().toString(),
+      fechaVencimiento: new Date().toString(),
+      plazo: 1,
+      destino: { Id: "", Descripcion: "" },
+      monto: 0,
+      denominacion: "Pesos",
+      institucionFinanciera: { Id: "", Descripcion: "" },
+    });
+    state.setTablaObligadoSolidarioAval([]);
+    state.setTablaGastosCostos([]);
+
+    state.setAutorizacionSelect({
+      Id: "",
+      IdEntidad: "",
+      Entidad: "",
+      NumeroAutorizacion: "",
+      FechaPublicacion: "",
+      DescripcionMedioPublicacion: "",
+      IdMedioPublicacion: "",
+      MontoAutorizado: "",
+      DocumentoSoporte: "",
+      AcreditacionQuorum: "",
+      DestinoAutorizado: "",
+      DetalleDestino: "",
+      CreadoPor: "",
+    });
+
+    state.setMecanismoVehiculoPago({
+      MecanismoPago: "",
+      Id: "",
+      NumeroRegistro: "",
+      FechaRegistro: "",
+
+      TipoFideicomiso: "",
+      Fiduciario: "",
+      Fideicomisario: "",
+
+      Mandatario: "",
+      Mandante: "",
+      TipoEntePublicoObligado: "",
+
+      CLABE: "",
+      Banco: "",
+      EntePublicoObligado: "",
+
+      TipoMovimiento: "",
+      SoporteDocumental: "",
+    });
+    state.setTablaAsignarFuente([]);
+    state.setGarantiaPago("");
+
+    state.setTablaCondicionesFinancieras([]);
+    state.setTablaDocumentos([]);
+    state.setReglasAplicables([]);
   },
 });

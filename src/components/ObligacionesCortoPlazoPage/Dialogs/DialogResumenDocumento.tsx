@@ -24,6 +24,7 @@ import {
 } from "./DialogSolicitarModificacion";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 type Props = {
   handler: Function;
@@ -80,8 +81,8 @@ export function VerBorradorDocumento(props: Props) {
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
   const [accion, setAccion] = useState("");
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   return (

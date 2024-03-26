@@ -67,8 +67,8 @@ export function SolicitudDeInscripcion() {
   const catalogoReglas: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoReglas
   );
-  const changeReglasAplicables: Function = useLargoPlazoStore(
-    (state) => state.changeReglasAplicables
+  const setReglasAplicables: Function = useLargoPlazoStore(
+    (state) => state.setReglasAplicables
   );
   const reglasAplicables: string[] = useLargoPlazoStore(
     (state) => state.reglasAplicables
@@ -310,7 +310,7 @@ export function SolicitudDeInscripcion() {
       }
     });
     arrReglas = aux;
-    changeReglasAplicables(arrReglas);
+    setReglasAplicables(arrReglas);
   };
 
   const query = {
@@ -502,7 +502,7 @@ export function SolicitudDeInscripcion() {
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
                                     : removeRegla(row.Descripcion);
-                                  changeReglasAplicables(arrReglas);
+                                  setReglasAplicables(arrReglas);
                                 }}
                               />
                             </StyledTableCell>

@@ -23,6 +23,7 @@ import { DialogGuardarComentarios } from "../../ObligacionesCortoPlazoPage/Dialo
 import { useEffect, useState } from "react";
 import { DatosCancelacion } from "../Panels/DatosCancelacion";
 import { useCancelacionStore } from "../../../store/Cancelacion/main";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 export function VerBorradorCancelacion({
   handler,
@@ -77,8 +78,8 @@ export function VerBorradorCancelacion({
     (state) => state.setComentarios
   );
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   const [value, setValue] = useState(1);

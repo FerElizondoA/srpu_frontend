@@ -60,8 +60,8 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.inscripcion
   );
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   return (

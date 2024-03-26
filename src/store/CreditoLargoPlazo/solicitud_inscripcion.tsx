@@ -15,7 +15,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   reglasAplicables: string[];
 
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
-  changeReglasAplicables: (newReglas: string[]) => void;
+  setReglasAplicables: (newReglas: string[]) => void;
 
   crearSolicitud: (
     idEditor: string,
@@ -59,7 +59,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   changeInscripcion: (inscripcion: any) =>
     set(() => ({ inscripcion: inscripcion })),
 
-  changeReglasAplicables: (newReglas: any) =>
+  setReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
 
   crearSolicitud: async (

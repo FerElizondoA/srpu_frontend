@@ -172,8 +172,11 @@ export function ConsultaDeSolicitudPage() {
   );
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
 
-  const cleanSolicitud: Function = useCortoPlazoStore(
-    (state) => state.cleanSolicitud
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
   );
 
   useEffect(() => {
@@ -186,7 +189,8 @@ export function ConsultaDeSolicitudPage() {
         setDatosFiltrados(e);
       }
     );
-    cleanSolicitud();
+    cleanSolicitudCortoPlazo();
+    cleanSolicitudLargoPlazo();
   }, [openEliminar]);
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
