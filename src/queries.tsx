@@ -141,15 +141,15 @@ export const queries = {
 
     fontSize: "50%",
     "@media (min-width: 480px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 768px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 1140px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 1400px)": {

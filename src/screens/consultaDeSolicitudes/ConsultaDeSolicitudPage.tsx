@@ -48,6 +48,7 @@ import {
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
+import { queries } from "../../queries";
 
 export interface IData {
   Id: string;
@@ -278,7 +279,10 @@ export function ConsultaDeSolicitudPage() {
 
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
 
+  const [controlInterno, setControlInterno] = useState("");
+
   const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
+
 
   const cleanSolicitud: Function = useCortoPlazoStore(
     (state) => state.cleanSolicitud
@@ -580,9 +584,16 @@ export function ConsultaDeSolicitudPage() {
                           <Button
                             onClick={() => {
                               setOpenTrazabilidad(!openTrazabilidad);
+                              setSolicitud({
+                                Id: row.Id,
+                                noSolicitud: row.NumeroRegistro,
+                              });
+                              setControlInterno(row.ControlInterno)
                             }}
                           >
-                            {chip}
+                            <Typography sx={queries.medium_text}>
+                              {chip}
+                            </Typography>
                           </Button>
                         </StyledTableCell>
 
@@ -624,9 +635,9 @@ export function ConsultaDeSolicitudPage() {
                         >
                           {row.Estatus.includes("Actualización")
                             ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
+                              new Date(row.FechaRequerimientos),
+                              "dd/MM/yyyy"
+                            )
                             : " "}
                         </StyledTableCell>
 
@@ -816,8 +827,7 @@ export function ConsultaDeSolicitudPage() {
       <DialogTrazabilidad
         handler={setOpenTrazabilidad}
         openState={openTrazabilidad}
-        rowSolicitud={solicitudFirma}
-        //rowId={""}
+        idSolicitud={solicitud.Id}
       />
       {openDialogVer && (
         <VerBorradorDocumento

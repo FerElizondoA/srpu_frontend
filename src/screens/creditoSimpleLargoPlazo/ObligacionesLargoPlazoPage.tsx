@@ -22,8 +22,15 @@ import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1537px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 635px)"),
+    //isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+
+    
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
+    isMiniTablet: useMediaQuery("(min-width: 480px) and (max-width: 767px)"),
+    isTablet: useMediaQuery("(min-width: 768px) and (max-width: 1139px)"),
+    isLaptop: useMediaQuery("(min-width: 1140px) and (max-width: 1399px)"),
+    isMonitor: useMediaQuery("(min-width: 1400px) and (max-width: 1869px)"),
+    isMonitorXL: useMediaQuery("(min-width: 1870px)"),
   };
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -77,7 +84,7 @@ export function ObligacionesLargoPlazoPage() {
         >
           {NumeroRegistro && (
             <Grid
-              width={query.isTittle ? "20%" : "20%"}
+              width={query.isMobile ? "20%" : "20%"}
               display={"flex"}
               justifyContent={"start"}
               alignItems={"center"}
@@ -91,8 +98,15 @@ export function ObligacionesLargoPlazoPage() {
               </Typography>
             </Grid>
           )}
-          <Grid
-           width={!NumeroRegistro ? "90%" : query.isTittle ? "60%" : "50%"}
+          <Grid 
+           width={reestructura === "con autorizacion" 
+           ? query.isMobile ? "70%" 
+           : query.isMiniTablet ? "60%"
+           : query.isTablet ? "50%"
+           : query.isLaptop ? "60%"
+           : query.isMonitor ? "60%"
+           : query.isMonitorXL ? "58%"
+           : !NumeroRegistro ? "90%" : query.isMobile ? "60%" : "50%" : "90%"}
             // width={reestructura === "con autorizacion" ? "60%" : "55%"}
             // sx={{
             //   width: query.isMobile
@@ -102,7 +116,9 @@ export function ObligacionesLargoPlazoPage() {
             //     : "55%",
             // }}
             display={"flex"}
-            justifyContent={"center"}
+            justifyContent={reestructura=== "con autorizacion" ? "end" : "center"}
+            alignItems={reestructura=== "con autorizacion" && query.isMobile
+            ? "center" : "center" }
             // justifyContent={
             //   reestructura === "con autorizacion" ? "center" : " end"
             // }
@@ -120,22 +136,31 @@ export function ObligacionesLargoPlazoPage() {
           {reestructura === "con autorizacion" ? (
             <Grid
               display={"flex"}
-              justifyContent={"center"}
+              justifyContent={"end"}
+
               sx={{
-                width: "30%",
+                width: "35%",
                 height: "2rem",
                 "@media (min-width: 480px)": {
-                  width: "20%",
+                  width: "32%",
                 },
 
                 "@media (min-width: 768px)": {
-                  width: "22%",
+                  width: "35%",
                   height: "2.5rem",
                 },
 
                 "@media (min-width: 1140px)": {
-                  width: "22%",
+                  width: "35%",
                   height: "2.5rem",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "35%",
+                },
+          
+                "@media (min-width: 1870px)": {
+                  width: "40%",
                 },
               }}
             >
@@ -153,17 +178,17 @@ export function ObligacionesLargoPlazoPage() {
                   //fontSize: "90%",
                   borderRadius: "0.8vh",
                   textTransform: "capitalize",
-                  fontSize: "70%",
+                  fontSize: "80%",
                 }}
               >
-                {query.isTittle
+                {query.isMobile || query.isMiniTablet
                   ? "Solicitar Autorización"
                   : "Solicitar Autorización para Reestructura"}
               </Button>
             </Grid>
           ) : (
             <Grid
-            width={!NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"}
+            width={!NumeroRegistro ? "0" : query.isMobile ? "10%" : "20%"}
             display={"flex"}
             justifyContent={"end"}
             alignItems={"center"}

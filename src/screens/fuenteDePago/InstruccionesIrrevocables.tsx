@@ -37,6 +37,7 @@ import { es } from "date-fns/locale";
 import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/dialog/DetalleInstrucciones";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -149,6 +150,16 @@ export function InstruccionesIrrevocables() {
     (state) => state.getSumaPorcentajeAcumulado
   );
 
+  const setTipoMecanismoVehiculoPago: Function = useLargoPlazoStore(
+    (state) => state.setTipoMecanismoVehiculoPago
+  );
+
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
+
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -159,6 +170,7 @@ export function InstruccionesIrrevocables() {
     getInstrucciones(setInstrucciones);
     getInstituciones();
     getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
+    setTipoMecanismoVehiculoPago("")
   }, []);
 
   useEffect(() => {

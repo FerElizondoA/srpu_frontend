@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import {
+  Button,
   Chip,
   Grid,
   IconButton,
@@ -15,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
@@ -30,6 +31,8 @@ import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogVerDetalle } from "./DialogVerDetalle";
+import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
+import { queries } from "../../queries";
 
 interface Head {
   label: string;
@@ -100,6 +103,10 @@ export function SolicitudesReestructura() {
     (state) => state.rowSolicitud
   );
 
+  const setRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.setRowSolicitud
+  );
+
   const changeEncabezadoLP: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
   );
@@ -146,7 +153,21 @@ export function SolicitudesReestructura() {
     });
   };
 
+  const getDays = (date: any, days: any) => {
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
   const [openDialogVer, changeOpenDialogVer] = useState(false);
+  const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
+  const [solicitud, setSolicitud] = useState({ Id: "", noSolicitud: "" });
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+
+
   useEffect(() => {
     getSolicitudes("Reestructura", (e: IData[]) => {
       setDatos(e);
@@ -288,20 +309,20 @@ export function SolicitudesReestructura() {
                         justifyContent: "center",
                         width:
                           head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
                             ? "180px"
                             : "100%",
 
                         "@media (min-width: 480px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "180px"
                               : "100%",
                         },
@@ -309,10 +330,10 @@ export function SolicitudesReestructura() {
                         "@media (min-width: 768px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "200x"
                               : "100%",
                         },
@@ -320,10 +341,10 @@ export function SolicitudesReestructura() {
                         "@media (min-width: 1140px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "180px"
                               : "100%",
                         },
@@ -360,6 +381,92 @@ export function SolicitudesReestructura() {
                       variant="outlined"
                     />
                   );
+                } else if (row.ControlInterno === "inscripcion") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="info"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.ControlInterno === "revision") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.ControlInterno === "autorizado") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.Estatus.includes("Requerimientos")) {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="warning"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.Estatus === "actualizacion") {
+                }
+                // else if (row.Estatus.includes("Inscrito")) {
+                //   chip = (
+                //     <Chip
+                //       label={row.Estatus}
+                //       color="warning"
+                //       variant="outlined"
+                //     />
+                //   );
+                // }
+                // else if (row.ControlInterno === "Inscrito") {
+                //   chip = (
+                //         <Chip
+                //           label={row.Estatus}
+                //           color="secondary"
+                //           variant="outlined"
+                //         />
+                //   );
+                // } 
+                else if (row.Estatus === "Actualizacion") {
+                  chip = (
+                    <Tooltip
+                      title={`${differenceInDays(
+                        getDays(new Date(row.FechaRequerimientos), 11),
+                        new Date()
+                      )} días restantes para cancelación automática`}
+                    >
+                      <Chip
+                        label={
+                          row.Estatus === "Actualizacion"
+                            ? "Actualización"
+                            : row.Estatus
+                        }
+                        color={
+                          differenceInDays(
+                            getDays(new Date(row.FechaRequerimientos), 11),
+                            new Date()
+                          ) > 5
+                            ? "warning"
+                            : "error"
+                        }
+                        variant="filled"
+                      />
+                    </Tooltip>
+                  );
+                } else {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="info"
+                      variant="outlined"
+                    />
+                  );
                 }
 
                 return (
@@ -377,7 +484,19 @@ export function SolicitudesReestructura() {
                     </StyledTableCell>
 
                     <StyledTableCell align="center" component="th" scope="row">
-                      {chip}
+                      <Button
+                        onClick={() => {
+                          setOpenTrazabilidad(!openTrazabilidad);
+                          setSolicitud({
+                            Id: row.Id,
+                            noSolicitud: row.NumeroRegistro,
+                          });
+                        }}
+                      >
+                        <Typography sx={queries.medium_text}>
+                          {chip}
+                        </Typography>
+                      </Button>
                     </StyledTableCell>
 
                     <StyledTableCell align="center" component="th" scope="row">
@@ -413,6 +532,8 @@ export function SolicitudesReestructura() {
                             );
                             changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
+                            changeRestructura("con autorizacion")
+                            setRowSolicitud(row)
                           }}
                         >
                           <FindInPageIcon />
@@ -420,11 +541,11 @@ export function SolicitudesReestructura() {
                       </Tooltip>
                     </StyledTableCell>
                     {openDialogVer && (
-                      <VerBorradorDocumento
+                      <DialogVerDetalle
                         handler={changeOpenDialogVer}
                         openState={openDialogVer}
-                        rowSolicitud={row}
-                        rowId={row.Id}
+                        rowSolicitud={rowSolicitud}
+                        rowId={rowId}
                       />
                     )}
                   </StyledTableRow>
@@ -435,14 +556,12 @@ export function SolicitudesReestructura() {
         </TableContainer>
       </Paper>
 
-      {openDialogVer && (
-        <DialogVerDetalle
-          handler={changeOpenDialogVer}
-          openState={openDialogVer}
-          rowSolicitud={rowSolicitud}
-          rowId={rowId}
-        />
-      )}
+      <DialogTrazabilidad
+        handler={setOpenTrazabilidad}
+        openState={openTrazabilidad}
+        //rowSolicitud={solicitudFirma}
+        idSolicitud={solicitud.Id}
+      />
     </Grid>
   );
 }

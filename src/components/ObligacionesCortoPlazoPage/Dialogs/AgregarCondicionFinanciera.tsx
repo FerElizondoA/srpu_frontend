@@ -232,10 +232,10 @@ export function AgregarCondicionFinanciera(props: Props) {
             <Grid item sx={{ top: 12, bottom: "auto" }}>
               <ThemeProvider theme={buttonTheme}>
                 <Button
-                  disabled={
-                    tablaComisiones.length === 0 ||
-                    tablaTasaInteres.length === 0
-                  }
+                  // disabled={
+                  //   tablaComisiones.length === 0 ||
+                  //   tablaTasaInteres.length === 0
+                  // }
                   sx={queries.buttonContinuar}
                   onClick={() => {
                     if (tablaComisiones.length === 0) {

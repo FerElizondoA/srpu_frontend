@@ -29,6 +29,7 @@ import { DatosGeneralesIntrucciones } from "../panels/DatosGeneralesIntrucciones
 import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstrucciones";
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 
 export function AgregarInstruccionesIrrevocables({
   handler,
@@ -77,10 +78,33 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
+  const banco: string = useInstruccionesStore(
+    (state) => state.datosGenerales.banco.Descripcion
+  );
+
+  const numeroCuenta: string = useInstruccionesStore(
+    (state) => state.datosGenerales.numeroCuenta
+  );
+
+  const fechaInstruccion: Date = useInstruccionesStore(
+    (state) => state.datosGenerales.fechaInstruccion
+  );
+
+  const cuentaCLABE: string = useInstruccionesStore(
+    (state) => state.datosGenerales.cuentaCLABE
+  );
+
+  const tablaTipoMovimiento: IDeudorInstrucciones[] = useInstruccionesStore(
+    (state) => state.tablaTipoMovimiento
+  );
+
   const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+
+  const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
+    useInstruccionesStore((state) => state.tablaSoporteDocumentalInstruccion);
 
   useEffect(() => {
     getTiposDeFuente();
@@ -89,7 +113,7 @@ export function AgregarInstruccionesIrrevocables({
     getTipoEntePublicoObligado();
     getFondosOIngresos();
   }, []);
-
+  
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
       <AppBar sx={{ position: "relative" }}>
@@ -119,17 +143,20 @@ export function AgregarInstruccionesIrrevocables({
           <Grid item width={"4rem"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
-              disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
-                // disabled={
-                //   tablaTipoMovimientoInstrucciones.length <= 0 ||
-                //   numeroCuenta === "" ||
-                //   parseInt(numeroCuenta) === 0 ||
-                //   cuentaCLABE === "" ||
-                //   parseInt(cuentaCLABE) === 0 ||
-                //   banco.Descripcion === "" ||
-                //   tablaSoporteDocumentalInstrucciones.length <= 0
-                //   // municipio === null
-                // }
+             // disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
+                disabled={
+                  (tablaTipoMovimiento.length <= 0 ||
+                  numeroCuenta === "" ||
+                  parseInt(numeroCuenta) === 0 ||
+                  cuentaCLABE === "" ||
+                  parseInt(cuentaCLABE) === 0 ||
+                  banco === "" ||
+                  tablaSoporteDocumentalInstrucciones.length <= 0) ||
+
+                  (tipoMecanismoVehiculoPago === "Mandato" ||  //Para fuente de pago->vehiculo de pago
+                  tipoMecanismoVehiculoPago === "Instrucción Irrevocable")
+                  // municipio === null
+                }
                 sx={{
                   backgroundColor: "#15212f",
                   color: "white",
