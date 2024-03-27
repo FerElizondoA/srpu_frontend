@@ -1,7 +1,4 @@
-
 const db = require("../config/db.js");
-
-
 
 module.exports = {
   //CREAR
@@ -14,28 +11,31 @@ module.exports = {
         error: "Ingrese Fuente De Pago",
       });
     } else {
-      db.query(`CALL sp_AgregarFuenteDePago('${IdUsuarioCreador}', '${FuenteDePago}' )`, (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            error: "Error",
-          });
-        }
-        if (result.length) {
-          const data = result[0][0];
-          if (data.error) {
-            return res.status(409).send({
-              result: data,
+      db.query(
+        `CALL sp_AgregarFuenteDePago('${IdUsuarioCreador}', '${FuenteDePago}' )`,
+        (err, result) => {
+          if (err) {
+            return res.status(500).send({
+              error: "Error",
             });
           }
-          return res.status(200).send({
-            data,
-          });
-        } else {
-          return res.status(409).send({
-            error: "¡Sin Información!",
-          });
+          if (result.length) {
+            const data = result[0][0];
+            if (data.error) {
+              return res.status(409).send({
+                result: data,
+              });
+            }
+            return res.status(200).send({
+              data,
+            });
+          } else {
+            return res.status(409).send({
+              error: "¡Sin Información!",
+            });
+          }
         }
-      });
+      );
     }
   },
 
@@ -63,29 +63,33 @@ module.exports = {
 
   // DETALLE POR ID
   getDetailFuenteDePago: (req, res) => {
-    const IdDescripcion = req.body.IdDescripcion;
-    db.query(`CALL sp_DetalleFuenteDePago('${IdDescripcion}')`, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          error: "Error",
-        });
-      }
-      if (result.length) {
-        const data = result[0][0];
-        if (data.error) {
-          return res.status(409).send({
-            result: data,
+    const Tabla = req.query.Tabla;
+    const Id = req.query.Id;
+    db.query(
+      `CALL sp_DetalleFuenteDePago('${Tabla}','${Id}')`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: "Error",
           });
         }
-        return res.status(200).send({
-          data,
-        });
-      } else {
-        return res.status(409).send({
-          error: "¡Sin Información!",
-        });
+        if (result.length) {
+          const data = result[0][0];
+          if (data.error) {
+            return res.status(409).send({
+              result: data,
+            });
+          }
+          return res.status(200).send({
+            data,
+          });
+        } else {
+          return res.status(409).send({
+            error: "¡Sin Información!",
+          });
+        }
       }
-    });
+    );
   },
 
   //MODIFICA POR ID
@@ -94,13 +98,12 @@ module.exports = {
     const Descripcion = req.body.Descripcion;
     const IdUsuarioModificador = req.body.IdUsuario;
 
-
     if (IdDescripcion == null || /^[\s]*$/.test(IdDescripcion)) {
       return res.status(409).send({
         error: "Ingrese Id",
       });
     }
-    
+
     if (Descripcion == null || /^[\s]*$/.test(Descripcion)) {
       return res.status(409).send({
         error: "Ingrese Nuevo Fuente De Pago",
@@ -149,11 +152,9 @@ module.exports = {
         if (result.length) {
           const data = result[0][0];
           if (data.error) {
-            
             return res.status(409).send({
               result: data,
             });
-            
           }
           return res.status(200).send({
             result: data,
