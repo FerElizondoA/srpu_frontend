@@ -48,6 +48,7 @@ import {
   ConsultaRequerimientos,
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
+import { DialogTrazabilidad } from "./DialogTrazabilidad";
 
 export interface IData {
   Id: string;
@@ -671,12 +672,11 @@ export function ConsultaDeSolicitudPage() {
         </Paper>
       </Grid>
 
-      {/* <DialogTrazabilidad
+      <DialogTrazabilidad
         handler={setOpenTrazabilidad}
         openState={openTrazabilidad}
-        rowSolicitud={solicitudFirma}
         //rowId={""}
-      /> */}
+      />
       {openDialogVer && (
         <VerBorradorDocumento
           handler={changeOpenDialogVer}

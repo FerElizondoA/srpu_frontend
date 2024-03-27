@@ -127,6 +127,8 @@ export const FirmaConUrl = () => {
             IdApp: localStorage.getItem("IdApp")!,
             PathPorEnviar: localStorage.getItem("PathPorEnviar") || "/",
             File: url,
+            ReferenciaDoc: "123",
+            AsuntoDoc: "asd",
           })}
           setState={(v: any) => {
             changeInfoDoc(v, enviaNotificacion);

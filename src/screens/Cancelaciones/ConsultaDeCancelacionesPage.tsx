@@ -47,6 +47,7 @@ import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCancelacionStore } from "../../store/Cancelacion/main";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 
 const heads: Array<{ label: string }> = [
   {
@@ -85,6 +86,7 @@ export function ConsultaDeCancelacionesPage() {
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [busqueda, setBusqueda] = useState("");
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+  const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
 
   const setCredito: Function = useCancelacionStore((state) => state.setCredito);
 
@@ -226,12 +228,6 @@ export function ConsultaDeCancelacionesPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
-  // const solicitud: IInscripcion = useInscripcionStore(
-  //   (state) => state.inscripcion
-  // );
-  // const setinscripcion: Function = useInscripcionStore(
-  //   (state) => state.setInscripcion
-  // );
   const cleanSolicitud: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
@@ -499,6 +495,9 @@ export function ConsultaDeCancelacionesPage() {
                           align="center"
                           component="th"
                           scope="row"
+                          onClick={() => {
+                            setOpenTrazabilidad(!openTrazabilidad);
+                          }}
                         >
                           {chip}
                         </StyledTableCell>
@@ -665,6 +664,13 @@ export function ConsultaDeCancelacionesPage() {
           </TableContainer>
         </Paper>
       </Grid>
+
+      <DialogTrazabilidad
+        handler={setOpenTrazabilidad}
+        openState={openTrazabilidad}
+        //rowId={""}
+      />
+
       {openDialogVer && (
         <VerBorradorCancelacion
           handler={changeOpenDialogVer}

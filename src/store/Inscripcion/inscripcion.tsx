@@ -152,36 +152,41 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     if (inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo") {
       cpState.changeEncabezado(aux?.encabezado);
 
-      cpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
+      cpState.setInformacionGeneral(
+        aux?.informacionGeneral?.informacionGeneral
+      );
       cpState.setTablaObligadoSolidarioAval(
-        aux?.informacionGeneral.obligadosSolidarios
+        aux?.informacionGeneral?.obligadosSolidarios
       );
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return cpState.addCondicionFinanciera(v);
       });
-      aux?.documentacion.map((v: any, index: number) => {
-        return cpState.addDocumento(v);
-      });
+      cpState.setTablaDocumentos(aux?.documentacion);
+
       cpState.setReglasAplicables(aux?.inscripcion.declaratorias);
     } else if (inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       lpState.changeEncabezado(aux?.encabezado);
 
-      lpState.setInformacionGeneral(aux?.informacionGeneral.informacionGeneral);
-      lpState.setTablaObligadoSolidarioAval(
-        aux?.informacionGeneral.obligadosSolidarios
+      lpState.setInformacionGeneral(
+        aux?.informacionGeneral?.informacionGeneral
       );
-      lpState.setTablaGastosCostos(aux?.informacionGeneral.destinoGastosCostos);
+      lpState.setTablaObligadoSolidarioAval(
+        aux?.informacionGeneral?.obligadosSolidarios
+      );
+      lpState.setTablaGastosCostos(
+        aux?.informacionGeneral?.destinoGastosCostos
+      );
 
-      lpState.getDetalleAutorizacion(aux?.autorizacion.Id);
+      lpState.getDetalleAutorizacion(aux?.autorizacion?.Id);
 
       lpState.setTipoMecanismoVehiculoPago(
-        aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo
       );
       lpState.getDetalleFuenteDePago(
-        aux?.fuenteDePago.mecanismoVehiculoDePago.Tipo,
-        aux?.fuenteDePago.mecanismoVehiculoDePago.Id
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
       );
-      lpState.setTablaAsignarFuente(aux?.fuenteDePago.fuente);
+      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);

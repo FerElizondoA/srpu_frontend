@@ -81,8 +81,11 @@ export function VerBorradorDocumento(props: Props) {
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
   const [accion, setAccion] = useState("");
 
-  const cleanSolicitud: Function = useInscripcionStore(
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
+  );
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
   );
 
   return (
@@ -93,7 +96,8 @@ export function VerBorradorDocumento(props: Props) {
       TransitionComponent={Transition}
       onClose={() => {
         props.handler(false);
-        cleanSolicitud();
+        cleanSolicitudCortoPlazo();
+        cleanSolicitudLargoPlazo();
       }}
     >
       <DialogTitle
@@ -135,7 +139,8 @@ export function VerBorradorDocumento(props: Props) {
               comentarios: {},
               idComentario: "",
             });
-            cleanSolicitud();
+            cleanSolicitudCortoPlazo();
+            cleanSolicitudLargoPlazo();
           }}
         >
           Volver

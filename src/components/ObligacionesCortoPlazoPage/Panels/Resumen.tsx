@@ -947,7 +947,11 @@ export function Resumen({ coments }: { coments: boolean }) {
                             Faltante
                           </StyledTableCell>
                         ) : (
-                          <StyledTableCell>
+                          <StyledTableCell
+                            onClick={() => {
+                              console.log(row);
+                            }}
+                          >
                             {row.descripcionTipo}
                           </StyledTableCell>
                         )}
