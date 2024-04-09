@@ -38,7 +38,6 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
       .then(({ data }) => {
         
         let fd = data.data;
-        console.log("data", data)
         set(() => ({
           listadoRegistroTrazabilidad: fd,
         }));

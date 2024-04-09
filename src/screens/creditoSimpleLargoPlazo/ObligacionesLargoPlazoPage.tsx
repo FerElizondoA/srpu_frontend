@@ -156,7 +156,7 @@ export function ObligacionesLargoPlazoPage() {
                 },
 
                 "@media (min-width: 1400px)": {
-                  width: "35%",
+                  width: "50%",
                 },
           
                 "@media (min-width: 1870px)": {
@@ -181,9 +181,10 @@ export function ObligacionesLargoPlazoPage() {
                   fontSize: "80%",
                 }}
               >
-                {query.isMobile || query.isMiniTablet
+                Finalizar Reestructuracion
+                {/* {query.isMobile || query.isMiniTablet
                   ? "Solicitar Autorización"
-                  : "Solicitar Autorización para Reestructura"}
+                  : "Solicitar Autorización para Reestructura"} */}
               </Button>
             </Grid>
           ) : (

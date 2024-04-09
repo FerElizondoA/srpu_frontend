@@ -52,42 +52,42 @@ import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGe
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Interes",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Interes",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: `Importe de disposición`,
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: `Importe de disposición`,
+    },
+  ];
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -397,23 +397,23 @@ export function DisposicionPagosCapital() {
           ? disposicionesParciales === false && tasasParciales === false
             ? "32rem"
             : disposicionesParciales === true && tasasParciales === false
-            ? "44rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "44rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "60rem"
-            : "36rem"
+              ? "44rem"
+              : disposicionesParciales === false && tasasParciales === true
+                ? "44rem"
+                : disposicionesParciales === true && tasasParciales === true
+                  ? "60rem"
+                  : "36rem"
           : query.isMobile === true
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "65rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "65rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "85rem"
-            : "52rem"
-          : "36rem"
+            ? disposicionesParciales === false && tasasParciales === false
+              ? "50rem"
+              : disposicionesParciales === true && tasasParciales === false
+                ? "65rem"
+                : disposicionesParciales === false && tasasParciales === true
+                  ? "65rem"
+                  : disposicionesParciales === true && tasasParciales === true
+                    ? "85rem"
+                    : "52rem"
+            : "36rem"
       }
     >
       <Grid item container mt={2} direction="column">
@@ -579,9 +579,9 @@ export function DisposicionPagosCapital() {
                   }}
                   minDate={new Date(fechaContratacion)}
                   maxDate={new Date(addDays(new Date(), 365))}
-                  slots={{
-                    textField: DateInput,
-                  }}
+                // slots={{
+                //   textField: DateInput,
+                // }}
                 />
               </LocalizationProvider>
             </Grid>
@@ -594,9 +594,9 @@ export function DisposicionPagosCapital() {
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
+                    monto +
+                    "; Monto restante: " +
+                    restante.toFixed(2)
                     : ""
                 }
                 value={
@@ -609,9 +609,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseInt(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
+                    9999999999999999 &&
                     parseInt(v.target.value.replace(/\D/g, "")) <=
-                      restante * 100
+                    restante * 100
                   ) {
                     changeDisposicion(
                       disposicionFechaDisposicion,
@@ -665,7 +665,7 @@ export function DisposicionPagosCapital() {
                       disposicionImporte.toString().replace(/\D/g, "")
                     ) === 0 ||
                     parseInt(disposicionImporte.toString().replace(/\D/g, "")) >
-                      restante * 100
+                    restante * 100
                   }
                   variant="outlined"
                   onClick={() => {
@@ -847,9 +847,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: "",
                         })
                       }
-                      slots={{
-                        textField: DateInput,
-                      }}
+                      // slots={{
+                      //   textField: DateInput,
+                      // }}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -1014,6 +1014,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                     sx={{ width: "100%" }}
                       value={new Date(tasaInteresFechaPrimerPago)}
                       onChange={(date) =>
                         changeTasaInteres({
@@ -1027,9 +1028,9 @@ export function DisposicionPagosCapital() {
                           sobreTasa: tasaInteresSobreTasa,
                         })
                       }
-                      slots={{
-                        textField: DateInput,
-                      }}
+                    // slots={{
+                    //   textField: DateInput,
+                    // }}
                     />
                   </LocalizationProvider>
                 </Grid>

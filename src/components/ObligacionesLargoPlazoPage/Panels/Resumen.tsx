@@ -42,6 +42,7 @@ import {
   headsDisposicion,
   headsTasa,
 } from "../../ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 interface Head {
   label: string;
@@ -398,6 +399,11 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
+
   return (
     <Grid
       width={"100%"}
@@ -464,25 +470,29 @@ export function Resumen({ coments }: { coments: boolean }) {
               <Grid sx={{ display: "flex", alignItems: "center" }}>
                 {/* Revisar */}
 
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentario[head.label] && comentario[head.label] !== ""
-                        ? "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: head.label,
-                        tab: "TabEncabezado",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                  </IconButton>
-                </Tooltip>
+                {reestructura !== "con autorizacion"
+                  ?
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentario[head.label] && comentario[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabEncabezado",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                  : null}
+
 
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
@@ -511,25 +521,29 @@ export function Resumen({ coments }: { coments: boolean }) {
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }}>
                 {/* Revisar */}
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentario[head.label] && comentario[head.label] !== ""
-                        ? "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: head.label,
-                        tab: "TabInformaciónGeneral",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                  </IconButton>
-                </Tooltip>
+                {reestructura !== "con autorizacion"
+                  ?
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentario[head.label] && comentario[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabInformaciónGeneral",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                  : null}
+
                 {/* Revisar */}
 
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
@@ -545,27 +559,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
+              {reestructura !== "con autorizacion"
+                ? <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentario["Tabla Obligado Solidario Aval"] &&
+                        comentario["Tabla Obligado Solidario Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+                : null}
 
-              <Tooltip title="Añadir comentario a este apartado">
-                <IconButton
-                  color={
-                    comentario["Tabla Obligado Solidario Aval"] &&
-                    comentario["Tabla Obligado Solidario Aval"] !== ""
-                      ? "success"
-                      : "primary"
-                  }
-                  size="small"
-                  onClick={() => {
-                    setOpenComentarioApartado({
-                      open: true,
-                      apartado: "Tabla Obligado Solidario Aval",
-                      tab: "TabInformaciónGeneral",
-                    });
-                  }}
-                >
-                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                </IconButton>
-              </Tooltip>
+
 
               {/* Revisar */}
             </Grid>
@@ -678,25 +695,28 @@ export function Resumen({ coments }: { coments: boolean }) {
                 width={"100%"}
                 sx={{ display: "flex", alignItems: "center" }}
               >
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentario[head.label] && comentario[head.label] !== ""
-                        ? "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: head.label,
-                        tab: "Destino / Gastos y Costos",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                  </IconButton>
-                </Tooltip>
+                {reestructura !== "con autorizacion"
+                  ? <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentario[head.label] && comentario[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "Destino / Gastos y Costos",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                  : null}
+
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong> {head.value}
                 </Typography>
@@ -708,26 +728,29 @@ export function Resumen({ coments }: { coments: boolean }) {
         <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
           <Grid>
             {/* Revisar */}
-            <Tooltip title="Añadir comentario a este apartado">
-              <IconButton
-                color={
-                  comentario["Tabla Gastos y Costos"] &&
-                  comentario["Tabla Gastos y Costos"] !== ""
-                    ? "success"
-                    : "primary"
-                }
-                size="small"
-                onClick={() => {
-                  setOpenComentarioApartado({
-                    open: true,
-                    apartado: "Tabla Gastos y Costos",
-                    tab: "TabGastos y Costos",
-                  });
-                }}
-              >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-              </IconButton>
-            </Tooltip>
+            {reestructura !== "con autorizacion"
+              ? <Tooltip title="Añadir comentario a este apartado">
+                <IconButton
+                  color={
+                    comentario["Tabla Gastos y Costos"] &&
+                      comentario["Tabla Gastos y Costos"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
+                  size="small"
+                  onClick={() => {
+                    setOpenComentarioApartado({
+                      open: true,
+                      apartado: "Tabla Gastos y Costos",
+                      tab: "TabGastos y Costos",
+                    });
+                  }}
+                >
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                </IconButton>
+              </Tooltip>
+              : null}
+
             {/* Revisar */}
           </Grid>
           <Paper sx={{ width: "96%" }}>
@@ -806,26 +829,28 @@ export function Resumen({ coments }: { coments: boolean }) {
           mb={4}
         >
           <Grid mt={4}>
-            <Tooltip title="Añadir comentario a este apartado">
-              <IconButton
-                color={
-                  comentario["Tabla Autorizacion"] &&
-                  comentario["Tabla Autorizacion"] !== ""
-                    ? "success"
-                    : "primary"
-                }
-                size="small"
-                onClick={() => {
-                  setOpenComentarioApartado({
-                    open: true,
-                    apartado: "Tabla Autorizacion",
-                    tab: "TabTabla Autorizacion",
-                  });
-                }}
-              >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-              </IconButton>
-            </Tooltip>
+            {reestructura !== "con autorizacion"
+              ? <Tooltip title="Añadir comentario a este apartado">
+                <IconButton
+                  color={
+                    comentario["Tabla Autorizacion"] &&
+                      comentario["Tabla Autorizacion"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
+                  size="small"
+                  onClick={() => {
+                    setOpenComentarioApartado({
+                      open: true,
+                      apartado: "Tabla Autorizacion",
+                      tab: "TabTabla Autorizacion",
+                    });
+                  }}
+                >
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                </IconButton>
+              </Tooltip>
+              : null}
           </Grid>
 
           <Paper sx={{ width: "95%" }}>
@@ -915,26 +940,29 @@ export function Resumen({ coments }: { coments: boolean }) {
         <Grid height={"50%"} display={"flex"} justifyContent={"space-evenly"}>
           <Grid>
             {/* Revisar */}
-            <Tooltip title="Añadir comentario a este apartado">
-              <IconButton
-                color={
-                  comentario["Tabla Fuente de Pago"] &&
-                  comentario["Tabla Fuente de Pago"] !== ""
-                    ? "success"
-                    : "primary"
-                }
-                size="small"
-                onClick={() => {
-                  setOpenComentarioApartado({
-                    open: true,
-                    apartado: "Tabla Fuente de Pago",
-                    tab: "TabFuente de Pago",
-                  });
-                }}
-              >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-              </IconButton>
-            </Tooltip>
+            {reestructura !== "con autorizacion"
+              ? <Tooltip title="Añadir comentario a este apartado">
+                <IconButton
+                  color={
+                    comentario["Tabla Fuente de Pago"] &&
+                      comentario["Tabla Fuente de Pago"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
+                  size="small"
+                  onClick={() => {
+                    setOpenComentarioApartado({
+                      open: true,
+                      apartado: "Tabla Fuente de Pago",
+                      tab: "TabFuente de Pago",
+                    });
+                  }}
+                >
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                </IconButton>
+              </Tooltip>
+              : null}
+
             {/* Revisar */}
           </Grid>
 
@@ -1024,26 +1052,29 @@ export function Resumen({ coments }: { coments: boolean }) {
         <Grid item display={"flex"} mt={2} mb={2}>
           <Grid mt={2}>
             {/* Revisar */}
-            <Tooltip title="Añadir comentario a este apartado">
-              <IconButton
-                color={
-                  comentario["Tabla Asignar Fuente"] &&
-                  comentario["Tabla Asignar Fuente"] !== ""
-                    ? "success"
-                    : "primary"
-                }
-                size="small"
-                onClick={() => {
-                  setOpenComentarioApartado({
-                    open: true,
-                    apartado: "Tabla Asignar Fuente",
-                    tab: "TabTablaAsignar Fuente",
-                  });
-                }}
-              >
-                <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-              </IconButton>
-            </Tooltip>
+            {reestructura !== "con autorizacion"
+              ? <Tooltip title="Añadir comentario a este apartado">
+                <IconButton
+                  color={
+                    comentario["Tabla Asignar Fuente"] &&
+                      comentario["Tabla Asignar Fuente"] !== ""
+                      ? "success"
+                      : "primary"
+                  }
+                  size="small"
+                  onClick={() => {
+                    setOpenComentarioApartado({
+                      open: true,
+                      apartado: "Tabla Asignar Fuente",
+                      tab: "TabTablaAsignar Fuente",
+                    });
+                  }}
+                >
+                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                </IconButton>
+              </Tooltip>
+              : null}
+
             {/* Revisar */}
           </Grid>
 
@@ -1089,26 +1120,29 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid width={"100%"} mt={3} item display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
-              <Tooltip title="Añadir comentario a este apartado">
-                <IconButton
-                  color={
-                    comentario["Tabla Condiciones Financieras"] &&
-                    comentario["Tabla Condiciones Financieras"] !== ""
-                      ? "success"
-                      : "primary"
-                  }
-                  size="small"
-                  onClick={() => {
-                    setOpenComentarioApartado({
-                      open: true,
-                      apartado: "Tabla Condiciones Financieras",
-                      tab: "TabCondiciones Financieras",
-                    });
-                  }}
-                >
-                  <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                </IconButton>
-              </Tooltip>
+              {reestructura !== "con autorizacion"
+                ? <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentario["Tabla Condiciones Financieras"] &&
+                        comentario["Tabla Condiciones Financieras"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Condiciones Financieras",
+                        tab: "TabCondiciones Financieras",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+                : null}
+
               {/* Revisar */}
             </Grid>
 
@@ -1502,26 +1536,30 @@ export function Resumen({ coments }: { coments: boolean }) {
                   {tablaDocumentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        <Tooltip title="Añadir comentario a este apartado">
-                          <IconButton
-                            color={
-                              comentario[row.descripcionTipo] &&
-                              comentario[row.descripcionTipo] !== ""
-                                ? "success"
-                                : "primary"
-                            }
-                            size="small"
-                            onClick={() => {
-                              setOpenComentarioApartado({
-                                open: true,
-                                apartado: row.descripcionTipo,
-                                tab: "TabDocumentacion",
-                              });
-                            }}
-                          >
-                            <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                          </IconButton>
-                        </Tooltip>
+                        {reestructura !== "con autorizacion"
+                          ? <Tooltip title="Añadir comentario a este apartado">
+                            <IconButton
+                              color={
+                                comentario[row.descripcionTipo] &&
+                                  comentario[row.descripcionTipo] !== ""
+                                  ? "success"
+                                  : "primary"
+                              }
+                              size="small"
+                              onClick={() => {
+                                setOpenComentarioApartado({
+                                  open: true,
+                                  apartado: row.descripcionTipo,
+                                  tab: "TabDocumentacion",
+                                });
+                              }}
+                            >
+                              <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                            </IconButton>
+                          </Tooltip>
+                          : "No disponible para reestructura"
+                        }
+
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
                             sx={{
@@ -1565,12 +1603,11 @@ export function Resumen({ coments }: { coments: boolean }) {
                                       })
                                       .catch((err) => {
                                         setFileSelected(
-                                          `data:application/pdf;base64,${
-                                            arr.filter((td: any) =>
-                                              td.nombre.includes(
-                                                row.nombreArchivo
-                                              )
-                                            )[0].file
+                                          `data:application/pdf;base64,${arr.filter((td: any) =>
+                                            td.nombre.includes(
+                                              row.nombreArchivo
+                                            )
+                                          )[0].file
                                           }`
                                         );
                                       });

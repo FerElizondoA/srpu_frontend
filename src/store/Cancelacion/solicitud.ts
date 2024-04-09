@@ -374,10 +374,6 @@ export async function CancelacionSolicitud(setUrl: Function) {
   const state = useCancelacionStore.getState();
   let infoSolicitud: any = JSON.parse(state.solicitud.Solicitud);
 
-  console.log(infoSolicitud);
-  console.log(state.solicitud);
-  console.log(state.cancelacion);
-
   //   await axios
   //     .post(
   //       process.env.REACT_APP_APPLICATION_BACK +

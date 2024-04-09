@@ -260,7 +260,7 @@ export function Fideicomisos() {
           </Paper>
         </Grid>
 
-        <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
+        <Grid width={"10%"} display={"flex"} justifyContent={"center"} height={"2.5rem"}>
           <Button
             sx={{ ...queries.buttonContinuar }}
             onClick={() => {

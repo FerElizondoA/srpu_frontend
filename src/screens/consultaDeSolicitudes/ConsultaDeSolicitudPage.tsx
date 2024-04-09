@@ -545,6 +545,15 @@ export function ConsultaDeSolicitudPage() {
                           />
                         </Tooltip>
                       );
+                    } else{
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="warning"
+                          variant="outlined"
+                        />
+                      );
+
                     }
 
                     return (

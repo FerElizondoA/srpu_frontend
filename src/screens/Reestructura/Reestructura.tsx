@@ -33,6 +33,15 @@ import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogVerDetalle } from "./DialogVerDetalle";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { queries } from "../../queries";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import {
+  ConsultaConstancia,
+  ConsultaRequerimientos,
+  ConsultaSolicitud,
+  GeneraFormatoReestructura,
+} from "../../store/SolicitudFirma/solicitudFirma";
+import { useNavigate } from "react-router-dom";
 
 interface Head {
   label: string;
@@ -71,6 +80,7 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudesReestructura() {
+  const navigate = useNavigate();
   const [datos, setDatos] = useState<Array<IData>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
@@ -99,6 +109,8 @@ export function SolicitudesReestructura() {
   );
   const [rowId] = useState("");
 
+
+
   const rowSolicitud: IData = useSolicitudFirmaStore(
     (state) => state.rowSolicitud
   );
@@ -106,6 +118,9 @@ export function SolicitudesReestructura() {
   const setRowSolicitud: Function = useSolicitudFirmaStore(
     (state) => state.setRowSolicitud
   );
+
+
+
 
   const changeEncabezadoLP: Function = useLargoPlazoStore(
     (state) => state.changeEncabezado
@@ -174,6 +189,37 @@ export function SolicitudesReestructura() {
       setDatosFiltrados(e);
     });
   }, []);
+
+  const changeNoRegistro: Function = useCortoPlazoStore(
+    (state) => state.changeNoRegistro
+  );
+  const setSolicitudFirma: Function = useCortoPlazoStore(
+    (state) => state.setRowSolicitud
+  );
+  const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
+
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
+  const requerimientos = (
+    Solicitud: string,
+    noRegistro: string,
+    Requerimiento: any,
+    IdSolicitud: string
+  ) => {
+    let a: any = {};
+
+    Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
+      return a[v]
+        ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
+        : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
+    });
+
+    ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
+
+    setProceso("actualizacion");
+    changeIdSolicitud(IdSolicitud);
+    navigate("../firmaUrl");
+  };
 
   return (
     <Grid>
@@ -519,7 +565,7 @@ export function SolicitudesReestructura() {
                       {row.TipoSolicitud}
                     </StyledTableCell>
 
-                    <StyledTableCell>
+                    <StyledTableCell size="medium" sx={{width:"120px"}}>
                       <Tooltip title="Ver Detalle">
                         <IconButton
                           type="button"
@@ -539,6 +585,79 @@ export function SolicitudesReestructura() {
                           <FindInPageIcon />
                         </IconButton>
                       </Tooltip>
+
+                      {localStorage.getItem("Rol") === row.Control &&
+                            ["19"].includes(row.NoEstatus) && (
+                              <Tooltip title="Firmar documento">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    llenaSolicitud(row, row.TipoSolicitud);
+                                    changeIdSolicitud(row.Id);
+                                    changeNoRegistro(row.NumeroRegistro);
+                                    setSolicitudFirma(row);
+                                    GeneraFormatoReestructura(
+                                      row.Solicitud,
+                                      row.TipoSolicitud,
+                                      row.NumeroRegistro,
+                                     // row.Id,
+                                      setUrl
+                                    )
+                                    changeIdSolicitud(row.Id);
+                                    navigate("../firmaUrl");
+
+                                    // getComentariosSolicitudPlazo(
+                                    //   row.Id,
+                                    //   () => {}
+                                    // ).then((data) => {
+                                    //   if (
+                                    //     rolesAdmin.includes(
+                                    //       localStorage.getItem("Rol")!
+                                    //     )
+                                    //   ) {
+                                    //     if (
+                                    //       data.filter(
+                                    //         (a: any) =>
+                                    //           a.Tipo === "Requerimiento"
+                                    //       ).length > 0
+                                    //     ) {
+                                    //       requerimientos(
+                                    //         row.Solicitud,
+                                    //         row.NumeroRegistro,
+                                    //         data.filter(
+                                    //           (a: any) =>
+                                    //             a.Tipo === "Requerimiento"
+                                    //         )[0],
+                                    //         row.Id
+                                    //       );
+                                    //     } else {
+                                    //       ConsultaConstancia(
+                                    //         row.Solicitud,
+                                    //         row.NumeroRegistro,
+                                    //         setUrl
+                                    //       );
+                                    //       changeIdSolicitud(row.Id);
+                                    //       navigate("../firmaUrl");
+                                    //     }
+                                    //   } else {
+                                    //     setSolicitudFirma(row);
+                                    //     ConsultaSolicitud(
+                                    //       row.Solicitud,
+                                    //       row.NumeroRegistro,
+                                    //       setUrl
+                                    //     );
+                                    //     setProceso("Por Firmar");
+                                    //     changeIdSolicitud(row.Id);
+                                    //     navigate("../firmaUrl");
+                                    //   }
+                                    // });
+                                  }}
+                                >
+                                  <HistoryEduIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
+
                     </StyledTableCell>
                     {openDialogVer && (
                       <DialogVerDetalle

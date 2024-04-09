@@ -226,20 +226,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             estatusPrevio.ControlInterno === "inscripcion"
               ? "Solicitud de Inscripción"
               : estatusPrevio.ControlInterno === "revision"
-              ? "Solicitud de Requerimientos"
-              : "Constancia de Inscripción";
+                ? "Solicitud de Requerimientos"
+                : "Constancia de Inscripción";
           let mensaje =
             estatusPrevio.ControlInterno === "inscripcion"
               ? `Se recibe el ${new Date().toLocaleString(
-                  "es-MX"
-                )} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
-                }`
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.rowSolicitud.IdClaveInscripcion
+              }`
               : `Se envía el ${new Date().toLocaleString(
-                  "es-MX"
-                )} el documento ${titulo} con el identificador: ${
-                  state.rowSolicitud.IdClaveInscripcion
-                }`;
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.rowSolicitud.IdClaveInscripcion
+              }`;
           let oficio = `Solicitud ${state.rowSolicitud.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
@@ -254,32 +252,32 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               ? "4"
               : estatusPrevio.ControlInterno === "revision" &&
                 state.proceso === "actualizacion"
-              ? "8"
-              : estatusPrevio.NoEstatus === "9"
-              ? "10"
-              : estatusPrevio.NoEstatus === "10" &&
-                state.proceso === "cancelacion"
-              ? "12"
-              : estatusPrevio.ControlInterno === "cancelacion" &&
-                state.proceso === "actualizacion"
-              ? "16"
-              : estatusPrevio.ControlInterno === "cancelado"
-              ? "18"
-              : estatusPrevio.ControlInterno === "reestructura" &&
-                state.proceso === "solicitud"
-              ? "20"
-              : estatusPrevio.ControlInterno === "reestructura" &&
-                state.proceso === "actualizacion"
-              ? "24"
-              : estatusPrevio.ControlInterno === "reestructurado"
-              ? "10"
-              : "101",
+                ? "8"
+                : estatusPrevio.NoEstatus === "9"
+                  ? "10"
+                  : estatusPrevio.NoEstatus === "10" &&
+                    state.proceso === "cancelacion"
+                    ? "12"
+                    : estatusPrevio.ControlInterno === "cancelacion" &&
+                      state.proceso === "actualizacion"
+                      ? "16"
+                      : estatusPrevio.ControlInterno === "cancelado"
+                        ? "18"
+                        : estatusPrevio.ControlInterno === "reestructura" &&
+                          state.proceso === "solicitud"
+                          ? "20"
+                          : estatusPrevio.ControlInterno === "reestructura" &&
+                            state.proceso === "actualizacion"
+                            ? "24"
+                            : estatusPrevio.ControlInterno === "reestructurado"
+                              ? "10"
+                              : "101",
             state.idSolicitud,
             inf.IdUsuario,
             oficio
           );
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   },
 
@@ -290,7 +288,7 @@ export async function GeneraAcuseRespuesta(
   tipoSolicitud: string,
   noOficio: string,
   idRegistro: string,
-  fraccionTexto: string
+  fraccionTexto: string,
 ) {
   await axios
     .post(
@@ -320,25 +318,92 @@ export async function GeneraAcuseRespuesta(
       );
       // setUrl(url);
     })
-    .catch((err) => {}); // aqui
+    .catch((err) => { }); // aqui
 }
 
 export async function GeneraFormatoReestructura(
+  Solicitud: string,
   tipoSolicitud: string,
   noOficio: string,
-  idRegistro: string,
-  fraccionTexto: string
+  //idRegistro: string,
+  setUrl: Function
+  //noRegistro: string,
+  // fraccionTexto: string
 ) {
+  const solicitud: any = JSON.parse(Solicitud);
+
+  const SolicitudReestructura: any = {
+    oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
+    servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    organismo: solicitud.encabezado.organismo.Organismo,
+    oficioSolicitud: noOficio,
+
+    fechaSolicitud: format(new Date(), "PPP", { // AL MOMENTO
+      locale: es,
+    }), 
+
+    tipoDocumento: solicitud.encabezado.tipoDocumento,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+
+    claveInscripcion: solicitud.ClaveDeInscripcion === undefined
+      ? "Sin Clave de Inscripcion"
+      : solicitud.ClaveDeInscripcion,
+      
+    fechaClave: format(new Date(), "PPP", { // PENDIENTE
+      locale: es,
+    }),
+    fechaReestructuracion: solicitud.informacionGeneral.fechaContratacion,
+
+    entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios.length > 0
+      ? solicitud.informacionGeneral.obligadosSolidarios[0]
+        .entePublicoObligado
+      : "No Aplica",
+
+    obligadoSolidarioAval: solicitud.informacionGeneral.obligadosSolidarios.length > 0
+      ? solicitud.informacionGeneral.obligadosSolidarios
+      : ["No Aplica"],
+
+    institucionFinanciera: solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    saldoVigente: solicitud,
+    mecanismoVehiculoDePago: "REVISAR",
+    fuentePago: "REVISAR",
+    directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+    cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    modificaciones: "REVISAR",
+  };
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/create-pdf-provisional-reestructura",
+      "/create-pdf-constancia-reestructura",
       {
-        tipoSolicitud: tipoSolicitud,
-        oficioConstancia: noOficio,
-        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
-        hora: new Date().toLocaleString("es-MX").split(" ")[1],
-        fraccionTexto: fraccionTexto,
+        // tipoSolicitud: tipoSolicitud,
+        // oficioConstancia: noOficio,
+        // fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        // hora: new Date().toLocaleString("es-MX").split(" ")[1],
+        //fraccionTexto: fraccionTexto,
+        oficioNum: SolicitudReestructura.noOficio,
+        servidorPublico: SolicitudReestructura.servidorPublico,
+        cargo: SolicitudReestructura.cargo,
+        organismo: SolicitudReestructura.organismo,
+        oficioSolicitud: SolicitudReestructura.oficioSolicitud,
+        fechaSolicitud: SolicitudReestructura.fechaSolicitud,
+        tipoDocumento: solicitud.encabezado.tipoDocumento,
+        fechaContratacion: SolicitudReestructura.fechaContratacion,
+        claveInscripcion: SolicitudReestructura.claveInscripcion,
+        fechaClave: SolicitudReestructura.fechaClave,
+        fechaReestructuracion: SolicitudReestructura.fechaReestructuracion,
+        entePublicoObligado: SolicitudReestructura.entePublicoObligado,
+        obligadoSolidarioAval: SolicitudReestructura.obligadoSolidarioAval,
+        institucionFinanciera: SolicitudReestructura.institucionFinanciera,
+        montoOriginalContratado: SolicitudReestructura.montoOriginalContratado,
+        saldoVigente: SolicitudReestructura.saldoVigente,
+        mecanismoVehiculoDePago: SolicitudReestructura.mecanismoVehiculoDePago,
+        fuentePago: SolicitudReestructura.fuentePago,
+        directorGeneral: SolicitudReestructura.directorGeneral,
+        cargoDirectorGeneral: SolicitudReestructura.cargoDirectorGeneral,
+        modificaciones: SolicitudReestructura.modificaciones,
       },
       {
         headers: {
@@ -349,19 +414,26 @@ export async function GeneraFormatoReestructura(
       }
     )
     .then((response) => {
-      const state = useCortoPlazoStore.getState();
-
-      state.guardaDocumentos(
-        idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
-        new File(
-          [response.data],
-          `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
-        )
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
       );
-      // setUrl(url);
+
+      setUrl(url);
     })
-    .catch((err) => {}); // aqui
+    //   const state = useCortoPlazoStore.getState();
+
+    //   state.guardaDocumentos(
+    //     idRegistro,
+    //     "/SRPU/CORTOPLAZO/ACUSE",
+    //     new File(
+    //       [response.data],
+    //       `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
+    //     )
+    //   );
+    //   // setUrl(url);
+    // })
+    .catch((err) => { }); // aqui
 }
 
 export async function ConsultaSolicitud(
@@ -401,15 +473,15 @@ export async function ConsultaSolicitud(
     comisiones:
       solicitud.condicionesFinancieras[0].comisiones[0].porcentaje !== "N/A"
         ? solicitud.condicionesFinancieras[0].comisiones[0].porcentaje +
-          (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
-            ? " "
-            : " más IVA")
+        (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
+          ? " "
+          : " más IVA")
         : solicitud.condicionesFinancieras[0].comisiones[0].montoFijo !== "N/A"
-        ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
+          ? solicitud.condicionesFinancieras[0].comisiones[0].montoFijo +
           (solicitud.condicionesFinancieras[0].comisiones[0].iva === "N/A"
             ? " "
             : " más IVA")
-        : "N/A",
+          : "N/A",
     gastosAdicionales: "No Aplica",
     tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva,
     mecanismoVehiculoDePago: "No Aplica",
@@ -468,7 +540,7 @@ export async function ConsultaSolicitud(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaRequerimientos(
@@ -525,7 +597,7 @@ export async function ConsultaRequerimientos(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function ConsultaConstancia(
@@ -599,7 +671,7 @@ export async function ConsultaConstancia(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function GeneraAcuseEnvio(
@@ -633,7 +705,7 @@ export async function GeneraAcuseEnvio(
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 export async function GeneraAcuse(
@@ -667,7 +739,7 @@ export async function GeneraAcuse(
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 export const CambiaEstatus = (
@@ -695,7 +767,7 @@ export const CambiaEstatus = (
     .then((response) => {
       return true;
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export const getPdf = (
@@ -733,7 +805,7 @@ export const getPdf = (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export async function borrarFirmaDetalle(
@@ -804,7 +876,7 @@ export async function AnularCancelacionSolicitud(
     entePublicoObligado:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
         ? solicitud.informacionGeneral.obligadosSolidarios[0]
-            .entePublicoObligado
+          .entePublicoObligado
         : "No Aplica",
 
     institucionFinanciera:
@@ -867,5 +939,5 @@ export async function AnularCancelacionSolicitud(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }

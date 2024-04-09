@@ -279,7 +279,10 @@ export function InstruccionesIrrevocables() {
           </Paper>
         </Grid>
 
-        <Grid width={"10%"} display={"flex"} justifyContent={"center"}>
+        <Grid width={"10%"} height={"3rem"} display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <Button
             sx={{ ...queries.buttonContinuar }}
             onClick={() => {
@@ -347,8 +350,12 @@ export function InstruccionesIrrevocables() {
                           {row.CLABE}
                         </StyledTableCell>
 
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" >
+                          <Typography sx={{width:"300px",
+                        fontFamily: "MontserratRegular",
+                        fontSize: "1.6ch"}}>
                           {row.DescripcionBanco}
+                          </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">

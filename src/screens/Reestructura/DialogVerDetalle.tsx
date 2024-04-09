@@ -172,11 +172,6 @@ export function DialogVerDetalle(props: Props) {
     isTittle: useMediaQuery("(min-width: 0px) and (max-width: 638px)"),
   };
 
-  useEffect(() => {
-    console.log("props.rowSolicitud", props.rowSolicitud)
-    console.log("localStorage.getItem",  localStorage.getItem("IdUsuario"))
-    console.log(" localStorage.getItem",  localStorage.getItem("Rol"))
-  }, [])
   
   return (
     <Dialog
@@ -232,7 +227,7 @@ export function DialogVerDetalle(props: Props) {
           Volver
         </Button>
         {
-        // reestructura === "con autorizacion" &&
+        reestructura === "con autorizacion" &&
         localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
         props.rowSolicitud.NoEstatus === "10" &&
         props.rowSolicitud.ControlInterno === "autorizado" &&
@@ -303,6 +298,7 @@ export function DialogVerDetalle(props: Props) {
               }}
               onClick={() => {
                 navigate("../ObligacionesLargoPlazo");
+                changeRestructura("con autorizacion")
               }}
             >
               <Typography

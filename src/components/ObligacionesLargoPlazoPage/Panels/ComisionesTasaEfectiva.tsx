@@ -249,7 +249,7 @@ export function ComisionesTasaEfectiva() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -290,7 +290,7 @@ export function ComisionesTasaEfectiva() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+        <Grid item xs={10} sm={5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
           <TextField
             fullWidth
@@ -330,7 +330,13 @@ export function ComisionesTasaEfectiva() {
       </Grid>
 
       <Grid container justifyContent={"space-evenly"}>
-        <Grid item xs={10} sm={2} md={1} lg={1} xl={1}>
+        <Grid item xs={10} sm={5} md={1} lg={1} xl={1}
+          //mb={{xs:0, sm:10, md:0}}
+          height={{xs:0, sm:"7rem", md:0}}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <FormControlLabel
             label="No Aplica"
             control={
@@ -358,7 +364,7 @@ export function ComisionesTasaEfectiva() {
             }
           ></FormControlLabel>
         </Grid>
-        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+        <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Fecha de Comisión</InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
@@ -381,7 +387,7 @@ export function ComisionesTasaEfectiva() {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+        <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Tipo de Comisión</InputLabel>
           <Autocomplete
             disabled={noAplica}
@@ -428,7 +434,7 @@ export function ComisionesTasaEfectiva() {
             }
           />
         </Grid>
-        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+        <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Periodicidad de Pago</InputLabel>
           <Autocomplete
             disabled={noAplica}
@@ -481,7 +487,7 @@ export function ComisionesTasaEfectiva() {
         <Grid
           item
           xs={10}
-          sm={3}
+          sm={5}
           md={3}
           lg={3}
           xl={3}
@@ -516,7 +522,7 @@ export function ComisionesTasaEfectiva() {
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+        <Grid item xs={10} sm={5} md={2} lg={2} xl={2}>
           {radioValue === "Porcentaje Fijo" ? (
             <InputLabel sx={queries.medium_text}>Porcentaje</InputLabel>
           ) : (
@@ -594,7 +600,7 @@ export function ComisionesTasaEfectiva() {
         <Grid
           item
           xs={10}
-          sm={2}
+          sm={5}
           md={2}
           lg={2}
           xl={2}
@@ -628,7 +634,7 @@ export function ComisionesTasaEfectiva() {
         <Grid
           item
           xs={10}
-          sm={3}
+          sm={5}
           md={3}
           lg={2}
           xl={2}

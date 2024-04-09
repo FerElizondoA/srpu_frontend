@@ -53,8 +53,6 @@ export function DialogTrazabilidad(props: Props) {
 
   useEffect(() => {
     getRegistroTrazabilidad(props.idSolicitud);
-    console.log(props.idSolicitud)
-    console.log("listadoRegistroTrazabilidad", listadoRegistroTrazabilidad)
   }, [!props.openState]);
 
   return (
