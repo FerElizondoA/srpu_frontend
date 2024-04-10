@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/FuenteDePago";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
@@ -127,9 +127,6 @@ export function AsignarFuente() {
     getFuentesPago();
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
   }, []);
-  
-
-  
 
   return (
     <Grid
@@ -151,8 +148,7 @@ export function AsignarFuente() {
           justifyContent: "space-evenly",
           mt: 2,
         }}
-
-        mb={{xs:0, sm:15}}
+        mb={{ xs: 0, sm: 15 }}
       >
         <Grid item sx={{ width: "100%" }} xs={10} sm={5} md={5} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Clasificación</InputLabel>
@@ -335,7 +331,7 @@ export function AsignarFuente() {
           md={5}
           lg={1}
           xl={1}
-          mt={{xs:0, sm:4}}
+          mt={{ xs: 0, sm: 4 }}
         >
           <Button
             disabled={filtro.RespectoA.Descripcion === ""}
