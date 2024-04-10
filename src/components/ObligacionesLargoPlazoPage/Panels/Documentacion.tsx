@@ -60,8 +60,6 @@ const heads: readonly Head[] = [
   },
 ];
 
-
-
 export function Documentacion() {
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
@@ -149,17 +147,20 @@ export function Documentacion() {
   //   }
   // }, []);
 
-  const reestructura: string = useCortoPlazoStore(
-    (state) => state.reestructura
-  );
-  const [justificacionRespuesta, setJustificacionRespuesta] = useState<Array<ITiposDocumento>>([]);
+  const reestructura: string = "";
+  const [justificacionRespuesta, setJustificacionRespuesta] = useState<
+    Array<ITiposDocumento>
+  >([]);
   //const [archivos, setArchivos] = useState<Array<IDocumentos>>([]);
 
   useEffect(() => {
     //const elementos = catalogo.filter(item => item.tipo === 'Justificacion para reestructura');
-    setJustificacionRespuesta(tiposDocumentos.filter( tipo => tipo.Descripcion === "Justificacion para Reestructurar")) 
-  }, [])
-  
+    setJustificacionRespuesta(
+      tiposDocumentos.filter(
+        (tipo) => tipo.Descripcion === "Justificacion para Reestructurar"
+      )
+    );
+  }, []);
 
   return (
     <Grid
@@ -240,9 +241,9 @@ export function Documentacion() {
                         sx={{ width: "250px" }}
                         disabled={
                           val.archivo?.name ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           (datosActualizar.length > 0 &&
                             !datosActualizar.includes(val.tipoArchivo))
                         }
@@ -274,7 +275,7 @@ export function Documentacion() {
                             display: "flex",
                             fontFamily:
                               val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "MontserratBold"
                                 : "MontserratMedium",
                             textAlign: "center",
@@ -285,7 +286,7 @@ export function Documentacion() {
                             fontSize: "70%",
                             border:
                               val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "2px dotted #af8c55"
                                 : "2px dotted black",
                           }}
@@ -340,7 +341,7 @@ export function Documentacion() {
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                  tablaDocumentos[index]?.tipoArchivo ===
+                                tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,
@@ -355,32 +356,29 @@ export function Documentacion() {
                             }
                           >
                             {reestructura === "con autorizacion"
-                              ?
-                              justificacionRespuesta.map((tipo) => (
-                                <MenuItem key={tipo.Id} value={tipo.Id}>
-                                  {tipo.Descripcion}
-                                </MenuItem>
-                              ))
-                              :
-                              tiposDocumentos.map((tipo) => (
-                                <MenuItem key={tipo.Id} value={tipo.Id}>
-                                  {tipo.Descripcion}
-                                </MenuItem>
-                              ))
-                            }
+                              ? justificacionRespuesta.map((tipo) => (
+                                  <MenuItem key={tipo.Id} value={tipo.Id}>
+                                    {tipo.Descripcion}
+                                  </MenuItem>
+                                ))
+                              : tiposDocumentos.map((tipo) => (
+                                  <MenuItem key={tipo.Id} value={tipo.Id}>
+                                    {tipo.Descripcion}
+                                  </MenuItem>
+                                ))}
                           </Select>
                         </FormControl>
                       )}
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                        comentario[val.descripcionTipo] !== "" ? (
+                      comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                  comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -402,7 +400,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                              comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }
@@ -482,12 +480,14 @@ export function Documentacion() {
               },
             }}
           >
-            {reestructura === "con autorizacion"
-
-            ? <Typography>ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR LOS ARCHIVOS DE JUSTIFICACIÓN PARA REESTRUCTURA</Typography>
-          : "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-          }
-            
+            {reestructura === "con autorizacion" ? (
+              <Typography>
+                ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR LOS ARCHIVOS DE
+                JUSTIFICACIÓN PARA REESTRUCTURA
+              </Typography>
+            ) : (
+              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+            )}
           </Typography>
           <input
             //disabled={reestructura}
