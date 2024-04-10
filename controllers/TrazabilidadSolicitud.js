@@ -2,9 +2,15 @@ const db = require("../config/db.js");
 
 module.exports = {
   getTrazabilidadSolicitud: (req, res) => {
-    const IdUsuarioModificador = req.body.IdUsuario;
-    db.query(`CALL sp_ListadoTrazabilidadSolicitud('${IdUsuarioModificador}')`, (err, result) => {
+    const IdSolicitud = req.query.IdSolicitud;
+    if (IdSolicitud == null || /^[\s]*$/.test(IdSolicitud)) {
+      return res.status(409).send({
+        error: "Ingrese IdSolicitud",
+      });
+    }
+    db.query(`CALL sp_ListadoTrazabilidadSolicitud('${IdSolicitud}')`, (err, result) => {
       if (err) {
+        console.log(err)
         return res.status(500).send({
           error: "Error",
         });
