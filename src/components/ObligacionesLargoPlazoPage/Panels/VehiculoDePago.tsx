@@ -459,7 +459,7 @@ export function VehiculoDePago() {
               flexDirection={"column"}
               justifyContent={"space-evenly"}
               width={{ xs: "100%", sm: "100%", md: "50%" }}
-              height={"18rem"}
+              height={"16rem"}
             >
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
@@ -564,7 +564,28 @@ export function VehiculoDePago() {
               flexDirection={"column"}
               justifyContent={"space-evenly"}
               width={{ xs: "100%", sm: "100%", md: "50%" }}
-              height={"18rem"}
+              sx={{
+                "@media (min-width: 480px)": {
+                  height: "18rem",
+                },
+
+                "@media (min-width: 768px)": {
+                  height: "18rem",
+                },
+
+                "@media (min-width: 1140px)": {
+                  height: "18rem",
+                },
+
+                "@media (min-width: 1400px)": {
+                  height: "16rem",
+                },
+
+                "@media (min-width: 1870px)": {
+                  height: "22rem",
+                },
+              }}
+              //height={"16rem"}
             >
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography

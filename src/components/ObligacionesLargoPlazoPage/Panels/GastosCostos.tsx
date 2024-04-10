@@ -131,17 +131,12 @@ export function GastoCostos() {
 
   return (
     <Grid
-      item
       container
-      sx={{
-        ...queries.contenedorInformacionGeneral,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-around",
-        alignItems: "center",
-      }}
+      display={"flex"}
+      width={"100%"}
+      justifyContent={"space-evenly"}
     >
-      <Grid item width={"30%"}>
+      <Grid item xs={10} sm={5} md={5} lg={3.3} xl={3.3}>
         <InputLabel sx={queries.medium_text}>Destino</InputLabel>
         <Autocomplete
           disabled={reestructura === "con autorizacion"}
@@ -238,7 +233,7 @@ export function GastoCostos() {
           {gastosCostos.destino.Descripcion.toLowerCase().includes(
             "inversión"
           ) && (
-            <Grid item width={"90%"}>
+            <Grid item xs={10} sm={5} md={5} lg={3.3} xl={3.3}>
               <InputLabel sx={queries.medium_text}>
                 Detalle de la Inversión
               </InputLabel>
@@ -284,7 +279,7 @@ export function GastoCostos() {
           {gastosCostos.destino.Descripcion.toLowerCase().includes(
             "inversión"
           ) && (
-            <Grid item width={"90%"}>
+            <Grid item xs={10} sm={10} md={3} lg={3.3} xl={3.3}>
               <InputLabel sx={queries.medium_text}>
                 Adjuntar detalle de la inversión pública productiva
               </InputLabel>

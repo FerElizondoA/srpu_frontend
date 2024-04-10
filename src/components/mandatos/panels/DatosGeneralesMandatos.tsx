@@ -34,6 +34,9 @@ export function DatosGeneralesMandato() {
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+  
+  const IdMandato: string = useMandatoStore((state) => state.idMandato);
+
   useEffect(() => {
     if (catalogoOrganismos.length > 0) {
       setDatosGenerales({
@@ -66,6 +69,7 @@ export function DatosGeneralesMandato() {
       <Grid sx={{ width: "70%" }}>
         <InputLabel
           error={
+            IdMandato !== "" ? false :
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
             ).length > 0
@@ -77,11 +81,13 @@ export function DatosGeneralesMandato() {
         <TextField
         disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
           error={
+            IdMandato !== "" ? false :
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
             ).length > 0
           }
           helperText={
+            IdMandato !== "" ? "" :
             tablaMandatos.filter(
               (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
             ).length > 0

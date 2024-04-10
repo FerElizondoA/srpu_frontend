@@ -164,6 +164,7 @@ export function DetalleFideicomiso({
 
       <DialogContent
         sx={{
+          
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: ".5vw",
@@ -179,7 +180,7 @@ export function DetalleFideicomiso({
         <Grid
         mt={{xs:4, sm:8, md:2}}
           sx={{
-           
+         
             height: "20%",
             display: "flex",
             flexDirection: "column",

@@ -37,6 +37,7 @@ import { es } from "date-fns/locale";
 import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/dialog/DetalleInstrucciones";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -149,6 +150,16 @@ export function InstruccionesIrrevocables() {
     (state) => state.getSumaPorcentajeAcumulado
   );
 
+  const setTipoMecanismoVehiculoPago: Function = useLargoPlazoStore(
+    (state) => state.setTipoMecanismoVehiculoPago
+  );
+
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
+
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -159,6 +170,7 @@ export function InstruccionesIrrevocables() {
     getInstrucciones(setInstrucciones);
     getInstituciones();
     getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
+    setTipoMecanismoVehiculoPago("")
   }, []);
 
   useEffect(() => {
@@ -267,7 +279,10 @@ export function InstruccionesIrrevocables() {
           </Paper>
         </Grid>
 
-        <Grid width={"10%"} display={"flex"} justifyContent={"center"}>
+        <Grid width={"10%"} height={"3rem"} display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <Button
             sx={{ ...queries.buttonContinuar }}
             onClick={() => {
@@ -335,8 +350,12 @@ export function InstruccionesIrrevocables() {
                           {row.CLABE}
                         </StyledTableCell>
 
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" >
+                          <Typography sx={{width:"300px",
+                        fontFamily: "MontserratRegular",
+                        fontSize: "1.6ch"}}>
                           {row.DescripcionBanco}
+                          </Typography>
                         </StyledTableCell>
 
                         <StyledTableCell align="center">

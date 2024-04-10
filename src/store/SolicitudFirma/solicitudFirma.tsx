@@ -238,21 +238,95 @@ export async function GeneraAcuseRespuesta(
 }
 
 export async function GeneraFormatoReestructura(
+  Solicitud: string,
   tipoSolicitud: string,
   noOficio: string,
-  idRegistro: string,
-  fraccionTexto: string
+  //idRegistro: string,
+  setUrl: Function
+  //noRegistro: string,
+  // fraccionTexto: string
 ) {
+  const solicitud: any = JSON.parse(Solicitud);
+
+  const SolicitudReestructura: any = {
+    oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
+    servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+    cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+    organismo: solicitud.encabezado.organismo.Organismo,
+    oficioSolicitud: noOficio,
+
+    fechaSolicitud: format(new Date(), "PPP", {
+      // AL MOMENTO
+      locale: es,
+    }),
+
+    tipoDocumento: solicitud.encabezado.tipoDocumento,
+    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
+
+    claveInscripcion:
+      solicitud.ClaveDeInscripcion === undefined
+        ? "Sin Clave de Inscripcion"
+        : solicitud.ClaveDeInscripcion,
+
+    fechaClave: format(new Date(), "PPP", {
+      // PENDIENTE
+      locale: es,
+    }),
+    fechaReestructuracion: solicitud.informacionGeneral.fechaContratacion,
+
+    entePublicoObligado:
+      solicitud.informacionGeneral.obligadosSolidarios.length > 0
+        ? solicitud.informacionGeneral.obligadosSolidarios[0]
+            .entePublicoObligado
+        : "No Aplica",
+
+    obligadoSolidarioAval:
+      solicitud.informacionGeneral.obligadosSolidarios.length > 0
+        ? solicitud.informacionGeneral.obligadosSolidarios
+        : ["No Aplica"],
+
+    institucionFinanciera:
+      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.monto,
+    saldoVigente: solicitud,
+    mecanismoVehiculoDePago: "REVISAR",
+    fuentePago: "REVISAR",
+    directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+    cargoDirectorGeneral:
+      solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+    modificaciones: "REVISAR",
+  };
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/create-pdf-provisional-reestructura",
+        "/create-pdf-constancia-reestructura",
       {
-        tipoSolicitud: tipoSolicitud,
-        oficioConstancia: noOficio,
-        fecha: new Date().toLocaleString("es-MX").split(" ")[0],
-        hora: new Date().toLocaleString("es-MX").split(" ")[1],
-        fraccionTexto: fraccionTexto,
+        // tipoSolicitud: tipoSolicitud,
+        // oficioConstancia: noOficio,
+        // fecha: new Date().toLocaleString("es-MX").split(" ")[0],
+        // hora: new Date().toLocaleString("es-MX").split(" ")[1],
+        //fraccionTexto: fraccionTexto,
+        oficioNum: SolicitudReestructura.noOficio,
+        servidorPublico: SolicitudReestructura.servidorPublico,
+        cargo: SolicitudReestructura.cargo,
+        organismo: SolicitudReestructura.organismo,
+        oficioSolicitud: SolicitudReestructura.oficioSolicitud,
+        fechaSolicitud: SolicitudReestructura.fechaSolicitud,
+        tipoDocumento: solicitud.encabezado.tipoDocumento,
+        fechaContratacion: SolicitudReestructura.fechaContratacion,
+        claveInscripcion: SolicitudReestructura.claveInscripcion,
+        fechaClave: SolicitudReestructura.fechaClave,
+        fechaReestructuracion: SolicitudReestructura.fechaReestructuracion,
+        entePublicoObligado: SolicitudReestructura.entePublicoObligado,
+        obligadoSolidarioAval: SolicitudReestructura.obligadoSolidarioAval,
+        institucionFinanciera: SolicitudReestructura.institucionFinanciera,
+        montoOriginalContratado: SolicitudReestructura.montoOriginalContratado,
+        saldoVigente: SolicitudReestructura.saldoVigente,
+        mecanismoVehiculoDePago: SolicitudReestructura.mecanismoVehiculoDePago,
+        fuentePago: SolicitudReestructura.fuentePago,
+        directorGeneral: SolicitudReestructura.directorGeneral,
+        cargoDirectorGeneral: SolicitudReestructura.cargoDirectorGeneral,
+        modificaciones: SolicitudReestructura.modificaciones,
       },
       {
         headers: {
@@ -263,18 +337,25 @@ export async function GeneraFormatoReestructura(
       }
     )
     .then((response) => {
-      const state = useCortoPlazoStore.getState();
-
-      state.guardaDocumentos(
-        idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
-        new File(
-          [response.data],
-          `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
-        )
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
       );
-      // setUrl(url);
+
+      setUrl(url);
     })
+    //   const state = useCortoPlazoStore.getState();
+
+    //   state.guardaDocumentos(
+    //     idRegistro,
+    //     "/SRPU/CORTOPLAZO/ACUSE",
+    //     new File(
+    //       [response.data],
+    //       `Acuse-respuesta-${tipoSolicitud}-${noOficio}.pdf`
+    //     )
+    //   );
+    //   // setUrl(url);
+    // })
     .catch((err) => {}); // aqui
 }
 

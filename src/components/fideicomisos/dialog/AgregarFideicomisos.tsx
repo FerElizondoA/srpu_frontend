@@ -42,7 +42,7 @@ export function AgregarFideicomisos({
   };
 
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1000)"),
+    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 700px)"),
   };
 
   const IdFideicomiso: string = useFideicomisoStore(
@@ -152,8 +152,9 @@ export function AgregarFideicomisos({
           onChange={handleChange}
           centered={query.isScrollable ? false : true}
           variant={query.isScrollable ? "scrollable" : "standard"}
-          scrollButtons
+          scrollButtons="auto"
           allowScrollButtonsMobile
+          sx={{ width: "100%", fontSize: ".8rem" }}
         >
           <Tab label="Datos Generales" sx={queries.bold_text}></Tab>
           <Tab label="Tipo de Movimiento" sx={queries.bold_text}></Tab>

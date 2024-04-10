@@ -141,15 +141,15 @@ export const queries = {
 
     fontSize: "50%",
     "@media (min-width: 480px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 768px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 1140px)": {
-      fontSize: "50%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 1400px)": {
@@ -612,7 +612,7 @@ export const queries = {
   },
 
   configuracion: {
-    width: "85%",
+    width: "95%",
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
     justifyItems: "center",
@@ -625,6 +625,7 @@ export const queries = {
     },
     "@media (min-width: 768px)": {
       height: "95%",
+      width: "85%",
     },
     "@media (min-width: 1140px)": {
       height: "95%",

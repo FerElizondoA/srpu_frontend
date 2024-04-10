@@ -24,8 +24,14 @@ import { useInscripcionStore } from "../../store/Inscripcion/main";
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1537px)"),
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
-    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 635px)"),
+    //isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
+
+    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
+    isMiniTablet: useMediaQuery("(min-width: 480px) and (max-width: 767px)"),
+    isTablet: useMediaQuery("(min-width: 768px) and (max-width: 1139px)"),
+    isLaptop: useMediaQuery("(min-width: 1140px) and (max-width: 1399px)"),
+    isMonitor: useMediaQuery("(min-width: 1400px) and (max-width: 1869px)"),
+    isMonitorXL: useMediaQuery("(min-width: 1870px)"),
   };
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -75,7 +81,7 @@ export function ObligacionesLargoPlazoPage() {
         >
           {inscripcion.NumeroRegistro && (
             <Grid
-              width={query.isTittle ? "20%" : "20%"}
+              width={query.isMobile ? "20%" : "20%"}
               display={"flex"}
               justifyContent={"start"}
               alignItems={"center"}
@@ -91,14 +97,35 @@ export function ObligacionesLargoPlazoPage() {
           )}
           <Grid
             width={
-              !inscripcion.NumeroRegistro
-                ? "90%"
-                : query.isTittle
-                ? "60%"
-                : "50%"
+              reestructura === "con autorizacion"
+                ? query.isMobile
+                  ? "70%"
+                  : query.isMiniTablet
+                  ? "60%"
+                  : query.isTablet
+                  ? "50%"
+                  : query.isLaptop
+                  ? "60%"
+                  : query.isMonitor
+                  ? "60%"
+                  : query.isMonitorXL
+                  ? "58%"
+                  : !inscripcion.NumeroRegistro
+                  ? "90%"
+                  : query.isMobile
+                  ? "60%"
+                  : "50%"
+                : "90%"
             }
             display={"flex"}
-            justifyContent={"center"}
+            justifyContent={
+              reestructura === "con autorizacion" ? "end" : "center"
+            }
+            alignItems={
+              reestructura === "con autorizacion" && query.isMobile
+                ? "center"
+                : "center"
+            }
           >
             <Typography
               sx={{
@@ -113,22 +140,30 @@ export function ObligacionesLargoPlazoPage() {
           {reestructura === "con autorizacion" ? (
             <Grid
               display={"flex"}
-              justifyContent={"center"}
+              justifyContent={"end"}
               sx={{
-                width: "30%",
+                width: "35%",
                 height: "2rem",
                 "@media (min-width: 480px)": {
-                  width: "20%",
+                  width: "32%",
                 },
 
                 "@media (min-width: 768px)": {
-                  width: "22%",
+                  width: "35%",
                   height: "2.5rem",
                 },
 
                 "@media (min-width: 1140px)": {
-                  width: "22%",
+                  width: "35%",
                   height: "2.5rem",
+                },
+
+                "@media (min-width: 1400px)": {
+                  width: "50%",
+                },
+
+                "@media (min-width: 1870px)": {
+                  width: "40%",
                 },
               }}
             >
@@ -146,12 +181,13 @@ export function ObligacionesLargoPlazoPage() {
                   //fontSize: "90%",
                   borderRadius: "0.8vh",
                   textTransform: "capitalize",
-                  fontSize: "70%",
+                  fontSize: "80%",
                 }}
               >
-                {query.isTittle
+                Finalizar Reestructuracion
+                {/* {query.isMobile || query.isMiniTablet
                   ? "Solicitar Autorización"
-                  : "Solicitar Autorización para Reestructura"}
+                  : "Solicitar Autorización para Reestructura"} */}
               </Button>
             </Grid>
           ) : (
@@ -159,25 +195,13 @@ export function ObligacionesLargoPlazoPage() {
               width={
                 !inscripcion.NumeroRegistro
                   ? "0"
-                  : query.isTittle
+                  : query.isMobile
                   ? "10%"
                   : "20%"
               }
               display={"flex"}
               justifyContent={"end"}
               alignItems={"center"}
-              // display={"flex"}
-              // justifyContent={"end"}
-              // sx={{
-              //   width: "20%",
-              //   "@media (min-width: 480px)": {
-              //     width: "20%",
-              //   },
-
-              //   "@media (min-width: 768px)": {
-              //     width: "35%",
-              //   },
-              // }}
             >
               <Button
                 onClick={() => {

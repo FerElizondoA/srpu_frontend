@@ -49,6 +49,7 @@ import {
   ConsultaSolicitud,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
+import { queries } from "../../queries";
 
 export interface IData {
   Id: string;
@@ -432,6 +433,14 @@ export function ConsultaDeSolicitudPage() {
                           />
                         </Tooltip>
                       );
+                    } else {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="warning"
+                          variant="outlined"
+                        />
+                      );
                     }
 
                     return (
@@ -473,7 +482,9 @@ export function ConsultaDeSolicitudPage() {
                               setOpenTrazabilidad(!openTrazabilidad);
                             }}
                           >
-                            {chip}
+                            <Typography sx={queries.medium_text}>
+                              {chip}
+                            </Typography>
                           </Button>
                         </StyledTableCell>
 

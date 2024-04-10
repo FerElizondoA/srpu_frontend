@@ -118,13 +118,14 @@ export function Catalogos() {
       direction="column"
       alignItems={"center"}
       sx={{ width: "100%" }}
+      
     >
       <Grid width={"100%"}>
         <LateralMenu />
       </Grid>
 
       <Grid
-        mt={{ xs: 3, sm: 0 }}
+        mt={{ xs: 6, sm: 0 }}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
@@ -160,7 +161,7 @@ export function Catalogos() {
 
           <Grid
             container
-            sx={{ width: "95%", height: "100%", overflow: "auto" }}
+            sx={{ width: "100%", height: "100%", overflow: "auto" }}
             justifyContent={"center"}
             alignItems={"center"}
           >

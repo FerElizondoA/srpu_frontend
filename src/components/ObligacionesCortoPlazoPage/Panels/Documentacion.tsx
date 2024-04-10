@@ -147,6 +147,10 @@ export function Documentacion() {
   //   }
   // }, []);
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   return (
     <Grid
       item
@@ -224,7 +228,10 @@ export function Documentacion() {
                     <StyledTableCell scope="row">
                       <TextField
                         sx={{ width: "250px" }}
-                        disabled={
+                        disabled={ 
+                          reestructura === "con autorizacion" 
+                          ? true
+                          :
                           val.archivo?.name ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
@@ -282,6 +289,8 @@ export function Documentacion() {
                         </Typography>
                         <input
                           disabled={
+                            reestructura === "con autorizacion" ? true
+                            :
                             datosActualizar.length > 0 &&
                             !datosActualizar.includes(val.tipoArchivo)
                           }
@@ -462,7 +471,7 @@ export function Documentacion() {
             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
           </Typography>
           <input
-            //disabled={reestructura}
+            //disabled={reestructura === "con autorizacion"}
             type="file"
             accept="application/pdf"
             onChange={(v) => {

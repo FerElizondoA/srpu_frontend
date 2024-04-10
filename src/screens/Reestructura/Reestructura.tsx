@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import FindInPageIcon from "@mui/icons-material/FindInPage";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import {
+  Button,
   Chip,
   Grid,
   IconButton,
@@ -15,8 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import {
@@ -24,12 +27,18 @@ import {
   StyledTableRow,
 } from "../../components/CustomComponents";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
-import { VerBorradorDocumento } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogResumenDocumento";
+import { queries } from "../../queries";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
+import {
+  ConsultaRequerimientos,
+  GeneraFormatoReestructura,
+} from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { DialogVerDetalle } from "./DialogVerDetalle";
 
 interface Head {
@@ -69,6 +78,7 @@ const heads: readonly Head[] = [
 ];
 
 export function SolicitudesReestructura() {
+  const navigate = useNavigate();
   const [datos, setDatos] = useState<Array<IData>>([]);
   // const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
@@ -95,6 +105,10 @@ export function SolicitudesReestructura() {
 
   const solicitud: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
+  );
+
+  const setInscripcion: Function = useInscripcionStore(
+    (state) => state.setInscripcion
   );
 
   const changeEncabezadoLP: Function = useLargoPlazoStore(
@@ -143,13 +157,48 @@ export function SolicitudesReestructura() {
     });
   };
 
+  const getDays = (date: any, days: any) => {
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
   const [openDialogVer, changeOpenDialogVer] = useState(false);
+  const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
+
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   useEffect(() => {
     getSolicitudes("Reestructura", (e: IData[]) => {
       setDatos(e);
       // setDatosFiltrados(e);
     });
   }, []);
+
+  const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
+
+  const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
+
+  const requerimientos = (
+    Solicitud: string,
+    noRegistro: string,
+    Requerimiento: any,
+    IdSolicitud: string
+  ) => {
+    let a: any = {};
+
+    Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
+      return a[v]
+        ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
+        : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
+    });
+
+    ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
+
+    setProceso("actualizacion");
+    navigate("../firmaUrl");
+  };
 
   return (
     <Grid>
@@ -357,6 +406,84 @@ export function SolicitudesReestructura() {
                       variant="outlined"
                     />
                   );
+                } else if (row.ControlInterno === "inscripcion") {
+                  chip = (
+                    <Chip label={row.Estatus} color="info" variant="outlined" />
+                  );
+                } else if (row.ControlInterno === "revision") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.ControlInterno === "autorizado") {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.Estatus.includes("Requerimientos")) {
+                  chip = (
+                    <Chip
+                      label={row.Estatus}
+                      color="warning"
+                      variant="outlined"
+                    />
+                  );
+                } else if (row.Estatus === "actualizacion") {
+                }
+                // else if (row.Estatus.includes("Inscrito")) {
+                //   chip = (
+                //     <Chip
+                //       label={row.Estatus}
+                //       color="warning"
+                //       variant="outlined"
+                //     />
+                //   );
+                // }
+                // else if (row.ControlInterno === "Inscrito") {
+                //   chip = (
+                //         <Chip
+                //           label={row.Estatus}
+                //           color="secondary"
+                //           variant="outlined"
+                //         />
+                //   );
+                // }
+                else if (row.Estatus === "Actualizacion") {
+                  chip = (
+                    <Tooltip
+                      title={`${differenceInDays(
+                        getDays(new Date(row.FechaRequerimientos), 11),
+                        new Date()
+                      )} días restantes para cancelación automática`}
+                    >
+                      <Chip
+                        label={
+                          row.Estatus === "Actualizacion"
+                            ? "Actualización"
+                            : row.Estatus
+                        }
+                        color={
+                          differenceInDays(
+                            getDays(new Date(row.FechaRequerimientos), 11),
+                            new Date()
+                          ) > 5
+                            ? "warning"
+                            : "error"
+                        }
+                        variant="filled"
+                      />
+                    </Tooltip>
+                  );
+                } else {
+                  chip = (
+                    <Chip label={row.Estatus} color="info" variant="outlined" />
+                  );
                 }
 
                 return (
@@ -374,7 +501,13 @@ export function SolicitudesReestructura() {
                     </StyledTableCell>
 
                     <StyledTableCell align="center" component="th" scope="row">
-                      {chip}
+                      <Button
+                        onClick={() => {
+                          setOpenTrazabilidad(!openTrazabilidad);
+                        }}
+                      >
+                        <Typography sx={queries.medium_text}>{chip}</Typography>
+                      </Button>
                     </StyledTableCell>
 
                     <StyledTableCell align="center" component="th" scope="row">
@@ -397,7 +530,7 @@ export function SolicitudesReestructura() {
                       {row.TipoSolicitud}
                     </StyledTableCell>
 
-                    <StyledTableCell>
+                    <StyledTableCell size="medium" sx={{ width: "120px" }}>
                       <Tooltip title="Ver Detalle">
                         <IconButton
                           type="button"
@@ -409,18 +542,90 @@ export function SolicitudesReestructura() {
                             );
                             changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
+                            changeRestructura("con autorizacion");
+                            setInscripcion(row);
                           }}
                         >
                           <FindInPageIcon />
                         </IconButton>
                       </Tooltip>
+
+                      {localStorage.getItem("Rol") === row.Control &&
+                        ["19"].includes(row.NoEstatus) && (
+                          <Tooltip title="Firmar documento">
+                            <IconButton
+                              type="button"
+                              onClick={() => {
+                                llenaSolicitud(row, row.TipoSolicitud);
+
+                                GeneraFormatoReestructura(
+                                  row.Solicitud,
+                                  row.TipoSolicitud,
+                                  row.NumeroRegistro,
+                                  // row.Id,
+                                  setUrl
+                                );
+
+                                navigate("../firmaUrl");
+
+                                // getComentariosSolicitudPlazo(
+                                //   row.Id,
+                                //   () => {}
+                                // ).then((data) => {
+                                //   if (
+                                //     rolesAdmin.includes(
+                                //       localStorage.getItem("Rol")!
+                                //     )
+                                //   ) {
+                                //     if (
+                                //       data.filter(
+                                //         (a: any) =>
+                                //           a.Tipo === "Requerimiento"
+                                //       ).length > 0
+                                //     ) {
+                                //       requerimientos(
+                                //         row.Solicitud,
+                                //         row.NumeroRegistro,
+                                //         data.filter(
+                                //           (a: any) =>
+                                //             a.Tipo === "Requerimiento"
+                                //         )[0],
+                                //         row.Id
+                                //       );
+                                //     } else {
+                                //       ConsultaConstancia(
+                                //         row.Solicitud,
+                                //         row.NumeroRegistro,
+                                //         setUrl
+                                //       );
+                                //       changeIdSolicitud(row.Id);
+                                //       navigate("../firmaUrl");
+                                //     }
+                                //   } else {
+                                //     setSolicitudFirma(row);
+                                //     ConsultaSolicitud(
+                                //       row.Solicitud,
+                                //       row.NumeroRegistro,
+                                //       setUrl
+                                //     );
+                                //     setProceso("Por Firmar");
+                                //     changeIdSolicitud(row.Id);
+                                //     navigate("../firmaUrl");
+                                //   }
+                                // });
+                              }}
+                            >
+                              <HistoryEduIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                     </StyledTableCell>
                     {openDialogVer && (
-                      <VerBorradorDocumento
+                      <DialogVerDetalle
                         handler={changeOpenDialogVer}
                         openState={openDialogVer}
-                        rowSolicitud={row}
-                        rowId={row.Id}
+                        rowSolicitud={solicitud}
+                        rowId={rowId}
                       />
                     )}
                   </StyledTableRow>
@@ -439,6 +644,10 @@ export function SolicitudesReestructura() {
           rowId={rowId}
         />
       )}
+      <DialogTrazabilidad
+        handler={setOpenTrazabilidad}
+        openState={openTrazabilidad}
+      />
     </Grid>
   );
 }

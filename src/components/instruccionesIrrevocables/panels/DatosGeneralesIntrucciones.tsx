@@ -17,6 +17,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDatosGeneralesInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { IDatosInstrucciones } from "../../../screens/fuenteDePago/InstruccionesIrrevocables";
 
 export function DatosGeneralesIntrucciones() {
   //DATOS GENERALES
@@ -35,6 +36,15 @@ export function DatosGeneralesIntrucciones() {
 
   const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
     (state) => state.tipoMecanismoVehiculoPago
+  );
+
+  const tablaInstrucciones: IDatosInstrucciones[] = useInstruccionesStore(
+    (state) => state.tablaInstrucciones
+  );
+
+
+  const IdInstruccion: string = useInstruccionesStore(
+    (state) => state.idInstruccion
   );
 
   useEffect(() => {
@@ -56,13 +66,13 @@ export function DatosGeneralesIntrucciones() {
       flexDirection="column"
       justifyContent={"space-evenly"}
       sx={{
-        height: "30rem",
+        height: "23rem",
         "@media (min-width: 480px)": {
-          height: "20rem",
+          height: "24rem",
         },
 
         "@media (min-width: 768px)": {
-          height: "60rem",
+          height: "25rem",
         },
 
         "@media (min-width: 1140px)": {
@@ -74,25 +84,48 @@ export function DatosGeneralesIntrucciones() {
         },
 
         "@media (min-width: 1870px)": {
-          height: "51rem",
+          height: "40rem",
         },
       }}
     >
       <Grid
         container
+
         sx={{
+          width: "100%",
           display: "flex",
           // gridTemplateColumns: "repeat(2,1fr)",
           justifyContent: "space-evenly",
-          height: "13rem",
         }}
       >
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
-          <InputLabel sx={{ ...queries.medium_text }}>
+        <Grid xs={10} sm={5} md={5} lg={5} xl={5}
+          mb={{ xs: 3 }}
+        >
+          <InputLabel sx={{ ...queries.medium_text }}
+            error={IdInstruccion !== "" ? false :
+              tablaInstrucciones.filter(
+              (v) => v.NumeroCuenta.toString() === datosGenerales.numeroCuenta
+            ).length > 0
+            }
+          >
             Número de Cuenta
           </InputLabel>
           <TextField
             disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
+            error={
+              IdInstruccion !== "" ? false :
+              tablaInstrucciones.filter(
+                (v) => v.NumeroCuenta.toString() === datosGenerales.numeroCuenta
+              ).length > 0
+            }
+            helperText={
+              IdInstruccion !== "" ? "" :
+              tablaInstrucciones.filter(
+                (v) => v.NumeroCuenta.toString() === datosGenerales.numeroCuenta
+              ).length > 0
+                ? "Número de mandato ya existente"
+                : ""
+            }
             fullWidth
             variant="standard"
             value={datosGenerales.numeroCuenta}
@@ -110,7 +143,9 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
+        <Grid xs={10} sm={5} md={5} lg={5} xl={5}
+          mb={{ xs: 3 }}
+        >
           <InputLabel sx={{ ...queries.medium_text }}>
             Fecha de la Instrucción
           </InputLabel>
@@ -134,11 +169,13 @@ export function DatosGeneralesIntrucciones() {
 
       <Grid
         container
-        height={"40%"}
+
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
+        <Grid item xs={10} sm={5} md={5} lg={5} xl={5}
+          mb={{ xs: 3 }}
+        >
           <InputLabel sx={{ ...queries.medium_text }}>Cuenta CLABE</InputLabel>
           <TextField
             disabled={
@@ -162,7 +199,7 @@ export function DatosGeneralesIntrucciones() {
           />
         </Grid>
 
-        <Grid item xs={10} sm={4} md={5} lg={5} xl={5}>
+        <Grid item xs={10} sm={5} md={5} lg={5} xl={5}>
           <InputLabel sx={{ ...queries.medium_text }}>Banco</InputLabel>
           <Autocomplete
             disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}

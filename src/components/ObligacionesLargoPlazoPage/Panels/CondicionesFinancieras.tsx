@@ -37,6 +37,7 @@ import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
 export const headsTasa: readonly {
   label: string;
@@ -98,31 +99,31 @@ export const headsDisposicion: readonly {
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Acciones",
-  },
-  {
-    label: "Fecha Disposición",
-  },
-  {
-    label: "Importe de disposición",
-  },
-  {
-    label: "Fecha de Primer Pago Capital",
-  },
-  {
-    label: "Periodicidad de Pago Capital",
-  },
-  {
-    label: "Fecha de Primer Pago de Interés",
-  },
-  {
-    label: "Tasa de Interés",
-  },
-  {
-    label: "Comisiones",
-  },
-];
+    {
+      label: "Acciones",
+    },
+    {
+      label: "Fecha Disposición",
+    },
+    {
+      label: "Importe de disposición",
+    },
+    {
+      label: "Fecha de Primer Pago Capital",
+    },
+    {
+      label: "Periodicidad de Pago Capital",
+    },
+    {
+      label: "Fecha de Primer Pago de Interés",
+    },
+    {
+      label: "Tasa de Interés",
+    },
+    {
+      label: "Comisiones",
+    },
+  ];
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
@@ -168,6 +169,9 @@ export function CondicionesFinancieras() {
     (!datosActualizar.includes("Tabla Condiciones Financieras") ||
       !datosActualizar.includes("Monto Original Contratado"));
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
   return (
     <Grid
       container
@@ -238,7 +242,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
-                            disabled={disable}
+                            disabled={disable || reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => {
                               setAccion("Editar");
@@ -252,7 +256,7 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
-                            disabled={disable}
+                            disabled={disable || reestructura === "con autorizacion"}
                             type="button"
                             onClick={() => {
                               removeCondicionFinanciera(index);
@@ -272,9 +276,9 @@ export function CondicionesFinancieras() {
                         {row.disposicion.length > 1
                           ? null
                           : format(
-                              new Date(row.disposicion[0].fechaDisposicion),
-                              "dd/MM/yyyy"
-                            )}
+                            new Date(row.disposicion[0].fechaDisposicion),
+                            "dd/MM/yyyy"
+                          )}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -558,7 +562,7 @@ export function CondicionesFinancieras() {
       >
         <ThemeProvider theme={buttonTheme}>
           <Button
-            disabled={disable}
+            disabled={disable || reestructura === "con autorizacion"}
             sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {

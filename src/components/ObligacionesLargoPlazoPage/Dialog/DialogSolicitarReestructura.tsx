@@ -5,6 +5,7 @@ import {
   Grid,
   MenuItem,
   TextField,
+  Typography,
 } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -13,6 +14,11 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
+import { IData } from "../../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPage";
+import { useNavigate } from "react-router-dom";
+import { stringify } from "querystring";
 
 type Props = {
   handler: Function;
@@ -27,6 +33,8 @@ export function DialogSolicitarReestructura(props: Props) {
 
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
     setidUsuarioAsignado("");
@@ -40,13 +48,27 @@ export function DialogSolicitarReestructura(props: Props) {
     setErrorAsignacion(false);
   }, []);
 
+
+  const rowSolicitud: IData = useSolicitudFirmaStore(
+    (state) => state.rowSolicitud
+  );
+
+  const setRowSolicitud: Function = useSolicitudFirmaStore(
+    (state) => state.setRowSolicitud
+  );
+
   return (
     <Dialog open={props.openState} fullWidth>
-      <DialogTitle>Seleccione un autorizador</DialogTitle>
+      {/* <DialogTitle>Seleccione un autorizador</DialogTitle> */}
+      <DialogTitle>
+        <Typography sx={queries.bold_text}>
+          Esta por terminar la reestructuración, ¿Desea finalizarla?
+        </Typography>
+      </DialogTitle>
 
       <DialogContent>
         <Grid mb={2}>
-          <FormControl fullWidth>
+          {/* <FormControl fullWidth>
             <TextField
               select
               value={idUsuarioAsignado}
@@ -76,7 +98,7 @@ export function DialogSolicitarReestructura(props: Props) {
                   );
                 })}
             </TextField>
-          </FormControl>
+          </FormControl> */}
         </Grid>
       </DialogContent>
 
@@ -91,8 +113,12 @@ export function DialogSolicitarReestructura(props: Props) {
           Cancelar
         </Button>
 
-        <Button variant="text" sx={queries.buttonContinuar} onClick={() => {}}>
-          {"Enviar"}
+        <Button variant="text" sx={queries.buttonContinuar}
+          onClick={() => {
+            CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
+            navigate("../ConsultaDeSolicitudes");
+          }}>
+          Aceptar
         </Button>
       </DialogActions>
     </Dialog>

@@ -191,6 +191,10 @@ export function InformacionGeneral() {
     (state) => state.datosActualizar
   );
 
+  const reestructura: string = useCortoPlazoStore(
+    (state) => state.reestructura
+  );
+
   return (
     <Grid
       container
@@ -275,8 +279,9 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Monto Original Contratado")
+              reestructura === "con autorizacion" || 
+              (datosActualizar.length > 0 &&
+              !datosActualizar.includes("Monto Original Contratado"))
             }
             fullWidth
             placeholder="0"
@@ -333,8 +338,9 @@ export function InformacionGeneral() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Vencimiento")
+                reestructura === "con autorizacion" || 
+                (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento"))
               }
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
@@ -348,6 +354,7 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             disabled={
+              reestructura === "con autorizacion" || 
               datosActualizar.length > 0 && !datosActualizar.includes("Destino")
             }
             clearText="Borrar"
@@ -399,8 +406,9 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Denominación")
+              reestructura === "con autorizacion" || 
+              (datosActualizar.length > 0 &&
+              !datosActualizar.includes("Denominación"))
             }
             fullWidth
             variant="standard"
@@ -433,8 +441,9 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Institución Financiera")
+              reestructura === "con autorizacion" || 
+              (datosActualizar.length > 0 &&
+              !datosActualizar.includes("Institución Financiera"))
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"

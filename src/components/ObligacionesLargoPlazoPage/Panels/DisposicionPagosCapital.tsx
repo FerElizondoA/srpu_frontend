@@ -838,6 +838,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                      sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
