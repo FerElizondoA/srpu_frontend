@@ -30,11 +30,6 @@ import { Mandatos } from "./screens/fuenteDePago/Mandatos";
 import { SolicitudesReestructura } from "./screens/Reestructura/Reestructura";
 import { ConsultaDeCancelacionesPage } from "./screens/Cancelaciones/ConsultaDeCancelacionesPage";
 
-export const getToken = () => {
-  let token = localStorage.getItem("jwtToken");
-  return token;
-};
-
 function App() {
   // const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
