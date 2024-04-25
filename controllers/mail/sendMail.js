@@ -18,24 +18,24 @@ module.exports = {
     });
 
     function getCorreo() {
-      return new Promise((resolve, reject) => {
-        let emails = "";
-        let mock = "";
-        db.query(
-          `CALL sp_DetalleCorreos('${usuarios}', '${plantilla}')`,
-          (err, result) => {
-            mock = result[1][0].body;
-            result[0].map(({ CorreoElectronico }) => {
-              if (emails !== "") {
-                return (emails = emails + "; " + CorreoElectronico);
-              } else {
-                return (emails = CorreoElectronico);
-              }
-            });
-            resolve({ emails: emails, plantilla: mock });
-          }
-        );
-      });
+      // return new Promise((resolve, reject) => {
+      let emails = "";
+      let mock = "";
+      db.query(
+        `CALL sp_DetalleCorreos('${usuarios}', '${plantilla}')`,
+        (err, result) => {
+          mock = result[1][0].body;
+          result[0].map(({ CorreoElectronico }) => {
+            if (emails !== "") {
+              return (emails = emails + "; " + CorreoElectronico);
+            } else {
+              return (emails = CorreoElectronico);
+            }
+          });
+          Promise.resolve({ emails: emails, plantilla: mock });
+        }
+      );
+      // });
     }
 
     getCorreo().then((r) => {

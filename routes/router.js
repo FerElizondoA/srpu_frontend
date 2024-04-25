@@ -709,20 +709,6 @@ router.delete(
 );
 //#endregion
 
-//#region Usuario
-router.get("/usuario", verifyToken.verifyJWT, (req, res) => {
-  getDetailUsuario(req, res);
-});
-
-router.get("/lista-usuarios", verifyToken.verifyJWT, (req, res) => {
-  getUsuarios(req, res);
-});
-
-router.get("/detail-usuario", verifyToken.verifyJWT, (req, res) => {
-  getDetailUsuario(req, res);
-});
-//#endregion
-
 //#region Solicitudes
 router.post("/create-solicitud", verifyToken.verifyJWT, (req, res) => {
   createSolicitud(req, res);
@@ -781,9 +767,6 @@ router.post("/delete-comentario", verifyToken.verifyJWT, (req, res) => {
 //#endregion
 
 //#region  Usuarios
-router.post("/create-usuario", verifyToken.verifyJWT, (req, res) => {
-  createUsuario(req, res);
-});
 
 router.post("/create-notificacion", verifyToken.verifyJWT, (req, res) => {
   createNotificacion(req, res);
