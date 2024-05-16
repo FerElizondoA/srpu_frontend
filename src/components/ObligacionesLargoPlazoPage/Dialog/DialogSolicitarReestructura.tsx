@@ -1,4 +1,4 @@
-import { Button, Dialog, Grid, Typography } from "@mui/material";
+import { Box, Button, Dialog, Grid, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -10,11 +10,15 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { IDatosSolicitudReestructura } from "../../../store/Reestructura/reestructura";
 
 type Props = {
   handler: Function;
   openState: boolean;
   idSolicitud: string;
+  Solicitud: string;
+  IdEditor: string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
@@ -25,6 +29,25 @@ export function DialogSolicitarReestructura(props: Props) {
   const [errorAsignacion, setErrorAsignacion] = useState(false);
 
   const navigate = useNavigate();
+
+
+
+  const rowSolicitud: IData = useInscripcionStore((state) => state.inscripcion);
+
+  const setSolicitudReestructura: Function = useReestructuraStore(
+    (state) => state.setSolicitudReestructura
+  );
+
+  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+    (state) => state.SolicitudReestructura
+  );
+
+  const createSolicitudReestructura: Function = useReestructuraStore(
+    (state) => state.createSolicitudReestructura
+  );
+
+  const [navigateReestructura, setNavigateReestructura] =
+    useState(false);
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -39,20 +62,28 @@ export function DialogSolicitarReestructura(props: Props) {
     setErrorAsignacion(false);
   }, []);
 
-  const rowSolicitud: IData = useInscripcionStore((state) => state.inscripcion);
 
   return (
     <Dialog open={props.openState} fullWidth>
       {/* <DialogTitle>Seleccione un autorizador</DialogTitle> */}
       <DialogTitle>
-        <Typography sx={queries.bold_text}>
-          Esta por terminar la reestructuración, ¿Desea finalizarla?
-        </Typography>
+        <Box sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}>
+          <Typography sx={queries.bold_text}>
+            Finalizar Solicitud
+          </Typography>
+        </Box>
+
       </DialogTitle>
 
       <DialogContent>
-        <Grid mb={2}>
-          {/* <FormControl fullWidth>
+        <Typography>
+          Esta por terminar la reestructuración, ¿Desea finalizarla?
+        </Typography>
+        {/* <Grid mb={2}>
+          <FormControl fullWidth>
             <TextField
               select
               value={idUsuarioAsignado}
@@ -82,8 +113,8 @@ export function DialogSolicitarReestructura(props: Props) {
                   );
                 })}
             </TextField>
-          </FormControl> */}
-        </Grid>
+          </FormControl>
+        </Grid> */}
       </DialogContent>
 
       <DialogActions>
@@ -101,8 +132,11 @@ export function DialogSolicitarReestructura(props: Props) {
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor);
-            navigate("../ConsultaDeSolicitudes");
+            // CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
+            createSolicitudReestructura(props.idSolicitud, props.Solicitud, props.IdEditor, setNavigateReestructura)
+            if (!navigateReestructura) {
+              navigate("../ConsultaDeSolicitudes");
+            }
           }}
         >
           Aceptar

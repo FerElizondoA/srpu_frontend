@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
@@ -163,10 +163,17 @@ export function CondicionesFinancieras() {
     (state) => state.datosActualizar
   );
 
+  const radioValue: number = useCortoPlazoStore((state) => state.radioValue);
+  const setRadioValue: Function = useCortoPlazoStore(
+    (state) => state.setRadioValue
+  );
+
   let disable =
     datosActualizar.length < 0 &&
     (!datosActualizar.includes("Tabla Condiciones Financieras") ||
       !datosActualizar.includes("Monto Original Contratado"));
+
+      
 
   return (
     <Grid
@@ -245,6 +252,8 @@ export function CondicionesFinancieras() {
                               changeOpenAgregarState(!openAgregarCondicion);
                               setIndexRegistro(index);
                               loadCondicionFinanciera(row);
+                              setRadioValue(row.tasaInteres[0].tasaFija=== "N/A" ? 2 : 1)
+                              console.log("row", row)
                             }}
                           >
                             <EditIcon />
@@ -326,6 +335,7 @@ export function CondicionesFinancieras() {
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);
+                            console.log("rowTasa",rowTasa)
                             setOpenTasa(true);
                           }}
                         >
@@ -402,10 +412,13 @@ export function CondicionesFinancieras() {
                                 {row.periocidadPago.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaReferencia.Descripcion}
+                                {row.tasaReferencia.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.sobreTasa}
+                                {row.sobreTasa === 0 || row.sobreTasa === null
+                                  ? "N/A"
+                                  : row.sobreTasa 
+                                } %
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.diasEjercicio.Descripcion}
@@ -472,7 +485,7 @@ export function CondicionesFinancieras() {
                                 {row.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.porcentaje}
+                                {row.porcentaje} %
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row.monto}

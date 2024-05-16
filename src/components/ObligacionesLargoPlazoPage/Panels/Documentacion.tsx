@@ -30,6 +30,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 interface Head {
   label: string;
@@ -147,7 +148,10 @@ export function Documentacion() {
   //   }
   // }, []);
 
-  const reestructura: string = "";
+  const reestructura: string = useReestructuraStore(
+    (state) => state.reestructura
+  );
+
   const [justificacionRespuesta, setJustificacionRespuesta] = useState<
     Array<ITiposDocumento>
   >([]);

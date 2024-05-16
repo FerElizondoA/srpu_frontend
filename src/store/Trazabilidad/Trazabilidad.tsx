@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 
+
 export interface IDataTrazabilidad {
   ID: string;
   IdSolicitud: string;
@@ -17,12 +18,32 @@ export interface IDataTrazabilidad {
 export interface TrazabilidadSlice {
   listadoRegistroTrazabilidad: IDataTrazabilidad[];
   getRegistroTrazabilidad: (IdSolicitud: string) => void;
+
+  IdSolicitudNotificacion: string;
+  setIdSolicitudNotificacion:(IdSolicitudNotificacion: string)  => void;
+  cleanIdSolicitud:() =>void;
+  
+
 }
 
 export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
   set,
   get
 ) => ({
+  IdSolicitudNotificacion: "",
+
+  setIdSolicitudNotificacion: (IdSolicitudNotificacion : string)=> {
+    set(() => ({
+      IdSolicitudNotificacion: IdSolicitudNotificacion,
+    }));
+  },
+
+  cleanIdSolicitud:() =>{
+    set(() => ({
+      IdSolicitudNotificacion: "",
+    }));
+  },
+
   listadoRegistroTrazabilidad: [],
 
   getRegistroTrazabilidad: async (IdSolicitud: string) => {

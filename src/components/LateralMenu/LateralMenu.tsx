@@ -26,6 +26,7 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import ExtensionIcon from "@mui/icons-material/Extension";
 
+
 import InfoIcon from "@mui/icons-material/Info";
 import {
   AppBar,
@@ -66,6 +67,7 @@ import { VisualizadorAyudas } from "../../screens/Ayuda/VisualizadorAyudas";
 import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
+import { useTrazabilidad } from "../../store/Trazabilidad/main";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -110,17 +112,28 @@ export const IconsMenu = (icon: string) => {
     case "BuildIcon":
       return <BuildOutlinedIcon sx={queries.icon} />;
     case "ExtensionIcon":
-      return <ExtensionIcon sx={queries.icon} />;
+      return <ExtensionIcon />;
+    case "NotificationsActiveIcon" :
+      return <NotificationsActiveIcon sx={queries.icon}/>;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
   }
 };
 
-export function LateralMenu() {
+export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
+
+  const setIdSolicitudNotificacion: Function = useTrazabilidad(
+    (state) => state.setIdSolicitudNotificacion
+  )
+
+  const IdSolicitudNotificacion: string = useTrazabilidad(
+    (state) => state.IdSolicitudNotificacion
+  )
+
   const menu =
     localStorage.getItem("Menu") !== undefined &&
-    localStorage.getItem("Menu") !== null
+      localStorage.getItem("Menu") !== null
       ? JSON.parse(localStorage.getItem("Menu")!)
       : [];
 
@@ -187,6 +200,29 @@ export function LateralMenu() {
 
   const [bandejaInfo, setBandejaInfo] = useState<any[]>([]);
 
+
+
+  const routerControlInterno = (controlInterno: string) => {
+    switch (controlInterno) {
+      case "inscripcion" : 
+
+      case "revision" :
+
+      case "autorizado" : navigate("../ConsultaDeSolicitudes"); fnc()
+      break;
+
+      case "cancelacion" : navigate("../cancelaciones") ; fnc()
+      break;
+
+      case "reestructura" : 
+
+      case "reestructurado" : navigate("../reestructura") ; fnc()
+      break;
+    }
+    
+
+  }
+
   const getBandejas = () => {
     axios
       .post(process.env.REACT_APP_APPLICATION_FIEL + "/api/docsfirmados/menu")
@@ -199,6 +235,7 @@ export function LateralMenu() {
 
   React.useEffect(() => {
     getBandejas();
+    //console.log(JSON.parse(localStorage.getItem("Menu")))
   }, []);
 
   React.useEffect(() => {
@@ -323,6 +360,9 @@ export function LateralMenu() {
           }
         });
     };
+
+    
+
 
     return (
       <Dialog
@@ -618,7 +658,8 @@ export function LateralMenu() {
                         "Cerrar sesión",
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
-                          <ListItemButton
+                          {/* Aqui esta el despliegue de las opciones */}
+                          <ListItemButton     
                             sx={{
                               backgroundColor:
                                 i === indexSelect && seccionesHover === true
@@ -953,6 +994,24 @@ export function LateralMenu() {
                             Marcar Como Leido
                           </Typography>
                         </Button>
+
+                        <Button
+                          onClick={() => {
+                            setIdSolicitudNotificacion(noti.IdSolicitud)
+                            routerControlInterno(noti.ControlInterno)
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: "10px",
+                            }}
+                            color="#af8c55 "
+                          >
+                            Ver Solicitud {noti.ControlInterno}
+                          </Typography>
+                        </Button>
+
+                        
                         <Divider variant="fullWidth" />
                       </Box>
                     </Grid>

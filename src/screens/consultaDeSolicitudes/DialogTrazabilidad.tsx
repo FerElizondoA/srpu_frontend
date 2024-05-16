@@ -23,10 +23,12 @@ import { IDataTrazabilidad } from "../../store/Trazabilidad/Trazabilidad";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 
 type Props = {
   handler: Function;
   openState: boolean;
+  row: IInscripcion;
 };
 
 const heads: Array<{ label: string }> = [
@@ -53,7 +55,8 @@ export function DialogTrazabilidad(props: Props) {
   const Id: string = useInscripcionStore((state) => state.inscripcion.Id);
 
   useEffect(() => {
-    getRegistroTrazabilidad(Id);
+    getRegistroTrazabilidad(props.row.Id);
+    console.log(listadoRegistroTrazabilidad)
   }, [!props.openState]);
 
   return (

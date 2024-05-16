@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 export function ComentarioApartado({
   setOpen,
@@ -27,7 +28,7 @@ export function ComentarioApartado({
     (state) => state.removeComentario
   );
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 

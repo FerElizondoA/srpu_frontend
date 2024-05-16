@@ -3,6 +3,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputLabel,
@@ -17,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -27,6 +30,9 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import { IFile } from "./Documentacion";
 
 interface Head {
   label: string;
@@ -47,6 +53,18 @@ const headsGC: Head[] = [
   },
   {
     label: "Monto",
+  },
+  {
+    label: "Gastos Adicionales",
+  },
+  {
+    label: "Monto Gastos Adicionales",
+  },
+  {
+    label: "Saldo Vigente",
+  },
+  {
+    label: "Detalle de la Inversión",
   },
   {
     label: "Acción",
@@ -102,16 +120,45 @@ export function GastoCostos() {
     addGastosCostos(gastosCostos);
   };
 
-  function cargarArchivo(event: any) {
+  const [fileSelected, setFileSelected] = useState<any>("");
+  const [showModalPrevia, setShowModalPrevia] = useState(false);
+  const [arrDocs, setArrDocs] = useState<any>([]);
+
+  const documentos: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
+
+  const toBase64 = (file: any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  const tablaDocumentos: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
+
+  function cargarArchivo(event: any, index: number) {
     let file = event.target.files[0];
 
-    setGastosCostos({
-      ...gastosCostos,
-      archivoDetalleInversion: {
-        archivo: file,
-        nombreArchivo: `DIPP-${file.name}`,
-      },
-    });
+    if (file !== undefined) {
+      let auxArrayArchivos = [...tablaDocumentos];
+      auxArrayArchivos[index].archivo = file;
+      auxArrayArchivos[index].nombreArchivo = file.name;
+      setGastosCostos({
+        ...gastosCostos,
+        archivoDetalleInversion: {
+          archivo: file,
+          nombreArchivo: `DIPP-${file.name}`,
+        },
+      });
+    } else {
+
+    }
+
+
   }
 
   useEffect(() => {
@@ -125,7 +172,7 @@ export function GastoCostos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 
@@ -189,30 +236,241 @@ export function GastoCostos() {
       </Grid>
 
       {gastosCostos.destino.Descripcion && (
-        <Grid
-          container
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
-            justifyItems: "center",
-            height: "25vh",
-          }}
-        >
-          {gastosCostos.destino.Descripcion.toLowerCase().includes(
-            "refinanciamiento"
-          ) && (
+        <>
+          <Grid
+            container
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3,1fr)",
+              justifyItems: "center",
+              height: "25vh",
+            }}
+          >
+            {gastosCostos.destino.Descripcion.toLowerCase().includes(
+              "refinanciamiento"
+            ) && (
+                <Grid item width={"90%"}>
+                  <InputLabel sx={queries.medium_text}>
+                    Clave de Inscripción del Financiamiento a Refinanciar
+                  </InputLabel>
+                  <TextField
+                    disabled={reestructura === "con autorizacion"}
+                    fullWidth
+                    value={gastosCostos.claveInscripcionFinanciamiento}
+                    onChange={(v) => {
+                      setGastosCostos({
+                        ...gastosCostos,
+                        claveInscripcionFinanciamiento: v.target.value,
+                      });
+                    }}
+                    InputLabelProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    variant="standard"
+                  />
+                </Grid>
+              )}
+
+            {gastosCostos.destino.Descripcion.toLowerCase().includes(
+              "inversión"
+            ) && (
+                <Grid container
+                  xs={8} sm={8} md={10} lg={11} xl={3.3}
+                >
+                  <InputLabel sx={queries.medium_text}>
+                    Detalle de la Inversión
+                  </InputLabel>
+                  <Autocomplete
+                    disabled={reestructura === "con autorizacion"}
+                    clearText="Borrar"
+                    noOptionsText="Sin opciones"
+                    closeText="Cerrar"
+                    openText="Abrir"
+                    fullWidth
+                    options={catalogoDetallesInversion}
+                    getOptionLabel={(option) => option.Descripcion}
+                    renderOption={(props, option) => {
+                      return (
+                        <li {...props} key={option.Descripcion}>
+                          <Typography>{option.Descripcion}</Typography>
+                        </li>
+                      );
+                    }}
+                    value={gastosCostos.detalleInversion}
+                    onChange={(event, text) => {
+                      setGastosCostos({
+                        ...gastosCostos,
+                        detalleInversion: {
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        sx={queries.medium_text}
+                      />
+                    )}
+                    isOptionEqualToValue={(option, value) =>
+                      option.Id === value.Id || value.Descripcion === ""
+                    }
+                  />
+                </Grid>
+              )}
+            {gastosCostos.destino.Descripcion.toLowerCase().includes(
+              "inversión"
+            ) && (
+                <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
+                  <InputLabel sx={queries.medium_text}>
+                    Adjuntar detalle de la inversión pública productiva
+                  </InputLabel>
+                  <Grid
+                    mt={1}
+                    mb={1}
+                    item
+                    display={"flex"}
+                    justifyContent={"center"}
+                  >
+                    <Grid item sx={{ position: "relative" }}>
+                      <Typography
+                        position={"absolute"}
+                        sx={{
+                          ...queries.leyendaArchivoGastosCosto,
+                          border:
+                            gastosCostos.archivoDetalleInversion.nombreArchivo !==
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              ? "2px dotted #af8c55"
+                              : "2x dotted black",
+                        }}
+                      >
+                        {gastosCostos.archivoDetalleInversion.nombreArchivo ||
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                      </Typography>
+                      <input
+                        disabled={reestructura === "con autorizacion"}
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(v) => {
+                          cargarArchivo(v, tablaGastosCostos.length);
+                        }}
+                        style={{
+                          opacity: 0,
+                          width: "100%",
+                          height: "3vh",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid display={"flex"} justifyContent={"end"}>
+                      <Tooltip title={"Remover Archivo"}>
+                        <Button
+                          onClick={() => {
+                            removeDocumento();
+                            setGastosCostos({
+                              ...gastosCostos,
+                              archivoDetalleInversion: {
+                                archivo: new File([], ""),
+                                nombreArchivo: ``,
+                              },
+                            });
+                          }}
+                        >
+                          <CloseIcon />
+                        </Button>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
             <Grid item width={"90%"}>
-              <InputLabel sx={queries.medium_text}>
-                Clave de Inscripción del Financiamiento a Refinanciar
-              </InputLabel>
+              <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
+              <TextField
+                disabled={reestructura === "con autorizacion"}
+                value={gastosCostos.descripcion}
+                onChange={(v) =>
+                  setGastosCostos({
+                    ...gastosCostos,
+                    descripcion: v.target.value,
+                  })
+                }
+                fullWidth
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                variant="standard"
+              />
+            </Grid>
+
+            <Grid item width={"90%"}>
+              <InputLabel sx={queries.medium_text}>Monto</InputLabel>
               <TextField
                 disabled={reestructura === "con autorizacion"}
                 fullWidth
-                value={gastosCostos.claveInscripcionFinanciamiento}
+                placeholder="0"
+                value={gastosCostos.monto}
+                onChange={(v) => {
+                  if (
+                    validator.isNumeric(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) &&
+                    parseInt(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) < 9999999999999999
+                  ) {
+                    setGastosCostos({
+                      ...gastosCostos,
+                      monto: moneyMask(v.target.value),
+                    });
+                  }
+                }}
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                  //startAdornment: <AttachMoneyIcon />,
+                }}
+                variant="standard"
+              />
+            </Grid>
+
+            <Grid item width={"90%"}>
+              <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
+              <TextField
+                disabled={reestructura === "con autorizacion"}
+                fullWidth
+                value={gastosCostos.gastosAdicionales}
                 onChange={(v) => {
                   setGastosCostos({
                     ...gastosCostos,
-                    claveInscripcionFinanciamiento: v.target.value,
+                    gastosAdicionales: v.target.value,
                   });
                 }}
                 InputLabelProps={{
@@ -228,303 +486,96 @@ export function GastoCostos() {
                 variant="standard"
               />
             </Grid>
-          )}
 
-          {gastosCostos.destino.Descripcion.toLowerCase().includes(
-            "inversión"
-          ) && (
-            <Grid item xs={10} sm={5} md={5} lg={3.3} xl={3.3}>
+            <Grid item width={"90%"}>
               <InputLabel sx={queries.medium_text}>
-                Detalle de la Inversión
+                Monto Gastos Adicionales
               </InputLabel>
-              <Autocomplete
+              <TextField
                 disabled={reestructura === "con autorizacion"}
-                clearText="Borrar"
-                noOptionsText="Sin opciones"
-                closeText="Cerrar"
-                openText="Abrir"
                 fullWidth
-                options={catalogoDetallesInversion}
-                getOptionLabel={(option) => option.Descripcion}
-                renderOption={(props, option) => {
-                  return (
-                    <li {...props} key={option.Descripcion}>
-                      <Typography>{option.Descripcion}</Typography>
-                    </li>
-                  );
+                placeholder="0"
+                value={gastosCostos.montoGastosAdicionales}
+                onChange={(v) => {
+                  if (
+                    validator.isNumeric(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) &&
+                    parseInt(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) < 9999999999999999
+                  ) {
+                    setGastosCostos({
+                      ...gastosCostos,
+                      montoGastosAdicionales: moneyMask(v.target.value),
+                    });
+                  }
                 }}
-                value={gastosCostos.detalleInversion}
-                onChange={(event, text) => {
-                  setGastosCostos({
-                    ...gastosCostos,
-                    detalleInversion: {
-                      Id: text?.Id || "",
-                      Descripcion: text?.Descripcion || "",
-                    },
-                  });
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    sx={queries.medium_text}
-                  />
-                )}
-                isOptionEqualToValue={(option, value) =>
-                  option.Id === value.Id || value.Descripcion === ""
-                }
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                  //startAdornment: <AttachMoneyIcon />,
+                }}
+                variant="standard"
               />
             </Grid>
-          )}
-          {gastosCostos.destino.Descripcion.toLowerCase().includes(
-            "inversión"
-          ) && (
-            <Grid item xs={10} sm={10} md={3} lg={3.3} xl={3.3}>
-              <InputLabel sx={queries.medium_text}>
-                Adjuntar detalle de la inversión pública productiva
+
+            <Grid item width={"90%"}>
+              <InputLabel disabled sx={queries.medium_text}>
+                Saldo Vigente
               </InputLabel>
-              <Grid
-                mt={1}
-                mb={1}
-                item
-                display={"flex"}
-                justifyContent={"center"}
-              >
-                <Grid item sx={{ position: "relative" }}>
-                  <Typography
-                    position={"absolute"}
-                    sx={{
-                      ...queries.leyendaArchivoGastosCosto,
-                      border:
-                        gastosCostos.archivoDetalleInversion.nombreArchivo !==
-                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                          ? "2px dotted #af8c55"
-                          : "2x dotted black",
-                    }}
-                  >
-                    {gastosCostos.archivoDetalleInversion.nombreArchivo ||
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-                  </Typography>
-                  <input
-                    disabled={reestructura === "con autorizacion"}
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(v) => {
-                      cargarArchivo(v);
-                    }}
-                    style={{
-                      opacity: 0,
-                      width: "100%",
-                      height: "3vh",
-                      cursor: "pointer",
-                    }}
-                  />
-                </Grid>
-
-                <Grid display={"flex"} justifyContent={"end"}>
-                  <Tooltip title={"Remover Archivo"}>
-                    <Button
-                      onClick={() => {
-                        removeDocumento();
-                        setGastosCostos({
-                          ...gastosCostos,
-                          archivoDetalleInversion: {
-                            archivo: new File([], ""),
-                            nombreArchivo: ``,
-                          },
-                        });
-                      }}
-                    >
-                      <CloseIcon />
-                    </Button>
-                  </Tooltip>
-                </Grid>
-              </Grid>
+              <TextField
+                disabled={reestructura === "con autorizacion"}
+                fullWidth
+                value={gastosCostos.saldoVigente}
+                onChange={(v) => {
+                  if (
+                    validator.isNumeric(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) &&
+                    parseInt(
+                      v.target.value
+                        .replace(".", "")
+                        .replace(",", "")
+                        .replace(/\D/g, "")
+                    ) < 9999999999999999
+                  ) {
+                    setGastosCostos({
+                      ...gastosCostos,
+                      saldoVigente: moneyMask(v.target.value.toString()),
+                    });
+                  }
+                }}
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                variant="standard"
+              />
             </Grid>
-          )}
-          <Grid item width={"90%"}>
-            <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              value={gastosCostos.descripcion}
-              onChange={(v) =>
-                setGastosCostos({
-                  ...gastosCostos,
-                  descripcion: v.target.value,
-                })
-              }
-              fullWidth
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              variant="standard"
-            />
           </Grid>
-
-          <Grid item width={"90%"}>
-            <InputLabel sx={queries.medium_text}>Monto</InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              fullWidth
-              placeholder="0"
-              value={gastosCostos.monto}
-              onChange={(v) => {
-                if (
-                  validator.isNumeric(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) &&
-                  parseInt(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) < 9999999999999999
-                ) {
-                  setGastosCostos({
-                    ...gastosCostos,
-                    monto: moneyMask(v.target.value),
-                  });
-                }
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-                //startAdornment: <AttachMoneyIcon />,
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item width={"90%"}>
-            <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              fullWidth
-              value={gastosCostos.gastosAdicionales}
-              onChange={(v) => {
-                setGastosCostos({
-                  ...gastosCostos,
-                  gastosAdicionales: v.target.value,
-                });
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item width={"90%"}>
-            <InputLabel sx={queries.medium_text}>
-              Monto Gastos Adicionales
-            </InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              fullWidth
-              placeholder="0"
-              value={gastosCostos.montoGastosAdicionales}
-              onChange={(v) => {
-                if (
-                  validator.isNumeric(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) &&
-                  parseInt(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) < 9999999999999999
-                ) {
-                  setGastosCostos({
-                    ...gastosCostos,
-                    montoGastosAdicionales: moneyMask(v.target.value),
-                  });
-                }
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-                //startAdornment: <AttachMoneyIcon />,
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item width={"90%"}>
-            <InputLabel disabled sx={queries.medium_text}>
-              Saldo Vigente
-            </InputLabel>
-            <TextField
-              disabled={reestructura === "con autorizacion"}
-              fullWidth
-              value={gastosCostos.saldoVigente}
-              onChange={(v) => {
-                if (
-                  validator.isNumeric(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) &&
-                  parseInt(
-                    v.target.value
-                      .replace(".", "")
-                      .replace(",", "")
-                      .replace(/\D/g, "")
-                  ) < 9999999999999999
-                ) {
-                  setGastosCostos({
-                    ...gastosCostos,
-                    saldoVigente: moneyMask(v.target.value.toString()),
-                  });
-                }
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              InputProps={{
-                style: {
-                  fontFamily: "MontserratMedium",
-                },
-              }}
-              variant="standard"
-            />
-          </Grid>
-        </Grid>
+        </>
       )}
 
       {gastosCostos.destino.Descripcion && (
@@ -625,6 +676,47 @@ export function GastoCostos() {
                       <StyledTableCell align="center" component="th">
                         {row.monto}
                       </StyledTableCell>
+
+                      <StyledTableCell align="center" component="th">
+                        {row.gastosAdicionales}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center" component="th">
+                        {row.montoGastosAdicionales}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center" component="th">
+                        {row.saldoVigente}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center" component="th">
+                        <Tooltip title={"Ver Documento"}>
+                          <IconButton
+                            onClick={() => {
+                              toBase64(documentos[index].archivo)
+                                .then((data) => {
+                                  setFileSelected(data);
+                                })
+                                .catch((err) => {
+                                  setFileSelected(
+                                    `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                      td.NOMBREFORMATEADO.includes(
+                                        row?.detalleInversion.Descripcion
+                                      )
+                                    )[0].FILE
+                                    }`
+                                  );
+                                });
+
+
+                              setShowModalPrevia(true);
+                            }}
+                          >
+                            <FileOpenIcon></FileOpenIcon>
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+
                       <StyledTableCell align="center">
                         <Tooltip title="Eliminar">
                           <IconButton
@@ -644,6 +736,42 @@ export function GastoCostos() {
           </TableContainer>
         </Paper>
       </Grid>
+
+      <Dialog
+        open={showModalPrevia}
+        onClose={() => {
+          setShowModalPrevia(false);
+          setArrDocs([]);
+        }}
+        fullWidth
+        maxWidth={"lg"}
+      >
+        <DialogTitle sx={{ mb: 2 }}>
+          <IconButton
+            onClick={() => {
+              setShowModalPrevia(false);
+            }}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "black",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ height: "100vh" }}>
+          <iframe
+            style={{
+              width: "100%",
+              height: "85vh",
+            }}
+            src={`${fileSelected}`}
+            title="description"
+          ></iframe>
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }

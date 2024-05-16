@@ -30,6 +30,8 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
+import { useResumenStore } from "../../../store/Resumen/main";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 interface Head {
   label: string;
@@ -147,7 +149,7 @@ export function Documentacion() {
   //   }
   // }, []);
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 

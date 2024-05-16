@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 export interface ITasaEfectiva {
   tasaEfectiva: string;
-  diasEjercicio: { Id: string; Descripcion: string };
+  //diasEjercicio: { Id: string; Descripcion: string };
 }
 export interface IComisiones {
   fechaComision: string;

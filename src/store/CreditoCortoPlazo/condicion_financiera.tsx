@@ -61,7 +61,7 @@ export const createCondicionFinancieraSlice: StateCreator<
       tasasParciales: condicionFinanciera.tasaInteres.length > 1,
       disposicionesParciales: condicionFinanciera.disposicion.length > 1,
 
-      noAplica: condicionFinanciera.comisiones[0]?.monto === "N/A",
+      noAplica: condicionFinanciera.comisiones[0]?.tipoDeComision.Descripcion === "N/A" ?  true : false,
 
       pagosDeCapital: condicionFinanciera.pagosDeCapital,
       tablaDisposicion: condicionFinanciera.disposicion,
@@ -131,7 +131,7 @@ export const createCondicionFinancieraSlice: StateCreator<
 
       tasaEfectiva: {
         tasaEfectiva: "",
-        diasEjercicio: { Id: "", Descripcion: "" },
+        //diasEjercicio: { Id: "", Descripcion: "" },
       },
       comision: {
         fechaComision: format(new Date(), "MM/dd/yyyy").toString(),

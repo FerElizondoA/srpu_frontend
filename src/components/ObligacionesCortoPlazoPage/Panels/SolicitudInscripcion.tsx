@@ -112,7 +112,7 @@ export function SolicitudInscripcion() {
         numeroDePago = item.pagosDeCapital.numeroDePago;
         PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;
-        diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
+        //diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
         tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
@@ -203,17 +203,17 @@ export function SolicitudInscripcion() {
           "Sección Condiciones Financieras: Seleccione la Periodicidad de pago."
         );
       }
-      if (
-        diasEjercicio === undefined ||
-        diasEjercicio === "" ||
-        /^[\s]*$/.test(diasEjercicio)
-      ) {
-        err = 1;
+      // if (
+      //   diasEjercicio === undefined ||
+      //   diasEjercicio === "" ||
+      //   /^[\s]*$/.test(diasEjercicio)
+      // ) {
+      //   err = 1;
 
-        errores.push(
-          "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
-        );
-      }
+      //   errores.push(
+      //     "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
+      //   );
+      // }
       if (
         tasaEfectiva === undefined ||
         tasaEfectiva === "" ||

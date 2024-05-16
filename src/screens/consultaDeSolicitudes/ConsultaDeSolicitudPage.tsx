@@ -50,6 +50,7 @@ import {
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
 import { queries } from "../../queries";
+import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 
 export interface IData {
   Id: string;
@@ -181,16 +182,18 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
-  useEffect(() => {
+  const getDatos=()=>{
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
         ? "Inscripcion"
         : "Revision",
       (e: IInscripcion[]) => {
         setDatos(e);
-        setDatosFiltrados(e);
-      }
+      },setDatosFiltrados
     );
+  }
+  useEffect(() => {
+    getDatos();
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
   }, [openEliminar]);
@@ -225,11 +228,44 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
+  const [accion, setAccion] = useState("");
+  const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-        <LateralMenu />
+        <LateralMenu fnc={getDatos}/>
       </Grid>
+
+      <Button
+        onClick={() => {
+          createNotification(
+            "Crédito simple a corto plazo",
+            `Se te ha asignado una solicitud de PRUEBA CON ESTATUS PRUEBA`,
+            
+            // ${
+            //   localStorage.getItem("Rol") === "Autorizador"
+            //     ? accion === "enviar"
+            //       ? "firmar"
+            //       : "validación"
+            //     : localStorage.getItem("Rol") === "Validador"
+            //     ? accion === "enviar"
+            //       ? "autorización"
+            //       : "revisión"
+            //     : "validación"
+            // }`,
+            [
+              localStorage.getItem("IdUsuario") === "d9e88484-759c-11ed-aad1-040300000000"
+                ? "9f6071e8-156b-11ee-ba60-3cd92b4d9bf4"
+                : "d9e88484-759c-11ed-aad1-040300000000",
+            ],
+            "7f70db71-1308-11ef-b2e9-c4346b72f0ba"
+            ,"3"
+              
+          );
+        }}
+      >
+        prueba
+      </Button>
       <Grid
         display={"flex"}
         justifyContent={"center"}
@@ -479,6 +515,7 @@ export function ConsultaDeSolicitudPage() {
                         >
                           <Button
                             onClick={() => {
+                              setInscripcion(row)
                               setOpenTrazabilidad(!openTrazabilidad);
                             }}
                           >
@@ -686,7 +723,7 @@ export function ConsultaDeSolicitudPage() {
       <DialogTrazabilidad
         handler={setOpenTrazabilidad}
         openState={openTrazabilidad}
-        //rowId={""}
+        row={inscripcion}
       />
       {openDialogVer && (
         <VerBorradorDocumento

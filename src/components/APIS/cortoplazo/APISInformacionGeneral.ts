@@ -1,5 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useTrazabilidad } from "../../../store/Trazabilidad/main";
 
 export async function getDestinos() {
   await axios({
@@ -50,7 +51,8 @@ export function getObligadoSolidarioAval(setState: Function) {
     });
 }
 
-export function getSolicitudes(tipoListado: string, setState: Function) {
+export function getSolicitudes(tipoListado: string, setState: Function, setStateFilter:Function) {
+
   axios({
     method: "get",
     url: process.env.REACT_APP_APPLICATION_BACK + "/get-solicitudes",
@@ -64,9 +66,24 @@ export function getSolicitudes(tipoListado: string, setState: Function) {
       Authorization: localStorage.getItem("jwtToken") || "",
     },
   })
+
     .then(({ data }) => {
-      setState(data.data);
-    })
+      const state = useTrazabilidad.getState()
+      console.log("state.IdSolicitudNotificacion", state.IdSolicitudNotificacion);
+      
+      console.log("state", state)
+      if (state.IdSolicitudNotificacion !== "") {
+        setStateFilter(data.data.filter((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || "")))
+        setTimeout(() => state.cleanIdSolicitud, 1000)
+      }else{
+        setStateFilter(data.data);
+      }
+        setState(data.data);
+      
+
+
+
+})
     .catch((error) => {
       Swal.fire({
         confirmButtonColor: "#15212f",

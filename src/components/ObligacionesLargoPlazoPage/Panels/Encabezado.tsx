@@ -12,6 +12,7 @@ import {
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 export function Encabezado() {
   const tipoDocumento: string = useLargoPlazoStore(
@@ -47,7 +48,7 @@ export function Encabezado() {
     (state) => state.datosActualizar
   );
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 

@@ -179,9 +179,11 @@ export function DetalleInstruccion({
           },
         }}
       >
-        <Grid
+        <Grid container 
+         mt={{xs:4, sm:8, md:2}}
+         height={{xs:"20rem", sm:"20rem", md:""}}
           sx={{
-            height: "20%",
+            //height: "20%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-around",
@@ -222,10 +224,11 @@ export function DetalleInstruccion({
             overflowX: "auto",
             "&::-webkit-scrollbar": {
               width: ".1vw",
+              height: ".5vh",
               mt: 1,
             },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "grey",
+              backgroundColor: "#AF8C55",
               outline: "1px solid slategrey",
               borderRadius: 1,
             },

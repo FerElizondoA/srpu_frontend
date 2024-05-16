@@ -109,7 +109,7 @@ export function SolicitudDeReestructuracion() {
         numeroDePago = item.pagosDeCapital.numeroDePago;
         PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;
-        diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
+        //diasEjercicio = item.tasaEfectiva.diasEjercicio.Descripcion;
         tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }

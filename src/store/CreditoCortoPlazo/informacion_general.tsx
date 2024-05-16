@@ -18,8 +18,7 @@ export interface IObligadoSolidarioAval {
 }
 
 export interface InformacionGeneralSlice {
-  reestructura: string;
-  changeRestructura: (restructura: string) => void;
+
 
   informacionGeneral: IInformacionGeneral;
 
@@ -63,12 +62,7 @@ export interface InformacionGeneralSlice {
 export const createInformacionGeneralSlice: StateCreator<
   InformacionGeneralSlice
 > = (set, get) => ({
-  reestructura: "",
-  changeRestructura: (reestructura: string) => {
-    set(() => ({
-      reestructura: reestructura,
-    }));
-  },
+
 
   informacionGeneral: {
     fechaContratacion: new Date().toString(),

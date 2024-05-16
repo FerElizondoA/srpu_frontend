@@ -25,11 +25,15 @@ import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { Transition } from "../fuenteDePago/Mandatos";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { useReestructuraStore } from "../../store/Reestructura/main";
+import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+
+
 
 type Props = {
   handler: Function;
   openState: boolean;
-  rowSolicitud: IData;
+  rowSolicitud: IInscripcion;
   rowId: string;
 };
 
@@ -84,9 +88,56 @@ export function DialogVerDetalle(props: Props) {
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
-  useEffect(() => {
-    getListadoUsuarioRol(setUsuarios);
-  }, [props.openState]);
+
+
+
+
+
+
+
+
+  const [openGuardaComentarios, setOpenGuardaComentarios] =
+    React.useState(false);
+
+  // REQUERIMIENTOS
+  React.useEffect(() => {
+    if (props.rowSolicitud.Id !== "") {
+      getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
+    }
+  }, [props.rowSolicitud.Id]);
+
+  React.useEffect(() => {
+    let a: any = {};
+
+    datosComentario
+      ?.filter((td) => td.Tipo === "Requerimiento")
+      .map((_) => {
+        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+          return a[v]
+            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+        });
+      });
+
+    setComentarios(a);
+
+    useCortoPlazoStore.setState({
+      idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
+        ?.Id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosComentario]);
+
+  const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
+
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+
 
   // const enviaNotificacion = (estatus: string) => {
   //   let users: string[] = [];
@@ -160,12 +211,12 @@ export function DialogVerDetalle(props: Props) {
 
   const [error, setError] = useState(false);
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
-  
-  
-  const changeRestructura: Function = useCortoPlazoStore(
+
+
+  const changeRestructura: Function = useReestructuraStore(
     (state) => state.changeRestructura
   );
 
@@ -174,8 +225,28 @@ export function DialogVerDetalle(props: Props) {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
     isTittle: useMediaQuery("(min-width: 0px) and (max-width: 638px)"),
   };
+  const setInscripcion: Function = useInscripcionStore(
+    (state) => state.setInscripcion
+  );
 
-  
+  const setSolicitudReestructura: Function = useReestructuraStore(
+    (state) => state.setSolicitudReestructura
+  );
+
+  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+    (state) => state.SolicitudReestructura
+  );
+
+  useEffect(() => {
+    getListadoUsuarioRol(setUsuarios);
+  }, [props.openState]);
+
+  useEffect(() => {
+    //setSolicitudReestructura("", "")
+    //console.log("SolicitudReestructura.IdSolicitud", SolicitudReestructura.IdSolicitud)
+    //console.log("SolicitudReestructura.solicitud", SolicitudReestructura.Solicitud)
+  }, []);
+
   return (
     <Dialog
       open={props.openState}
@@ -184,6 +255,7 @@ export function DialogVerDetalle(props: Props) {
       TransitionComponent={Transition}
       onClose={() => {
         props.handler(false);
+        cleanSolicitudLargoPlazo();
       }}
     >
       <DialogTitle
@@ -225,340 +297,184 @@ export function DialogVerDetalle(props: Props) {
               comentarios: {},
               idComentario: "",
             });
+            cleanSolicitudCortoPlazo();
           }}
         >
           Volver
         </Button>
         {
-        reestructura === "con autorizacion" &&
-        localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-        props.rowSolicitud.NoEstatus === "10" &&
-        props.rowSolicitud.ControlInterno === "autorizado" &&
-        localStorage.getItem("Rol") === "Verificador" ? (
-          <Grid
-            container
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            alignItems={"center"}
-            sx={{
-              width: "65%",
-              "@media (min-width: 480px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 768px)": {
-                width: "82%",
-              },
-
-              "@media (min-width: 1140px)": {
-                width: "60%",
-              },
-
-              "@media (min-width: 1400px)": {
-                width: "50%",
-              },
-
-              "@media (min-width: 1870px)": {
-                width: "40%",
-              },
-            }}
-          >
-            <Button
+          reestructura === "con autorizacion" &&
+            localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+            props.rowSolicitud.NoEstatus === "10" &&
+            props.rowSolicitud.ControlInterno === "autorizado" &&
+            localStorage.getItem("Rol") === "Verificador" ? (
+            <Grid
+              container
+              display={"flex"}
+              justifyContent={"space-evenly"}
+              alignItems={"center"}
               sx={{
-                width: "45%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
+                width: "65%",
                 "@media (min-width: 480px)": {
-                  width: "45%",
+                  width: "82%",
                 },
 
                 "@media (min-width: 768px)": {
-                  width: "40%",
+                  width: "82%",
                 },
 
                 "@media (min-width: 1140px)": {
-                  width: "40%",
+                  width: "60%",
                 },
 
                 "@media (min-width: 1400px)": {
-                  width: "42%",
+                  width: "50%",
                 },
 
                 "@media (min-width: 1870px)": {
                   width: "40%",
                 },
               }}
-              onClick={() => {
-                navigate("../ObligacionesLargoPlazo");
-                changeRestructura("con autorizacion")
-              }}
             >
-              <Typography
+              <Button
                 sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
-                  "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
-                  },
-
-                  "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
-                  },
-
-                  "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
-                  },
-
-                  "@media (min-width: 1400px)": {
-                    fontSize: ".85rem",
-                  },
-                }}
-              >
-                {query.isTittle
-                  ? "Reest. con autorización"
-                  : "Reestructuración con autorización"}
-              </Typography>
-            </Button>
-
-            <Button
-              sx={{
-                width: "45%",
-                backgroundColor: "#15212f",
-                color: "white",
-                "&&:hover": {
-                  backgroundColor: "rgba(47, 47, 47, 0.4)",
-                  color: "#000",
-                },
-                //fontSize: "90%",
-                borderRadius: "0.8vh",
-                textTransform: "capitalize",
-                fontSize: "60%",
-                "@media (min-width: 480px)": {
                   width: "45%",
-                },
-
-                "@media (min-width: 768px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "40%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "40%",
-                },
-              }}
-              onClick={() => {
-                navigate("../ObligacionesLargoPlazo");
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontFamily: "MontserratMedium",
-
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#15212f",
+                  color: "white",
+                  "&&:hover": {
+                    backgroundColor: "rgba(47, 47, 47, 0.4)",
+                    color: "#000",
+                  },
+                  //fontSize: "90%",
+                  borderRadius: "0.8vh",
+                  textTransform: "capitalize",
+                  fontSize: "60%",
                   "@media (min-width: 480px)": {
-                    fontSize: "0.7rem",
+                    width: "45%",
                   },
 
                   "@media (min-width: 768px)": {
-                    fontSize: ".75rem",
+                    width: "40%",
                   },
 
                   "@media (min-width: 1140px)": {
-                    fontSize: ".8rem",
+                    width: "40%",
                   },
 
                   "@media (min-width: 1400px)": {
-                    fontSize: ".9rem",
+                    width: "42%",
+                  },
+
+                  "@media (min-width: 1870px)": {
+                    width: "40%",
                   },
                 }}
+                onClick={() => {
+                  setInscripcion(props.rowSolicitud);
+                  changeRestructura("con autorizacion");
+                  navigate("../ObligacionesLargoPlazo");
+                  
+                }}
               >
-                {query.isTittle
-                  ? "Reest. sin autorización"
-                  : "Reestructuración sin autorización"}
-              </Typography>
-            </Button>
-          </Grid>
-        // ) : reestructura === "con autorizacion" &&
-        //   localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-        //   props.rowSolicitud.Estatus === "En Reestructura" &&
-        //   localStorage.getItem("Rol") === "Autorizador" ? (
-        //   <Grid
-        //     container
-        //     display={"flex"}
-        //     justifyContent={"space-evenly"}
-        //     alignItems={"center"}
-        //     sx={{
-        //       width: "65%",
-        //       "@media (min-width: 480px)": {
-        //         width: "82%",
-        //       },
+                <Typography
+                  sx={{
+                    fontSize: "0.7rem",
+                    fontFamily: "MontserratMedium",
 
-        //       "@media (min-width: 768px)": {
-        //         width: "82%",
-        //       },
+                    "@media (min-width: 480px)": {
+                      fontSize: "0.7rem",
+                    },
 
-        //       "@media (min-width: 1140px)": {
-        //         width: "60%",
-        //       },
+                    "@media (min-width: 768px)": {
+                      fontSize: ".75rem",
+                    },
 
-        //       "@media (min-width: 1400px)": {
-        //         width: "50%",
-        //       },
+                    "@media (min-width: 1140px)": {
+                      fontSize: ".8rem",
+                    },
 
-        //       "@media (min-width: 1870px)": {
-        //         width: "40%",
-        //       },
-        //     }}
-        //   >
-        //     <Button
-        //       sx={{
-        //         width: "45%",
-        //         display: "flex",
-        //         justifyContent: "center",
-        //         alignItems: "center",
-        //         backgroundColor: "#15212f",
-        //         color: "white",
-        //         "&&:hover": {
-        //           backgroundColor: "rgba(47, 47, 47, 0.4)",
-        //           color: "#000",
-        //         },
-        //         //fontSize: "90%",
-        //         borderRadius: "0.8vh",
-        //         textTransform: "capitalize",
-        //         fontSize: "60%",
-        //         "@media (min-width: 480px)": {
-        //           width: "45%",
-        //         },
+                    "@media (min-width: 1400px)": {
+                      fontSize: ".85rem",
+                    },
+                  }}
+                >
+                  {query.isTittle
+                    ? "Reest. con autorización"
+                    : "Reestructuración con autorización"}
+                </Typography>
+              </Button>
 
-        //         "@media (min-width: 768px)": {
-        //           width: "40%",
-        //         },
+              <Button
+                sx={{
+                  width: "45%",
+                  backgroundColor: "#15212f",
+                  color: "white",
+                  "&&:hover": {
+                    backgroundColor: "rgba(47, 47, 47, 0.4)",
+                    color: "#000",
+                  },
+                  //fontSize: "90%",
+                  borderRadius: "0.8vh",
+                  textTransform: "capitalize",
+                  fontSize: "60%",
+                  "@media (min-width: 480px)": {
+                    width: "45%",
+                  },
 
-        //         "@media (min-width: 1140px)": {
-        //           width: "40%",
-        //         },
+                  "@media (min-width: 768px)": {
+                    width: "40%",
+                  },
 
-        //         "@media (min-width: 1400px)": {
-        //           width: "42%",
-        //         },
+                  "@media (min-width: 1140px)": {
+                    width: "40%",
+                  },
 
-        //         "@media (min-width: 1870px)": {
-        //           width: "40%",
-        //         },
-        //       }}
-        //       onClick={() => {
-        //         CambiaEstatus("Autorizado", props.rowId, "");
-        //       }}
-        //     >
-        //       <Typography
-        //         sx={{
-        //           fontSize: "0.7rem",
-        //           fontFamily: "MontserratMedium",
+                  "@media (min-width: 1400px)": {
+                    width: "40%",
+                  },
 
-        //           "@media (min-width: 480px)": {
-        //             fontSize: "0.7rem",
-        //           },
+                  "@media (min-width: 1870px)": {
+                    width: "40%",
+                  },
+                }}
+                onClick={() => {
+                  setInscripcion(props.rowSolicitud)
+                  changeRestructura("con autorizacion");
+                  navigate("../ObligacionesLargoPlazo");
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "0.7rem",
+                    fontFamily: "MontserratMedium",
 
-        //           "@media (min-width: 768px)": {
-        //             fontSize: ".75rem",
-        //           },
+                    "@media (min-width: 480px)": {
+                      fontSize: "0.7rem",
+                    },
 
-        //           "@media (min-width: 1140px)": {
-        //             fontSize: ".8rem",
-        //           },
+                    "@media (min-width: 768px)": {
+                      fontSize: ".75rem",
+                    },
 
-        //           "@media (min-width: 1400px)": {
-        //             fontSize: ".85rem",
-        //           },
-        //         }}
-        //       >
-        //         Rechazar Reestructuración
-        //       </Typography>
-        //     </Button>
+                    "@media (min-width: 1140px)": {
+                      fontSize: ".8rem",
+                    },
 
-        //     <Button
-        //       sx={{
-        //         width: "45%",
-        //         backgroundColor: "#15212f",
-        //         color: "white",
-        //         "&&:hover": {
-        //           backgroundColor: "rgba(47, 47, 47, 0.4)",
-        //           color: "#000",
-        //         },
-        //         // fontSize: "90%",
-        //         borderRadius: "0.8vh",
-        //         textTransform: "capitalize",
-        //         fontSize: "60%",
-        //         "@media (min-width: 480px)": {
-        //           width: "45%",
-        //         },
-
-        //         "@media (min-width: 768px)": {
-        //           width: "40%",
-        //         },
-
-        //         "@media (min-width: 1140px)": {
-        //           width: "40%",
-        //         },
-
-        //         "@media (min-width: 1400px)": {
-        //           width: "40%",
-        //         },
-
-        //         "@media (min-width: 1870px)": {
-        //           width: "40%",
-        //         },
-        //       }}
-        //       onClick={() => {
-        //         CambiaEstatus("Autorizado", props.rowId, "");
-        //       }}
-        //     >
-        //       <Typography
-        //         sx={{
-        //           fontSize: "0.7rem",
-        //           fontFamily: "MontserratMedium",
-
-        //           "@media (min-width: 480px)": {
-        //             fontSize: "0.7rem",
-        //           },
-
-        //           "@media (min-width: 768px)": {
-        //             fontSize: ".75rem",
-        //           },
-
-        //           "@media (min-width: 1140px)": {
-        //             fontSize: ".8rem",
-        //           },
-
-        //           "@media (min-width: 1400px)": {
-        //             fontSize: ".9rem",
-        //           },
-        //         }}
-        //       >
-        //         Autorizar Reestructuración
-        //       </Typography>
-        //     </Button>
-        //   </Grid>
-        ) : null}
+                    "@media (min-width: 1400px)": {
+                      fontSize: ".9rem",
+                    },
+                  }}
+                >
+                  {query.isTittle
+                    ? "Reest. sin autorización"
+                    : "Reestructuración sin autorización"}
+                </Typography>
+              </Button>
+            </Grid>
+          ) : null}
       </DialogTitle>
 
       <DialogContent
@@ -576,11 +492,7 @@ export function DialogVerDetalle(props: Props) {
           },
         }}
       >
-        {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
-          <Resumen coments={false} />
-        ) : (
-          <ResumenLP coments={false} />
-        )}
+        <ResumenLP coments={false} />
       </DialogContent>
     </Dialog>
   );

@@ -35,6 +35,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 const heads: {
   label: string;
@@ -191,7 +192,7 @@ export function InformacionGeneral() {
     (state) => state.datosActualizar
   );
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 

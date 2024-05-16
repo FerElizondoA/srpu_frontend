@@ -1,10 +1,12 @@
 export interface INotificaciones {
     Id: string;
+    IdSolicitud: string;
     Titulo: string;
     Mensaje: string;
     FechaDeCreacion: string;
     Creador: string;
     Cargo: string;
+    ControlInterno: string
 }
 
 export interface IDestinatarios {

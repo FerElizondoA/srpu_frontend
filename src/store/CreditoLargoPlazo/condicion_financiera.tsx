@@ -120,7 +120,7 @@ export const createCondicionFinancieraSlice: StateCreator<
 
       tasaEfectiva: {
         tasaEfectiva: "",
-        diasEjercicio: { Id: "", Descripcion: "" },
+        //diasEjercicio: { Id: "", Descripcion: "" },
       },
       comision: {
         fechaComision: format(new Date(), "MM/dd/yyyy").toString(),

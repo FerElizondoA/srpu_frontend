@@ -166,11 +166,14 @@ export function ConfirmacionEnviarSolicitud({
                       text: "La solicitud se envió con éxito",
                     });
                     cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    // navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
                       "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""]
+                      [localStorage.getItem("IdUsuario") || ""],
+
+                      "asldjsakjsda",
+                      "inscripcion"
                     );
                   })
                   .catch(() => {
@@ -197,12 +200,15 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                   // cleanSolicitud();
+                   // navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
                       "Se te ha asignado una solicitud de inscripción",
-                      [idUsuarioAsignado]
+                      [idUsuarioAsignado],
+
+                      "asldjsakjsda",
+                      "inscripcion"
                     );
                   })
                   .catch(() => {
@@ -219,8 +225,8 @@ export function ConfirmacionEnviarSolicitud({
               if (localStorage.getItem("Rol") === "Verificador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
-                  localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  "Hola"
                 )
                   .then(() => {
                     addComentario(
@@ -235,8 +241,8 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    //cleanSolicitud();
+                    //navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -250,13 +256,17 @@ export function ConfirmacionEnviarSolicitud({
                 createNotification(
                   "Crédito simple a corto plazo",
                   "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""]
+                  [localStorage.getItem("IdUsuario") || ""],
+
+                  "asldjsakjsda",
+                  "Se te ha asignado una solicitud de Credito a Corto Plazo"
                 );
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
-                  localStorage.getItem("IdUsuario"),
                   idUsuarioAsignado,
-                  "2"
+                  "2",
+                  "Se te ha asignado una solicitud de Credito a Corto Plazo"
+                  
                 )
                   .then(() => {
                     addComentario(
@@ -271,8 +281,8 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    //cleanSolicitud();
+                    //navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({

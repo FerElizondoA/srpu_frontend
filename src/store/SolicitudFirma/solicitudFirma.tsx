@@ -242,18 +242,21 @@ export async function GeneraFormatoReestructura(
   tipoSolicitud: string,
   noOficio: string,
   //idRegistro: string,
-  setUrl: Function
+  idClaveInscripcion: string,
+  setUrl: Function,
   //noRegistro: string,
   // fraccionTexto: string
 ) {
   const solicitud: any = JSON.parse(Solicitud);
+
+ 
 
   const SolicitudReestructura: any = {
     oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
     servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
     cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
     organismo: solicitud.encabezado.organismo.Organismo,
-    oficioSolicitud: noOficio,
+    oficioSolicitud: noOficio, //
 
     fechaSolicitud: format(new Date(), "PPP", {
       // AL MOMENTO
@@ -261,36 +264,36 @@ export async function GeneraFormatoReestructura(
     }),
 
     tipoDocumento: solicitud.encabezado.tipoDocumento,
-    fechaContratacion: solicitud.informacionGeneral.fechaContratacion,
 
-    claveInscripcion:
-      solicitud.ClaveDeInscripcion === undefined
-        ? "Sin Clave de Inscripcion"
-        : solicitud.ClaveDeInscripcion,
-
-    fechaClave: format(new Date(), "PPP", {
-      // PENDIENTE
+    fechaContratacion:  format(new Date(solicitud.encabezado.fechaContratacion), "PPP", {
       locale: es,
     }),
-    fechaReestructuracion: solicitud.informacionGeneral.fechaContratacion,
+
+    claveInscripcion:
+    idClaveInscripcion === undefined
+        ? "Sin Clave de Inscripcion"
+        : idClaveInscripcion,
+
+    fechaClave: idClaveInscripcion,
+
+    fechaReestructuracion: "FALTA CREAR LA TABLA Y GUARDAR CUANDO SE FINALIZO LA REESTRUCTURA CON SUS CAMBIOS", //guardar esa fecha al la hora de finalizarla 
 
     entePublicoObligado:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
-        ? solicitud.informacionGeneral.obligadosSolidarios[0]
-            .entePublicoObligado
+        ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
         : "No Aplica",
 
     obligadoSolidarioAval:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
-        ? solicitud.informacionGeneral.obligadosSolidarios
+        ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
         : ["No Aplica"],
 
     institucionFinanciera:
-      solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-    montoOriginalContratado: solicitud.informacionGeneral.monto,
-    saldoVigente: solicitud,
-    mecanismoVehiculoDePago: "REVISAR",
-    fuentePago: "REVISAR",
+      solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+    montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+    saldoVigente: solicitud.informacionGeneral.destinoGastosCostos[0].saldoVigente,
+    mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+    fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion , //tabla "REVISAR"
     directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
     cargoDirectorGeneral:
       solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,

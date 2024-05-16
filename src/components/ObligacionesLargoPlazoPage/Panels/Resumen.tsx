@@ -18,6 +18,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -44,6 +45,18 @@ import {
 import { ComentarioApartado } from "../Dialog/DialogComentarioApartado";
 import { IFile } from "./Documentacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IAutorizaciones } from "../../../store/CreditoLargoPlazo/autorizacion";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
+import { useMandatoStore } from "../../../store/Mandatos/main";
+import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
+
+
+
 
 interface Head {
   label: string;
@@ -81,6 +94,111 @@ const headsCondiciones: Head[] = [
   },
   {
     label: "Comisiones",
+  },
+];
+
+const headsAutorizacion: Head[] = [
+  {
+    label: "Número de autorización",
+  },
+  {
+    label: "Fecha de publicación",
+  },
+  {
+    label: "Monto autorizado",
+  },
+  {
+    label: "Medio de publicación",
+  },
+  {
+    label: "Documento soporte",
+  },
+  {
+    label: "Detalle del destino",
+  },
+];
+
+const headsTipoMovimiento: Head[] = [
+  {
+    label: "Id",
+  },
+  {
+    label: "Tipo de Ente Público Obligado",
+  },
+  {
+    label: "Ente Público Obligado",
+  },
+  {
+    label: "Fuente de Pago",
+  },
+  {
+    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+  },
+  {
+    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
+  },
+  {
+    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
+  },
+  {
+    label: "% del Ingreso Correspondiente al Organismo",
+  },
+  {
+    label:
+      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+  },
+  {
+    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
+  },
+  {
+    label:
+      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
+  },
+  {
+    label:
+      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Municipio",
+  },
+  {
+    label:
+      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
+  },
+  {
+    label:
+      "% Afectado a la Instrucción del Ingreso Correspondiente al Organismo",
+  },
+  {
+    label:
+      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
+  },
+];
+
+const headsGC: Head[] = [
+  {
+    label: "Destino",
+  },
+  {
+    label: "Detalle de la inversión",
+  },
+  {
+    label: "Descripción",
+  },
+  {
+    label: "Clave de Inscripción del Financiamiento",
+  },
+  {
+    label: "Monto",
+  },
+  {
+    label: "Gastos Adicionales",
+  },
+  {
+    label: "Monto Gastos Adicionales",
+  },
+  {
+    label: "Saldo Vigente",
+  },
+  {
+    label: "Detalle de la Inversión",
   },
 ];
 
@@ -154,6 +272,31 @@ export function Resumen({ coments }: { coments: boolean }) {
     tab: "Tab",
   });
 
+
+  const mecanismoVehiculoPago: IRegistro = useLargoPlazoStore(
+    (state) => state.mecanismoVehiculoPago
+  );
+
+  const setMecanismoVehiculoPago: Function = useLargoPlazoStore(
+    (state) => state.setMecanismoVehiculoPago
+  );
+
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+
+  const gastosCostos: IGastosCostos = useLargoPlazoStore(
+    (state) => state.gastosCostos
+  );
+
+  const tablaGastosCostos: IGastosCostos[] = useLargoPlazoStore(
+    (state) => state.tablaGastosCostos
+  );
+
   const encabezado: HeadLabels[] = [
     {
       label: "Tipo de Documento",
@@ -212,6 +355,36 @@ export function Resumen({ coments }: { coments: boolean }) {
     },
   ];
 
+  const GastosCostos: HeadLabels[] = [
+    {
+      label: "Monto",
+      value: gastosCostos.monto,
+    },
+    {
+      label: "Gastos Adicionales",
+      value: gastosCostos.gastosAdicionales
+    },
+    {
+      label: "Monto Gastos Adicionales",
+      value: gastosCostos.montoGastosAdicionales
+    },
+    {
+      label: "Saldo Vigente ",
+      value: gastosCostos.saldoVigente
+    },
+  ];
+
+  const fuenteDePago: HeadLabels[] = [
+    {
+      label: "Mecanismo o vehículo de pago",
+      value: tipoMecanismoVehiculoPago,
+    },
+    {
+      label: "Identificador",
+      value: mecanismoVehiculoPago.NumeroRegistro,
+    },
+  ];
+
   const [fileSelected, setFileSelected] = useState<any>("");
 
   const comentarios: any = useLargoPlazoStore((state) => state.comentarios);
@@ -225,7 +398,7 @@ export function Resumen({ coments }: { coments: boolean }) {
       getDocumentos(
         `/SRPU/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        () => {}
+        () => { }
         // setCargados
       );
   }, []);
@@ -243,9 +416,36 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const activaAccion =
     localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
-  const reestructura: string = useCortoPlazoStore(
+
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
+
+  const autorizacionSelect: IAutorizaciones = useLargoPlazoStore(
+    (state) => state.autorizacionSelect
+  );
+
+
+  const [arrDocs, setArrDocs] = useState<any>([]);
+
+  const sumaPorcentajeAcumulado: {
+    SumaAcumuladoEstado: number;
+    SumaAcumuladoMunicipios: number;
+    SumaAcumuladoOrganismos: number;
+  } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
+
+  const tablaTipoMovimiento: IDeudorInstrucciones[] = useInstruccionesStore(
+    (state) => state.tablaTipoMovimiento
+  );
+
+  const addPorcentaje: Function = useInstruccionesStore(
+    (state) => state.addPorcentaje
+  );
+
+  const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
+    (state) => state.tablaResumenMecanismoPago
+  )
+
 
   return (
     <Grid
@@ -314,7 +514,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                     <IconButton
                       color={
                         comentarios[head.label] &&
-                        comentarios[head.label] !== ""
+                          comentarios[head.label] !== ""
                           ? "success"
                           : "primary"
                       }
@@ -364,7 +564,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                     <IconButton
                       color={
                         comentarios[head.label] &&
-                        comentarios[head.label] !== ""
+                          comentarios[head.label] !== ""
                           ? "success"
                           : "primary"
                       }
@@ -400,7 +600,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <IconButton
                     color={
                       comentarios["Tabla Obligado Solidario / Aval"] &&
-                      comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -420,6 +620,348 @@ export function Resumen({ coments }: { coments: boolean }) {
             </Grid>
 
             <Paper sx={{ width: "96%" }}>
+              <TableContainer
+                sx={{
+                  maxHeight: "100%",
+                  width: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    height: ".5vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                {tablaObligados.length > 0 ? (
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        {heads.map((head, index) => (
+                          <StyledTableCell key={index}>
+                            {head.label}
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {tablaObligados.map((row: any, index: number) => {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell component="th">
+                              {row.tipoEntePublicoObligado}
+                            </StyledTableCell>
+                            <StyledTableCell component="th">
+                              {row.entePublicoObligado}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        {heads.map((head, index) => (
+                          <StyledTableCell key={index}>
+                            {head.label}
+                          </StyledTableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      <StyledTableRow>
+                        <StyledTableCell component="th">
+
+                        </StyledTableCell>
+                        <StyledTableCell component="th" align="left">
+                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
+                            NO APLICA
+                          </Typography>
+                        </StyledTableCell>
+
+                        <StyledTableCell component="th">
+
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    </TableBody>
+                  </Table>
+                )}
+              </TableContainer>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        <Grid mt={5} mb={4} width={"100%"}>
+          <Typography sx={queries.bold_text}>Gastos y Costos</Typography>
+
+          <Divider color="lightGrey"></Divider>
+
+          <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
+            <Grid mt={2}>
+              {/* Revisar */}
+              {activaAccion && reestructura !== "con autorizacion" ? (
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+            </Grid>
+
+            <Paper sx={{ width: "95%", overflow: "clip", height: "100%" }}>
+              <TableContainer
+                sx={{
+                  height: "100%",
+                  maxHeight: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".3vw",
+                    height: ".5vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {headsGC.map((head, index) => (
+                        <StyledTableCell align="center" key={index}>
+                          {head.label}
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tablaGastosCostos.map((row: IGastosCostos, index: number) => {
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                          >
+                            {row.destino.Descripcion}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.detalleInversion.Descripcion}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.descripcion}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.claveInscripcionFinanciamiento}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.monto}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.gastosAdicionales}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.montoGastosAdicionales}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            {row.saldoVigente}
+                          </StyledTableCell>
+
+                          <StyledTableCell align="center" component="th">
+                            <Tooltip title={"Ver Documento"}>
+                              <IconButton
+                                onClick={() => {
+                                  toBase64(documentos[index].archivo)
+                                    .then((data) => {
+                                      setFileSelected(data);
+                                    })
+                                    .catch((err) => {
+                                      setFileSelected(
+                                        `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row?.detalleInversion.Descripcion
+                                          )
+                                        )[0].FILE
+                                        }`
+                                      );
+                                    });
+
+
+                                  setShowModalPrevia(true);
+                                }}
+                              >
+                                <FileOpenIcon></FileOpenIcon>
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+        </Grid>
+
+
+
+        <Grid mt={5} mb={4} width={"100%"}>
+          <Typography sx={queries.bold_text}>Autorizacion</Typography>
+
+          <Divider color="lightGrey"></Divider>
+
+          <Grid item display="flex" height={150} mt={2} mb={2} width={"100%"}>
+            <Grid mt={2}>
+              {/* Revisar */}
+              {activaAccion && reestructura !== "con autorizacion" ? (
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+            </Grid>
+
+            <Paper
+              sx={{
+                width: "95%",
+              }}
+            >
+              <TableContainer
+                sx={{
+                  width: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    height: ".6vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {headsAutorizacion.map((head, index) => (
+                        <StyledTableCell align="center" key={index}>
+                          {head.label}
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    <StyledTableRow>
+                      <StyledTableCell align="center" component="th">
+                        <Typography>
+                          {autorizacionSelect?.NumeroAutorizacion}
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th">
+                        <Typography>
+                          {autorizacionSelect?.FechaPublicacion}
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        sx={{ width: 200 }}
+                      >
+                        <Typography>
+                          {autorizacionSelect?.MontoAutorizado}
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th">
+                        <Typography>
+                          {autorizacionSelect?.DescripcionMedioPublicacion}
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th">
+                        <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                          <IconButton
+                            onClick={() => {
+                              setFileSelected(
+                                `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                  td.nombre.includes(
+                                    autorizacionSelect?.DocumentoSoporte
+                                  )
+                                )[0].file
+                                }`
+                              );
+
+                              setShowModalPrevia(true);
+                            }}
+                          >
+                            <FileOpenIcon></FileOpenIcon>
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                      <StyledTableCell align="center" component="th">
+                        <Typography>
+                          {autorizacionSelect?.DetalleDestino &&
+                            JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                              .detalleDestino}
+                        </Typography>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+
+            {/* <Paper sx={{ width: "96%" }}>
               <TableContainer
                 sx={{
                   maxHeight: "100%",
@@ -490,9 +1032,420 @@ export function Resumen({ coments }: { coments: boolean }) {
                   </Table>
                 )}
               </TableContainer>
+            </Paper> */}
+
+          </Grid>
+        </Grid>
+
+
+
+
+
+
+
+
+        <Grid mt={5} mb={4} width={"100%"}>
+          <Typography sx={queries.bold_text}>Fuente de Pago</Typography>
+          <Grid
+            sx={{
+              flexDirection: "row",
+              mt: 1,
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "#cfcfcf",
+              fontSize: "12px",
+            }}
+          >
+            <Divider color="lightGrey"></Divider>
+            {fuenteDePago.map((head, index) => (
+              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
+                {/* Revisar */}
+                {activaAccion && reestructura !== "con autorizacion" ? (
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios[head.label] &&
+                          comentarios[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabInformaciónGeneral",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                ) : null}
+
+                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
+                  <strong>{head.label}: </strong>
+                  {head.label.includes("Fecha")
+                    ? format(new Date(head.value), "dd/MM/yyyy")
+                    : head.value}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Grid item display="flex" height={500} mt={2} mb={2} width={"100%"}>
+            <Grid mt={2}>
+              {/* Revisar */}
+              {activaAccion && reestructura !== "con autorizacion" ? (
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+            </Grid>
+
+            <Paper sx={{ width: "100%" }}>
+              <TableContainer
+                sx={{
+                  height: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    height: "1vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {headsTipoMovimiento.map((head, index) => (
+                        <StyledTableCell align="center" key={index}>
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            {head.label}
+                          </Typography>
+                        </StyledTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {tablaResumenMecanismoPago.length > 0
+                      ?
+
+                      tablaResumenMecanismoPago.map(
+                        (row: IDeudorInstrucciones, index: number) => {
+                          return (
+                            <StyledTableRow key={index}>
+                              {/* ID */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.id}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* TIPO MANDANTE */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.tipoEntePublicoObligado.Descripcion}
+                                </Typography>
+                              </StyledTableCell>
+
+
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.entePublicoObligado.Descripcion}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* FUENTE DE PAGO */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.tipoFuente.Descripcion}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* FONDO INGRESO GOBIERNO ESTATAL */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.fondoIngresoGobiernoEstatal}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* FONDO INGRESO MUNICIPIOS */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.fondoIngresoMunicipios}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* FONDO INGRESO MUNICIPIO */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.fondoIngresoAsignadoMunicipio}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* INGRESO ORGANISMO */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.ingresoOrganismo}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* AFECTADO POR GOBIERNO ESTATAL */}
+                              <StyledTableCell align="center">
+                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                                  "gobierno estatal" && (
+                                    <TextField
+                                      inputProps={{
+                                        sx: {
+                                          fontSize: "0.7rem",
+                                        },
+                                      }}
+                                      size="small"
+                                      value={row?.fondoIngresoAfectadoXGobiernoEstatal}
+                                      onChange={(v) => {
+                                        let auxArray = [...tablaTipoMovimiento];
+                                        let val = Number(v.target.value);
+
+                                        if (
+                                          val <= 100 &&
+                                          Number(
+                                            sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                          ) +
+                                          val <=
+                                          Number(
+                                            tablaTipoMovimiento[index]
+                                              .fondoIngresoGobiernoEstatal
+                                          )
+                                        ) {
+                                          let suma = 0;
+
+                                          tablaTipoMovimiento.map((column) => {
+                                            return (suma += Number(
+                                              column.fondoIngresoAfectadoXGobiernoEstatal
+                                            ));
+                                          });
+
+                                          auxArray.map((column) => {
+                                            return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                              (
+                                                suma +
+                                                val +
+                                                Number(
+                                                  sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                                )
+                                              ).toString());
+                                          });
+
+                                          auxArray[
+                                            index
+                                          ].fondoIngresoAfectadoXGobiernoEstatal =
+                                            val.toString();
+
+                                          addPorcentaje(auxArray);
+                                        }
+                                      }}
+                                    />
+                                  )}
+                              </StyledTableCell>
+
+                              {/* AFECTACION GOBIERNO ESTATAL / 100 */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.afectacionGobiernoEstatalEntre100}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.acumuladoAfectacionGobiernoEstatalEntre100}
+                                </Typography>
+                              </StyledTableCell>
+
+                              {/* AFECTADO POR MUNICIPIO */}
+                              <StyledTableCell align="center">
+                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                                  "municipio" && (
+                                    <TextField
+                                      type="number"
+                                      inputProps={{
+                                        sx: {
+                                          fontSize: "0.7rem",
+                                        },
+                                      }}
+                                      size="small"
+                                      value={row?.fondoIngresoAfectadoXMunicipio}
+                                      onChange={(v) => {
+                                        let auxArray = [...tablaTipoMovimiento];
+                                        let val = Number(v.target.value);
+
+                                        if (
+                                          val <= 100 &&
+                                          Number(
+                                            sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                          ) +
+                                          val <=
+                                          Number(
+                                            tablaTipoMovimiento[index]
+                                              .fondoIngresoAsignadoMunicipio
+                                          )
+                                        ) {
+                                          let suma = 0;
+
+                                          tablaTipoMovimiento.map((column) => {
+                                            return (suma += Number(
+                                              column.fondoIngresoAfectadoXMunicipio
+                                            ));
+                                          });
+
+                                          auxArray.map((column) => {
+                                            return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                              (
+                                                suma +
+                                                val +
+                                                Number(
+                                                  sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                                )
+                                              ).toString());
+                                          });
+
+                                          auxArray[
+                                            index
+                                          ].fondoIngresoAfectadoXMunicipio =
+                                            val.toString();
+
+                                          addPorcentaje(auxArray);
+                                        }
+                                      }}
+                                    />
+                                  )}
+                              </StyledTableCell>
+
+                              {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
+                              <StyledTableCell align="center">
+                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
+                                  "municipio" && (
+                                    <Typography sx={{ fontSize: "0.7rem" }}>
+                                      {
+                                        row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                                      }
+                                    </Typography>
+                                  )}
+                              </StyledTableCell>
+
+                              {/* AFECTADO POR ORGANISMO */}
+                              <StyledTableCell align="center">
+                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                                  "gobierno estatal" &&
+                                  row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
+                                  "municipio" && (
+                                    <TextField
+                                      type="number"
+                                      inputProps={{
+                                        sx: {
+                                          fontSize: "0.7rem",
+                                        },
+                                      }}
+                                      size="small"
+                                      value={row?.ingresoAfectadoXOrganismo}
+                                      onChange={(v) => {
+                                        let auxArray = [...tablaTipoMovimiento];
+                                        let val = Number(v.target.value);
+
+                                        if (
+                                          val <= 100 &&
+                                          Number(
+                                            sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                          ) +
+                                          val <=
+                                          Number(
+                                            tablaTipoMovimiento[index]
+                                              .ingresoOrganismo
+                                          )
+                                        ) {
+                                          let suma = 0;
+
+                                          tablaTipoMovimiento.map((column) => {
+                                            return (suma += Number(
+                                              column.ingresoAfectadoXOrganismo
+                                            ));
+                                          });
+
+                                          auxArray.map((column) => {
+                                            return (column.acumuladoAfectacionOrganismoEntre100 =
+                                              (
+                                                suma +
+                                                val +
+                                                Number(
+                                                  sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                                )
+                                              ).toString());
+                                          });
+
+                                          auxArray[index].ingresoAfectadoXOrganismo =
+                                            val.toString();
+
+                                          addPorcentaje(auxArray);
+                                        }
+                                      }}
+                                    />
+                                  )}
+                              </StyledTableCell>
+
+                              {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
+                              <StyledTableCell align="center">
+                                <Typography sx={{ fontSize: "0.7rem" }}>
+                                  {row?.acumuladoAfectacionOrganismoEntre100}
+                                </Typography>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        }
+                      )
+
+                      : null
+                    }
+
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Paper>
           </Grid>
         </Grid>
+
+
+
+
+
+
+
+
+
+
 
         <Grid mt={3} width={"100%"}>
           <Typography sx={queries.bold_text}>
@@ -507,7 +1460,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   <IconButton
                     color={
                       comentarios["Tabla Condiciones Financieras"] &&
-                      comentarios["Tabla Condiciones Financieras"] !== ""
+                        comentarios["Tabla Condiciones Financieras"] !== ""
                         ? "success"
                         : "primary"
                     }
@@ -916,7 +1869,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                             <IconButton
                               color={
                                 comentarios[row.descripcionTipo] &&
-                                comentarios[row.descripcionTipo] !== ""
+                                  comentarios[row.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -988,12 +1941,11 @@ export function Resumen({ coments }: { coments: boolean }) {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.NOMBREFORMATEADO.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].FILE
+                                        `data:application/pdf;base64,${arr.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].FILE
                                         }`
                                       );
                                     });

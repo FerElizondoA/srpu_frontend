@@ -25,11 +25,11 @@ export const queries = {
     },
 
     "@media (min-width: 1140px)": {
-      fontSize: ".9rem",
+      fontSize: "1rem",
     },
 
     "@media (min-width: 1400px)": {
-      fontSize: ".9rem",
+      fontSize: "1rem",
     },
   },
 
@@ -221,7 +221,7 @@ export const queries = {
     textTransform: "capitalize",
     fontSize: "60%",
     "@media (min-width: 480px)": {
-      fontSize: "70%",
+      fontSize: "80%",
     },
 
     "@media (min-width: 768px)": {
@@ -266,9 +266,8 @@ export const queries = {
   },
 
   tablaNotificaciones: {
-    height: "37rem",
+    height: "36rem",
     width: "100%",
-
     overflow: "auto",
     "@media (min-width: 1870px)": {
       height: 780,
@@ -585,7 +584,8 @@ export const queries = {
   },
 
   modulosConfig: {
-    color: "black",
+    //color: "black",
+    color: "e57373",
     width: "80%",
     height: "65%",
     display: "flex",
@@ -604,7 +604,7 @@ export const queries = {
       fontSize: "75%",
     },
     "@media (min-width: 1400px)": {
-      fontSize: "80%",
+      fontSize: "85%",
     },
     "@media (min-width: 1870px)": {
       fontSize: "90%",

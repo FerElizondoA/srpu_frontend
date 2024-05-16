@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import DownloadIcon from "@mui/icons-material/Download";
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,6 +23,7 @@ import {
   getPathDocumentos,
 } from "../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../CustomComponents";
+import { queries } from "../../queries";
 
 export interface IDocumentos {
   Id: string;
@@ -140,7 +142,17 @@ export function DialogDescargaArchivos({
           </TableBody>
         </Table>
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions>
+
+        <Button 
+          sx={queries.buttonCancelar}
+          onClick={() => {
+            setOpen(false)
+          }}
+        >
+          Cerrar
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }

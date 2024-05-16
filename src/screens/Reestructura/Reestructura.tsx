@@ -40,6 +40,9 @@ import {
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { DialogVerDetalle } from "./DialogVerDetalle";
+import { useReestructuraStore } from "../../store/Reestructura/main";
+import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+
 
 interface Head {
   label: string;
@@ -77,16 +80,24 @@ const heads: readonly Head[] = [
   },
 ];
 
+
+
 export function SolicitudesReestructura() {
+  const getDatos=()=>{
+    getSolicitudes("Reestructura", 
+    (e: IData[]) => {
+      setDatos(e);
+    },
+    setDatosFiltrados)
+  }
   const navigate = useNavigate();
   const [datos, setDatos] = useState<Array<IData>>([]);
-  // const [datosFiltrados, setDatosFiltrados] = useState<Array<IData>>([]);
 
   const setDatosActualizar: Function = useCortoPlazoStore(
     (state) => state.setDatosActualizar
   );
 
-  const changeRestructura: Function = useCortoPlazoStore(
+  const changeRestructura: Function = useReestructuraStore(
     (state) => state.changeRestructura
   );
 
@@ -109,6 +120,10 @@ export function SolicitudesReestructura() {
 
   const setInscripcion: Function = useInscripcionStore(
     (state) => state.setInscripcion
+  );
+
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
   );
 
   const changeEncabezadoLP: Function = useLargoPlazoStore(
@@ -138,15 +153,15 @@ export function SolicitudesReestructura() {
     setReglasAplicablesLP(aux?.inscripcion.declaratorias);
     changeEncabezadoLP(aux?.encabezado);
     setInformacionGeneralLP(aux?.informacionGeneral);
-    setGastosCostos(aux?.GastosCostos);
+    // setGastosCostos(aux?.GastosCostos);
 
     aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
       return addObligadoSolidarioAvalLP(v);
     });
 
-    aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
-      return addGeneralGastosCostos(v);
-    });
+    // aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
+    //   return addGeneralGastosCostos(v);
+    // });
 
     aux?.condicionesFinancieras.map((v: any, index: number) => {
       return addCondicionFinancieraLP(v);
@@ -164,16 +179,15 @@ export function SolicitudesReestructura() {
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
+  
 
   useEffect(() => {
-    getSolicitudes("Reestructura", (e: IData[]) => {
-      setDatos(e);
-      // setDatosFiltrados(e);
-    });
+    getDatos()
   }, []);
 
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
@@ -200,10 +214,51 @@ export function SolicitudesReestructura() {
     navigate("../firmaUrl");
   };
 
+  const setSolicitudReestructura: Function = useReestructuraStore(
+    (state) => state.setSolicitudReestructura
+  );
+
+  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+    (state) => state.SolicitudReestructura
+  );
+
+  const [busqueda, setBusqueda] = useState("");
+  const filtrarDatos = () => {
+    // eslint-disable-next-line array-callback-return
+    let ResultadoBusqueda = datos.filter((elemento) => {
+      if (
+        elemento.IdClaveInscripcion?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Estatus?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.FechaContratacion?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.Institucion?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.MontoOriginalContratado?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.TipoEntePublico?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+        elemento.TipoSolicitud?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase())
+      ) {
+        return elemento;
+      }
+    });
+
+    setDatosFiltrados(ResultadoBusqueda);
+  };
   return (
     <Grid>
       <Grid>
-        <LateralMenu />
+      <LateralMenu fnc={getDatos}/>
       </Grid>
 
       <Grid
@@ -263,17 +318,20 @@ export function SolicitudesReestructura() {
               id="Enter"
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
-              //value={busqueda}
+              value={busqueda}
               onChange={(e) => {
-                //handleChange(e.target.value);
+                setBusqueda(e.target.value);
+                if (e.target.value === "") {
+                  setDatosFiltrados(datos);
+                }
               }}
               onKeyPress={(ev) => {
                 //cuando se presiona Enter
-                // if (ev.key === "Enter") {
-                //   filtrarDatos();
-                //   ev.preventDefault();
-                //   return false;
-                // }
+                if (ev.key === "Enter") {
+                  filtrarDatos();
+                  ev.preventDefault();
+                  return false;
+                }
               }}
             />
             <IconButton
@@ -281,7 +339,7 @@ export function SolicitudesReestructura() {
               sx={{ p: "10px" }}
               title="Buscar"
               onClick={() => {
-                //filtrarDatos();
+                filtrarDatos();
               }}
             >
               <GridSearchIcon />
@@ -396,7 +454,20 @@ export function SolicitudesReestructura() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {datos.map((row, index) => {
+              {datosFiltrados.length === 0 ? (
+                  <StyledTableRow>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell>Sin registros</StyledTableCell>
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                    <StyledTableCell />
+                  </StyledTableRow>
+                ) :datosFiltrados.map((row, index) => {
                 let chip = <></>;
                 if (row.Estatus === "Autorizado") {
                   chip = (
@@ -503,7 +574,9 @@ export function SolicitudesReestructura() {
                     <StyledTableCell align="center" component="th" scope="row">
                       <Button
                         onClick={() => {
+                          setInscripcion(row)
                           setOpenTrazabilidad(!openTrazabilidad);
+                          
                         }}
                       >
                         <Typography sx={queries.medium_text}>{chip}</Typography>
@@ -535,15 +608,13 @@ export function SolicitudesReestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            llenaSolicitud(row, row.TipoSolicitud);
-                            getComentariosSolicitudPlazo(
-                              row.Id,
-                              setDatosActualizar
-                            );
-                            changeRestructura(true);
+                            setInscripcion(row)
+                            // changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
                             changeRestructura("con autorizacion");
-                            setInscripcion(row);
+                            setSolicitudReestructura(row.Id, row.Solicitud, row.IdEditor);
+                            console.log("row.Id", row.Id)
+                            console.log("row.Solicitud", row.Solicitud)
                           }}
                         >
                           <FindInPageIcon />
@@ -562,6 +633,7 @@ export function SolicitudesReestructura() {
                                   row.Solicitud,
                                   row.TipoSolicitud,
                                   row.NumeroRegistro,
+                                  row.IdClaveInscripcion,
                                   // row.Id,
                                   setUrl
                                 );
@@ -645,8 +717,9 @@ export function SolicitudesReestructura() {
         />
       )}
       <DialogTrazabilidad
-        handler={setOpenTrazabilidad}
+        handler={setOpenTrazabilidad} 
         openState={openTrazabilidad}
+        row={inscripcion}
       />
     </Grid>
   );

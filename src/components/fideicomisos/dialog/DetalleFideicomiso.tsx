@@ -177,11 +177,12 @@ export function DetalleFideicomiso({
           },
         }}
       >
-        <Grid
+        <Grid container
         mt={{xs:4, sm:8, md:2}}
+        height={{xs:"20rem", sm:"20rem", md:""}}
           sx={{
          
-            height: "20%",
+            //height: "100%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-around",
@@ -191,7 +192,7 @@ export function DetalleFideicomiso({
           <Typography sx={queries.bold_text}>Datos Generales</Typography>
           <Divider color="lightGrey"></Divider>
 
-          <Typography sx={{ ...queries.medium_text }}>
+          <Typography  sx={{ ...queries.medium_text }}>
             <strong> Número de Fideicomiso:</strong>{" "}
             {fideicomiso.NumeroFideicomiso}
           </Typography>
@@ -270,10 +271,11 @@ export function DetalleFideicomiso({
             overflowX: "auto",
             "&::-webkit-scrollbar": {
               width: ".1vw",
+              height: ".5vh",
               mt: 1,
             },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "grey",
+              backgroundColor: "#AF8C55",
               outline: "1px solid slategrey",
               borderRadius: 1,
             },

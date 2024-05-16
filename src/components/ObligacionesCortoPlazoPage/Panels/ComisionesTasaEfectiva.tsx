@@ -222,7 +222,7 @@ export function ComisionesTasaEfectiva() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+        {/* <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -261,7 +261,7 @@ export function ComisionesTasaEfectiva() {
               value.Descripcion === ""
             }
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>
@@ -474,23 +474,27 @@ export function ComisionesTasaEfectiva() {
                 : moneyMask(comision.monto)
             }
             onChange={(v) => {
+               const expRegular = /^\d*\.?\d*$/;
               if (
                 !noAplica &&
-                (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
-                  v.target.value === "") &&
-                parseInt(v.target.value.replace(/\D/g, "")) <
-                  9999999999999999 &&
+                
+                // (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
+                //   v.target.value === "") &&
+                // parseInt(v.target.value.replace(/\D/g, "")) <
+                //   9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
+              if (expRegular.test(v.target.value) || v.target.value === "") {
                 setComision({
                   ...comision,
                   porcentaje: v.target.value,
-                  monto: moneyMask("0"),
+                  monto: "N/A",
                 });
+              }
               } else {
                 setComision({
                   ...comision,
-                  porcentaje: "",
+                  porcentaje: "N/A",
                   monto: moneyMask(
                     v.target.value.toString() === ""
                       ? "0"

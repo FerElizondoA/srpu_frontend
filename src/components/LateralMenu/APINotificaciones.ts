@@ -4,7 +4,9 @@ import Swal from "sweetalert2";
 export const createNotification = (
   Titulo: string,
   mensaje: string,
-  listadoUsuarios: Array<string>
+  listadoUsuarios: Array<string>,
+  IdSolicitud?: string,
+  ControlInterno?: string,
 ) => {
   axios
     .post(
@@ -12,6 +14,8 @@ export const createNotification = (
       {
         Titulo: Titulo,
         Mensaje: mensaje,
+        IdSolicitud: IdSolicitud,
+        ControlInterno: ControlInterno,
         IdUsuarioCreador: localStorage.getItem("IdUsuario"),
         ListadoUsuarios: listadoUsuarios,
       },
@@ -32,7 +36,7 @@ export const createNotification = (
         text: "La solicitud se envió con éxito",
       });
     })
-    .catch((r) => {});
+    .catch((r) => { });
 };
 
 export const getNotificaciones = (
@@ -119,7 +123,7 @@ export const leerMensaje = (IdNotificacion: string) => {
         },
       }
     )
-    .then(({ data }) => {})
+    .then(({ data }) => { })
     .catch((r) => {
       if (r.response.status === 409) {
       }

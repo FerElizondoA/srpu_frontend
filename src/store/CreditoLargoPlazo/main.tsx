@@ -28,6 +28,10 @@ import {
   InformacionGeneralLpSlice,
   createInformacionGeneralLpSlice,
 } from "./informacion_general";
+import {
+  ReestructuraSlice,
+  createReestructura,
+} from "../Reestructura/reestructura"
 
 export type SolicitudStoreCSLP = EncabezadoSlice &
   InformacionGeneralLpSlice &
@@ -38,7 +42,8 @@ export type SolicitudStoreCSLP = EncabezadoSlice &
   ComentarioApartadoLargoPlazoSlice &
   DocumentosSlice &
   FuenteDePagoLargoPlazoSlice &
-  AutorizacionLargoPlazoSlice;
+  AutorizacionLargoPlazoSlice &
+  ReestructuraSlice;
 
 export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createEncabezadoSlice(...x),
@@ -51,4 +56,5 @@ export const useLargoPlazoStore = create<SolicitudStoreCSLP>()((...x) => ({
   ...createDocumentoSlice(...x),
   ...createFuentePagoLargoPLazoSlice(...x),
   ...createAutorizacionLargoPlazoSlice(...x),
+  ...createReestructura(...x),
 }));

@@ -2,6 +2,7 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
 import { useLargoPlazoStore } from "./main";
+import { IDeudorInstrucciones } from "../InstruccionesIrrevocables/instruccionesIrrevocables";
 
 export type IMecanismoVehiculoPago = { Id: string; NumeroRegistro: string };
 export interface IRegistro {
@@ -40,6 +41,10 @@ export type AsignarFuenteV = {
 };
 
 export interface FuenteDePagoLargoPlazoSlice {
+
+  tablaResumenMecanismoPago: IDeudorInstrucciones[];
+  setTablaResumenMecanismoPago:(tablaResumenMecanismoPago: IDeudorInstrucciones[]) => void;
+
   tablaMecanismoVehiculoPago: IRegistro[];
   getMecanismosVehiculosPago: (tabla: string, setState: Function) => void;
 
@@ -63,6 +68,12 @@ export interface FuenteDePagoLargoPlazoSlice {
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
+  tablaResumenMecanismoPago:[],
+  setTablaResumenMecanismoPago: (tablaResumenMecanismoPago: IDeudorInstrucciones[]) =>
+    set(() => ({
+      tablaResumenMecanismoPago: tablaResumenMecanismoPago,
+    })),
+
   tablaMecanismoVehiculoPago: [],
 
   tipoMecanismoVehiculoPago: "",

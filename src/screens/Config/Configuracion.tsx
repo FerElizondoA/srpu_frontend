@@ -118,9 +118,18 @@ export const modulos = [
     fnc: "tipoBeneficiario",
   },
   {
+    label: "Tipo de Convenio",
+    fnc: "tiposConvenio",
+  },
+  {
+    label: "Clave de incripción del financiamiento a refinanciar",
+    fnc: "ClaveRefinanciar",
+  },
+  {
     label: "Usuarios",
     fnc: "Usuarios",
   },
+  
 ];
 
 export function Configuracion() {
@@ -177,17 +186,17 @@ export function Configuracion() {
           item
           gridTemplateColumns={{
             xs: "repeat(3,1fr)",
-            sm: "repeat(5,1fr)",
-            md: "repeat(5,1fr)",
-            lg: "repeat(5,1fr)",
-            xl: "repeat(5,1fr)",
+            sm: "repeat(6,1fr)",
+            md: "repeat(6,1fr)",
+            lg: "repeat(6,1fr)",
+            xl: "repeat(6,1fr)",
           }}
           width={{
             xs: "100%",
             sm: "100%",
             md: "80%",
-            lg: "70%",
-            xl: "70%",
+            lg: "80%",
+            xl: "80%",
           }}
           sx={{
             height: "100%",

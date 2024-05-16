@@ -222,7 +222,7 @@ export function ComisionesTasaEfectiva() {
         display={"flex"}
         justifyContent={"space-evenly"}
       >
-        <Grid item xs={10} sm={5} md={3} lg={3} xl={3}>
+        {/* <Grid item xs={10} sm={5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Días del Ejercicio</InputLabel>
           <Autocomplete
             clearText="Borrar"
@@ -261,7 +261,7 @@ export function ComisionesTasaEfectiva() {
               value.Descripcion === ""
             }
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={10} sm={5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Tasa Efectiva</InputLabel>

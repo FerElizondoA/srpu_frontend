@@ -39,12 +39,12 @@ import { DialogEliminarAutorizacion } from "../Dialog/DialogEliminarAutorizacion
 import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 interface Head {
   label: string;
 }
-
-const heads: Head[] = [
+ const headsAutorizacion: Head[] = [
   {
     label: "Número de autorización",
   },
@@ -136,7 +136,7 @@ export function Autorizacion() {
     }
   }, [pathDocumentos]);
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 
@@ -264,7 +264,7 @@ export function Autorizacion() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {heads.map((head, index) => (
+                    {headsAutorizacion.map((head, index) => (
                       <StyledTableCell align="center" key={index}>
                         {head.label}
                       </StyledTableCell>

@@ -101,9 +101,12 @@ export function VerComentariosSolicitud({
   };
 
   return (
-    <Dialog
+    <Dialog 
+    sx={{
+      width:"100%"
+    }}
       fullWidth
-      maxWidth={"lg"}
+     // maxWidth={"lg"}
       open={openState}
       keepMounted
       TransitionComponent={Transition}
@@ -173,7 +176,7 @@ export function VerComentariosSolicitud({
           <Grid item>
             <TableContainer component={Paper}>
               <Table
-                sx={{ minWidth: 650 }}
+                //sx={{ minWidth: 650 }}
                 size="small"
                 aria-label="a dense table"
               >

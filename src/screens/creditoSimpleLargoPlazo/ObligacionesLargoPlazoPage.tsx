@@ -20,10 +20,14 @@ import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudDeInscripcion";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { useReestructuraStore } from "../../store/Reestructura/main";
+import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+import { Declaratorias } from "../../components/ObligacionesLargoPlazoPage/Panels/Declaratorias";
+import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPlazoPage/Panels/DeclaratoriasReestructura";
 
 export function ObligacionesLargoPlazoPage() {
   const query = {
-    isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1537px)"),
+    isScrollable: useMediaQuery("(min-width: 0px) "),
     //isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
 
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
@@ -47,7 +51,7 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.getTiposDocumentos
   );
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 
@@ -55,12 +59,18 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.inscripcion
   );
 
+  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+    (state) => state.SolicitudReestructura
+  );
+
+
+
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
       `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
-      () => {},
-      () => {}
+      () => { },
+      () => { }
     );
   }, []);
 
@@ -101,20 +111,20 @@ export function ObligacionesLargoPlazoPage() {
                 ? query.isMobile
                   ? "70%"
                   : query.isMiniTablet
-                  ? "60%"
-                  : query.isTablet
-                  ? "50%"
-                  : query.isLaptop
-                  ? "60%"
-                  : query.isMonitor
-                  ? "60%"
-                  : query.isMonitorXL
-                  ? "58%"
-                  : !inscripcion.NumeroRegistro
-                  ? "90%"
-                  : query.isMobile
-                  ? "60%"
-                  : "50%"
+                    ? "60%"
+                    : query.isTablet
+                      ? "50%"
+                      : query.isLaptop
+                        ? "60%"
+                        : query.isMonitor
+                          ? "60%"
+                          : query.isMonitorXL
+                            ? "58%"
+                            : !inscripcion.NumeroRegistro
+                              ? "90%"
+                              : query.isMobile
+                                ? "60%"
+                                : "50%"
                 : "90%"
             }
             display={"flex"}
@@ -196,8 +206,8 @@ export function ObligacionesLargoPlazoPage() {
                 !inscripcion.NumeroRegistro
                   ? "0"
                   : query.isMobile
-                  ? "10%"
-                  : "20%"
+                    ? "10%"
+                    : "20%"
               }
               display={"flex"}
               justifyContent={"end"}
@@ -250,6 +260,15 @@ export function ObligacionesLargoPlazoPage() {
               label="Solicitud de Inscripción"
               sx={queries.bold_text_Largo_Plazo}
             />
+            {reestructura === "con autorizacion"
+              ?
+              <Tab 
+              // disabled={reestructura !== "con autorizacion"}
+                label="Solicitud de reestructuración"
+                sx={queries.bold_text_Largo_Plazo}
+              />
+              : null}
+
           </Tabs>
         </Grid>
       </Grid>
@@ -263,6 +282,11 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 6 && <Resumen coments={true} />}
       {tabIndex === 7 && <SolicitudDeInscripcion />}
 
+      {reestructura === "con autorizacion"
+        ?
+        tabIndex === 8 && <DeclaratoriasReestructura />
+        : null}
+        
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
@@ -272,6 +296,8 @@ export function ObligacionesLargoPlazoPage() {
         handler={setOpenDialogReestructura}
         openState={openDialogReestructura}
         idSolicitud={inscripcion.Id}
+        Solicitud={inscripcion.Solicitud}
+        IdEditor={inscripcion.IdEditor}
       />
     </>
   );

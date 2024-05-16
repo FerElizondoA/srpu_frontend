@@ -143,14 +143,17 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then(({ data }) => {
-        inscripcionState.setInscripcion(data.data);
-        cpState.addComentario(data.data.Id, comentario, "Captura");
-        lpState.saveFiles(
-          data.data.Id,
-          `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        );
+      .then((r) => {
+        console.log("data", r);
+
+        // inscripcionState.setInscripcion(data.data);
+        // cpState.addComentario(data.data.Id, comentario, "Captura");
+        // lpState.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        // );
       });
+
   },
   modificaSolicitud: async (
     idCreador: string,

@@ -38,6 +38,7 @@ import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 export const headsTasa: readonly {
   label: string;
@@ -169,7 +170,7 @@ export function CondicionesFinancieras() {
     (!datosActualizar.includes("Tabla Condiciones Financieras") ||
       !datosActualizar.includes("Monto Original Contratado"));
 
-  const reestructura: string = useCortoPlazoStore(
+  const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
   return (

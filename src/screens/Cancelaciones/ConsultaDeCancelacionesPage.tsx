@@ -173,6 +173,16 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.addGastosCostos
   );
 
+
+  const setInscripcion: Function = useInscripcionStore(
+    (state) => state.setInscripcion
+  );
+
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
+
   const llenaSolicitud = (solicitud: IData) => {
     setCredito(solicitud);
 
@@ -239,8 +249,9 @@ export function ConsultaDeCancelacionesPage() {
         : "Cancelacion",
       (e: IData[]) => {
         setDatos(e);
-        setDatosFiltrados(e);
-      }
+        
+      },
+      setDatosFiltrados
     );
     cleanSolicitud();
   }, []);
@@ -275,10 +286,25 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
+  const getDatos=()=>{
+    getSolicitudes(
+      !rolesAdmin.includes(localStorage.getItem("Rol")!)
+        ? "Inscripcion"
+        : "Revision",
+      (e: IInscripcion[]) => {
+        setDatos(e);
+      },setDatosFiltrados
+    );
+  }
+  
+  useEffect(() => {
+    getDatos();
+  }, []);
+
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-        <LateralMenu />
+      <LateralMenu fnc={getDatos}/>
       </Grid>
       <Grid
         display={"flex"}
@@ -316,9 +342,9 @@ export function ConsultaDeCancelacionesPage() {
             value={busqueda}
             onChange={(e) => {
               setBusqueda(e.target.value);
-              if (e.target.value === "") {
-                setDatosFiltrados(datos);
-              }
+              // if (e.target.value === "") {
+              //   setDatosFiltrados(datos);
+              // }
             }}
             onKeyPress={(ev) => {
               if (ev.key === "Enter") {
@@ -496,6 +522,7 @@ export function ConsultaDeCancelacionesPage() {
                           component="th"
                           scope="row"
                           onClick={() => {
+                            setInscripcion(row)
                             setOpenTrazabilidad(!openTrazabilidad);
                           }}
                         >
@@ -668,7 +695,7 @@ export function ConsultaDeCancelacionesPage() {
       <DialogTrazabilidad
         handler={setOpenTrazabilidad}
         openState={openTrazabilidad}
-        //rowId={""}
+        row={inscripcion}
       />
 
       {openDialogVer && (

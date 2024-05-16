@@ -220,8 +220,8 @@ export function ConfirmacionEnviarSolicitud({
               if (localStorage.getItem("Rol") === "Verificador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
-                  localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  localStorage.getItem("IdUsuario")
                 )
                   .then(() => {
                     addComentario(
@@ -256,8 +256,8 @@ export function ConfirmacionEnviarSolicitud({
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
+                  "2",
                   idUsuarioAsignado,
-                  "2"
                 )
                   .then(() => {
                     addComentario(

@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
@@ -27,6 +27,7 @@ import {
   AgregarMandatos,
   buttonTheme,
 } from "../../mandatos/dialog/AgregarMandatos";
+import { IDeudorInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 
 interface Head {
   label: string;
@@ -142,6 +143,13 @@ export function VehiculoDePago() {
     }
   };
 
+  const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
+    (state) => state.tablaResumenMecanismoPago
+  )
+  const setTablaResumenMecanismoPago: Function = useLargoPlazoStore(
+    (state) => state.setTablaResumenMecanismoPago
+  )
+
   return (
     <Grid container direction={"column"} justifyContent={"space-around"}>
       <Grid
@@ -185,6 +193,7 @@ export function VehiculoDePago() {
                 getMecanismosVehiculosPago(e.target.value, () => {});
                 setTipoMecanismoVehiculoPago(e.target.value);
                 cleanTablaAsignarFuente();
+             
               }}
             >
               {CatalogoMecanismo.map((item, index) => (
@@ -217,6 +226,7 @@ export function VehiculoDePago() {
             }}
             onChange={(event, text) => {
               setMecanismoVehiculoPago(text);
+              setTablaResumenMecanismoPago(JSON.parse(mecanismoVehiculoPago.TipoMovimiento))
             }}
             value={mecanismoVehiculoPago}
             renderInput={(params) => (

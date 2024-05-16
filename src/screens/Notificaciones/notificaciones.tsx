@@ -131,7 +131,7 @@ export function Notificaciones() {
         </Grid> */}
 
         <Grid item sx={queries.tablaNotificaciones}>
-          <Paper sx={{ height: "100%" }}>
+          <Paper sx={{ height: "100%", width:"100%" }}>
             <TableContainer
               sx={{
                 maxHeight: "100%",
@@ -212,11 +212,11 @@ export function Notificaciones() {
                     </StyledTableRow>
                   ))}
                 </TableBody>
-                <Destinatarios
+                {/* <Destinatarios
                   open={openDestinatarios}
                   handleClose={openDialogDestinatarios}
                   IdNotificacion={idNoti}
-                />
+                /> */}
               </Table>
             </TableContainer>
           </Paper>
