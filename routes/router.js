@@ -88,6 +88,13 @@ const {
   getDetailTipoEntePublico,
 } = require("../controllers/TipoEntePublico.js");
 const {
+  createTiposConvenio,
+  modifyTiposConvenio,
+  deleteTiposConvenio,
+  getTiposConvenio,
+  getDetailTiposConvenio,
+} = require("../controllers/TiposConvenio.js");
+const {
   createSolicitud,
   getSolicitudes,
   getSolicitudesReestructura,
@@ -300,9 +307,12 @@ const {
 } = require("../controllers/Consultas.js");
 const { getDetailUsuario, getUsuarios } = require("../controllers/Usuarios.js");
 const {
-  getTrazabilidadSolicitud
+  getTrazabilidadSolicitud,
 } = require("../controllers/TrazabilidadSolicitud.js");
 
+const {
+  createSolicitudReestructura,
+} = require("../controllers/Reestructura.js");
 
 //#region Instituciones Financieras
 router.post(
@@ -397,6 +407,37 @@ router.delete("/delete-tiposEntePublico", verifyToken.verifyJWT, (req, res) => {
   deleteTipoEntePublico(req, res);
 });
 //#endregion
+
+//#region TiposConvenio
+router.post("/create-tiposConvenio", verifyToken.verifyJWT, (req, res) => {
+  createTiposConvenio(req, res);
+});
+
+router.get("/get-tiposConvenio", verifyToken.verifyJWT, (req, res) => {
+  getTiposConvenio(req, res);
+});
+
+router.get("/detail-tiposConvenio", verifyToken.verifyJWT, (req, res) => {
+  getDetailTiposConvenio(req, res);
+});
+
+router.put("/modify-tiposConvenio", verifyToken.verifyJWT, (req, res) => {
+  modifyTiposConvenio(req, res);
+});
+
+router.delete("/delete-tiposConvenio", verifyToken.verifyJWT, (req, res) => {
+  deleteTiposConvenio(req, res);
+});
+//#endregion
+
+
+
+
+
+
+
+
+
 
 //#region ObligadoSolidarioAval
 router.post(
@@ -1593,9 +1634,16 @@ router.get("/listaMecanismosDePago", verifyToken.verifyJWT, (req, res) => {
 });
 // #endregion
 
-
 router.get("/get-TrazabilidadSolicitud", verifyToken.verifyJWT, (req, res) => {
   getTrazabilidadSolicitud(req, res);
 });
+
+// #region Reestructura
+router.post("/create-SolicitudReestructura", verifyToken.verifyJWT, (req, res) => {
+    createSolicitudReestructura(req, res);
+  }
+);
+
+// #endregion
 
 module.exports = router;

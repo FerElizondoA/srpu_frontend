@@ -83,9 +83,11 @@ module.exports = {
     db.query(
       `CALL sp_AgregarSolicitud( '${IdEntePublico}','${IdTipoEntePublico}', '${TipoSolicitud}','${IdInstitucionFinanciera}','${Estatus}', '${IdClaveInscripcion}', '${MontoOriginalContratado}', '${FechaContratacion}', '${Solicitud}','${IdEditor}', '${CreadoPor}' )`,
       (err, result) => {
+        console.log("err", err)
+        console.log("result", result)
         if (err) {
           return res.status(500).send({
-            error: "Error de servidor",
+            error: err,
           });
         }
         if (result.length) {
