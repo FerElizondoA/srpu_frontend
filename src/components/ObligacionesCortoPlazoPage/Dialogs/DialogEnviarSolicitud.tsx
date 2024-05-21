@@ -241,8 +241,8 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    //cleanSolicitud();
-                    //navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitud();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -281,8 +281,8 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    //cleanSolicitud();
-                    //navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitud();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({

@@ -88,14 +88,6 @@ export function DialogVerDetalle(props: Props) {
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
-
-
-
-
-
-
-
-
   const [openGuardaComentarios, setOpenGuardaComentarios] =
     React.useState(false);
 
@@ -442,7 +434,7 @@ export function DialogVerDetalle(props: Props) {
                 }}
                 onClick={() => {
                   setInscripcion(props.rowSolicitud)
-                  changeRestructura("con autorizacion");
+                  changeRestructura("sin autorizacion");
                   navigate("../ObligacionesLargoPlazo");
                 }}
               >

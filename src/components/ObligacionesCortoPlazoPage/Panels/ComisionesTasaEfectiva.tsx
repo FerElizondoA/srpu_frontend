@@ -663,7 +663,7 @@ export function ComisionesTasaEfectiva() {
                         {row.monto.toString()}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {row.iva}
+                        {row.iva === true ? "Aplica" : "N/A"}
                       </StyledTableCell>
                     </StyledTableRow>
                   );

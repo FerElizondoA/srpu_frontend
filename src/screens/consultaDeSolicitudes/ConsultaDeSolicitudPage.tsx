@@ -236,7 +236,7 @@ export function ConsultaDeSolicitudPage() {
         <LateralMenu fnc={getDatos}/>
       </Grid>
 
-      <Button
+      {/* <Button
         onClick={() => {
           createNotification(
             "Crédito simple a corto plazo",
@@ -265,7 +265,7 @@ export function ConsultaDeSolicitudPage() {
         }}
       >
         prueba
-      </Button>
+      </Button> */}
       <Grid
         display={"flex"}
         justifyContent={"center"}

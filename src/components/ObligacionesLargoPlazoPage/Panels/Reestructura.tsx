@@ -194,7 +194,6 @@ export function SolicitudReestructura() {
       <Grid container
         display={"flex"}
         justifyContent={"space-around"}
-
       >
         <Grid xs={10} sm={5} md={4} lg={3} xl={3}>
           <InputLabel

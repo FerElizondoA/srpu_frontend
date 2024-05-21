@@ -40,16 +40,16 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 const heads: {
   label: string;
 }[] = [
-  {
-    label: "Selección",
-  },
-  {
-    label: "Tipo de Ente Público Obligado",
-  },
-  {
-    label: "Ente Público Obligado",
-  },
-];
+    {
+      label: "Selección",
+    },
+    {
+      label: "Tipo de Ente Público Obligado",
+    },
+    {
+      label: "Ente Público Obligado",
+    },
+  ];
 
 export function InformacionGeneral() {
   // GET CATALOGOS
@@ -280,9 +280,10 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Monto Original Contratado"))
+                !datosActualizar.includes("Monto Original Contratado"))
             }
             fullWidth
             placeholder="0"
@@ -339,9 +340,10 @@ export function InformacionGeneral() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                reestructura === "con autorizacion" || 
+                reestructura === "con autorizacion" ||
+                reestructura === "sin autorizacion" ||
                 (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Vencimiento"))
+                  !datosActualizar.includes("Fecha de Vencimiento"))
               }
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
@@ -355,7 +357,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               datosActualizar.length > 0 && !datosActualizar.includes("Destino")
             }
             clearText="Borrar"
@@ -407,9 +410,10 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Denominación"))
+                !datosActualizar.includes("Denominación"))
             }
             fullWidth
             variant="standard"
@@ -442,9 +446,10 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Institución Financiera"))
+                !datosActualizar.includes("Institución Financiera"))
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -504,8 +509,10 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
+              (datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -551,10 +558,12 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              obligadoSolidario === "NO APLICA" ||
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
+              (obligadoSolidario === "NO APLICA" ||
               /^[\s]*$/.test(obligadoSolidario) ||
               (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval")))
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -719,7 +728,7 @@ export function InformacionGeneral() {
 
               <TableBody>
                 {obligadoSolidario === "NO APLICA" &&
-                tablaObligados.length === 0 ? (
+                  tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell align="center">NO APLICA</StyledTableCell>
@@ -733,6 +742,8 @@ export function InformacionGeneral() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
+                              disabled={reestructura === "con autorizacion" ||
+                              reestructura === "sin autorizacion" }
                               onClick={() => removeObligadoSolidarioAval(index)}
                             >
                               <DeleteIcon />

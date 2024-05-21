@@ -243,30 +243,22 @@ export function ObligacionesLargoPlazoPage() {
             sx={{ width: "100%", fontSize: ".8rem" }}
           >
             <Tab label="Encabezado" sx={{ ...queries.bold_text_Largo_Plazo }} />
-            <Tab
-              label="Información General"
-              sx={queries.bold_text_Largo_Plazo}
-            />
-            <Tab label="Autorización" sx={queries.bold_text_Largo_Plazo} />
+            <Tab label="Información General" sx={queries.bold_text_Largo_Plazo} />
+            {reestructura !== "sin autorizacion" && (
+              <Tab
+                disabled={reestructura === "sin autorizacion"}
+                label="Autorización"
+                sx={queries.bold_text_Largo_Plazo}
+              />
+            )}
             <Tab label="Fuente De Pago" sx={queries.bold_text_Largo_Plazo} />
-            <Tab
-              label="Condiciones Financieras"
-              sx={queries.bold_text_Largo_Plazo}
-            />
+            <Tab label="Condiciones Financieras" sx={queries.bold_text_Largo_Plazo} />
             <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
             {/* <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} /> */}
             <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
-            <Tab
-              label="Solicitud de Inscripción"
-              sx={queries.bold_text_Largo_Plazo}
-            />
-            {reestructura === "con autorizacion"
-              ?
-              <Tab 
-              // disabled={reestructura !== "con autorizacion"}
-                label="Solicitud de reestructuración"
-                sx={queries.bold_text_Largo_Plazo}
-              />
+            <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
+            {reestructura === "con autorizacion" || reestructura === "sin autorizacion"
+              ? <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} />
               : null}
 
           </Tabs>
@@ -275,18 +267,48 @@ export function ObligacionesLargoPlazoPage() {
 
       {tabIndex === 0 && <Encabezado />}
       {tabIndex === 1 && <InfoGeneralGastoCosto />}
-      {tabIndex === 2 && <Autorizacion />}
-      {tabIndex === 3 && <FuentePagoSecciones />}
+
+      {reestructura === "sin autorizacion"
+        ? null
+        : tabIndex === 2 && <Autorizacion />}
+
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 2 && <FuentePagoSecciones />
+        : tabIndex === 3 && <FuentePagoSecciones />}
+
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 3 && <CondicionesFinancieras />
+        : tabIndex === 4 && <CondicionesFinancieras />}
+
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 4 && <Documentacion />
+        : tabIndex === 5 && <Documentacion />}
+
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 5 && <Resumen coments={true} />
+        : tabIndex === 6 && <Resumen coments={true} />}
+
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 6 && <SolicitudDeInscripcion />
+        : tabIndex === 7 && <SolicitudDeInscripcion />}
+
+
+      {/* {tabIndex === 3 && <FuentePagoSecciones />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
       {tabIndex === 6 && <Resumen coments={true} />}
-      {tabIndex === 7 && <SolicitudDeInscripcion />}
+      {tabIndex === 7 && <SolicitudDeInscripcion />} */}
 
-      {reestructura === "con autorizacion"
-        ?
-        tabIndex === 8 && <DeclaratoriasReestructura />
-        : null}
-        
+      {/* {reestructura === "con autorizacion"
+        ? */}
+      {reestructura === "sin autorizacion"
+      ? tabIndex === 7 && <DeclaratoriasReestructura />
+      : tabIndex === 8 && <DeclaratoriasReestructura />
+      
+      }
+      {/* {tabIndex === 8 && <DeclaratoriasReestructura />} */}
+      {/* : null} */}
+
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}

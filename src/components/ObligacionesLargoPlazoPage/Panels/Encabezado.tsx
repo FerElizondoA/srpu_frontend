@@ -67,9 +67,10 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Documento"))
+                !datosActualizar.includes("Tipo de Documento"))
             }
             fullWidth
             value={tipoDocumento}
@@ -95,9 +96,10 @@ export function Encabezado() {
           </InputLabel>
           <Select
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Solicitante Autorizado"))
+                !datosActualizar.includes("Solicitante Autorizado"))
             }
             sx={queries.medium_text}
             fullWidth
@@ -139,9 +141,10 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Cargo del Solicitante"))
+                !datosActualizar.includes("Cargo del Solicitante"))
             }
             fullWidth
             value={encabezado.solicitanteAutorizado.Cargo}
@@ -174,9 +177,10 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tipo de Ente Público"))
+                !datosActualizar.includes("Tipo de Ente Público"))
             }
             fullWidth
             value={tipoEntePublico.TipoEntePublico}
@@ -203,9 +207,10 @@ export function Encabezado() {
 
           <TextField
             disabled={
-              reestructura === "con autorizacion" || 
+              reestructura === "con autorizacion" ||
+              reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Municipio u Organismo"))
+                !datosActualizar.includes("Municipio u Organismo"))
             }
             multiline
             fullWidth
@@ -233,9 +238,10 @@ export function Encabezado() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                reestructura === "con autorizacion" || 
+                reestructura === "con autorizacion" ||
+                reestructura === "sin autorizacion" ||
                 (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Contratación"))
+                  !datosActualizar.includes("Fecha de Contratación"))
               }
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Badge,
   Button,
@@ -230,16 +231,16 @@ export function Documentacion() {
                     <StyledTableCell scope="row">
                       <TextField
                         sx={{ width: "250px" }}
-                        disabled={ 
-                          reestructura === "con autorizacion" 
-                          ? true
-                          :
-                          val.archivo?.name ===
+                        disabled={
+                          reestructura === "con autorizacion"
+                            ? true
+                            :
+                            val.archivo?.name ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                          val.nombreArchivo ===
+                            val.nombreArchivo ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                          (datosActualizar.length > 0 &&
-                            !datosActualizar.includes(val.tipoArchivo))
+                            (datosActualizar.length > 0 &&
+                              !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
                         multiline={!query.isMobile}
@@ -269,7 +270,7 @@ export function Documentacion() {
                             display: "flex",
                             fontFamily:
                               val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "MontserratBold"
                                 : "MontserratMedium",
                             textAlign: "center",
@@ -280,7 +281,7 @@ export function Documentacion() {
                             fontSize: "70%",
                             border:
                               val.archivo?.name !==
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                 ? "2px dotted #af8c55"
                                 : "2px dotted black",
                           }}
@@ -292,9 +293,9 @@ export function Documentacion() {
                         <input
                           disabled={
                             reestructura === "con autorizacion" ? true
-                            :
-                            datosActualizar.length > 0 &&
-                            !datosActualizar.includes(val.tipoArchivo)
+                              :
+                              datosActualizar.length > 0 &&
+                              !datosActualizar.includes(val.tipoArchivo)
                           }
                           type="file"
                           accept="application/pdf"
@@ -309,6 +310,20 @@ export function Documentacion() {
                           }}
                         />
                       </Grid>
+
+                      <Grid display={"flex"} justifyContent={"end"}>
+                        <Tooltip title={"Remover Archivo"}>
+                          <Button
+                            onClick={() => {
+                              quitDocument(openEliminar.index);
+                              setOpenEliminar({ ...openEliminar, open: false });
+                            }}
+                          >
+                            <CloseIcon />
+                          </Button>
+                        </Tooltip>
+                      </Grid>
+
                     </StyledTableCell>
                     <StyledTableCell>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
@@ -337,7 +352,7 @@ export function Documentacion() {
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                tablaDocumentos[index]?.tipoArchivo ===
+                                  tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,
@@ -362,13 +377,13 @@ export function Documentacion() {
                     </StyledTableCell>
                     <StyledTableCell>
                       {comentario[val.descripcionTipo] &&
-                      comentario[val.descripcionTipo] !== "" ? (
+                        comentario[val.descripcionTipo] !== "" ? (
                         <Badge badgeContent={"!"} color="primary">
                           <Tooltip title="Añadir comentario a este apartado">
                             <IconButton
                               color={
                                 comentario[val.descripcionTipo] &&
-                                comentario[val.descripcionTipo] !== ""
+                                  comentario[val.descripcionTipo] !== ""
                                   ? "success"
                                   : "primary"
                               }
@@ -390,7 +405,7 @@ export function Documentacion() {
                           <IconButton
                             color={
                               comentario[val.descripcionTipo] &&
-                              comentario[val.descripcionTipo] !== ""
+                                comentario[val.descripcionTipo] !== ""
                                 ? "success"
                                 : "primary"
                             }

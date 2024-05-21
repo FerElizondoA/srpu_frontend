@@ -491,7 +491,7 @@ export function CondicionesFinancieras() {
                                 {row.monto}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.iva}
+                                {row.iva === true ? "Aplica": "N/A"}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
