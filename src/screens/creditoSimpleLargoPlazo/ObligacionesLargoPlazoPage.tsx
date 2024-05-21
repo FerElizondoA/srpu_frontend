@@ -260,14 +260,20 @@ export function ObligacionesLargoPlazoPage() {
               label="Solicitud de Inscripción"
               sx={queries.bold_text_Largo_Plazo}
             />
-            {reestructura === "con autorizacion"
+
+<Tab 
+              // disabled={reestructura !== "con autorizacion"}
+                label="Solicitud de reestructuración"
+                sx={queries.bold_text_Largo_Plazo}
+              />
+            {/* {reestructura === "con autorizacion"
               ?
               <Tab 
               // disabled={reestructura !== "con autorizacion"}
                 label="Solicitud de reestructuración"
                 sx={queries.bold_text_Largo_Plazo}
               />
-              : null}
+              : null} */}
 
           </Tabs>
         </Grid>
@@ -281,11 +287,11 @@ export function ObligacionesLargoPlazoPage() {
       {tabIndex === 5 && <Documentacion />}
       {tabIndex === 6 && <Resumen coments={true} />}
       {tabIndex === 7 && <SolicitudDeInscripcion />}
-
-      {reestructura === "con autorizacion"
+      {tabIndex === 8 && <DeclaratoriasReestructura />}
+      {/* {reestructura === "con autorizacion"
         ?
-        tabIndex === 8 && <DeclaratoriasReestructura />
-        : null}
+        // tabIndex === 8 && <DeclaratoriasReestructura />
+        : null} */}
         
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}
