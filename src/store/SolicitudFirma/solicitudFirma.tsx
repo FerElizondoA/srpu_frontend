@@ -187,7 +187,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               ? "24"
               : estatusPrevio.ControlInterno === "reestructurado"
               ? "10"
-              : "101",
+              : "11",
             state.inscripcion.Id,
             inf.IdUsuario,
             oficio

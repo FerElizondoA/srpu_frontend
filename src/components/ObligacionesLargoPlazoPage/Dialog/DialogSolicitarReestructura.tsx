@@ -12,6 +12,7 @@ import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../../store/Reestructura/reestructura";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 type Props = {
   handler: Function;
@@ -19,6 +20,7 @@ type Props = {
   idSolicitud: string;
   Solicitud: string;
   IdEditor: string;
+  IdCreado:string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
@@ -44,6 +46,10 @@ export function DialogSolicitarReestructura(props: Props) {
 
   const createSolicitudReestructura: Function = useReestructuraStore(
     (state) => state.createSolicitudReestructura
+  );
+
+  const modificaSolicitud: Function = useLargoPlazoStore(
+    (state) => state.modificaSolicitud
   );
 
   const [navigateReestructura, setNavigateReestructura] =
@@ -134,6 +140,7 @@ export function DialogSolicitarReestructura(props: Props) {
           onClick={() => {
             // CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
             createSolicitudReestructura(props.idSolicitud, props.Solicitud, props.IdEditor, setNavigateReestructura)
+            modificaSolicitud(props.IdCreado, localStorage.getItem("IdUsuario"), "19" )
             if (!navigateReestructura) {
               navigate("../ConsultaDeSolicitudes");
             }

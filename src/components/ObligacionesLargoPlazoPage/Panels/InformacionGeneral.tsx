@@ -240,7 +240,9 @@ export function InformacionGeneral() {
           </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              disabled
+              disabled={
+                reestructura === "" 
+              }
               disablePast={false}
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
@@ -257,6 +259,7 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Plazo (Días)</InputLabel>
           <TextField
             fullWidth
+            disabled
             variant="standard"
             value={plazoD}
             sx={queries.medium_text}
@@ -270,7 +273,6 @@ export function InformacionGeneral() {
                 fontFamily: "MontserratMedium",
               },
             }}
-            disabled
           />
         </Grid>
 
@@ -280,8 +282,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <TextField
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              // reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Monto Original Contratado"))
             }
@@ -340,8 +342,8 @@ export function InformacionGeneral() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               disabled={
-                reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion" ||
+                // reestructura === "con autorizacion" ||
+                // reestructura === "sin autorizacion" ||
                 (datosActualizar.length > 0 &&
                   !datosActualizar.includes("Fecha de Vencimiento"))
               }
@@ -357,8 +359,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Destino</InputLabel>
           <Autocomplete
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              //reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               datosActualizar.length > 0 && !datosActualizar.includes("Destino")
             }
             clearText="Borrar"
@@ -410,8 +412,8 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Denominación</InputLabel>
           <Select
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              // reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Denominación"))
             }
@@ -446,8 +448,8 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              // reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
                 !datosActualizar.includes("Institución Financiera"))
             }
@@ -509,10 +511,10 @@ export function InformacionGeneral() {
           </InputLabel>
           <Autocomplete
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              // reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               (datosActualizar.length > 0 &&
-              !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -558,12 +560,12 @@ export function InformacionGeneral() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              reestructura === "con autorizacion" ||
-              reestructura === "sin autorizacion" ||
+              // reestructura === "con autorizacion" ||
+              // reestructura === "sin autorizacion" ||
               (obligadoSolidario === "NO APLICA" ||
-              /^[\s]*$/.test(obligadoSolidario) ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval")))
+                /^[\s]*$/.test(obligadoSolidario) ||
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Tabla Obligado Solidario / Aval")))
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -743,7 +745,7 @@ export function InformacionGeneral() {
                             <IconButton
                               type="button"
                               disabled={reestructura === "con autorizacion" ||
-                              reestructura === "sin autorizacion" }
+                                reestructura === "sin autorizacion"}
                               onClick={() => removeObligadoSolidarioAval(index)}
                             >
                               <DeleteIcon />

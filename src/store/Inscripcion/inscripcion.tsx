@@ -9,6 +9,7 @@ import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera"
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
+import { IAnexoClausula } from "../Reestructura/reestructura";
 
 export interface IInscripcion {
   Id: string;
@@ -80,6 +81,18 @@ export interface ISolicitudLargoPlazo {
     cargoServidorPublicoServidorPublicoDirigido: string;
     declaratorias: string[];
   };
+
+  SolicitudReestructuracion: {
+    tablaDeclaratorias: IAnexoClausula[]
+    ReestructuraDeclaratorias: {
+      TipoConvenio: { Id: string, Descripcion: string };
+      FechaConvenio: string;
+      SalgoVigente: number;
+      PeriodoFinanciamiento: string;
+      PeriodoAdminitracion: string;
+    }
+
+  }
 }
 
 export interface ISolicitudCortoPlazo {

@@ -118,6 +118,20 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         cargoServidorPublicoServidorPublicoDirigido: lpState.inscripcion.cargo,
         declaratorias: lpState.reglasAplicables,
       },
+
+      SolicitudReestructuracion: {
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        ReestructuraDeclaratorias: {
+          TipoConvenio: {
+            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
+            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+          },
+          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
+          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
+          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
+        }
+      },
     };
 
     return await axios
@@ -212,6 +226,20 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         cargoServidorPublicoServidorPublicoDirigido: lpState.inscripcion.cargo,
         declaratorias: lpState.reglasAplicables,
       },
+      SolicitudReestructuracion: {
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        ReestructuraDeclaratorias: {
+          TipoConvenio: {
+            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
+            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+          },
+          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
+          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
+          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
+        }
+      },
+
     };
 
     await axios
@@ -314,7 +342,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
@@ -348,7 +376,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
                 data.RESPONSE.NOMBREARCHIVO
               );
             })
-            .catch((e) => {});
+            .catch((e) => { });
         } else {
           return null;
         }
@@ -383,7 +411,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             data.RESPONSE.NOMBREARCHIVO
           );
         })
-        .catch((e) => {});
+        .catch((e) => { });
     } else {
       return null;
     }
@@ -410,8 +438,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => { })
+      .catch((e) => { });
   },
 });
 
@@ -534,7 +562,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export const getUsuariosAsignables = async (

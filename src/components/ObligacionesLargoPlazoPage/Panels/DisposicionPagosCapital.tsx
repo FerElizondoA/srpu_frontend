@@ -48,6 +48,7 @@ import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabeza
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { useReestructuraStore } from "../../../store/Reestructura/main";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 const heads: readonly {
@@ -257,6 +258,10 @@ export function DisposicionPagosCapital() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
   };
 
+  const reestructura: string = useReestructuraStore(
+    (state) => state.reestructura
+  );
+
   return (
     <Grid
       container
@@ -425,6 +430,7 @@ export function DisposicionPagosCapital() {
           >
             <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
               <FormControlLabel
+              disabled={reestructura !== ""}
                 label="Disposiciones Parciales"
                 control={
                   <Checkbox
@@ -446,6 +452,7 @@ export function DisposicionPagosCapital() {
               >
                 <DesktopDatePicker
                   sx={{ width: "100%" }}
+                  disabled={reestructura !== ""}
                   value={new Date(disposicion.fechaDisposicion)}
                   onChange={(date) => {
                     setDisposicion({
@@ -698,6 +705,7 @@ export function DisposicionPagosCapital() {
                   >
                     <DesktopDatePicker
                       sx={{ width: "100%" }}
+                     
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) => {
                         setTasaInteres({
@@ -838,6 +846,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                
                       sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>

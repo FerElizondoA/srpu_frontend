@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Button, Grid, Tab, Tabs, ThemeProvider, Tooltip, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
@@ -21,10 +21,11 @@ import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoP
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { useReestructuraStore } from "../../store/Reestructura/main";
-import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+import { IAnexoClausula, IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
 import { Declaratorias } from "../../components/ObligacionesLargoPlazoPage/Panels/Declaratorias";
 import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPlazoPage/Panels/DeclaratoriasReestructura";
-
+import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
+// "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) "),
@@ -51,16 +52,24 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.getTiposDocumentos
   );
 
-  const reestructura: string = useReestructuraStore(
-    (state) => state.reestructura
-  );
-
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
 
+
+
+
+  //Reestructura
+  const reestructura: string = useReestructuraStore(
+    (state) => state.reestructura
+  );
+
   const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
     (state) => state.SolicitudReestructura
+  );
+
+  const tablaDeclaratorias: IAnexoClausula[] = useReestructuraStore(
+    (state) => state.tablaDeclaratorias
   );
 
 
@@ -107,7 +116,7 @@ export function ObligacionesLargoPlazoPage() {
           )}
           <Grid
             width={
-              reestructura === "con autorizacion"
+              reestructura !== ""
                 ? query.isMobile
                   ? "70%"
                   : query.isMiniTablet
@@ -117,9 +126,9 @@ export function ObligacionesLargoPlazoPage() {
                       : query.isLaptop
                         ? "60%"
                         : query.isMonitor
-                          ? "60%"
+                          ? "38%"
                           : query.isMonitorXL
-                            ? "58%"
+                            ? "32%"
                             : !inscripcion.NumeroRegistro
                               ? "90%"
                               : query.isMobile
@@ -129,10 +138,10 @@ export function ObligacionesLargoPlazoPage() {
             }
             display={"flex"}
             justifyContent={
-              reestructura === "con autorizacion" ? "end" : "center"
+              reestructura !== "" ? "end" : "center"
             }
             alignItems={
-              reestructura === "con autorizacion" && query.isMobile
+              reestructura !== "" && query.isMobile
                 ? "center"
                 : "center"
             }
@@ -147,7 +156,7 @@ export function ObligacionesLargoPlazoPage() {
             </Typography>
           </Grid>
 
-          {reestructura === "con autorizacion" ? (
+          {reestructura !== "" ? (
             <Grid
               display={"flex"}
               justifyContent={"end"}
@@ -169,36 +178,42 @@ export function ObligacionesLargoPlazoPage() {
                 },
 
                 "@media (min-width: 1400px)": {
-                  width: "50%",
+                  width: "35%",
                 },
 
                 "@media (min-width: 1870px)": {
-                  width: "40%",
+                  width: "35%",
                 },
               }}
             >
-              <Button
-                onClick={() => {
-                  setOpenDialogReestructura(!openDialogReestructura);
-                }}
-                sx={{
-                  backgroundColor: "#15212f",
-                  color: "white",
-                  "&&:hover": {
-                    backgroundColor: "rgba(47, 47, 47, 0.4)",
-                    color: "#000",
-                  },
-                  //fontSize: "90%",
-                  borderRadius: "0.8vh",
-                  textTransform: "capitalize",
-                  fontSize: "80%",
-                }}
-              >
-                Finalizar Reestructuracion
-                {/* {query.isMobile || query.isMiniTablet
-                  ? "Solicitar Autorización"
-                  : "Solicitar Autorización para Reestructura"} */}
-              </Button>
+              <ThemeProvider theme={buttonTheme}>
+
+                <Tooltip title="hola">
+                  <Button
+                    onClick={() => {
+                      setOpenDialogReestructura(!openDialogReestructura);
+                    }}
+                    disabled={
+                      tablaDeclaratorias.length < 1
+                    }
+                    sx={{
+                      backgroundColor: "#15212f",
+                      color: "white",
+                      "&&:hover": {
+                        backgroundColor: "rgba(47, 47, 47, 0.4)",
+                        color: "#000",
+                      },
+                      //fontSize: "90%",
+                      borderRadius: "0.8vh",
+                      textTransform: "capitalize",
+                      fontSize: "80%",
+                    }}
+                  >
+                    Finalizar Reestructuracion
+                  </Button>
+                </Tooltip>
+
+              </ThemeProvider>
             </Grid>
           ) : (
             <Grid
@@ -240,7 +255,7 @@ export function ObligacionesLargoPlazoPage() {
             variant={query.isScrollable ? "scrollable" : "standard"}
             scrollButtons="auto"
             allowScrollButtonsMobile
-            sx={{ width: "100%", fontSize: ".8rem" }}
+            sx={{ fontSize: ".8rem" }}
           >
             <Tab label="Encabezado" sx={{ ...queries.bold_text_Largo_Plazo }} />
             <Tab label="Información General" sx={queries.bold_text_Largo_Plazo} />
@@ -256,7 +271,11 @@ export function ObligacionesLargoPlazoPage() {
             <Tab label="Documentación" sx={queries.bold_text_Largo_Plazo} />
             {/* <Tab label="Tabla De Pagos" sx={queries.bold_text_Largo_Plazo} /> */}
             <Tab label="Resumen" sx={queries.bold_text_Largo_Plazo} />
-            <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
+            {reestructura === ""
+              ? <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
+              : null
+            }
+
             {reestructura === "con autorizacion" || reestructura === "sin autorizacion"
               ? <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} />
               : null}
@@ -288,24 +307,21 @@ export function ObligacionesLargoPlazoPage() {
         ? tabIndex === 5 && <Resumen coments={true} />
         : tabIndex === 6 && <Resumen coments={true} />}
 
+      {reestructura === ""
+        ? tabIndex === 7 && <SolicitudDeInscripcion />
+        : null}
+
       {reestructura === "sin autorizacion"
-        ? tabIndex === 6 && <SolicitudDeInscripcion />
-        : tabIndex === 7 && <SolicitudDeInscripcion />}
-
-
+        ? tabIndex === 6 && <DeclaratoriasReestructura />
+        : reestructura === "con autorizacion"
+          ? tabIndex === 7 && <DeclaratoriasReestructura />
+          : null
+      }
       {/* {tabIndex === 3 && <FuentePagoSecciones />}
       {tabIndex === 4 && <CondicionesFinancieras />}
       {tabIndex === 5 && <Documentacion />}
       {tabIndex === 6 && <Resumen coments={true} />}
       {tabIndex === 7 && <SolicitudDeInscripcion />} */}
-
-      {/* {reestructura === "con autorizacion"
-        ? */}
-      {reestructura === "sin autorizacion"
-      ? tabIndex === 7 && <DeclaratoriasReestructura />
-      : tabIndex === 8 && <DeclaratoriasReestructura />
-      
-      }
       {/* {tabIndex === 8 && <DeclaratoriasReestructura />} */}
       {/* : null} */}
 
@@ -320,6 +336,7 @@ export function ObligacionesLargoPlazoPage() {
         idSolicitud={inscripcion.Id}
         Solicitud={inscripcion.Solicitud}
         IdEditor={inscripcion.IdEditor}
+        IdCreado={inscripcion.CreadoPor}
       />
     </>
   );

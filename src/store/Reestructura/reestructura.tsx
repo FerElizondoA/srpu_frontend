@@ -8,6 +8,7 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import { IAutorizaciones } from "../CreditoLargoPlazo/autorizacion";
 // import { useInstruccionesStore } from "./main";
 
 export interface IDatosSolicitudReestructura {
@@ -38,6 +39,9 @@ export interface ReestructuraSlice {
   SolicitudReestructura: IDatosSolicitudReestructura,
   setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
 
+
+
+
   ReestructuraDeclaratorias: ICreditoSolicitudReestructura
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => void;
 
@@ -59,6 +63,9 @@ export interface ReestructuraSlice {
 
 
 export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) => ({
+  
+
+  
   AnexoClausulas: {
     ClausulaOriginal: { Id: "", Descripcion: "" },
     ClausulaModificada: { Id: "", Descripcion: "" },
@@ -175,4 +182,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       reestructura: reestructura,
     }));
   },
+
+
+  
 })

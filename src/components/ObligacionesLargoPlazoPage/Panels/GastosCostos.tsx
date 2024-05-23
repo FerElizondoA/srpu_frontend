@@ -186,10 +186,10 @@ export function GastoCostos() {
       <Grid item xs={10} sm={5} md={5} lg={3.3} xl={3.3}>
         <InputLabel sx={queries.medium_text}>Destino</InputLabel>
         <Autocomplete
-          disabled={
-            reestructura === "con autorizacion" ||
-            reestructura === "sin autorizacion"
-          }
+          // disabled={
+          //   reestructura === "con autorizacion" ||
+          //   reestructura === "sin autorizacion"
+          // }
           clearText="Borrar"
           noOptionsText="Sin opciones"
           closeText="Cerrar"
@@ -257,10 +257,10 @@ export function GastoCostos() {
                     Clave de Inscripción del Financiamiento a Refinanciar
                   </InputLabel>
                   <TextField
-                    disabled={
-                      reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion"
-                    }
+                    // disabled={
+                    //   reestructura === "con autorizacion" ||
+                    //   reestructura === "sin autorizacion"
+                    // }
                     fullWidth
                     value={gastosCostos.claveInscripcionFinanciamiento}
                     onChange={(v) => {
@@ -294,10 +294,10 @@ export function GastoCostos() {
                     Detalle de la Inversión
                   </InputLabel>
                   <Autocomplete
-                    disabled={
-                      reestructura === "con autorizacion" ||
-                      reestructura === "sin autorizacion"
-                    }
+                    // disabled={
+                    //   reestructura === "con autorizacion" ||
+                    //   reestructura === "sin autorizacion"
+                    // }
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -407,10 +407,10 @@ export function GastoCostos() {
             <Grid item width={"90%"}>
               <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
               <TextField
-                disabled={
-                  reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion" 
-              }
+              //   disabled={
+              //     reestructura === "con autorizacion" ||
+              //   reestructura === "sin autorizacion" 
+              // }
                 value={gastosCostos.descripcion}
                 onChange={(v) =>
                   setGastosCostos({
@@ -436,10 +436,10 @@ export function GastoCostos() {
             <Grid item width={"90%"}>
               <InputLabel sx={queries.medium_text}>Monto</InputLabel>
               <TextField
-                disabled={
-                  reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion"
-              }
+              //   disabled={
+              //     reestructura === "con autorizacion" ||
+              //   reestructura === "sin autorizacion"
+              // }
                 fullWidth
                 placeholder="0"
                 value={gastosCostos.monto}
@@ -482,9 +482,10 @@ export function GastoCostos() {
             <Grid item width={"90%"}>
               <InputLabel sx={queries.medium_text}>Gastos Adicionales</InputLabel>
               <TextField
-                disabled={reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion"
-              }
+              //   disabled={
+              //     reestructura === "con autorizacion" ||
+              //   reestructura === "sin autorizacion"
+              // }
                 fullWidth
                 value={gastosCostos.gastosAdicionales}
                 onChange={(v) => {
@@ -512,8 +513,8 @@ export function GastoCostos() {
                 Monto Gastos Adicionales
               </InputLabel>
               <TextField
-                disabled={reestructura === "con autorizacion" ||
-                reestructura === "sin autorizacion" }
+                // disabled={reestructura === "con autorizacion" ||
+                // reestructura === "sin autorizacion" }
                 fullWidth
                 placeholder="0"
                 value={gastosCostos.montoGastosAdicionales}

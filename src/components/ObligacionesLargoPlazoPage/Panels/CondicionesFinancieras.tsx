@@ -43,59 +43,59 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 export const headsTasa: readonly {
   label: string;
 }[] = [
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Fija",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Fija",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 export const headsComision: readonly {
   label: string;
 }[] = [
-  {
-    label: "Tipo de comisión",
-  },
-  {
-    label: "Fecha de primer pago",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Porcentaje",
-  },
-  {
-    label: "Monto",
-  },
-  {
-    label: "IVA",
-  },
-];
+    {
+      label: "Tipo de comisión",
+    },
+    {
+      label: "Fecha de primer pago",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Porcentaje",
+    },
+    {
+      label: "Monto",
+    },
+    {
+      label: "IVA",
+    },
+  ];
 
 export const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: "Importe de disposición",
-  },
-];
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: "Importe de disposición",
+    },
+  ];
 
 const heads: readonly {
   label: string;
@@ -243,7 +243,7 @@ export function CondicionesFinancieras() {
                       <StyledTableCell align="left">
                         <Tooltip title="Editar">
                           <IconButton
-                            disabled={disable || reestructura === "con autorizacion"}
+                            disabled={disable}
                             type="button"
                             onClick={() => {
                               setAccion("Editar");
@@ -257,7 +257,10 @@ export function CondicionesFinancieras() {
                         </Tooltip>
                         <Tooltip title="Eliminar">
                           <IconButton
-                            disabled={disable || reestructura === "con autorizacion"}
+                            disabled={disable ||
+                              (reestructura === "con autorizacion" ||
+                                reestructura === "sin autorizacion"
+                              )}
                             type="button"
                             onClick={() => {
                               removeCondicionFinanciera(index);
@@ -468,9 +471,9 @@ export function CondicionesFinancieras() {
                               <StyledTableCell align="center">
                                 {row?.fechaComision !== "N/A"
                                   ? format(
-                                      new Date(row?.fechaComision),
-                                      "dd/MM/yyyy"
-                                    )
+                                    new Date(row?.fechaComision),
+                                    "dd/MM/yyyy"
+                                  )
                                   : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">

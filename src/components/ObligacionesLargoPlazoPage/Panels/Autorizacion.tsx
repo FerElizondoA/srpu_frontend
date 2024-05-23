@@ -22,6 +22,7 @@ import {
   Tooltip,
   Typography,
   ThemeProvider,
+  Divider,
 } from "@mui/material";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -44,7 +45,8 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 interface Head {
   label: string;
 }
- const headsAutorizacion: Head[] = [
+
+const headsAutorizacion: Head[] = [
   {
     label: "Número de autorización",
   },
@@ -92,6 +94,21 @@ export function Autorizacion() {
     (state) => state.setAutorizacionSelect
   );
 
+
+
+  const autorizacionesReestructura: IAutorizaciones[] = useLargoPlazoStore(
+    (state) => state.autorizacionesReestructura
+  );
+
+  const autorizacionSelectReestructura: IAutorizaciones = useLargoPlazoStore(
+    (state) => state.autorizacionSelectReestructura
+  );
+
+  const setAutorizacionSelectReestructura: Function = useLargoPlazoStore(
+    (state) => state.setAutorizacionSelectReestructura
+  );
+
+
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
@@ -116,7 +133,7 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect?.Id !== "") {
       getPathDocumentosAut(autorizacionSelect?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => {});
+      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => { });
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
@@ -136,10 +153,159 @@ export function Autorizacion() {
     }
   }, [pathDocumentos]);
 
+  const Autorizacion = (FiltroReestructura: string) => {
+
+    if (FiltroReestructura === "") {
+      setAutorizacion(
+        {
+          entidad: {
+            Id: autorizacionSelect?.IdEntidad,
+            Organismo: autorizacionSelect?.Entidad,
+          },
+          numeroAutorizacion:
+            autorizacionSelect?.NumeroAutorizacion,
+          fechaPublicacion:
+            autorizacionSelect?.FechaPublicacion,
+          medioPublicacion: {
+            Id: autorizacionSelect?.IdMedioPublicacion,
+            Descripcion:
+              autorizacionSelect?.DescripcionMedioPublicacion,
+          },
+          montoAutorizado:
+            autorizacionSelect?.MontoAutorizado,
+          documentoSoporte:
+            autorizacionSelect?.DocumentoSoporte,
+          acreditacionQuorum:
+            autorizacionSelect?.AcreditacionQuorum,
+        },
+        JSON.parse(autorizacionSelect?.DestinoAutorizado),
+        JSON.parse(autorizacionSelect?.DetalleDestino)
+      );
+
+    } else {
+      setAutorizacion(
+        {
+          entidad: {
+            Id: autorizacionSelectReestructura?.IdEntidad,
+            Organismo: autorizacionSelectReestructura?.Entidad,
+          },
+          numeroAutorizacion:
+            autorizacionSelectReestructura?.NumeroAutorizacion,
+          fechaPublicacion:
+            autorizacionSelectReestructura?.FechaPublicacion,
+          medioPublicacion: {
+            Id: autorizacionSelectReestructura?.IdMedioPublicacion,
+            Descripcion:
+              autorizacionSelectReestructura?.DescripcionMedioPublicacion,
+          },
+          montoAutorizado:
+            autorizacionSelectReestructura?.MontoAutorizado,
+          documentoSoporte:
+            autorizacionSelectReestructura?.DocumentoSoporte,
+          acreditacionQuorum:
+            autorizacionSelectReestructura?.AcreditacionQuorum,
+        },
+        JSON.parse(autorizacionSelectReestructura?.DestinoAutorizado),
+        JSON.parse(autorizacionSelectReestructura?.DetalleDestino)
+      );
+    }
+  }
+
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 
+  // const [filtroAutorizacion, setFiltroAutorizacion] = useState<IAutorizaciones>();
+  // const [filtroAutorizacionSelect, setFiltroAutorizacionSelect] = useState<IAutorizaciones>();
+
+  const filtroAutorizacion: IAutorizaciones = useLargoPlazoStore(
+    (state) => state.filtroAutorizacion
+  );
+
+
+  const filtroAutorizacionSelect: IAutorizaciones = useLargoPlazoStore(
+    (state) => state.filtroAutorizacionSelect
+  );
+  const setFiltroAutorizacionSelect: Function = useLargoPlazoStore(
+    (state) => state.setFiltroAutorizacionSelect
+  );
+
+  const setFiltroAutorizacion: Function = useLargoPlazoStore(
+    (state) => state.setFiltroAutorizacion
+  );
+
+
+  useEffect(() => {
+    console.log("autorizacionSelectReestructura", autorizacionSelectReestructura)
+    console.log("autorizacionSelect", autorizacionSelect)
+  }, [filtroAutorizacionSelect])
+
+  useEffect(() => {
+    if (reestructura === "") {
+      setFiltroAutorizacion(autorizacionSelect)
+
+    } else {
+      setFiltroAutorizacion(autorizacionSelectReestructura)
+    }
+  }, [])
+
+  const AutorizacionLlenado = (FiltroReestructura: string) => {
+
+    if (FiltroReestructura === "") {
+      setAutorizacion(
+        {
+          entidad: {
+            Id: autorizacionSelect?.IdEntidad,
+            Organismo: autorizacionSelect?.Entidad,
+          },
+          numeroAutorizacion:
+            autorizacionSelect?.NumeroAutorizacion,
+          fechaPublicacion:
+            autorizacionSelect?.FechaPublicacion,
+          medioPublicacion: {
+            Id: autorizacionSelect?.IdMedioPublicacion,
+            Descripcion:
+              autorizacionSelect?.DescripcionMedioPublicacion,
+          },
+          montoAutorizado:
+            autorizacionSelect?.MontoAutorizado,
+          documentoSoporte:
+            autorizacionSelect?.DocumentoSoporte,
+          acreditacionQuorum:
+            autorizacionSelect?.AcreditacionQuorum,
+        },
+        JSON.parse(autorizacionSelect?.DestinoAutorizado),
+        JSON.parse(autorizacionSelect?.DetalleDestino)
+      );
+
+    } else {
+      setAutorizacion(
+        {
+          entidad: {
+            Id: autorizacionSelectReestructura?.IdEntidad,
+            Organismo: autorizacionSelectReestructura?.Entidad,
+          },
+          numeroAutorizacion:
+            autorizacionSelectReestructura?.NumeroAutorizacion,
+          fechaPublicacion:
+            autorizacionSelectReestructura?.FechaPublicacion,
+          medioPublicacion: {
+            Id: autorizacionSelectReestructura?.IdMedioPublicacion,
+            Descripcion:
+              autorizacionSelectReestructura?.DescripcionMedioPublicacion,
+          },
+          montoAutorizado:
+            autorizacionSelectReestructura?.MontoAutorizado,
+          documentoSoporte:
+            autorizacionSelectReestructura?.DocumentoSoporte,
+          acreditacionQuorum:
+            autorizacionSelectReestructura?.AcreditacionQuorum,
+        },
+        JSON.parse(autorizacionSelectReestructura?.DestinoAutorizado),
+        JSON.parse(autorizacionSelectReestructura?.DetalleDestino)
+      );
+    }
+  }
   return (
     <Grid
       container
@@ -148,13 +314,27 @@ export function Autorizacion() {
       justifyContent={"space-evenly"}
       alignItems={"center"}
     >
+      {reestructura === ""
+        ? null
+
+        :
+        <Divider>
+          <Typography
+            sx={{ ...queries.bold_text }}
+          >
+            Autorización Solicitud Reestructura
+          </Typography>
+
+        </Divider>
+      }
+
       <Grid container display={"flex"} justifyContent={"center"} width={"100%"}>
         <Grid item xs={10} sm={6} md={6} lg={4} xl={4}>
           <InputLabel sx={queries.medium_text}>
             Autorización de la legislatura local
           </InputLabel>
           <Autocomplete
-            disabled={reestructura === "con autorizacion"}
+            //disabled={reestructura === "con autorizacion"}
             disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -162,7 +342,7 @@ export function Autorizacion() {
             openText="Abrir"
             fullWidth
             options={autorizaciones}
-            value={autorizacionSelect}
+            value={filtroAutorizacion}
             getOptionLabel={(option) =>
               option.NumeroAutorizacion
                 ? `${option.NumeroAutorizacion} - ${option.FechaPublicacion}`
@@ -179,7 +359,7 @@ export function Autorizacion() {
               );
             }}
             onChange={(event, text: IAutorizaciones) => {
-              setAutorizacionSelect(text);
+              setFiltroAutorizacionSelect(text)
             }}
             renderInput={(params) => (
               <TextField
@@ -206,7 +386,7 @@ export function Autorizacion() {
           <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
-                disabled={reestructura === "con autorizacion"}
+                //disabled={reestructura === "con autorizacion"}
                 sx={{
                   backgroundColor: "#15212f",
                   color: "white",
@@ -238,7 +418,8 @@ export function Autorizacion() {
         </Grid>
       </Grid>
 
-      {autorizacionSelect?.NumeroAutorizacion && (
+      {filtroAutorizacionSelect?.NumeroAutorizacion && (
+
         <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
           <Paper
             sx={{
@@ -276,12 +457,20 @@ export function Autorizacion() {
                   <StyledTableRow>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.NumeroAutorizacion}
+                        {filtroAutorizacionSelect.NumeroAutorizacion}
+                        {/* {reestructura === ""
+                              ? autorizacionSelect?.NumeroAutorizacion
+                              : autorizacionSelectReestructura?.NumeroAutorizacion
+                            } */}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.FechaPublicacion}
+                        {filtroAutorizacionSelect.FechaPublicacion}
+                        {/* {reestructura === ""
+                              ? autorizacionSelect?.FechaPublicacion
+                              : autorizacionSelectReestructura?.FechaPublicacion
+                            } */}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell
@@ -290,27 +479,38 @@ export function Autorizacion() {
                       sx={{ width: 200 }}
                     >
                       <Typography>
-                        {autorizacionSelect?.MontoAutorizado}
+                        {filtroAutorizacionSelect.MontoAutorizado}
+                        {/* {reestructura === ""
+                              ? autorizacionSelect?.MontoAutorizado
+                              : autorizacionSelectReestructura?.MontoAutorizado
+                            } */}
+
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.DescripcionMedioPublicacion}
+
+                        {filtroAutorizacionSelect.DescripcionMedioPublicacion}
+                        {/* {reestructura === ""
+                              ? autorizacionSelect?.DescripcionMedioPublicacion
+                              : autorizacionSelectReestructura?.DescripcionMedioPublicacion
+                            } */}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
-                      <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                      <Tooltip title={filtroAutorizacionSelect?.DocumentoSoporte}>
                         <IconButton
                           onClick={() => {
+
+
                             setFileSelected(
-                              `data:application/pdf;base64,${
-                                arrDocs.filter((td: any) =>
-                                  td.nombre.includes(
-                                    autorizacionSelect?.DocumentoSoporte
-                                  )
-                                )[0].file
+                              `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                td.nombre.includes(
+                                  filtroAutorizacionSelect?.DocumentoSoporte
+                                )
+                              )[0].file
                               }`
-                            );
+                            )
 
                             setShowModalPrevia(true);
                           }}
@@ -321,9 +521,14 @@ export function Autorizacion() {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.DetalleDestino &&
-                          JSON.parse(autorizacionSelect?.DetalleDestino)[0]
-                            .detalleDestino}
+                        {
+                          filtroAutorizacionSelect?.DetalleDestino &&
+                          JSON.parse(filtroAutorizacionSelect?.DetalleDestino)[0]
+                            .detalleDestino
+                        }
+                        {/* {autorizacionSelect?.DetalleDestino &&
+                              JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                                .detalleDestino} */}
                       </Typography>
                     </StyledTableCell>
 
@@ -336,11 +541,10 @@ export function Autorizacion() {
                     >
                       <Tooltip title="Eliminar">
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
                           type="button"
                           onClick={() => {
                             setDialogNumAutorizacion(
-                              autorizacionSelect?.NumeroAutorizacion
+                              filtroAutorizacion?.NumeroAutorizacion
                             );
                             setOpenDialogEliminarAutorizacion(
                               !openDialogEliminarAutorizacion
@@ -353,35 +557,11 @@ export function Autorizacion() {
 
                       <Tooltip title="Editar">
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
+                          disabled={reestructura !== ""}
                           type="button"
                           onClick={() => {
                             setAccion("Editar");
-                            setAutorizacion(
-                              {
-                                entidad: {
-                                  Id: autorizacionSelect?.IdEntidad,
-                                  Organismo: autorizacionSelect?.Entidad,
-                                },
-                                numeroAutorizacion:
-                                  autorizacionSelect?.NumeroAutorizacion,
-                                fechaPublicacion:
-                                  autorizacionSelect?.FechaPublicacion,
-                                medioPublicacion: {
-                                  Id: autorizacionSelect?.IdMedioPublicacion,
-                                  Descripcion:
-                                    autorizacionSelect?.DescripcionMedioPublicacion,
-                                },
-                                montoAutorizado:
-                                  autorizacionSelect?.MontoAutorizado,
-                                documentoSoporte:
-                                  autorizacionSelect?.DocumentoSoporte,
-                                acreditacionQuorum:
-                                  autorizacionSelect?.AcreditacionQuorum,
-                              },
-                              JSON.parse(autorizacionSelect?.DestinoAutorizado),
-                              JSON.parse(autorizacionSelect?.DetalleDestino)
-                            );
+                            AutorizacionLlenado(reestructura)
                             setOpenNuevaAutorizacion(
                               !openDialogNuevaAutorizacion
                             );
@@ -397,23 +577,29 @@ export function Autorizacion() {
             </TableContainer>
           </Paper>
         </Grid>
-      )}
+      )
+      }
 
-      {openDialogEliminarAutorizacion && (
-        <DialogEliminarAutorizacion
-          handler={setOpenDialogEliminarAutorizacion}
-          openState={openDialogEliminarAutorizacion}
-          numeroAutorizacion={dialogNumAutorizacion}
-        />
-      )}
 
-      {openDialogNuevaAutorizacion && (
-        <DialogNuevaAutorizacion
-          handler={setOpenNuevaAutorizacion}
-          openState={openDialogNuevaAutorizacion}
-          accion={accion}
-        />
-      )}
+      {
+        openDialogEliminarAutorizacion && (
+          <DialogEliminarAutorizacion
+            handler={setOpenDialogEliminarAutorizacion}
+            openState={openDialogEliminarAutorizacion}
+            numeroAutorizacion={dialogNumAutorizacion}
+          />
+        )
+      }
+
+      {
+        openDialogNuevaAutorizacion && (
+          <DialogNuevaAutorizacion
+            handler={setOpenNuevaAutorizacion}
+            openState={openDialogNuevaAutorizacion}
+            accion={accion}
+          />
+        )
+      }
 
       <Dialog
         open={showModalPrevia}
@@ -450,6 +636,6 @@ export function Autorizacion() {
           ></iframe>
         </DialogContent>
       </Dialog>
-    </Grid>
+    </Grid >
   );
 }
