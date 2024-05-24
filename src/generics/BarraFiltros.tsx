@@ -158,7 +158,7 @@ export function BarraFiltros({Lista,setStateFiltered}:{Lista:any[];setStateFilte
                 
                 fechaInicio===null?
                     setStateFiltered(filterByWord(Lista, busqueda))
-                    :filtrarPorFecha(Lista,['Fecha'],fechaInicio,fechaFin)
+                    :setStateFiltered((filtrarPorFecha(Lista,['Fecha'],fechaInicio,fechaFin, busqueda)))
             }}
           >
             Buscar

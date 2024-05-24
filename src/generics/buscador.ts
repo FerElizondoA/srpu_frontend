@@ -19,6 +19,7 @@ export function filterByWord(objectsArray: any[], word: string) {
         typeof value === "string" && value.toLowerCase().includes(lowerCaseWord)
     );
   });
+  
   console.log("arrFilter", arrFilter);
   if (arrFilter.length === 0) {
     alertaInfo("No se encontraron coincidencias");
@@ -36,32 +37,30 @@ export function filtrarPorFecha<T extends GenericObject>(
   objetos: T[],
   keys:string[],
   fechaInicio: Dayjs,
-  fechaFin: Dayjs | null
+  fechaFin: Dayjs | null,
+  word: string
 ): T[] {
+
   let objetosFiltrdos = objetos.filter((objeto) => {
-    console.log('objetos',objeto);
-    keys.map((key)=>{
+  
+    let keyvalid= keys.some((key)=>{
       
       let parseDate:Dayjs=dayjs(objeto[key], 'DD-MM-YYYY');
-      console.log('typeof objeto[key]',typeof objeto[key] );
-      console.log('objeto[key]3',objeto[key]);
-      console.log('objeto[key]3',objeto[key]);
 
-      console.log('parseDate',parseDate);
-      console.log('fechaInicio',fechaInicio);
-      console.log('fechaFin',fechaFin);
-      console.log('/////////////////////////////////////////////////////////////////////////////////');
-      
-      
       if (fechaFin !== null) {
-        
-        return parseDate >= fechaInicio && parseDate <= fechaFin;
+      
+          return parseDate >= fechaInicio && parseDate <= fechaFin
+      
       } else {
-        return parseDate == fechaInicio;
+        
+        return parseDate.isSame(fechaInicio, "day");
       }
       
     })
-    
+    return keyvalid
   });
-  return objetosFiltrdos;
+  
+  return filterByWord(objetosFiltrdos, word);
 }
+
+
