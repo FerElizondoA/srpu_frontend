@@ -101,7 +101,7 @@ export function Notificaciones() {
             Historial de Notificaciones
           </Typography>
         </Grid>
-        <BarraFiltros Lista={historial} setStateFiltered={setHistorialFilter}/>
+        <BarraFiltros Lista={historial} setStateFiltered={setHistorialFilter} CamposFecha={["Fecha"]}/>
 
         <Grid item sx={queries.tablaNotificaciones}>
           <Paper sx={{ height: "100%", width: "100%" }}>

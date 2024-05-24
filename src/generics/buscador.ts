@@ -42,10 +42,23 @@ export function filtrarPorFecha<T extends GenericObject>(
 ): T[] {
 
   let objetosFiltrdos = objetos.filter((objeto) => {
+
+    
   
     let keyvalid= keys.some((key)=>{
       
+      
       let parseDate:Dayjs=dayjs(objeto[key], 'DD-MM-YYYY');
+
+      console.log('1typeof objeto[key]',typeof objeto[key] );
+      console.log('2objeto[key]3',objeto[key]);
+      console.log('3objeto[key]3',objeto[key]);
+
+      console.log('4parseDate-base-datos',parseDate);
+      console.log('5fechaInicio',fechaInicio);
+      console.log('6fechaFin',fechaFin);
+      console.log('objeto',objeto);
+      console.log('7/////////////////////////////////////////////////////////////////////////////////');
 
       if (fechaFin !== null) {
       

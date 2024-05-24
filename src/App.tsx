@@ -45,12 +45,12 @@ function App() {
             process.env.REACT_APP_APPLICATION_LOGIN_FRONT || ""
           );
         } else if ((r as boolean) === true) {
-          setTimeout(() => {
+       //  setTimeout(() => {
             localStorage.setItem("IdApp", IdApp as string);
             window.location.assign(
               process.env.REACT_APP_APPLICATION_FRONT || "/"
             );
-          }, 1000);
+     //     }, 500);
         }
       });
     } else {

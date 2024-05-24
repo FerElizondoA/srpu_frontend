@@ -8,7 +8,15 @@ import { useEffect, useState } from "react";
 import { filterByWord, filtrarPorFecha } from "./buscador";
 import dayjs, { Dayjs } from "dayjs";
 
-export function BarraFiltros({Lista,setStateFiltered}:{Lista:any[];setStateFiltered:Function}) {
+export function BarraFiltros({
+  Lista,
+  setStateFiltered,
+  CamposFecha,
+}:
+{Lista:any[];
+  setStateFiltered:Function
+  CamposFecha: string[]
+}) {
     const [busqueda, setBusqueda] = useState("");
     const [fechaInicio, setFechaInicio] = useState<Dayjs|null>(null);
     const [fechaFin, setFechaFin] = useState<Dayjs| null>(null);
@@ -158,7 +166,7 @@ export function BarraFiltros({Lista,setStateFiltered}:{Lista:any[];setStateFilte
                 
                 fechaInicio===null?
                     setStateFiltered(filterByWord(Lista, busqueda))
-                    :setStateFiltered((filtrarPorFecha(Lista,['Fecha'],fechaInicio,fechaFin, busqueda)))
+                    :setStateFiltered((filtrarPorFecha(Lista,CamposFecha,fechaInicio,fechaFin, busqueda)))
             }}
           >
             Buscar

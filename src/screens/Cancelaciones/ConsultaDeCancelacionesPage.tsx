@@ -48,6 +48,7 @@ import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { useCancelacionStore } from "../../store/Cancelacion/main";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
+import { BarraFiltros } from "../../generics/BarraFiltros";
 
 const heads: Array<{ label: string }> = [
   {
@@ -328,7 +329,8 @@ export function ConsultaDeCancelacionesPage() {
           Cancelaciones
         </Typography>
       </Grid>
-      <Grid item mb={3} lg={12} display="center" justifyContent="center">
+
+      {/* <Grid item mb={3} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
@@ -363,7 +365,9 @@ export function ConsultaDeCancelacionesPage() {
             <SearchIcon />
           </IconButton>
         </Paper>
-      </Grid>
+      </Grid> */}
+
+<BarraFiltros Lista={datos} setStateFiltered={setDatosFiltrados} CamposFecha={["FechaContratacion","FechaRequerimientos"]}/>
 
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
@@ -384,19 +388,19 @@ export function ConsultaDeCancelacionesPage() {
               },
               height: "35rem",
               "@media (min-width: 480px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 768px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1140px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1400px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1870px)": {
-                height: "46.5rem",
+                height: "44.5rem",
               },
             }}
           >
