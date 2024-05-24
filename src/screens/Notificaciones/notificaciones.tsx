@@ -1,22 +1,13 @@
-import InfoIcon from "@mui/icons-material/Info";
-import SearchIcon from "@mui/icons-material/Search";
 import {
-  Button,
   Grid,
-  InputBase,
-  InputLabel,
   Paper,
   Table,
   TableBody,
   TableContainer,
   TableHead,
-  Typography,
+  Typography
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import {
   StyledTableCell,
@@ -28,9 +19,9 @@ import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { LateralMenuMobile } from "../../components/LateralMenu/LateralMenuMobile";
 import { queries } from "../../queries";
 import { AñadirNotificaciones } from "../Notificaciones/Dialog/AñadirNotificaciones";
+import { BarraFiltros } from "../../generics/BarraFiltros";
 
 export function Notificaciones() {
-  //Declaraciones
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -54,16 +45,14 @@ export function Notificaciones() {
       id: "hora",
       label: "Hora de envio",
     },
-    // {
-    //   id: "CreadoPor",
-    //   label: "Informacion Adicional",
-    // },
   ];
 
   const [historial, setHistorial] = useState<Array<IHistorial>>([]);
-  const [filterHistorial, setFilterHistorial] = useState<Array<IHistorial>>([]);
+  const [historialFilter, setHistorialFilter] = useState<Array<IHistorial>>([]);
 
-  const [busqueda,setBusqueda]=useState('');
+  // const [busqueda, setBusqueda] = useState("");
+  // const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
+  // const [fechaFin, setFechaFin] = useState<Date | null>(null);
 
   // const [idNoti, setIdNoti] = useState<string>("");
 
@@ -72,19 +61,13 @@ export function Notificaciones() {
     setOpenDialog(!openDialog);
   };
 
-  const [openDestinatarios, setOpenDestinatarios] = useState(false);
-  const openDialogDestinatarios = () => {
-    setOpenDestinatarios(!openDestinatarios);
-  };
-
   useEffect(() => {
     // getNotificaciones(setNotificaciones, setCantNoti);
     getHistorialNotificaciones(setHistorial);
   }, [openDialog]);
 
   useEffect(() => {
-    // getNotificaciones(setNotificaciones, setCantNoti);
-    setFilterHistorial(historial);
+    setHistorialFilter(historial);
   }, [historial]);
 
   return (
@@ -108,7 +91,7 @@ export function Notificaciones() {
 
               fontFamily: "MontserratBold",
               "@media (max-width: 600px)": {
-                fontSize: "1rem",
+                fontSize: "1.5rem",
               },
               "@media (min-width: 601px) and (max-width: 900px)": {
                 fontSize: "1.5ch",
@@ -118,8 +101,9 @@ export function Notificaciones() {
             Historial de Notificaciones
           </Typography>
         </Grid>
+        <BarraFiltros Lista={historial} setStateFiltered={setHistorialFilter}/>
         {/* //////////////////////////////////////////////////////////////////////////// */}
-        <Grid
+        {/* <Grid
           item
           container
           xs={12}
@@ -151,12 +135,9 @@ export function Notificaciones() {
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
                 placeholder="Buscar"
-                value={
-                  ""
-                  // busqueda
-                }
+                value={busqueda}
                 onChange={(e) => {
-                  // setBusqueda(e.target.value);
+                  setBusqueda(e.target.value);
                   if (e.target.value === "") {
                     // setDatosFiltrados(datos);
                   }
@@ -169,85 +150,89 @@ export function Notificaciones() {
                   }
                 }}
               />
-              {/* <IconButton
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-                onClick={
-                  () => {}
-                  // filtrarDatos()
-                }
-              >
-                <SearchIcon />
-              </IconButton> */}
             </Paper>
           </Grid>
 
           <Grid item xs={5} sm={2} md={2} lg={2} xl={2} mb={{ xs: 3 }}>
-            <InputLabel sx={{ ...queries.medium_text }}>
+          <Grid sx={{display:'flex',justifyContent:'space-between', alignItems:'center'}}>
+              <InputLabel sx={{ ...queries.medium_text}}>
               Fecha de la Inicial
-            </InputLabel>
+            </InputLabel><IconButton onClick={()=>setFechaInicio(null)} >
+              <ClearIcon />
+            </IconButton>
+            </Grid>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={es}
             >
               <DesktopDatePicker
-                // disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
-                sx={{
-                  width: "100%",
-                }}
-                value={
-                  ""
-                  // datosGenerales.fechaInstruccion
-                }
+                sx={{ width: "100%" }}
+                format="dd/MM/yyyy" // El formato correcto es 'dd/MM/yyyy'
+                value={fechaInicio}
                 onChange={(v) => {
-                  // setDatosGenerales({
-                  //   ...datosGenerales,
-                  //   fechaInstruccion: v,
-                  // });
+                  if (v == fechaInicio) {
+                    setFechaInicio(null);
+                  } else {
+                    setFechaInicio(v);
+                  }
                 }}
               />
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={5} sm={2} md={2} lg={2} xl={2} mb={{ xs: 3 }}>
-            <InputLabel sx={{ ...queries.medium_text }}>
+          {fechaInicio!=null?<Grid item xs={5} sm={2} md={2} lg={2} xl={2} sx={{mb:"3"}}>
+            <Grid sx={{display:'flex',justifyContent:'space-between', alignItems:'center'}}>
+              <InputLabel sx={{ ...queries.medium_text}}>
               Fecha de la Final
-            </InputLabel>
+            </InputLabel><IconButton onClick={()=>setFechaFin(null)} >
+              <ClearIcon />
+            </IconButton>
+            </Grid>
+            
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={es}
+              
             >
               <DesktopDatePicker
-                // disabled={tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
-                sx={{
-                  width: "100%",
-                }}
-                value={
-                  ""
-                  // datosGenerales.fechaInstruccion
-                }
+                sx={{ width: "100%" }}
+                format="dd/MM/yyyy" // El formato correcto es 'dd/MM/yyyy'
+                value={fechaFin}
                 onChange={(v) => {
-                  // setDatosGenerales({
-                  //   ...datosGenerales,
-                  //   fechaInstruccion: v,
-                  // });
+                  if (v == fechaFin) {
+                    setFechaFin(null);
+                  } else {
+                    setFechaFin(v);
+                  }
                 }}
               />
             </LocalizationProvider>
-          </Grid>
+            
+          </Grid>:null}
 
-          <Grid item xs={12} sm={1} md={1} lg={1} xl={1} sx={{display:'flex', alignItems:'center',justifyContent:'center'}}>
+          <Grid
+            item
+            xs={12}
+            sm={1}
+            md={1}
+            lg={1}
+            xl={1}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Button
-              sx={{...queries.buttonContinuar,minWidth:'60%'}}
+              sx={{ ...queries.buttonContinuar, minWidth: "60%" }}
               onClick={() => {
-                // handler(false);
+                setHistorialFilter(filterByWord(historial, busqueda));
               }}
             >
               Buscar
             </Button>
           </Grid>
-        </Grid>
+        </Grid> */}
 
         <Grid item sx={queries.tablaNotificaciones}>
           <Paper sx={{ height: "100%", width: "100%" }}>
@@ -279,7 +264,7 @@ export function Notificaciones() {
                   ))}
                 </TableHead>
                 <TableBody>
-                  {filterHistorial?.map((noti, index) => (
+                  {historialFilter?.map((noti, index) => (
                     <StyledTableRow>
                       <StyledTableCell
                         component="th"
@@ -314,20 +299,6 @@ export function Notificaciones() {
                         {noti.Hora}
                       </StyledTableCell>
 
-                      {/* <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        <IconButton
-                          onClick={() => {
-                            setIdNoti(noti.Id);
-                            openDialogDestinatarios();
-                          }}
-                        >
-                          <InfoIcon />
-                        </IconButton>
-                      </StyledTableCell> */}
                     </StyledTableRow>
                   ))}
                 </TableBody>
