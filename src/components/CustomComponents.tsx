@@ -1,12 +1,12 @@
-import { styled } from '@mui/material/styles'
-import { tableCellClasses } from "@mui/material/TableCell"
+import { styled } from "@mui/material/styles";
+import { tableCellClasses } from "@mui/material/TableCell";
 
 import {
-    TableCell,
-    TableRow,
-    Box,
-    Button,
-    TextFieldProps
+  TableCell,
+  TableRow,
+  Box,
+  Button,
+  TextFieldProps,
 } from "@mui/material";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -19,6 +19,28 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
     fontFamily: "MontserratRegular",
     fontSize: "1.6ch",
+  },
+}));
+
+export const StyledTableCell2 = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "white",
+    color: theme.palette.common.black,
+    fontFamily: "MontserratMedium",
+    fontSize: "1.6ch",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontFamily: "MontserratRegular",
+    fontSize: "1.6ch",
+    //width: "100px",
+    wordWrap: "break-word",
+    padding: "1px 15px 1px 0",
+    //whiteSpace: "normal", // Allows the text to wrap
+    //overflow: "hidden", // Ensures that the text does not overflow its container
+    //textOverflow: "ellipsis", // Adds ellipsis if the text overflows (optional)
+    //maxWidth: "30px", // Ensures that the cell does not grow beyond a certain width
+    //padding: theme.spacing(0), // Adjust padding as needed
+    wordBreak: "break-word", // Breaks long words
   },
 }));
 
@@ -45,9 +67,9 @@ export const ConfirmButton = styled(Button)(({ theme }) => ({
   ":hover": {
     backgroundColor: "green",
     color: "white",
-    borderColor: "green"
-  }
-}))
+    borderColor: "green",
+  },
+}));
 
 export const DeleteButton = styled(Button)(({ theme }) => ({
   width: "100%",
@@ -60,33 +82,43 @@ export const DeleteButton = styled(Button)(({ theme }) => ({
   ":hover": {
     backgroundColor: "#e57373",
     color: "white",
-    borderColor: "#e57373"
-  }
-}))
+    borderColor: "#e57373",
+  },
+}));
 
 type DateInputProps = TextFieldProps & {
   ownerState?: any;
 };
 
 export const DateInput = function DateInput(props: DateInputProps) {
-  const { inputProps, InputProps, ownerState, inputRef, error, ...other } = props;
+  const { inputProps, InputProps, ownerState, inputRef, error, ...other } =
+    props;
 
   return (
-
-    <Box sx={{ 
-      display: 'flex', 
-      alignItems: 'center',
-      "&.MuiBox-root > input": {
-        color: "black",
-        fontSize: "1.5ch",
-        width: "100%", 
-        fontFamily: "MontserratRegular", 
-        margin: "8px auto"
-      }
-      }} ref={InputProps?.ref}>
-      <input ref={inputRef} {...inputProps} {...(other as any)} size="small" sx={{
-        marginTop: "4px",
-      }} disabled/>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        "&.MuiBox-root > input": {
+          color: "black",
+          fontSize: "1.5ch",
+          width: "100%",
+          fontFamily: "MontserratRegular",
+          margin: "8px auto",
+        },
+      }}
+      ref={InputProps?.ref}
+    >
+      <input
+        ref={inputRef}
+        {...inputProps}
+        {...(other as any)}
+        size="small"
+        sx={{
+          marginTop: "4px",
+        }}
+        disabled
+      />
       {InputProps?.endAdornment}
     </Box>
   );
@@ -94,17 +126,20 @@ export const DateInput = function DateInput(props: DateInputProps) {
 
 export const hashFunctionCYRB53 = (str: string, seed: number = 0) => {
   let h1 = 0xdeadbeef ^ seed,
-  h2 = 0x41c6ce57 ^ seed;
+    h2 = 0x41c6ce57 ^ seed;
   for (let i = 0, ch; i < str.length; i++) {
     ch = str.charCodeAt(i);
     h1 = Math.imul(h1 ^ ch, 2654435761);
     h2 = Math.imul(h2 ^ ch, 1597334677);
   }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  
-  return (4294967296 * (2097151 & h2) + (h1 >>> 0));
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+    Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+    Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-
-export {} // DO NOT DELETE THIS
+export {}; // DO NOT DELETE THIS

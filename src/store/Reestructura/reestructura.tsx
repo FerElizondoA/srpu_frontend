@@ -9,6 +9,7 @@ import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { IAutorizaciones } from "../CreditoLargoPlazo/autorizacion";
+import { useReestructuraStore } from "./main";
 // import { useInstruccionesStore } from "./main";
 
 export interface IDatosSolicitudReestructura {
@@ -47,6 +48,7 @@ export interface ReestructuraSlice {
 
   createSolicitudReestructura: (IdSolicitud: string, Solicitud: string, IdEditor: string, setState: Function) => void;
 
+  updateClausulasModificatorias:(IAnexoClausula: IAnexoClausula, Index: number) =>void,
 
   AnexoClausulas: IAnexoClausula,
   setAnexoClausulas: (AnexoClausulas: IAnexoClausula) => void;
@@ -55,10 +57,15 @@ export interface ReestructuraSlice {
 
   tablaDeclaratorias: IAnexoClausula[],
   addTablaDeclaratorias: (tablaDeclaratorias: IAnexoClausula) => void;
+  EditTablaDeclaratorias: (tablaDeclaratorias: IAnexoClausula) => void;
   removeDeclaratoria: (index: number) => void;
 
   reestructura: string;
   changeRestructura: (restructura: string) => void;
+
+  loadAnexoClausula: (AnexoClausulas: IAnexoClausula) => void;
+
+
 }
 
 
@@ -93,6 +100,27 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       tablaDeclaratorias: [...state.tablaDeclaratorias, tablaDeclaratorias]
     }))
   },
+
+  EditTablaDeclaratorias: (tablaDeclaratorias: IAnexoClausula) => {
+    set((state) => ({
+      tablaDeclaratorias: [...state.tablaDeclaratorias, tablaDeclaratorias]
+    }))
+  },
+
+  updateClausulasModificatorias: (AnexoClausulas: IAnexoClausula, Index: number) => {
+    set((state) => {
+      const nuevaTabla = [...state.tablaDeclaratorias];
+
+      nuevaTabla[Index] = AnexoClausulas;
+
+      return {
+        tablaDeclaratorias: nuevaTabla,
+      };
+    });
+  }, 
+
+
+
   removeDeclaratoria: (index: number) =>
     set((state) => ({
       tablaDeclaratorias: state.tablaDeclaratorias.filter((_, i) => i !== index),
@@ -185,4 +213,14 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
 
 
   
+  loadAnexoClausula: (AnexoClausulas: IAnexoClausula) => {
+    useLargoPlazoStore.setState({
+      AnexoClausulas: {
+      ClausulaOriginal: { Id: AnexoClausulas.ClausulaOriginal.Id, Descripcion: AnexoClausulas.ClausulaOriginal.Descripcion },
+      ClausulaModificada:  { Id: AnexoClausulas.ClausulaModificada.Id, Descripcion: AnexoClausulas.ClausulaModificada.Descripcion },
+      Modificacion: AnexoClausulas.Modificacion
+    }
+    })
+    
+  },
 })

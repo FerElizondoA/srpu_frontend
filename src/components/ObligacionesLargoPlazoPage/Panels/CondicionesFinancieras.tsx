@@ -359,6 +359,7 @@ export function CondicionesFinancieras() {
                   );
                 })}
               </TableBody>
+              
               <Dialog
                 open={openTasa}
                 onClose={() => {
