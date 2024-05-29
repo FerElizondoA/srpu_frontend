@@ -1,8 +1,7 @@
 import { useLayoutEffect } from "react";
-
 import "./App.css";
 import "./Fonts.css";
-
+// import "./Globals.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import {
@@ -26,10 +25,10 @@ import { Solicitudes } from "./screens/solicitudesUsuarios/solicitudes";
 
 import { FirmaConUrl } from "./components/e.firma/FirmaConUrl";
 import Ayuda from "./screens/Ayuda/Ayuda";
+import { ConsultaDeCancelacionesPage } from "./screens/Cancelaciones/ConsultaDeCancelacionesPage";
+import { SolicitudesReestructura } from "./screens/Reestructura/Reestructura";
 import { InstruccionesIrrevocables } from "./screens/fuenteDePago/InstruccionesIrrevocables";
 import { Mandatos } from "./screens/fuenteDePago/Mandatos";
-import { SolicitudesReestructura } from "./screens/Reestructura/Reestructura";
-import { ConsultaDeCancelacionesPage } from "./screens/Cancelaciones/ConsultaDeCancelacionesPage";
 
 function App() {
   // const navigate = useNavigate();
@@ -45,12 +44,12 @@ function App() {
             process.env.REACT_APP_APPLICATION_LOGIN_FRONT || ""
           );
         } else if ((r as boolean) === true) {
-       //  setTimeout(() => {
-            localStorage.setItem("IdApp", IdApp as string);
-            window.location.assign(
-              process.env.REACT_APP_APPLICATION_FRONT || "/"
-            );
-     //     }, 500);
+          //  setTimeout(() => {
+          localStorage.setItem("IdApp", IdApp as string);
+          window.location.assign(
+            process.env.REACT_APP_APPLICATION_FRONT || "/"
+          );
+          //     }, 500);
         }
       });
     } else {
@@ -68,44 +67,47 @@ function App() {
   }, []);
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="firmar" element={<Firma />} />
-        <Route path="firmaUrl" element={<FirmaConUrl />} />
-        <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
-        <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
-        <Route path="home" element={<HomePage />} />
-        <Route
-          path="obligacionesCortoPlazo"
-          element={<ObligacionesCortoPlazoPage />}
-        />
-        <Route path="config" element={<Configuracion />} />
-        <Route
-          path="ConsultaDeSolicitudes"
-          element={<ConsultaDeSolicitudPage />}
-        />
-        <Route path="catalogos" element={<Catalogos />} />
-        <Route path="users" element={<Usuarios />} />
-        <Route path="solicitudes-usuarios" element={<Solicitudes />} />
-        <Route path="notificaciones" element={<Notificaciones />} />
-        <Route
-          path="obligacionesLargoPlazo"
-          element={<ObligacionesLargoPlazoPage />}
-        />
-        <Route path="fideicomisos" element={<Fideicomisos />} />
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="firmar" element={<Firma />} />
+          <Route path="firmaUrl" element={<FirmaConUrl />} />
+          <Route path="bandeja/:NombreBandeja/:IdTipo" element={<Bandeja />} />
+          <Route path="enviar/:IdDoc" element={<EnviarDocumento />} />
+          <Route path="home" element={<HomePage />} />
+          <Route
+            path="obligacionesCortoPlazo"
+            element={<ObligacionesCortoPlazoPage />}
+          />
+          <Route path="config" element={<Configuracion />} />
+          <Route
+            path="ConsultaDeSolicitudes"
+            element={<ConsultaDeSolicitudPage />}
+          />
+          <Route path="catalogos" element={<Catalogos />} />
+          <Route path="users" element={<Usuarios />} />
+          <Route path="solicitudes-usuarios" element={<Solicitudes />} />
+          <Route path="notificaciones" element={<Notificaciones />} />
+          <Route
+            path="obligacionesLargoPlazo"
+            element={<ObligacionesLargoPlazoPage />}
+          />
+          <Route path="fideicomisos" element={<Fideicomisos />} />
 
-        <Route path="cancelaciones" element={<ConsultaDeCancelacionesPage />} />
+          <Route
+            path="cancelaciones"
+            element={<ConsultaDeCancelacionesPage />}
+          />
 
-        <Route path="mandatos" element={<Mandatos />} />
-        <Route
-          path="instruccionesIrrevocables"
-          element={<InstruccionesIrrevocables />}
-        />
-        <Route path="AdministracionAyudas" element={<Ayuda />} />
-        <Route path="reestructura" element={<SolicitudesReestructura />} />
-      </Routes>
-    </HashRouter>
+          <Route path="mandatos" element={<Mandatos />} />
+          <Route
+            path="instruccionesIrrevocables"
+            element={<InstruccionesIrrevocables />}
+          />
+          <Route path="AdministracionAyudas" element={<Ayuda />} />
+          <Route path="reestructura" element={<SolicitudesReestructura />} />
+        </Routes>
+      </HashRouter>
   );
 }
 
