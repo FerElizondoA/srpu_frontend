@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -8,6 +9,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+=======
+>>>>>>> d8c8267a4ea3a4f6d8fc4e1e17c2b88788077983
 # dependencies
 /node_modules
 /.pnp
@@ -16,15 +19,21 @@ lerna-debug.log*
 # testing
 /coverage
 
+<<<<<<< HEAD
 # dotenv environment variables file
 .env.test
 
+=======
+>>>>>>> d8c8267a4ea3a4f6d8fc4e1e17c2b88788077983
 # production
 /build
 
 # misc
 .DS_Store
+<<<<<<< HEAD
 .env
+=======
+>>>>>>> d8c8267a4ea3a4f6d8fc4e1e17c2b88788077983
 .env.local
 .env.development.local
 .env.test.local
@@ -33,3 +42,9 @@ lerna-debug.log*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
+=======
+.npmrc
+.env
+.npmrc.example
+>>>>>>> d8c8267a4ea3a4f6d8fc4e1e17c2b88788077983
