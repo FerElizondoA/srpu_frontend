@@ -3,7 +3,7 @@ import axios from "axios"
 export const servicesAvisosPAUA={
     getAvisos: async ()=>{
         try {
-            const response = await axios.get('http://10.200.4.199:5000'+ '/api/AdminAvisosVigentes', 
+            const response = await axios.get(process.env.REACT_APP_APPLICATION_LOGIN+ '/api/AdminAvisosVigentes', 
             {params:{'IdApp':localStorage.getItem('IdApp')||''}});//process.env.REACT_APP_APPLICATION_LOGIN 
             return response.data;
           } catch (error) {

@@ -80,14 +80,12 @@ export function alertaError(titulo = "Movimiento fallido") {
 }
 
 export function alertaInfo(titulo: string) {
-
   return Toast.fire({
     icon: "info",
     title: titulo,
     iconColor: "#af8c55",
     color: "#af8c55",
   });
-
 }
 
 export function alertaExitoConfirm(titulo: string) {
@@ -110,9 +108,6 @@ export function alertaErrorConfirm(titulo: string) {
   });
 }
 
-// export function alertaEliminar(fnc:Function){
-//   fnc();
-// }
 export const alertaEliminar = (  confirmedfunction: Function, cancelfunction: Function, title= "¿Desea eliminar elemento?") => {
  return Swal.fire({
     title: title,
@@ -129,7 +124,6 @@ export const alertaEliminar = (  confirmedfunction: Function, cancelfunction: Fu
     }else{
       cancelfunction();
     }
-
   });
 };
 

@@ -1,12 +1,12 @@
-import { Button, Grid, IconButton, InputBase, InputLabel, Paper } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import { queries } from "../queries";
+import { Button, Grid, IconButton, InputBase, InputLabel, Paper } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
+import { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
+import { queries } from "../queries";
 import { filterByWord, filtrarPorFecha } from "./buscador";
-import dayjs, { Dayjs } from "dayjs";
 
 export function BarraFiltros({
   Lista,
