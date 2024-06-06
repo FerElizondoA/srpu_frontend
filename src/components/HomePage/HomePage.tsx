@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
 import escudo from "../../assets/logo/escudo.png";
 import { LateralMenu } from "../LateralMenu/LateralMenu";
+import { FavIconAvisos } from "../../avisosPAUA/componentes/FavIconAvisos";
 
 export function HomePage() {
   return (
@@ -18,8 +19,10 @@ export function HomePage() {
           justifyContent: "center",
         }}
       >
-        <img src={escudo} alt="Escudo" style={{ width: "25vw" }} />
-      </Grid>
+        <img src={escudo} alt="Escudo" style={{ width: "25vw", height:'auto' }} />
+       
+      </Grid> 
+      <FavIconAvisos/>
     </Grid>
   );
 }

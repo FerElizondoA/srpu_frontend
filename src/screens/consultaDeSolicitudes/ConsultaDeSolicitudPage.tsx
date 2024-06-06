@@ -51,6 +51,7 @@ import {
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
 import { queries } from "../../queries";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+import { BarraFiltros } from "../../generics/BarraFiltros";
 
 export interface IData {
   Id: string;
@@ -288,7 +289,8 @@ export function ConsultaDeSolicitudPage() {
           Consulta de Solicitudes
         </Typography>
       </Grid>
-      <Grid item mb={3} lg={12} display="center" justifyContent="center">
+
+      {/* <Grid item mb={3} lg={12} display="center" justifyContent="center">
         <Paper
           component="form"
           sx={{
@@ -323,7 +325,9 @@ export function ConsultaDeSolicitudPage() {
             <SearchIcon />
           </IconButton>
         </Paper>
-      </Grid>
+      </Grid> */}
+
+   <BarraFiltros Lista={datos} setStateFiltered={setDatosFiltrados} CamposFecha={["FechaContratacion","FechaRequerimientos"]}/>
 
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
@@ -344,19 +348,19 @@ export function ConsultaDeSolicitudPage() {
               },
               height: "35rem",
               "@media (min-width: 480px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 768px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1140px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1400px)": {
-                height: "32.5rem",
+                height: "30.5rem",
               },
               "@media (min-width: 1870px)": {
-                height: "46.5rem",
+                height: "44.5rem",
               },
             }}
           >

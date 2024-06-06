@@ -490,6 +490,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               </IconButton>
             </Tooltip>
           </Grid>
+          
           <Grid item mt={0.5} ml={3}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
@@ -612,8 +613,8 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.bold_text}>
+              <Grid item sx={{ alignSelf: "center",  }}>
+                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
                 </Typography>
               </Grid>
@@ -629,22 +630,22 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.bold_text}>
+                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}} >
                   {localStorage.getItem("NombreUsuario")}
                 </Typography>
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.bold_text}>
+                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}}>
                   {localStorage.getItem("Rol")}
                 </Typography>
               </Grid>
 
-              <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={queries.bold_text}>
-                  {/* {tipoEnte}:  */} {ente}
+              {/* <Grid item sx={{ alignSelf: "center" }}>
+                <Typography >
+                   {ente}
                 </Typography>
-              </Grid>
+              </Grid> */}
 
               <Divider />
 
@@ -686,7 +687,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                             <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
                             <Typography
                               sx={{
-                                ...queries.bold_text,
+                                fontSize: [15, 15, 15, 15, 15],
                                 ":hover": { backgroundColor: "#AF8C55" },
                               }}
                             >
@@ -715,7 +716,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                   <Grid key={i}>
                                     <ListItemButton
                                       sx={{
-                                        ...queries.bold_text,
+                                        
                                         ":hover": {
                                           backgroundColor: "#AF8C55",
                                         },
@@ -741,7 +742,8 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                       <ListItemIcon>
                                         {IconsMenu(v.Icon)}
                                       </ListItemIcon>
-                                      <Typography sx={queries.medium_text}>
+                                      <Typography sx={{...queries.medium_text,fontSize: [15, 15, 15, 15, 15] }}
+                                      >
                                         {v.Menu}
                                       </Typography>
 
@@ -796,7 +798,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                                   {IconsMenu(v.Icon)}
                                                 </ListItemIcon>
                                                 <Typography
-                                                  sx={queries.medium_text}
+                                                  sx={{...queries.medium_text,fontSize: [15, 15, 15, 15, 15] }}
                                                 >
                                                   {v.Menu}
                                                 </Typography>
@@ -821,7 +823,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                     }}
                   >
                     <ListItemIcon>{IconsMenu("LogoutIcon")}</ListItemIcon>
-                    <Typography sx={queries.bold_text}>
+                    <Typography sx={{fontSize: [15, 15, 15, 15, 15] }}>
                       Cerrar sesión
                     </Typography>
                   </ListItemButton>
@@ -871,7 +873,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                             }}
                           >
                             <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
-                            <Typography sx={queries.bold_text}>
+                            <Typography sx={{fontSize: [15, 15, 15, 15, 15] }}>
                               {v.Menu}
                             </Typography>
                           </ListItemButton>
@@ -909,8 +911,9 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               <Typography
                 sx={{
                   textAlign: "center",
-                  fontSize: "18px",
+                  
                   fontWeight: "bold",
+                  fontSize: [15, 15, 15, 15, 15]
                 }}
               >
                 Tus Notificaciones
@@ -932,7 +935,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                           <Typography
                             sx={{
                               padding: "1px 4px 1px 0",
-                              fontSize: "14px",
+                            fontSize: [15, 15, 15, 15, 15],
                               fontWeight: "bold",
                             }}
                             color="#af8c55"
@@ -943,7 +946,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                           <Typography
                             sx={{
                               padding: "1px 4px 1px 0",
-                              fontSize: "14px",
+                              fontSize: [15, 15, 15, 15, 15],
                               fontWeight: "bold",
                             }}
                             color="#af8c55 "
@@ -964,7 +967,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                             sx={{
                               width: "100%",
                               padding: "10px 4px 1px 5px",
-                              fontSize: "14px",
+                          fontSize: [15, 15, 15, 15, 15],
                               textAlign: "center",
                             }}
                             color="black"

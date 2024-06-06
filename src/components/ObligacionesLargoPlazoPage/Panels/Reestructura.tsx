@@ -31,18 +31,20 @@ import {
   IUsuarios,
 } from "../../../store/CreditoCortoPlazo/encabezado";
 import { LateralMenu } from "../../LateralMenu/LateralMenu";
-import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { StyledTableCell, StyledTableCell2, StyledTableRow } from "../../CustomComponents";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IAnexoClausula } from "../../../store/Reestructura/reestructura";
 import { kMaxLength } from "buffer";
+import EditIcon from "@mui/icons-material/Edit";
+import { EditarSolicitudDeRestructura } from "../Dialog/EditarSolicitudDeRestructura";
 
 interface Head {
   label: string;
 }
 
 interface headsCatalogo {
-  id: string,
-  label: string,
+  id: string;
+  label: string;
 }
 
 const heads: readonly Head[] = [
@@ -60,7 +62,7 @@ const heads: readonly Head[] = [
   },
 ];
 
-const headsCatalogo: headsCatalogo[] = [
+export const headsCatalogo: headsCatalogo[] = [
   { id: "1", label: "I" },
   { id: "2", label: "II" },
   { id: "3", label: "III" },
@@ -160,11 +162,10 @@ const headsCatalogo: headsCatalogo[] = [
   { id: "97", label: "XCVII" },
   { id: "98", label: "XCVIII" },
   { id: "99", label: "XCIX" },
-  { id: "100", label: "C" }
-]
+  { id: "100", label: "C" },
+];
 
 export function SolicitudReestructura() {
-
   const setAnexoClausulas: Function = useReestructuraStore(
     (state) => state.setAnexoClausulas
   );
@@ -189,12 +190,40 @@ export function SolicitudReestructura() {
     (state) => state.removeDeclaratoria
   );
 
+  const updateClausulasModificatorias: Function = useReestructuraStore(
+    (state) => state.updateClausulasModificatorias
+  );
+
+  const loadAnexoClausula: Function = useReestructuraStore(
+    (state) => state.loadAnexoClausula
+  );
+
+  const getBorderColor = (): string => {
+    const length = AnexoClausulas.Modificacion.length;
+    if (length === 5) {
+      return "orange";
+    } else if (length === 10) {
+      return "red";
+    } else if (length > 10) {
+      return "#15212f";
+    }
+    return "";
+  };
+
+  const getHelperTextColor = (): string => {
+    return AnexoClausulas.Modificacion.length === 600 ? "orange" : "";
+  };
+
+  const [openEditarCondicion, setEditarCondicion] = useState(false);
+  const [Index, setIndex] = useState(0);
+
+  const handleCloseEnviar = () => {
+    setEditarCondicion(false);
+  };
+
   return (
     <>
-      <Grid container
-        display={"flex"}
-        justifyContent={"space-around"}
-      >
+      <Grid container display={"flex"} justifyContent={"space-around"}>
         <Grid xs={10} sm={5} md={4} lg={3} xl={3}>
           <InputLabel
             sx={{
@@ -219,18 +248,24 @@ export function SolicitudReestructura() {
                 </li>
               );
             }}
-            value={{
-              id: AnexoClausulas.ClausulaOriginal.Id || "",
-              label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
-            }}
+            value={
+              openEditarCondicion === false
+                ? {
+                    id: AnexoClausulas.ClausulaOriginal.Id || "",
+                    label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
+                  }
+                : { id: "", label: "" }
+            }
             onChange={(event, text) => {
+              if (openEditarCondicion === false) {
+              }
               setAnexoClausulas({
                 ...AnexoClausulas,
                 ClausulaOriginal: {
                   id: text?.id || "",
-                  Descripcion: text?.label || ""
-                }
-              })
+                  Descripcion: text?.label || "",
+                },
+              });
             }}
             renderInput={(params) => (
               <TextField
@@ -240,11 +275,9 @@ export function SolicitudReestructura() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.label === value.label ||
-              value.label === ""
+              option.label === value.label || value.label === ""
             }
           />
-
         </Grid>
 
         <Grid xs={10} sm={5} md={4} lg={3} xl={3}>
@@ -271,18 +304,22 @@ export function SolicitudReestructura() {
                 </li>
               );
             }}
-            value={{
-              id: AnexoClausulas.ClausulaModificada.Id || "",
-              label: AnexoClausulas.ClausulaModificada.Descripcion || "",
-            }}
+            value={
+              openEditarCondicion === false
+                ? {
+                    id: AnexoClausulas.ClausulaModificada.Id || "",
+                    label: AnexoClausulas.ClausulaModificada.Descripcion || "",
+                  }
+                : { id: "", label: "" }
+            }
             onChange={(event, text) => {
               setAnexoClausulas({
                 ...AnexoClausulas,
                 ClausulaModificada: {
                   id: text?.id || "",
-                  Descripcion: text?.label || ""
-                }
-              })
+                  Descripcion: text?.label || "",
+                },
+              });
             }}
             renderInput={(params) => (
               <TextField
@@ -292,78 +329,127 @@ export function SolicitudReestructura() {
               />
             )}
             isOptionEqualToValue={(option, value) =>
-              option.label === value.label ||
-              value.label === ""
+              option.label === value.label || value.label === ""
             }
           />
         </Grid>
       </Grid>
 
-      <Grid mt={4} container width={"100%"} display={"flex"} justifyContent={"center"}>
+      <Grid
+        mt={4}
+        container
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Grid xs={10} sm={10} md={2.5} lg={1.5} xl={1}>
           <InputLabel
             sx={{
-              ...queries.medium_text, display: "flex",
-              justifyContent: { xs: "start", sm: "start", md: "start", lg: "start" }
+              ...queries.medium_text,
+              display: "flex",
+              justifyContent: {
+                xs: "start",
+                sm: "start",
+                md: "start",
+                lg: "start",
+              },
             }}
           >
-            Modificación  ({AnexoClausulas.Modificacion ? AnexoClausulas.Modificacion.length : 0})
+            Modificación
           </InputLabel>
         </Grid>
 
         <Grid xs={10} sm={11} md={7.5} lg={7.5} xl={8}>
           <TextField
             type="text"
-            value={AnexoClausulas.Modificacion}
-            inputProps={{ maxlength: 250 }}
+            //value={AnexoClausulas.Modificacion}
+
+            value={
+              openEditarCondicion === false ? AnexoClausulas.Modificacion : ""
+            }
+            inputProps={{ maxlength: 650 }}
             fullWidth
             variant="outlined"
             multiline
             rows={3}
-            error={AnexoClausulas.Modificacion.length === 250}
-            helperText="El texto de modificación no debe pasar los 250 caracteres"
+            error={AnexoClausulas.Modificacion.length === 650}
+            FormHelperTextProps={{
+              sx: {
+                color: getHelperTextColor(),
+              },
+            }}
+            helperText={`El texto de modificación no debe pasar los 10 caracteres. Caracteres Usados: ${
+              AnexoClausulas.Modificacion
+                ? AnexoClausulas.Modificacion.length
+                : 0
+            }`}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: getBorderColor(),
+                },
+                "&:hover fieldset": {
+                  borderColor: getBorderColor(),
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: getBorderColor(),
+                },
+              },
+            }}
             onChange={(e) => {
               let inputValue = e.target.value;
-              const expRegular = /^[a-zA-Z0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
-              if ((inputValue.length <= 250 && expRegular.test(inputValue)) || e.target.value === "") {
+              const expRegular =
+                /^[a-zA-Z0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+              if (
+                (inputValue.length <= 650 && expRegular.test(inputValue)) ||
+                e.target.value === ""
+              ) {
+                const nuevaTabla = [inputValue];
                 setAnexoClausulas({
                   ...AnexoClausulas,
-                  Modificacion: inputValue
+                  Modificacion: inputValue,
                 });
               }
             }}
-          >
-
-          </TextField>
+          ></TextField>
         </Grid>
       </Grid>
 
-      <Grid mt={2} mb={2} container width={"100%"} display={"flex"} justifyContent={"center"}>
-        <Grid xs={10} sm={10} md={2} lg={2} xl={2}
+      <Grid
+        mt={2}
+        mb={2}
+        container
+        width={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
+        <Grid
+          xs={10}
+          sm={10}
+          md={2}
+          lg={2}
+          xl={2}
           //mt={{ xs: 3, sm: 3, md: 2, lg: 2, xl: 2 }}
           display={"flex"}
           justifyContent={"center"}
           alignContent={"center"}
-        //height={"3rem"}
+          //height={"3rem"}
         >
-          <Button sx={{
-            ...queries.buttonContinuar,
-            height: "2rem",
-            display: "flex",
-            alignItems: "center"
-          }}
+          <Button
+            sx={{
+              ...queries.buttonContinuar,
+              height: "2rem",
+              display: "flex",
+              alignItems: "center",
+            }}
             onClick={() => {
-              addTablaDeclaratorias(AnexoClausulas)
+              addTablaDeclaratorias(AnexoClausulas);
               cleanAnexoClausulas()
             }}
           >
-            <Typography>
-              Agregar
-            </Typography>
-
+            <Typography>Agregar</Typography>
           </Button>
         </Grid>
-
       </Grid>
 
       <Grid
@@ -421,9 +507,12 @@ export function SolicitudReestructura() {
                       {head.ClausulaModificada.Descripcion}
                     </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell2 
+                    component="th" 
+                    scope="row" 
+                    >
                       {head.Modificacion}
-                    </StyledTableCell>
+                    </StyledTableCell2>
 
                     <StyledTableCell align="center">
                       <Tooltip title="Eliminar">
@@ -436,6 +525,20 @@ export function SolicitudReestructura() {
                           <DeleteIcon />
                         </IconButton>
                       </Tooltip>
+
+                      <Tooltip title="Editar">
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            // removeDeclaratoria(index);
+                            setEditarCondicion(true);
+                            setIndex(index);
+                            loadAnexoClausula(head);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -445,7 +548,13 @@ export function SolicitudReestructura() {
         </Paper>
       </Grid>
 
-
+      <EditarSolicitudDeRestructura
+        //handler={changeOpenAgregarState}
+        openState={openEditarCondicion}
+        handleClose={handleCloseEnviar}
+        Index={Index}
+        //indexA={indexRegistro}
+      />
     </>
   );
 }
