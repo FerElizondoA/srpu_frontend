@@ -295,10 +295,10 @@ export function DialogVerDetalle(props: Props) {
           Volver
         </Button>
         {
-          reestructura === "con autorizacion" &&
+          reestructura !== "" &&
             localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
             props.rowSolicitud.NoEstatus === "10" &&
-            props.rowSolicitud.ControlInterno === "autorizado" &&
+             props.rowSolicitud.ControlInterno === "autorizado" &&
             localStorage.getItem("Rol") === "Verificador" ? (
             <Grid
               container

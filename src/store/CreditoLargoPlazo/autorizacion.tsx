@@ -103,93 +103,13 @@ export interface AutorizacionLargoPlazoSlice {
 
   autorizacionSelect: IAutorizaciones;
   setAutorizacionSelect: (autorizacion: IAutorizaciones) => void;
-
   modificarAutorizacion: () => void;
 
-  autorizacionesReestructura: IAutorizaciones[];
-
-
-  autorizacionSelectReestructura: IAutorizaciones;
-  setAutorizacionSelectReestructura: (autorizacion: IAutorizaciones) => void;
-
-  filtroAutorizacion:IAutorizaciones ;
-  filtroAutorizacionSelect:IAutorizaciones;
-  setFiltroAutorizacion: (filtroAutorizacion:IAutorizaciones) => void;
-  setFiltroAutorizacionSelect: (filtroAutorizacionSelect: IAutorizaciones) => void;
 }
 
 export const createAutorizacionLargoPlazoSlice: StateCreator<
   AutorizacionLargoPlazoSlice
 > = (set, get) => ({
-  setFiltroAutorizacionSelect: (filtroAutorizacionSelect: IAutorizaciones) => {
-    set((state) => ({
-      filtroAutorizacionSelect: filtroAutorizacionSelect,
-    }));
-  },
-  
-  filtroAutorizacionSelect:{
-    Id: "",
-    IdEntidad: "",
-    Entidad: "",
-    NumeroAutorizacion: "",
-    FechaPublicacion: "",
-    DescripcionMedioPublicacion: "",
-    IdMedioPublicacion: "",
-    MontoAutorizado: "",
-    DocumentoSoporte: "",
-    AcreditacionQuorum: "",
-    DestinoAutorizado: "",
-    DetalleDestino: "",
-    CreadoPor: "",
-  },
-
-  filtroAutorizacion:{
-    Id: "",
-    IdEntidad: "",
-    Entidad: "",
-    NumeroAutorizacion: "",
-    FechaPublicacion: "",
-    DescripcionMedioPublicacion: "",
-    IdMedioPublicacion: "",
-    MontoAutorizado: "",
-    DocumentoSoporte: "",
-    AcreditacionQuorum: "",
-    DestinoAutorizado: "",
-    DetalleDestino: "",
-    CreadoPor: "",
-  },
-
-  setFiltroAutorizacion: (filtroAutorizacion: IAutorizaciones) => {
-    set((state) => ({
-      filtroAutorizacion: filtroAutorizacion,
-    }));
-  },
-
-  autorizacionesReestructura: [],
-
-  autorizacionSelectReestructura: {
-    Id: "",
-    IdEntidad: "",
-    Entidad: "",
-    NumeroAutorizacion: "",
-    FechaPublicacion: "",
-    DescripcionMedioPublicacion: "",
-    IdMedioPublicacion: "",
-    MontoAutorizado: "",
-    DocumentoSoporte: "",
-    AcreditacionQuorum: "",
-    DestinoAutorizado: "",
-    DetalleDestino: "",
-    CreadoPor: "",
-  },
-
-
-
-  setAutorizacionSelectReestructura: (autorizacionReestructura: IAutorizaciones) => {
-    set((state) => ({
-      autorizacionSelectReestructura: autorizacionReestructura,
-    }));
-  },
   autorizacion: {
     entidad: {
       Id: localStorage.getItem("IdEntePublicoObligado") || "",
@@ -546,8 +466,8 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => { })
+      .catch((e) => { });
   },
 
   saveFilesAutorizacion: async (
@@ -584,7 +504,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
               data.RESPONSE.NOMBREARCHIVO
             );
           })
-          .catch((e) => {});
+          .catch((e) => { });
       } else {
         return null;
       }

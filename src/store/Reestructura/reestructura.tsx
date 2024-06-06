@@ -19,6 +19,8 @@ export interface IDatosSolicitudReestructura {
   //FechaReestructura:string;
 }
 
+
+
 export interface ICreditoSolicitudReestructura {
   TipoConvenio: { Id: string, Descripcion: string };
   FechaConvenio: string;
@@ -33,20 +35,14 @@ export interface IAnexoClausula {
   Modificacion: string
 }
 
-
-
 export interface ReestructuraSlice {
   SolicitudReestructura: IDatosSolicitudReestructura,
   setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
-
-
-
 
   ReestructuraDeclaratorias: ICreditoSolicitudReestructura
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => void;
 
   createSolicitudReestructura: (IdSolicitud: string, Solicitud: string, IdEditor: string, setState: Function) => void;
-
 
   AnexoClausulas: IAnexoClausula,
   setAnexoClausulas: (AnexoClausulas: IAnexoClausula) => void;
@@ -59,13 +55,88 @@ export interface ReestructuraSlice {
 
   reestructura: string;
   changeRestructura: (restructura: string) => void;
+
+  autorizacionesReestructura: IAutorizaciones[];
+  
+  autorizacionSelectReestructura: IAutorizaciones;
+  setAutorizacionSelectReestructura: (autorizacion: IAutorizaciones) => void;
+
+  filtroAutorizacion:IAutorizaciones ;
+  filtroAutorizacionSelect:IAutorizaciones;
+  setFiltroAutorizacion: (filtroAutorizacion:IAutorizaciones) => void;
+  setFiltroAutorizacionSelect: (filtroAutorizacionSelect: IAutorizaciones) => void;
+
+
 }
 
 
 export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) => ({
+  setFiltroAutorizacionSelect: (filtroAutorizacionSelect: IAutorizaciones) => {
+    set((state) => ({
+      filtroAutorizacionSelect: filtroAutorizacionSelect,
+    }));
+  },
   
+  filtroAutorizacionSelect:{
+    Id: "",
+    IdEntidad: "",
+    Entidad: "",
+    NumeroAutorizacion: "",
+    FechaPublicacion: "",
+    DescripcionMedioPublicacion: "",
+    IdMedioPublicacion: "",
+    MontoAutorizado: "",
+    DocumentoSoporte: "",
+    AcreditacionQuorum: "",
+    DestinoAutorizado: "",
+    DetalleDestino: "",
+    CreadoPor: "",
+  },
 
-  
+  filtroAutorizacion:{
+    Id: "",
+    IdEntidad: "",
+    Entidad: "",
+    NumeroAutorizacion: "",
+    FechaPublicacion: "",
+    DescripcionMedioPublicacion: "",
+    IdMedioPublicacion: "",
+    MontoAutorizado: "",
+    DocumentoSoporte: "",
+    AcreditacionQuorum: "",
+    DestinoAutorizado: "",
+    DetalleDestino: "",
+    CreadoPor: "",
+  },
+
+  setFiltroAutorizacion: (filtroAutorizacion: IAutorizaciones) => {
+    set((state) => ({
+      filtroAutorizacion: filtroAutorizacion,
+    }));
+  },
+
+  autorizacionesReestructura: [],
+
+  autorizacionSelectReestructura: {
+    Id: "",
+    IdEntidad: "",
+    Entidad: "",
+    NumeroAutorizacion: "",
+    FechaPublicacion: "",
+    DescripcionMedioPublicacion: "",
+    IdMedioPublicacion: "",
+    MontoAutorizado: "",
+    DocumentoSoporte: "",
+    AcreditacionQuorum: "",
+    DestinoAutorizado: "",
+    DetalleDestino: "",
+    CreadoPor: "",
+  },
+  setAutorizacionSelectReestructura: (autorizacionReestructura: IAutorizaciones) => {
+    set((state) => ({
+      autorizacionSelectReestructura: autorizacionReestructura,
+    }));
+  },
   AnexoClausulas: {
     ClausulaOriginal: { Id: "", Descripcion: "" },
     ClausulaModificada: { Id: "", Descripcion: "" },

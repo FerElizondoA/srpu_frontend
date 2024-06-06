@@ -25,6 +25,7 @@ import { IAnexoClausula, IDatosSolicitudReestructura } from "../../store/Reestru
 import { Declaratorias } from "../../components/ObligacionesLargoPlazoPage/Panels/Declaratorias";
 import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPlazoPage/Panels/DeclaratoriasReestructura";
 import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
+import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -70,6 +71,10 @@ export function ObligacionesLargoPlazoPage() {
 
   const tablaDeclaratorias: IAnexoClausula[] = useReestructuraStore(
     (state) => state.tablaDeclaratorias
+  );
+
+  const autorizacionSelectReestructura: IAutorizaciones = useReestructuraStore(
+    (state) => state.autorizacionSelectReestructura
   );
 
 
@@ -194,7 +199,8 @@ export function ObligacionesLargoPlazoPage() {
                       setOpenDialogReestructura(!openDialogReestructura);
                     }}
                     disabled={
-                      tablaDeclaratorias.length < 1
+                      tablaDeclaratorias.length < 1 ||
+                      autorizacionSelectReestructura.Id === "" 
                     }
                     sx={{
                       backgroundColor: "#15212f",
@@ -275,6 +281,7 @@ export function ObligacionesLargoPlazoPage() {
               ? <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
               : null
             }
+             {/* <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} /> */}
 
             {reestructura === "con autorizacion" || reestructura === "sin autorizacion"
               ? <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} />
@@ -310,20 +317,14 @@ export function ObligacionesLargoPlazoPage() {
       {reestructura === ""
         ? tabIndex === 7 && <SolicitudDeInscripcion />
         : null}
-
+{/* {tabIndex === 7 && <DeclaratoriasReestructura />} */}
       {reestructura === "sin autorizacion"
         ? tabIndex === 6 && <DeclaratoriasReestructura />
         : reestructura === "con autorizacion"
           ? tabIndex === 7 && <DeclaratoriasReestructura />
           : null
       }
-      {/* {tabIndex === 3 && <FuentePagoSecciones />}
-      {tabIndex === 4 && <CondicionesFinancieras />}
-      {tabIndex === 5 && <Documentacion />}
-      {tabIndex === 6 && <Resumen coments={true} />}
-      {tabIndex === 7 && <SolicitudDeInscripcion />} */}
-      {/* {tabIndex === 8 && <DeclaratoriasReestructura />} */}
-      {/* : null} */}
+
 
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}

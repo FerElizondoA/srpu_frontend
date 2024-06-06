@@ -58,6 +58,7 @@ export function DialogSolicitarReestructura(props: Props) {
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
     setidUsuarioAsignado("");
+    console.log("props.Solicitud", props.Solicitud)
   }, [props.openState]);
 
   useEffect(() => {
@@ -67,7 +68,6 @@ export function DialogSolicitarReestructura(props: Props) {
   useEffect(() => {
     setErrorAsignacion(false);
   }, []);
-
 
   return (
     <Dialog open={props.openState} fullWidth>
@@ -138,9 +138,11 @@ export function DialogSolicitarReestructura(props: Props) {
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            // CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
-            createSolicitudReestructura(props.idSolicitud, props.Solicitud, props.IdEditor, setNavigateReestructura)
-            modificaSolicitud(props.IdCreado, localStorage.getItem("IdUsuario"), "19" )
+            CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
+            
+            createSolicitudReestructura(props.idSolicitud, props.Solicitud, props.IdEditor, 
+              setNavigateReestructura)
+            //modificaSolicitud(props.IdCreado, localStorage.getItem("IdUsuario"), "19" )
             if (!navigateReestructura) {
               navigate("../ConsultaDeSolicitudes");
             }

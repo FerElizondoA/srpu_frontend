@@ -177,6 +177,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       cpState.setTablaDocumentos(aux?.documentacion);
 
       cpState.setReglasAplicables(aux?.inscripcion.declaratorias);
+      
     } else if (inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       lpState.changeEncabezado(aux?.encabezado);
 
