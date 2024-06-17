@@ -730,8 +730,7 @@ export function ConsultaDeSolicitudPage() {
                                 type="button"
                                 onClick={() => {
                                   setInscripcion(row);
-                                  
-                                  changeOpenDialogRestructura(true);
+                                  changeOpenDialogRestructura(!openDialogRestructura);
                                 }}
                               >
                                 <BuildIcon></BuildIcon>

@@ -40,16 +40,16 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 const heads: {
   label: string;
 }[] = [
-    {
-      label: "Selección",
-    },
-    {
-      label: "Tipo de Ente Público Obligado",
-    },
-    {
-      label: "Ente Público Obligado",
-    },
-  ];
+  {
+    label: "Selección",
+  },
+  {
+    label: "Tipo de Ente Público Obligado",
+  },
+  {
+    label: "Ente Público Obligado",
+  },
+];
 
 export function InformacionGeneral() {
   // GET CATALOGOS
@@ -202,7 +202,6 @@ export function InformacionGeneral() {
       height={{ xs: "35rem" }}
       sx={{
         display: "flex",
-
         flexDirection: "column",
         justifyContent: "space-evenly",
         width: "100%",
@@ -240,9 +239,7 @@ export function InformacionGeneral() {
           </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              disabled={
-                reestructura === "" 
-              }
+              disabled={reestructura === ""}
               disablePast={false}
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
@@ -284,8 +281,8 @@ export function InformacionGeneral() {
             disabled={
               // reestructura === "con autorizacion" ||
               // reestructura === "sin autorizacion" ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Monto Original Contratado"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Monto Original Contratado")
             }
             fullWidth
             placeholder="0"
@@ -344,8 +341,8 @@ export function InformacionGeneral() {
               disabled={
                 // reestructura === "con autorizacion" ||
                 // reestructura === "sin autorizacion" ||
-                (datosActualizar.length > 0 &&
-                  !datosActualizar.includes("Fecha de Vencimiento"))
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento")
               }
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
@@ -414,8 +411,8 @@ export function InformacionGeneral() {
             disabled={
               // reestructura === "con autorizacion" ||
               // reestructura === "sin autorizacion" ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Denominación"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Denominación")
             }
             fullWidth
             variant="standard"
@@ -450,8 +447,8 @@ export function InformacionGeneral() {
             disabled={
               // reestructura === "con autorizacion" ||
               // reestructura === "sin autorizacion" ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Institución Financiera"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Institución Financiera")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -513,8 +510,8 @@ export function InformacionGeneral() {
             disabled={
               // reestructura === "con autorizacion" ||
               // reestructura === "sin autorizacion" ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+              datosActualizar.length > 0 &&
+              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
             }
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -562,10 +559,10 @@ export function InformacionGeneral() {
             disabled={
               // reestructura === "con autorizacion" ||
               // reestructura === "sin autorizacion" ||
-              (obligadoSolidario === "NO APLICA" ||
-                /^[\s]*$/.test(obligadoSolidario) ||
-                (datosActualizar.length > 0 &&
-                  !datosActualizar.includes("Tabla Obligado Solidario / Aval")))
+              obligadoSolidario === "NO APLICA" ||
+              /^[\s]*$/.test(obligadoSolidario) ||
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
             }
             fullWidth
             options={catalogoTipoEntePublicoObligado}
@@ -664,109 +661,114 @@ export function InformacionGeneral() {
         </Grid>
       </Grid>
 
-      <Grid width={"94%"} display={"flex"} justifyContent={"flex-end"}>
-        <ThemeProvider theme={buttonTheme}>
-          <Button
-            sx={queries.buttonContinuar}
-            disabled={
-              obligadoSolidario === "NO APLICA" ||
-              /^[\s]*$/.test(obligadoSolidario) ||
-              /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
-              /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
-              (datosActualizar.length > 0 &&
-                !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
-            }
-            variant="outlined"
-            onClick={() => {
-              setObligadoSolidarioAval({
-                obligadoSolidario: "SI APLICA",
-                tipoEntePublicoObligado: "",
-                entePublicoObligado: {
-                  Id: "",
-                  Descripcion: "",
+      <Grid width={"100%"}  display={"flex"} justifyContent={"flex-end"} flexDirection={"column"} alignItems ={"center"} >
+        <Grid align-alignItems ={"center"} display={"flex"} justifyContent={"center"} item xs={12} sm={10.5} md={10.5} lg={12} xl={12} >
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              sx={queries.buttonContinuar}
+              disabled={
+                obligadoSolidario === "NO APLICA" ||
+                /^[\s]*$/.test(obligadoSolidario) ||
+                /^[\s]*$/.test(generalTipoEntePublico?.Descripcion) ||
+                /^[\s]*$/.test(generalEntePublico?.Descripcion) ||
+                (datosActualizar.length > 0 &&
+                  !datosActualizar.includes("Tabla Obligado Solidario / Aval"))
+              }
+              variant="outlined"
+              onClick={() => {
+                setObligadoSolidarioAval({
+                  obligadoSolidario: "SI APLICA",
+                  tipoEntePublicoObligado: "",
+                  entePublicoObligado: {
+                    Id: "",
+                    Descripcion: "",
+                  },
+                });
+                addRows();
+              }}
+            >
+              Agregar
+            </Button>
+          </ThemeProvider>{" "}
+        </Grid>
+
+         <Grid mt={3} width={"80%"} align-alignItems ={"center"} display={"flex"} justifyContent={"center"} item xs={12} sm={10.5} md={10.5} lg={12} xl={12}>
+          <Paper sx={{ width: "100%", overflow: "clip" }}>
+            <TableContainer
+              sx={{
+                maxHeight: "100%",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: ".5vw",
+                  height: ".3rem",
+                  mt: 1,
                 },
-              });
-              addRows();
-            }}
-          >
-            Agregar
-          </Button>
-        </ThemeProvider>
-      </Grid>
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#AF8C55",
+                  outline: "1px solid slategrey",
+                  borderRadius: 1,
+                },
+              }}
+            >
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    {heads.map((head, index) => (
+                      <StyledTableCell align="center" key={index}>
+                        {head.label}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-      <Grid
-        height={"35%"}
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        width={"100%"}
-      >
-        <Paper sx={{ width: "88%", overflow: "clip" }}>
-          <TableContainer
-            sx={{
-              maxHeight: "100%",
-              overflow: "auto",
-              "&::-webkit-scrollbar": {
-                width: ".5vw",
-                height: ".3rem",
-                mt: 1,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#AF8C55",
-                outline: "1px solid slategrey",
-                borderRadius: 1,
-              },
-            }}
-          >
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {heads.map((head, index) => (
-                    <StyledTableCell align="center" key={index}>
-                      {head.label}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {obligadoSolidario === "NO APLICA" &&
+                <TableBody>
+                  {obligadoSolidario === "NO APLICA" &&
                   tablaObligados.length === 0 ? (
-                  <StyledTableRow>
-                    <StyledTableCell />
-                    <StyledTableCell align="center">NO APLICA</StyledTableCell>
-                    <StyledTableCell />
-                  </StyledTableRow>
-                ) : (
-                  tablaObligados.map((row: any, index: number) => {
-                    return (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell align="center">
-                          <Tooltip title="Eliminar">
-                            <IconButton
-                              type="button"
-                              disabled={reestructura === "con autorizacion" ||
-                                reestructura === "sin autorizacion"}
-                              onClick={() => removeObligadoSolidarioAval(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          {row.tipoEntePublicoObligado}
-                        </StyledTableCell>
-                        <StyledTableCell align="center" component="th">
-                          {row.entePublicoObligado}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+                    <StyledTableRow>
+                      <StyledTableCell />
+                      <StyledTableCell align="center">
+                        NO APLICA
+                      </StyledTableCell>
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  ) : (
+                    tablaObligados.map((row: any, index: number) => {
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell align="center">
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                type="button"
+                                disabled={
+                                  reestructura === "con autorizacion" ||
+                                  reestructura === "sin autorizacion"
+                                }
+                                onClick={() =>
+                                  removeObligadoSolidarioAval(index)
+                                }
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </StyledTableCell>
+                          <StyledTableCell align="center" component="th">
+                            {row.tipoEntePublicoObligado}
+                          </StyledTableCell>
+                          <StyledTableCell align="center" component="th">
+                            {row.entePublicoObligado}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
       </Grid>
+
+   
     </Grid>
   );
 }
