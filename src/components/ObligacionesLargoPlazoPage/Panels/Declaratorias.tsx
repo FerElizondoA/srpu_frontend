@@ -15,6 +15,8 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IAnexoClausula, ICreditoSolicitudReestructura } from "../../../store/Reestructura/reestructura";
 import validator from "validator";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 interface Heads {
   Id: string
@@ -56,6 +58,10 @@ const catalogo: readonly Heads[] = [
 
 export function Declaratorias() {
 
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
   const [openGuardaComentarios, setOpenGuardaComentarios] = useState("");
 
   const Declaratorias: ICreditoSolicitudReestructura = useReestructuraStore(
@@ -88,13 +94,9 @@ export function Declaratorias() {
             </InputLabel>
 
             <TextField
-              // disabled={
-              //     reestructura === "con autorizacion" ||
-              //     (datosActualizar.length > 0 &&
-              //         !datosActualizar.includes("Tipo de Documento"))
-              // }
+              disabled
               fullWidth
-              // value={tipoDocumento}
+               value={inscripcion.NumeroRegistro}
               variant="standard"
               sx={queries.medium_text}
               InputLabelProps={{

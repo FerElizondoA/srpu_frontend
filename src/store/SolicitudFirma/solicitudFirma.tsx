@@ -102,7 +102,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     if (info) {
       const inf = JSON.parse(info);
-
+      
       const state = useInscripcionStore.getState();
 
       const estatusPrevio = {
@@ -538,10 +538,13 @@ export async function ConsultaConstancia(
             ? solicitud.informacionGeneral.obligadosSolidarios
             : ["No Aplica"],
         institucionFinanciera:
-          solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-        montoOriginalContratado: solicitud.informacionGeneral.monto,
-        destino: solicitud.informacionGeneral.destino.Descripcion,
-        plazo: solicitud.informacionGeneral.plazo,
+          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+        
+        
         amortizaciones: "No Aplica",
         tasaInteres: "tasaInteres",
         tasaEfectiva: "tasaEfectiva",

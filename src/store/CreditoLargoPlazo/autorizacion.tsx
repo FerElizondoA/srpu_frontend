@@ -104,7 +104,6 @@ export interface AutorizacionLargoPlazoSlice {
   autorizacionSelect: IAutorizaciones;
   setAutorizacionSelect: (autorizacion: IAutorizaciones) => void;
   modificarAutorizacion: () => void;
-
 }
 
 export const createAutorizacionLargoPlazoSlice: StateCreator<

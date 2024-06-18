@@ -13,6 +13,7 @@ import { IUsuariosAsignables } from "../../ObligacionesCortoPlazoPage/Dialogs/Di
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../../store/Reestructura/reestructura";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { ISolicitudLargoPlazo } from "../../../store/Inscripcion/inscripcion";
 
 type Props = {
   handler: Function;
@@ -21,6 +22,8 @@ type Props = {
   Solicitud: string;
   IdEditor: string;
   IdCreado:string;
+  Estatus: string;
+  NumeroRegistro: string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
@@ -52,6 +55,13 @@ export function DialogSolicitarReestructura(props: Props) {
     (state) => state.modificaSolicitud
   );
 
+
+  const inscripcionReestructura: string = useReestructuraStore(
+    (state) => state.inscripcionReestructura
+  );
+
+  const lpState = useLargoPlazoStore.getState();
+
   const [navigateReestructura, setNavigateReestructura] =
     useState(false);
 
@@ -68,6 +78,25 @@ export function DialogSolicitarReestructura(props: Props) {
   useEffect(() => {
     setErrorAsignacion(false);
   }, []);
+
+  
+  const EnviarReestructura = () => {
+    const ReesState = useReestructuraStore?.getState();
+    createSolicitudReestructura(
+      props.idSolicitud, 
+      props.IdEditor, 
+      setNavigateReestructura, 
+      props.Estatus,
+      props.NumeroRegistro,
+      ReesState
+    )
+    setTimeout(() => {
+      if (!navigateReestructura) {
+        window.location.reload();
+        navigate("../reestructura");
+      }
+    }, 4000);
+  }
 
   return (
     <Dialog open={props.openState} fullWidth>
@@ -138,14 +167,7 @@ export function DialogSolicitarReestructura(props: Props) {
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
-            CambiaEstatus("19", rowSolicitud.Id, rowSolicitud.IdEditor)
-            
-            createSolicitudReestructura(props.idSolicitud, props.Solicitud, props.IdEditor, 
-              setNavigateReestructura)
-            //modificaSolicitud(props.IdCreado, localStorage.getItem("IdUsuario"), "19" )
-            if (!navigateReestructura) {
-              navigate("../ConsultaDeSolicitudes");
-            }
+            EnviarReestructura()
           }}
         >
           Aceptar

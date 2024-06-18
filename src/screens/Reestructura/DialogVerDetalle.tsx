@@ -229,14 +229,20 @@ export function DialogVerDetalle(props: Props) {
     (state) => state.SolicitudReestructura
   );
 
+
+  const setInscripcionReestructura: Function = useReestructuraStore(
+    (state) => state.setInscripcionReestructura
+  );
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [props.openState]);
 
   useEffect(() => {
-    //setSolicitudReestructura("", "")
-    //console.log("SolicitudReestructura.IdSolicitud", SolicitudReestructura.IdSolicitud)
-    //console.log("SolicitudReestructura.solicitud", SolicitudReestructura.Solicitud)
+    console.log("reestructura", reestructura)
+    console.log("localStorage: usuario", localStorage.getItem("IdUsuario") === props.rowSolicitud.CreadoPor)
+    console.log("props.rowSolicitud.NoEstatus ", props.rowSolicitud.NoEstatus )
+    console.log("localStorage.getItem(Rol)", localStorage.getItem("Rol"))
   }, []);
 
   return (
@@ -296,9 +302,9 @@ export function DialogVerDetalle(props: Props) {
         </Button>
         {
           reestructura !== "" &&
-            localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+            localStorage.getItem("IdUsuario") === props.rowSolicitud.CreadoPor &&
             props.rowSolicitud.NoEstatus === "10" &&
-             props.rowSolicitud.ControlInterno === "autorizado" &&
+            //props.rowSolicitud.ControlInterno === "autorizado" &&
             localStorage.getItem("Rol") === "Verificador" ? (
             <Grid
               container
@@ -368,6 +374,8 @@ export function DialogVerDetalle(props: Props) {
                   setInscripcion(props.rowSolicitud);
                   changeRestructura("con autorizacion");
                   navigate("../ObligacionesLargoPlazo");
+                  
+                  setInscripcionReestructura(props.rowSolicitud)
                   
                 }}
               >

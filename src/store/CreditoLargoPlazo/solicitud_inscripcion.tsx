@@ -5,8 +5,15 @@ import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
+import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
+import { useReestructuraStore } from "../Reestructura/main";
 
 export interface SolicitudInscripcionLargoPlazoSlice {
+
+
+  //createSolicitudReestructura: (IdSolicitud: string, IdEditor: string, setState: Function) => void;
+
+
   inscripcion: {
     servidorPublicoDirigido: string;
     cargo: string;
@@ -120,7 +127,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       SolicitudReestructuracion: {
-        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        autorizacionReestructura:{
+          Id: lpState.autorizacionSelectReestructura.Id,
+          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
+        },
+        tablaDeclaratorias: lpState.tablaDeclaratorias ,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
@@ -132,7 +144,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
         }
       },
-    };
+    }
 
     return await axios
       .post(
@@ -227,7 +239,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         declaratorias: lpState.reglasAplicables,
       },
       SolicitudReestructuracion: {
-        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        autorizacionReestructura:{
+          Id: lpState.autorizacionSelectReestructura.Id,
+          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
+        },
+        tablaDeclaratorias: lpState.tablaDeclaratorias ,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,

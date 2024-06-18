@@ -169,7 +169,6 @@ export function DialogGuardarBorrador({
             } else {
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
-                localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )

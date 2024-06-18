@@ -9,7 +9,7 @@ import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera"
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
 import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
-import { IAnexoClausula } from "../Reestructura/reestructura";
+import { IAnexoClausula, IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 
 export interface IInscripcion {
   Id: string;
@@ -83,6 +83,11 @@ export interface ISolicitudLargoPlazo {
   };
 
   SolicitudReestructuracion: {
+    autorizacionReestructura:{
+      Id: string
+      MontoAutorizado: string
+      NumeroAutorizacion: string
+    },
     tablaDeclaratorias: IAnexoClausula[]
     ReestructuraDeclaratorias: {
       TipoConvenio: { Id: string, Descripcion: string };
@@ -120,6 +125,9 @@ export interface ISolicitudCortoPlazo {
 export interface InscripcionSlice {
   inscripcion: IInscripcion;
   setInscripcion: (solicitud: IInscripcion) => void;
+  
+  // inscripcionReestructura: IInscripcion; TE QUEDASTE AQUI
+  // setInscripcionRestructura: (solicitud: IDatosSolicitudReestructura) => void;
 
   proceso: string;
   setProceso: (proceso: string) => void;
