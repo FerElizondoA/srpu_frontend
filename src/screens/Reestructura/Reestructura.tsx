@@ -638,11 +638,9 @@ export function SolicitudesReestructura() {
                                 if (row.Id !== "") {
                                   setProceso("solicitud")
                                   getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-                                  console.log("constanciaReestructura", constanciaReestructura);
-                                  
                                   if (constanciaReestructura === true) {
                                     //setInscripcion(SolicitudReestructuraFirma)
-                                    //console.log("ins", inscripcion)
+                                    console.log("ins", inscripcion)
                                     ConsultaConstancia(
                                       SolicitudReestructuraFirma.SolicitudReestructura,
                                       SolicitudReestructuraFirma.NumeroRegistro,
@@ -651,23 +649,6 @@ export function SolicitudesReestructura() {
                                     navigate("../firmaUrl");
                                   }
                                 }
-
-                                // llenaSolicitud(row, row.TipoSolicitud);
-
-
-
-
-                                // GeneraFormatoReestructura(
-                                //   row.Solicitud,
-                                //   row.TipoSolicitud,
-                                //   row.NumeroRegistro,
-                                //   row.IdClaveInscripcion,
-                                //   // row.Id,
-                                //   setUrl
-                                // );
-
-                                // navigate("../firmaUrl");
-
                               }}
                             >
                               <HistoryEduIcon />
