@@ -18,6 +18,7 @@ import {
   Button,
   Tooltip,
   IconButton,
+  ThemeProvider,
 } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -37,6 +38,7 @@ import { IAnexoClausula } from "../../../store/Reestructura/reestructura";
 import { kMaxLength } from "buffer";
 import EditIcon from "@mui/icons-material/Edit";
 import { EditarSolicitudDeRestructura } from "../Dialog/EditarSolicitudDeRestructura";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 interface Head {
   label: string;
@@ -251,9 +253,9 @@ export function SolicitudReestructura() {
             value={
               openEditarCondicion === false
                 ? {
-                    id: AnexoClausulas.ClausulaOriginal.Id || "",
-                    label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
-                  }
+                  id: AnexoClausulas.ClausulaOriginal.Id || "",
+                  label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
+                }
                 : { id: "", label: "" }
             }
             onChange={(event, text) => {
@@ -307,9 +309,9 @@ export function SolicitudReestructura() {
             value={
               openEditarCondicion === false
                 ? {
-                    id: AnexoClausulas.ClausulaModificada.Id || "",
-                    label: AnexoClausulas.ClausulaModificada.Descripcion || "",
-                  }
+                  id: AnexoClausulas.ClausulaModificada.Id || "",
+                  label: AnexoClausulas.ClausulaModificada.Descripcion || "",
+                }
                 : { id: "", label: "" }
             }
             onChange={(event, text) => {
@@ -378,11 +380,10 @@ export function SolicitudReestructura() {
                 color: getHelperTextColor(),
               },
             }}
-            helperText={`El texto de modificación no debe pasar los 10 caracteres. Caracteres Usados: ${
-              AnexoClausulas.Modificacion
-                ? AnexoClausulas.Modificacion.length
-                : 0
-            }`}
+            helperText={`El texto de modificación no debe pasar los 650 caracteres. Caracteres Usados: ${AnexoClausulas.Modificacion
+              ? AnexoClausulas.Modificacion.length
+              : 0
+              }`}
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -433,22 +434,29 @@ export function SolicitudReestructura() {
           display={"flex"}
           justifyContent={"center"}
           alignContent={"center"}
-          //height={"3rem"}
+        //height={"3rem"}
         >
-          <Button
-            sx={{
-              ...queries.buttonContinuar,
-              height: "2rem",
-              display: "flex",
-              alignItems: "center",
-            }}
-            onClick={() => {
-              addTablaDeclaratorias(AnexoClausulas);
-              cleanAnexoClausulas()
-            }}
-          >
-            <Typography>Agregar</Typography>
-          </Button>
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              disabled={AnexoClausulas.Modificacion === "" ||
+                AnexoClausulas.ClausulaOriginal.Descripcion === "" ||
+                AnexoClausulas.ClausulaModificada.Descripcion === ""
+              }
+              sx={{
+                ...queries.buttonContinuar,
+                height: "2rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+              onClick={() => {
+                addTablaDeclaratorias(AnexoClausulas);
+                cleanAnexoClausulas()
+              }}
+            >
+              <Typography>Agregar</Typography>
+            </Button>
+          </ThemeProvider>
+
         </Grid>
       </Grid>
 
@@ -507,9 +515,9 @@ export function SolicitudReestructura() {
                       {head.ClausulaModificada.Descripcion}
                     </StyledTableCell>
 
-                    <StyledTableCell2 
-                    component="th" 
-                    scope="row" 
+                    <StyledTableCell2
+                      component="th"
+                      scope="row"
                     >
                       {head.Modificacion}
                     </StyledTableCell2>
@@ -553,7 +561,7 @@ export function SolicitudReestructura() {
         openState={openEditarCondicion}
         handleClose={handleCloseEnviar}
         Index={Index}
-        //indexA={indexRegistro}
+      //indexA={indexRegistro}
       />
     </>
   );

@@ -232,7 +232,7 @@ export function EditarSolicitudDeRestructura({
                       color: getHelperTextColor(),
                     },
                   }}
-                  helperText={`El texto de modificación no debe pasar los 10 caracteres. Caracteres Usados: ${
+                  helperText={`El texto de modificación no debe pasar los 650 caracteres. Caracteres Usados: ${
                     AnexoClausulas.Modificacion
                       ? AnexoClausulas.Modificacion.length
                       : 0

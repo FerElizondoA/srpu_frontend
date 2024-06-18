@@ -209,6 +209,21 @@ export const queries = {
       fontSize: "80%",
     },
   },
+  iconButtonCancelar:{
+    color: "rgb(175, 140, 85)",
+    "&:hover": {
+      color: "rgba(175, 140, 85, 0.6)",
+    },
+    borderRadius: "0.8vh",
+    textTransform: "capitalize",
+    fontSize: "60%",
+    "@media (min-width: 480px)": {
+      fontSize: "70%",
+    },
+    "@media (min-width: 768px)": {
+      fontSize: "80%",
+    },
+  },
   buttonContinuar: {
     backgroundColor: "#15212f",
     color: "white",

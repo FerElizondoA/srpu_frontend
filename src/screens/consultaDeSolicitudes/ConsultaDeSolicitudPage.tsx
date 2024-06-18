@@ -623,7 +623,6 @@ export function ConsultaDeSolicitudPage() {
                                   type="button"
                                   onClick={() => {
                                     setInscripcion(row);
-
                                     if (row.NoEstatus === "3") {
                                       setInscripcion(row);
                                       ConsultaSolicitud(setUrl);
