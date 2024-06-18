@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   Typography,
   useMediaQuery,
@@ -20,6 +21,7 @@ import axios from "axios";
 import { ISolicitudLargoPlazo } from "../../store/Inscripcion/inscripcion";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { queries } from "../../queries";
 // interface AccordionItem {
 //     title: string;
 //     content: string;
@@ -31,8 +33,8 @@ interface AccordionItem {
 }
 
 interface Restructura {
-    [key: string]: any;
-  }
+  [key: string]: any;
+}
 
 export function DialogVerRestrucuturas({
   showRestructura,
@@ -52,8 +54,6 @@ export function DialogVerRestrucuturas({
   }, [openRestructura]);
 
   const [restructuras, setRestructuras] = useState<Restructura[]>([]);
-
-  
 
   async function getRestrucutras() {
     await axios({
@@ -84,13 +84,11 @@ export function DialogVerRestrucuturas({
   }
 
   useEffect(() => {
-    
     getRestrucutras();
   }, []);
 
   const restructura = solicitud;
 
-  
   const keyMapping: { [key: string]: string } = {
     tipoDocumento: "Tipo de documento",
     tipoEntePublico: "Tipo de Ente Publico",
@@ -166,68 +164,75 @@ export function DialogVerRestrucuturas({
     saldoVigente: "Saldo Vigente",
     declaratorias: "Declaratorias",
     SolicitudReestructuracion: "Solicitud de Reestructuracion",
-    fechaDisposicion: " Fecha de Disposicion"
+    fechaDisposicion: " Fecha de Disposicion",
   };
 
   interface Differences {
     [key: string]: boolean;
   }
-  
-  
- 
-const isObject = (value: any) => value && typeof value === 'object' && !Array.isArray(value);
 
-const compareObjects = (obj1: any, obj2: any): Differences => {
+  const isObject = (value: any) =>
+    value && typeof value === "object" && !Array.isArray(value);
+
+  const compareObjects = (obj1: any, obj2: any): Differences => {
     const differences: Differences = {};
-  
-    const compare = (obj1: any, obj2: any, path: string = ''): void => {
+
+    const compare = (obj1: any, obj2: any, path: string = ""): void => {
       const keys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
-      keys.forEach(key => {
+      keys.forEach((key) => {
         const currentPath = path ? `${path}.${key}` : key;
         const val1 = obj1[key];
         const val2 = obj2[key];
-  
-       // console.log(`Comparing: ${currentPath}`);
+
+        // console.log(`Comparing: ${currentPath}`);
         //console.log(`val1: ${val1}, val2: ${val2}`);
-  
+
         if (isObject(val1) && isObject(val2)) {
           compare(val1, val2, currentPath);
-
         } else if (val1 !== val2) {
-         console.log(`Difference found at: ${currentPath}`);
+          console.log(`Difference found at: ${currentPath}`);
           differences[currentPath] = true;
-        
-          
         }
       });
     };
-  
+
     compare(obj1, obj2);
     return differences;
   };
-  
 
-  const renderProperties = (obj: any, differences: Differences = {}, path: string = '') => {
+  const renderProperties = (
+    obj: any,
+    differences: Differences = {},
+    path: string = ""
+  ) => {
     return Object.keys(obj)
       .map((key, idx) => {
         const value = obj[key];
         const currentPath = path ? `${path}.${key}` : key;
         const label = keyMapping[key] || key;
+
         // Excluir propiedades que contienen la palabra 'Id' o 'tipoArchivo'
-        if (key.toLowerCase().includes("id") || key.toLowerCase().includes("tipoarchivo")) {
+        if (
+          key.toLowerCase().includes("id") ||
+          key.toLowerCase().includes("tipoarchivo")
+        ) {
           return null;
         }
-  
+
         const isDifferent = differences[currentPath];
-        
-  
+
         if (typeof value === "object" && value !== null) {
           return (
-            <Grid item xs={12} key={idx}>
-              <Typography sx={{ color: isDifferent ? 'red' : 'rgb(175, 140, 85)' }}>
-                <strong>{label }</strong>:
+            <Grid item container spacing={1} sx={{ paddingLeft: 2,  }} xs={12} key={idx}>
+              <Typography
+                sx={{
+                  color: isDifferent ? "red" : "rgb(175, 140, 85)",
+                  ...queries.bold_text,
+                }}
+              >
+                <strong>{label}</strong>:
               </Typography>
-              <Grid container spacing={1} sx={{ paddingLeft: 2 }}>
+              <Grid container >
                 {renderProperties(value, differences, currentPath)}
               </Grid>
             </Grid>
@@ -236,11 +241,16 @@ const compareObjects = (obj1: any, obj2: any): Differences => {
           const formattedValue = key.toLowerCase().includes("fecha")
             ? format(new Date(value), "dd/MM/yyyy", { locale: es })
             : JSON.stringify(value);
-  
+
           return (
-            <Grid item xs={12} key={idx}>
-              <Typography sx={{ color: isDifferent ? 'red' : 'inherit' }}>
-                <strong>{label }</strong>: {formattedValue}
+            <Grid item xs={12} key={idx} sx={{}}>
+              <Typography
+                sx={{
+                  color: isDifferent ? "red" : "inherit",
+                  ...queries.bold_text,
+                }}
+              >
+                <strong>{label}</strong>: {formattedValue}
               </Typography>
             </Grid>
           );
@@ -251,85 +261,105 @@ const compareObjects = (obj1: any, obj2: any): Differences => {
 
   const [expanded, setExpanded] = useState<string | false>(false); // Estado para mantener el índice del acordeón abierto
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false); // Actualiza el estado cuando se expande o colapsa el acordeón
-  };
-  
-  
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false); // Actualiza el estado cuando se expande o colapsa el acordeón
+    };
+
   return (
     <Dialog
-    fullScreen
-    open={openRestructura}
-    sx={{ height: "100%" }}
-    onClose={() => showRestructura(false)}
-  >
-    <DialogTitle
-      sx={{
-        fontFamily: "MontserratBold",
-        backgroundColor: "rgb(175, 140, 85)",
-        display: "flex",
-        color: "white",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
+      fullScreen
+      open={openRestructura}
+      sx={{ height: "100%" }}
+      onClose={() => showRestructura(false)}
     >
-      Restructuras
-      <IconButton
-        edge="end"
-        color="inherit"
-        onClick={() => showRestructura(false)}
-        aria-label="close"
-        sx={{ ml: 2 }}
+      <DialogTitle
+        sx={{
+          //fontFamily: "MontserratBold",
+          backgroundColor: "rgb(175, 140, 85)",
+          display: "flex",
+          color: "white",
+          justifyContent: "space-between",
+          alignItems: "center",
+          ...queries.bold_text,
+        }}
       >
-        <CloseIcon />
-      </IconButton>
-    </DialogTitle>
+        Restructuras
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={() => showRestructura(false)}
+          aria-label="close"
+          sx={{ ml: 2 }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
-    <DialogContent>
-      <Grid container spacing={3}>
-        {restructuras.map((item, index) => {
-          const diffMap = compareObjects(JSON.parse(restructura), item);
+      <DialogContent>
+        <Grid container spacing={3}>
+          {restructuras.map((item, index) => {
+            const diffMap = compareObjects(JSON.parse(restructura), item);
 
-          return (
-            <Grid item xs={12} key={index}>
-              <Accordion  expanded={expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`panel${index + 1}-content`}
-                  id={`panel${index + 1}-header`}
+            return (
+              <Grid item xs={12} key={index}>
+                <Accordion
+                  expanded={expanded === `panel${index + 1}`}
+                  onChange={handleChange(`panel${index + 1}`)}
                 >
-                  <strong>{"Solicitud de Restructura"}</strong>
-                </AccordionSummary>
-                {expanded === `panel${index + 1}` ? <AccordionDetails>
-                  <Grid item container flexDirection={"column"} spacing={2}>
-                    {['encabezado', 'autorizacion', 'SolicitudReestructuracion', 'condicionesFinancieras', 'documentacion', 'fuenteDePago', 'informacionGeneral', 'inscripcion'].map((section, idx) => (
-                      <Grid
-                        item
-                        key={idx}
-                        sx={{
-                          borderBlockColor: "black",
-                          border: 1,
-                          borderRadius: 5,
-                          justifyContent: "center",
-                          padding: 2,
-                          marginBottom: 2,
-                        }}
-                      >
-                        <Typography>
-                          <strong>{section.charAt(0).toUpperCase() + section.slice(1)}:</strong>
-                        </Typography>
-                        {renderProperties(item[section], diffMap, section)}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`panel${index + 1}-content`}
+                    id={`panel${index + 1}-header`}
+                    sx={queries.bold_text}
+                    
+                  >
+                    <Typography sx={queries.bold_text}>
+                      <strong>{"Solicitud de Restructura"}</strong>
+                    </Typography>
+                  </AccordionSummary>
+                  {expanded === `panel${index + 1}` ? (
+                    <AccordionDetails>
+                      <Grid item container flexDirection={"column"}  marginBottom={2} spacing={2}>
+                        {[
+                          "encabezado",
+                          "autorizacion",
+                          "SolicitudReestructuracion",
+                          "condicionesFinancieras",
+                          "documentacion",
+                          "fuenteDePago",
+                          "informacionGeneral",
+                          "inscripcion",
+                        ].map((section, idx) => (
+                          <Grid
+                            item
+                            key={idx}
+                            sx={{
+                              justifyContent: "center",
+                              padding: 2,
+                              marginBottom: 2,
+                              
+                            }}
+                          >
+                            <Typography sx={{ ...queries.bold_text }}>
+                              <strong>
+                                {section.charAt(0).toUpperCase() +
+                                  section.slice(1)}
+                              </strong>
+                            </Typography>
+                            <Divider color="lightGrey" sx={{ marginBottom: 1}}></Divider>
+                            {renderProperties(item[section], diffMap, section)}
+                          </Grid>
+                        ))}
                       </Grid>
-                    ))}
-                  </Grid>
-                </AccordionDetails> : null}
-                
-              </Accordion>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </DialogContent>
-  </Dialog>
+                    </AccordionDetails>
+                  ) : null}
+                </Accordion>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </DialogContent>
+    </Dialog>
   );
 }
