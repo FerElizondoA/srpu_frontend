@@ -22,6 +22,7 @@ import { ISolicitudLargoPlazo } from "../../store/Inscripcion/inscripcion";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { queries } from "../../queries";
+import { RestructuraHistorial } from "../../store/Reestructura/reestructura";
 // interface AccordionItem {
 //     title: string;
 //     content: string;
@@ -32,9 +33,7 @@ interface AccordionItem {
   [key: string]: any;
 }
 
-interface Restructura {
-  [key: string]: any;
-}
+
 
 export function DialogVerRestrucuturas({
   showRestructura,
@@ -53,7 +52,9 @@ export function DialogVerRestrucuturas({
     setOpen(openRestructura);
   }, [openRestructura]);
 
-  const [restructuras, setRestructuras] = useState<Restructura[]>([]);
+  const [restructuras, setRestructuras] = useState<RestructuraHistorial[]>([]);
+  const [fecha, setFecha] = useState([]);
+
 
   async function getRestrucutras() {
     await axios({
@@ -71,14 +72,17 @@ export function DialogVerRestrucuturas({
         let newJson = data.data;
 
         let newArrayjson: any = [];
+        let newArrayFecha: any = [];
         // eslint-disable-next-line array-callback-return
         newJson.map((item: any) => {
           newArrayjson.push(JSON.parse(item.SolicitudReestructura));
+          newArrayFecha.push(item.FechaReestructura);
         });
+        console.log(data.data);
 
-        console.log("newjson: ", JSON.stringify(newArrayjson[0]));
-
+        
         setRestructuras(newArrayjson);
+        setFecha(newArrayFecha);
       })
       .catch((error) => {});
   }
@@ -190,7 +194,6 @@ export function DialogVerRestrucuturas({
         if (isObject(val1) && isObject(val2)) {
           compare(val1, val2, currentPath);
         } else if (val1 !== val2) {
-          console.log(`Difference found at: ${currentPath}`);
           differences[currentPath] = true;
         }
       });
@@ -204,7 +207,7 @@ export function DialogVerRestrucuturas({
     obj: any,
     differences: Differences = {},
     path: string = ""
-  ) => {
+  ): JSX.Element[] => {
     return Object.keys(obj)
       .map((key, idx) => {
         const value = obj[key];
@@ -222,31 +225,41 @@ export function DialogVerRestrucuturas({
         const isDifferent = differences[currentPath];
 
         if (typeof value === "object" && value !== null) {
-          return (
-            <Grid item container spacing={1} sx={{ paddingLeft: 2,  }} xs={12} key={idx}>
+          const nestedProperties: JSX.Element[] = renderProperties(
+            value,
+            differences,
+            currentPath
+          );
+          return nestedProperties.length > 0 ? (
+            <Grid
+              item
+              container
+              spacing={1}
+              sx={{ paddingLeft: 2 }}
+              xs={12}
+              key={idx}
+            >
               <Typography
                 sx={{
-                  color: isDifferent ? "red" : "rgb(175, 140, 85)",
+                  color: "rgb(175, 140, 85)",
                   ...queries.bold_text,
                 }}
               >
                 <strong>{label}</strong>:
               </Typography>
-              <Grid container >
-                {renderProperties(value, differences, currentPath)}
-              </Grid>
+              <Grid container>{nestedProperties}</Grid>
             </Grid>
-          );
-        } else {
+          ) : null;
+        } else if (isDifferent) {
           const formattedValue = key.toLowerCase().includes("fecha")
             ? format(new Date(value), "dd/MM/yyyy", { locale: es })
-            : JSON.stringify(value);
+            : value;
 
           return (
-            <Grid item xs={12} key={idx} sx={{}}>
+            <Grid item xs={12} key={idx}>
               <Typography
                 sx={{
-                  color: isDifferent ? "red" : "inherit",
+                  color: "red",
                   ...queries.bold_text,
                 }}
               >
@@ -254,9 +267,11 @@ export function DialogVerRestrucuturas({
               </Typography>
             </Grid>
           );
+        } else {
+          return null;
         }
       })
-      .filter(Boolean);
+      .filter(Boolean) as JSX.Element[];
   };
 
   const [expanded, setExpanded] = useState<string | false>(false); // Estado para mantener el índice del acordeón abierto
@@ -312,15 +327,39 @@ export function DialogVerRestrucuturas({
                     aria-controls={`panel${index + 1}-content`}
                     id={`panel${index + 1}-header`}
                     sx={queries.bold_text}
-                    
                   >
-                    <Typography sx={queries.bold_text}>
-                      <strong>{"Solicitud de Restructura"}</strong>
-                    </Typography>
+                    <Grid
+                      container
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Grid item>
+                        <Typography sx={queries.bold_text}>
+                          <strong>{"Solicitud de Restructura"}</strong>
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography sx={queries.bold_text}>
+                          <strong>
+                            {"Fecha: " +
+                              format(new Date(fecha[index]), "dd/MM/yyyy", {
+                                locale: es,
+                              })}
+                          </strong>
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </AccordionSummary>
+
                   {expanded === `panel${index + 1}` ? (
                     <AccordionDetails>
-                      <Grid item container flexDirection={"column"}  marginBottom={2} spacing={2}>
+                      <Grid
+                        item
+                        container
+                        flexDirection={"column"}
+                        marginBottom={2}
+                        spacing={2}
+                      >
                         {[
                           "encabezado",
                           "autorizacion",
@@ -338,7 +377,6 @@ export function DialogVerRestrucuturas({
                               justifyContent: "center",
                               padding: 2,
                               marginBottom: 2,
-                              
                             }}
                           >
                             <Typography sx={{ ...queries.bold_text }}>
@@ -347,7 +385,10 @@ export function DialogVerRestrucuturas({
                                   section.slice(1)}
                               </strong>
                             </Typography>
-                            <Divider color="lightGrey" sx={{ marginBottom: 1}}></Divider>
+                            <Divider
+                              color="lightGrey"
+                              sx={{ marginBottom: 1 }}
+                            ></Divider>
                             {renderProperties(item[section], diffMap, section)}
                           </Grid>
                         ))}

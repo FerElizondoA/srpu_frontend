@@ -33,6 +33,7 @@ export interface IInscripcion {
   IdEditor: string;
   FechaRequerimientos: string;
   IdPathDoc?: string;
+  CountReestructuras?: string;
 }
 
 export interface ICredito {

@@ -22,7 +22,9 @@ export interface IDatosSolicitudReestructura {
   NumeroRegistro: string,
 }
 
-
+export interface RestructuraHistorial {
+  [key: string]: any;
+}
 
 export interface ICreditoSolicitudReestructura {
   TipoConvenio: { Id: string, Descripcion: string };

@@ -53,7 +53,7 @@ import { queries } from "../../queries";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { DialogVerRestrucuturas } from "../Reestructura/DialogVerRestructuras";
-import BuildIcon from '@mui/icons-material/Build';
+import BuildIcon from "@mui/icons-material/Build";
 
 export interface IData {
   Id: string;
@@ -722,20 +722,23 @@ export function ConsultaDeSolicitudPage() {
                                 </IconButton>
                               </Tooltip>
                             )}
-
-{
-                            <Tooltip title="Ver Restructuras">
-                              <IconButton
-                                type="button"
-                                onClick={() => {
-                                  setInscripcion(row);
-                                  changeOpenDialogRestructura(!openDialogRestructura);
-                                }}
-                              >
-                                <BuildIcon></BuildIcon>
-                              </IconButton>
-                            </Tooltip>
-                          }
+                          {row?.TipoSolicitud !==
+                            "Crédito Simple a Corto Plazo" &&
+                            Number(row?.CountReestructuras) > 0 && (
+                              <Tooltip title="Ver Restructuras">
+                                <IconButton
+                                  type="button"
+                                  onClick={() => {
+                                    setInscripcion(row);
+                                    changeOpenDialogRestructura(
+                                      !openDialogRestructura
+                                    );
+                                  }}
+                                >
+                                  <BuildIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -771,16 +774,15 @@ export function ConsultaDeSolicitudPage() {
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
-          
         />
       )}
 
       {openDialogRestructura && (
         <DialogVerRestrucuturas
-        showRestructura={changeOpenDialogRestructura}
-        openRestructura={openDialogRestructura}
-        IdSolicitud={inscripcion.Id}
-        solicitud={inscripcion.Solicitud}
+          showRestructura={changeOpenDialogRestructura}
+          openRestructura={openDialogRestructura}
+          IdSolicitud={inscripcion.Id}
+          solicitud={inscripcion.Solicitud}
         />
       )}
 
