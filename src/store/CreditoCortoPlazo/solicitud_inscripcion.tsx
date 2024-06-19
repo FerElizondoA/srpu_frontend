@@ -235,10 +235,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        state.deleteFiles(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         state.saveFiles(
           data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
   },
