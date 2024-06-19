@@ -21,7 +21,7 @@ import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoP
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { useReestructuraStore } from "../../store/Reestructura/main";
-import { IAnexoClausula, IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+import { IAnexoClausula, ICreditoSolicitudReestructura, IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
 import { Declaratorias } from "../../components/ObligacionesLargoPlazoPage/Panels/Declaratorias";
 import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPlazoPage/Panels/DeclaratoriasReestructura";
 import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
@@ -77,7 +77,9 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.autorizacionSelectReestructura
   );
 
-
+  const Declaratorias: ICreditoSolicitudReestructura = useReestructuraStore(
+    (state) => state.ReestructuraDeclaratorias
+  );
 
   useEffect(() => {
     getTiposDocumentos();
@@ -200,7 +202,11 @@ export function ObligacionesLargoPlazoPage() {
                     }}
                     disabled={
                       tablaDeclaratorias.length < 1 ||
-                      autorizacionSelectReestructura.Id === "" 
+                      autorizacionSelectReestructura.Id === "" ||
+                      Declaratorias.TipoConvenio.Descripcion === "" ||
+                      Declaratorias.SalgoVigente === 0 ||
+                      Declaratorias.PeriodoAdminitracion === "" ||
+                      Declaratorias.PeriodoFinanciamiento === ""
                     }
                     sx={{
                       backgroundColor: "#15212f",
@@ -281,29 +287,17 @@ export function ObligacionesLargoPlazoPage() {
               ? <Tab label="Solicitud de Inscripción" sx={queries.bold_text_Largo_Plazo} />
               : null
             }
-             {/* <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} /> */}
+            {/* <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} /> */}
 
-            {reestructura === "con autorizacion" || reestructura === "sin autorizacion"
-              ? <Tab label="Solicitud de reestructuración" sx={queries.bold_text_Largo_Plazo} />
-              : null}
-            <Tab
-              label="Solicitud de Inscripción"
-              sx={queries.bold_text_Largo_Plazo}
-            />
 
-<Tab 
-              // disabled={reestructura !== "con autorizacion"}
-                label="Solicitud de reestructuración"
-                sx={queries.bold_text_Largo_Plazo}
-              />
-            {/* {reestructura === "con autorizacion"
+            {reestructura !== ""
               ?
               <Tab 
               // disabled={reestructura !== "con autorizacion"}
                 label="Solicitud de reestructuración"
                 sx={queries.bold_text_Largo_Plazo}
               />
-              : null} */}
+              : null}
 
           </Tabs>
         </Grid>
@@ -335,7 +329,7 @@ export function ObligacionesLargoPlazoPage() {
       {reestructura === ""
         ? tabIndex === 7 && <SolicitudDeInscripcion />
         : null}
-{/* {tabIndex === 7 && <DeclaratoriasReestructura />} */}
+      
       {reestructura === "sin autorizacion"
         ? tabIndex === 6 && <DeclaratoriasReestructura />
         : reestructura === "con autorizacion"
@@ -343,14 +337,14 @@ export function ObligacionesLargoPlazoPage() {
           : null
       }
 
-
+{/* 
       {tabIndex === 7 && <SolicitudDeInscripcion />}
-      {tabIndex === 8 && <DeclaratoriasReestructura />}
+      {tabIndex === 8 && <DeclaratoriasReestructura />} */}
       {/* {reestructura === "con autorizacion"
         ?
         // tabIndex === 8 && <DeclaratoriasReestructura />
         : null} */}
-        
+
       <DialogGuardarBorrador
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
@@ -363,6 +357,9 @@ export function ObligacionesLargoPlazoPage() {
         Solicitud={inscripcion.Solicitud}
         IdEditor={inscripcion.IdEditor}
         IdCreado={inscripcion.CreadoPor}
+        Estatus={inscripcion.NoEstatus}
+        NumeroRegistro={inscripcion.NumeroRegistro}
+
       />
     </>
   );

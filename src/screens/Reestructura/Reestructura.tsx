@@ -36,6 +36,7 @@ import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
   ConsultaRequerimientos,
   GeneraFormatoReestructura,
+  ConsultaConstancia,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
@@ -83,12 +84,12 @@ const heads: readonly Head[] = [
 
 
 export function SolicitudesReestructura() {
-  const getDatos=()=>{
-    getSolicitudes("Reestructura", 
-    (e: IData[]) => {
-      setDatos(e);
-    },
-    setDatosFiltrados)
+  const getDatos = () => {
+    getSolicitudes("Reestructura",
+      (e: IData[]) => {
+        setDatos(e);
+      },
+      setDatosFiltrados)
   }
   const navigate = useNavigate();
   const [datos, setDatos] = useState<Array<IData>>([]);
@@ -181,10 +182,8 @@ export function SolicitudesReestructura() {
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
-  const reestructura: string = useReestructuraStore(
-    (state) => state.reestructura
-  );
-  
+
+
 
   useEffect(() => {
     getDatos()
@@ -218,9 +217,18 @@ export function SolicitudesReestructura() {
     (state) => state.setSolicitudReestructura
   );
 
-  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
-    (state) => state.SolicitudReestructura
+  const SolicitudReestructuraFirma: IDatosSolicitudReestructura = useReestructuraStore(
+    (state) => state.SolicitudReestructuraFirma
   );
+
+
+
+
+  const getSolicitudReestructuraFirma: Function = useReestructuraStore(
+    (state) => state.getSolicitudReestructuraFirma
+  );
+  const [constanciaReestructura, setConstanciaReestructura] = useState(false);
+
 
   const [busqueda, setBusqueda] = useState("");
   const filtrarDatos = () => {
@@ -258,7 +266,7 @@ export function SolicitudesReestructura() {
   return (
     <Grid>
       <Grid>
-      <LateralMenu fnc={getDatos}/>
+        <LateralMenu fnc={getDatos} />
       </Grid>
 
       <Grid
@@ -392,20 +400,20 @@ export function SolicitudesReestructura() {
                         justifyContent: "center",
                         width:
                           head.label === "Clave de inscripción" ||
-                          head.label === "Institución financiera" ||
-                          head.label === "Monto original contratado" ||
-                          head.label === "Tipo de Documento" ||
-                          head.label === "Tipo de Ente Público Obligado"
+                            head.label === "Institución financiera" ||
+                            head.label === "Monto original contratado" ||
+                            head.label === "Tipo de Documento" ||
+                            head.label === "Tipo de Ente Público Obligado"
                             ? "180px"
                             : "100%",
 
                         "@media (min-width: 480px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "180px"
                               : "100%",
                         },
@@ -413,10 +421,10 @@ export function SolicitudesReestructura() {
                         "@media (min-width: 768px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "200x"
                               : "100%",
                         },
@@ -424,10 +432,10 @@ export function SolicitudesReestructura() {
                         "@media (min-width: 1140px)": {
                           width:
                             head.label === "Clave de inscripción" ||
-                            head.label === "Institución financiera" ||
-                            head.label === "Monto original contratado" ||
-                            head.label === "Tipo de Documento" ||
-                            head.label === "Tipo de Ente Público Obligado"
+                              head.label === "Institución financiera" ||
+                              head.label === "Monto original contratado" ||
+                              head.label === "Tipo de Documento" ||
+                              head.label === "Tipo de Ente Público Obligado"
                               ? "180px"
                               : "100%",
                         },
@@ -455,19 +463,19 @@ export function SolicitudesReestructura() {
             </TableHead>
             <TableBody>
               {datosFiltrados.length === 0 ? (
-                  <StyledTableRow>
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell>Sin registros</StyledTableCell>
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                    <StyledTableCell />
-                  </StyledTableRow>
-                ) :datosFiltrados.map((row, index) => {
+                <StyledTableRow>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell>Sin registros</StyledTableCell>
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                  <StyledTableCell />
+                </StyledTableRow>
+              ) : datosFiltrados.map((row, index) => {
                 let chip = <></>;
                 if (row.Estatus === "Autorizado") {
                   chip = (
@@ -576,7 +584,7 @@ export function SolicitudesReestructura() {
                         onClick={() => {
                           setInscripcion(row)
                           setOpenTrazabilidad(!openTrazabilidad);
-                          
+
                         }}
                       >
                         <Typography sx={queries.medium_text}>{chip}</Typography>
@@ -612,7 +620,7 @@ export function SolicitudesReestructura() {
                             // changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
                             changeRestructura("con autorizacion");
-                            setSolicitudReestructura(row.Id, row.Solicitud, row.IdEditor);
+                            //setSolicitudReestructura(row.Id, row.Solicitud, row.IdEditor);
                             console.log("row.Id", row.Id)
                             console.log("row.Solicitud", row.Solicitud)
                           }}
@@ -627,64 +635,39 @@ export function SolicitudesReestructura() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                llenaSolicitud(row, row.TipoSolicitud);
+                                if (row.Id !== "") {
+                                  setProceso("solicitud")
+                                  getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
+                                  console.log("constanciaReestructura", constanciaReestructura);
+                                  
+                                  if (constanciaReestructura === true) {
+                                    //setInscripcion(SolicitudReestructuraFirma)
+                                    //console.log("ins", inscripcion)
+                                    ConsultaConstancia(
+                                      SolicitudReestructuraFirma.SolicitudReestructura,
+                                      SolicitudReestructuraFirma.NumeroRegistro,
+                                      setUrl
+                                    );
+                                    navigate("../firmaUrl");
+                                  }
+                                }
 
-                                GeneraFormatoReestructura(
-                                  row.Solicitud,
-                                  row.TipoSolicitud,
-                                  row.NumeroRegistro,
-                                  row.IdClaveInscripcion,
-                                  // row.Id,
-                                  setUrl
-                                );
+                                // llenaSolicitud(row, row.TipoSolicitud);
 
-                                navigate("../firmaUrl");
 
-                                // getComentariosSolicitudPlazo(
-                                //   row.Id,
-                                //   () => {}
-                                // ).then((data) => {
-                                //   if (
-                                //     rolesAdmin.includes(
-                                //       localStorage.getItem("Rol")!
-                                //     )
-                                //   ) {
-                                //     if (
-                                //       data.filter(
-                                //         (a: any) =>
-                                //           a.Tipo === "Requerimiento"
-                                //       ).length > 0
-                                //     ) {
-                                //       requerimientos(
-                                //         row.Solicitud,
-                                //         row.NumeroRegistro,
-                                //         data.filter(
-                                //           (a: any) =>
-                                //             a.Tipo === "Requerimiento"
-                                //         )[0],
-                                //         row.Id
-                                //       );
-                                //     } else {
-                                //       ConsultaConstancia(
-                                //         row.Solicitud,
-                                //         row.NumeroRegistro,
-                                //         setUrl
-                                //       );
-                                //       changeIdSolicitud(row.Id);
-                                //       navigate("../firmaUrl");
-                                //     }
-                                //   } else {
-                                //     setSolicitudFirma(row);
-                                //     ConsultaSolicitud(
-                                //       row.Solicitud,
-                                //       row.NumeroRegistro,
-                                //       setUrl
-                                //     );
-                                //     setProceso("Por Firmar");
-                                //     changeIdSolicitud(row.Id);
-                                //     navigate("../firmaUrl");
-                                //   }
-                                // });
+
+
+                                // GeneraFormatoReestructura(
+                                //   row.Solicitud,
+                                //   row.TipoSolicitud,
+                                //   row.NumeroRegistro,
+                                //   row.IdClaveInscripcion,
+                                //   // row.Id,
+                                //   setUrl
+                                // );
+
+                                // navigate("../firmaUrl");
+
                               }}
                             >
                               <HistoryEduIcon />
@@ -717,7 +700,7 @@ export function SolicitudesReestructura() {
         />
       )}
       <DialogTrazabilidad
-        handler={setOpenTrazabilidad} 
+        handler={setOpenTrazabilidad}
         openState={openTrazabilidad}
         row={inscripcion}
       />

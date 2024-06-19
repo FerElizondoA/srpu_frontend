@@ -52,6 +52,8 @@ import { DialogTrazabilidad } from "./DialogTrazabilidad";
 import { queries } from "../../queries";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 import { BarraFiltros } from "../../generics/BarraFiltros";
+import { DialogVerRestrucuturas } from "../Reestructura/DialogVerRestructuras";
+import BuildIcon from '@mui/icons-material/Build';
 
 export interface IData {
   Id: string;
@@ -168,6 +170,8 @@ export function ConsultaDeSolicitudPage() {
 
   const [openDescargar, setOpenDescargar] = useState(false);
 
+  const [openDialogRestructura, changeOpenDialogRestructura] = useState(false);
+
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
@@ -183,16 +187,17 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
-  const getDatos=()=>{
+  const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
         ? "Inscripcion"
         : "Revision",
       (e: IInscripcion[]) => {
         setDatos(e);
-      },setDatosFiltrados
+      },
+      setDatosFiltrados
     );
-  }
+  };
   useEffect(() => {
     getDatos();
     cleanSolicitudCortoPlazo();
@@ -231,10 +236,11 @@ export function ConsultaDeSolicitudPage() {
 
   const [accion, setAccion] = useState("");
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
+
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-        <LateralMenu fnc={getDatos}/>
+        <LateralMenu fnc={getDatos} />
       </Grid>
 
       {/* <Button
@@ -327,7 +333,11 @@ export function ConsultaDeSolicitudPage() {
         </Paper>
       </Grid> */}
 
-   <BarraFiltros Lista={datos} setStateFiltered={setDatosFiltrados} CamposFecha={["FechaContratacion","FechaRequerimientos"]}/>
+      <BarraFiltros
+        Lista={datos}
+        setStateFiltered={setDatosFiltrados}
+        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+      />
 
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
@@ -519,7 +529,7 @@ export function ConsultaDeSolicitudPage() {
                         >
                           <Button
                             onClick={() => {
-                              setInscripcion(row)
+                              setInscripcion(row);
                               setOpenTrazabilidad(!openTrazabilidad);
                             }}
                           >
@@ -613,7 +623,6 @@ export function ConsultaDeSolicitudPage() {
                                   type="button"
                                   onClick={() => {
                                     setInscripcion(row);
-
                                     if (row.NoEstatus === "3") {
                                       setInscripcion(row);
                                       ConsultaSolicitud(setUrl);
@@ -713,6 +722,20 @@ export function ConsultaDeSolicitudPage() {
                                 </IconButton>
                               </Tooltip>
                             )}
+
+{
+                            <Tooltip title="Ver Restructuras">
+                              <IconButton
+                                type="button"
+                                onClick={() => {
+                                  setInscripcion(row);
+                                  changeOpenDialogRestructura(!openDialogRestructura);
+                                }}
+                              >
+                                <BuildIcon></BuildIcon>
+                              </IconButton>
+                            </Tooltip>
+                          }
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -748,8 +771,19 @@ export function ConsultaDeSolicitudPage() {
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
+          
         />
       )}
+
+      {openDialogRestructura && (
+        <DialogVerRestrucuturas
+        showRestructura={changeOpenDialogRestructura}
+        openRestructura={openDialogRestructura}
+        IdSolicitud={inscripcion.Id}
+        solicitud={inscripcion.Solicitud}
+        />
+      )}
+
       <DialogEliminar
         handler={changeOpenEliminar}
         openState={openEliminar}
