@@ -222,17 +222,17 @@ export function DialogVerDetalle(props: Props) {
     (state) => state.setInscripcion
   );
 
-  const setSolicitudReestructura: Function = useReestructuraStore(
-    (state) => state.setSolicitudReestructura
-  );
+  // const setSolicitudReestructura: Function = useReestructuraStore(
+  //   (state) => state.setSolicitudReestructura
+  // );
 
-  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
-    (state) => state.SolicitudReestructura
-  );
+  // const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+  //   (state) => state.SolicitudReestructura
+  // );
 
 
-  const setInscripcionReestructura: Function = useReestructuraStore(
-    (state) => state.setInscripcionReestructura
+  const setInscripcionReestructura: Function = useInscripcionStore(
+    (state) => state.setInscripcionRestructura
   );
 
   useEffect(() => {
