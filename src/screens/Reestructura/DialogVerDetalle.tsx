@@ -27,6 +27,7 @@ import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { useReestructuraStore } from "../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 
 
@@ -238,12 +239,13 @@ export function DialogVerDetalle(props: Props) {
     getListadoUsuarioRol(setUsuarios);
   }, [props.openState]);
 
-  useEffect(() => {
-    console.log("reestructura", reestructura)
-    console.log("localStorage: usuario", localStorage.getItem("IdUsuario") === props.rowSolicitud.CreadoPor)
-    console.log("props.rowSolicitud.NoEstatus ", props.rowSolicitud.NoEstatus )
-    console.log("localStorage.getItem(Rol)", localStorage.getItem("Rol"))
-  }, []);
+  
+
+  
+  
+  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
 
   return (
     <Dialog
@@ -254,6 +256,7 @@ export function DialogVerDetalle(props: Props) {
       onClose={() => {
         props.handler(false);
         cleanSolicitudLargoPlazo();
+        cleanCondicionFinanciera();
       }}
     >
       <DialogTitle
@@ -376,7 +379,8 @@ export function DialogVerDetalle(props: Props) {
                   navigate("../ObligacionesLargoPlazo");
                   
                   setInscripcionReestructura(props.rowSolicitud)
-                  
+                  cleanSolicitudLargoPlazo();
+                  //cleanCondicionFinanciera();
                 }}
               >
                 <Typography

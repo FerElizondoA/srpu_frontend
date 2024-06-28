@@ -129,7 +129,11 @@ export const modulos = [
     label: "Usuarios",
     fnc: "Usuarios",
   },
-  
+  //Garantia de Pago
+  {
+    label: "Garantia de Pago",
+    fnc: "GarantiaDePago",
+  },
 ];
 
 export function Configuracion() {

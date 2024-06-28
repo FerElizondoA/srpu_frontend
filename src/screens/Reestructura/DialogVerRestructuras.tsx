@@ -174,125 +174,118 @@ export function DialogVerRestrucuturas({
   const isObject = (value: any) =>
     value && typeof value === "object" && !Array.isArray(value);
 
-  
-const compareObjects = (obj1: any, obj2: any): Differences => {
-  const differences: Differences = {};
+  const compareObjects = (obj1: any, obj2: any): Differences => {
+    const differences: Differences = {};
 
-  const compare = (obj1: any, obj2: any, path: string = ""): void => {
+    const compare = (obj1: any, obj2: any, path: string = ""): void => {
       const keys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
       keys.forEach((key) => {
-          const currentPath = path ? `${path}.${key}` : key;
-          const val1 = obj1[key];
-          const val2 = obj2[key];
+        const currentPath = path ? `${path}.${key}` : key;
+        const val1 = obj1[key];
+        const val2 = obj2[key];
 
-          if (isObject(val1) && isObject(val2)) {
-              compare(val1, val2, currentPath);
-          } else if (val1 !== val2 || (val1 === undefined && val2 !== undefined)) {
-              differences[currentPath] = true;
-          }
+        if (isObject(val1) && isObject(val2)) {
+          compare(val1, val2, currentPath);
+        } else if (
+          val1 !== val2 ||
+          (val1 === undefined && val2 !== undefined)
+        ) {
+          differences[currentPath] = true;
+        }
       });
+    };
+
+    compare(obj1, obj2);
+    return differences;
   };
 
-  compare(obj1, obj2);
-  return differences;
-};
-
-const renderProperties = (
-  obj: any,
-  differences: Differences = {},
-  path: string = ""
-): JSX.Element[] => {
-  return Object.keys(obj)
+  const renderProperties = (
+    obj: any,
+    differences: Differences = {},
+    path: string = ""
+  ): JSX.Element[] => {
+    return Object.keys(obj)
       .map((key, idx) => {
-          const value = obj[key];
-          const currentPath = path ? `${path}.${key}` : key;
-          const label = keyMapping[key] || key;
+        const value = obj[key];
+        const currentPath = path ? `${path}.${key}` : key;
+        const label = keyMapping[key] || key;
 
-          if (
-              key.toLowerCase().includes("id") ||
-              key.toLowerCase().includes("tipoarchivo")
-          ) {
-              return null;
-          }
+        if (
+          key.toLowerCase().includes("id") ||
+          key.toLowerCase().includes("tipoarchivo")
+        ) {
+          return null;
+        }
 
-          const isDifferent = differences[currentPath];
+        const isDifferent = differences[currentPath];
 
-          if (Array.isArray(value)) {
-              const arrayElements = value.map((item, index) => {
-                  const itemPath = `${currentPath}[${index}]`;
-                  return renderProperties(item, differences, itemPath);
-              });
+        if (Array.isArray(value)) {
+          const arrayElements = value.map((item, index) => {
+            const itemPath = `${currentPath}[${index}]`;
+            return renderProperties(item, differences, itemPath);
+          });
 
-              return (
-                  <Grid
-                      item
-                      container
-                      spacing={1}
-                      sx={{ paddingLeft: 2 }}
-                      xs={12}
-                      key={idx}
-                  >
-                      <Typography
-                          sx={{
-                              color: "rgb(175, 140, 85)",
-                              ...queries.bold_text,
-                          }}
-                      >
-                          <strong>{label}</strong>:
-                      </Typography>
-                      <Grid container>{arrayElements.flat()}</Grid>
-                  </Grid>
-              );
-          } else if (isObject(value)) {
-              const nestedProperties: JSX.Element[] = renderProperties(
-                  value,
-                  differences,
-                  currentPath
-              );
-              return nestedProperties.length > 0 ? (
-                  <Grid
-                      item
-                      container
-                      spacing={1}
-                      sx={{ paddingLeft: 2 }}
-                      xs={12}
-                      key={idx}
-                  >
-                      <Typography
-                          sx={{
-                              color: "rgb(175, 140, 85)",
-                              ...queries.bold_text,
-                          }}
-                      >
-                          <strong>{label}</strong>:
-                      </Typography>
-                      <Grid container>{nestedProperties}</Grid>
-                  </Grid>
-              ) : null;
-          } else if (isDifferent) {
-              const formattedValue = key.toLowerCase().includes("fecha")
-                  ? format(new Date(value), "dd/MM/yyyy", { locale: es })
-                  : value;
+          return (
+            <Grid
+              item
+              container
+              spacing={1}
+              mt={0.2}
+              xs={12}
+              sx={{ paddingLeft: 2 }}
+              key={idx}
+            >
+              <Typography sx={{ color: "rgb(175, 140, 85)" }}>
+                <strong>{label}</strong>:
+              </Typography>
+              <Grid container>{arrayElements.flat()}</Grid>
+            </Grid>
+          );
+        } else if (isObject(value)) {
+          const nestedProperties = renderProperties(
+            value,
+            differences,
+            currentPath
+          );
+          return (
+            <Grid
+              item
+              container
+              spacing={1}
+              mt={0.2}
+              sx={{ paddingLeft: 2 }}
+              xs={12}
+              key={idx}
+            >
+              <Typography sx={{ color: "rgb(175, 140, 85)" }}>
+                <strong>{label}</strong>:
+              </Typography>
+              <Grid container>{nestedProperties}</Grid>
+            </Grid>
+          );
+        } else if (isDifferent || currentPath.includes("tablaDeclaratorias")) {
+          const formattedValue = key.toLowerCase().includes("fecha")
+            ? format(new Date(value), "dd/MM/yyyy", { locale: es })
+            : value;
 
-              return (
-                  <Grid item xs={12} key={idx}>
-                      <Typography
-                          sx={{
-                              color: "red",
-                              ...queries.bold_text,
-                          }}
-                      >
-                          <strong>{label}</strong>: {formattedValue}
-                      </Typography>
-                  </Grid>
-              );
-          } else {
-              return null;
-          }
+          return (
+            <Grid item xs={12} mt={0.2} key={idx}>
+              <Typography
+                sx={{
+                  color: "red",
+                  ...queries.bold_text,
+                }}
+              >
+                <strong>{label}</strong>: {formattedValue}
+              </Typography>
+            </Grid>
+          );
+        } else {
+          return null;
+        }
       })
-      .filter(Boolean) as JSX.Element[];
-};
-
+      .filter((element): element is JSX.Element => element !== null); // Filtra los elementos nulos
+  };
 
   const [expanded, setExpanded] = useState<string | false>(false); // Estado para mantener el índice del acordeón abierto
 

@@ -25,6 +25,7 @@ import {
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 type Props = {
   handler: Function;
@@ -88,6 +89,13 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
+  
+  
+  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+  
+
   return (
     <Dialog
       open={props.openState}
@@ -141,6 +149,7 @@ export function VerBorradorDocumento(props: Props) {
             });
             cleanSolicitudCortoPlazo();
             cleanSolicitudLargoPlazo();
+            cleanCondicionFinanciera();
           }}
         >
           Volver

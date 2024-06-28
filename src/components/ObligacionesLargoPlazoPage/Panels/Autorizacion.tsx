@@ -41,6 +41,7 @@ import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { formatDateToMexican } from "../../../generics/Validation";
 
 interface Head {
   label: string;
@@ -94,8 +95,6 @@ export function Autorizacion() {
     (state) => state.setAutorizacionSelect
   );
 
-
-
   const autorizacionesReestructura: IAutorizaciones[] = useReestructuraStore(
     (state) => state.autorizacionesReestructura
   );
@@ -107,7 +106,6 @@ export function Autorizacion() {
   const setAutorizacionSelectReestructura: Function = useReestructuraStore(
     (state) => state.setAutorizacionSelectReestructura
   );
-
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -133,7 +131,7 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect?.Id !== "") {
       getPathDocumentosAut(autorizacionSelect?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => { });
+      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => {});
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
@@ -154,7 +152,6 @@ export function Autorizacion() {
   }, [pathDocumentos]);
 
   const Autorizacion = (FiltroReestructura: string) => {
-
     if (FiltroReestructura === "") {
       setAutorizacion(
         {
@@ -162,26 +159,19 @@ export function Autorizacion() {
             Id: autorizacionSelect?.IdEntidad,
             Organismo: autorizacionSelect?.Entidad,
           },
-          numeroAutorizacion:
-            autorizacionSelect?.NumeroAutorizacion,
-          fechaPublicacion:
-            autorizacionSelect?.FechaPublicacion,
+          numeroAutorizacion: autorizacionSelect?.NumeroAutorizacion,
+          fechaPublicacion: autorizacionSelect?.FechaPublicacion,
           medioPublicacion: {
             Id: autorizacionSelect?.IdMedioPublicacion,
-            Descripcion:
-              autorizacionSelect?.DescripcionMedioPublicacion,
+            Descripcion: autorizacionSelect?.DescripcionMedioPublicacion,
           },
-          montoAutorizado:
-            autorizacionSelect?.MontoAutorizado,
-          documentoSoporte:
-            autorizacionSelect?.DocumentoSoporte,
-          acreditacionQuorum:
-            autorizacionSelect?.AcreditacionQuorum,
+          montoAutorizado: autorizacionSelect?.MontoAutorizado,
+          documentoSoporte: autorizacionSelect?.DocumentoSoporte,
+          acreditacionQuorum: autorizacionSelect?.AcreditacionQuorum,
         },
         JSON.parse(autorizacionSelect?.DestinoAutorizado),
         JSON.parse(autorizacionSelect?.DetalleDestino)
       );
-
     } else {
       setAutorizacion(
         {
@@ -191,17 +181,14 @@ export function Autorizacion() {
           },
           numeroAutorizacion:
             autorizacionSelectReestructura?.NumeroAutorizacion,
-          fechaPublicacion:
-            autorizacionSelectReestructura?.FechaPublicacion,
+          fechaPublicacion: autorizacionSelectReestructura?.FechaPublicacion,
           medioPublicacion: {
             Id: autorizacionSelectReestructura?.IdMedioPublicacion,
             Descripcion:
               autorizacionSelectReestructura?.DescripcionMedioPublicacion,
           },
-          montoAutorizado:
-            autorizacionSelectReestructura?.MontoAutorizado,
-          documentoSoporte:
-            autorizacionSelectReestructura?.DocumentoSoporte,
+          montoAutorizado: autorizacionSelectReestructura?.MontoAutorizado,
+          documentoSoporte: autorizacionSelectReestructura?.DocumentoSoporte,
           acreditacionQuorum:
             autorizacionSelectReestructura?.AcreditacionQuorum,
         },
@@ -209,15 +196,13 @@ export function Autorizacion() {
         JSON.parse(autorizacionSelectReestructura?.DetalleDestino)
       );
     }
-  }
+  };
 
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
 
-
   const AutorizacionLlenado = (FiltroReestructura: string) => {
-
     if (FiltroReestructura === "") {
       setAutorizacion(
         {
@@ -225,26 +210,19 @@ export function Autorizacion() {
             Id: autorizacionSelect?.IdEntidad,
             Organismo: autorizacionSelect?.Entidad,
           },
-          numeroAutorizacion:
-            autorizacionSelect?.NumeroAutorizacion,
-          fechaPublicacion:
-            autorizacionSelect?.FechaPublicacion,
+          numeroAutorizacion: autorizacionSelect?.NumeroAutorizacion,
+          fechaPublicacion: autorizacionSelect?.FechaPublicacion,
           medioPublicacion: {
             Id: autorizacionSelect?.IdMedioPublicacion,
-            Descripcion:
-              autorizacionSelect?.DescripcionMedioPublicacion,
+            Descripcion: autorizacionSelect?.DescripcionMedioPublicacion,
           },
-          montoAutorizado:
-            autorizacionSelect?.MontoAutorizado,
-          documentoSoporte:
-            autorizacionSelect?.DocumentoSoporte,
-          acreditacionQuorum:
-            autorizacionSelect?.AcreditacionQuorum,
+          montoAutorizado: autorizacionSelect?.MontoAutorizado,
+          documentoSoporte: autorizacionSelect?.DocumentoSoporte,
+          acreditacionQuorum: autorizacionSelect?.AcreditacionQuorum,
         },
         JSON.parse(autorizacionSelect?.DestinoAutorizado),
         JSON.parse(autorizacionSelect?.DetalleDestino)
       );
-
     } else {
       setAutorizacion(
         {
@@ -254,17 +232,14 @@ export function Autorizacion() {
           },
           numeroAutorizacion:
             autorizacionSelectReestructura?.NumeroAutorizacion,
-          fechaPublicacion:
-            autorizacionSelectReestructura?.FechaPublicacion,
+          fechaPublicacion: autorizacionSelectReestructura?.FechaPublicacion,
           medioPublicacion: {
             Id: autorizacionSelectReestructura?.IdMedioPublicacion,
             Descripcion:
               autorizacionSelectReestructura?.DescripcionMedioPublicacion,
           },
-          montoAutorizado:
-            autorizacionSelectReestructura?.MontoAutorizado,
-          documentoSoporte:
-            autorizacionSelectReestructura?.DocumentoSoporte,
+          montoAutorizado: autorizacionSelectReestructura?.MontoAutorizado,
+          documentoSoporte: autorizacionSelectReestructura?.DocumentoSoporte,
           acreditacionQuorum:
             autorizacionSelectReestructura?.AcreditacionQuorum,
         },
@@ -272,7 +247,8 @@ export function Autorizacion() {
         JSON.parse(autorizacionSelectReestructura?.DetalleDestino)
       );
     }
-  }
+  };
+
   return (
     <Grid
       container
@@ -281,14 +257,13 @@ export function Autorizacion() {
       justifyContent={"space-evenly"}
       alignItems={"center"}
     >
-      {reestructura === ""
-        ? null
-
-        :
-        <Grid container
+      {reestructura === "" ? null : (
+        <Grid
+          container
           justifyContent={"center"}
           alignItems={"flex-start"}
-          width={"100%"}>
+          width={"100%"}
+        >
           <Divider
             sx={{
               fontWeight: "bold",
@@ -307,8 +282,7 @@ export function Autorizacion() {
             Autorización Solicitud Reestructura
           </Divider>
         </Grid>
-
-      }
+      )}
 
       <Grid container display={"flex"} justifyContent={"center"} width={"100%"}>
         <Grid item xs={10} sm={6} md={6} lg={4} xl={4}>
@@ -324,7 +298,11 @@ export function Autorizacion() {
             openText="Abrir"
             fullWidth
             options={autorizaciones}
-            value={reestructura === "" ? autorizacionSelect : autorizacionSelectReestructura}
+            value={
+              reestructura === ""
+                ? autorizacionSelect
+                : autorizacionSelectReestructura
+            }
             getOptionLabel={(option) =>
               option.NumeroAutorizacion
                 ? `${option.NumeroAutorizacion} - ${option.FechaPublicacion}`
@@ -333,21 +311,20 @@ export function Autorizacion() {
             renderOption={(props, option) => {
               return (
                 <li {...props} key={option.Id}>
-                  <Typography>{`${option.NumeroAutorizacion} - ${format(
-                    new Date(option.FechaPublicacion),
-                    "dd/MM/yyyy"
-                  )}`}</Typography>
+                  <Typography>
+                    {`${option.NumeroAutorizacion} - ${formatDateToMexican(
+                      String(option.FechaPublicacion)
+                    )}`}
+                  </Typography>
                 </li>
               );
             }}
             onChange={(event, text: IAutorizaciones) => {
               if (reestructura === "") {
-                setAutorizacionSelect(text)
+                setAutorizacionSelect(text);
               } else {
-                setAutorizacionSelectReestructura(text)
+                setAutorizacionSelectReestructura(text);
               }
-
-
             }}
             renderInput={(params) => (
               <TextField
@@ -407,7 +384,6 @@ export function Autorizacion() {
       </Grid>
 
       {autorizacionSelectReestructura?.NumeroAutorizacion && (
-
         <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
           <Paper
             sx={{
@@ -464,23 +440,26 @@ export function Autorizacion() {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelectReestructura.DescripcionMedioPublicacion}
+                        {
+                          autorizacionSelectReestructura.DescripcionMedioPublicacion
+                        }
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
-                      <Tooltip title={autorizacionSelectReestructura?.DocumentoSoporte}>
+                      <Tooltip
+                        title={autorizacionSelectReestructura?.DocumentoSoporte}
+                      >
                         <IconButton
                           onClick={() => {
-
-
                             setFileSelected(
-                              `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                td.nombre.includes(
-                                  autorizacionSelectReestructura?.DocumentoSoporte
-                                )
-                              )[0].file
+                              `data:application/pdf;base64,${
+                                arrDocs.filter((td: any) =>
+                                  td.nombre.includes(
+                                    autorizacionSelectReestructura?.DocumentoSoporte
+                                  )
+                                )[0].file
                               }`
-                            )
+                            );
 
                             setShowModalPrevia(true);
                           }}
@@ -491,11 +470,10 @@ export function Autorizacion() {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {
-                          autorizacionSelectReestructura?.DetalleDestino &&
-                          JSON.parse(autorizacionSelectReestructura?.DetalleDestino)[0]
-                            .detalleDestino
-                        }
+                        {autorizacionSelectReestructura?.DetalleDestino &&
+                          JSON.parse(
+                            autorizacionSelectReestructura?.DetalleDestino
+                          )[0].detalleDestino}
                       </Typography>
                     </StyledTableCell>
 
@@ -529,7 +507,7 @@ export function Autorizacion() {
                           type="button"
                           onClick={() => {
                             setAccion("Editar");
-                            AutorizacionLlenado(reestructura)
+                            AutorizacionLlenado(reestructura);
                             setOpenNuevaAutorizacion(
                               !openDialogNuevaAutorizacion
                             );
@@ -545,18 +523,15 @@ export function Autorizacion() {
             </TableContainer>
           </Paper>
         </Grid>
-      )
-      }
+      )}
 
-      {reestructura === ""
-        ? null
-
-        :
-
-        <Grid container
+      {reestructura === "" ? null : (
+        <Grid
+          container
           justifyContent={"center"}
           alignItems={"flex-start"}
-          width={"100%"}>
+          width={"100%"}
+        >
           <Divider
             sx={{
               fontWeight: "bold",
@@ -575,12 +550,9 @@ export function Autorizacion() {
             Autorización de la Solicitud
           </Divider>
         </Grid>
-
-
-      }
+      )}
 
       {autorizacionSelect?.NumeroAutorizacion && (
-
         <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
           <Paper
             sx={{
@@ -645,11 +617,12 @@ export function Autorizacion() {
                         <IconButton
                           onClick={() => {
                             setFileSelected(
-                              `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                td.nombre.includes(
-                                  autorizacionSelect?.DocumentoSoporte
-                                )
-                              )[0].file
+                              `data:application/pdf;base64,${
+                                arrDocs.filter((td: any) =>
+                                  td.nombre.includes(
+                                    autorizacionSelect?.DocumentoSoporte
+                                  )
+                                )[0].file
                               }`
                             );
 
@@ -738,29 +711,23 @@ export function Autorizacion() {
             </TableContainer>
           </Paper>
         </Grid>
-      )
-      }
+      )}
 
+      {openDialogEliminarAutorizacion && (
+        <DialogEliminarAutorizacion
+          handler={setOpenDialogEliminarAutorizacion}
+          openState={openDialogEliminarAutorizacion}
+          numeroAutorizacion={dialogNumAutorizacion}
+        />
+      )}
 
-      {
-        openDialogEliminarAutorizacion && (
-          <DialogEliminarAutorizacion
-            handler={setOpenDialogEliminarAutorizacion}
-            openState={openDialogEliminarAutorizacion}
-            numeroAutorizacion={dialogNumAutorizacion}
-          />
-        )
-      }
-
-      {
-        openDialogNuevaAutorizacion && (
-          <DialogNuevaAutorizacion
-            handler={setOpenNuevaAutorizacion}
-            openState={openDialogNuevaAutorizacion}
-            accion={accion}
-          />
-        )
-      }
+      {openDialogNuevaAutorizacion && (
+        <DialogNuevaAutorizacion
+          handler={setOpenNuevaAutorizacion}
+          openState={openDialogNuevaAutorizacion}
+          accion={accion}
+        />
+      )}
 
       <Dialog
         open={showModalPrevia}
@@ -797,6 +764,6 @@ export function Autorizacion() {
           ></iframe>
         </DialogContent>
       </Dialog>
-    </Grid >
+    </Grid>
   );
 }

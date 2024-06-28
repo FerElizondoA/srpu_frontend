@@ -69,7 +69,7 @@ export function DialogSolicitarReestructura(props: Props) {
     getListadoUsuarioRol(setUsuarios);
     setidUsuarioAsignado("");
     console.log("props.Solicitud", props.Solicitud)
-  }, [props.openState]);
+  }, []);
 
   useEffect(() => {
     setErrorAsignacion(false);

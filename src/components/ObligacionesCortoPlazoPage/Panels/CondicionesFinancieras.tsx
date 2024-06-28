@@ -254,6 +254,7 @@ export function CondicionesFinancieras() {
                               loadCondicionFinanciera(row);
                               setRadioValue(row.tasaInteres[0].tasaFija=== "N/A" ? 2 : 1)
                               console.log("row", row)
+                              
                             }}
                           >
                             <EditIcon />

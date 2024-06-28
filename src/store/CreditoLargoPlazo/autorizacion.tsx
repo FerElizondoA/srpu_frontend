@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../screens/Config/Catalogos";
 import { useLargoPlazoStore } from "./main";
+import { formatDateToMexican } from "../../generics/Validation";
 
 export type IGeneralAutorizado = {
   entidad: { Id: string; Organismo: string };
@@ -305,7 +306,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           IdUsuario: localStorage.getItem("IdUsuario"),
           Entidad: state.autorizacion.entidad.Id,
           NumeroAutorizacion: state.autorizacion.numeroAutorizacion,
-          FechaPublicacion: state.autorizacion.fechaPublicacion,
+          FechaPublicacion: formatDateToMexican(String(state.autorizacion.fechaPublicacion)),
           MedioPublicacion: state.autorizacion.medioPublicacion.Id,
           MontoAutorizado: state.autorizacion.montoAutorizado,
           DocumentoSoporte: state.autorizacion.documentoSoporte,
@@ -353,8 +354,10 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           IdAutorizacion: state.autorizacionSelect.Id,
           IdUsuario: localStorage.getItem("IdUsuario"),
           Entidad: state.autorizacion.entidad.Id,
-          NumeroAutorizacion: state.autorizacion.numeroAutorizacion,
-          FechaPublicacion: state.autorizacion.fechaPublicacion,
+          NumeroAutorizacion: formatDateToMexican(String(state.autorizacion.numeroAutorizacion)),
+
+          FechaPublicacion: formatDateToMexican(String(state.autorizacion.fechaPublicacion)),
+
           MedioPublicacion: state.autorizacion.medioPublicacion.Id,
           MontoAutorizado: state.autorizacion.montoAutorizado,
           DocumentoSoporte: state.autorizacion.documentoSoporte.nombreArchivo,
