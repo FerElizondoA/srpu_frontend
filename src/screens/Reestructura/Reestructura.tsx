@@ -37,6 +37,8 @@ import {
   ConsultaRequerimientos,
   GeneraFormatoReestructura,
   ConsultaConstancia,
+  ConsultaSolicitud,
+  ConsultaSolicitudReestructura,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
@@ -147,22 +149,23 @@ export function SolicitudesReestructura() {
     (state) => state.addDocumento
   );
 
-  const llenaSolicitud = (solicitud: IData, TipoDocumento: string) => {
-    // const state = useCortoPlazoStore.getState();
-    let aux: any = JSON.parse(solicitud.Solicitud!);
+  const llenaSolicitud = (solicitud: IDatosSolicitudReestructura) => {
+    let aux: any = JSON.parse(solicitud.SolicitudReestructura!);
 
     setReglasAplicablesLP(aux?.inscripcion.declaratorias);
     changeEncabezadoLP(aux?.encabezado);
     setInformacionGeneralLP(aux?.informacionGeneral);
-    // setGastosCostos(aux?.GastosCostos);
+    setGastosCostos(aux?.GastosCostos);
 
-    aux?.informacionGeneral.obligadosSolidarios.map((v: any, index: number) => {
-      return addObligadoSolidarioAvalLP(v);
+    aux?.informacionGeneral.obligadosSolidarios.map(
+      (v: any, index: number) => {
+        return addObligadoSolidarioAvalLP(v);
+      }
+    );
+
+    aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
+      return addGeneralGastosCostos(v);
     });
-
-    // aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
-    //   return addGeneralGastosCostos(v);
-    // });
 
     aux?.condicionesFinancieras.map((v: any, index: number) => {
       return addCondicionFinancieraLP(v);
@@ -213,12 +216,19 @@ export function SolicitudesReestructura() {
     navigate("../firmaUrl");
   };
 
-  const setSolicitudReestructura: Function = useReestructuraStore(
-    (state) => state.setSolicitudReestructura
-  );
+
 
   const SolicitudReestructuraFirma: IDatosSolicitudReestructura = useReestructuraStore(
     (state) => state.SolicitudReestructuraFirma
+  );
+
+  
+  const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
+    (state) => state.inscripcionReestructura
+  );
+
+  const setInscripcionRestructura: Function = useInscripcionStore(
+    (state) => state.setInscripcionRestructura
   );
 
 
@@ -639,14 +649,19 @@ export function SolicitudesReestructura() {
                                   setProceso("solicitud")
                                   getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
                                   if (constanciaReestructura === true) {
-                                    //setInscripcion(SolicitudReestructuraFirma)
-                                    console.log("ins", inscripcion)
-                                    ConsultaConstancia(
-                                      SolicitudReestructuraFirma.SolicitudReestructura,
-                                      SolicitudReestructuraFirma.NumeroRegistro,
-                                      setUrl
-                                    );
-                                    navigate("../firmaUrl");
+                                    setInscripcionRestructura(SolicitudReestructuraFirma)
+                                    //llenaSolicitud(SolicitudReestructuraFirma)
+                                    console.log("insRes", inscripcionReestructura)
+                                    
+                                    ConsultaSolicitudReestructura(setUrl);
+                                        navigate("../firmaUrl");
+                                    
+                                    // ConsultaConstancia(
+                                    //   SolicitudReestructuraFirma.SolicitudReestructura,
+                                    //   SolicitudReestructuraFirma.NumeroRegistro,
+                                    //   setUrl
+                                    // );
+                                    // navigate("../firmaUrl");
                                   }
                                 }
                               }}

@@ -521,6 +521,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
+      console.log("autorizaciones", data,data)
       set((state) => ({
         autorizaciones: data.data,
       }));

@@ -39,8 +39,8 @@ export interface IAnexoClausula {
 }
 
 export interface ReestructuraSlice {
-  SolicitudReestructura: IDatosSolicitudReestructura,
-  setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
+   SolicitudReestructura: IDatosSolicitudReestructura,
+   setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
 
   ReestructuraDeclaratorias: ICreditoSolicitudReestructura
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => void;
@@ -75,15 +75,30 @@ export interface ReestructuraSlice {
 
   loadAnexoClausula: (AnexoClausulas: IAnexoClausula) => void;
 
-  inscripcionReestructura: string;
-  setInscripcionReestructura: (solicitud: string) => void;
+  //  inscripcionReestructura: string;
+  //  setInscripcionReestructura: (solicitud: string) => void;
 
   getSolicitudReestructuraFirma: (IdSolicitud: string, setConstanciaReestructura: Function) => void;
   SolicitudReestructuraFirma: IDatosSolicitudReestructura,
+
+  Declaratorias: IAnexoClausula;
+  setTablaDeclaratorias : (Declaratorias: IAnexoClausula[]) => void
 }
 
 
 export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) => ({
+  
+  Declaratorias: {
+    ClausulaOriginal: { Id: "", Descripcion: "" },
+    ClausulaModificada: { Id: "", Descripcion: "" },
+    Modificacion: ""
+  },
+
+  setTablaDeclaratorias: (Declaratorias: IAnexoClausula[]) =>
+    set((state) => ({
+      tablaDeclaratorias: Declaratorias,
+    })),
+  
   SolicitudReestructuraFirma: {
     IdSolicitud: "",
     SolicitudReestructura: "",
@@ -122,13 +137,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       });
   },
 
-  inscripcionReestructura: "",
 
-  setInscripcionReestructura: (inscripcionReestructura: string) => {
-    set(() => ({
-      inscripcionReestructura: inscripcionReestructura
-    }));
-  },
   autorizacionesReestructura: [],
 
   autorizacionSelectReestructura: {
@@ -157,7 +166,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     Modificacion: ""
   },
 
-  setAnexoClausulas: (AnexoClausulas: IAnexoClausula) => {
+  setAnexoClausulas: (AnexoClausulas: any) => {
     set(() => ({
       AnexoClausulas: AnexoClausulas,
     }));

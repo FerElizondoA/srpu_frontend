@@ -112,7 +112,7 @@ export interface ISolicitudCortoPlazo {
   condicionesFinancieras: ICondicionFinanciera[];
   documentacion: {
     descripcionTipo: string;
-    nombreArchivo: string;
+    nombreArchivo: string; 
     tipoArchivo: string;
   }[];
   inscripcion: {
@@ -126,8 +126,9 @@ export interface InscripcionSlice {
   inscripcion: IInscripcion;
   setInscripcion: (solicitud: IInscripcion) => void;
   
-  // inscripcionReestructura: IInscripcion; TE QUEDASTE AQUI
-  // setInscripcionRestructura: (solicitud: IDatosSolicitudReestructura) => void;
+  inscripcionReestructura: IDatosSolicitudReestructura;
+  //PASAR LOS DATOS NECESRIOS PARA EL LLENADO DE LA SOLICITUD! ******************************** 
+  setInscripcionRestructura: (solicitud: IDatosSolicitudReestructura) => void;
 
   proceso: string;
   setProceso: (proceso: string) => void;
@@ -140,6 +141,68 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   set,
   get
 ) => ({
+  inscripcionReestructura: {
+    IdSolicitud: "",
+    SolicitudReestructura: "",
+    Estatus: "",
+    IdEditor: "",
+    FechaReestructura: "",
+    NumeroRegistro: "",
+  },
+
+  setInscripcionRestructura: (inscripcionReestructura: IDatosSolicitudReestructura) => {
+    const lpState = useLargoPlazoStore.getState();
+    
+    let aux: ISolicitudLargoPlazo = JSON.parse(inscripcionReestructura.SolicitudReestructura);
+
+    lpState.changeEncabezado(aux?.encabezado);
+
+      lpState.setInformacionGeneral(
+        aux?.informacionGeneral?.informacionGeneral
+      );
+      lpState.setTablaObligadoSolidarioAval(
+        aux?.informacionGeneral?.obligadosSolidarios
+      );
+      lpState.setTablaGastosCostos(
+        aux?.informacionGeneral?.destinoGastosCostos
+      );
+
+      lpState.getDetalleAutorizacion(aux?.autorizacion?.Id);
+
+      lpState.setTipoMecanismoVehiculoPago(
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo
+      );
+      lpState.getDetalleFuenteDePago(
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
+        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
+      );
+      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
+
+      aux?.condicionesFinancieras.map((v: any, index: number) => {
+        return lpState.addCondicionFinanciera(v);
+      });
+      aux?.documentacion.map((v: any, index: number) => {
+        return lpState.addDocumento(v);
+      });
+      lpState.setReglasAplicables(aux?.inscripcion.declaratorias);
+
+      //Reestructura
+      lpState.setTablaDeclaratorias(
+        aux?.SolicitudReestructuracion?.tablaDeclaratorias
+      );
+
+      lpState.setCreditoSolicitudReestructura(
+        aux?.SolicitudReestructuracion?.ReestructuraDeclaratorias
+      );
+
+      lpState.getDetalleAutorizacion(aux?.SolicitudReestructuracion?.autorizacionReestructura?.Id);
+
+
+    set(() => ({
+      inscripcionReestructura: inscripcionReestructura
+    }))
+  },
+
   inscripcion: {
     Id: "",
     NumeroRegistro: "",
