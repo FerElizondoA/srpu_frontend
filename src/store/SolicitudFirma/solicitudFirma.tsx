@@ -1,12 +1,12 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { useInscripcionStore } from "../Inscripcion/main";
+import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../generics/Alertas";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -708,7 +708,9 @@ export const getPdf = (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((err) => {});
+    .catch((err) => {
+      alertaError("Error al intentar descargar documento pdf")
+    });
 };
 
 export async function borrarFirmaDetalle(
@@ -727,26 +729,29 @@ export async function borrarFirmaDetalle(
     })
     .then(function (response) {
       if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Se anuló la solicitud de cancelación con éxito",
-          iconColor: "#AF8C55",
-          showConfirmButton: false,
-          color: "#AF8C55",
-          timer: 3000,
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Se anuló la solicitud de cancelación con éxito",
+        //   iconColor: "#AF8C55",
+        //   showConfirmButton: false,
+        //   color: "#AF8C55",
+        //   timer: 3000,
+        // });
+        alertaExitoConfirm("Se anuló la solicitud de cancelación con éxito")
       }
       return true;
     })
     .catch(function () {
-      Swal.fire({
-        icon: "error",
-        title: "Error, favor de intentar más tarde.",
-        iconColor: "#AF8C55",
-        showConfirmButton: false,
-        color: "#AF8C55",
-        timer: 2000,
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error, favor de intentar más tarde.",
+      //   iconColor: "#AF8C55",
+      //   showConfirmButton: false,
+      //   color: "#AF8C55",
+      //   timer: 2000,
+      // });
+
+      alertaErrorConfirm("Error, favor de intentar más tarde.")
     });
   return false;
 }

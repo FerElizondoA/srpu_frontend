@@ -59,7 +59,6 @@ import axios from "axios";
 import * as React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import logo from "../../assets/images/logo.svg";
 import { queries } from "../../queries";
 import { getAyuda } from "../../screens/Ayuda/ServicesAyuda";
@@ -68,6 +67,7 @@ import { INotificaciones } from "../Interfaces/Notificaciones/INotificaciones";
 import { getNotificaciones, leerMensaje } from "./APINotificaciones";
 import { TimerCounter } from "./TimerCounter";
 import { useTrazabilidad } from "../../store/Trazabilidad/main";
+import { alertaConfirmCancelar, alertaError, alertaExito } from "../../generics/Alertas";
 
 export const IconsMenu = (icon: string) => {
   switch (icon) {
@@ -333,30 +333,16 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
           if (r.status === 200) {
             handleClosePasswordChange();
             setNewPassword("");
-            Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              position: "center",
-              icon: "success",
-              title: "Contraseña actualizada",
-              showConfirmButton: true,
-              timer: 1500,
-            });
+            alertaConfirmCancelar("Contraseña actualizada")
+            //alertaExito(()=>{}, )
           }
         })
         .catch((r) => {
           if (r.response.status === 409) {
             handleClosePasswordChange();
 
-            Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              position: "center",
-              icon: "error",
-              title: "Error",
-              showConfirmButton: true,
-              timer: 1500,
-            });
+           
+            alertaError("Error")
           }
         });
     };

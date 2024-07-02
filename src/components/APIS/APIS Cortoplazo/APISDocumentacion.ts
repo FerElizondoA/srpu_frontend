@@ -1,5 +1,5 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+import { alertaError } from "../../../generics/Alertas";
 
 export async function getTiposDocumentos(setState: Function) {
   await axios({
@@ -16,12 +16,8 @@ export async function getTiposDocumentos(setState: Function) {
       setState(data.data);
     })
     .catch((error) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Mensaje",
-        text: "(" + error.response.status + ") " + error.response.data.msg,
-      });
+     
+
+      alertaError( "(" + error.response.status + ") " + error.response.data.msg,)
     });
 }

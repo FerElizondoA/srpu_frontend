@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { alertaError } from "../../../generics/Alertas";
 
 export async function getPathDocumentos(
   IdSolicitud: string,
@@ -140,7 +141,9 @@ export const descargaDocumento = async (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((r) => {});
+    .catch((r) => {
+      alertaError("Error al intentar descargar documento")
+    });
 };
 
 export const listFile = async (ROUTE: string, setState: Function) => {

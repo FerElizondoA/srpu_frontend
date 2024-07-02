@@ -1,7 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import Swal from "sweetalert2";
+
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 
