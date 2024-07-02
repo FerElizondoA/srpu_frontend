@@ -39,13 +39,13 @@ export function DialogSolicitarReestructura(props: Props) {
 
   const rowSolicitud: IData = useInscripcionStore((state) => state.inscripcion);
 
-  const setSolicitudReestructura: Function = useReestructuraStore(
-    (state) => state.setSolicitudReestructura
-  );
+  // const setSolicitudReestructura: Function = useReestructuraStore(
+  //   (state) => state.setSolicitudReestructura
+  // );
 
-  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
-    (state) => state.SolicitudReestructura
-  );
+  // const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+  //   (state) => state.SolicitudReestructura
+  // );
 
   const createSolicitudReestructura: Function = useReestructuraStore(
     (state) => state.createSolicitudReestructura
@@ -56,9 +56,9 @@ export function DialogSolicitarReestructura(props: Props) {
   );
 
 
-  const inscripcionReestructura: string = useReestructuraStore(
-    (state) => state.inscripcionReestructura
-  );
+  // const inscripcionReestructura: string = useReestructuraStore(
+  //   (state) => state.inscripcionReestructura
+  // );
 
   const lpState = useLargoPlazoStore.getState();
 
@@ -90,12 +90,12 @@ export function DialogSolicitarReestructura(props: Props) {
       props.NumeroRegistro,
       ReesState
     )
-    setTimeout(() => {
-      if (!navigateReestructura) {
-        window.location.reload();
-        navigate("../reestructura");
-      }
-    }, 4000);
+    // setTimeout(() => {
+    //   if (!navigateReestructura) {
+    //     window.location.reload();
+    //     navigate("../reestructura");
+    //   }
+    // }, 4000);
   }
 
   return (

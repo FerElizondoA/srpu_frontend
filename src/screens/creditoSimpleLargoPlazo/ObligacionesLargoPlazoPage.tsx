@@ -65,9 +65,9 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.reestructura
   );
 
-  const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
-    (state) => state.SolicitudReestructura
-  );
+  // const SolicitudReestructura: IDatosSolicitudReestructura = useReestructuraStore(
+  //   (state) => state.SolicitudReestructura
+  // );
 
   const tablaDeclaratorias: IAnexoClausula[] = useReestructuraStore(
     (state) => state.tablaDeclaratorias

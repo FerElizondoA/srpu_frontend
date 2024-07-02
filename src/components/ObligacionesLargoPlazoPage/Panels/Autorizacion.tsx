@@ -124,6 +124,8 @@ export function Autorizacion() {
 
   useEffect(() => {
     getAutorizaciones();
+    console.log("autorizaciones", autorizaciones);
+    
   }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
 
   const [fileSelected, setFileSelected] = useState<any>("");
