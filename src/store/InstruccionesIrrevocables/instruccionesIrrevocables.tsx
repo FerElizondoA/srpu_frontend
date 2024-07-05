@@ -440,9 +440,9 @@ export const createInstruccionesIrrevocables: StateCreator<
       )
       .then(({ data }) => {
         state.setIdInstruccion(data.result.Id);
-        cpState.deleteFiles(
-          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
-        );
+        // cpState.deleteFiles(
+        //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
+        // );
         state.saveFilesInstruccion(
           data.result.Id,
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,

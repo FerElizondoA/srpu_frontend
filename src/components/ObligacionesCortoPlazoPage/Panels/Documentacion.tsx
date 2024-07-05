@@ -63,7 +63,6 @@ const heads: readonly Head[] = [
   {
     label: "Tipo de Documento",
   },
-
 ];
 
 export function Documentacion() {
@@ -79,8 +78,9 @@ export function Documentacion() {
     (state) => state.tablaDocumentos
   );
 
-  useEffect(()=>{console.log('tablaDocumentos',tablaDocumentos);
-  },[tablaDocumentos])
+  useEffect(() => {
+    console.log("tablaDocumentos", tablaDocumentos);
+  }, [tablaDocumentos]);
 
   const addDocumento: Function = useCortoPlazoStore(
     (state) => state.addDocumento
@@ -108,14 +108,14 @@ export function Documentacion() {
     }
   }
 
-  function clearArchivo( index: number){
+  function clearArchivo(index: number) {
     if (index < tablaDocumentos.length) {
       let auxArrayArchivos = [...tablaDocumentos];
       auxArrayArchivos[index].archivo = newFile;
-      auxArrayArchivos[index].nombreArchivo = '';
+      auxArrayArchivos[index].nombreArchivo = "";
       setTablaDocumentos(auxArrayArchivos);
-    }else{
-      alertaInfo('Ocurrio un error al remover el archivo')
+    } else {
+      alertaInfo("Ocurrio un error al remover el archivo");
     }
   }
 
@@ -175,8 +175,7 @@ export function Documentacion() {
     <Grid
       item
       container
-
-      sx={{ display: 'flex', width: '100%', height: ['75vh'] }}
+      sx={{ display: "flex", width: "100%", height: ["75vh"] }}
     >
       <Grid container height={"100%"} width={"100%"}>
         <Grid item height={"100%"} width={"100%"}>
@@ -210,9 +209,11 @@ export function Documentacion() {
               <TableBody>
                 {tablaDocumentos.map((val, index) => (
                   <StyledTableRow key={index} id={`${index + 1}`}>
-                    <StyledTableCell scope="row" sx={{ width: '100px' }}>
+                    <StyledTableCell scope="row" sx={{ width: "100px" }}>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
-                        <Typography style={{ textDecoration: "underline" }}>Obligatorio</Typography>
+                        <Typography style={{ textDecoration: "underline" }}>
+                          Obligatorio
+                        </Typography>
                       ) : (
                         <Typography>Opcional</Typography>
                         // <IconButton
@@ -225,17 +226,17 @@ export function Documentacion() {
                       )}
                     </StyledTableCell>
 
-                    <StyledTableCell sx={{width:'150px'}}>
-                      <Grid sx={{display:'flex',width:'120px'}}>
+                    <StyledTableCell sx={{ width: "150px" }}>
+                      <Grid sx={{ display: "flex", width: "120px" }}>
                         <Grid>
                           {comentario[val.descripcionTipo] &&
-                            comentario[val.descripcionTipo] !== "" ? (
+                          comentario[val.descripcionTipo] !== "" ? (
                             <Badge badgeContent={"!"} color="primary">
                               <Tooltip title="Añadir comentario a este apartado">
                                 <IconButton
                                   color={
                                     comentario[val.descripcionTipo] &&
-                                      comentario[val.descripcionTipo] !== ""
+                                    comentario[val.descripcionTipo] !== ""
                                       ? "success"
                                       : "primary"
                                   }
@@ -248,14 +249,17 @@ export function Documentacion() {
                                     });
                                   }}
                                 >
-                                  <CommentIcon fontSize="medium" sx={{ mr: 2 }} />
+                                  <CommentIcon
+                                    fontSize="medium"
+                                    sx={{ mr: 2 }}
+                                  />
                                 </IconButton>
                               </Tooltip>
                             </Badge>
                           ) : (
                             <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
-                                sx={{...queries.iconButtonCancelar}}
+                                sx={{ ...queries.iconButtonCancelar }}
                                 size="small"
                                 onClick={() => {
                                   setOpenComentarioApartado({
@@ -265,42 +269,42 @@ export function Documentacion() {
                                   });
                                 }}
                               >
-                                <CommentIcon fontSize="medium"/>
+                                <CommentIcon fontSize="medium" />
                               </IconButton>
                             </Tooltip>
                           )}
                         </Grid>
-                        <Grid>
-                         {index >= catalogoTiposDocumentosObligatorios.length ? 
-                         <IconButton
-                         sx={{...queries.iconButtonCancelar}}
-                            onClick={() => {
-                              setOpenEliminar({ open: true, index: index });
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>:null}
-                        </Grid>
-                        <Grid>
 
+
+                        <Grid>
+                          {index >=
+                          catalogoTiposDocumentosObligatorios.length ? (
+                            <IconButton
+                              sx={{ ...queries.iconButtonCancelar }}
+                              onClick={() => {
+                                setOpenEliminar({ open: true, index: index });
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          ) : null}
                         </Grid>
+                        <Grid></Grid>
                       </Grid>
-
                     </StyledTableCell>
 
-                    <StyledTableCell scope="row" sx={{ width: '300px' }}>
+                    <StyledTableCell scope="row" sx={{ width: "300px" }}>
                       <TextField
                         sx={{ width: "250px" }}
                         disabled={
                           reestructura === "con autorizacion"
                             ? true
-                            :
-                            val.archivo?.name ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                            val.nombreArchivo ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
-                            (datosActualizar.length > 0 &&
-                              !datosActualizar.includes(val.tipoArchivo))
+                            : val.archivo?.name ===
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                              val.nombreArchivo ===
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                              (datosActualizar.length > 0 &&
+                                !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
                         multiline={!query.isMobile}
@@ -316,7 +320,9 @@ export function Documentacion() {
                       ></TextField>
                     </StyledTableCell>
 
-                    <StyledTableCell sx={{ position: "relative", width: '400px' }}>
+                    <StyledTableCell
+                      sx={{ position: "relative", width: "400px" }}
+                    >
                       <Grid
                         container
                         height="3rem"
@@ -324,13 +330,20 @@ export function Documentacion() {
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <Grid sx={{ display: 'flex', alignItems: 'center', width: '350px' }}>
+                        <Grid
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            width: "350px",
+                          }}
+                        >
                           <Typography
                             position="absolute"
                             sx={{
                               display: "flex",
                               fontFamily:
-                                val.archivo?.name !== "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                val.archivo?.name !==
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                   ? "MontserratBold"
                                   : "MontserratMedium",
                               textAlign: "center",
@@ -338,9 +351,9 @@ export function Documentacion() {
                               alignItems: "center",
                               width: {
                                 xs: "300px", // 100% width on extra small screens
-                                sm: "300px",  // 80% width on small screens
-                                md: "300px",  // 70% width on medium screens
-                                lg: "300px",  // 60% width on large screens
+                                sm: "300px", // 80% width on small screens
+                                md: "300px", // 70% width on medium screens
+                                lg: "300px", // 60% width on large screens
                               },
                               height: "65%",
                               fontSize: {
@@ -349,7 +362,8 @@ export function Documentacion() {
                                 md: "70%", // normal on medium and larger screens
                               },
                               border:
-                                val.archivo?.name !== "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                val.archivo?.name !==
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                   ? "2px dotted #af8c55"
                                   : "2px dotted black",
                             }}
@@ -360,8 +374,10 @@ export function Documentacion() {
                           </Typography>
                           <input
                             disabled={
-                              reestructura === "con autorizacion" ? true :
-                                datosActualizar.length > 0 && !datosActualizar.includes(val.tipoArchivo)
+                              reestructura === "con autorizacion"
+                                ? true
+                                : datosActualizar.length > 0 &&
+                                  !datosActualizar.includes(val.tipoArchivo)
                             }
                             type="file"
                             accept="application/pdf"
@@ -376,12 +392,13 @@ export function Documentacion() {
                             }}
                           />
                         </Grid>
-                        <Grid sx={{ display: 'flex', alignItems: 'center' }}>
+                        
+                        <Grid sx={{ display: "flex", alignItems: "center" }}>
                           <Tooltip title="Remover Archivo">
                             <Button
                               sx={{ position: "absolute", right: 0 }}
                               onClick={() => {
-                                clearArchivo(index)
+                                clearArchivo(index);
                                 // quitDocument(openEliminar.index);
                                 // setOpenEliminar({ ...openEliminar, open: false });
                               }}
@@ -464,8 +481,7 @@ export function Documentacion() {
                       </Grid>
                     </StyledTableCell> */}
 
-
-                    <StyledTableCell sx={{ width: '700px' }}>
+                    <StyledTableCell sx={{ width: "700px" }}>
                       {index < catalogoTiposDocumentosObligatorios.length ? (
                         <Typography width={"700px"}>
                           {tablaDocumentos[index]?.descripcionTipo || ""}
@@ -492,7 +508,7 @@ export function Documentacion() {
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                  tablaDocumentos[index]?.tipoArchivo ===
+                                tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,

@@ -157,19 +157,23 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log("Crearsoli data: ", data.data); 
+        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO );
+        
         state.saveFiles(
           data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO +
+            `/DOCSOL/${data.data.Id}`
         );
-        console.log('data create solicitud',data);
-        
+        console.log("data create solicitud", data);
+
         inscripcionState.setInscripcion(data.data);
 
-        console.log('data create solicitud 1');
+        console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
-        console.log('data create solicitud 2');
-        
-        console.log('data create solicitud 3');
+        console.log("data create solicitud 2");
+
+        console.log("data create solicitud 3");
       });
   },
 
@@ -235,10 +239,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        //state.deleteFiles(`/SRPU_DEV/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        console.log("modifcarsoli data: ", data.data);
+        
         state.saveFiles(
           data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO}/DOCSOL/${data.data.Id}`
         );
       });
   },
@@ -365,8 +371,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
-    console.log('state.getState',state);
-    
+    console.log("Entre saveFiles");
+
     return await state.tablaDocumentos.map((file) => {
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
@@ -379,12 +385,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
         // console.log('file.archivo',file.archivo)
         // console.log('file',file);
         // console.log('file',file.archivo.size);
-        if (file.archivo && file.archivo.size>0 ) {
-          console.log('entre');
-          
+        if (file.archivo && file.archivo.size > 0) {
+          console.log("entre");
+
           return axios
             .post(
-              process.env.REACT_APP_APPLICATION_FILES  + "/api/ApiDoc/SaveFile",
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
               dataArray,
               {
                 headers: {
@@ -393,8 +399,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
               }
             )
             .then(({ data }) => {
-              console.log('data response',data);
-              
+              console.log("data response", data);
+
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,
@@ -412,7 +418,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
-
+    console.log("Entre guardaDocumentos");
+    
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
     dataArray.append("ADDROUTE", "true");
@@ -449,6 +456,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     NombreIdentificador: string,
     NombreArchivo: string
   ) => {
+
+    console.log("Entre savePathDoc");
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
@@ -457,6 +466,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          
         },
         {
           headers: {
@@ -464,7 +474,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
+      .then((r) => {
+        console.log("r: ",r.data);
+        
+        //saveFiles("", Ruta);
+      })
+
       .catch((e) => {});
   },
 });

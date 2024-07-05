@@ -444,7 +444,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       )
       .then(({ data }) => {
         state.setIdMandato(data.result.Id);
-        cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
+        //cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
         state.saveFilesMandato(
           data.result.Id,
           `/SRPU/MANDATOS/${data.result.Id}`,
