@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import { useState } from "react";
-import Swal from "sweetalert2";
+
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -25,6 +25,8 @@ import {
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { alertaExito } from "../../../generics/Alertas";
 
 type Props = {
   handler: Function;
@@ -88,6 +90,13 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
+  
+  
+  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+  
+
   return (
     <Dialog
       open={props.openState}
@@ -141,6 +150,7 @@ export function VerBorradorDocumento(props: Props) {
             });
             cleanSolicitudCortoPlazo();
             cleanSolicitudLargoPlazo();
+            cleanCondicionFinanciera();
           }}
         >
           Volver
@@ -258,15 +268,10 @@ export function VerBorradorDocumento(props: Props) {
                 JSON.stringify(comentarios),
                 "Requerimiento"
               ).then(() => {
-                Swal.fire({
-                  confirmButtonColor: "#15212f",
-                  cancelButtonColor: "rgb(175, 140, 85)",
-                  icon: "success",
-                  title: "Mensaje",
-                  text: "Comentarios guardados con éxito",
-                });
+                                alertaExito(()=>{} ,"Comentarios guardados con éxito")
                 setOpenGuardaComentarios(false);
                 props.handler(false);
+
               });
             }}
           >

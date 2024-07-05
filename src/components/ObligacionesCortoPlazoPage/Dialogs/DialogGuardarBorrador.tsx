@@ -11,6 +11,7 @@ import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
 
 export function DialogGuardarBorrador({
   handler,
@@ -147,24 +148,16 @@ export function DialogGuardarBorrador({
                     JSON.stringify(comentario),
                     "Captura"
                   );
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
+                  
+
+                  alertaConfirmCancelar("La solicitud se guardó con éxito")
+
                   cleanSolicitud();
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
+
+                  alertaConfirmCancelar("Ocurrió un error, inténtelo de nuevo")
                 });
             } else {
               crearSolicitud(
@@ -179,23 +172,17 @@ export function DialogGuardarBorrador({
                     JSON.stringify(comentario),
                     "Captura"
                   );
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
+                  
+
+                  alertaConfirmCancelar("La solicitud se guardó con éxito")
+
                   navigate("../ConsultaDeSolicitudes");
                 })
                 .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
+
+                 
+
+                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                 });
             }
           }}
@@ -225,22 +212,14 @@ export function DialogGuardarBorrador({
                 JSON.stringify(comentario)
               )
                 .then(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
+                  
+                  alertaConfirmCancelar("La solicitud se guardó con éxito")
                 })
                 .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
+                 
+
+                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+                  
                 });
             } else {
               crearSolicitud(
@@ -249,22 +228,12 @@ export function DialogGuardarBorrador({
                 JSON.stringify(comentario)
               )
                 .then((r: any) => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
+                  alertaConfirmCancelar("La solicitud se guardó con éxito")
                 })
                 .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
+                  
+
+                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                 });
             }
           }}

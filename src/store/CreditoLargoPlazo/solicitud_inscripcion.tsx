@@ -169,15 +169,22 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => {
-        console.log("data", r);
+      .then((data) => {
+        console.log("data", data);
 
         // inscripcionState.setInscripcion(data.data);
         // cpState.addComentario(data.data.Id, comentario, "Captura");
         // lpState.saveFiles(
         //   data.data.Id,
         //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        // );
+        // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
+        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
+        lpState.saveFiles(
+          data.data.Id,
+           
+           
+             `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        );
       });
 
   },
@@ -284,10 +291,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
+        //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
         lpState.saveFiles(
           data.data.Id,
-          `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
+           
+            
+            `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
   },
@@ -364,6 +373,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useLargoPlazoStore.getState();
+    console.log("Entre saveFiles LARGO PLAZO");
 
     return await state.tablaDocumentos.map((file: any) => {
       return setTimeout(() => {
@@ -374,7 +384,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
 
-        if (file.archivo) {
+        if (file.archivo && file.archivo.size > 0) {
           return axios
             .post(
               process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
@@ -386,6 +396,9 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
               }
             )
             .then(({ data }) => {
+              console.log("data.RESPONSE: ", data.RESPONSE);
+              console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
+              
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,

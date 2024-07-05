@@ -32,13 +32,18 @@ import {
   IUsuarios,
 } from "../../../store/CreditoCortoPlazo/encabezado";
 import { LateralMenu } from "../../LateralMenu/LateralMenu";
-import { StyledTableCell, StyledTableCell2, StyledTableRow } from "../../CustomComponents";
+import {
+  StyledTableCell,
+  StyledTableCell2,
+  StyledTableRow,
+} from "../../CustomComponents";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IAnexoClausula } from "../../../store/Reestructura/reestructura";
 import { kMaxLength } from "buffer";
 import EditIcon from "@mui/icons-material/Edit";
 import { EditarSolicitudDeRestructura } from "../Dialog/EditarSolicitudDeRestructura";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { DialogEliminarAnexoClausula } from "../Dialog/DialogEliminarAnexoClausula";
 
 interface Head {
   label: string;
@@ -217,10 +222,15 @@ export function SolicitudReestructura() {
   };
 
   const [openEditarCondicion, setEditarCondicion] = useState(false);
+  const [openEiminarCondicion, setElimnarCondicion] = useState(false);
   const [Index, setIndex] = useState(0);
 
   const handleCloseEnviar = () => {
     setEditarCondicion(false);
+  };
+
+  const handleCloseEliminar = () => {
+    setElimnarCondicion(false);
   };
 
   return (
@@ -253,9 +263,9 @@ export function SolicitudReestructura() {
             value={
               openEditarCondicion === false
                 ? {
-                  id: AnexoClausulas.ClausulaOriginal.Id || "",
-                  label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
-                }
+                    id: AnexoClausulas.ClausulaOriginal.Id || "",
+                    label: AnexoClausulas.ClausulaOriginal.Descripcion || "",
+                  }
                 : { id: "", label: "" }
             }
             onChange={(event, text) => {
@@ -309,9 +319,9 @@ export function SolicitudReestructura() {
             value={
               openEditarCondicion === false
                 ? {
-                  id: AnexoClausulas.ClausulaModificada.Id || "",
-                  label: AnexoClausulas.ClausulaModificada.Descripcion || "",
-                }
+                    id: AnexoClausulas.ClausulaModificada.Id || "",
+                    label: AnexoClausulas.ClausulaModificada.Descripcion || "",
+                  }
                 : { id: "", label: "" }
             }
             onChange={(event, text) => {
@@ -380,10 +390,11 @@ export function SolicitudReestructura() {
                 color: getHelperTextColor(),
               },
             }}
-            helperText={`El texto de modificación no debe pasar los 650 caracteres. Caracteres Usados: ${AnexoClausulas.Modificacion
-              ? AnexoClausulas.Modificacion.length
-              : 0
-              }`}
+            helperText={`El texto de modificación no debe pasar los 650 caracteres. Caracteres Usados: ${
+              AnexoClausulas.Modificacion
+                ? AnexoClausulas.Modificacion.length
+                : 0
+            }`}
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -434,11 +445,12 @@ export function SolicitudReestructura() {
           display={"flex"}
           justifyContent={"center"}
           alignContent={"center"}
-        //height={"3rem"}
+          //height={"3rem"}
         >
           <ThemeProvider theme={buttonTheme}>
             <Button
-              disabled={AnexoClausulas.Modificacion === "" ||
+              disabled={
+                AnexoClausulas.Modificacion === "" ||
                 AnexoClausulas.ClausulaOriginal.Descripcion === "" ||
                 AnexoClausulas.ClausulaModificada.Descripcion === ""
               }
@@ -450,13 +462,12 @@ export function SolicitudReestructura() {
               }}
               onClick={() => {
                 addTablaDeclaratorias(AnexoClausulas);
-                cleanAnexoClausulas()
+                cleanAnexoClausulas();
               }}
             >
               <Typography>Agregar</Typography>
             </Button>
           </ThemeProvider>
-
         </Grid>
       </Grid>
 
@@ -515,10 +526,7 @@ export function SolicitudReestructura() {
                       {head.ClausulaModificada.Descripcion}
                     </StyledTableCell>
 
-                    <StyledTableCell2
-                      component="th"
-                      scope="row"
-                    >
+                    <StyledTableCell2 component="th" scope="row">
                       {head.Modificacion}
                     </StyledTableCell2>
 
@@ -527,7 +535,8 @@ export function SolicitudReestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            removeDeclaratoria(index);
+                            setIndex(index);
+                            setElimnarCondicion(true);
                           }}
                         >
                           <DeleteIcon />
@@ -561,7 +570,15 @@ export function SolicitudReestructura() {
         openState={openEditarCondicion}
         handleClose={handleCloseEnviar}
         Index={Index}
-      //indexA={indexRegistro}
+        //indexA={indexRegistro}
+      />
+
+      <DialogEliminarAnexoClausula
+        //handler={handleCloseEliminar}
+        openState={openEiminarCondicion}
+        handleClose={handleCloseEliminar}
+        Index={Index}
+        //indexA={indexRegistro}
       />
     </>
   );

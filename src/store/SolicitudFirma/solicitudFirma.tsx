@@ -1,12 +1,13 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { useInscripcionStore } from "../Inscripcion/main";
+import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../generics/Alertas";
+import { IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -363,65 +364,138 @@ export async function GeneraFormatoReestructura(
 }
 
 export async function ConsultaSolicitud(setUrl: Function) {
-  let inscripcion: IInscripcion = useInscripcionStore.getState().inscripcion;
+  let inscripcion: IInscripcion = useInscripcionStore?.getState()?.inscripcion;
+  let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.Solicitud);
 
-  let solicitud: ISolicitudLargoPlazo = JSON.parse(inscripcion.Solicitud);
+  
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
+      {
+        oficioNum: inscripcion.NumeroRegistro,         
+       
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,        
+        
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,          
+        
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        
+        cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
+        organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
+
+        institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+
+        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),"PPP",{
+            locale: es,
+          }) ,
+
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+
+        entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
+
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+
+        plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+
+        tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
+
+        comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
+
+        gastosAdicionales: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+          ? solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales
+          : "N/A" ,
+
+        tasaEfectiva: solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
+
+        mecanismoVehiculoDePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo
+            : "N/A" ,
+        
+        fuentePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro
+            : "N/A",
+        
+        garantiaDePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
+            ? solicitud.fuenteDePago?.garantiaDePago
+            : "N/A",
+        
+        reglas: JSON.stringify(solicitud.inscripcion.declaratorias) ,
+        documentos: JSON.stringify(solicitud.documentacion)
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => {});
+}
+
+
+export async function ConsultaSolicitudReestructura(setUrl: Function) {
+  let inscripcion: IDatosSolicitudReestructura = useInscripcionStore?.getState()?.inscripcionReestructura;
+  let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.SolicitudReestructura);
 
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
       {
-        oficioNum: inscripcion.NumeroRegistro,
-        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
-        cargoDirectorGeneral:
-          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        oficioNum: inscripcion.NumeroRegistro,         
+       
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,        
+        
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,          
+        
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        
         cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
         organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
-        institucionFinanciera:
-          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera
-            .Descripcion,
-        fechaContratacion: format(
-          new Date(
-            solicitud.informacionGeneral.informacionGeneral.fechaContratacion
-          ),
-          "PPP",
-          {
+
+        institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+
+        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),"PPP",{
             locale: es,
-          }
-        ),
-        montoOriginalContratado:
-          solicitud.informacionGeneral.informacionGeneral.monto,
+          }) ,
+
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+
         entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
-        destino:
-          solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
-        tasaInteres:
-          solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
-        comisiones:
-          solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
-        gastosAdicionales: inscripcion.TipoSolicitud.toLowerCase().includes(
-          "largo"
-        )
-          ? solicitud.informacionGeneral?.destinoGastosCostos[0]
-              ?.gastosAdicionales
-          : "N/A",
-        tasaEfectiva:
-          solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
-        mecanismoVehiculoDePago:
-          inscripcion.TipoSolicitud.toLowerCase().includes("largo")
-            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo
-            : "N/A",
-        fuentePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
-          ? solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro
-          : "N/A",
-        garantiaDePago: inscripcion.TipoSolicitud.toLowerCase().includes(
-          "largo"
-        )
-          ? solicitud.fuenteDePago?.garantiaDePago
-          : "N/A",
+
+        tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
+
+        comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
+
+        gastosAdicionales: solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales
+           ,
+
+        tasaEfectiva: solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
+
+        mecanismoVehiculoDePago:  solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo,
+        
+        fuentePago: solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro,
+        
+        garantiaDePago: solicitud.fuenteDePago?.garantiaDePago,
+
         reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
-        documentos: JSON.stringify(solicitud.documentacion),
+
+        documentos: JSON.stringify(solicitud.documentacion)
       },
       {
         headers: {
@@ -708,7 +782,9 @@ export const getPdf = (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((err) => {});
+    .catch((err) => {
+      alertaError("Error al intentar descargar documento pdf")
+    });
 };
 
 export async function borrarFirmaDetalle(
@@ -727,26 +803,29 @@ export async function borrarFirmaDetalle(
     })
     .then(function (response) {
       if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Se anuló la solicitud de cancelación con éxito",
-          iconColor: "#AF8C55",
-          showConfirmButton: false,
-          color: "#AF8C55",
-          timer: 3000,
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Se anuló la solicitud de cancelación con éxito",
+        //   iconColor: "#AF8C55",
+        //   showConfirmButton: false,
+        //   color: "#AF8C55",
+        //   timer: 3000,
+        // });
+        alertaExitoConfirm("Se anuló la solicitud de cancelación con éxito")
       }
       return true;
     })
     .catch(function () {
-      Swal.fire({
-        icon: "error",
-        title: "Error, favor de intentar más tarde.",
-        iconColor: "#AF8C55",
-        showConfirmButton: false,
-        color: "#AF8C55",
-        timer: 2000,
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error, favor de intentar más tarde.",
+      //   iconColor: "#AF8C55",
+      //   showConfirmButton: false,
+      //   color: "#AF8C55",
+      //   timer: 2000,
+      // });
+
+      alertaErrorConfirm("Error, favor de intentar más tarde.")
     });
   return false;
 }

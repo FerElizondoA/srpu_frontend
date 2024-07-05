@@ -153,6 +153,12 @@ export function CondicionesFinancieras() {
     (state) => state.removeCondicionFinanciera
   );
 
+  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+  
+
+
   const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
@@ -247,9 +253,14 @@ export function CondicionesFinancieras() {
                             type="button"
                             onClick={() => {
                               setAccion("Editar");
+
                               changeOpenAgregarState(!openAgregarCondicion);
                               setIndexRegistro(index);
+                              cleanCondicionFinanciera()
                               loadCondicionFinanciera(row);
+                              loadCondicionFinanciera()
+                              console.log("row", row)
+                              
                             }}
                           >
                             <EditIcon />
@@ -277,7 +288,7 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.disposicion.length > 1
+                        {row.disposicion.length >= 1
                           ? null
                           : format(
                             new Date(row.disposicion[0].fechaDisposicion),

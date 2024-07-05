@@ -54,6 +54,7 @@ import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEnc
 import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
+import { log } from "console";
 
 
 
@@ -446,6 +447,11 @@ export function Resumen({ coments }: { coments: boolean }) {
     (state) => state.tablaResumenMecanismoPago
   )
 
+    useEffect(() => {
+   console.log(tablaCondicionesFinancieras);
+   
+    }, [])
+    
 
   return (
     <Grid

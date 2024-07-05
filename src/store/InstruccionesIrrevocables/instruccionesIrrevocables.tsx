@@ -5,6 +5,7 @@ import { StateCreator } from "zustand";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { useInstruccionesStore } from "./main";
+import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../generics/Alertas";
 
 export interface IDatosGeneralesInstrucciones {
   numeroCuenta: string;
@@ -391,23 +392,14 @@ export const createInstruccionesIrrevocables: StateCreator<
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.data.Id}`,
           setLoading
         );
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "success",
-          title: "Éxito",
-          text: "La instruccion se ha creado exitosamente",
-        });
+       
+
+        alertaConfirmCancelar("La instruccion se ha creado exitosamente")
         state.cleanInstruccion();
       })
       .catch((error) => {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "Mensaje",
-          text: "Ha sucedido un error, inténtelo de nuevo",
-        });
+      
+        alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
   },
 
@@ -448,30 +440,21 @@ export const createInstruccionesIrrevocables: StateCreator<
       )
       .then(({ data }) => {
         state.setIdInstruccion(data.result.Id);
-        cpState.deleteFiles(
-          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
-        );
+        // cpState.deleteFiles(
+        //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
+        // );
         state.saveFilesInstruccion(
           data.result.Id,
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
           setLoading
         );
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "success",
-          title: "Éxito",
-          text: "La instruccion se ha creado exitosamente",
-        });
+       
+        alertaConfirmCancelar("La instruccion se ha creado exitosamente")
       })
       .catch((error) => {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "Mensaje",
-          text: "Ha sucedido un error, inténtelo de nuevo",
-        });
+        
+
+        alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
   },
 

@@ -10,9 +10,9 @@ const Toast = Swal.mixin({
     const parentElement = toast.parentElement;
 
     if (parentElement) {
-      parentElement.style.zIndex = '1000';  // Aplica zIndex si el parentElement no es null
+      parentElement.style.zIndex = "1000"; // Aplica zIndex si el parentElement no es null
     }
-    toast.style.position = 'relative';  // Agrega esta línea
+    toast.style.position = "relative"; // Agrega esta línea
     toast.addEventListener("mouseenter", Swal.stopTimer);
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
@@ -57,6 +57,32 @@ export function alertaErroresDocumento(errores: string[] = []) {
   </small>
   </div>
   </div>`,
+  });
+}
+
+export function alertaConfirmCancelar(
+  texto = "Movimiento exitoso"
+) {
+
+  return Toast.fire({
+    confirmButtonColor: "#15212f",
+    cancelButtonColor: "rgb(175, 140, 85)",
+    icon: "success",
+    title: "Mensaje",
+    text: texto,
+  });
+}
+
+export function alertaConfirmCancelarError(
+  texto = "Movimiento exitoso"
+) {
+
+  return Toast.fire({
+    confirmButtonColor: "#15212f",
+    cancelButtonColor: "rgb(175, 140, 85)",
+    icon: "error",
+    title: "Mensaje",
+    text: texto,
   });
 }
 
@@ -108,12 +134,16 @@ export function alertaErrorConfirm(titulo: string) {
   });
 }
 
-export const alertaEliminar = (  confirmedfunction: Function, cancelfunction: Function, title= "¿Desea eliminar elemento?") => {
- return Swal.fire({
+export const alertaEliminar = (
+  confirmedfunction: Function,
+  cancelfunction: Function,
+  title = "¿Desea eliminar elemento?"
+) => {
+  return Swal.fire({
     title: title,
     icon: "question",
     showCancelButton: true,
-   
+
     cancelButtonColor: "#af8c55",
     cancelButtonText: "Cancelar",
     confirmButtonText: "Eliminar",
@@ -121,9 +151,8 @@ export const alertaEliminar = (  confirmedfunction: Function, cancelfunction: Fu
   }).then((result) => {
     if (result.isConfirmed) {
       confirmedfunction();
-    }else{
+    } else {
       cancelfunction();
     }
   });
 };
-
