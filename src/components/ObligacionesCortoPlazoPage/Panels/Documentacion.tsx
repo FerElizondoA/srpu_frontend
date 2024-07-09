@@ -42,6 +42,7 @@ interface Head {
 
 export interface IFile {
   archivo: File;
+  IdArchivo: string; 
   nombreArchivo: string;
   tipoArchivo: string;
   descripcionTipo: string;

@@ -35,6 +35,8 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { alertaInfo } from "../../../generics/Alertas";
 import { newFile } from "../../../generics/instanciasObjetosVacios";
 import { deleteDocumentos } from "../../../generics/interfaces";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 interface Head {
   label: string;
@@ -42,6 +44,7 @@ interface Head {
 
 export interface IFile {
   archivo: File;
+  IdArchivo: string; 
   nombreArchivo: string;
   tipoArchivo: string;
   descripcionTipo: string;
@@ -75,9 +78,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
   const catalogoTiposDocumentosObligatorios: ITiposDocumento[] =
     useLargoPlazoStore((state) => state.catalogoTiposDocumentosObligatorios);
 
-  const tablaDocumentos: IFile[] = useLargoPlazoStore(
-    (state) => state.tablaDocumentos
-  );
+ 
 
   const [borrarDoc, setBorrarDoc] = useState<deleteDocumentos[]>([]);
  
@@ -134,6 +135,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
   });
 
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
+  const [IndexDelete, setIndexDelete] = useState(0);
 
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
@@ -184,6 +186,19 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
       alertaInfo("Ocurrio un error al remover el archivo");
     }
   }
+
+  const InfoDoc =(x: deleteDocumentos) =>{
+
+  }
+
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
+  const tablaDocumentos: IFile[] = useLargoPlazoStore(
+    (state) => state.tablaDocumentos
+  );
+
 
   return (
     <Grid
@@ -293,6 +308,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                             <IconButton
                               sx={{ ...queries.iconButtonCancelar }}
                               onClick={() => {
+                                
                                 setOpenEliminar({ open: true, index: index });
                               }}
                             >
@@ -405,9 +421,19 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                             <Button
                               sx={{ position: "absolute", right: 0 }}
                               onClick={() => {
-                                clearArchivo(index);
-                                // quitDocument(openEliminar.index);
-                                // setOpenEliminar({ ...openEliminar, open: false });
+                                //clearArchivo(index);
+                                //quitDocument(openEliminar.index);
+                                setIndexDelete(index)
+                                console.log(tablaDocumentos);
+                                console.log(inscripcion.Id);
+                                console.log(val.nombreArchivo);
+                                InfoDoc({
+                                  Id: inscripcion.IdPathDoc ||"",
+                                  IdSolicitud: inscripcion.Id,
+                                  NombreArchivo: val.nombreArchivo,
+                                });
+                                //setOpenEliminar({ open: true, index: index });
+                                 setOpenEliminar({ ...openEliminar, open: true });
                               }}
                             >
                               <CloseIcon />
@@ -581,6 +607,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
             sx={queries.buttonCancelar}
             onClick={() => {
               setOpenEliminar({ ...openEliminar, open: false });
+              //InfoDoc()
             }}
           >
             Cancelar
@@ -588,7 +615,10 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
           <Button
             sx={queries.buttonContinuar}
             onClick={() => {
-              quitDocument(openEliminar.index);
+              //quitDocument(openEliminar.index);
+              console.log("IndexDelete: ",IndexDelete);
+              
+              clearArchivo(IndexDelete);
               setOpenEliminar({ ...openEliminar, open: false });
             }}
           >

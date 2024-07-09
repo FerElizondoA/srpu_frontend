@@ -469,6 +469,8 @@ export function InformacionGeneral() {
               Descripcion: institucionFinanciera.Descripcion || "",
             }}
             onChange={(event, text) =>
+          {    console.log("institucionFinanciera: ",institucionFinanciera);
+              
               setInformacionGeneral({
                 fechaContratacion: contratacion,
                 fechaVencimiento: vencimiento,
@@ -480,7 +482,8 @@ export function InformacionGeneral() {
                   Id: text?.Id || "",
                   Descripcion: text?.Descripcion || "",
                 },
-              })
+              })}
+
             }
             renderInput={(params) => (
               <TextField

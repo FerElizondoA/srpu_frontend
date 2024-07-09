@@ -58,6 +58,8 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
+      console.log("data: ",data);
+      
       if (state.inscripcion.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,
@@ -66,14 +68,20 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
           ),
         }));
       } else {
+        console.log("data.data documentos largo plazo: ", data.data);
         set((state) => ({
+          
           catalogoTiposDocumentos: data.data,
           catalogoTiposDocumentosObligatorios: data.data.filter(
             (td: any) => td.Obligatorio === 1
           ),
+          
+          
           tablaDocumentos: data.data
             .filter((td: any) => td.Obligatorio === 1)
             .map((num: any, index: number) => {
+              
+              console.log("td: ",num);
               return {
                 archivo: new File(
                   [],

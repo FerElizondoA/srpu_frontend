@@ -201,7 +201,7 @@ export function ConsultaDeSolicitudPage() {
   useEffect(() => {
     getDatos();
     cleanSolicitudCortoPlazo();
-    cleanSolicitudLargoPlazo();
+    //cleanSolicitudLargoPlazo();
   }, [openEliminar]);
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);

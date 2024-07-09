@@ -12,6 +12,7 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { v4 as uuidv4 } from 'uuid';
 
 export function DialogGuardarBorrador({
   handler,
@@ -89,6 +90,17 @@ export function DialogGuardarBorrador({
   const solicitud: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
+
+  const saveFiles: Function = useLargoPlazoStore(
+    (state) => state.saveFiles
+  );
+
+  const [uuid, setUuid] = useState<string>('');
+
+  useEffect(() => {
+    const newUuid = uuidv4();
+    setUuid(newUuid);
+  }, []);
 
   return (
     <Dialog
@@ -168,10 +180,14 @@ export function DialogGuardarBorrador({
                   });
                 });
             } else {
-              crearSolicitud(
+              console.log("uuid: ",uuid);
+              
+              saveFiles(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                uuid,
+                `/SRPU_DEV/LARGOPLAZO/DOCSOL/${uuid}`,
               )
                 .then(() => {
                   // addComentario(
@@ -224,6 +240,7 @@ export function DialogGuardarBorrador({
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                 JSON.stringify(comentario)
               )
+
                 .then(() => {
                   Swal.fire({
                     confirmButtonColor: "#15212f",
@@ -243,11 +260,15 @@ export function DialogGuardarBorrador({
                   });
                 });
             } else {
-              crearSolicitud(
+
+              saveFiles(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                uuid,
+                `/SRPU_DEV/LARGOPLAZO/DOCSOL/${uuid}`,
               )
+
                 .then((r: any) => {
                   Swal.fire({
                     confirmButtonColor: "#15212f",

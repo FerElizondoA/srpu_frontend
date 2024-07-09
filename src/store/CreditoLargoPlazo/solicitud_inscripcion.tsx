@@ -7,12 +7,11 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
+import { IFile } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
+
 
 export interface SolicitudInscripcionLargoPlazoSlice {
-
-
   //createSolicitudReestructura: (IdSolicitud: string, IdEditor: string, setState: Function) => void;
-
 
   inscripcion: {
     servidorPublicoDirigido: string;
@@ -25,9 +24,12 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   setReglasAplicables: (newReglas: string[]) => void;
 
   crearSolicitud: (
+    idSolicitud: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    index: number,
+    data: any
   ) => void;
 
   modificaSolicitud: (
@@ -41,7 +43,13 @@ export interface SolicitudInscripcionLargoPlazoSlice {
 
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
-  saveFiles: (idRegistro: string, ruta: string) => void;
+  saveFiles: (
+    idRegistro: string,
+    ruta: string,
+    idEditor: string,
+    estatus: string,
+    comentario: string
+  ) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -49,7 +57,13 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TipoDocId: string,
+
+    idEditor: string,
+    estatus: string,
+    comentario: string,
+    index: number
   ) => void;
 }
 
@@ -69,125 +83,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   setReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
 
-  crearSolicitud: async (
-    idEditor: string,
-    estatus: string,
-    comentario: string
-  ) => {
-    const lpState = useLargoPlazoStore.getState();
-    const cpState = useCortoPlazoStore.getState();
-    const inscripcionState = useInscripcionStore.getState();
-
-    const solicitud: ISolicitudLargoPlazo = {
-      encabezado: lpState.encabezado,
-
-      informacionGeneral: {
-        informacionGeneral: lpState.informacionGeneral,
-        obligadosSolidarios: lpState.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
-            entePublicoObligado,
-            tipoEntePublicoObligado,
-          })
-        ),
-        destinoGastosCostos: lpState.tablaGastosCostos,
-      },
-
-      autorizacion: {
-        Id: lpState.autorizacionSelect.Id,
-        MontoAutorizado: lpState.autorizacionSelect.MontoAutorizado,
-        NumeroAutorizacion: lpState.autorizacionSelect.NumeroAutorizacion,
-      },
-
-      fuenteDePago: {
-        mecanismoVehiculoDePago: {
-          Tipo: lpState.mecanismoVehiculoPago.MecanismoPago,
-          Id: lpState.mecanismoVehiculoPago.Id,
-          NumeroRegistro: lpState.mecanismoVehiculoPago.NumeroRegistro,
-          TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
-          Fiduciario: lpState.mecanismoVehiculoPago.Fiduciario,
-        },
-        fuente: lpState.tablaAsignarFuente,
-        garantiaDePago: lpState.garantiaPago,
-      },
-
-      condicionesFinancieras: lpState.tablaCondicionesFinancieras,
-
-      documentacion: lpState.tablaDocumentos.map(
-        ({ descripcionTipo, nombreArchivo, tipoArchivo }) => ({
-          descripcionTipo,
-          nombreArchivo,
-          tipoArchivo,
-        })
-      ),
-
-      inscripcion: {
-        servidorPublicoDirigido: lpState.inscripcion.servidorPublicoDirigido,
-        cargoServidorPublicoServidorPublicoDirigido: lpState.inscripcion.cargo,
-        declaratorias: lpState.reglasAplicables,
-      },
-
-      SolicitudReestructuracion: {
-        autorizacionReestructura:{
-          Id: lpState.autorizacionSelectReestructura.Id,
-          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
-          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
-        },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
-        ReestructuraDeclaratorias: {
-          TipoConvenio: {
-            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
-          },
-          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
-          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
-        }
-      },
-    }
-
-    return await axios
-      .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/create-solicitud",
-        {
-          IdTipoEntePublico: lpState.encabezado.tipoEntePublico.Id,
-          IdEntePublico: lpState.encabezado.organismo.Id,
-          TipoSolicitud: lpState.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            lpState.informacionGeneral.institucionFinanciera.Id,
-          Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
-          MontoOriginalContratado: lpState.informacionGeneral.monto,
-          FechaContratacion: lpState.encabezado.fechaContratacion,
-          Solicitud: JSON.stringify(solicitud),
-          IdEditor: localStorage.getItem("IdUsuario"),
-          CreadoPor: localStorage.getItem("IdUsuario"),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then((data) => {
-        console.log("data", data);
-
-        // inscripcionState.setInscripcion(data.data);
-        // cpState.addComentario(data.data.Id, comentario, "Captura");
-        // lpState.saveFiles(
-        //   data.data.Id,
-        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
-        lpState.saveFiles(
-          data.data.Id,
-           
-           
-             `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        );
-      });
-
-  },
   modificaSolicitud: async (
     idCreador: string,
     idEditor: string,
@@ -246,24 +141,28 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         declaratorias: lpState.reglasAplicables,
       },
       SolicitudReestructuracion: {
-        autorizacionReestructura:{
+        autorizacionReestructura: {
           Id: lpState.autorizacionSelectReestructura.Id,
-          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
-          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
+          MontoAutorizado:
+            lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion:
+            lpState.autorizacionSelectReestructura.NumeroAutorizacion,
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+            Descripcion:
+              lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion,
           },
           FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
           SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
-        }
+          PeriodoFinanciamiento:
+            lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion:
+            lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+        },
       },
-
     };
 
     await axios
@@ -294,9 +193,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
         lpState.saveFiles(
           data.data.Id,
-           
-            
-            `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+          `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`,
+          "",
+          "",
+          ""
         );
       });
   },
@@ -368,50 +268,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => { });
-  },
-
-  saveFiles: async (idRegistro: string, ruta: string) => {
-    const state = useLargoPlazoStore.getState();
-    console.log("Entre saveFiles LARGO PLAZO");
-
-    return await state.tablaDocumentos.map((file: any) => {
-      return setTimeout(() => {
-        const url = new File([file.archivo], file.nombreArchivo);
-
-        let dataArray = new FormData();
-        dataArray.append("ROUTE", `${ruta}`);
-        dataArray.append("ADDROUTE", "true");
-        dataArray.append("FILE", url);
-
-        if (file.archivo && file.archivo.size > 0) {
-          return axios
-            .post(
-              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-              dataArray,
-              {
-                headers: {
-                  Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
-            )
-            .then(({ data }) => {
-              console.log("data.RESPONSE: ", data.RESPONSE);
-              console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
-              
-              state.savePathDoc(
-                idRegistro,
-                data.RESPONSE.RUTA,
-                data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
-              );
-            })
-            .catch((e) => { });
-        } else {
-          return null;
-        }
-      }, 1000);
-    });
+      .catch((e) => {});
   },
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
@@ -438,22 +295,112 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
-            data.RESPONSE.NOMBREARCHIVO
+            data.RESPONSE.NOMBREARCHIVO,
+            "Firma",
+            "",
+            "",
+            "",
+            // idEditor,
+            // estatus,
+            // comentario
+            //file.tipoArchivo,
+            1
           );
         })
-        .catch((e) => { });
+        .catch((e) => {});
     } else {
       return null;
     }
   },
 
+  saveFiles: async (
+    idEditor: string,
+    estatus: string,
+    comentario: string,
+    idRegistro: string,
+    ruta: string
+  ) => {
+    // console.log("saveFiles idRegistro: ", idRegistro);
+    // console.log("saveFiles ruta: ", ruta);
+    // console.log("saveFiles idEditor: ", idEditor);
+    // console.log("saveFiles estatus: ", estatus);
+    // console.log("saveFiles comentario: ", comentario);
+
+    const state = useLargoPlazoStore.getState();
+
+    return await state.tablaDocumentos.map((file: any, index: number) => {
+      return setTimeout(() => {
+        const url = new File([file.archivo], file.nombreArchivo);
+        let dataArray = new FormData();
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
+        dataArray.append("FILE", url);
+        //dataArray.append("TipoArchivo",file.tipoArchivo)
+
+        if (file.archivo && file.archivo.size > 0) {
+          return axios
+            .post(
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+              dataArray,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("jwtToken"),
+                },
+              }
+            )
+            .then(({ data }) => {
+
+             
+              // console.log("data.RESPONSE: ", data.RESPONSE);
+              // console.log("INDEX EN saveFiles: ", index);
+              state.savePathDoc(
+                idRegistro,
+                data.RESPONSE.RUTA,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREARCHIVO,
+                file.tipoArchivo,
+
+                idEditor,
+                estatus,
+                comentario,
+                index
+              );
+            })
+            .catch((e) => {});
+        } else {
+          return null;
+        }
+      }, 1000);
+    });
+    
+  },
+
+  
+
   savePathDoc: async (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TipoDocId: string,
+
+    idEditor: string,
+    estatus: string,
+    comentario: string,
+    index: number
   ) => {
+    const state = useLargoPlazoStore.getState();
+    
+    //tate.crearSolicitud(idSolicitud, idEditor, estatus, comentario, index);
+    console.log(
+      "entre a la funcionalidad savePathDoc, idSolicitud: ",
+      idSolicitud
+    );
+
+    console.log("TipoDocId: ", TipoDocId);
+
     return await axios
+
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
         {
@@ -461,6 +408,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          TipoDocId: TipoDocId,
+          Index: index,
         },
         {
           headers: {
@@ -468,8 +417,180 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => { })
-      .catch((e) => { });
+      .then((r) => {
+        console.log("entre, Id del doc", TipoDocId);
+        console.log(
+          "state.tablaDocumentos.length",
+          state.tablaDocumentos.length
+        );
+        console.log("state.tablaDocumentos docs", state.tablaDocumentos);
+        console.log("index", index);
+        console.log("r", r.data.data);
+        console.log("idEditor", idEditor);
+
+        let arregloDocs: IFile[] = [...state.tablaDocumentos];
+
+        if (index >= 0 && index < state.tablaDocumentos.length) {
+          arregloDocs[index] = r.data.data[index];
+        }
+
+        console.log("arregloDocs: ",arregloDocs);
+
+        if (
+          TipoDocId !== "Firma" &&
+          state.tablaDocumentos.length === index
+          //(index ) >= 0
+        ) {
+          console.log("Entre al if para crear la solicitud");
+
+          state.crearSolicitud(
+            idSolicitud,
+            idEditor,
+            estatus,
+            comentario,
+            index,
+            r.data.data
+          );
+        }
+      })
+
+      .catch((e) => {});
+  },
+
+  crearSolicitud: async (
+    idSolicitud: string,
+    idEditor: string,
+    estatus: string,
+    comentario: string,
+    index: number,
+    data: any
+  ) => {
+    const lpState = useLargoPlazoStore.getState();
+    //const cpState = useCortoPlazoStore.getState();
+    //const inscripcionState = useInscripcionStore.getState();
+
+  
+
+    const solicitud: ISolicitudLargoPlazo = {
+      encabezado: lpState.encabezado,
+
+      informacionGeneral: {
+        informacionGeneral: lpState.informacionGeneral,
+        obligadosSolidarios: lpState.tablaObligadoSolidarioAval.map(
+          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+            entePublicoObligado,
+            tipoEntePublicoObligado,
+          })
+        ),
+        destinoGastosCostos: lpState.tablaGastosCostos,
+      },
+
+      autorizacion: {
+        Id: lpState.autorizacionSelect.Id,
+        MontoAutorizado: lpState.autorizacionSelect.MontoAutorizado,
+        NumeroAutorizacion: lpState.autorizacionSelect.NumeroAutorizacion,
+      },
+
+      fuenteDePago: {
+        mecanismoVehiculoDePago: {
+          Tipo: lpState.mecanismoVehiculoPago.MecanismoPago,
+          Id: lpState.mecanismoVehiculoPago.Id,
+          NumeroRegistro: lpState.mecanismoVehiculoPago.NumeroRegistro,
+          TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
+          Fiduciario: lpState.mecanismoVehiculoPago.Fiduciario,
+        },
+        fuente: lpState.tablaAsignarFuente,
+        garantiaDePago: lpState.garantiaPago,
+      },
+
+      condicionesFinancieras: lpState.tablaCondicionesFinancieras,
+
+      documentacion: lpState.tablaDocumentos.map(
+        ({ descripcionTipo, nombreArchivo, tipoArchivo, IdArchivo }) => ({
+          descripcionTipo,
+          nombreArchivo,
+          tipoArchivo,
+          IdArchivo,
+        })
+      ),
+
+      inscripcion: {
+        servidorPublicoDirigido: lpState.inscripcion.servidorPublicoDirigido,
+        cargoServidorPublicoServidorPublicoDirigido: lpState.inscripcion.cargo,
+        declaratorias: lpState.reglasAplicables,
+      },
+
+      SolicitudReestructuracion: {
+        autorizacionReestructura: {
+          Id: lpState.autorizacionSelectReestructura.Id,
+          MontoAutorizado:
+            lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion:
+            lpState.autorizacionSelectReestructura.NumeroAutorizacion,
+        },
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        ReestructuraDeclaratorias: {
+          TipoConvenio: {
+            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
+            Descripcion:
+              lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion,
+          },
+          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
+          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
+          PeriodoFinanciamiento:
+            lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion:
+            lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+        },
+      },
+    };
+    console.log("entre holaaaaaaaaaaaaaaaa");
+
+    return await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-solicitud",
+        {
+          IdSolicitud: idSolicitud,
+          IdTipoEntePublico: lpState.encabezado.tipoEntePublico.Id,
+          IdEntePublico: lpState.encabezado.organismo.Id,
+          TipoSolicitud: lpState.encabezado.tipoDocumento,
+          IdInstitucionFinanciera:
+            lpState.informacionGeneral.institucionFinanciera.Id,
+          Estatus: estatus,
+          IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
+          MontoOriginalContratado: lpState.informacionGeneral.monto,
+          FechaContratacion: lpState.encabezado.fechaContratacion,
+          Solicitud: JSON.stringify(solicitud),
+          IdEditor: localStorage.getItem("IdUsuario"),
+          CreadoPor: localStorage.getItem("IdUsuario"),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((data) => {
+        console.log("data", data);
+
+        // inscripcionState.setInscripcion(data.data);
+        // cpState.addComentario(data.data.Id, comentario, "Captura");
+        // lpState.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
+        // console.log(
+        //   "ruta: ",
+        //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
+        // );
+        // lpState.saveFiles(
+        //   data.data.Id,
+        //   `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`,
+        //   "",
+        //   "",
+        //   ""
+        // );
+      });
   },
 });
 
@@ -592,7 +713,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => { });
+    .catch((err) => {});
 }
 
 export const getUsuariosAsignables = async (
