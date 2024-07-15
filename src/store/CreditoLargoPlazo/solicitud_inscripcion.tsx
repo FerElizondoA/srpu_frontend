@@ -9,6 +9,17 @@ import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
 import { IFile } from "../../components/ObligacionesLargoPlazoPage/Panels/Documentacion";
 
+interface IArchivo {
+  Id: string;
+  IdSolicitud: string;
+  IndexDoc: number;
+  NombreArchivo: string;
+  NombreIdentificador: string;
+  Ruta: string;
+  TipoDocId: string;
+}
+
+let archivos: IArchivo[] = [];
 
 export interface SolicitudInscripcionLargoPlazoSlice {
   //createSolicitudReestructura: (IdSolicitud: string, IdEditor: string, setState: Function) => void;
@@ -327,55 +338,84 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     // console.log("saveFiles comentario: ", comentario);
 
     const state = useLargoPlazoStore.getState();
+    try {
+      const promesas = state.tablaDocumentos.map((file: any, index: number) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const url = new File([file.archivo], file.nombreArchivo);
+            let dataArray = new FormData();
+            dataArray.append("ROUTE", `${ruta}`);
+            dataArray.append("ADDROUTE", "true");
+            dataArray.append("FILE", url);
 
-    return await state.tablaDocumentos.map((file: any, index: number) => {
-      return setTimeout(() => {
-        const url = new File([file.archivo], file.nombreArchivo);
-        let dataArray = new FormData();
-        dataArray.append("ROUTE", `${ruta}`);
-        dataArray.append("ADDROUTE", "true");
-        dataArray.append("FILE", url);
-        //dataArray.append("TipoArchivo",file.tipoArchivo)
+            if (file.archivo && file.archivo.size > 0) {
+              axios
+                .post(
+                  process.env.REACT_APP_APPLICATION_FILES +
+                    "/api/ApiDoc/SaveFile",
+                  dataArray,
+                  {
+                    headers: {
+                      Authorization: localStorage.getItem("jwtToken"),
+                    },
+                  }
+                )
+                .then(({ data }) => {
+                  state.savePathDoc(
+                    idRegistro,
+                    data.RESPONSE.RUTA,
+                    data.RESPONSE.NOMBREIDENTIFICADOR,
+                    data.RESPONSE.NOMBREARCHIVO,
+                    file.tipoArchivo,
+                    idEditor,
+                    estatus,
+                    comentario,
+                    index
+                  );
+                  resolve(data);
+                })
+                .catch((e) => {
+                  reject(e);
+                });
+            } else {
+              resolve(null);
+            }
+          }, 1000);
+        });
+      });
 
-        if (file.archivo && file.archivo.size > 0) {
-          return axios
-            .post(
-              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-              dataArray,
-              {
-                headers: {
-                  Authorization: localStorage.getItem("jwtToken"),
-                },
-              }
-            )
-            .then(({ data }) => {
+      const resultados = await Promise.all(promesas).then(() => {
+        state.crearSolicitud(
+          idRegistro,
+          idEditor,
+          estatus,
+          comentario,
+          1,
+          ""
+          //r.data.data
+        );
+      });
 
-             
-              // console.log("data.RESPONSE: ", data.RESPONSE);
-              // console.log("INDEX EN saveFiles: ", index);
-              state.savePathDoc(
-                idRegistro,
-                data.RESPONSE.RUTA,
-                data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO,
-                file.tipoArchivo,
+      // resultados.forEach(resultado => {
+      //   if (resultado.e) {
+      //     console.error(`Error en el documento con id ${resultado}: ${resultado}`);
+      //   } else {
+      //     console.log(`Datos del documento con id ${resultado}:`, resultado);
+      //   }
+      // });
+      console.log("Resultado: ", resultados);
 
-                idEditor,
-                estatus,
-                comentario,
-                index
-              );
-            })
-            .catch((e) => {});
-        } else {
-          return null;
-        }
-      }, 1000);
-    });
-    
+      return resultados;
+    } catch (error) {
+      // Maneja cualquier error que ocurra en el proceso general
+      console.error("Error general:", error);
+      throw error; // Si quieres propagar el error hacia arriba
+    }
+
+    // return await state.tablaDocumentos.map((file: any, index: number) => {
+
+    // });
   },
-
-  
 
   savePathDoc: async (
     idSolicitud: string,
@@ -390,7 +430,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     index: number
   ) => {
     const state = useLargoPlazoStore.getState();
-    
+
     //tate.crearSolicitud(idSolicitud, idEditor, estatus, comentario, index);
     console.log(
       "entre a la funcionalidad savePathDoc, idSolicitud: ",
@@ -418,40 +458,44 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then((r) => {
-        console.log("entre, Id del doc", TipoDocId);
-        console.log(
-          "state.tablaDocumentos.length",
-          state.tablaDocumentos.length
-        );
+        // console.log("entre, Id del doc", TipoDocId);
+        // console.log(
+        //   "state.tablaDocumentos.length",
+        //   state.tablaDocumentos.length
+        // );
         console.log("state.tablaDocumentos docs", state.tablaDocumentos);
-        console.log("index", index);
-        console.log("r", r.data.data);
-        console.log("idEditor", idEditor);
+        // console.log("index", index);
+        // console.log("r", r.data.data);
+        // console.log("idEditor", idEditor);
+
+        archivos.push(r.data.data);
+
+        console.log("archivos: ", archivos);
 
         let arregloDocs: IFile[] = [...state.tablaDocumentos];
 
         if (index >= 0 && index < state.tablaDocumentos.length) {
-          arregloDocs[index] = r.data.data[index];
+          arregloDocs[index] = r.data.data;
         }
 
-        console.log("arregloDocs: ",arregloDocs);
+        console.log("arregloDocs: ", arregloDocs);
 
-        if (
-          TipoDocId !== "Firma" &&
-          state.tablaDocumentos.length === index
-          //(index ) >= 0
-        ) {
-          console.log("Entre al if para crear la solicitud");
+        // if (
+        //   TipoDocId !== "Firma" &&
+        //   state.tablaDocumentos.length === index
+        //   //(index ) >= 0
+        // ) {
+        //   console.log("Entre al if para crear la solicitud");
 
-          state.crearSolicitud(
-            idSolicitud,
-            idEditor,
-            estatus,
-            comentario,
-            index,
-            r.data.data
-          );
-        }
+        //   state.crearSolicitud(
+        //     idSolicitud,
+        //     idEditor,
+        //     estatus,
+        //     comentario,
+        //     index,
+        //     r.data.data
+        //   );
+        // }
       })
 
       .catch((e) => {});
@@ -468,8 +512,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     const lpState = useLargoPlazoStore.getState();
     //const cpState = useCortoPlazoStore.getState();
     //const inscripcionState = useInscripcionStore.getState();
-
-  
 
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
