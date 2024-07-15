@@ -189,3 +189,22 @@ export const ActualizaDescarga = (IdPath: string) => {
     .then((response) => {})
     .catch((err) => {});
 };
+
+export const deleteFile =(ruta:string)=>{
+  axios
+  .post(
+    process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/DeleteFileSimple",
+    {
+      ROUTE:ruta
+    },
+    {
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Access-Control-Allow-Origin": "*",
+      },
+      responseType: "arraybuffer",
+    }
+  )
+  .then((response) => {})
+  .catch((err) => {});
+}
