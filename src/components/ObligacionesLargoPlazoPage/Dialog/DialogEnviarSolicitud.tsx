@@ -151,9 +151,12 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  idUsuarioAsignado
                 )
-                  .then(() => {
+                  .then((r: any) => {
+                    console.log("r.data.data: ", r.data);
+
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
@@ -169,9 +172,11 @@ export function ConfirmacionEnviarSolicitud({
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
+                      "Crédito simple a largo plazo",
                       "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""]
+                      [localStorage.getItem("IdUsuario") || ""],
+                      r.data.data.Id,
+                      r.data.data.ControlInterno,
                     );
                   })
                   .catch(() => {
@@ -185,7 +190,8 @@ export function ConfirmacionEnviarSolicitud({
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
-                  .then(() => {
+                  .then((r: any) => {
+                    console.log("r.data.data: ", r.data);
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
@@ -201,9 +207,11 @@ export function ConfirmacionEnviarSolicitud({
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
-                      "Se te ha asignado una solicitud de inscripción",
-                      [idUsuarioAsignado]
+                      "Crédito simple a largo plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""],
+                      r.data.data.Id,
+                      r.data.data.ControlInterno,
                     );
                   })
                   .catch(() => {
@@ -214,6 +222,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
+                    navigate("../ConsultaDeSolicitudes");
                   });
               }
             } else {
@@ -221,13 +230,22 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "3",
-                  localStorage.getItem("IdUsuario")
+                  localStorage.getItem("IdUsuario"),
+                  idUsuarioAsignado
                 )
-                  .then(() => {
+                  .then((r: any) => {
+                    console.log("r.data.data: ", r.data);
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura"
+                    );
+                    createNotification(
+                      "Crédito simple a largo plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""],
+                      r.data.data.Id,
+                      r.data.data.ControlInterno,
                     );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
@@ -237,6 +255,7 @@ export function ConfirmacionEnviarSolicitud({
                       text: "La solicitud se envió con éxito",
                     });
                     cleanSolicitud();
+
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -247,19 +266,17 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
+                    navigate("../ConsultaDeSolicitudes");
+
                   });
-                createNotification(
-                  "Crédito simple a corto plazo",
-                  "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""]
-                );
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "2",
-                  idUsuarioAsignado,
+                  idUsuarioAsignado
                 )
-                  .then(() => {
+                  .then((r: any) => {
+                    console.log("r.data.data: ", r.data);
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
@@ -273,6 +290,13 @@ export function ConfirmacionEnviarSolicitud({
                       text: "La solicitud se envió con éxito",
                     });
                     cleanSolicitud();
+                    createNotification(
+                      "Crédito simple a largo plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""],
+                      r.data.data.Id,
+                      r.data.data.ControlInterno,
+                    );
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -283,6 +307,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
+                    navigate("../ConsultaDeSolicitudes");
                   });
               }
             }

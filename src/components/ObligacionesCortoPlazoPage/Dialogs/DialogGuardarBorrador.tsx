@@ -140,7 +140,9 @@ export function DialogGuardarBorrador({
                 solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+               // solicitud.Id
+                
               )
                 .then(() => {
                   addComentario(

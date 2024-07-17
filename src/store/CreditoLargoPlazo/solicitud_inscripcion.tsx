@@ -7,6 +7,7 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
+import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionLargoPlazoSlice {
 
@@ -27,14 +28,16 @@ export interface SolicitudInscripcionLargoPlazoSlice {
   crearSolicitud: (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => void;
 
   modificaSolicitud: (
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -72,7 +75,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   crearSolicitud: async (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
@@ -155,7 +159,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           TipoSolicitud: lpState.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
-          Estatus: estatus,
+          Estatus:  Number(estatus),
           IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
           MontoOriginalContratado: lpState.informacionGeneral.monto,
           FechaContratacion: lpState.encabezado.fechaContratacion,
@@ -171,14 +175,20 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       )
       .then((data) => {
         console.log("data", data);
-
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para modificación`,
+         [idUsuarioAsignado],
+          data.data.data.Id,
+          data.data.data.ControlInterno
+        );
         // inscripcionState.setInscripcion(data.data);
         // cpState.addComentario(data.data.Id, comentario, "Captura");
         // lpState.saveFiles(
         //   data.data.Id,
         //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
         // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
+        //console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
         lpState.saveFiles(
           data.data.Id,
            
@@ -192,7 +202,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
@@ -292,6 +303,13 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       )
       .then(({ data }) => {
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para modificación`,
+         [idUsuarioAsignado],
+          data.data.data.Id,
+          data.data.data.ControlInterno
+        );
         lpState.saveFiles(
           data.data.Id,
            

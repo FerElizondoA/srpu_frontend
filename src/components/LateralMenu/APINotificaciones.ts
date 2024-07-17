@@ -15,9 +15,9 @@ export const createNotification = (
         Titulo: Titulo,
         Mensaje: mensaje,
         IdSolicitud: IdSolicitud,
-        ControlInterno: ControlInterno,
+        ControlInterno: ControlInterno,// ojita de angel
         IdUsuarioCreador: localStorage.getItem("IdUsuario"),
-        ListadoUsuarios: listadoUsuarios,
+        ListadoUsuarios: listadoUsuarios,// usuarios aquienes les va a llegar la noti
       },
       {
         headers: {

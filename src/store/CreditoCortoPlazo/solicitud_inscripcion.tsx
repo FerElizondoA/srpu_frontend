@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
+import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -25,14 +26,16 @@ export interface SolicitudInscripcionSlice {
   crearSolicitud: (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => void;
 
   modificaSolicitud: (
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -99,7 +102,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   crearSolicitud: async (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -142,7 +146,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           TipoSolicitud: state.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
-          Estatus: estatus,
+          Estatus: Number(estatus),
           IdClaveInscripcion: `DDPYPF-${"CSCP"}/${new Date().getFullYear()}`,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
@@ -157,23 +161,27 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log("Crearsoli data: ", data.data); 
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO );
+        
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para modificación`,
+         [idUsuarioAsignado],
+          data.data.data.Id,
+          data.data.data.ControlInterno
+        );
         
         state.saveFiles(
           data.data.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO +
             `/DOCSOL/${data.data.Id}`
         );
-        console.log("data create solicitud", data);
+        
 
         inscripcionState.setInscripcion(data.data);
 
         console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
-        console.log("data create solicitud 2");
-
-        console.log("data create solicitud 3");
+        
       });
   },
 
@@ -181,7 +189,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    idUsuarioAsignado: string,
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -241,6 +250,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {
         //state.deleteFiles(`/SRPU_DEV/CORTOPLAZO/DOCSOL/${data.data.Id}`);
         console.log("modifcarsoli data: ", data.data);
+
+        createNotification(
+          "Crédito simple a corto plazo",
+          `Se te ha asignado una solicitud para modificación`,
+         [idUsuarioAsignado],
+          data.data.data.Id,
+          data.data.data.ControlInterno
+        );
         
         state.saveFiles(
           data.data.Id,

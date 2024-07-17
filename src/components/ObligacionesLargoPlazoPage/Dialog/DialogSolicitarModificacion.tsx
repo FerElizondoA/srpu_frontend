@@ -94,7 +94,7 @@ export function DialogSolicitarModificacion({
           : idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
+          "Crédito simple a Largo plazo",
           `Se te ha asignado una solicitud para  ${
             localStorage.getItem("Rol") === "Autorizador"
               ? accion === "enviar"
@@ -126,9 +126,13 @@ export function DialogSolicitarModificacion({
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
-          "1"
+          "1",
+          "",// comentario,
+          idUsuarioAsignado
         )
-          .then(() => {
+          .then((r: any) => {
+            console.log("r.data.data: ", r.data.data);
+
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
               addComentario(
                 inscripcion.Id,
@@ -142,6 +146,46 @@ export function DialogSolicitarModificacion({
               title: "Mensaje",
               text: "La solicitud se envió con éxito",
             });
+
+            createNotification(
+              "Crédito simple a Largo plazo",
+              "Se te ha asignado una solicitud para modificación",
+              [idUsuarioAsignado],
+              r.data.data.Id,
+              r.data.data.ControlInterno
+            );
+
+            navigate("../ConsultaDeSolicitudes");
+          })
+          .catch(() => {
+            Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "error",
+              title: "Mensaje",
+              text: "Ocurrió un error, inténtelo de nuevo",
+            });
+
+            navigate("../ConsultaDeSolicitudes");
+          });
+      } else {
+        crearSolicitud(
+          localStorage.getItem("IdUsuario"),
+          idUsuarioAsignado,
+          "1",
+          JSON.stringify(comentarios)
+        )
+          .then((r: any) => {
+            console.log("r.data.data", r.data.data);
+
+            createNotification(
+              "Crédito simple a Largo plazo",
+              `Se te ha asignado una solicitud para modificación`,
+              [idUsuarioAsignado],
+              r.data.data.Id,
+              r.data.data.ControlInterno
+            );
+            navigate("../ConsultaDeSolicitudes");
           })
           .catch(() => {
             Swal.fire({
@@ -152,32 +196,6 @@ export function DialogSolicitarModificacion({
               text: "Ocurrió un error, inténtelo de nuevo",
             });
           });
-        createNotification(
-          "Crédito simple a corto plazo",
-          "Se te ha asignado una solicitud para modificación",
-          [idUsuarioAsignado]
-        );
-        navigate("../ConsultaDeSolicitudes");
-      } else {
-        crearSolicitud(
-          localStorage.getItem("IdUsuario"),
-          idUsuarioAsignado,
-          "1",
-          JSON.stringify(comentarios)
-        ).catch(() => {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Mensaje",
-            text: "Ocurrió un error, inténtelo de nuevo",
-          });
-        });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado]
-        );
         navigate("../ConsultaDeSolicitudes");
       }
     }
