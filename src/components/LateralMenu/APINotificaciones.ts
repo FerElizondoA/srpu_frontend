@@ -55,9 +55,9 @@ export const getNotificaciones = (
       setState(data.data);
     })
     .catch((r) => {
-      if (r.response.status === 409) {
+    //  if (r.response.status === 409) {
         alertaError("No es posible traer las notificaciones")
-      }
+      //}
     });
 };
 

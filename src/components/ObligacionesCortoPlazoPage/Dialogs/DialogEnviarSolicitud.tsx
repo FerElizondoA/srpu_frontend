@@ -27,6 +27,7 @@ import {
   alertaError,
   alertaExito,
 } from "../../../generics/Alertas";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -35,7 +36,7 @@ export function ConfirmacionEnviarSolicitud({
   handler: Function;
   openState: boolean;
 }) {
-  const crearSolicitud: Function = useCortoPlazoStore(
+  const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
   );
 
@@ -159,27 +160,18 @@ export function ConfirmacionEnviarSolicitud({
                   "comentario",
                   idUsuarioAsignado
                 )
-                  .then((r: any) => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-
-                    alertaExito(() => {}, "La solicitud se envió con éxito");
-                    cleanSolicitud();
-                    // navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno
-                    );
-                  })
+                  
                   .catch(() => {
                     alertaError("Ocurrió un error, inténtelo de nuevo");
                   });
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  navigate("../ConsultaDeSolicitudes");
+                  console.log("idUsuarioAsignado: ", idUsuarioAsignado);
+
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
@@ -188,28 +180,21 @@ export function ConfirmacionEnviarSolicitud({
                   "comentario",
                   idUsuarioAsignado
                 )
-                  .then((r: any) => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    alertaExito(() => {}, "La solicitud se envió con éxito");
-                    // cleanSolicitud();
-                    // navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno
-                    );
-                  })
+                  
                   .catch(() => {
                     alertaConfirmCancelarError(
                       "Ocurrió un error, inténtelo de nuevo"
                     );
                   });
+                  navigate("../ConsultaDeSolicitudes");
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  console.log("idUsuarioAsignado: ", idUsuarioAsignado);
+                  navigate("../ConsultaDeSolicitudes");
+
               }
             } else {
               if (localStorage.getItem("Rol") === "Verificador") {
@@ -219,29 +204,21 @@ export function ConfirmacionEnviarSolicitud({
                   "prueba de valor",
                   idUsuarioAsignado
                 )
-                  .then((r: any) => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    alertaConfirmCancelar("La solicitud se envió con éxito");
-                    cleanSolicitud();
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno
-                    );
-                    navigate("../ConsultaDeSolicitudes");
-                  })
+                  
                   .catch(() => {
                     alertaConfirmCancelarError(
                       "Ocurrió un error, inténtelo de nuevo hola1"
                     );
-                  //  navigate("../ConsultaDeSolicitudes");
+                   
+                    navigate("../ConsultaDeSolicitudes");
                   });
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  navigate("../ConsultaDeSolicitudes");
+                  console.log("idUsuarioAsignado: ", idUsuarioAsignado);
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
                   idUsuarioAsignado,
@@ -249,23 +226,18 @@ export function ConfirmacionEnviarSolicitud({
                   "Se te ha asignado una solicitud de Credito a Corto Plazo",
                   idUsuarioAsignado
                 )
-                  .then(() => {
-                    console.log("el error es aqui 2");
-                    
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    alertaConfirmCancelar("La solicitud se envió con éxito");
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
-                  })
                   .catch(() => {
                     alertaConfirmCancelarError(
                       "Ocurrió un error, inténtelo de nuevo"
                     );
+                    navigate("../ConsultaDeSolicitudes");
                   });
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  navigate("../ConsultaDeSolicitudes");
               }
             }
           }}

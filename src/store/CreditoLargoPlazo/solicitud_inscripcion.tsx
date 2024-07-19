@@ -8,12 +8,10 @@ import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+import { alertaConfirmCancelar } from "../../generics/Alertas";
 
 export interface SolicitudInscripcionLargoPlazoSlice {
-
-
   //createSolicitudReestructura: (IdSolicitud: string, IdEditor: string, setState: Function) => void;
-
 
   inscripcion: {
     servidorPublicoDirigido: string;
@@ -29,7 +27,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    idUsuarioAsignado: string,
+    idUsuarioAsignado: string
   ) => void;
 
   modificaSolicitud: (
@@ -37,7 +35,7 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    idUsuarioAsignado: string,
+    idUsuarioAsignado: string
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -131,24 +129,29 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       SolicitudReestructuracion: {
-        autorizacionReestructura:{
+        autorizacionReestructura: {
           Id: lpState.autorizacionSelectReestructura.Id,
-          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
-          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
+          MontoAutorizado:
+            lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion:
+            lpState.autorizacionSelectReestructura.NumeroAutorizacion,
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+            Descripcion:
+              lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion,
           },
           FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
           SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
-        }
+          PeriodoFinanciamiento:
+            lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion:
+            lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+        },
       },
-    }
+    };
 
     return await axios
       .post(
@@ -159,7 +162,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           TipoSolicitud: lpState.encabezado.tipoDocumento,
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
-          Estatus:  Number(estatus),
+          Estatus: Number(estatus),
           IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
           MontoOriginalContratado: lpState.informacionGeneral.monto,
           FechaContratacion: lpState.encabezado.fechaContratacion,
@@ -174,36 +177,38 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then((data) => {
-        console.log("data", data);
+        console.log("data", data.data);
+        console.log("idUsuarioAsignado: ", idUsuarioAsignado);
         createNotification(
-          "Crédito simple a corto plazo",
+          "Crédito simple a largo plazo",
           `Se te ha asignado una solicitud para modificación`,
-         [idUsuarioAsignado],
+          [idUsuarioAsignado] || [],
           data.data.data.Id,
           data.data.data.ControlInterno
         );
-        // inscripcionState.setInscripcion(data.data);
-        // cpState.addComentario(data.data.Id, comentario, "Captura");
-        // lpState.saveFiles(
-        //   data.data.Id,
-        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
-        //console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
+       
         lpState.saveFiles(
           data.data.Id,
-           
-           
-             `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        );
-      });
 
+          `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        );
+
+       
+
+        inscripcionState.cleanSolicitudLargoPlazo();
+        alertaConfirmCancelar()
+      })
+      .catch((err) => {
+        console.log("si trone");
+        console.log("err: ", err);
+      });
   },
   modificaSolicitud: async (
     idCreador: string,
     idEditor: string,
     estatus: string,
     comentario: string,
-    idUsuarioAsignado: string,
+    idUsuarioAsignado: string
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
@@ -257,24 +262,28 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         declaratorias: lpState.reglasAplicables,
       },
       SolicitudReestructuracion: {
-        autorizacionReestructura:{
+        autorizacionReestructura: {
           Id: lpState.autorizacionSelectReestructura.Id,
-          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
-          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
+          MontoAutorizado:
+            lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion:
+            lpState.autorizacionSelectReestructura.NumeroAutorizacion,
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+            Descripcion:
+              lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion,
           },
           FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
           SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
-        }
+          PeriodoFinanciamiento:
+            lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion:
+            lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+        },
       },
-
     };
 
     await axios
@@ -303,19 +312,21 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       )
       .then(({ data }) => {
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
+        console.log("idUsuarioAsignado: ", idUsuarioAsignado);
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para modificación`,
-         [idUsuarioAsignado],
+          [idUsuarioAsignado] ||  [],
           data.data.data.Id,
           data.data.data.ControlInterno
         );
         lpState.saveFiles(
           data.data.Id,
-           
-            
-            `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+
+          `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
+        inscripcionState.cleanSolicitudLargoPlazo();
+        alertaConfirmCancelar("La solicitud se envió con éxito")
       });
   },
   borrarSolicitud: async (Id: string) => {
@@ -386,7 +397,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => { });
+      .catch((e) => {});
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
@@ -416,7 +427,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             .then(({ data }) => {
               console.log("data.RESPONSE: ", data.RESPONSE);
               console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
-              
+
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,
@@ -424,7 +435,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
                 data.RESPONSE.NOMBREARCHIVO
               );
             })
-            .catch((e) => { });
+            .catch((e) => {});
         } else {
           return null;
         }
@@ -459,7 +470,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             data.RESPONSE.NOMBREARCHIVO
           );
         })
-        .catch((e) => { });
+        .catch((e) => {});
     } else {
       return null;
     }
@@ -486,8 +497,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => { })
-      .catch((e) => { });
+      .then((r) => {})
+      .catch((e) => {});
   },
 });
 
@@ -610,7 +621,7 @@ export async function DescargarConsultaSolicitud(Solicitud: string) {
       document.body.appendChild(link);
       link.click();
     })
-    .catch((err) => { });
+    .catch((err) => {});
 }
 
 export const getUsuariosAsignables = async (

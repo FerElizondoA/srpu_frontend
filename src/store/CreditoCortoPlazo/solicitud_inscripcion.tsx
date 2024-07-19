@@ -7,6 +7,7 @@ import { useInscripcionStore } from "../Inscripcion/main";
 import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+import { alertaConfirmCancelar } from "../../generics/Alertas";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -165,7 +166,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para modificación`,
-         [idUsuarioAsignado],
+         [idUsuarioAsignado] || [],
           data.data.data.Id,
           data.data.data.ControlInterno
         );
@@ -176,11 +177,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
             `/DOCSOL/${data.data.Id}`
         );
         
-
         inscripcionState.setInscripcion(data.data);
-
-        console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
+
+        inscripcionState.cleanSolicitudCortoPlazo();
+       alertaConfirmCancelar()
         
       });
   },
@@ -254,7 +255,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para modificación`,
-         [idUsuarioAsignado],
+          [idUsuarioAsignado] || [],
           data.data.data.Id,
           data.data.data.ControlInterno
         );
@@ -263,6 +264,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           data.data.Id,
           `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_CORTOPLAZO}/DOCSOL/${data.data.Id}`
         );
+        inscripcionState.cleanSolicitudCortoPlazo();
+        alertaConfirmCancelar("La solicitud se envió con éxito")
       });
   },
 

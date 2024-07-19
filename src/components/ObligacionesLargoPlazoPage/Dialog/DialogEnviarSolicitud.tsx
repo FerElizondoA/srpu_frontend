@@ -154,31 +154,7 @@ export function ConfirmacionEnviarSolicitud({
                   "3",
                   idUsuarioAsignado
                 )
-                  .then((r: any) => {
-                    console.log("r.data.data: ", r.data);
-
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno,
-                    );
-                  })
+                  
                   .catch(() => {
                     Swal.fire({
                       confirmButtonColor: "#15212f",
@@ -188,32 +164,15 @@ export function ConfirmacionEnviarSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  navigate("../ConsultaDeSolicitudes");
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
-                  .then((r: any) => {
-                    console.log("r.data.data: ", r.data);
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno,
-                    );
-                  })
+                  
                   .catch(() => {
                     Swal.fire({
                       confirmButtonColor: "#15212f",
@@ -222,7 +181,13 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
+                    addComentario(
+                      solicitud.Id,
+                      JSON.stringify(comentarios),
+                      "Captura"
+                    );
                     navigate("../ConsultaDeSolicitudes");
+                 
                   });
               }
             } else {
@@ -234,71 +199,48 @@ export function ConfirmacionEnviarSolicitud({
                   idUsuarioAsignado
                 )
                   .then((r: any) => {
-                    console.log("r.data.data: ", r.data);
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno,
-                    );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
-                    cleanSolicitud();
+                    console.log("r.data.data: ", r);
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
+                    // createNotification(
+                    //   "Crédito simple a largo plazo",
+                    //   "La solicitud de inscripción está lista para firmar",
+                    //   [localStorage.getItem("IdUsuario") || ""],
+                    //   r.data.data.Id,
+                    //   r.data.data.ControlInterno,
+                    // );
+                   
 
-                    navigate("../ConsultaDeSolicitudes");
+                    
                   })
-                  .catch(() => {
+                  .catch((err: any) => {
+                   
+                    
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
                       icon: "error",
                       title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
+                      text: "Ocurrió un error, inténtelo de nuevo hola",
                     });
-                    navigate("../ConsultaDeSolicitudes");
+                   navigate("../ConsultaDeSolicitudes");
 
                   });
+                  navigate("../ConsultaDeSolicitudes");
+
               } else if (localStorage.getItem("Rol") === "Capturador") {
+                console.log("Largo plazo");
+                
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "2",
+                  "",
                   idUsuarioAsignado
                 )
-                  .then((r: any) => {
-                    console.log("r.data.data: ", r.data);
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
-                    cleanSolicitud();
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      r.data.data.Id,
-                      r.data.data.ControlInterno,
-                    );
-                    navigate("../ConsultaDeSolicitudes");
-                  })
+                 
                   .catch(() => {
                     Swal.fire({
                       confirmButtonColor: "#15212f",
@@ -309,6 +251,12 @@ export function ConfirmacionEnviarSolicitud({
                     });
                     navigate("../ConsultaDeSolicitudes");
                   });
+                  addComentario(
+                    solicitud.Id,
+                    JSON.stringify(comentarios),
+                    "Captura"
+                  );
+                  navigate("../ConsultaDeSolicitudes");
               }
             }
           }}

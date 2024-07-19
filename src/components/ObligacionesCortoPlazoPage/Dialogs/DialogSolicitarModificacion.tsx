@@ -133,6 +133,7 @@ export function DialogSolicitarModificacion({
         )
           .then((r: any) => {
             console.log("r.data.data: ", r.data.data);
+            console.log("idUsuarioAsignado: ", idUsuarioAsignado);
             createNotification(
               "Crédito simple a corto plazo",
               `Se te ha asignado una solicitud para modificación`,
@@ -184,7 +185,9 @@ export function DialogSolicitarModificacion({
             );
             navigate("../ConsultaDeSolicitudes");
           })
-          .catch(() => {
+          .catch((err: any) => {
+            console.log("trone");
+            console.log("err: ", err);
             Swal.fire({
               confirmButtonColor: "#15212f",
               cancelButtonColor: "rgb(175, 140, 85)",
