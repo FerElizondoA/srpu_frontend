@@ -230,7 +230,7 @@ export async function GeneraAcuseRespuesta(
 
       state.guardaDocumentos(
         idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-${noOficio}.pdf`)
       );
       // setUrl(url);
@@ -678,7 +678,7 @@ export async function GeneraAcuseEnvio(
 
       state.guardaDocumentos(
         idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
@@ -703,6 +703,8 @@ export async function GeneraAcuse(
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
           "Access-Control-Allow-Origin": "*",
+
+
         },
         responseType: "arraybuffer",
       }
@@ -712,7 +714,7 @@ export async function GeneraAcuse(
 
       state.guardaDocumentos(
         idRegistro,
-        "/SRPU/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })

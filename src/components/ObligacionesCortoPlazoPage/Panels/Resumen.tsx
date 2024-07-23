@@ -44,6 +44,7 @@ import {
   ITasaInteres,
 } from "../../../store/CreditoCortoPlazo/pagos_capital";
 import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
+import { IDocsEliminados } from "./InterfacesCortoPlazo";
 
 interface Head {
   label: string;
@@ -92,7 +93,7 @@ const headsCondiciones: Head[] = [
   },
 ];
 
-export function Resumen({ coments }: { coments: boolean }) {
+export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDocsEliminados?:IDocsEliminados[] }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -229,9 +230,11 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
+
+    
     inscripcion.Id &&
       getDocumentos(
-        `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
         setCargados
       );

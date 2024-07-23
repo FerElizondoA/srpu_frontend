@@ -65,7 +65,7 @@ const heads: readonly Head[] = [
   },
 ];
 
-export function Documentacion() {
+export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Function}) {
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useCortoPlazoStore(
     (state) => state.catalogoTiposDocumentos
@@ -109,8 +109,14 @@ export function Documentacion() {
   }
 
   function clearArchivo(index: number) {
+    let auxArrayArchivos = [...tablaDocumentos];
+    let objetoSeleccionado={...auxArrayArchivos[index]} 
+    
+    addArrDocsEliminados({  
+      NombreDoc:objetoSeleccionado.nombreArchivo,
+      TpoDoc:objetoSeleccionado.tipoArchivo}
+    )
     if (index < tablaDocumentos.length) {
-      let auxArrayArchivos = [...tablaDocumentos];
       auxArrayArchivos[index].archivo = newFile;
       auxArrayArchivos[index].nombreArchivo = "";
       setTablaDocumentos(auxArrayArchivos);

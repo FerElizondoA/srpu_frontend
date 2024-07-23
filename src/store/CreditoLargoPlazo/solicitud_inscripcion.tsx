@@ -178,12 +178,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         //   data.data.Id,
         //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
         // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO );
+       
         lpState.saveFiles(
           data.data.Id,
-           
-           
-             `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
 
@@ -296,7 +294,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           data.data.Id,
            
             
-            `/SRPU_DEV/LARGOPLAZO/DOCSOL/${data.data.Id}`
+            process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
   },

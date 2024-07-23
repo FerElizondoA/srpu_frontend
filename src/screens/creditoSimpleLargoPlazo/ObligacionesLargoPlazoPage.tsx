@@ -92,7 +92,7 @@ export function ObligacionesLargoPlazoPage() {
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => { },
       () => { }
     );

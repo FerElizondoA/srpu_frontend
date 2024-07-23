@@ -103,7 +103,7 @@ export const getDocumentos = async (
       files.map((file: any, index: any) => {
         let auxArrayArchivos = [...state.tablaDocumentos];
         auxArrayArchivos[index].archivo = file.FILE;
-        auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
+        auxArrayArchivos[index].nombreArchivo = file.NOMBRE;
         return state.setTablaDocumentos(auxArrayArchivos);
       });
 
@@ -151,7 +151,7 @@ export const listFile = async (ROUTE: string, setState: Function) => {
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
       {
-        ROUTE: ROUTE, // /SRPU/CORTOPLAZO
+        ROUTE: ROUTE,
       },
       {
         headers: {
