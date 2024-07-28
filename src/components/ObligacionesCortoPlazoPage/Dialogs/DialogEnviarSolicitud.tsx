@@ -22,13 +22,16 @@ import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelarError, alertaConfirmCancelar, alertaError, alertaExito } from "../../../generics/Alertas";
+import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
+  arrDocsEliminados
 }: {
   handler: Function;
   openState: boolean;
+  arrDocsEliminados?:IDocsEliminados[]
 }) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -150,7 +153,8 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  arrDocsEliminados
                 )
                   .then(() => {
                     addComentario(
@@ -176,12 +180,13 @@ export function ConfirmacionEnviarSolicitud({
                     alertaError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
+                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2", arrDocsEliminados)
                   .then(() => {
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
-                      "Captura"
+                      "Captura",
+                      
                     );
                     alertaExito(() =>{}, "La solicitud se envió con éxito")
                    // cleanSolicitud();

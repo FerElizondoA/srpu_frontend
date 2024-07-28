@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
-import { alertaError } from "../../../generics/Alertas";
+import { alertaError, alertaExito } from "../../../generics/Alertas";
 
 export async function getPathDocumentos(
   IdSolicitud: string,
@@ -100,12 +100,37 @@ export const getDocumentos = async (
     .then(({ data }) => {
       let files = data.RESPONSE;
 
-      files.map((file: any, index: any) => {
-        let auxArrayArchivos = [...state.tablaDocumentos];
-        auxArrayArchivos[index].archivo = file.FILE;
-        auxArrayArchivos[index].nombreArchivo = file.NOMBRE;
-        return state.setTablaDocumentos(auxArrayArchivos);
+      console.log('el conchesumadre files:', files);
+      console.log();
+      
+      console.log('state.tablaDocumentos',state.tablaDocumentos);
+      
+      const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
+        const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
+        if (archivo) {
+          return {
+            ...documento,
+            archivo: archivo.FILE,
+            nombreArchivo: archivo.NOMBRE,
+            size:archivo.SIZE
+          };
+        }
+        return documento;
       });
+
+      console.log("auxArrayArchivos",auxArrayArchivos);
+      
+      state.setTablaDocumentos(auxArrayArchivos);
+
+
+      // files.map((file: any, index: any) => {
+      //   let auxArrayArchivos = [...state.tablaDocumentos];
+      //   auxArrayArchivos[index].archivo = file.FILE;
+      //   auxArrayArchivos[index].nombreArchivo = file.NOMBRE;
+      //   console.log('el conchesumadre auxArrayArchivos',auxArrayArchivos);
+        
+      //   return state.setTablaDocumentos(auxArrayArchivos);
+      // });
 
       setState(files);
       setLoad(false);
@@ -207,4 +232,21 @@ export const deleteFile =(ruta:string)=>{
   )
   .then((response) => {})
   .catch((err) => {});
+}
+
+export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
+  console.log('docs axios',docs);
+  
+  axios.delete(
+    process.env.REACT_APP_APPLICATION_BACK + "/delete-PathDocSol",
+     {
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: localStorage.getItem("jwtToken"),
+      },
+      data: { IdSolicitud:IdSolicitud, jsonDocsDel:docs }
+  })
+    
+  .then((response) => {alertaExito(()=>{},"Exito de eliminacion")})
+  .catch((err) => {alertaError('Error de eliminacion')});
 }

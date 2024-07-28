@@ -20,6 +20,7 @@ import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -35,10 +36,12 @@ export function DialogSolicitarModificacion({
   handler,
   openState,
   accion,
+  arrDocsEliminados
 }: {
   handler: Function;
   openState: boolean;
   accion: string;
+  arrDocsEliminados?:IDocsEliminados[]
 }) {
   const navigate = useNavigate();
 
@@ -66,6 +69,8 @@ export function DialogSolicitarModificacion({
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
+    console.log('arrDocsEliminadossolicitar modificacion',arrDocsEliminados);
+    
   }, [openState]);
 
   const checkform = () => {
@@ -122,10 +127,13 @@ export function DialogSolicitarModificacion({
       });
     } else {
       if (inscripcion.Id !== "") {
+        console.log('arrDocsEliminados dialog: ',arrDocsEliminados);
+        
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
-          "1"
+          "1",
+          arrDocsEliminados
         )
           .then(() => {
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&

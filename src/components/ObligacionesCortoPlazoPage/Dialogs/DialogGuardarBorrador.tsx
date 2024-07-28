@@ -12,13 +12,16 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
+import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 
 export function DialogGuardarBorrador({
   handler,
   openState,
+  arrDocsEliminados
 }: {
   handler: Function;
   openState: boolean;
+  arrDocsEliminados?:IDocsEliminados[]
 }) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -136,11 +139,14 @@ export function DialogGuardarBorrador({
           onClick={() => {
             handler(false);
             if (solicitud.Id !== "") {
+              console.log('guardarborrador ',arrDocsEliminados);
+              
               modificaSolicitud(
                 solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                arrDocsEliminados
               )
                 .then(() => {
                   addComentario(
@@ -205,11 +211,13 @@ export function DialogGuardarBorrador({
           onClick={() => {
             handler(false);
             if (solicitud.Id !== "") {
+              console.log('guardarborrador 2',arrDocsEliminados);
               modificaSolicitud(
                 solicitud.CreadoPor,
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                arrDocsEliminados
               )
                 .then(() => {
                   

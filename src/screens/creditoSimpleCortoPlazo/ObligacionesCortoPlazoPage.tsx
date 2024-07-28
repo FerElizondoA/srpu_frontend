@@ -24,7 +24,7 @@ export function ObligacionesCortoPlazoPage() {
   const [arrDocsEliminados, setArrDocsEliminados]=useState<IDocsEliminados[]>([]);
 
   useEffect(()=>{
-    console.log("arrDocsEliminados",JSON.stringify(arrDocsEliminados));
+    console.log("arrDocsEliminados ObligacionCortoPlazo:",JSON.stringify(arrDocsEliminados));
   },[arrDocsEliminados])
 
 
@@ -58,11 +58,11 @@ export function ObligacionesCortoPlazoPage() {
 
   useEffect(() => {
     getTiposDocumentos();
-    getDocumentos(
+    if(inscripcion.Id){getDocumentos(
       process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => {},
       () => {}
-    );
+    );}
   }, []);
 
   return (
@@ -183,7 +183,7 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
       {tabIndex === 4 && <Resumen coments={true} arrDocsEliminados={arrDocsEliminados} />}
-      {tabIndex === 5 && <SolicitudInscripcion />}
+      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados}/>}
 
       {openDialogBorrador && (
         <DialogGuardarBorrador

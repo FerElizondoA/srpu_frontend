@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
+import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -32,7 +34,8 @@ export interface SolicitudInscripcionSlice {
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    // comentario: string,
+    arrDocsEliminados:IDocsEliminados[]
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -181,11 +184,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    // comentario: string,
+    arrDocsEliminados: IDocsEliminados[]
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
-
+    console.log('arrDocsEliminados: modisoli ',arrDocsEliminados);
+    
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
@@ -240,11 +245,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         console.log("modifcarsoli data: ", data.data);
-        
+        console.log('arrDocsEliminados',arrDocsEliminados);
+        deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
         state.saveFiles(
           data.data.Id,
           `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
+
+
       });
   },
 

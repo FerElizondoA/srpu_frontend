@@ -232,7 +232,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
   useEffect(() => {
 
     
-    inscripcion.Id &&
+    if(inscripcion.Id)
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
@@ -914,6 +914,8 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                 </TableHead>
                 <TableBody>
                   {documentos.map((row, index) => {
+                    console.log('documentos resumen:',row);
+                    
                     return (
                       <StyledTableRow key={index}>
                         {activaAccion && (
@@ -978,6 +980,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                               {cargados ? (
                                 <CircularProgress />
                               ) : (
+
                                 <IconButton
                                   onClick={() => {
                                     // var a = document.createElement("a"); //Create <a>
@@ -990,21 +993,23 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                                     //   )[0].FILE; //Image Base64 Goes here
                                     // a.download = `${"NOMBRE"}.pdf`; //File name Here
 
-                                    toBase64(documentos[index].archivo)
-                                      .then((data) => {
-                                        setFileSelected(data);
-                                      })
-                                      .catch((err) => {
-                                        setFileSelected(
-                                          `data:application/pdf;base64,${
-                                            arr.filter((td: any) =>
-                                              td.NOMBREFORMATEADO.includes(
-                                                row.nombreArchivo
-                                              )
-                                            )[0].FILE
-                                          }`
-                                        );
-                                      });
+                                    // toBase64(row.archivo)
+                                    //   .then((data) => {
+                                      const base64String = row.archivo;
+                                      const dataUri = `data:application/pdf;base64,${base64String}`;
+                                      setFileSelected(dataUri);
+                                      // })
+                                      // .catch((err) => {
+                                      //   setFileSelected(
+                                      //     `data:application/pdf;base64,${
+                                      //       arr.filter((td: any) =>
+                                      //         td.nombreArchivo.includes(
+                                      //           row.nombreArchivo
+                                      //         )
+                                      //       )[0].archivo
+                                      //     }`
+                                      //   );
+                                      // });
                                     // setFileSelected(a);
                                     setShowModalPrevia(true);
                                     // a.click();
@@ -1049,14 +1054,22 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ height: "100vh" }}>
-          <iframe
+   {/*     <iframe
             style={{
               width: "100%",
               height: "85vh",
             }}
             src={fileSelected}
             title="description"
-          ></iframe>
+          ></iframe>*/}  
+          <iframe
+        style={{
+          width: "100%",
+          height: "85vh",
+        }}
+        src={fileSelected}
+        title="PDF Viewer"
+      ></iframe>
         </DialogContent>
       </Dialog>
       <ComentarioApartado
