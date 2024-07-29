@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import CommentIcon from "@mui/icons-material/Comment";
 import {
   Button,
   Chip,
@@ -39,12 +40,14 @@ import {
   ConsultaConstancia,
   ConsultaSolicitud,
   ConsultaSolicitudReestructura,
+  ConsultaRequerimientosReestructura,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { IData } from "../consultaDeSolicitudes/ConsultaDeSolicitudPage";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { DialogVerDetalle } from "./DialogVerDetalle";
 import { useReestructuraStore } from "../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
+import { VerComentariosSolicitudReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogComentariosSolicitudReestructura";
 
 
 interface Head {
@@ -149,6 +152,12 @@ export function SolicitudesReestructura() {
     (state) => state.addDocumento
   );
 
+  const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
+    (state) => state.getCatalogoFirmaDetalle
+  );
+
+  const [openVerComentarios, changeOpenVerComentarios] = useState(false);
+
   const llenaSolicitud = (solicitud: IDatosSolicitudReestructura) => {
     let aux: any = JSON.parse(solicitud.SolicitudReestructura!);
 
@@ -185,12 +194,15 @@ export function SolicitudesReestructura() {
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
 
 
 
-  useEffect(() => {
-    getDatos()
-  }, []);
 
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
 
@@ -200,7 +212,7 @@ export function SolicitudesReestructura() {
     Solicitud: string,
     noRegistro: string,
     Requerimiento: any,
-    IdSolicitud: string
+    //IdSolicitud: string
   ) => {
     let a: any = {};
 
@@ -209,8 +221,9 @@ export function SolicitudesReestructura() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
+    console.log("Requeriemito solicitud", solicitud)
 
-    ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
+    ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl);
 
     setProceso("actualizacion");
     navigate("../firmaUrl");
@@ -222,7 +235,7 @@ export function SolicitudesReestructura() {
     (state) => state.SolicitudReestructuraFirma
   );
 
-  
+
   const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
     (state) => state.inscripcionReestructura
   );
@@ -231,9 +244,6 @@ export function SolicitudesReestructura() {
     (state) => state.setInscripcionRestructura
   );
 
-
-
-
   const getSolicitudReestructuraFirma: Function = useReestructuraStore(
     (state) => state.getSolicitudReestructuraFirma
   );
@@ -241,6 +251,7 @@ export function SolicitudesReestructura() {
 
 
   const [busqueda, setBusqueda] = useState("");
+
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = datos.filter((elemento) => {
@@ -273,6 +284,58 @@ export function SolicitudesReestructura() {
 
     setDatosFiltrados(ResultadoBusqueda);
   };
+
+  const firmaSolicitudReestructura = (row: IInscripcion) => {
+
+    if (row.Id !== "") {
+      setProceso("solicitud")
+      getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
+      console.log("constanciaReestructura", constanciaReestructura)
+      navigate("../firmaUrl");
+
+      if (row.NoEstatus === "19") {
+        if (constanciaReestructura === true) {
+          setInscripcionRestructura(SolicitudReestructuraFirma)
+          ConsultaSolicitudReestructura(setUrl);
+        }
+      } else {
+        getComentariosSolicitudPlazo(
+          row.Id,
+          () => { }
+        ).then((data) => {
+          if (
+            data.filter(
+              (a: any) =>
+                a.Tipo === "RequerimientoReestructura"
+            ).length > 0
+          ) {
+            requerimientos(
+              row.Solicitud,
+              row.NumeroRegistro,
+              data.filter(
+                (a: any) =>
+                  a.Tipo === "RequerimientoReestructura"
+              )[0]
+            );
+          } else {
+            ConsultaConstancia(
+              row.Solicitud,
+              row.NumeroRegistro,
+              setUrl
+            );
+            navigate("../firmaUrl");
+          }
+        });
+      }
+    }
+  }
+
+  useEffect(() => {
+    getDatos()
+    cleanSolicitudCortoPlazo();
+    cleanSolicitudLargoPlazo();
+  }, []);
+
   return (
     <Grid>
       <Grid>
@@ -627,12 +690,9 @@ export function SolicitudesReestructura() {
                           type="button"
                           onClick={() => {
                             setInscripcion(row)
-                            // changeRestructura(true);
                             changeOpenDialogVer(!openDialogVer);
                             changeRestructura("con autorizacion");
-                            //setSolicitudReestructura(row.Id, row.Solicitud, row.IdEditor);
-                            console.log("row.Id", row.Id)
-                            console.log("row.Solicitud", row.Solicitud)
+                            getCatalogoFirmaDetalle(row.Id);
                           }}
                         >
                           <FindInPageIcon />
@@ -640,36 +700,78 @@ export function SolicitudesReestructura() {
                       </Tooltip>
 
                       {localStorage.getItem("Rol") === row.Control &&
-                        ["19"].includes(row.NoEstatus) && (
+                        ["19", "23", "25"].includes(row.NoEstatus) && (
                           <Tooltip title="Firmar documento">
                             <IconButton
                               type="button"
                               onClick={() => {
+
+                                //firmaSolicitudReestructura(row)
                                 if (row.Id !== "") {
-                                  setProceso("solicitud")
                                   getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-                                  if (constanciaReestructura === true) {
-                                    setInscripcionRestructura(SolicitudReestructuraFirma)
-                                    //llenaSolicitud(SolicitudReestructuraFirma)
-                                    console.log("insRes", inscripcionReestructura)
-                                    
-                                    ConsultaSolicitudReestructura(setUrl);
+                                  // setProceso("solicitud")
+                                  //console.log("constanciaReestructura", constanciaReestructura)
+                                  // navigate("../firmaUrl");
+
+                                  if (row.NoEstatus === "19") {
+                                    console.log("constanciaReestructura", constanciaReestructura)
+                                    if (constanciaReestructura === true) {
+                                      setProceso("solicitud")
+                                      setInscripcionRestructura(SolicitudReestructuraFirma)
+                                      ConsultaSolicitudReestructura(setUrl);
+                                      navigate("../firmaUrl");
+                                    }
+                                  } else {
+                                    getComentariosSolicitudPlazo(
+                                      row.Id,
+                                      () => { }
+                                    ).then((data) => {
+                                      if (
+                                        data.filter(
+                                          (a: any) =>
+                                            a.Tipo === "RequerimientoReestructura"
+                                        ).length > 0
+                                      ) {
+                                        requerimientos(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          data.filter(
+                                            (a: any) =>
+                                              a.Tipo === "RequerimientoReestructura"
+                                          )[0]
+                                        );
+                                      } else {
+                                        ConsultaConstancia(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+                                          setUrl
+                                        );
                                         navigate("../firmaUrl");
-                                    
-                                    // ConsultaConstancia(
-                                    //   SolicitudReestructuraFirma.SolicitudReestructura,
-                                    //   SolicitudReestructuraFirma.NumeroRegistro,
-                                    //   setUrl
-                                    // );
-                                    // navigate("../firmaUrl");
+                                      }
+                                    });
                                   }
                                 }
+
                               }}
                             >
                               <HistoryEduIcon />
                             </IconButton>
                           </Tooltip>
                         )}
+
+                      {localStorage.getItem("Rol") !== "Administrador" && (
+                        <Tooltip title="Comentarios">
+                          <IconButton
+                            type="button"
+                            onClick={() => {
+                              setInscripcion(row);
+                              changeOpenVerComentarios(!openVerComentarios);
+                            }}
+                          >
+                            <CommentIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </StyledTableCell>
                     {openDialogVer && (
                       <DialogVerDetalle
@@ -686,6 +788,15 @@ export function SolicitudesReestructura() {
           </Table>
         </TableContainer>
       </Paper>
+
+
+      {openVerComentarios && (
+        <VerComentariosSolicitudReestructura
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+        />
+      )}
+
 
       {openDialogVer && (
         <DialogVerDetalle

@@ -601,9 +601,13 @@ export function ConsultaDeCancelacionesPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                llenaSolicitud(row);
+                                setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
+
+                                // llenaSolicitud(row);
+                                // changeOpenDialogVer(!openDialogVer);
+                                // getCatalogoFirmaDetalle(row.Id);
                               }}
                             >
                               <VisibilityIcon />

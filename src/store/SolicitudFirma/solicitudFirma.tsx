@@ -98,12 +98,17 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     }));
   },
 
+
+
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
+    console.log("info", info)
     set(() => ({ infoDoc: info }));
 
     if (info) {
       const inf = JSON.parse(info);
-      
+
+
+      console.log("inf", inf)
       const state = useInscripcionStore.getState();
 
       const estatusPrevio = {
@@ -141,20 +146,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             estatusPrevio.ControlInterno === "inscripcion"
               ? "Solicitud de Inscripción"
               : estatusPrevio.ControlInterno === "revision"
-              ? "Solicitud de Requerimientos"
-              : "Constancia de Inscripción";
+                ? "Solicitud de Requerimientos"
+                : "Constancia de Inscripción";
           let mensaje =
             estatusPrevio.ControlInterno === "inscripcion"
               ? `Se recibe el ${new Date().toLocaleString(
-                  "es-MX"
-                )} el documento ${titulo} con el identificador: ${
-                  state.inscripcion.IdClaveInscripcion
-                }`
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+              }`
               : `Se envía el ${new Date().toLocaleString(
-                  "es-MX"
-                )} el documento ${titulo} con el identificador: ${
-                  state.inscripcion.IdClaveInscripcion
-                }`;
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+              }`;
           let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
@@ -163,38 +166,43 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
+          //GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
+          console.log(" estatusPrevio.ControlInterno: ", estatusPrevio.ControlInterno);
+          console.log("estatusPrevio.NoEstatus: ", estatusPrevio.NoEstatus);
+          console.log("state.proceso: ", state.proceso);
+
+
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
               : estatusPrevio.ControlInterno === "revision" &&
                 state.proceso === "actualizacion"
-              ? "8"
-              : estatusPrevio.NoEstatus === "9"
-              ? "10"
-              : estatusPrevio.NoEstatus === "10" &&
-                state.proceso === "cancelacion"
-              ? "12"
-              : estatusPrevio.ControlInterno === "cancelacion" &&
-                state.proceso === "actualizacion"
-              ? "16"
-              : estatusPrevio.ControlInterno === "cancelado"
-              ? "18"
-              : estatusPrevio.ControlInterno === "reestructura" &&
-                state.proceso === "solicitud"
-              ? "20"
-              : estatusPrevio.ControlInterno === "reestructura" &&
-                state.proceso === "actualizacion"
-              ? "24"
-              : estatusPrevio.ControlInterno === "reestructurado"
-              ? "10"
-              : "11",
+                ? "8"
+                : estatusPrevio.NoEstatus === "9"
+                  ? "10"
+                  : estatusPrevio.NoEstatus === "10" &&
+                    state.proceso === "cancelacion"
+                    ? "12"
+                    : estatusPrevio.ControlInterno === "cancelacion" &&
+                      state.proceso === "actualizacion"
+                      ? "16"
+                      : estatusPrevio.ControlInterno === "cancelado"
+                        ? "18"
+                        : estatusPrevio.ControlInterno === "reestructura" &&
+                          state.proceso === "solicitud"
+                          ? "20"
+                          : estatusPrevio.ControlInterno === "reestructura" &&
+                            state.proceso === "actualizacion"
+                            ? "24"
+                            : estatusPrevio.ControlInterno === "reestructurado"
+                              ? "10"
+                              : "11",
             state.inscripcion.Id,
             inf.IdUsuario,
             oficio
           );
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   },
 
@@ -235,7 +243,7 @@ export async function GeneraAcuseRespuesta(
       );
       // setUrl(url);
     })
-    .catch((err) => {}); // aqui
+    .catch((err) => { }); // aqui
 }
 
 export async function GeneraFormatoReestructura(
@@ -250,7 +258,7 @@ export async function GeneraFormatoReestructura(
 ) {
   const solicitud: any = JSON.parse(Solicitud);
 
- 
+
 
   const SolicitudReestructura: any = {
     oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
@@ -266,12 +274,12 @@ export async function GeneraFormatoReestructura(
 
     tipoDocumento: solicitud.encabezado.tipoDocumento,
 
-    fechaContratacion:  format(new Date(solicitud.encabezado.fechaContratacion), "PPP", {
+    fechaContratacion: format(new Date(solicitud.encabezado.fechaContratacion), "PPP", {
       locale: es,
     }),
 
     claveInscripcion:
-    idClaveInscripcion === undefined
+      idClaveInscripcion === undefined
         ? "Sin Clave de Inscripcion"
         : idClaveInscripcion,
 
@@ -294,7 +302,7 @@ export async function GeneraFormatoReestructura(
     montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
     saldoVigente: solicitud.informacionGeneral.destinoGastosCostos[0].saldoVigente,
     mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
-    fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion , //tabla "REVISAR"
+    fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion, //tabla "REVISAR"
     directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
     cargoDirectorGeneral:
       solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
@@ -303,7 +311,7 @@ export async function GeneraFormatoReestructura(
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/create-pdf-constancia-reestructura",
+      "/create-pdf-constancia-reestructura",
       {
         // tipoSolicitud: tipoSolicitud,
         // oficioConstancia: noOficio,
@@ -360,35 +368,35 @@ export async function GeneraFormatoReestructura(
     //   );
     //   // setUrl(url);
     // })
-    .catch((err) => {}); // aqui
+    .catch((err) => { }); // aqui
 }
 
 export async function ConsultaSolicitud(setUrl: Function) {
   let inscripcion: IInscripcion = useInscripcionStore?.getState()?.inscripcion;
   let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.Solicitud);
 
-  
+
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
       {
-        oficioNum: inscripcion.NumeroRegistro,         
-       
-        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,        
-        
-        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,          
-        
+        oficioNum: inscripcion.NumeroRegistro,
+
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
-        
+
         cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
 
         organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
 
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
-        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),"PPP",{
-            locale: es,
-          }) ,
+        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
+          locale: es,
+        }),
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
 
@@ -404,23 +412,23 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
         gastosAdicionales: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
           ? solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales
-          : "N/A" ,
+          : "N/A",
 
         tasaEfectiva: solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
 
         mecanismoVehiculoDePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
-            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo
-            : "N/A" ,
-        
+          ? solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo
+          : "N/A",
+
         fuentePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
-            ? solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro
-            : "N/A",
-        
+          ? solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro
+          : "N/A",
+
         garantiaDePago: inscripcion.TipoSolicitud.toLowerCase().includes("largo")
-            ? solicitud.fuenteDePago?.garantiaDePago
-            : "N/A",
-        
-        reglas: JSON.stringify(solicitud.inscripcion.declaratorias) ,
+          ? solicitud.fuenteDePago?.garantiaDePago
+          : "N/A",
+
+        reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
         documentos: JSON.stringify(solicitud.documentacion)
       },
       {
@@ -440,7 +448,7 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 
@@ -450,51 +458,45 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
 
   await axios
     .post(
-      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-corto",
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-reestructura",
       {
-        oficioNum: inscripcion.NumeroRegistro,         
-       
-        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,        
-        
-        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,          
-        
+        oficioNum: inscripcion.NumeroRegistro,
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        claveInscripcion: inscripcion.IdClaveInscripcion,
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
-        
         cargoServidorPublico: solicitud.encabezado.solicitanteAutorizado.Cargo,
-
         organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
-
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
-        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),"PPP",{
-            locale: es,
-          }) ,
+        fechaContratacionSolicitud: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
+          locale: es, // YAA FALTA MODIFICAR TAL VEZ
+        }),
 
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-
-        entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
-
+        fechaContratacionReestructura: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
+          locale: es, // YAA FALTA MODIFICAR TAL VEZ
+        }),
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,// YAA
+        entePublicoObligado:
+          solicitud.informacionGeneral.obligadosSolidarios.length > 0
+            ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
+            : "No Aplica",
+        obligadoSolidarioAval:
+          solicitud.informacionGeneral.obligadosSolidarios.length > 0
+            ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
+            : ["No Aplica"],
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
-
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
-
+        periodoFinanciamiento: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+        periodoAdministracion: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoAdminitracion,
+        saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
         tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
-
         comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
-
-        gastosAdicionales: solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales
-           ,
-
+        gastosAdicionales: solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales,
+        fuentePago: solicitud.fuenteDePago?.fuente[0]?.fondoIngreso.Descripcion,
         tasaEfectiva: solicitud.condicionesFinancieras[0]?.tasaEfectiva.tasaEfectiva,
-
-        mecanismoVehiculoDePago:  solicitud.fuenteDePago?.mecanismoVehiculoDePago.Tipo,
-        
-        fuentePago: solicitud.fuenteDePago?.mecanismoVehiculoDePago?.NumeroRegistro,
-        
-        garantiaDePago: solicitud.fuenteDePago?.garantiaDePago,
-
+        anexosClausulas: JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias),
         reglas: JSON.stringify(solicitud.inscripcion.declaratorias),
-
         documentos: JSON.stringify(solicitud.documentacion)
       },
       {
@@ -514,8 +516,75 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
+
+export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER!!!!
+  Solicitud: string,
+  Requerimientos: {},
+  NoOficio: string,
+  setUrl: Function
+) {
+  const solicitud: any = JSON.parse(Solicitud);
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-constancia-reestructura",
+      {
+
+        //oficioRequerimiento: 1,
+        //oficioNum: ,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+        fechaSolicitud: format(new Date(), "PPP", {
+          locale: es,
+        }),
+        fechaRecepcion: format(new Date(), "PPP", {
+          locale: es,
+        }),
+
+        organismo: solicitud.encabezado.organismo.Organismo,
+        oficioSolicitud: NoOficio,
+
+        fechaContratacion: format(
+          new Date(solicitud.encabezado.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+        entePublicoObligado:
+          solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        institucionFinanciera:
+          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: solicitud.informacionGeneral.monto,
+        comentarios: JSON.stringify(Requerimientos),
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral:
+          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => { });
+}
+
+
+
 
 export async function ConsultaRequerimientos(
   Solicitud: string,
@@ -547,7 +616,7 @@ export async function ConsultaRequerimientos(
         entePublicoObligado:
           solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         institucionFinanciera:
-          solicitud.informacionGeneral.institucionFinanciera.Descripcion,
+          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.monto,
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
@@ -571,8 +640,10 @@ export async function ConsultaRequerimientos(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
+
+
 
 export async function ConsultaConstancia(
   Solicitud: string,
@@ -617,8 +688,8 @@ export async function ConsultaConstancia(
 
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
-        
-        
+
+
         amortizaciones: "No Aplica",
         tasaInteres: "tasaInteres",
         tasaEfectiva: "tasaEfectiva",
@@ -648,7 +719,7 @@ export async function ConsultaConstancia(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
 
 export async function GeneraAcuseEnvio(
@@ -682,7 +753,7 @@ export async function GeneraAcuseEnvio(
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 export async function GeneraAcuse(
@@ -716,7 +787,7 @@ export async function GeneraAcuse(
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 export const CambiaEstatus = (
@@ -744,7 +815,7 @@ export const CambiaEstatus = (
     .then((response) => {
       return true;
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export const getPdf = (
@@ -782,7 +853,7 @@ export const getPdf = (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((err) => {});
+    .catch((err) => { });
 };
 
 export async function borrarFirmaDetalle(
@@ -853,7 +924,7 @@ export async function AnularCancelacionSolicitud(
     entePublicoObligado:
       solicitud.informacionGeneral.obligadosSolidarios.length > 0
         ? solicitud.informacionGeneral.obligadosSolidarios[0]
-            .entePublicoObligado
+          .entePublicoObligado
         : "No Aplica",
 
     institucionFinanciera:
@@ -916,5 +987,5 @@ export async function AnularCancelacionSolicitud(
 
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }

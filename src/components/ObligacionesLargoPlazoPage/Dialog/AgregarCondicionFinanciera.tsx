@@ -119,7 +119,11 @@ export function AgregarCondicionFinanciera(props: Props) {
             <ThemeProvider theme={buttonTheme}>
               <Button
                 disabled={
-                  tablaComisiones.length === 0 || tablaTasaInteres.length === 0
+                  tablaComisiones.length === 0 || 
+                  tablaTasaInteres.length === 0 ||
+                  pagosDeCapital.numeroDePago === 0 ||
+                  pagosDeCapital.numeroDePago <= 0  ||
+                  pagosDeCapital.periodicidadDePago.Descripcion === "" 
                 }
                 sx={queries.buttonContinuar}
                 onClick={() => {

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, TextField, Typography } from "@mui/material";
+import { Button, Dialog, TextField, Typography, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -8,6 +8,21 @@ import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+
+const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#f3f3f3",
+            color: "#dadada",
+          },
+        },
+      },
+    },
+  },
+});
 
 export function ComentarioApartado({
   setOpen,
@@ -56,19 +71,30 @@ export function ComentarioApartado({
       </DialogTitle>
 
       <DialogContent>
-        <Typography sx={{ display: "flex", justifyContent: "center" }}>
+        {/* <Typography sx={{ display: "flex", justifyContent: "center" }}>
           {comentario[openState.apartado] || ""}
-        </Typography>
+        </Typography> */}
         <TextField
-          label="Nuevo comentario"
+          // label="Nuevo comentario"
+          label={
+            comentario[openState.apartado]
+              ? "Editar comentario"
+              : "Nuevo comentario"
+          }
           sx={{ width: "100%", mt: 2 }}
           value={coment.Comentario}
-          disabled={reestructura === "con autorizacion"}
+          //disabled={reestructura === "con autorizacion"}
           onChange={(v) => {
             setComent({
-              Comentario: v.target.value,
+              Comentario: v.target.value
+                .replaceAll(/[^\w\s]/gi, "")
+                .replaceAll("\n", ""),
               Apartado: openState.apartado,
             });
+            // setComent({
+            //   Comentario: v.target.value,
+            //   Apartado: openState.apartado,
+            // });
           }}
           multiline
           rows={2}
@@ -79,7 +105,7 @@ export function ComentarioApartado({
         {comentario[openState.apartado] !== "" ? (
           <Button
             sx={queries.buttonCancelar}
-            disabled={reestructura === "con autorizacion"}
+            //disabled={reestructura === "con autorizacion"}
             onClick={() => {
               removeComentario(openState.apartado);
               setOpen(false);
@@ -100,7 +126,7 @@ export function ComentarioApartado({
         </Button>
         <Button
           sx={queries.buttonContinuar}
-          disabled={reestructura === "con autorizacion"}
+         // disabled={reestructura === "con autorizacion"}
           onClick={() => {
             newComentario(coment, openState.tab);
             setComent({ Comentario: "", Apartado: "" });

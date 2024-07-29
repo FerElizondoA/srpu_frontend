@@ -11,6 +11,7 @@ export interface IPagosDeCapital {
 export interface IDisposicion {
   fechaDisposicion: string;
   importe: string;
+  montoDisposición: string;
 }
 export interface ITasaInteres {
   fechaPrimerPago: string;
@@ -98,6 +99,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   disposicion: {
     fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
     importe: "$ 0.00",
+    montoDisposición: "$ 0.00",
   },
   setDisposicion: (disposicion: IDisposicion) => {
     set((state) => ({
@@ -135,6 +137,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         {
           fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
           importe: monto,
+          montoDisposición: "$ 0.00",
         },
       ],
     })),

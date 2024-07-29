@@ -74,20 +74,20 @@ export function DialogSolicitarModificacion({
       addComentario(
         inscripcion.Id,
         JSON.stringify(comentarios),
-        "Requerimiento"
+        "RequerimientoReestructura"
       );
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
             ? Object.keys(comentarios).length > 0
-              ? "7"
-              : "9"
-            : "5"
+              ? "23"
+              : "25"
+            : "21"
           : localStorage.getItem("Rol") === "Validador"
           ? accion === "enviar"
-            ? "6"
-            : "4"
-          : "5",
+            ? "22"
+            : "20"
+          : "21",
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!

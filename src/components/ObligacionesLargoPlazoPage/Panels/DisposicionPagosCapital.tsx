@@ -393,7 +393,7 @@ export function DisposicionPagosCapital() {
               onChange={(v) => {
                 setPagosDeCapital({
                   ...pagosDeCapital,
-                  numeroDePago: v.target.value || 1,
+                  numeroDePago: v.target.value,
                 });
               }}
               fullWidth

@@ -2,6 +2,7 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -28,8 +29,10 @@ import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { useReestructuraStore } from "../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
-
-
+import { queries } from "../../queries";
+import { DialogSolicitarModificacion, rolesAdmin } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarModificacion";
+import { DialogGuardarComentarios } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogGuardarComentarios";
+import Swal from "sweetalert2";
 
 type Props = {
   handler: Function;
@@ -39,26 +42,29 @@ type Props = {
 };
 
 export function DialogVerDetalle(props: Props) {
-  const [openDialogCancelacion, setOpenDialogCancelacion] =
-    React.useState(false);
+
+
+
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
+
   // REQUERIMIENTOS
+
   React.useEffect(() => {
-    if (inscripcion.Id !== "") {
-      getComentariosSolicitudPlazo(inscripcion.Id, setDatosComentarios);
+    if (props.rowSolicitud.Id !== "") {
+      getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
     }
-  }, [inscripcion.Id]);
-  const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>
-  >([]);
+  }, [props.rowSolicitud.Id]);
+
+  const [datosComentario, setDatosComentarios] = React.useState<Array<IComentarios>>([]);
+
 
   React.useEffect(() => {
     let a: any = {};
 
     datosComentario
-      ?.filter((td) => td.Tipo === "Requerimiento")
+      ?.filter((td) => td.Tipo === "RequerimientoReestructura")
       .map((_) => {
         return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
           return a[v]
@@ -70,27 +76,29 @@ export function DialogVerDetalle(props: Props) {
     setComentarios(a);
 
     useCortoPlazoStore.setState({
-      idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
+      idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
         ?.Id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datosComentario]);
+
+
+
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+
   const setComentarios: Function = useCortoPlazoStore(
     (state) => state.setComentarios
   );
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
-  const tieneComentarios: boolean =
-    Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
+  const tieneComentarios: boolean = Object.entries(useCortoPlazoStore((state) => state.comentarios)).length > 0;
 
   const navigate = useNavigate();
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
-  const [openGuardaComentarios, setOpenGuardaComentarios] =
-    React.useState(false);
+  const [openGuardaComentarios, setOpenGuardaComentarios] = React.useState(false);
 
   // REQUERIMIENTOS
   React.useEffect(() => {
@@ -103,7 +111,7 @@ export function DialogVerDetalle(props: Props) {
     let a: any = {};
 
     datosComentario
-      ?.filter((td) => td.Tipo === "Requerimiento")
+      ?.filter((td) => td.Tipo === "RequerimientoReestructura")
       .map((_) => {
         return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
           return a[v]
@@ -115,7 +123,7 @@ export function DialogVerDetalle(props: Props) {
     setComentarios(a);
 
     useCortoPlazoStore.setState({
-      idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
+      idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
         ?.Id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,79 +134,12 @@ export function DialogVerDetalle(props: Props) {
   const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
+
   const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudLargoPlazo
   );
 
 
-
-  // const enviaNotificacion = (estatus: string) => {
-  //   let users: string[] = [];
-  //   if (estatus === "Revision") {
-  //     usuarios
-  //       .filter(
-  //         (usr: any) =>
-  //           usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-  //           usr.Rol.toLowerCase() === "revisor"
-  //       )
-  //       .map((usuario: any) => {
-  //         return users.push(usuario.Id);
-  //       });
-  //     createNotification(
-  //       "Crédito simple a corto plazo",
-  //       "Se te ha asignado una solicitud de inscripción para revisión",
-  //       users
-  //     );
-  //   } else if (estatus === "Validacion") {
-  //     usuarios
-  //       .filter(
-  //         (usr: any) =>
-  //           usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-  //           usr.Rol.toLowerCase() === "validador"
-  //       )
-  //       .map((usuario: any) => {
-  //         return users.push(usuario.Id);
-  //       });
-  //     createNotification(
-  //       "Crédito simple a corto plazo",
-  //       "Se te ha asignado una solicitud de inscripción para validación",
-  //       users
-  //     );
-  //   } else if (estatus === "Autorizacion") {
-  //     usuarios
-  //       .filter(
-  //         (usr: any) =>
-  //           usr.Entidad === localStorage.getItem("EntePublicoObligado")! &&
-  //           usr.Rol.toLowerCase() === "autorizador"
-  //       )
-  //       .map((usuario: any) => {
-  //         return users.push(usuario.Id);
-  //       });
-  //     createNotification(
-  //       "Crédito simple a corto plazo",
-  //       "Se te ha asignado una solicitud de inscripción para autorización",
-  //       users
-  //     );
-  //   } else if (estatus === "Cancelado") {
-  //     usuarios
-  //       .filter(
-  //         (usr: any) =>
-  //           usr.Entidad === localStorage.getItem("EntePublicoObligado")!
-  //       )
-  //       .map((usuario: any) => {
-  //         return users.push(usuario.Id);
-  //       });
-  //     createNotification(
-  //       "Crédito simple a corto plazo",
-  //       "Una solicitud ha sido cancelada",
-  //       users
-  //     );
-  //   }
-
-  //   CambiaEstatus(estatus, props.rowId || inscripcion.Id).then(() => {
-  //     window.location.reload();
-  //   });
-  // };
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
@@ -207,7 +148,6 @@ export function DialogVerDetalle(props: Props) {
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
-
 
   const changeRestructura: Function = useReestructuraStore(
     (state) => state.changeRestructura
@@ -230,7 +170,6 @@ export function DialogVerDetalle(props: Props) {
   //   (state) => state.SolicitudReestructura
   // );
 
-
   const setInscripcionReestructura: Function = useInscripcionStore(
     (state) => state.setInscripcionRestructura
   );
@@ -239,15 +178,14 @@ export function DialogVerDetalle(props: Props) {
     getListadoUsuarioRol(setUsuarios);
   }, [props.openState]);
 
-  
-
-  
-  
   const cleanCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.cleanCondicionFinanciera
   );
 
+  const [accion, setAccion] = useState("");
+
   return (
+
     <Dialog
       open={props.openState}
       fullScreen
@@ -299,6 +237,8 @@ export function DialogVerDetalle(props: Props) {
               idComentario: "",
             });
             cleanSolicitudCortoPlazo();
+            cleanSolicitudLargoPlazo();
+            cleanCondicionFinanciera();
           }}
         >
           Volver
@@ -374,13 +314,11 @@ export function DialogVerDetalle(props: Props) {
                   },
                 }}
                 onClick={() => {
-                  setInscripcion(props.rowSolicitud);
+                  //setInscripcion(props.rowSolicitud);
                   changeRestructura("con autorizacion");
                   navigate("../ObligacionesLargoPlazo");
-                  
+
                   setInscripcionReestructura(props.rowSolicitud)
-                  cleanSolicitudLargoPlazo();
-                  //cleanCondicionFinanciera();
                 }}
               >
                 <Typography
@@ -479,6 +417,68 @@ export function DialogVerDetalle(props: Props) {
               </Button>
             </Grid>
           ) : null}
+
+        {((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+          (props.rowSolicitud.NoEstatus === "20" &&
+            localStorage.getItem("Rol") === "Revisor")) &&
+          ["20", "21", "22"].includes(props.rowSolicitud.NoEstatus) && (
+            //["4", "5", "6"].includes(props.rowSolicitud.NoEstatus) && (
+            <Grid
+              justifyContent={"space-evenly"}
+              sx={{ width: "50rem", display: "flex" }}
+            >
+              <Button
+                sx={{
+                  ...queries.buttonCancelar,
+                  fontSize: "50%",
+                }}
+                onClick={() => {
+                  setOpenGuardaComentarios(true);
+                }}
+              >
+                Guardar Comentarios
+              </Button>
+
+              {localStorage.getItem("Rol") !== "Revisor" && (
+                <Button
+                  sx={{
+                    ...queries.buttonCancelar,
+                    fontSize: "50%",
+                  }}
+                  onClick={() => {
+                    setOpenDialogRegresar(true);
+                    setAccion("modificar");
+                  }}
+                >
+                  {`Devolver para ${localStorage.getItem("Rol") === "Autorizador"
+                    ? "validación"
+                    : "revisión"
+                    }`}
+                </Button>
+              )}
+
+              <Button
+                sx={{
+                  ...queries.buttonContinuar,
+                  fontSize: "50%",
+                }}
+                onClick={() => {
+                  setOpenDialogRegresar(true);
+                  setAccion("enviar");
+                }}
+              >
+                Confirmar{" "}
+                {localStorage.getItem("Rol") === "Validador"
+                  ? "Validación"
+                  : localStorage.getItem("Rol") === "Revisor"
+                    ? "Revisión"
+                    : Object.keys(comentarios).length > 0
+                      ? "Solicitud de Requerimientos"
+                      : "Autorización"}
+              </Button>
+            </Grid>
+          )}
       </DialogTitle>
 
       <DialogContent
@@ -498,6 +498,67 @@ export function DialogVerDetalle(props: Props) {
       >
         <ResumenLP coments={false} />
       </DialogContent>
+
+
+      <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>
+        <DialogTitle>Guardar comentarios</DialogTitle>
+        <DialogContent>
+          {Object.entries(comentarios).map(([key, val], index) =>
+            (val as string) === "" ? null : (
+              <Typography key={index}>
+                <strong>{key}:</strong>
+                {val as string}
+              </Typography>
+            )
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => setOpenGuardaComentarios(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            sx={queries.buttonContinuar}
+            onClick={() => {
+              addComentario(
+                props.rowSolicitud.Id,
+                JSON.stringify(comentarios),
+                "RequerimientoReestructura"
+              ).then(() => {
+                Swal.fire({
+                  confirmButtonColor: "#15212f",
+                  cancelButtonColor: "rgb(175, 140, 85)",
+                  icon: "success",
+                  title: "Mensaje",
+                  text: "Comentarios guardados con éxito",
+                });
+                setOpenGuardaComentarios(false);
+                props.handler(false);
+              });
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {openGuardaComentarios && (
+        <DialogGuardarComentarios
+          open={openGuardaComentarios}
+          handler={setOpenGuardaComentarios}
+        />
+      )}
+
+      {openDialogRegresar && (
+        <DialogSolicitarModificacion
+          handler={setOpenDialogRegresar}
+          openState={openDialogRegresar}
+          accion={accion}
+        />
+      )}
     </Dialog>
   );
 }

@@ -21,9 +21,10 @@ type Props = {
   idSolicitud: string;
   Solicitud: string;
   IdEditor: string;
-  IdCreado:string;
+  IdCreado: string;
   Estatus: string;
   NumeroRegistro: string;
+  ClaveInscripcion: string;
 };
 
 export function DialogSolicitarReestructura(props: Props) {
@@ -79,23 +80,28 @@ export function DialogSolicitarReestructura(props: Props) {
     setErrorAsignacion(false);
   }, []);
 
-  
+
   const EnviarReestructura = () => {
+    console.log("props.idclaveinscripcion", props.ClaveInscripcion);
     const ReesState = useReestructuraStore?.getState();
+
     createSolicitudReestructura(
-      props.idSolicitud, 
-      props.IdEditor, 
-      setNavigateReestructura, 
+      props.idSolicitud,
+      localStorage.getItem("IdUsuario"),
+      setNavigateReestructura,
       props.Estatus,
       props.NumeroRegistro,
+      props.ClaveInscripcion,
       ReesState
     )
-    // setTimeout(() => {
-    //   if (!navigateReestructura) {
-    //     window.location.reload();
-    //     navigate("../reestructura");
-    //   }
-    // }, 4000);
+
+
+    setTimeout(() => {
+      if (!navigateReestructura) {
+        window.location.reload();
+        navigate("../reestructura");
+      }
+    }, 4000);
   }
 
   return (
@@ -167,6 +173,9 @@ export function DialogSolicitarReestructura(props: Props) {
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
+
+
+
             EnviarReestructura()
           }}
         >

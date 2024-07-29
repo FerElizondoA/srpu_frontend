@@ -117,6 +117,7 @@ export const createCondicionFinancieraSlice: StateCreator<
       disposicion: {
         fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
         importe: "$ 0.00",
+        montoDisposición: "$ 0.00",
       },
       tablaDisposicion: [],
       tasaDeInteres: {

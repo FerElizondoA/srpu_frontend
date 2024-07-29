@@ -163,13 +163,9 @@ export function ConsultaDeSolicitudPage() {
   };
 
   const [openDialogVer, changeOpenDialogVer] = useState(false);
-
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
-
   const [openEliminar, changeOpenEliminar] = useState(false);
-
   const [openDescargar, setOpenDescargar] = useState(false);
-
   const [openDialogRestructura, changeOpenDialogRestructura] = useState(false);
 
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -218,10 +214,10 @@ export function ConsultaDeSolicitudPage() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
-
+    
+    setProceso("actualizacion");
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
-    setProceso("actualizacion");
     navigate("../firmaUrl");
   };
 
@@ -698,6 +694,7 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
+                                  setInscripcion(row);
                                   changeOpenVerComentarios(!openVerComentarios);
                                 }}
                               >

@@ -221,11 +221,8 @@ export function Resumen({ coments }: { coments: boolean }) {
   ];
 
   const [fileSelected, setFileSelected] = useState<any>("");
-
   const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
-
   const [arr, setArr] = useState<any>([]);
-
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
@@ -247,11 +244,10 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
-
-  const activaAccion =
-    localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
+  const activaAccion = localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
 
   return (
+
     <Grid
       width={"100%"}
       container
@@ -323,6 +319,8 @@ export function Resumen({ coments }: { coments: boolean }) {
                       }
                       size="small"
                       onClick={() => {
+                        console.log("Hola Informacion General");
+                        
                         setOpenComentarioApartado({
                           open: true,
                           apartado: head.label,

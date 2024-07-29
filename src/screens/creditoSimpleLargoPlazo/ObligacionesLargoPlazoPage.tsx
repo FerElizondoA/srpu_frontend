@@ -201,12 +201,19 @@ export function ObligacionesLargoPlazoPage() {
                       setOpenDialogReestructura(!openDialogReestructura);
                     }}
                     disabled={
-                      tablaDeclaratorias.length < 1 ||
-                      autorizacionSelectReestructura.Id === "" ||
-                      Declaratorias.TipoConvenio.Descripcion === "" ||
-                      Declaratorias.SalgoVigente === 0 ||
-                      Declaratorias.PeriodoAdminitracion === "" ||
-                      Declaratorias.PeriodoFinanciamiento === ""
+                      reestructura === "con autorizacion" ?
+                        autorizacionSelectReestructura.Id === "" ||
+                        tablaDeclaratorias.length < 1 ||
+                        Declaratorias.TipoConvenio.Descripcion === "" ||
+                        Declaratorias.SalgoVigente === 0 ||
+                        Declaratorias.PeriodoAdminitracion === "" ||
+                        Declaratorias.PeriodoFinanciamiento === ""
+                        : 
+                        tablaDeclaratorias.length < 1 ||
+                        Declaratorias.TipoConvenio.Descripcion === "" ||
+                        Declaratorias.SalgoVigente === 0 ||
+                        Declaratorias.PeriodoAdminitracion === "" ||
+                        Declaratorias.PeriodoFinanciamiento === ""
                     }
                     sx={{
                       backgroundColor: "#15212f",
@@ -292,8 +299,8 @@ export function ObligacionesLargoPlazoPage() {
 
             {reestructura !== ""
               ?
-              <Tab 
-              // disabled={reestructura !== "con autorizacion"}
+              <Tab
+                // disabled={reestructura !== "con autorizacion"}
                 label="Solicitud de reestructuración"
                 sx={queries.bold_text_Largo_Plazo}
               />
@@ -301,43 +308,57 @@ export function ObligacionesLargoPlazoPage() {
 
           </Tabs>
         </Grid>
-      </Grid>
+      </Grid >
 
-      {tabIndex === 0 && <Encabezado />}
+      {tabIndex === 0 && <Encabezado />
+      }
       {tabIndex === 1 && <InfoGeneralGastoCosto />}
 
-      {reestructura === "sin autorizacion"
-        ? null
-        : tabIndex === 2 && <Autorizacion />}
+      {
+        reestructura === "sin autorizacion"
+          ? null
+          : tabIndex === 2 && <Autorizacion />
+      }
 
-      {reestructura === "sin autorizacion"
-        ? tabIndex === 2 && <FuentePagoSecciones />
-        : tabIndex === 3 && <FuentePagoSecciones />}
+      {
+        reestructura === "sin autorizacion"
+          ? tabIndex === 2 && <FuentePagoSecciones />
+          : tabIndex === 3 && <FuentePagoSecciones />
+      }
 
-      {reestructura === "sin autorizacion"
-        ? tabIndex === 3 && <CondicionesFinancieras />
-        : tabIndex === 4 && <CondicionesFinancieras />}
+      {
+        reestructura === "sin autorizacion"
+          ? tabIndex === 3 && <CondicionesFinancieras />
+          : tabIndex === 4 && <CondicionesFinancieras />
+      }
 
-      {reestructura === "sin autorizacion"
-        ? tabIndex === 4 && <Documentacion />
-        : tabIndex === 5 && <Documentacion />}
+      {
+        reestructura === "sin autorizacion"
+          ? tabIndex === 4 && <Documentacion />
+          : tabIndex === 5 && <Documentacion />
+      }
 
-      {reestructura === "sin autorizacion"
-        ? tabIndex === 5 && <Resumen coments={true} />
-        : tabIndex === 6 && <Resumen coments={true} />}
+      {
+        reestructura === "sin autorizacion"
+          ? tabIndex === 5 && <Resumen coments={true} />
+          : tabIndex === 6 && <Resumen coments={true} />
+      }
 
-      {reestructura === ""
-        ? tabIndex === 7 && <SolicitudDeInscripcion />
-        : null}
-      
-      {reestructura === "sin autorizacion"
-        ? tabIndex === 6 && <DeclaratoriasReestructura />
-        : reestructura === "con autorizacion"
-          ? tabIndex === 7 && <DeclaratoriasReestructura />
+      {
+        reestructura === ""
+          ? tabIndex === 7 && <SolicitudDeInscripcion />
           : null
       }
 
-{/* 
+      {
+        reestructura === "sin autorizacion"
+          ? tabIndex === 6 && <DeclaratoriasReestructura />
+          : reestructura === "con autorizacion"
+            ? tabIndex === 7 && <DeclaratoriasReestructura />
+            : null
+      }
+
+      {/* 
       {tabIndex === 7 && <SolicitudDeInscripcion />}
       {tabIndex === 8 && <DeclaratoriasReestructura />} */}
       {/* {reestructura === "con autorizacion"
@@ -359,7 +380,7 @@ export function ObligacionesLargoPlazoPage() {
         IdCreado={inscripcion.CreadoPor}
         Estatus={inscripcion.NoEstatus}
         NumeroRegistro={inscripcion.NumeroRegistro}
-
+        ClaveInscripcion={inscripcion.IdClaveInscripcion}
       />
     </>
   );

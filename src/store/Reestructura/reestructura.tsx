@@ -20,6 +20,7 @@ export interface IDatosSolicitudReestructura {
   IdEditor: string;
   FechaReestructura: "",
   NumeroRegistro: string,
+  IdClaveInscripcion: string;
 }
 
 export interface RestructuraHistorial {
@@ -53,6 +54,7 @@ export interface ReestructuraSlice {
     setState: Function,
     Estatus: string,
     NumeroRegistro: string,
+    ClaveInscripcion: string,
     ReesState: any) => void;
 
   updateClausulasModificatorias: (IAnexoClausula: IAnexoClausula, Index: number) => void,
@@ -107,7 +109,8 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     FechaReestructura: "",
     IdEditor: "",
     Estatus: "",
-    NumeroRegistro: ""
+    NumeroRegistro: "",
+    IdClaveInscripcion: ""
   },
   // {
   //   IdSolicitud: "",
@@ -235,7 +238,8 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     Estatus: "",
     FechaReestructura: "",
     IdEditor: "",
-    NumeroRegistro: "" //AQUI TE QUEDASTE!
+    NumeroRegistro: "", 
+    IdClaveInscripcion: ""
   },
 
   setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => {
@@ -250,6 +254,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     setState: Function,
     Estatus: string,
     NumeroRegistro: string,
+    ClaveInscripcion: string,
     ReesState: any
   ) => {
     const lpState = useLargoPlazoStore.getState();
@@ -331,8 +336,9 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
           IdSolicitud: IdSolicitud,
           SolicitudReestructura: JSON.stringify(solicitud),
           IdEditor: IdEditor,
-          Estatus: Estatus,
+          Estatus: "19",
           NumeroRegistro: NumeroRegistro,
+          ClaveInscripcion: ClaveInscripcion,
           //localStorage.getItem("IdUsuario"),
         },
         {

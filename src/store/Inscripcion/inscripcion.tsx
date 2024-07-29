@@ -149,6 +149,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     IdEditor: "",
     FechaReestructura: "",
     NumeroRegistro: "",
+    IdClaveInscripcion: "",
   },
 
   setInscripcionRestructura: (inscripcionReestructura: IDatosSolicitudReestructura) => {

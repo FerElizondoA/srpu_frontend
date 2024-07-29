@@ -186,6 +186,13 @@ export function DisposicionPagosCapital() {
     (state) => state.setDisposicionesParciales
   );
 
+  const cleanDisposicion: Function = useCortoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
+
+  
+  
+
   useEffect(() => {
     catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
     catalogoTasaReferencia.length <= 0 && getTasaReferencia();
@@ -388,7 +395,7 @@ export function DisposicionPagosCapital() {
               onChange={(v) => {
                 setPagosDeCapital({
                   ...pagosDeCapital,
-                  numeroDePago: v.target.value || 1,
+                  numeroDePago: v.target.value ,
                 });
               }}
               fullWidth
@@ -431,6 +438,11 @@ export function DisposicionPagosCapital() {
                     checked={disposicionesParciales}
                     onChange={(v) => {
                       setDisposicionesParciales();
+                      if(disposicionesParciales === false){
+                        removeDisposicion(0)
+                      }
+                      
+                      
                     }}
                   />
                 }

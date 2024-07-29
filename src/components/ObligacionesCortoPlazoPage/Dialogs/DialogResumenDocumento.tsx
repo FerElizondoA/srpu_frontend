@@ -45,9 +45,8 @@ export function VerBorradorDocumento(props: Props) {
     }
   }, [props.rowSolicitud.Id]);
 
-  const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>
-  >([]);
+  const [datosComentario, setDatosComentarios] = React.useState<Array<IComentarios>>([]);
+  
   React.useEffect(() => {
     let a: any = {};
 
@@ -62,6 +61,7 @@ export function VerBorradorDocumento(props: Props) {
       });
 
     setComentarios(a);
+    console.log("comentarios", comentarios)
 
     useCortoPlazoStore.setState({
       idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
@@ -95,8 +95,8 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.cleanCondicionFinanciera
   );
   
-
   return (
+
     <Dialog
       open={props.openState}
       fullScreen
