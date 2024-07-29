@@ -119,7 +119,7 @@ export function DetalleFideicomiso({
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(`/SRPU/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
         setLoading(false);
       });
     }

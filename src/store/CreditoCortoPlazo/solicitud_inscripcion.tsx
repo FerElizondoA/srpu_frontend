@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
+import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -32,7 +34,8 @@ export interface SolicitudInscripcionSlice {
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    // comentario: string,
+    arrDocsEliminados:IDocsEliminados[]
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -55,7 +58,8 @@ export interface SolicitudInscripcionSlice {
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc:string
   ) => void;
 }
 
@@ -157,22 +161,22 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log("Crearsoli data: ", data.data); 
+        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS );
+        
         state.saveFiles(
           data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
-        
-        
-        inscripcionState.setInscripcion(data.data);
-        console.log("1data comentarios guardados reestructura", comentario)
-        
-        console.log("1data comentarios data.data", data.data)
-        
+        console.log("data create solicitud", data);
+
+        // inscripcionState.setInscripcion(data.data);
+
+        console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
-      
-        console.log("2data comentarios guardados reestructura", comentario)
-        
-        console.log("2data comentarios data.data", data.data)
+        console.log("data create solicitud 2");
+
+        console.log("data create solicitud 3");
       });
   },
 
@@ -180,11 +184,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    // comentario: string,
+    arrDocsEliminados: IDocsEliminados[]
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
-
+    console.log('arrDocsEliminados: modisoli ',arrDocsEliminados);
+    
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
@@ -238,11 +244,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.deleteFiles(`/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`);
+        console.log("modifcarsoli data: ", data.data);
+        console.log('arrDocsEliminados',arrDocsEliminados);
+        if(arrDocsEliminados.length!=0){
+          deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
+        }
+          
         state.saveFiles(
           data.data.Id,
-          `/SRPU/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
+
+
       });
   },
 
@@ -368,9 +381,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   saveFiles: async (idRegistro: string, ruta: string) => {
     const state = useCortoPlazoStore.getState();
-    console.log('state.getState',state);
-    
+    console.log("Entre saveFiles");
+
     return await state.tablaDocumentos.map((file) => {
+      console.log(file);
+      
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
@@ -378,16 +393,13 @@ export const createSolicitudInscripcionSlice: StateCreator<
         dataArray.append("ROUTE", `${ruta}`);
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
-        // console.log('ip:',process.env.REACT_APP_APPLICATION_FILES  + "/api/ApiDoc/SaveFile");
-        // console.log('file.archivo',file.archivo)
-        // console.log('file',file);
-        // console.log('file',file.archivo.size);
-        if (file.archivo && file.archivo.size>0 ) {
-          console.log('entre');
-          
+       
+        if (file.archivo && file.archivo.size > 0) {
+          console.log("entre");
+
           return axios
             .post(
-              process.env.REACT_APP_APPLICATION_FILES  + "/api/ApiDoc/SaveFile",
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
               dataArray,
               {
                 headers: {
@@ -396,14 +408,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
               }
             )
             .then(({ data }) => {
-              console.log('data response',data);
-              
+              console.log("data response", data);
+
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
+                data.RESPONSE.NOMBREARCHIVO,
+                file.tipoArchivo
               );
+              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR,' tipoArchivo: ', file.tipoArchivo );
+              
             })
             .catch((e) => {});
         } else {
@@ -415,7 +430,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
-
+    console.log("Entre guardaDocumentos");
+    
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
     dataArray.append("ADDROUTE", "true");
@@ -437,7 +453,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
-            data.RESPONSE.NOMBREARCHIVO
+            data.RESPONSE.NOMBREARCHIVO,
+            'fake'
           );
         })
         .catch((e) => {});
@@ -450,8 +467,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc:string
   ) => {
+
+    console.log("Entre savePathDoc");
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
@@ -460,6 +480,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          TpoDoc:TpoDoc
         },
         {
           headers: {
@@ -467,7 +488,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
+      .then((r) => {
+        console.log("r: ",r.data);
+        
+        //saveFiles("", Ruta);
+      })
+
       .catch((e) => {});
   },
 });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+import { alertaError, alertaExito } from "../../generics/Alertas";
 
 export const createNotification = (
   Titulo: string,
@@ -28,13 +28,9 @@ export const createNotification = (
     )
     .then((r) => {
       // window.location.reload();
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "success",
-        title: "Mensaje",
-        text: "La solicitud se envió con éxito",
-      });
+      
+
+      alertaExito(()=>{}, "La solicitud se envió con éxito" )
     })
     .catch((r) => { });
 };
@@ -59,6 +55,7 @@ export const getNotificaciones = (
     })
     .catch((r) => {
       if (r.response.status === 409) {
+        alertaError("No es posible traer las notificaciones")
       }
     });
 };
@@ -84,6 +81,7 @@ export const getHistorialNotificaciones = (setState: Function) => {
     })
     .catch((r) => {
       if (r.response.status === 409) {
+        alertaError("No es posible traer el historial")
       }
     });
 };

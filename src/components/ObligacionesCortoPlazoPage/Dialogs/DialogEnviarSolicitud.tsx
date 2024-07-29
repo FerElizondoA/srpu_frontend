@@ -13,7 +13,6 @@ import {
 
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -22,13 +21,17 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import { IUsuariosAsignables } from "./DialogSolicitarModificacion";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { alertaConfirmCancelarError, alertaConfirmCancelar, alertaError, alertaExito } from "../../../generics/Alertas";
+import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
+  arrDocsEliminados
 }: {
   handler: Function;
   openState: boolean;
+  arrDocsEliminados?:IDocsEliminados[]
 }) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -150,7 +153,8 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  arrDocsEliminados
                 )
                   .then(() => {
                     addComentario(
@@ -158,13 +162,8 @@ export function ConfirmacionEnviarSolicitud({
                       JSON.stringify(comentarios),
                       "Captura"
                     );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
+                   
+                    alertaExito(() =>{}, "La solicitud se envió con éxito")
                     cleanSolicitud();
                     // navigate("../ConsultaDeSolicitudes");
                     createNotification(
@@ -177,29 +176,19 @@ export function ConfirmacionEnviarSolicitud({
                     );
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                    
+                    alertaError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
-                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
+                modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2", arrDocsEliminados)
                   .then(() => {
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
-                      "Captura"
+                      "Captura",
+                      
                     );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
+                    alertaExito(() =>{}, "La solicitud se envió con éxito")
                    // cleanSolicitud();
                    // navigate("../ConsultaDeSolicitudes");
                     createNotification(
@@ -212,13 +201,8 @@ export function ConfirmacionEnviarSolicitud({
                     );
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                  
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }
             } else {
@@ -234,24 +218,12 @@ export function ConfirmacionEnviarSolicitud({
                       JSON.stringify(comentarios),
                       "Captura"
                     );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
+                    alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
                 createNotification(
                   "Crédito simple a corto plazo",
@@ -274,24 +246,12 @@ export function ConfirmacionEnviarSolicitud({
                       JSON.stringify(comentarios),
                       "Captura"
                     );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se envió con éxito",
-                    });
+                    alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }
             }

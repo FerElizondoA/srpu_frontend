@@ -120,7 +120,7 @@ export function DetalleInstruccion({
   useEffect(() => {
     if (idInstruccion !== "") {
       listFile(
-        `/SRPU/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
         setArr
       ).then(() => {
         setLoading(false);

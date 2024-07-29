@@ -9,11 +9,20 @@ export interface DocumentosSlice {
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
+
+
+
+
   addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;
   setTablaDocumentos: (docs: any) => any;
   getTiposDocumentos: () => void;
+
+
+
 }
+
+
 
 export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
@@ -83,4 +92,8 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
       }
     });
   },
+
+
+
 });
+

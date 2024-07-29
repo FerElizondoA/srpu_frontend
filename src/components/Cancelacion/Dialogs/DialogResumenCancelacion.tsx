@@ -276,7 +276,7 @@ export function VerBorradorCancelacion({
       >
         {value === 1 ? (
           credito.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
-            <Resumen coments={false} />
+            <Resumen coments={false}  />
           ) : (
             <ResumenLP coments={false} />
           )

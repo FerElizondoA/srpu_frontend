@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { alertaError, alertaExito } from "../../../generics/Alertas";
 
 export async function getPathDocumentos(
   IdSolicitud: string,
@@ -99,12 +100,37 @@ export const getDocumentos = async (
     .then(({ data }) => {
       let files = data.RESPONSE;
 
-      files.map((file: any, index: any) => {
-        let auxArrayArchivos = [...state.tablaDocumentos];
-        auxArrayArchivos[index].archivo = file.FILE;
-        auxArrayArchivos[index].nombreArchivo = file.NOMBREFORMATEADO;
-        return state.setTablaDocumentos(auxArrayArchivos);
+      console.log('el conchesumadre files:', files);
+      console.log();
+      
+      console.log('state.tablaDocumentos',state.tablaDocumentos);
+      
+      const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
+        const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
+        if (archivo) {
+          return {
+            ...documento,
+            archivo: archivo.FILE,
+            nombreArchivo: archivo.NOMBRE,
+            size:archivo.SIZE
+          };
+        }
+        return documento;
       });
+
+      console.log("auxArrayArchivos",auxArrayArchivos);
+      
+      state.setTablaDocumentos(auxArrayArchivos);
+
+
+      // files.map((file: any, index: any) => {
+      //   let auxArrayArchivos = [...state.tablaDocumentos];
+      //   auxArrayArchivos[index].archivo = file.FILE;
+      //   auxArrayArchivos[index].nombreArchivo = file.NOMBRE;
+      //   console.log('el conchesumadre auxArrayArchivos',auxArrayArchivos);
+        
+      //   return state.setTablaDocumentos(auxArrayArchivos);
+      // });
 
       setState(files);
       setLoad(false);
@@ -140,7 +166,9 @@ export const descargaDocumento = async (
         ActualizaDescarga(IdPath);
       }
     })
-    .catch((r) => {});
+    .catch((r) => {
+      alertaError("Error al intentar descargar documento")
+    });
 };
 
 export const listFile = async (ROUTE: string, setState: Function) => {
@@ -148,7 +176,7 @@ export const listFile = async (ROUTE: string, setState: Function) => {
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
       {
-        ROUTE: ROUTE, // /SRPU/CORTOPLAZO
+        ROUTE: ROUTE,
       },
       {
         headers: {
@@ -186,3 +214,39 @@ export const ActualizaDescarga = (IdPath: string) => {
     .then((response) => {})
     .catch((err) => {});
 };
+
+export const deleteFile =(ruta:string)=>{
+  axios
+  .post(
+    process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/DeleteFileSimple",
+    {
+      ROUTE:ruta
+    },
+    {
+      headers: {
+        Authorization: localStorage.getItem("jwtToken"),
+        "Access-Control-Allow-Origin": "*",
+      },
+      responseType: "arraybuffer",
+    }
+  )
+  .then((response) => {})
+  .catch((err) => {});
+}
+
+export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
+  console.log('docs axios',docs);
+  
+  axios.delete(
+    process.env.REACT_APP_APPLICATION_BACK + "/delete-PathDocSol",
+     {
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: localStorage.getItem("jwtToken"),
+      },
+      data: { IdSolicitud:IdSolicitud, jsonDocsDel:docs }
+  })
+    
+  .then((response) => {})
+  .catch((err) => {alertaError('Error de eliminacion')});
+}

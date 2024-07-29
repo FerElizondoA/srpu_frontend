@@ -26,6 +26,7 @@ import { Declaratorias } from "../../components/ObligacionesLargoPlazoPage/Panel
 import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPlazoPage/Panels/DeclaratoriasReestructura";
 import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
 import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
+import { deleteDocumentos } from "../../generics/interfaces";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -81,10 +82,17 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.ReestructuraDeclaratorias
   );
 
+  const [borrarDoc, setBorrarDoc] = useState<deleteDocumentos[]>([]);
+
+  const addDocumentDelete = (x: deleteDocumentos) => {
+    
+    setBorrarDoc([...borrarDoc, x]);
+  };
+
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => { },
       () => { }
     );
@@ -332,11 +340,9 @@ export function ObligacionesLargoPlazoPage() {
           : tabIndex === 4 && <CondicionesFinancieras />
       }
 
-      {
-        reestructura === "sin autorizacion"
-          ? tabIndex === 4 && <Documentacion />
-          : tabIndex === 5 && <Documentacion />
-      }
+      {reestructura === "sin autorizacion"
+        ? tabIndex === 4 && <Documentacion addDocumentDelete ={addDocumentDelete} />
+        : tabIndex === 5 && <Documentacion addDocumentDelete ={addDocumentDelete} />}
 
       {
         reestructura === "sin autorizacion"

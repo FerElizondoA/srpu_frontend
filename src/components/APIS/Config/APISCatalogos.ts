@@ -1,5 +1,5 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+import { alertaError, alertaExito } from "../../../generics/Alertas";
 
 export async function getCatalogo(setState: Function, getState: string) {
   await axios({
@@ -14,13 +14,7 @@ export async function getCatalogo(setState: Function, getState: string) {
       setState(data.data);
     })
     .catch((error) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Mensaje",
-        text: "Ha sucedido un error, inténtelo de nuevo",
-      });
+      alertaError("Ha sucedido un error, inténtelo de nuevo");
     });
 }
 
@@ -51,22 +45,11 @@ export async function modDesc(
       }
     )
     .then((r) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "success",
-        title: "Éxito",
-        text: "Descripción modificada con éxito.",
-      });
+      alertaExito(() => {}, "Descripción modificada con éxito.");
     })
+
     .catch((error) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "info",
-        title: "¡Aviso!",
-        text: "No hubo cambios, asi que no se modificaron los campos",
-      });
+      alertaError("No hubo cambios, asi que no se modificaron los campos");
     });
 }
 
@@ -96,39 +79,16 @@ export async function creaDesc(
     )
     .then(({ data }) => {
       !data.data.error
-        ? Swal.fire({
-            customClass: { container: ".swal2-container" },
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "success",
-            title: "Éxito",
-            text: "Descripción agregada con éxito.",
-          })
-        : Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "¡Error!",
-            text: "Descripción ya existente",
-          });
+        ? alertaExito(() => {}, "Descripción agregada con éxito.")
+        : alertaError("Descripción ya existente");
     })
     .catch((err) => {
       if (desc === "") {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "¡Error!",
-          text: "Favor de completar los campos",
-        });
+       
+        alertaError("Favor de completar los campos");
       } else {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "¡Error!",
-          text: "Ha sucedido un error, inténtelo de nuevo",
-        });
+        
+        alertaError("Ha sucedido un error, inténtelo de nuevo");
       }
     });
 }
@@ -147,21 +107,12 @@ export async function delDesc(delDesc: string, desc: string) {
       },
     })
     .then((r) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "success",
-        title: "Éxito",
-        text: "Elemento eliminado con éxito.",
-      });
+     
+      alertaExito(() =>{},"Favor de completar los campos");
     })
     .catch((err) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Error",
-        text: "Ha sucedido un error, inténtelo de nuevo",
-      });
+     
+
+      alertaError("Ha sucedido un error, inténtelo de nuevo")
     });
 }

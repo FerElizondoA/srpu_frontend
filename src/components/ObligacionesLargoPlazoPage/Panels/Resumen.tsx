@@ -395,7 +395,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   useEffect(() => {
     inscripcion.Id &&
       getDocumentos(
-        `/SRPU/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
         setCargados
       );

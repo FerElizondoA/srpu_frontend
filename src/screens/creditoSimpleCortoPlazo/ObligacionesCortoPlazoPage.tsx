@@ -2,8 +2,7 @@
 import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useEffect, useState } from "react";
-
+import { SyntheticEvent, useCallback, useEffect, useState } from "react";
 import { LateralMenu } from "../../components/LateralMenu/LateralMenu";
 import { DialogGuardarBorrador } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogGuardarBorrador";
 import { CondicionesFinancieras } from "../../components/ObligacionesCortoPlazoPage/Panels/CondicionesFinancieras";
@@ -17,8 +16,24 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+
 
 export function ObligacionesCortoPlazoPage() {
+
+  const [arrDocsEliminados, setArrDocsEliminados]=useState<IDocsEliminados[]>([]);
+
+  useEffect(()=>{
+    console.log("arrDocsEliminados ObligacionCortoPlazo:",JSON.stringify(arrDocsEliminados));
+  },[arrDocsEliminados])
+
+
+  const addArrDocsEliminados = (obj: IDocsEliminados) => {
+    console.log('objeto eliminado', obj);
+    
+    setArrDocsEliminados( [...arrDocsEliminados, obj]);
+  };
+
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -43,11 +58,11 @@ export function ObligacionesCortoPlazoPage() {
 
   useEffect(() => {
     getTiposDocumentos();
-    getDocumentos(
-      `/SRPU/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+    if(inscripcion.Id){getDocumentos(
+      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => {},
       () => {}
-    );
+    );}
   }, []);
 
   return (
@@ -166,9 +181,9 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 0 && <Encabezado />}
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
-      {tabIndex === 3 && <Documentacion />}
-      {tabIndex === 4 && <Resumen coments={true} />}
-      {tabIndex === 5 && <SolicitudInscripcion />}
+      {tabIndex === 3 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
+      {tabIndex === 4 && <Resumen coments={true} arrDocsEliminados={arrDocsEliminados} />}
+      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados}/>}
 
       {openDialogBorrador && (
         <DialogGuardarBorrador

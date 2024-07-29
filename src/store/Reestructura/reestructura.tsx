@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 import axios from "axios";
-import Swal from "sweetalert2";
 import { StateCreator } from "zustand";
 import { useNavigate } from "react-router-dom";
 import { IDatosInstrucciones } from "../../screens/fuenteDePago/InstruccionesIrrevocables";
@@ -11,6 +10,7 @@ import { ICatalogo } from "../../components/Interfaces/InterfacesLplazo/encabeza
 import { IAutorizaciones } from "../CreditoLargoPlazo/autorizacion";
 import { useReestructuraStore } from "./main";
 import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
+import { alertaConfirmCancelarError, alertaEliminar, alertaExitoConfirm } from "../../generics/Alertas";
 // import { useInstruccionesStore } from "./main";
 
 export interface IDatosSolicitudReestructura {
@@ -349,13 +349,8 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       )
 
       .then(({ data }) => {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "success",
-          title: "Éxito",
-          text: "La reestructura de la solicitud se completado exitosamente",
-        });
+       
+        alertaExitoConfirm("La reestructura de la solicitud se completado exitosamente")
         //navigate("../ConsultaDeSolicitudes");
         // console.log("reestructura", ReesState.tablaDeclaratorias )
         // console.log("reestructura", ReesState.autorizacionSelectReestructura )
@@ -363,13 +358,9 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
         setState(true)
       })
       .catch(() => {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "Mensaje",
-          text: "Ha sucedido un error, inténtelo de nuevo",
-        });
+       
+        alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
+       // alertaEliminar(() =>{}, () =>{}, "Ha sucedido un error, inténtelo de nuevo")
       });
   },
 

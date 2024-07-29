@@ -4,6 +4,7 @@ import { StateCreator } from "zustand";
 import { IDatosMandatos } from "../../screens/fuenteDePago/Mandatos";
 import { useMandatoStore } from "./main";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../generics/Alertas";
 
 export interface IDatosGeneralesMandato {
   numeroMandato: string;
@@ -390,22 +391,14 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           setLoading
         );
 
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "success",
-          title: "Éxito",
-          text: "El mandato se ha creado exitosamente",
-        });
+        
+
+        alertaConfirmCancelar("El mandato se ha creado exitosamente")
+
       })
       .catch(() => {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "Mensaje",
-          text: "Ha sucedido un error, inténtelo de nuevo",
-        });
+        
+        alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
   },
 
@@ -451,27 +444,19 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       )
       .then(({ data }) => {
         state.setIdMandato(data.result.Id);
-        cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
+        //cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
         state.saveFilesMandato(
           data.result.Id,
           `/SRPU/MANDATOS/${data.result.Id}`,
           setLoading
         );
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "success",
-          title: "Éxito",
-          text: "El mandato se ha modificado exitosamente",
-        });
+        alertaConfirmCancelar("El mandato se ha creado exitosamente")
+
       })
       .catch(function (error) {
-        Swal.fire({
-          confirmButtonColor: "#15212f",
-          cancelButtonColor: "rgb(175, 140, 85)",
-          icon: "error",
-          title: "Se encontró un error, verifique la información.",
-        });
+        
+
+        alertaConfirmCancelarError("Se encontró un error, verifique la información.")
       });
   },
 

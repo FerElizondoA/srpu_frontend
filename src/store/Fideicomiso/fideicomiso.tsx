@@ -534,7 +534,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       )
       .then(({ data }) => {
         state.setIdFideicomiso(data.result.Id);
-        cpState.deleteFiles(`/SRPU/FIDEICOMISOS/${data.result.Id}`);
+        //cpState.deleteFiles(`/SRPU/FIDEICOMISOS/${data.result.Id}`);
         state.saveFilesFideicomiso(
           data.result.Id,
           `/SRPU/FIDEICOMISOS/${data.result.Id}`,

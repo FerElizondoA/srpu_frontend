@@ -38,6 +38,9 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
 
   getTiposDocumentos: async () => {
     const state = useInscripcionStore.getState();
+
+    console.log('state',state);
+    
     await axios({
       method: "get",
       url:
@@ -49,6 +52,8 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
+      console.log('data que quiero',data);
+      
       if (state.inscripcion.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,

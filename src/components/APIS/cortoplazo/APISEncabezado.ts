@@ -1,6 +1,5 @@
 import axios from "axios";
-import { env } from "process";
-import Swal from "sweetalert2";
+import { alertaError } from "../../../generics/Alertas";
 
 export function getMunicipiosUOrganismos(setState: Function) {
   axios({
@@ -16,13 +15,9 @@ export function getMunicipiosUOrganismos(setState: Function) {
       setState(data.data);
     })
     .catch((error) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Mensaje",
-        text: "(" + error.response.status + ") " + error.response.data.msg,
-      });
+     
+
+      alertaError("(" + error.response.status + ") " + error.response.data.msg)
     });
 }
 
@@ -40,12 +35,8 @@ export function getTipoEntePublico(setState: Function) {
       setState(data.data);
     })
     .catch((error) => {
-      Swal.fire({
-        confirmButtonColor: "#15212f",
-        cancelButtonColor: "rgb(175, 140, 85)",
-        icon: "error",
-        title: "Mensaje",
-        text: "(" + error.response.status + ") " + error.response.data.msg,
-      });
+      
+
+      alertaError("(" + error.response.status + ") " + error.response.data.msg)
     });
 }

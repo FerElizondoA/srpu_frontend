@@ -28,6 +28,7 @@ import { ConfirmacionCancelarSolicitud } from "../Dialogs/DialogCancelarSolicitu
 import { ConfirmacionEnviarSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { DialogGuardarBorrador } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
+import { IDocsEliminados } from "./InterfacesCortoPlazo";
 
 interface Head {
   label: string;
@@ -43,7 +44,7 @@ const heads: readonly Head[] = [
 ];
 export let errores: string[] = [];
 
-export function SolicitudInscripcion() {
+export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDocsEliminados[]}) {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
@@ -77,6 +78,8 @@ export function SolicitudInscripcion() {
 
   useEffect(() => {
     catalogoReglas.length <= 0 && getReglas();
+    console.log('arrDocsEliminados SolicitudInscripcion',arrDocsEliminados);
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -616,6 +619,7 @@ export function SolicitudInscripcion() {
                     <ConfirmacionEnviarSolicitud
                       handler={setOpenDialogEnviar}
                       openState={openDialogEnviar}
+                      arrDocsEliminados={arrDocsEliminados}
                     />
                   )}
 
@@ -631,6 +635,7 @@ export function SolicitudInscripcion() {
                       handler={setOpenDialogModificacion}
                       openState={openDialogModificacion}
                       accion={"modificacion"}
+                      arrDocsEliminados={arrDocsEliminados}
                     />
                   )}
                 </Grid>
