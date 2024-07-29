@@ -247,6 +247,6 @@ export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
       data: { IdSolicitud:IdSolicitud, jsonDocsDel:docs }
   })
     
-  .then((response) => {alertaExito(()=>{},"Exito de eliminacion")})
+  .then((response) => {})
   .catch((err) => {alertaError('Error de eliminacion')});
 }

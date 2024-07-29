@@ -170,7 +170,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         );
         console.log("data create solicitud", data);
 
-        inscripcionState.setInscripcion(data.data);
+        // inscripcionState.setInscripcion(data.data);
 
         console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
@@ -246,7 +246,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .then(({ data }) => {
         console.log("modifcarsoli data: ", data.data);
         console.log('arrDocsEliminados',arrDocsEliminados);
-        deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
+        if(arrDocsEliminados.length!=0){
+          deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
+        }
+          
         state.saveFiles(
           data.data.Id,
           `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
