@@ -691,7 +691,7 @@ export function SolicitudesReestructura() {
                         <IconButton
                           type="button"
                           onClick={() => {
-                            setInscripcion(row)
+                            setInscripcion(row) // CONSHESUMADRE LIMPIAR INSCRIPCION ****************
                             changeOpenDialogVer(!openDialogVer);
                             changeRestructura("con autorizacion");
                             getCatalogoFirmaDetalle(row.Id);

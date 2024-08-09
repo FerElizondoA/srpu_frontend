@@ -98,6 +98,16 @@ export function ObligacionesLargoPlazoPage() {
     );
   }, []);
 
+  const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
+    (state) => state.inscripcionReestructura
+  );
+  
+  useEffect(() => {
+    console.log("inscripcion", inscripcion);
+    console.log("inscripcionReestructura", inscripcionReestructura);
+  }, [])
+  
+
   return (
     <>
       <Grid item width={"100%"}>

@@ -126,10 +126,13 @@ export interface ISolicitudCortoPlazo {
 export interface InscripcionSlice {
   inscripcion: IInscripcion;
   setInscripcion: (solicitud: IInscripcion) => void;
+
+  cleanInscripcion: () => void;
   
   inscripcionReestructura: IDatosSolicitudReestructura;
   //PASAR LOS DATOS NECESRIOS PARA EL LLENADO DE LA SOLICITUD! ******************************** 
   setInscripcionRestructura: (solicitud: IDatosSolicitudReestructura) => void;
+
 
   proceso: string;
   setProceso: (proceso: string) => void;
@@ -142,6 +145,37 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   set,
   get
 ) => ({
+  cleanInscripcion: () => {
+    set(() => ({
+      inscripcion: {
+        Id: "",
+        NumeroRegistro: "",
+        Nombre: "",
+        TipoEntePublico: "",
+        TipoSolicitud: "",
+        Institucion: "",
+        NoEstatus: "",
+        Estatus: "",
+        ControlInterno: "",
+        Control: "",
+        IdClaveInscripcion: "",
+        MontoOriginalContratado: "",
+        FechaContratacion: "",
+        Solicitud: "",
+        FechaCreacion: "",
+        CreadoPor: "",
+        UltimaModificacion: "",
+        ModificadoPor: "",
+        IdEditor: "",
+        FechaRequerimientos: "",
+        IdPathDoc: "",
+        CountReestructuras: "",
+      },
+      
+      
+    }));
+  },
+
   inscripcionReestructura: {
     IdSolicitud: "",
     SolicitudReestructura: "",

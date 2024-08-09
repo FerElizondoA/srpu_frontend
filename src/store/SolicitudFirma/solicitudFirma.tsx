@@ -8,6 +8,7 @@ import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../generics/Alertas";
 import { IDatosSolicitudReestructura } from "../Reestructura/reestructura";
+import { useState } from "react";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -102,21 +103,51 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
     //console.log("info", info)
+
     set(() => ({ infoDoc: info }));
 
     if (info) {
+      let validacionReestructura = false
+
       const inf = JSON.parse(info);
 
 
       console.log("inf", inf)
-      const state = useInscripcionStore.getState();
-
-      const estatusPrevio = {
-        NoEstatus: state.inscripcion.NoEstatus,
-        Estatus: state.inscripcion.Estatus,
-        ControlInterno: state.inscripcion.ControlInterno,
+      
+      const filtro = useInscripcionStore.getState();
+      let state: any;
+      
+      let estatusPrevio = {
+        Id: "",
+        NoEstatus: "",
+        Estatus: "",
+        ControlInterno: "",
       };
 
+      if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
+        filtro.inscripcionReestructura?.IdSolicitud === null ||
+        filtro.inscripcionReestructura?.IdSolicitud === undefined) {
+
+        validacionReestructura = false
+        state = filtro.inscripcion;
+        estatusPrevio = {
+          Id: state.Id,
+          NoEstatus: state.NoEstatus,
+          Estatus: state.Estatus,
+          ControlInterno: state.ControlInterno,
+        };
+
+      } else {
+        validacionReestructura = true
+        state = filtro.inscripcionReestructura
+        if (state.Estatus === "19")
+          estatusPrevio = {
+            Id: state.IdSolicitud,
+            NoEstatus: state.Estatus,
+            Estatus: "",
+            ControlInterno: "reestructura",
+          }
+      }
 
       axios
         .post(
@@ -124,7 +155,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           {
             IdPathDoc: inf.IdPathDoc,
             IdFirma: inf.IdFirma,
-            IdSolicitud: state.inscripcion.Id,
+
+            IdSolicitud: estatusPrevio.Id,
+
             NumeroOficio: `${inf.NumeroOficio}`,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
@@ -143,23 +176,24 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          let titulo =
-            estatusPrevio.ControlInterno === "inscripcion"
-              ? "Solicitud de Inscripción"
-              : estatusPrevio.ControlInterno === "revision"
-                ? "Solicitud de Requerimientos"
-                : "Constancia de Inscripción";
-          let mensaje =
-            estatusPrevio.ControlInterno === "inscripcion"
-              ? `Se recibe el ${new Date().toLocaleString(
-                "es-MX"
-              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-              }`
-              : `Se envía el ${new Date().toLocaleString(
-                "es-MX"
-              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-              }`;
-          let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+          // let titulo =
+          //   estatusPrevio.ControlInterno === "inscripcion"
+          //     ? "Solicitud de Inscripción"
+          //     : estatusPrevio.ControlInterno === "revision"
+          //       ? "Solicitud de Requerimientos"
+
+          //       : "Constancia de Inscripción";
+          // let mensaje =
+          //   estatusPrevio.ControlInterno === "inscripcion"
+          //     ? `Se recibe el ${new Date().toLocaleString(
+          //       "es-MX"
+          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+          //     }`
+          //     : `Se envía el ${new Date().toLocaleString(
+          //       "es-MX"
+          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+          //     }`;
+          // let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -168,9 +202,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           // }
 
           //GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
-         
-   
 
+
+          console.log("state.Id 2", state.Id)
+          //console.log("state.IdSolicitu 2", state.IdSolicitud)
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
@@ -187,19 +222,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                       ? "16"
                       : estatusPrevio.ControlInterno === "cancelado"
                         ? "18"
-                        : estatusPrevio.ControlInterno === "reestructura" &&
-                          state.proceso === "solicitud"
+                        : estatusPrevio.NoEstatus === "19"
                           ? "20"
-                          : estatusPrevio.ControlInterno === "reestructura" &&
-                            state.proceso === "actualizacion"
+                          : estatusPrevio.NoEstatus === "23"
                             ? "24"
-                            : estatusPrevio.ControlInterno === "reestructurado"
+                            : estatusPrevio.NoEstatus === "25"
                               ? "10"
                               : "11",
-            state.inscripcion.Id,
+            estatusPrevio.Id,
             inf.IdUsuario,
             //oficio
           );
+
         })
         .catch((err) => { });
     }
@@ -237,7 +271,7 @@ export async function GeneraAcuseRespuesta(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-${noOficio}.pdf`)
       );
       // setUrl(url);
@@ -558,9 +592,9 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
           }
         ),
 
-        claveInscripcion: (idClaveInscripcion !== "" || idClaveInscripcion !== undefined  ) 
-        ? idClaveInscripcion
-        :"Sin Id Clave de Inscripcion",
+        claveInscripcion: (idClaveInscripcion !== "" || idClaveInscripcion !== undefined)
+          ? idClaveInscripcion
+          : "Sin Id Clave de Inscripcion",
 
         fechaClave: format(
           new Date(solicitud.encabezado.fechaContratacion),
@@ -577,9 +611,9 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
         entePublicoObligado: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         obligadoSolidarioAval:
-        solicitud.informacionGeneral.obligadosSolidarios.length > 0
-          ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
-          : ["No Aplica"],
+          solicitud.informacionGeneral.obligadosSolidarios.length > 0
+            ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
+            : ["No Aplica"],
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
 
@@ -776,7 +810,7 @@ export async function GeneraAcuseEnvio(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-envio-${noOficio}.pdf`)
       );
     })
@@ -812,7 +846,7 @@ export async function GeneraAcuse(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+"/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
@@ -824,6 +858,8 @@ export const CambiaEstatus = (
   IdSolicitud: string,
   IdEditor: string
 ) => {
+  console.log("intento cambiar de estatus 1");
+
   return axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/cambiaEstatus",
@@ -841,7 +877,8 @@ export const CambiaEstatus = (
         responseType: "arraybuffer",
       }
     )
-    .then((response) => {      
+    .then((response) => {
+      console.log("intento cambiar de estatus 2");
       return true;
     })
     .catch((err) => { });
