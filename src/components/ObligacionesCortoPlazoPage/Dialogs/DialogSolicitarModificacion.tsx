@@ -41,13 +41,14 @@ export function DialogSolicitarModificacion({
   handler: Function;
   openState: boolean;
   accion: string;
-  arrDocsEliminados?:IDocsEliminados[]
+  arrDocsEliminados?: IDocsEliminados[]
 }) {
   const navigate = useNavigate();
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
+  const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -69,8 +70,8 @@ export function DialogSolicitarModificacion({
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
-    console.log('arrDocsEliminadossolicitar modificacion',arrDocsEliminados);
-    
+    console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
+
   }, [openState]);
 
   const checkform = () => {
@@ -88,10 +89,10 @@ export function DialogSolicitarModificacion({
               : "9"
             : "5"
           : localStorage.getItem("Rol") === "Validador"
-          ? accion === "enviar"
-            ? "6"
-            : "4"
-          : "5",
+            ? accion === "enviar"
+              ? "6"
+              : "4"
+            : "5",
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
@@ -99,12 +100,13 @@ export function DialogSolicitarModificacion({
       ).then(() => {
         createNotification(
           "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para  ${
-            localStorage.getItem("Rol") === "Autorizador"
-              ? accion === "enviar"
-                ? "firmar"
-                : "validación"
-              : localStorage.getItem("Rol") === "Validador"
+          `Se te ha asignado una solicitud para  
+          ${
+            localStorage.getItem("Rol") === "Autorizador"? 
+              accion === "enviar" ? 
+              "firmar": 
+              "validación"
+            : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
                 ? "autorización"
                 : "revisión"
@@ -116,7 +118,9 @@ export function DialogSolicitarModificacion({
               : idUsuarioAsignado,
           ],
           inscripcion.Id,
-          
+          "inscripcion"
+          //Aqui va el control interno
+
         );
         window.location.reload();
         Swal.fire({
@@ -129,8 +133,8 @@ export function DialogSolicitarModificacion({
       });
     } else {
       if (inscripcion.Id !== "") {
-        console.log('arrDocsEliminados dialog: ',arrDocsEliminados);
-        
+        console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
+
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
@@ -164,15 +168,18 @@ export function DialogSolicitarModificacion({
         createNotification(
           "Crédito simple a corto plazo",
           "Se te ha asignado una solicitud para modificación",
-          [idUsuarioAsignado]
+          [idUsuarioAsignado],
+          inscripcion.Id,
+          "inscripcion"
         );
         navigate("../ConsultaDeSolicitudes");
       } else {
         crearSolicitud(
-          localStorage.getItem("IdUsuario"),
+          
           idUsuarioAsignado,
           "1",
-          JSON.stringify(comentarios)
+          JSON.stringify(comentarios),
+          setIdSolicitudCreada
         ).catch(() => {
           Swal.fire({
             confirmButtonColor: "#15212f",
@@ -185,7 +192,9 @@ export function DialogSolicitarModificacion({
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado]
+          [idUsuarioAsignado],
+          idSolicitudCreada,
+          "inscripcion"
         );
         navigate("../ConsultaDeSolicitudes");
       }
@@ -217,7 +226,7 @@ export function DialogSolicitarModificacion({
 
       <DialogContent>
         {localStorage.getItem("Rol") === "Autorizador" &&
-        accion === "enviar" ? null : (
+          accion === "enviar" ? null : (
           <Grid mb={2}>
             <FormControl fullWidth>
               <TextField
@@ -228,25 +237,25 @@ export function DialogSolicitarModificacion({
                 }}
               >
                 {localStorage.getItem("Rol")! === "Autorizador" ||
-                localStorage.getItem("Rol") === "Revisor"
+                  localStorage.getItem("Rol") === "Revisor"
                   ? usuarios
-                      .filter((usr) => usr.Rol === "Validador")
-                      .map((usuario, index) => {
-                        return (
-                          <MenuItem value={usuario.Id} key={index}>
-                            {usuario.Nombre +
-                              " " +
-                              usuario.ApellidoPaterno +
-                              " " +
-                              usuario.ApellidoMaterno +
-                              " - " +
-                              (usuario.Rol || "")}
-                          </MenuItem>
-                        );
-                      })
+                    .filter((usr) => usr.Rol === "Validador")
+                    .map((usuario, index) => {
+                      return (
+                        <MenuItem value={usuario.Id} key={index}>
+                          {usuario.Nombre +
+                            " " +
+                            usuario.ApellidoPaterno +
+                            " " +
+                            usuario.ApellidoMaterno +
+                            " - " +
+                            (usuario.Rol || "")}
+                        </MenuItem>
+                      );
+                    })
                   : localStorage.getItem("Rol")! === "Validador"
-                  ? accion === "enviar"
-                    ? usuarios
+                    ? accion === "enviar"
+                      ? usuarios
                         .filter((usr) => usr.Rol === "Autorizador")
                         .map((usuario, index) => {
                           return (
@@ -261,7 +270,7 @@ export function DialogSolicitarModificacion({
                             </MenuItem>
                           );
                         })
-                    : usuarios
+                      : usuarios
                         .filter((usr) => usr.Rol === "Revisor")
                         .map((usuario, index) => {
                           return (
@@ -276,7 +285,7 @@ export function DialogSolicitarModificacion({
                             </MenuItem>
                           );
                         })
-                  : usuarios
+                    : usuarios
                       .filter((usr) => usr.Rol === "Capturador")
                       .map((usuario, index) => {
                         return (

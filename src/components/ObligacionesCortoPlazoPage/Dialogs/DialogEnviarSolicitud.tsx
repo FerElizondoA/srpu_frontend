@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
@@ -23,6 +22,7 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelarError, alertaConfirmCancelar, alertaError, alertaExito } from "../../../generics/Alertas";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
+import { useEffect, useState } from "react";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -31,8 +31,9 @@ export function ConfirmacionEnviarSolicitud({
 }: {
   handler: Function;
   openState: boolean;
-  arrDocsEliminados?:IDocsEliminados[]
+  arrDocsEliminados?: IDocsEliminados[]
 }) {
+
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
@@ -45,13 +46,13 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.addComentario
   );
 
-  const [idUsuarioAsignado, setidUsuarioAsignado] = React.useState("");
+  const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
-  const [usuarios, setUsuarios] = React.useState<Array<IUsuariosAsignables>>(
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>(
     []
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
 
@@ -65,6 +66,8 @@ export function ConfirmacionEnviarSolicitud({
   const cleanSolicitud: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
+
+  const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
   return (
     <Dialog
@@ -162,8 +165,8 @@ export function ConfirmacionEnviarSolicitud({
                       JSON.stringify(comentarios),
                       "Captura"
                     );
-                   
-                    alertaExito(() =>{}, "La solicitud se envió con éxito")
+
+                    alertaExito(() => { }, "La solicitud se envió con éxito")
                     cleanSolicitud();
                     // navigate("../ConsultaDeSolicitudes");
                     // createNotification(
@@ -176,7 +179,7 @@ export function ConfirmacionEnviarSolicitud({
                     // );
                   })
                   .catch(() => {
-                    
+
                     alertaError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
@@ -186,9 +189,9 @@ export function ConfirmacionEnviarSolicitud({
                       solicitud.Id,
                       JSON.stringify(comentarios),
                       "Captura",
-                      
+
                     );
-                    alertaExito(() =>{}, "La solicitud se envió con éxito")
+                    alertaExito(() => { }, "La solicitud se envió con éxito")
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
@@ -200,7 +203,7 @@ export function ConfirmacionEnviarSolicitud({
                     );
                   })
                   .catch(() => {
-                  
+
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }
@@ -209,41 +212,51 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "3",
-                  ""
+                  "",
+                  setIdSolicitudCreada
                 )
                   .then(() => {
-                    
+
                     addComentario(
-                      solicitud.Id,
+                      idSolicitudCreada,
                       JSON.stringify(comentarios),
                       "Captura"
                     );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitud();
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "La solicitud de inscripción está lista para firmar",
+                      [localStorage.getItem("IdUsuario") || ""],
+                      idSolicitudCreada,
+                      "inscripcion"
+                    );
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
-                createNotification(
-                  "Crédito simple a corto plazo",
-                  "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""],
-                  solicitud.Id,
-                  "inscripcion"
-                );
+
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
                   idUsuarioAsignado,
                   "2",
-                  "Se te ha asignado una solicitud de Credito a Corto Plazo"
-                  
+                  "Se te ha asignado una solicitud de Credito a Corto Plazo",
+                  setIdSolicitudCreada
+
                 )
                   .then(() => {
                     addComentario(
-                      solicitud.Id,
+                      idSolicitudCreada,
                       JSON.stringify(comentarios),
                       "Captura"
+                    );
+                    createNotification(
+                      "Crédito simple a corto plazo",
+                      "Se te ha asignado una solicitud de Credito a Corto Plazo",
+                      [idUsuarioAsignado || ""],
+                      idSolicitudCreada,
+                      "inscripcion"
                     );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitud();
@@ -259,17 +272,15 @@ export function ConfirmacionEnviarSolicitud({
           sx={queries.buttonContinuar}
         >
           {JSON.stringify(comentarios) == null ||
-          /^[\s]*$/.test(JSON.stringify(comentarios))
-            ? `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `
-            : `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `}
+            /^[\s]*$/.test(JSON.stringify(comentarios))
+            ? `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `
+            : `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `}
         </Button>
       </DialogActions>
     </Dialog>

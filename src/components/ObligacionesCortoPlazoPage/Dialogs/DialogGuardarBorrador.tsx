@@ -93,6 +93,7 @@ export function DialogGuardarBorrador({
     (state) => state.inscripcion
   );
 
+  const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
   return (
     <Dialog
       open={openState}
@@ -169,7 +170,8 @@ export function DialogGuardarBorrador({
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                setIdSolicitudCreada
               )
                 .then(() => {
                   
@@ -233,7 +235,8 @@ export function DialogGuardarBorrador({
               crearSolicitud(
                 localStorage.getItem("IdUsuario"),
                 localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
+                JSON.stringify(comentario),
+                setIdSolicitudCreada
               )
                 .then((r: any) => {
                   alertaConfirmCancelar("La solicitud se guardó con éxito")
