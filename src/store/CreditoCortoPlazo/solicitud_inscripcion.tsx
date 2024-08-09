@@ -170,15 +170,12 @@ export const createSolicitudInscripcionSlice: StateCreator<
           data.data.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
-        console.log("data create solicitud", data);
+
 
         // inscripcionState.setInscripcion(data.data);
 
-        console.log("data create solicitud 1");
         state.addComentario(data.data.Id, comentario, "Captura");
-        console.log("data create solicitud 2");
 
-        console.log("data create solicitud 3");
       });
   },
 

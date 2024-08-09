@@ -101,7 +101,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
-    console.log("info", info)
+    //console.log("info", info)
     set(() => ({ infoDoc: info }));
 
     if (info) {
@@ -116,6 +116,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         Estatus: state.inscripcion.Estatus,
         ControlInterno: state.inscripcion.ControlInterno,
       };
+
 
       axios
         .post(
@@ -167,10 +168,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           // }
 
           //GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
-          console.log(" estatusPrevio.ControlInterno: ", estatusPrevio.ControlInterno);
-          console.log("estatusPrevio.NoEstatus: ", estatusPrevio.NoEstatus);
-          console.log("state.proceso: ", state.proceso);
-
+         
+   
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -199,7 +198,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                               : "11",
             state.inscripcion.Id,
             inf.IdUsuario,
-            oficio
+            //oficio
           );
         })
         .catch((err) => { });
@@ -523,7 +522,8 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
   Solicitud: string,
   Requerimientos: {},
   NoOficio: string,
-  setUrl: Function
+  setUrl: Function,
+  idClaveInscripcion: string,
 ) {
   const solicitud: any = JSON.parse(Solicitud);
 
@@ -533,15 +533,19 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
       {
 
         //oficioRequerimiento: 1,
-        //oficioNum: ,
+        oficioNum: NoOficio,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
         }),
-        fechaRecepcion: format(new Date(), "PPP", {
-          locale: es,
-        }),
+
+        tipoDocumento: "Solicitud de reestructuración",
+
+        // fechaContratacion: format(new Date(), "PPP", {
+        //   locale: es,
+        // }),
 
         organismo: solicitud.encabezado.organismo.Organismo,
         oficioSolicitud: NoOficio,
@@ -553,15 +557,38 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
             locale: es,
           }
         ),
-        entePublicoObligado:
-          solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-        institucionFinanciera:
-          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
-        montoOriginalContratado: solicitud.informacionGeneral.monto,
+
+        claveInscripcion: (idClaveInscripcion !== "" || idClaveInscripcion !== undefined  ) 
+        ? idClaveInscripcion
+        :"Sin Id Clave de Inscripcion",
+
+        fechaClave: format(
+          new Date(solicitud.encabezado.fechaContratacion),
+          "PPP",
+          {
+            locale: es,
+          }
+        ),
+
+        fechaReestructuracion: format(new Date(), "PPP", {
+          locale: es,
+        }),
+
+        entePublicoObligado: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        obligadoSolidarioAval:
+        solicitud.informacionGeneral.obligadosSolidarios.length > 0
+          ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
+          : ["No Aplica"],
+
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+
+        saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
+        mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+        fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion,
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
-        cargoDirectorGeneral:
-          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
       },
       {
         headers: {
@@ -804,7 +831,7 @@ export const CambiaEstatus = (
         Id: IdSolicitud,
         Estatus: Estatus,
         ModificadoPor: localStorage.getItem("IdCentral"),
-        IdEditor: IdEditor,
+        IdEditor: IdEditor === "" ? "N/A" : IdEditor,
       },
       {
         headers: {
@@ -814,7 +841,7 @@ export const CambiaEstatus = (
         responseType: "arraybuffer",
       }
     )
-    .then((response) => {
+    .then((response) => {      
       return true;
     })
     .catch((err) => { });
