@@ -50,29 +50,29 @@ export const FirmaConUrl = () => {
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
-      createNotification(
-        "Crédito Simple a Corto Plazo",
-        `${oficio} enviada para autorización con fecha ${
-          new Date().toLocaleString("es-MX").split(" ")[0]
-        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-        [localStorage.getItem("IdUsuario")!]
-      );
-      createNotification(
-        "Crédito simple a corto plazo",
-        `Se ha registrado una solicitud de inscripción pendiente de revisión`,
-        users
-      );
+      // createNotification(
+      //   "Crédito Simple a Corto Plazo",
+      //   `${oficio} enviada para autorización con fecha ${
+      //     new Date().toLocaleString("es-MX").split(" ")[0]
+      //   } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+      //   [localStorage.getItem("IdUsuario")!]
+      // );
+      // createNotification(
+      //   "Crédito simple a corto plazo",
+      //   `Se ha registrado una solicitud de inscripción pendiente de revisión`,
+      //   users
+      // );
     } else if (estatus === "8") {
-      // editor = idCreador;
-      editor = "";
-      createNotification(
-        "Crédito Simple a Corto Plazo",
-        `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
-        [idCreador]
-      );
-    } else if (estatus === "10") {
-      // editor = idCreador;
-      editor = "";
+      editor = idCreador;
+      //editor = "";
+      // createNotification(
+      //   "Crédito Simple a Corto Plazo",
+      //   `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
+      //   [idCreador]
+      // );
+    } else if (estatus === "9") {
+      editor = idCreador;
+      //editor = "";
       usuarios
         .filter(
           (usr: any) =>
@@ -82,16 +82,16 @@ export const FirmaConUrl = () => {
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
-      createNotification(
-        "Crédito Simple a Corto Plazo",
-        `${oficio} ha sido autorizado con fecha ${
-          new Date().toLocaleString("es-MX").split(" ")[0]
-        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-        users
-      );
+      // createNotification(
+      //   "Crédito Simple a Corto Plazo",
+      //   `${oficio} ha sido autorizado con fecha ${
+      //     new Date().toLocaleString("es-MX").split(" ")[0]
+      //   } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+      //   users
+      // );
     } else if (estatus === "10") {
       // editor = idCreador;
-      editor = "";
+      //editor = "";
       usuarios
         .filter(
           (usr: any) =>
@@ -101,16 +101,20 @@ export const FirmaConUrl = () => {
         .map((usuario: any) => {
           return users.push(usuario.Id);
         });
-      createNotification(
-        "Crédito Simple a Corto Plazo",
-        `${oficio} ha sido autorizado con fecha ${
-          new Date().toLocaleString("es-MX").split(" ")[0]
-        } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
-        users
-      );
+      // createNotification(
+      //   "Crédito Simple a Corto Plazo",
+      //   `${oficio} ha sido autorizado con fecha ${
+      //     new Date().toLocaleString("es-MX").split(" ")[0]
+      //   } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+      //   users
+      // );
     }
 
-    CambiaEstatus(estatus, id, editor);
+    
+    
+
+    CambiaEstatus(estatus, id, editor);  
+    //REVISA EL ESTATUS!
   };
 
   return (

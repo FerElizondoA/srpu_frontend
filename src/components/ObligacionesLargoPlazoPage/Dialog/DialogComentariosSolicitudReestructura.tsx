@@ -118,9 +118,9 @@ import {
           <Tabs
             value={menu}
             onChange={() => {
-              menu === "RequerimientosReestructura"
+              menu === "Requerimientos"
                 ? setMenu("Comentarios")
-                : setMenu("RequerimientosReestructura");
+                : setMenu("Requerimientos");
             }}
             centered={query.isScrollable ? false : true}
             variant={query.isScrollable ? "scrollable" : "standard"}

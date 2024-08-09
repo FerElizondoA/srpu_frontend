@@ -212,7 +212,7 @@ export function SolicitudesReestructura() {
     Solicitud: string,
     noRegistro: string,
     Requerimiento: any,
-    //IdSolicitud: string
+    idClaveInscripcion: string
   ) => {
     let a: any = {};
 
@@ -223,7 +223,7 @@ export function SolicitudesReestructura() {
     });
     console.log("Requeriemito solicitud", solicitud)
 
-    ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl);
+    ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl, idClaveInscripcion);
 
     setProceso("actualizacion");
     navigate("../firmaUrl");
@@ -287,46 +287,48 @@ export function SolicitudesReestructura() {
 
   const firmaSolicitudReestructura = (row: IInscripcion) => {
 
-    if (row.Id !== "") {
-      setProceso("solicitud")
-      getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-      console.log("constanciaReestructura", constanciaReestructura)
-      navigate("../firmaUrl");
+    getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
 
-      if (row.NoEstatus === "19") {
-        if (constanciaReestructura === true) {
-          setInscripcionRestructura(SolicitudReestructuraFirma)
-          ConsultaSolicitudReestructura(setUrl);
-        }
-      } else {
-        getComentariosSolicitudPlazo(
-          row.Id,
-          () => { }
-        ).then((data) => {
-          if (
+    //APLICAR BIEN EL FILTRO! *************************************
+    if (row.NoEstatus === "19") {
+      // if (constanciaReestructura === true) {
+      setProceso("solicitud")
+      setInscripcionRestructura(SolicitudReestructuraFirma)
+      ConsultaSolicitudReestructura(setUrl);
+      console.log("constanciaReestructura CONSULTA INSCRIPCION", constanciaReestructura)
+      navigate("../firmaUrl");
+      // }
+    } else {
+      getComentariosSolicitudPlazo(
+        row.Id,
+        () => { }
+      ).then((data) => {
+        if (
+          data.filter(
+            (a: any) =>
+              a.Tipo === "RequerimientoReestructura"
+          ).length > 0
+        ) {
+          console.log("SI HUBO REQUERIMIENTOS");
+
+          requerimientos(
+            row.Solicitud,
+            row.NumeroRegistro,
             data.filter(
               (a: any) =>
                 a.Tipo === "RequerimientoReestructura"
-            ).length > 0
-          ) {
-            requerimientos(
-              row.Solicitud,
-              row.NumeroRegistro,
-              data.filter(
-                (a: any) =>
-                  a.Tipo === "RequerimientoReestructura"
-              )[0]
-            );
-          } else {
-            ConsultaConstancia(
-              row.Solicitud,
-              row.NumeroRegistro,
-              setUrl
-            );
-            navigate("../firmaUrl");
-          }
-        });
-      }
+            )[0],
+            row.IdClaveInscripcion
+          );
+        } else {
+          ConsultaConstancia(
+            row.Solicitud,
+            row.NumeroRegistro,
+            setUrl
+          );
+          navigate("../firmaUrl");
+        }
+      });
     }
   }
 
@@ -705,53 +707,92 @@ export function SolicitudesReestructura() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                firmaSolicitudReestructura(row)
+
+                                // getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
+                                // setInscripcionRestructura(SolicitudReestructuraFirma)
+
+                                // getComentariosSolicitudPlazo(
+                                //   row.Id,
+                                //   () => { }
+                                // ).then((data) => {
+                                //   if (
+                                //     data.filter(
+                                //       (a: any) =>
+                                //         a.Tipo === "RequerimientoReestructura"
+                                //     ).length > 0
+                                //   ) {
+                                //     console.log("Si hay requerimeintos reestructura")
+                                //     requerimientos(
+                                //       SolicitudReestructuraFirma.SolicitudReestructura,
+                                //       SolicitudReestructuraFirma.NumeroRegistro,
+                                //       data.filter(
+                                //         (a: any) =>
+                                //           a.Tipo === "RequerimientoReestructura"
+                                //       )[0],
+                                //       SolicitudReestructuraFirma.IdClaveInscripcion
+                                //     );
+                                //     navigate("../firmaUrl");
+                                //   } else {
+                                //     console.log("No se hay o no se detectaron requerimientos reestructura");
+
+                                //     // ConsultaConstancia(
+                                //     //   row.Solicitud,
+                                //     //   row.NumeroRegistro,
+                                //     //   setUrl
+                                //     // );
+                                //     // navigate("../firmaUrl")
+
+                                //   }
+                                // });
+
+                                // navigate("../firmaUrl");
 
                                 //firmaSolicitudReestructura(row)
-                                if (row.Id !== "") {
-                                  getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-                                  // setProceso("solicitud")
-                                  //console.log("constanciaReestructura", constanciaReestructura)
-                                  // navigate("../firmaUrl");
+                                // // if (row.Id !== "") {
+                                // //   getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
+                                // //   // setProceso("solicitud")
+                                // //   //console.log("constanciaReestructura", constanciaReestructura)
+                                // //   // navigate("../firmaUrl");
 
-                                  if (row.NoEstatus === "19") {
-                                    console.log("constanciaReestructura", constanciaReestructura)
-                                    if (constanciaReestructura === true) {
-                                      setProceso("solicitud")
-                                      setInscripcionRestructura(SolicitudReestructuraFirma)
-                                      ConsultaSolicitudReestructura(setUrl);
-                                      navigate("../firmaUrl");
-                                    }
-                                  } else {
-                                    getComentariosSolicitudPlazo(
-                                      row.Id,
-                                      () => { }
-                                    ).then((data) => {
-                                      if (
-                                        data.filter(
-                                          (a: any) =>
-                                            a.Tipo === "RequerimientoReestructura"
-                                        ).length > 0
-                                      ) {
-                                        requerimientos(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
-                                          data.filter(
-                                            (a: any) =>
-                                              a.Tipo === "RequerimientoReestructura"
-                                          )[0]
-                                        );
-                                      } else {
-                                        ConsultaConstancia(
-                                          row.Solicitud,
-                                          row.NumeroRegistro,
-                                          setUrl
-                                        );
-                                        navigate("../firmaUrl");
-                                      }
-                                    });
-                                  }
-                                }
-
+                                // //   if (row.NoEstatus === "19") {
+                                // //     console.log("constanciaReestructura", constanciaReestructura)
+                                // //     if (constanciaReestructura === true) {
+                                // //       setProceso("solicitud")
+                                // //       setInscripcionRestructura(SolicitudReestructuraFirma)
+                                // //       ConsultaSolicitudReestructura(setUrl);
+                                // //       navigate("../firmaUrl");
+                                // //     }
+                                // //   } else {
+                                // //     getComentariosSolicitudPlazo(
+                                // //       row.Id,
+                                // //       () => { }
+                                // //     ).then((data) => {
+                                // //       if (
+                                // //         data.filter(
+                                // //           (a: any) =>
+                                // //             a.Tipo === "RequerimientoReestructura"
+                                // //         ).length > 0
+                                // //       ) {
+                                // //         requerimientos(
+                                // //           row.Solicitud,
+                                // //           row.NumeroRegistro,
+                                // //           data.filter(
+                                // //             (a: any) =>
+                                // //               a.Tipo === "RequerimientoReestructura"
+                                // //           )[0]
+                                // //         );
+                                // //       } else {
+                                // //         ConsultaConstancia(
+                                // //           row.Solicitud,
+                                // //           row.NumeroRegistro,
+                                // //           setUrl
+                                // //         );
+                                // //         navigate("../firmaUrl");
+                                // //       }
+                                // //     });
+                                // //   }
+                                // }
                               }}
                             >
                               <HistoryEduIcon />

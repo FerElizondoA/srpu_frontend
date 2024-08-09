@@ -41,7 +41,7 @@ export function VerBorradorDocumento(props: Props) {
 
   // REQUERIMIENTOS
   React.useEffect(() => {
-    if (props.rowSolicitud.Id !== "") {
+    if (props.rowSolicitud.Id !== "") { 
       getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
     }
   }, [props.rowSolicitud.Id]);

@@ -122,6 +122,8 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
   // },
 
   getSolicitudReestructuraFirma: async (IdSolicitud: string, setConstanciaReestructura: Function) => {
+    // const state = useLargoPlazoStore.getState();
+
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-SolicitudReestructuraFirma", {
         params: {
@@ -133,13 +135,14 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       })
       .then(({ data }) => {
         let r = data.data;
-        console.log("R",r)
-        console.log("AXIOS Aqui si hay id: ", IdSolicitud)
         setConstanciaReestructura(true)        
         set(() => ({
           SolicitudReestructuraFirma: r,
         }));
-      });
+      })
+      .catch(({}) => {
+
+      })
   },
 
 

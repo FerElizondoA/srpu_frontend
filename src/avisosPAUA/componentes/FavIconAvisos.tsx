@@ -10,7 +10,6 @@ export const FavIconAvisos = () => {
     setOpen(!open);
   };
   useEffect(()=>{
-console.log('open',open);
 
   },[open])
 
