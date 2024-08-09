@@ -27,7 +27,8 @@ export interface SolicitudInscripcionSlice {
   crearSolicitud: (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    setIdSolicitud:Function
   ) => void;
 
   modificaSolicitud: (
@@ -103,7 +104,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   crearSolicitud: async (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    setIdSolicitud:Function
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -161,6 +163,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log("Crearsoli data: ", data.data); 
+        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS );
+        setIdSolicitud(data.data.Id);
         state.saveFiles(
           data.data.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${data.data.Id}`
