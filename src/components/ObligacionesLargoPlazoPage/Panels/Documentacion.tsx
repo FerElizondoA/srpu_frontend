@@ -144,18 +144,6 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
     (state) => state.datosActualizar
   );
 
-  // IdSolicitud
-  // const IdSolicitud: string = useLargoPlazoStore((state) => state.idSolicitud);
-  // useEffect(() => {
-  //   if (IdSolicitud) {
-  //     getDocumentos(
-  //       `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-  //       () => {},
-  //       () => {}
-  //     );
-  //   }
-  // }, []);
-
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );

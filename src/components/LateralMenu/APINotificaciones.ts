@@ -32,7 +32,7 @@ export const createNotification = (
 
       alertaExito(()=>{}, "La solicitud se envió con éxito" )
     })
-    .catch((r) => { });
+    .catch((r) => { alertaError(r)});
 };
 
 export const getNotificaciones = (

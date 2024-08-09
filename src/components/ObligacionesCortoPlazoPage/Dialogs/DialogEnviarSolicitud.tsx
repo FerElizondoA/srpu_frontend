@@ -143,7 +143,7 @@ export function ConfirmacionEnviarSolicitud({
           onClick={() => handler(false)}
           sx={queries.buttonCancelar}
         >
-          Cancelar
+          Cancelar xd
         </Button>
         <Button
           onClick={() => {
@@ -166,14 +166,14 @@ export function ConfirmacionEnviarSolicitud({
                     alertaExito(() =>{}, "La solicitud se envió con éxito")
                     cleanSolicitud();
                     // navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a corto plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
+                    // createNotification(
+                    //   "Crédito simple a corto plazo",
+                    //   "La solicitud de inscripción está lista para firmar",
+                    //   [localStorage.getItem("IdUsuario") || ""],
 
-                      "asldjsakjsda",
-                      "inscripcion"
-                    );
+                    //   "asldjsakjsda",
+                    //   "inscripcion"
+                    // );
                   })
                   .catch(() => {
                     
@@ -189,14 +189,13 @@ export function ConfirmacionEnviarSolicitud({
                       
                     );
                     alertaExito(() =>{}, "La solicitud se envió con éxito")
-                   // cleanSolicitud();
-                   // navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitud();
+                    navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
                       "Se te ha asignado una solicitud de inscripción",
                       [idUsuarioAsignado],
-
-                      "asldjsakjsda",
+                      solicitud.Id,
                       "inscripcion"
                     );
                   })
@@ -210,9 +209,10 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "3",
-                  "Hola"
+                  ""
                 )
                   .then(() => {
+                    
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
@@ -229,9 +229,8 @@ export function ConfirmacionEnviarSolicitud({
                   "Crédito simple a corto plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""],
-
-                  "asldjsakjsda",
-                  "Se te ha asignado una solicitud de Credito a Corto Plazo"
+                  solicitud.Id,
+                  "inscripcion"
                 );
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(

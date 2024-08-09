@@ -160,7 +160,7 @@ export const descargaDocumento = async (
     .then(({ data }) => {
       var a = document.createElement("a"); //Create <a>
       a.href = "data:application/pdf;base64," + data.RESPONSE.FILE; //Image Base64 Goes here
-      a.download = `${NOMBRE}.pdf`; //File name Here
+      a.download = `${NOMBRE}`; //File name Here
       a.click();
       if (IdPath !== "") {
         ActualizaDescarga(IdPath);

@@ -45,6 +45,7 @@ import {
 } from "../../../store/CreditoCortoPlazo/pagos_capital";
 import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { IDocsEliminados } from "./InterfacesCortoPlazo";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 interface Head {
   label: string;
@@ -959,7 +960,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                           </StyledTableCell>
                         )}
 
-                        {row.nombreArchivo === undefined ? (
+                        {row.nombreArchivo === undefined || row.nombreArchivo==='' ? (
                           <StyledTableCell
                             sx={{
                               bgcolor: "rgb(255 0 0 / 24%)",
@@ -972,45 +973,32 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                           <StyledTableCell>{row.nombreArchivo}</StyledTableCell>
                         )}
 
-                        {row.nombreArchivo === undefined ? null : (
+                        {row.nombreArchivo === undefined || row.nombreArchivo===''? null : (
                           <StyledTableCell>
                             <Tooltip title={"Ver Documento"}>
-                              {cargados ? (
+                              {
+                               row?.archivo?.name==="ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" && cargados ? (
                                 <CircularProgress />
                               ) : (
 
                                 <IconButton
-                                  onClick={() => {
-                                    // var a = document.createElement("a"); //Create <a>
-                                    // a.href =
-                                    //   "data:application/pdf;base64," +
-                                    //   arr.filter((td: any) =>
-                                    //     td.NOMBREFORMATEADO.includes(
-                                    //       row.nombreArchivo
-                                    //     )
-                                    //   )[0].FILE; //Image Base64 Goes here
-                                    // a.download = `${"NOMBRE"}.pdf`; //File name Here
-
-                                    // toBase64(row.archivo)
-                                    //   .then((data) => {
-                                      const base64String = row.archivo;
-                                      const dataUri = `data:application/pdf;base64,${base64String}`;
-                                      setFileSelected(dataUri);
-                                      // })
-                                      // .catch((err) => {
-                                      //   setFileSelected(
-                                      //     `data:application/pdf;base64,${
-                                      //       arr.filter((td: any) =>
-                                      //         td.nombreArchivo.includes(
-                                      //           row.nombreArchivo
-                                      //         )
-                                      //       )[0].archivo
-                                      //     }`
-                                      //   );
-                                      // });
-                                    // setFileSelected(a);
+                                  onClick={async () => {
+                                    
+                                      let base64String='';
+                                      try {
+                                        if (row.archivo instanceof File) {
+                                           base64String = await convertFileToBase64(row.archivo);
+                                        }else{
+                                           base64String = row.archivo;
+                                        }
+                                        
+                                        const dataUri = `data:application/pdf;base64,${base64String}`;
+                                        setFileSelected(dataUri);
+                                      } catch (error) {
+                                        console.error("Error al convertir el archivo a Base64", error);
+                                      }
+                                    
                                     setShowModalPrevia(true);
-                                    // a.click();
                                   }}
                                 >
                                   <FileOpenIcon />

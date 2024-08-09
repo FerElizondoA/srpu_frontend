@@ -114,7 +114,9 @@ export function DialogSolicitarModificacion({
             localStorage.getItem("Rol") === "Autorizador"
               ? localStorage.getItem("IdUsuario")!
               : idUsuarioAsignado,
-          ]
+          ],
+          inscripcion.Id,
+          
         );
         window.location.reload();
         Swal.fire({

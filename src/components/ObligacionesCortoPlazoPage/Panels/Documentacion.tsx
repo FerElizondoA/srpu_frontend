@@ -161,18 +161,6 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
     (state) => state.datosActualizar
   );
 
-  // IdSolicitud
-  // const IdSolicitud: string = useCortoPlazoStore((state) => state.idSolicitud);
-  // useEffect(() => {
-  //   if (IdSolicitud) {
-  //     getDocumentos(
-  //       `/SRPU/CORTOPLAZO/DOCSOL/${IdSolicitud}/`,
-  //       () => {},
-  //       () => {}
-  //     );
-  //   }
-  // }, []);
-
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
