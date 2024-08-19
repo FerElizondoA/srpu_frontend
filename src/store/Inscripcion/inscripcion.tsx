@@ -96,6 +96,7 @@ export interface ISolicitudLargoPlazo {
       SalgoVigente: number;
       PeriodoFinanciamiento: string;
       PeriodoAdminitracion: string;
+      ClaseTitulo: { Id: string, Descripcion: string };
     }
 
   }

@@ -113,10 +113,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
       console.log("inf", inf)
-      
+
       const filtro = useInscripcionStore.getState();
       let state: any;
-      
+
       let estatusPrevio = {
         Id: "",
         NoEstatus: "",
@@ -140,13 +140,23 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       } else {
         validacionReestructura = true
         state = filtro.inscripcionReestructura
-        if (state.Estatus === "19")
+
+        if (state.Estatus === "19") {
           estatusPrevio = {
             Id: state.IdSolicitud,
             NoEstatus: state.Estatus,
             Estatus: "",
             ControlInterno: "reestructura",
           }
+        } else {
+          state = filtro.inscripcion;
+          estatusPrevio = {
+            Id: state.Id,
+            NoEstatus: state.NoEstatus,
+            Estatus: state.Estatus,
+            ControlInterno: state.ControlInterno,
+          };
+        }
       }
 
       axios
@@ -205,6 +215,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
           console.log("state.Id 2", state.Id)
+
+          console.log("estatusPrevioEstatus", estatusPrevio.Estatus)
+          console.log("estatusPrevioNoEstatus", estatusPrevio.NoEstatus)
           //console.log("state.IdSolicitu 2", state.IdSolicitud)
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -704,6 +717,72 @@ export async function ConsultaRequerimientos(
     .catch((err) => { });
 }
 
+export async function RegistroEstatalReestructura(
+  Solicitud: string,
+  NoOficio: string,
+  setUrl: Function
+) {
+  const solicitud: any = JSON.parse(Solicitud);
+  console.log("hola")
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-contestacion-reestructura",
+      {
+        oficioNum: NoOficio,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+
+        fechaSolicitud: format(new Date(), "PPP", {
+          locale: es,
+        }),
+
+        fechaRecepcion: format(new Date(), "PPP", {
+          locale: es,
+        }),
+
+        claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo,
+
+        fechaContratacion: format(new Date(), "PPP", {
+          locale: es,
+        }),
+
+        noInscripcionEstatal: NoOficio,
+
+        acreditado: solicitud.informacionGeneral.obligadosSolidarios.length > 0
+          ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
+          : ["No Aplica"],
+
+        acreditante: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        monto: solicitud.informacionGeneral.informacionGeneral.monto,
+
+        //modificaciones: solicitud.modificaciones,
+
+
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        anexosClausulas: JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      console.log("JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias)", JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias));
+
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+
+      setUrl(url);
+    })
+    .catch((err) => { });
+}
 
 
 export async function ConsultaConstancia(
@@ -859,6 +938,9 @@ export const CambiaEstatus = (
   IdEditor: string
 ) => {
   console.log("intento cambiar de estatus 1");
+  console.log("Estatus res", Estatus);
+  console.log("IdEditor res", IdEditor);
+  console.log("IdSolicitud res", IdSolicitud);
 
   return axios
     .post(

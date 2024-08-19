@@ -23,28 +23,7 @@ export function getComentariosSolicitudPlazo(
   // const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
 
-  // const requerimientos = (
-  //   Solicitud: string,
-  //   noRegistro: string,
-  //   Requerimiento: any,
-  //   //IdSolicitud: string
-  // ) => {
 
-
-
-  //   let a: any = {};
-
-  //   Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
-  //     return a[v]
-  //       ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
-  //       : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
-  //   });
-
-  //   ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl);
-
-  //   setProceso("actualizacion");
-  //   navigate("../firmaUrl");
-  // };
 
   return axios({
     method: "get",
@@ -89,30 +68,6 @@ export function getComentariosSolicitudPlazo(
       return data.data;
 
     })
-    // .then((data) => {
-    //   if (
-    //     data.filter(
-    //       (a: any) =>
-    //         a.Tipo === "RequerimientoReestructura"
-    //     ).length > 0
-    //   ) {
-    //     requerimientos(
-    //       row.Solicitud,
-    //       row.NumeroRegistro,
-    //       data.filter(
-    //         (a: any) =>
-    //           a.Tipo === "RequerimientoReestructura"
-    //       )[0]
-    //     );
-    //   } else {
-    //     ConsultaConstancia(
-    //       row.Solicitud,
-    //       row.NumeroRegistro,
-    //       setUrl
-    //     );
-    //     navigate("../firmaUrl");
-    //   }
-    // });
     .catch((error) => {
       return error;
     });

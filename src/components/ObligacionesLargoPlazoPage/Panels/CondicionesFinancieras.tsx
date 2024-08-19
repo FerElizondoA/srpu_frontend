@@ -1,6 +1,7 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -39,6 +40,7 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { AgregarCondicionFinanciera } from "../Dialog/AgregarCondicionFinanciera";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 export const headsTasa: readonly {
   label: string;
@@ -156,7 +158,7 @@ export function CondicionesFinancieras() {
   const cleanCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.cleanCondicionFinanciera
   );
-  
+
 
 
   const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
@@ -166,6 +168,9 @@ export function CondicionesFinancieras() {
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
   const [openDisposicion, setOpenDisposicion] = useState(false);
+
+
+  const [openFiltroMonto, setOpenFiltroMonto] = useState(false);
 
   const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
@@ -179,6 +184,11 @@ export function CondicionesFinancieras() {
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
+
+  const monto: number = useLargoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
   return (
     <Grid
       container
@@ -260,7 +270,7 @@ export function CondicionesFinancieras() {
                               loadCondicionFinanciera(row);
                               loadCondicionFinanciera()
                               console.log("row", row)
-                              
+
                             }}
                           >
                             <EditIcon />
@@ -370,7 +380,7 @@ export function CondicionesFinancieras() {
                   );
                 })}
               </TableBody>
-              
+
               <Dialog
                 open={openTasa}
                 onClose={() => {
@@ -582,13 +592,53 @@ export function CondicionesFinancieras() {
             sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
-              changeOpenAgregarState(!openAgregarCondicion);
-              setAccion("Agregar");
+              if (moneyMask(monto.toString()) === "$ 0.00") {
+                setOpenFiltroMonto(true)
+              } else {
+                changeOpenAgregarState(!openAgregarCondicion);
+                setAccion("Agregar");
+              }
             }}
           >
             Agregar
           </Button>
         </ThemeProvider>
+
+
+        <Dialog open={openFiltroMonto}>
+          <DialogTitle>
+            <Typography sx={{
+              fontSize: "1.2rem",
+              fontFamily: "MontserratBold",
+            }}>
+              Falta de informacion
+            </Typography>
+          </DialogTitle>
+
+
+          <DialogContent>
+            <Typography sx={{
+              ...queries.text,
+              color: "red"
+
+            }}>
+              * Favor de Ingresar <strong>Monto Original</strong> contratado en informacion general
+            </Typography>
+          </DialogContent>
+
+
+          <DialogActions>
+            <Button sx={queries.buttonCancelar}
+              onClick={() => {
+                setOpenFiltroMonto(false)
+              }}
+            >
+              Cerrar
+            </Button>
+
+          </DialogActions>
+
+        </Dialog>
 
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}

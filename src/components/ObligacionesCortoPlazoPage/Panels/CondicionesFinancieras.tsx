@@ -1,6 +1,7 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -37,92 +38,93 @@ import {
 import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { AgregarCondicionFinanciera } from "../Dialogs/AgregarCondicionFinanciera";
+import { moneyMask } from "./InformacionGeneral";
 
 export const headsTasa: readonly {
   label: string;
 }[] = [
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Fija",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Fija",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 export const headsComision: readonly {
   label: string;
 }[] = [
-  {
-    label: "Tipo de comisión",
-  },
-  {
-    label: "Fecha de primer pago",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Porcentaje",
-  },
-  {
-    label: "Monto",
-  },
-  {
-    label: "IVA",
-  },
-];
+    {
+      label: "Tipo de comisión",
+    },
+    {
+      label: "Fecha de primer pago",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Porcentaje",
+    },
+    {
+      label: "Monto",
+    },
+    {
+      label: "IVA",
+    },
+  ];
 
 export const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: "Importe de disposición",
-  },
-];
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: "Importe de disposición",
+    },
+  ];
 
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Acciones",
-  },
-  {
-    label: "Fecha Disposición",
-  },
-  {
-    label: "Importe de disposición",
-  },
-  {
-    label: "Fecha de Primer Pago Capital",
-  },
-  {
-    label: "Periodicidad de Pago Capital",
-  },
-  {
-    label: "Fecha de Primer Pago de Interés",
-  },
-  {
-    label: "Tasa de Interés",
-  },
-  {
-    label: "Comisiones",
-  },
-];
+    {
+      label: "Acciones",
+    },
+    {
+      label: "Fecha Disposición",
+    },
+    {
+      label: "Importe de disposición",
+    },
+    {
+      label: "Fecha de Primer Pago Capital",
+    },
+    {
+      label: "Periodicidad de Pago Capital",
+    },
+    {
+      label: "Fecha de Primer Pago de Interés",
+    },
+    {
+      label: "Tasa de Interés",
+    },
+    {
+      label: "Comisiones",
+    },
+  ];
 
 export function CondicionesFinancieras() {
   const [openAgregarCondicion, changeAgregarCondicion] = useState(false);
@@ -159,6 +161,8 @@ export function CondicionesFinancieras() {
   const [openComision, setOpenComision] = useState(false);
   const [openDisposicion, setOpenDisposicion] = useState(false);
 
+  const [openFiltroMonto, setOpenFiltroMonto] = useState(false);
+
   const datosActualizar: Array<string> = useCortoPlazoStore(
     (state) => state.datosActualizar
   );
@@ -173,7 +177,12 @@ export function CondicionesFinancieras() {
     (!datosActualizar.includes("Tabla Condiciones Financieras") ||
       !datosActualizar.includes("Monto Original Contratado"));
 
-      
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
+
+
 
   return (
     <Grid
@@ -252,9 +261,9 @@ export function CondicionesFinancieras() {
                               changeOpenAgregarState(!openAgregarCondicion);
                               setIndexRegistro(index);
                               loadCondicionFinanciera(row);
-                              setRadioValue(row.tasaInteres[0].tasaFija=== "N/A" ? 2 : 1)
+                              setRadioValue(row.tasaInteres[0].tasaFija === "N/A" ? 2 : 1)
                               console.log("row", row)
-                              
+
                             }}
                           >
                             <EditIcon />
@@ -282,9 +291,9 @@ export function CondicionesFinancieras() {
                         {row.disposicion.length > 1
                           ? null
                           : format(
-                              new Date(row.disposicion[0].fechaDisposicion),
-                              "dd/MM/yyyy"
-                            )}
+                            new Date(row.disposicion[0].fechaDisposicion),
+                            "dd/MM/yyyy"
+                          )}
                       </StyledTableCell>
                       <StyledTableCell
                         sx={{ padding: "1px 30px 1px 0" }}
@@ -336,7 +345,7 @@ export function CondicionesFinancieras() {
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);
-                            console.log("rowTasa",rowTasa)
+                            console.log("rowTasa", rowTasa)
                             setOpenTasa(true);
                           }}
                         >
@@ -362,6 +371,7 @@ export function CondicionesFinancieras() {
                   );
                 })}
               </TableBody>
+
               <Dialog
                 open={openTasa}
                 onClose={() => {
@@ -418,7 +428,7 @@ export function CondicionesFinancieras() {
                               <StyledTableCell align="center">
                                 {row.sobreTasa === 0 || row.sobreTasa === null
                                   ? "N/A"
-                                  : row.sobreTasa 
+                                  : row.sobreTasa
                                 } %
                               </StyledTableCell>
                               <StyledTableCell align="center">
@@ -477,9 +487,9 @@ export function CondicionesFinancieras() {
                               <StyledTableCell align="center">
                                 {row?.fechaComision !== "N/A"
                                   ? format(
-                                      new Date(row?.fechaComision),
-                                      "dd/MM/yyyy"
-                                    )
+                                    new Date(row?.fechaComision),
+                                    "dd/MM/yyyy"
+                                  )
                                   : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
@@ -492,7 +502,7 @@ export function CondicionesFinancieras() {
                                 {row.monto}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.iva === true ? "Aplica": "N/A"}
+                                {row.iva === true ? "Aplica" : "N/A"}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -573,16 +583,58 @@ export function CondicionesFinancieras() {
         <ThemeProvider theme={buttonTheme}>
           <Button
             disabled={disable}
+            // || moneyMask(monto.toString()) === "$ 0.00"
             sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
-              changeOpenAgregarState(!openAgregarCondicion);
-              setAccion("Agregar");
+              if (moneyMask(monto.toString()) === "$ 0.00") {
+                setOpenFiltroMonto(true)
+              } else {
+                changeOpenAgregarState(!openAgregarCondicion);
+                setAccion("Agregar");
+              }
+
             }}
           >
             Agregar
           </Button>
         </ThemeProvider>
+
+
+        <Dialog open={openFiltroMonto}>
+          <DialogTitle>
+            <Typography sx={{
+              fontSize: "1.2rem",
+              fontFamily: "MontserratBold",
+            }}>
+              Falta de informacion
+            </Typography>
+          </DialogTitle>
+
+
+          <DialogContent>
+            <Typography sx={{
+              ...queries.text,
+              color:"red"
+
+            }}>
+              * Favor de Ingresar <strong>Monto Original</strong> contratado en informacion general
+            </Typography>
+          </DialogContent>
+
+
+          <DialogActions>
+            <Button sx={queries.buttonCancelar}
+              onClick={() => {
+                setOpenFiltroMonto(false)
+              }}
+            >
+              Cerrar
+            </Button>
+
+          </DialogActions>
+
+        </Dialog>
 
         <AgregarCondicionFinanciera
           handler={changeOpenAgregarState}

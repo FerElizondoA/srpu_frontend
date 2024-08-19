@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, Typography } from "@mui/material";
+import { Button, Dialog, ThemeProvider, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -13,6 +13,18 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+
+export const moneyMask = (value: string) => {
+  value = value.replace(/\D/g, "");
+
+  const options = { minimumFractionDigits: 2 };
+
+  const result = new Intl.NumberFormat("en-US", options).format(
+    parseInt(value) / 100
+  );
+  return "$ " + result;
+};
 
 export function DialogGuardarBorrador({
   handler,
@@ -21,7 +33,7 @@ export function DialogGuardarBorrador({
 }: {
   handler: Function;
   openState: boolean;
-  arrDocsEliminados?:IDocsEliminados[]
+  arrDocsEliminados?: IDocsEliminados[]
 }) {
   const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
@@ -93,6 +105,9 @@ export function DialogGuardarBorrador({
     (state) => state.inscripcion
   );
 
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
   return (
     <Dialog
@@ -113,11 +128,11 @@ export function DialogGuardarBorrador({
         <Typography
           color={
             (institucion === "" || institucion === null) &&
-            (montoOriginal === null ||
-              montoOriginal === 0 ||
-              montoOriginal.toString() === "0" ||
-              montoOriginal === undefined ||
-              montoOriginal.toString() === "$ 0.00")
+              (montoOriginal === null ||
+                montoOriginal === 0 ||
+                montoOriginal.toString() === "0" ||
+                montoOriginal === undefined ||
+                montoOriginal.toString() === "$ 0.00")
               ? "red"
               : "black"
           }
@@ -136,133 +151,142 @@ export function DialogGuardarBorrador({
         >
           Cancelar
         </Button>
-        <Button
-          onClick={() => {
-            handler(false);
-            if (solicitud.Id !== "") {
-              console.log('guardarborrador ',arrDocsEliminados);
-              
-              modificaSolicitud(
-                solicitud.CreadoPor,
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario),
-                arrDocsEliminados
-              )
-                .then(() => {
-                  addComentario(
-                    solicitud.Id,
-                    JSON.stringify(comentario),
-                    "Captura"
-                  );
-                  
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            onClick={() => {
+              handler(false);
+              if (solicitud.Id !== "") {
+                console.log('guardarborrador ', arrDocsEliminados);
 
-                  alertaConfirmCancelar("La solicitud se guardó con éxito")
+                modificaSolicitud(
+                  solicitud.CreadoPor,
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario),
+                  arrDocsEliminados
+                )
+                  .then(() => {
+                    addComentario(
+                      solicitud.Id,
+                      JSON.stringify(comentario),
+                      "Captura"
+                    );
 
-                  cleanSolicitud();
-                  navigate("../ConsultaDeSolicitudes");
-                })
-                .catch(() => {
 
-                  alertaConfirmCancelar("Ocurrió un error, inténtelo de nuevo")
-                });
-            } else {
-              crearSolicitud(
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario),
-                setIdSolicitudCreada
-              )
-                .then(() => {
-                  
-                  addComentario(
-                    solicitud.Id,
-                    JSON.stringify(comentario),
-                    "Captura"
-                  );
-                  
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
 
-                  alertaConfirmCancelar("La solicitud se guardó con éxito")
+                    cleanSolicitud();
+                    navigate("../ConsultaDeSolicitudes");
+                  })
+                  .catch(() => {
 
-                  navigate("../ConsultaDeSolicitudes");
-                })
-                .catch(() => {
+                    alertaConfirmCancelar("Ocurrió un error, inténtelo de nuevo")
+                  });
+              } else {
+                crearSolicitud(
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario),
+                  setIdSolicitudCreada
+                )
+                  .then(() => {
 
-                 
+                    addComentario(
+                      solicitud.Id,
+                      JSON.stringify(comentario),
+                      "Captura"
+                    );
 
-                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
-                });
-            }
-          }}
-          sx={{
-            ...queries.buttonContinuar,
-            pointerEvents:
-              institucion === "" ||
-              institucion === null ||
-              tipoEntePublico === "" ||
-              tipoEntePublico === null ||
-              montoOriginal === null ||
-              montoOriginal === 0
-                ? "none"
-                : "auto",
-          }}
-        >
-          Guardar y cerrar
-        </Button>
-        <Button
-          onClick={() => {
-            handler(false);
-            if (solicitud.Id !== "") {
-              console.log('guardarborrador 2',arrDocsEliminados);
-              modificaSolicitud(
-                solicitud.CreadoPor,
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario),
-                arrDocsEliminados
-              )
-                .then(() => {
-                  
-                  alertaConfirmCancelar("La solicitud se guardó con éxito")
-                })
-                .catch(() => {
-                 
 
-                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
-                  
-                });
-            } else {
-              crearSolicitud(
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario),
-                setIdSolicitudCreada
-              )
-                .then((r: any) => {
-                  alertaConfirmCancelar("La solicitud se guardó con éxito")
-                })
-                .catch(() => {
-                  
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
 
-                  alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
-                });
-            }
-          }}
-          sx={{
-            ...queries.buttonContinuar,
-            pointerEvents:
-              institucion === "" ||
-              institucion === null ||
-              tipoEntePublico === "" ||
-              tipoEntePublico === null ||
-              montoOriginal === null ||
-              montoOriginal === 0
-                ? "none"
-                : "auto",
-          }}
-        >
-          Guardar y continuar
-        </Button>
+                    navigate("../ConsultaDeSolicitudes");
+                  })
+                  .catch(() => {
+
+
+
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+                  });
+              }
+            }}
+            sx={{
+              ...queries.buttonContinuar,
+              // pointerEvents:
+              //   institucion === "" ||
+              //   institucion === null ||
+              //   tipoEntePublico === "" ||
+              //   tipoEntePublico === null ||
+              //   montoOriginal === null ||
+              //   montoOriginal === 0
+              //     ? "none"
+              //     : "auto",
+            }}
+          >
+            Guardar y cerrar
+          </Button>
+        </ThemeProvider>
+
+
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            onClick={() => {
+              handler(false);
+              if (solicitud.Id !== "") {
+                console.log('guardarborrador 2', arrDocsEliminados);
+                modificaSolicitud(
+                  solicitud.CreadoPor,
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario),
+                  arrDocsEliminados
+                )
+                  .then(() => {
+
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+                  })
+                  .catch(() => {
+
+
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+
+                  });
+              } else {
+                crearSolicitud(
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario),
+                  setIdSolicitudCreada
+                )
+                  .then((r: any) => {
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+                  })
+                  .catch(() => {
+
+
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+                  });
+              }
+            }}
+            sx={{
+              ...queries.buttonContinuar,
+              // pointerEvents:
+              //   institucion === "" ||
+              //   institucion === null ||
+              //   tipoEntePublico === "" ||
+              //   tipoEntePublico === null ||
+              //   montoOriginal === null ||
+              //   montoOriginal === 0
+              //     ? "none"
+              //     : "auto",
+            }}
+          >
+            Guardar y continuar
+          </Button>
+        </ThemeProvider>
+
       </DialogActions>
     </Dialog>
   );

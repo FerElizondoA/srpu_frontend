@@ -56,6 +56,10 @@ export function ObligacionesCortoPlazoPage() {
     (state) => state.inscripcion
   );
 
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
   useEffect(() => {
     getTiposDocumentos();
     if(inscripcion.Id){getDocumentos(

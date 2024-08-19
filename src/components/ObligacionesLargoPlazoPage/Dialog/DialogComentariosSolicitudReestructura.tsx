@@ -144,7 +144,7 @@ import {
           </Tabs>
         </DialogTitle>
         <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
-          {menu === "RequerimientosReestructura" ? (
+          {menu === "Requerimientos" ? (
             <Grid>
               {datosComentario.filter((f) => f.Tipo === "RequerimientoReestructura")[0] &&
               Object.entries(

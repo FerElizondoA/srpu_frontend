@@ -29,10 +29,11 @@ import { queries } from "../../queries";
 import { modulos } from "./Configuracion";
 
 export function Catalogos() {
-  const params = new URLSearchParams(window.location.search);
+  const params = window.location.hash;
+  const hashParams = new URLSearchParams(params.split('?')[1]);
 
   const [modulo, setModulo] = useState(
-    modulos[parseInt(params.get("id") || "0")].label
+    modulos[parseInt(hashParams.get("id") || "0")].label
   );
 
   const [catalogo, setCatalogo] = useState<Array<ICatalogo>>([
@@ -47,7 +48,7 @@ export function Catalogos() {
 
   const [edit, setEdit] = useState<IDialog>({
     Crud: "",
-    Id: parseInt(params.get("id") || "0"),
+    Id: parseInt(hashParams.get("id") || "0"),
     IdDesc: "",
     Descripcion: "",
     Tipo: { Id: "", Descripcion: "" },
@@ -70,6 +71,7 @@ export function Catalogos() {
 
   useEffect(() => {
     setCatalogoFiltrado(catalogo);
+    console.log(catalogo)
   }, [catalogo]);
 
   const [page, setPage] = useState(0);
@@ -118,7 +120,7 @@ export function Catalogos() {
       direction="column"
       alignItems={"center"}
       sx={{ width: "100%" }}
-      
+
     >
       <Grid width={"100%"}>
         <LateralMenu />
@@ -148,6 +150,7 @@ export function Catalogos() {
                         ...{ Modulo: item.label },
                       });
                       setPage(0);
+
                     }}
                   >
                     {item.label}
@@ -347,17 +350,17 @@ export function Catalogos() {
                             ) : null}
                             <TableCell sx={{ textAlign: "center" }}>
                               {modulo === "Reglas de Financiamiento" ||
-                              modulo === "Destinos" ||
-                              modulo === "Tipos de Documento" ? (
+                                modulo === "Destinos" ||
+                                modulo === "Tipos de Documento" ? (
                                 <Tooltip
                                   title={
                                     item.OCP === 1 && item.OLP === 1
                                       ? "Obligatorio en corto plazo y largo plazo"
                                       : item.OCP === 1 && item.OLP === 0
-                                      ? "Obligatorio en corto plazo"
-                                      : item.OCP === 0 && item.OLP === 1
-                                      ? "Obligatorio en largo plazo"
-                                      : "No obligatorio en corto plazo o largo plazo"
+                                        ? "Obligatorio en corto plazo"
+                                        : item.OCP === 0 && item.OLP === 1
+                                          ? "Obligatorio en largo plazo"
+                                          : "No obligatorio en corto plazo o largo plazo"
                                   }
                                 >
                                   <IconButton>

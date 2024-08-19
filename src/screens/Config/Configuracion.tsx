@@ -39,7 +39,7 @@ export const modulos = [
     fnc: "periodicidadDePago",
   },
   {
-    label: "Reglas de Financiamiento", //SI
+    label: "Reglas de Financiamiento",
     fnc: "reglaDeFinanciamiento",
   },
   {
@@ -51,7 +51,7 @@ export const modulos = [
     fnc: "tipoDeComision",
   },
   {
-    label: "Tipos de Documento", //SI
+    label: "Tipos de Documento",
     fnc: "tiposDocumento",
   },
   {
@@ -129,10 +129,13 @@ export const modulos = [
     label: "Usuarios",
     fnc: "Usuarios",
   },
-  //Garantia de Pago
   {
     label: "Garantia de Pago",
     fnc: "GarantiaDePago",
+  },
+  {
+    label: "Clase de Titulo",
+    fnc: "ClaseTitulo",
   },
 ];
 
@@ -143,7 +146,7 @@ export function Configuracion() {
     if (label === "Usuarios") {
       navigate("../users");
     } else {
-      navigate(`../catalogos?id=${id}&label=${label}`);
+      navigate(`../catalogos?id=${id}&label=${encodeURIComponent(label)}`);
     }
   };
   return (

@@ -1,4 +1,4 @@
-import { Grid, InputLabel, MenuItem, Select, TextField, Divider, Paper, Table, Checkbox, TableContainer, TableHead, TableRow, Typography, FormControlLabel, TableBody, FormControl, Button, } from "@mui/material";
+import { Grid, InputLabel, MenuItem, Select, TextField, Divider, Paper, Table, Checkbox, TableContainer, TableHead, TableRow, Typography, FormControlLabel, TableBody, FormControl, Button, Autocomplete, } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
@@ -17,6 +17,7 @@ import validator from "validator";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 
 interface Heads {
   Id: string
@@ -58,6 +59,8 @@ const catalogo: readonly Heads[] = [
 
 export function Declaratorias() {
 
+
+
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
@@ -67,15 +70,58 @@ export function Declaratorias() {
   const Declaratorias: ICreditoSolicitudReestructura = useReestructuraStore(
     (state) => state.ReestructuraDeclaratorias
   );
+
   const setCreditoSolicitudReestructura: Function = useReestructuraStore(
     (state) => state.setCreditoSolicitudReestructura
   );
+
+  const catalogoClaseTitulo: Array<ICatalogo> = useReestructuraStore(
+    (state) => state.catalogoClaseTitulo
+  );
+
+  const getClaseTitulo: Function = useReestructuraStore(
+    (state) => state.getClaseTitulo
+  );
+
+  const reestructura: string = useReestructuraStore(
+    (state) => state.reestructura
+  );
+
+
+  const getBorderColor = (): string => {
+    const length = Declaratorias.ClaseTitulo.Descripcion.length;
+    if (length === 5) {
+      return "orange";
+    } else if (length === 10) {
+      return "red";
+    } else if (length > 10) {
+      return "#15212f";
+    }
+    return "";
+  };
+
+  const getHelperTextColor = (): string => {
+    return Declaratorias.ClaseTitulo.Descripcion.length === 120 ? "orange" : "";
+  };
+
+  const [modificacionDescripcion, setModificacionDescripcion] = useState("");
+  const [Otro, setOtro] = useState(false);
+
+  useEffect(() => {
+    getClaseTitulo()
+  }, [reestructura !== ""])
+
+  useEffect(() => {
+    console.log(Declaratorias.ClaseTitulo.Id)
+    console.log(Declaratorias.ClaseTitulo.Descripcion)
+    
+  }, [Declaratorias.ClaseTitulo.Descripcion])
 
   return (
     <>
       <Grid container
         flexDirection={"column"}
-        height={"12rem"}
+        height={"20rem"}
         justifyContent={"space-evenly"}
       >
         <Grid container sx={{
@@ -96,7 +142,7 @@ export function Declaratorias() {
             <TextField
               disabled
               fullWidth
-               value={inscripcion.NumeroRegistro}
+              value={inscripcion.NumeroRegistro}
               variant="standard"
               sx={queries.medium_text}
               InputLabelProps={{
@@ -174,7 +220,7 @@ export function Declaratorias() {
           </Grid>
         </Grid>
 
-        <Grid container sx={{
+        <Grid container mb={2} sx={{
           display: "flex",
           justifyContent: "space-evenly"
         }}>
@@ -261,7 +307,7 @@ export function Declaratorias() {
                 display: "flex",
               }}
             >
-              Pediodo de adminitracion (meses)
+              Periodo de adminitracion (meses)
             </InputLabel>
             <TextField
               fullWidth
@@ -286,11 +332,147 @@ export function Declaratorias() {
             />
           </Grid>
         </Grid>
+
+        <Grid item display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <InputLabel
+              sx={{
+                ...queries.medium_text,
+                display: "flex",
+              }}
+            >
+              Clase de Titulo
+            </InputLabel>
+            <Autocomplete
+              sx={{ display: "flex", justifyContent: "space-evenly" }}
+
+              disabled={Otro}
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={catalogoClaseTitulo}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Descripcion}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              value={!Otro ? Declaratorias.ClaseTitulo : null}
+              onChange={(event, text) => {
+                setCreditoSolicitudReestructura({
+                  ...Declaratorias,
+                  ClaseTitulo: {
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                  },
+                });
+
+
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Id === value.Id || value.Descripcion === ""
+              }
+            />
+
+
+          </Grid>
+
+          <Grid item xs={10} sm={2} md={1} lg={1} xl={1.2}>
+            <FormControlLabel
+              label="Otro"
+              control={
+                <Checkbox
+                  checked={Otro}
+                  onChange={(v) => {
+                    setOtro(!Otro);
+                    setCreditoSolicitudReestructura({
+                      ...Declaratorias,
+                      ClaseTitulo: {
+                        Id: "",
+                        Descripcion: "",
+                      },
+                    });
+
+                  }}
+                />
+              }
+            ></FormControlLabel>
+          </Grid>
+
+          <Grid xs={10} sm={5} md={5} lg={4.5} xl={4.8}>
+            <TextField
+              type="text"
+              //value={AnexoClausulas.Modificacion}
+
+              value={Otro === true ? Declaratorias.ClaseTitulo.Descripcion : ""}
+              disabled={Otro ? false : true}
+              //inputProps={{ maxlength: 120 }}
+              fullWidth
+              variant="outlined"
+              multiline
+              rows={3}
+              //error={Declaratorias.ClaseTitulo.Descripcion.length === 120}
+              FormHelperTextProps={{
+                sx: {
+                  color: getHelperTextColor(),
+                },
+              }}
+              helperText={`El texto de modificación no debe pasar los 120 caracteres. Caracteres Usados: ${Declaratorias.ClaseTitulo.Descripcion
+                ? Declaratorias.ClaseTitulo.Descripcion.length
+                : 0
+                }`}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: getBorderColor(),
+                  },
+                  "&:hover fieldset": {
+                    borderColor: getBorderColor(),
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: getBorderColor(),
+                  },
+                },
+              }}
+              onChange={(e) => {
+                let inputValue = e.target.value;
+                // const expRegular =
+                //   /^[a-zA-Z0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+                // if (
+                //   (inputValue.length <= 120 && expRegular.test(inputValue)) ||
+                //   e.target.value === ""
+                // ) {
+                //   const nuevaTabla = [inputValue];
+                setCreditoSolicitudReestructura({
+                  ...Declaratorias,
+                  ClaseTitulo: {
+                    Id: "Otro",
+                    Descripcion: e.target.value || "",
+                  },
+                });
+                //}
+              }}
+            ></TextField>
+          </Grid>
+        </Grid>
+
       </Grid>
+
       <Divider
         sx={{
-          mt:2,
-          mb:2,
+          mt: 2,
+          mb: 2,
           fontWeight: "bold",
           fontFamily: "MontserratMedium",
           width: "100%",
@@ -323,7 +505,7 @@ export function Declaratorias() {
         <Grid width={"90%"} display={"flex"} justifyContent={"center"}
           sx={{
             outline: "solid",
-            outlineColor:"rgb(175, 140, 85)"
+            outlineColor: "rgb(175, 140, 85)"
           }}>
           <FormControlLabel
             label="Aqui iran las declaatorias aplicables"

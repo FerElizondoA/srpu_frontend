@@ -141,7 +141,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
           SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
           PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
+          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+          ClaseTitulo: lpState.ReestructuraDeclaratorias.ClaseTitulo
         }
       },
     }
@@ -258,7 +259,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
           SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
           PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion
+          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+          ClaseTitulo: lpState.ReestructuraDeclaratorias.ClaseTitulo
         }
       },
 

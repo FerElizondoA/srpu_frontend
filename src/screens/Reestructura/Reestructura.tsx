@@ -38,6 +38,7 @@ import {
   ConsultaRequerimientos,
   GeneraFormatoReestructura,
   ConsultaConstancia,
+  RegistroEstatalReestructura,
   ConsultaSolicitud,
   ConsultaSolicitudReestructura,
   ConsultaRequerimientosReestructura,
@@ -214,6 +215,8 @@ export function SolicitudesReestructura() {
     Requerimiento: any,
     idClaveInscripcion: string
   ) => {
+
+    console.log("Solicitud", Solicitud);
     let a: any = {};
 
     Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
@@ -224,6 +227,7 @@ export function SolicitudesReestructura() {
     console.log("Requeriemito solicitud", solicitud)
 
     ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl, idClaveInscripcion);
+
 
     setProceso("actualizacion");
     navigate("../firmaUrl");
@@ -288,7 +292,7 @@ export function SolicitudesReestructura() {
   const firmaSolicitudReestructura = (row: IInscripcion) => {
 
     getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-
+    console.log("SolicitudReestructuraFirma", SolicitudReestructuraFirma)
     //APLICAR BIEN EL FILTRO! *************************************
     if (row.NoEstatus === "19") {
       // if (constanciaReestructura === true) {
@@ -310,9 +314,10 @@ export function SolicitudesReestructura() {
           ).length > 0
         ) {
           console.log("SI HUBO REQUERIMIENTOS");
-
+     
+          setInscripcion(row)
           requerimientos(
-            row.Solicitud,
+            SolicitudReestructuraFirma.SolicitudReestructura,
             row.NumeroRegistro,
             data.filter(
               (a: any) =>
@@ -321,8 +326,10 @@ export function SolicitudesReestructura() {
             row.IdClaveInscripcion
           );
         } else {
-          ConsultaConstancia(
-            row.Solicitud,
+
+          
+          RegistroEstatalReestructura(
+            SolicitudReestructuraFirma.SolicitudReestructura,
             row.NumeroRegistro,
             setUrl
           );

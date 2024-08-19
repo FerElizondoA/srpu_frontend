@@ -316,6 +316,7 @@ export function InformacionGeneral() {
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
                 });
+                console.log(monto)
               }
             }}
             InputLabelProps={{

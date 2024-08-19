@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, Typography } from "@mui/material";
+import { Button, Dialog, ThemeProvider, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -12,6 +12,8 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 export function DialogGuardarBorrador({
   handler,
@@ -90,6 +92,10 @@ export function DialogGuardarBorrador({
     (state) => state.inscripcion
   );
 
+  const monto: number = useCortoPlazoStore(
+    (state) => state.informacionGeneral.monto
+  );
+
   return (
     <Dialog
       open={openState}
@@ -109,11 +115,11 @@ export function DialogGuardarBorrador({
         <Typography
           color={
             (institucion === "" || institucion === null) &&
-            (montoOriginal === null ||
-              montoOriginal === 0 ||
-              montoOriginal.toString() === "0" ||
-              montoOriginal === undefined ||
-              montoOriginal.toString() === "$ 0.00")
+              (montoOriginal === null ||
+                montoOriginal === 0 ||
+                montoOriginal.toString() === "0" ||
+                montoOriginal === undefined ||
+                montoOriginal.toString() === "$ 0.00")
               ? "red"
               : "black"
           }
@@ -132,157 +138,167 @@ export function DialogGuardarBorrador({
         >
           Cancelar
         </Button>
-        <Button
-          onClick={() => {
-            handler(false);
-            if (solicitud.Id !== "") {
-              modificaSolicitud(
-                solicitud.CreadoPor,
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
-              )
-                .then(() => {
-                  addComentario(
-                    solicitud.Id,
-                    JSON.stringify(comentario),
-                    "Captura"
-                  );
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
+
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            onClick={() => {
+              handler(false);
+              if (solicitud.Id !== "") {
+                modificaSolicitud(
+                  solicitud.CreadoPor,
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario)
+                )
+                  .then(() => {
+                    addComentario(
+                      solicitud.Id,
+                      JSON.stringify(comentario),
+                      "Captura"
+                    );
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "success",
+                      title: "Mensaje",
+                      text: "La solicitud se guardó con éxito",
+                    });
+                    // cleanSolicitud();
+                    navigate("../ConsultaDeSolicitudes");
+                  })
+                  .catch(() => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "error",
+                      title: "Mensaje",
+                      text: "Ocurrió un error, inténtelo de nuevo",
+                    });
                   });
-                  // cleanSolicitud();
-                  navigate("../ConsultaDeSolicitudes");
-                })
-                .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
+              } else {
+                crearSolicitud(
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario)
+                )
+                  .then(() => {
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentario),
+                    //   "Captura"
+                    // );
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "success",
+                      title: "Mensaje",
+                      text: "La solicitud se guardó con éxito",
+                    });
+                    navigate("../ConsultaDeSolicitudes");
+                  })
+                  .catch(() => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "error",
+                      title: "Mensaje",
+                      text: "Ocurrió un error, inténtelo de nuevo",
+                    });
                   });
-                });
-            } else {
-              crearSolicitud(
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
-              )
-                .then(() => {
-                  // addComentario(
-                  //   solicitud.Id,
-                  //   JSON.stringify(comentario),
-                  //   "Captura"
-                  // );
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
+              }
+            }}
+            sx={{
+              ...queries.buttonContinuar,
+              pointerEvents:
+                institucion === "" ||
+                  institucion === null ||
+                  tipoEntePublico === "" ||
+                  tipoEntePublico === null ||
+                  montoOriginal === null ||
+                  montoOriginal === 0
+                  ? "none"
+                  : "auto",
+            }}
+          >
+            Guardar y cerrar
+          </Button>
+        </ThemeProvider>
+
+
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            onClick={() => {
+              handler(false);
+              if (solicitud.Id !== "") {
+                modificaSolicitud(
+                  solicitud.CreadoPor,
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario)
+                )
+                  .then(() => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "success",
+                      title: "Mensaje",
+                      text: "La solicitud se guardó con éxito",
+                    });
+                  })
+                  .catch(() => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "error",
+                      title: "Mensaje",
+                      text: "Ocurrió un error, inténtelo de nuevo",
+                    });
                   });
-                  navigate("../ConsultaDeSolicitudes");
-                })
-                .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
+              } else {
+                crearSolicitud(
+                  localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
+                  JSON.stringify(comentario)
+                )
+                  .then((r: any) => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "success",
+                      title: "Mensaje",
+                      text: "La solicitud se guardó con éxito",
+                    });
+                  })
+                  .catch(() => {
+                    Swal.fire({
+                      confirmButtonColor: "#15212f",
+                      cancelButtonColor: "rgb(175, 140, 85)",
+                      icon: "error",
+                      title: "Mensaje",
+                      text: "Ocurrió un error, inténtelo de nuevo",
+                    });
                   });
-                });
-            }
-          }}
-          sx={{
-            ...queries.buttonContinuar,
-            pointerEvents:
-              institucion === "" ||
-              institucion === null ||
-              tipoEntePublico === "" ||
-              tipoEntePublico === null ||
-              montoOriginal === null ||
-              montoOriginal === 0
-                ? "none"
-                : "auto",
-          }}
-        >
-          Guardar y cerrar
-        </Button>
-        <Button
-          onClick={() => {
-            handler(false);
-            if (solicitud.Id !== "") {
-              modificaSolicitud(
-                solicitud.CreadoPor,
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
-              )
-                .then(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
-                })
-                .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
-                });
-            } else {
-              crearSolicitud(
-                localStorage.getItem("IdUsuario"),
-                localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                JSON.stringify(comentario)
-              )
-                .then((r: any) => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "success",
-                    title: "Mensaje",
-                    text: "La solicitud se guardó con éxito",
-                  });
-                })
-                .catch(() => {
-                  Swal.fire({
-                    confirmButtonColor: "#15212f",
-                    cancelButtonColor: "rgb(175, 140, 85)",
-                    icon: "error",
-                    title: "Mensaje",
-                    text: "Ocurrió un error, inténtelo de nuevo",
-                  });
-                });
-            }
-          }}
-          sx={{
-            ...queries.buttonContinuar,
-            pointerEvents:
-              institucion === "" ||
-              institucion === null ||
-              tipoEntePublico === "" ||
-              tipoEntePublico === null ||
-              montoOriginal === null ||
-              montoOriginal === 0
-                ? "none"
-                : "auto",
-          }}
-        >
-          Guardar y continuar
-        </Button>
+              }
+            }}
+            sx={{
+              ...queries.buttonContinuar,
+              // pointerEvents:
+              //   institucion === "" ||
+              //   institucion === null ||
+              //   tipoEntePublico === "" ||
+              //   tipoEntePublico === null ||
+              //   montoOriginal === null ||
+              //   montoOriginal === 0
+              //     ? "none"
+              //     : "auto",
+            }}
+          >
+            Guardar y continuar
+          </Button>
+        </ThemeProvider>
+
       </DialogActions>
     </Dialog>
   );

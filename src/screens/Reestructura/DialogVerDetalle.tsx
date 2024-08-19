@@ -60,27 +60,27 @@ export function DialogVerDetalle(props: Props) {
   const [datosComentario, setDatosComentarios] = React.useState<Array<IComentarios>>([]);
 
 
-  React.useEffect(() => {
-    let a: any = {};
+  // React.useEffect(() => {
+  //   let a: any = {};
 
-    datosComentario
-      ?.filter((td) => td.Tipo === "RequerimientoReestructura")
-      .map((_) => {
-        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
-          return a[v]
-            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
-            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
-        });
-      });
+  //   datosComentario
+  //     ?.filter((td) => td.Tipo === "RequerimientoReestructura")
+  //     .map((_) => {
+  //       return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+  //         return a[v]
+  //           ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+  //           : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+  //       });
+  //     });
 
-    setComentarios(a);
+  //   setComentarios(a);
 
-    useCortoPlazoStore.setState({
-      idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
-        ?.Id,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosComentario]);
+  //   useCortoPlazoStore.setState({
+  //     idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
+  //       ?.Id,
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [datosComentario]);
 
 
 
@@ -107,27 +107,7 @@ export function DialogVerDetalle(props: Props) {
     }
   }, [props.rowSolicitud.Id]);
 
-  React.useEffect(() => {
-    let a: any = {};
 
-    datosComentario
-      ?.filter((td) => td.Tipo === "RequerimientoReestructura")
-      .map((_) => {
-        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
-          return a[v]
-            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
-            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
-        });
-      });
-
-    setComentarios(a);
-
-    useCortoPlazoStore.setState({
-      idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
-        ?.Id,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosComentario]);
 
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
 
@@ -183,6 +163,28 @@ export function DialogVerDetalle(props: Props) {
   );
 
   const [accion, setAccion] = useState("");
+
+  React.useEffect(() => {
+    let a: any = {};
+
+    datosComentario
+      ?.filter((td) => td.Tipo === "RequerimientoReestructura")
+      .map((_) => {
+        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+          return a[v]
+            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+        });
+      });
+
+    setComentarios(a);
+
+    useCortoPlazoStore.setState({
+      idComentario: datosComentario.filter((r) => r.Tipo === "RequerimientoReestructura")[0]
+        ?.Id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosComentario]);
 
   return (
 
@@ -314,11 +316,11 @@ export function DialogVerDetalle(props: Props) {
                   },
                 }}
                 onClick={() => {
-                  //setInscripcion(props.rowSolicitud);
+                  setInscripcion(props.rowSolicitud);
                   changeRestructura("con autorizacion");
                   navigate("../ObligacionesLargoPlazo");
 
-                  setInscripcionReestructura(props.rowSolicitud)
+                  //setInscripcionReestructura(props.rowSolicitud)
                 }}
               >
                 <Typography

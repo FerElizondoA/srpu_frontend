@@ -33,6 +33,7 @@ export interface ICreditoSolicitudReestructura {
   SalgoVigente: number;
   PeriodoFinanciamiento: string;
   PeriodoAdminitracion: string;
+  ClaseTitulo: { Id: string, Descripcion: string };
 }
 
 export interface IAnexoClausula {
@@ -87,6 +88,12 @@ export interface ReestructuraSlice {
 
   Declaratorias: IAnexoClausula;
   setTablaDeclaratorias : (Declaratorias: IAnexoClausula[]) => void
+
+  //Catalogo Clase Titulo
+  
+  catalogoClaseTitulo: ICatalogo[];
+
+  getClaseTitulo: () => void;
 }
 
 
@@ -135,7 +142,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       })
       .then(({ data }) => {
         let r = data.data;
-        setConstanciaReestructura(true)        
+        setConstanciaReestructura(true)  
         set(() => ({
           SolicitudReestructuraFirma: r,
         }));
@@ -227,6 +234,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     SalgoVigente: 0,
     PeriodoFinanciamiento: "",
     PeriodoAdminitracion: "",
+    ClaseTitulo:{ Id: "", Descripcion: "" }
   },
 
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => {
@@ -312,20 +320,24 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
 
       SolicitudReestructuracion: {
         autorizacionReestructura: {
-          Id: ReesState.autorizacionSelectReestructura.Id,
-          MontoAutorizado: ReesState.autorizacionSelectReestructura.MontoAutorizado,
-          NumeroAutorizacion: ReesState.autorizacionSelectReestructura.NumeroAutorizacion
+          Id: lpState.autorizacionSelectReestructura.Id,
+          MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
+          NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
         },
-        tablaDeclaratorias: ReesState.tablaDeclaratorias,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
-            Id: ReesState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: ReesState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
+            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
           },
-          FechaConvenio: ReesState.ReestructuraDeclaratorias.FechaConvenio,
-          SalgoVigente: ReesState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: ReesState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: ReesState.ReestructuraDeclaratorias.PeriodoAdminitracion
+          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
+          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
+          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+          ClaseTitulo: {
+            Id: lpState.ReestructuraDeclaratorias.ClaseTitulo.Id,
+            Descripcion: lpState.ReestructuraDeclaratorias.ClaseTitulo.Descripcion
+          },
         }
       },
 
@@ -384,5 +396,25 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       }
     })
 
+  },
+
+
+  //CLASE TITULO
+
+  catalogoClaseTitulo: [],
+
+  getClaseTitulo: async () => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-ClaseTitulo", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        set((state) => ({
+          catalogoClaseTitulo: r
+        }));
+      });
   },
 })
