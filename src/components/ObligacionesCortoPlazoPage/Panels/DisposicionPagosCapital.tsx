@@ -53,42 +53,42 @@ import { moneyMask } from "./InformacionGeneral";
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Interes",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Interes",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: `Importe de disposición`,
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: `Importe de disposición`,
+    },
+  ];
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -190,8 +190,8 @@ export function DisposicionPagosCapital() {
     (state) => state.cleanDisposicion
   );
 
-  
-  
+
+
 
   useEffect(() => {
     catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
@@ -282,41 +282,62 @@ export function DisposicionPagosCapital() {
       }}
       flexDirection={"column"}
       justifyContent={"space-between"}
-      height={
-        query.isMobile === false
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "32rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "44rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "44rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "60rem"
-            : "36rem"
-          : query.isMobile === true
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "65rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "65rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "85rem"
-            : "52rem"
-          : "36rem"
-      }
+
+    // height={
+    //   query.isMobile === false
+    //     ? disposicionesParciales === false && tasasParciales === false
+    //       ? "32rem"
+    //       : disposicionesParciales === true && tasasParciales === false
+    //         ? "50rem"
+    //         : disposicionesParciales === false && tasasParciales === true
+    //           ? "50rem"
+    //           : disposicionesParciales === true && tasasParciales === true
+    //             ? "62rem"
+    //             : "36rem"
+    //     : query.isMobile === true
+    //       ? disposicionesParciales === false && tasasParciales === false
+    //         ? "50rem"
+    //         : disposicionesParciales === true && tasasParciales === false
+    //           ? "65rem"
+    //           : disposicionesParciales === false && tasasParciales === true
+    //             ? "65rem"
+    //             : disposicionesParciales === true && tasasParciales === true
+    //               ? "85rem"
+    //               : "52rem"
+    //       : "36rem"
+    // }
     >
-      <Grid item container mt={2} direction="column">
-        <Grid item>
-          <Divider>
+      <Grid container mt={2} direction="column"
+        height={{
+          xs: "20rem",
+          sm: "10rem",
+          md: "10rem",
+          lg: "10rem",
+          xl: "10rem" /* */
+        }} //MOVER EL HEIGHT
+      >
+        <Grid item >
+          <Divider sx={{ marginBottom: 2 }}>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               PAGOS DE CAPITAL
             </Typography>
           </Divider>
         </Grid>
 
-        <Grid container display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
+        <Grid container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          alignItems={"center"}
+        >
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{
+              xs: 3,
+              sm: 0,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
+            sx={{ width: "100%" }}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -339,7 +360,15 @@ export function DisposicionPagosCapital() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{
+              xs: 3,
+              sm: 0,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
+          >
             <InputLabel sx={queries.medium_text}>
               Periodicidad de Pago
             </InputLabel>
@@ -395,7 +424,7 @@ export function DisposicionPagosCapital() {
               onChange={(v) => {
                 setPagosDeCapital({
                   ...pagosDeCapital,
-                  numeroDePago: v.target.value ,
+                  numeroDePago: v.target.value,
                 });
               }}
               fullWidth
@@ -415,10 +444,21 @@ export function DisposicionPagosCapital() {
         </Grid>
       </Grid>
 
-      <Grid container direction="column" width={"100%"}>
-        <Grid item width={"100%"}>
-          <Divider>
-            <Typography color={"#af8c55 "} fontWeight={"bold"}>
+      <Grid container direction="column" width={"100%"} alignItems={"center"}
+        //height={disposicionesParciales === false ? "16rem": "35rem"}
+        height={{
+          xs: disposicionesParciales === false ? "16rem" : "38rem",
+          sm: disposicionesParciales === false ? "16rem" : "35rem",
+          md: disposicionesParciales === false ? "16rem" : "35rem",
+          lg: disposicionesParciales === false ? "12rem" : "35rem",
+          xl: disposicionesParciales === false ? "12rem" : "28rem" /* */
+        }}
+      // height={ disposicionesParciales === false ? 2 : 3 }
+
+      >
+        <Grid item width={"100%"} alignItems={"center"}>
+          <Divider sx={{ marginBottom: 2 }}>
+            <Typography color={"#af8c55 "} fontWeight={"bold"} >
               DISPOSICIÓN
             </Typography>
           </Divider>
@@ -430,7 +470,15 @@ export function DisposicionPagosCapital() {
             alignItems={"center"}
             width={"100%"}
           >
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
               <FormControlLabel
                 label="Disposiciones Parciales"
                 control={
@@ -438,17 +486,24 @@ export function DisposicionPagosCapital() {
                     checked={disposicionesParciales}
                     onChange={(v) => {
                       setDisposicionesParciales();
-                      if(disposicionesParciales === false){
+                      if (disposicionesParciales === false) {
                         removeDisposicion(0)
                       }
-                      
-                      
                     }}
                   />
                 }
               ></FormControlLabel>
             </Grid>
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+
+            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
@@ -471,7 +526,15 @@ export function DisposicionPagosCapital() {
               </LocalizationProvider>
             </Grid>
 
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid item xs={10} sm={6} md={6} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
               <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
               <TextField
@@ -479,9 +542,10 @@ export function DisposicionPagosCapital() {
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
+                    monto +
+                    "; Monto restante: " +
+
+                    moneyMask(restante.toFixed(2))
                     : ""
                 }
                 value={disposicion.importe}
@@ -490,9 +554,9 @@ export function DisposicionPagosCapital() {
                     validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
                     disposicionesParciales &&
                     parseFloat(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
+                    9999999999999999 &&
                     parseFloat(v.target.value.replace(/\D/g, "")) <=
-                      restante * 101
+                    restante * 101
                   ) {
                     setDisposicion({
                       ...disposicion,
@@ -544,7 +608,7 @@ export function DisposicionPagosCapital() {
                     parseFloat(
                       disposicion.importe.toString().replace(/\D/g, "")
                     ) >
-                      restante * 101
+                    restante * 101
                   }
                   variant="outlined"
                   onClick={() => {
@@ -560,7 +624,7 @@ export function DisposicionPagosCapital() {
                 width={"100%"}
                 display={"flex"}
                 justifyContent={"center"}
-                height={"12rem"}
+                height={"13rem"}
               >
                 <Paper sx={{ width: "88%", height: "100%" }}>
                   <TableContainer
@@ -627,7 +691,7 @@ export function DisposicionPagosCapital() {
       </Grid>
 
       <Grid container direction="column">
-        <Grid item>
+        <Grid item mt={3}>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               TASA DE INTERÉS
@@ -642,6 +706,13 @@ export function DisposicionPagosCapital() {
         >
           <Grid
             item
+            mb={{
+              xs: 3,
+              // sm: ,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
             container
             sx={{
               justifyContent: "center",
@@ -695,11 +766,17 @@ export function DisposicionPagosCapital() {
                 <Grid
                   item
                   xs={10}
-                  sm={2}
-                  md={2}
+                  sm={5} md={5}
                   lg={2}
                   xl={2}
                   display={"block"}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
                 >
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
@@ -720,7 +797,15 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                   <TextField
@@ -746,7 +831,15 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -789,7 +882,15 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -841,7 +942,7 @@ export function DisposicionPagosCapital() {
                   display: "flex",
                 }}
               >
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2} width={"100%"}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -850,6 +951,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                      sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
@@ -860,7 +962,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -904,7 +1006,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Tasa de Referencia
                   </InputLabel>
@@ -948,7 +1050,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
                     //type="number"
@@ -984,7 +1086,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
