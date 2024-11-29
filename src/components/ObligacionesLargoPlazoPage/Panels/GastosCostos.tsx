@@ -201,8 +201,8 @@ export function GastoCostos() {
         xs={10}
         sm={5}
         md={5}
-        lg={3.3}
-        xl={3.3}
+        lg={3}
+        xl={3}
         sx={isSmallScreen ? gridItemStyle : {}}
       >
         <InputLabel sx={queries.medium_text}>Destino</InputLabel>
@@ -269,215 +269,210 @@ export function GastoCostos() {
           {gastosCostos.destino.Descripcion.toLowerCase().includes(
             "inversión"
           ) && (
-            <Grid
-              container
-              item
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              xs={12}
-              sm={5}
-              md={5}
-              lg={3.3}
-              xl={12}
-            >
               <Grid
+                container
                 item
-                xs={10}
-                sm={8}
-                md={10}
-                lg={11}
-                xl={4}
-                sx={isSmallScreen ? gridItemStyle : {}}
+                display={"flex"}
+                justifyContent={"space-evenly"}
+                mt={4}
+              // xs={12}
+              // sm={5}
+              // md={5}
+              // lg={3.3}
+              // xl={12}
               >
-                <InputLabel sx={queries.medium_text}>
-                  Detalle de la Inversión
-                </InputLabel>
-                <Autocomplete
-                  // disabled={
-                  //   reestructura === "con autorizacion" ||
-                  //   reestructura === "sin autorizacion"
-                  // }
-                  clearText="Borrar"
-                  noOptionsText="Sin opciones"
-                  closeText="Cerrar"
-                  openText="Abrir"
-                  fullWidth
-                  options={catalogoDetallesInversion}
-                  getOptionLabel={(option) => option.Descripcion}
-                  renderOption={(props, option) => {
-                    return (
-                      <li {...props} key={option.Descripcion}>
-                        <Typography>{option.Descripcion}</Typography>
-                      </li>
-                    );
-                  }}
-                  value={gastosCostos.detalleInversion}
-                  onChange={(event, text) => {
-                    setGastosCostos({
-                      ...gastosCostos,
-                      detalleInversion: {
-                        Id: text?.Id || "",
-                        Descripcion: text?.Descripcion || "",
-                      },
-                    });
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      sx={queries.medium_text}
-                    />
-                  )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.Id === value.Id || value.Descripcion === ""
-                  }
-                />
-              </Grid>
-
-              <Grid
-                item
-                xs={10}
-                sm={10}
-                md={10}
-                lg={10}
-                xl={4}
-                sx={isSmallScreen ? gridItemStyle : {}}
-              >
-                <InputLabel sx={queries.medium_text}>
-                  Adjuntar detalle de la inversión pública productiva
-                </InputLabel>
+                <Grid
+                  item
+                  xs={10}
+                  sm={4}
+                  md={4}
+                  lg={4}
+                  xl={4.9}
+                //sx={isSmallScreen ? gridItemStyle : {}}
+                >
+                  <InputLabel sx={queries.medium_text}>
+                    Detalle de la Inversión
+                  </InputLabel>
+                  <Autocomplete
+                    // disabled={
+                    //   reestructura === "con autorizacion" ||
+                    //   reestructura === "sin autorizacion"
+                    // }
+                    clearText="Borrar"
+                    noOptionsText="Sin opciones"
+                    closeText="Cerrar"
+                    openText="Abrir"
+                    fullWidth
+                    options={catalogoDetallesInversion}
+                    getOptionLabel={(option) => option.Descripcion}
+                    renderOption={(props, option) => {
+                      return (
+                        <li {...props} key={option.Descripcion}>
+                          <Typography>{option.Descripcion}</Typography>
+                        </li>
+                      );
+                    }}
+                    value={gastosCostos.detalleInversion}
+                    onChange={(event, text) => {
+                      setGastosCostos({
+                        ...gastosCostos,
+                        detalleInversion: {
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        sx={queries.medium_text}
+                      />
+                    )}
+                    isOptionEqualToValue={(option, value) =>
+                      option.Id === value.Id || value.Descripcion === ""
+                    }
+                  />
+                </Grid>
 
                 <Grid
-                  mt={1}
-                  mb={1}
-                  item
-                  display={"flex"}
-                  justifyContent={"center"}
-                >
-                  <Grid item sx={{ position: "relative" }}>
-                    <Typography
-                      position={"absolute"}
-                      sx={{
-                        ...queries.leyendaArchivoGastosCosto,
-                        border:
-                          gastosCostos.archivoDetalleInversion.nombreArchivo !==
-                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                            ? "2px dotted #af8c55"
-                            : "2x dotted black",
-                      }}
-                    >
-                      {gastosCostos.archivoDetalleInversion.nombreArchivo ||
-                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-                    </Typography>
-                    <input
-                      disabled={
-                        reestructura === "con autorizacion" ||
-                        reestructura === "sin autorizacion"
-                      }
-                      type="file"
-                      accept="application/pdf"
-                      onChange={(v) => {
-                        cargarArchivo(v, tablaGastosCostos.length);
-                      }}
-                      style={{
-                        opacity: 0,
-                        width: "100%",
-                        height: "3vh",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </Grid>
 
-                  <Grid display={"flex"} justifyContent={"end"}>
-                    <Tooltip title={"Remover Archivo"}>
-                      <Button
-                        onClick={() => {
-                          removeDocumento();
-                          setGastosCostos({
-                            ...gastosCostos,
-                            archivoDetalleInversion: {
-                              archivo: new File([], ""),
-                              nombreArchivo: ``,
-                            },
-                          });
+                  justifyContent={"center"}
+                  xs={10}
+                  sm={10}
+                  md={10}
+                  lg={10}
+                  xl={4.8}
+                  sx={isSmallScreen ? gridItemStyle : {}}
+                >
+                  <InputLabel sx={{
+                    ...queries.medium_text,
+                    // justifyContent: "center",
+                    // display: "flex"
+                  }}>
+                    Adjuntar detalle de la inversión pública productiva
+                  </InputLabel>
+
+                  <Grid
+                    mt={1}
+                    mb={1}
+                    item
+                    display={"flex"}
+                    justifyContent={"center"}
+                  >
+                    <Grid item sx={{ position: "relative", width: "100%" }}>
+                      <Typography
+                        position={"absolute"}
+                        sx={{
+                          ...queries.leyendaArchivoGastosCosto,
+                          border:
+                            gastosCostos.archivoDetalleInversion.nombreArchivo !==
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                              ? "2px dotted #af8c55"
+                              : "2x dotted black",
                         }}
                       >
-                        <CloseIcon />
-                      </Button>
-                    </Tooltip>
+                        {gastosCostos.archivoDetalleInversion.nombreArchivo ||
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                      </Typography>
+                      <input
+                        disabled={
+                          reestructura === "con autorizacion" ||
+                          reestructura === "sin autorizacion"
+                        }
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(v) => {
+                          cargarArchivo(v, tablaGastosCostos.length);
+                        }}
+                        style={{
+                          opacity: 0,
+                          width: "100%",
+                          height: "3vh",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid display={"flex"} justifyContent={"end"} sx={{width:"10%"}}>
+                      <Tooltip title={"Remover Archivo"}>
+                        <Button
+                          onClick={() => {
+                            removeDocumento();
+                            setGastosCostos({
+                              ...gastosCostos,
+                              archivoDetalleInversion: {
+                                archivo: new File([], ""),
+                                nombreArchivo: ``,
+                              },
+                            });
+                          }}
+                        >
+                          <CloseIcon />
+                        </Button>
+                      </Tooltip>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          )}
-
-          {gastosCostos.destino.Descripcion.toLowerCase().includes(
-            "refinanciamiento"
-          ) && (
-            <Grid
-              container
-              item
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              xs={12}
-              sm={5}
-              md={5}
-              lg={3.3}
-              xl={12}
-              sx={isSmallScreen ? gridItemStyle : {}}
-            >
-              <Grid item xs={10} sm={10} md={10} lg={10} xl={4}>
-                <InputLabel sx={queries.medium_text}>
-                  Clave de Inscripción del Financiamiento a Refinanciar
-                </InputLabel>
-                <TextField
-                  // disabled={
-                  //   reestructura === "con autorizacion" ||
-                  //   reestructura === "sin autorizacion"
-                  // }
-                  fullWidth
-                  value={gastosCostos.claveInscripcionFinanciamiento}
-                  onChange={(v) => {
-                    setGastosCostos({
-                      ...gastosCostos,
-                      claveInscripcionFinanciamiento: v.target.value,
-                    });
-                  }}
-                  InputLabelProps={{
-                    style: {
-                      fontFamily: "MontserratMedium",
-                    },
-                  }}
-                  InputProps={{
-                    style: {
-                      fontFamily: "MontserratMedium",
-                    },
-                  }}
-                  variant="standard"
-                />
-              </Grid>
-            </Grid>
-          )}
+            )}
 
           <Grid
             container
             item
             display={"flex"}
             justifyContent={"space-evenly"}
-            xs={12}
-            sm={5}
-            md={5}
-            lg={3.3}
-            xl={12}
-            marginBottom={2}
+            mt={3}
+            marginBottom={3}
           >
+            {gastosCostos.destino.Descripcion.toLowerCase().includes(
+              "refinanciamiento"
+            ) && (
+
+                <Grid item
+                  xs={10}
+                  sm={10}
+                  md={10}
+                  lg={10}
+                  xl={3}>
+                  <InputLabel sx={queries.medium_text}>
+                    Clave de Inscripción del Financiamiento a Refinanciar
+                  </InputLabel>
+                  <TextField
+                    // disabled={
+                    //   reestructura === "con autorizacion" ||
+                    //   reestructura === "sin autorizacion"
+                    // }
+                    fullWidth
+                    value={gastosCostos.claveInscripcionFinanciamiento}
+                    onChange={(v) => {
+                      setGastosCostos({
+                        ...gastosCostos,
+                        claveInscripcionFinanciamiento: v.target.value,
+                      });
+                    }}
+                    InputLabelProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    variant="standard"
+                  />
+                </Grid>
+
+              )}
             <Grid
               item
               xs={10}
               sm={8}
               md={10}
               lg={11}
-              xl={3.3}
+              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 4.9 : 3}
               sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
@@ -508,13 +503,63 @@ export function GastoCostos() {
               />
             </Grid>
 
+
             <Grid
               item
               xs={10}
               sm={10}
               md={10}
               lg={10}
-              xl={3.3}
+              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 4.8 : 3}
+              sx={isSmallScreen ? gridItemStyle : {}}
+            >
+              <InputLabel sx={queries.medium_text}>
+                Gastos Adicionales
+              </InputLabel>
+              <TextField
+                //   disabled={
+                //     reestructura === "con autorizacion" ||
+                //   reestructura === "sin autorizacion"
+                // }
+                fullWidth
+                value={gastosCostos.gastosAdicionales}
+                onChange={(v) => {
+                  setGastosCostos({
+                    ...gastosCostos,
+                    gastosAdicionales: v.target.value,
+                  });
+                }}
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                variant="standard"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            item
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            mt={3}
+            marginBottom={3}
+          >
+
+            <Grid
+              item
+              xs={10}
+              sm={10}
+              md={10}
+              lg={10}
+              xl={3}
               sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel sx={queries.medium_text}>Monto</InputLabel>
@@ -568,59 +613,7 @@ export function GastoCostos() {
               sm={10}
               md={10}
               lg={10}
-              xl={3.3}
-              sx={isSmallScreen ? gridItemStyle : {}}
-            >
-              <InputLabel sx={queries.medium_text}>
-                Gastos Adicionales
-              </InputLabel>
-              <TextField
-                //   disabled={
-                //     reestructura === "con autorizacion" ||
-                //   reestructura === "sin autorizacion"
-                // }
-                fullWidth
-                value={gastosCostos.gastosAdicionales}
-                onChange={(v) => {
-                  setGastosCostos({
-                    ...gastosCostos,
-                    gastosAdicionales: v.target.value,
-                  });
-                }}
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                variant="standard"
-              />
-            </Grid>
-          </Grid>
-
-          <Grid
-            container
-            item
-            display={"flex"}
-            justifyContent={"space-evenly"}
-            xs={12}
-            sm={5}
-            md={5}
-            lg={3.3}
-            xl={12}
-            marginBottom={2}
-          >
-            <Grid
-              item
-              xs={10}
-              sm={10}
-              md={10}
-              lg={10}
-              xl={4}
+              xl={3}
               sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel sx={queries.medium_text}>
@@ -674,7 +667,7 @@ export function GastoCostos() {
               sm={10}
               md={10}
               lg={10}
-              xl={4}
+              xl={3}
               sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel disabled sx={queries.medium_text}>
@@ -727,6 +720,8 @@ export function GastoCostos() {
 
       {gastosCostos.destino.Descripcion && (
         <Grid
+        mt={2}
+        mb={2}
           width={"94%"}
           sx={{
             display: "flex",
@@ -846,12 +841,11 @@ export function GastoCostos() {
                                 })
                                 .catch((err) => {
                                   setFileSelected(
-                                    `data:application/pdf;base64,${
-                                      arrDocs.filter((td: any) =>
-                                        td.NOMBREFORMATEADO.includes(
-                                          row?.detalleInversion.Descripcion
-                                        )
-                                      )[0].FILE
+                                    `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                      td.NOMBREFORMATEADO.includes(
+                                        row?.detalleInversion.Descripcion
+                                      )
+                                    )[0].FILE
                                     }`
                                   );
                                 });

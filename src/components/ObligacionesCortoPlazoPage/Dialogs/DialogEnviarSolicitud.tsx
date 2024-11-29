@@ -146,7 +146,7 @@ export function ConfirmacionEnviarSolicitud({
           onClick={() => handler(false)}
           sx={queries.buttonCancelar}
         >
-          Cancelar xd
+          Cancelar
         </Button>
         <Button
           onClick={() => {

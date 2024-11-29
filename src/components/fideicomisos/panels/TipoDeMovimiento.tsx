@@ -194,12 +194,12 @@ export function TipoDeMovimientoFideicomiso() {
               fondoIngreso: tipoMovimientoFideicomiso.fondoIngreso,
               fondoIngresoGobiernoEstatal:
                 tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
-                "participaciones"
+                  "participaciones"
                   ? "80.00"
                   : "100.00",
               fondoIngresoMunicipios:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "municipio"
+                  "municipio"
                   ? tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
                     "participaciones"
                     ? "20.00"
@@ -207,52 +207,52 @@ export function TipoDeMovimientoFideicomiso() {
                   : "0.00",
               fondoIngresoAsignadoMunicipio:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "municipio"
+                  "municipio"
                   ? "100.00"
                   : "0.00",
               ingresoOrganismo:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "municipio" &&
-                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? "0.00"
                   : "0.00",
               fondoIngresoAfectadoXGobiernoEstatal:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "gobierno estatal"
+                  "gobierno estatal"
                   ? ""
                   : "",
               afectacionGobiernoEstatalEntre100:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "gobierno estatal"
+                  "gobierno estatal"
                   ? "0.00"
                   : "",
               acumuladoAfectacionGobiernoEstatalEntre100:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "gobierno estatal"
+                  "gobierno estatal"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
                   : "",
               fondoIngresoAfectadoXMunicipio:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "municipio"
+                  "municipio"
                   ? "0"
                   : "0",
               acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-                "municipio"
+                  "municipio"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
                   : "",
               ingresoAfectadoXOrganismo:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "municipio" &&
-                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? ""
                   : "",
               acumuladoAfectacionOrganismoEntre100:
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "municipio" &&
-                tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+                  tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
                   "gobierno estatal"
                   ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
                   : "",
@@ -320,23 +320,29 @@ export function TipoDeMovimientoFideicomiso() {
         </RadioGroup>
       </Grid>
 
-      <Divider>
-        <Typography
-          sx={{
-            ...queries.bold_text,
-            color: "#af8c55 ",
-          }}
-        >
-          Mandante
-        </Typography>
-      </Divider>
+      <Grid item
+        mb={{ xs: 2, sm: 2, md: 1, lg: 1, xl: 0 }}
+      >
+        <Divider >
+          <Typography
+            sx={{
+              ...queries.bold_text_Titulos,
+              color: "#af8c55 ",
+            }}
+          >
+            MANDANTE
+          </Typography>
+        </Divider>
+      </Grid>
+
 
       <Grid
         container
         display={"flex"}
         justifyContent={"space-evenly"}
         alignItems={"center"}
-        sx={{ height: "10vh" }}
+       // height={{ xs: "18rem", sm: "22rem", md: "22rem", lg: "22rem", xl: "22rem" }}
+       mt={2}
       >
         {movimiento === "BENEFICIARIO" ? (
           <Grid
@@ -348,7 +354,7 @@ export function TipoDeMovimientoFideicomiso() {
             xl={3}
             mb={
               movimiento === "BENEFICIARIO"
-                ? { xs: 2, sm: 0, md: 0, lg: 0 }
+                ? { xs: 4, sm: 0, md: 0, lg: 0 }
                 : { xs: 0, sm: 0 }
             }
           >
@@ -393,14 +399,14 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
+          sm={movimiento === "DEUDOR" ? 10 : 3}
+          md={movimiento === "DEUDOR" ? 10 : 3}
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
           mb={
             movimiento === "BENEFICIARIO"
-              ? { xs: 1, sm: 0, md: 0 }
-              : { xs: 4, sm: 0, md: 0 }
+              ? { xs: 4, sm: 0, md: 0 }
+              : { xs: 2, sm: 0, md: 0 }
           }
         >
           <InputLabel sx={queries.medium_text}>
@@ -456,12 +462,12 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
+          sm={movimiento === "DEUDOR" ? 10 : 3}
+          md={movimiento === "DEUDOR" ? 10 : 3}
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
-          mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : { sm: 0 }
+          mb={
+            movimiento === "BENEFICIARIO" ? { xs: 0, sm: 0, md: 0 } : { xs: 2, sm: 0, }
           }
         >
           <InputLabel sx={queries.medium_text}>Fideicomitente</InputLabel>
@@ -473,7 +479,7 @@ export function TipoDeMovimientoFideicomiso() {
             openText="Abrir"
             disabled={
               tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion ===
-                "No Aplica" ||
+              "No Aplica" ||
               /^[\s]*$/.test(
                 tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion
               )
@@ -525,12 +531,12 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
+          sm={movimiento === "DEUDOR" ? 10 : 4}
+          md={movimiento === "DEUDOR" ? 10 : 4}
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 5, sm: 3 } : { xs: 0, sm: 0 }
+            movimiento === "BENEFICIARIO" ? { xs: 4, sm: 0 } : { xs: 1, sm: 1 }
           }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
@@ -583,12 +589,13 @@ export function TipoDeMovimientoFideicomiso() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
+          sm={movimiento === "DEUDOR" ? 10 : 4}
+          md={movimiento === "DEUDOR" ? 10 : 4}
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
+          mb={4}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 3 } : { xs: 3, sm: 0 }
+            movimiento === "BENEFICIARIO" ? { xs: 4, sm: 4 } : { xs: 5, sm: 4, md:4 }
           }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
@@ -617,15 +624,14 @@ export function TipoDeMovimientoFideicomiso() {
             onChange={(event, text) => {
               setTipoMovimiento({
                 ...tipoMovimientoFideicomiso,
-                id: `${
-                  tipoMovimientoFideicomiso.tipoFuente?.Descripcion
-                }/${text.Descripcion.split(" ")
-                  .map((word) =>
-                    word.charAt(0) === word.charAt(0).toUpperCase()
-                      ? word.charAt(0)
-                      : ""
-                  )
-                  .join("")}/${tablaTipoMovimiento?.length + 1}`,
+                id: `${tipoMovimientoFideicomiso.tipoFuente?.Descripcion
+                  }/${text.Descripcion.split(" ")
+                    .map((word) =>
+                      word.charAt(0) === word.charAt(0).toUpperCase()
+                        ? word.charAt(0)
+                        : ""
+                    )
+                    .join("")}/${tablaTipoMovimiento?.length + 1}`,
                 fondoIngreso: {
                   Id: text.Id,
                   Descripcion: text.Descripcion,
@@ -662,7 +668,7 @@ export function TipoDeMovimientoFideicomiso() {
       )}
 
       {movimiento === "BENEFICIARIO" && (
-        <Divider>
+        <Divider sx={{mb:2}}>
           <Typography
             sx={{
               ...queries.bold_text,
@@ -681,7 +687,9 @@ export function TipoDeMovimientoFideicomiso() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+          mb={{xs:2, sm:0}}
+          >
             <InputLabel sx={queries.medium_text}>
               Tipo de Beneficiario
             </InputLabel>
@@ -732,7 +740,9 @@ export function TipoDeMovimientoFideicomiso() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
+          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+            mb={{xs:2, sm:0}}
+          >
             <InputLabel sx={queries.medium_text}>Beneficiario</InputLabel>
             <Autocomplete
               disableClearable
@@ -788,6 +798,7 @@ export function TipoDeMovimientoFideicomiso() {
             lg={3}
             xl={3}
             mt={{ xs: 2, sm: 2, md: 0 }}
+            mb={{xs:2, sm:0}}
           >
             <InputLabel sx={{ ...queries.medium_text }}>
               Fecha de Alta
@@ -824,8 +835,8 @@ export function TipoDeMovimientoFideicomiso() {
         </Grid>
       )}
 
-      <Grid container mt={3} mb={2} display={"flex"} justifyContent={"center"}>
-        <Paper sx={{ width: "100%" }}>
+      <Grid container mt={3} mb={2} display={"flex"} justifyContent={"center"} height={"24.2rem"}>
+        <Paper sx={{ width: "100%", height:"100%" }}>
           <TableContainer
             sx={{
               height: "100%",
@@ -919,58 +930,58 @@ export function TipoDeMovimientoFideicomiso() {
                       <StyledTableCell align="center">
                         {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
                           "gobierno estatal" && (
-                          <TextField
-                            inputProps={{
-                              sx: {
-                                fontSize: "0.7rem",
-                              },
-                            }}
-                            size="small"
-                            value={row?.fondoIngresoAfectadoXGobiernoEstatal}
-                            onChange={(v) => {
-                              let auxArray = [...tablaTipoMovimiento];
-                              let val = Number(v.target.value);
+                            <TextField
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXGobiernoEstatal}
+                              onChange={(v) => {
+                                let auxArray = [...tablaTipoMovimiento];
+                                let val = Number(v.target.value);
 
-                              if (
-                                val <= 100 &&
-                                Number(
-                                  sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                ) +
+                                if (
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                  ) +
                                   val <=
                                   Number(
                                     tablaTipoMovimiento[index]
                                       .fondoIngresoGobiernoEstatal
                                   )
-                              ) {
-                                let suma = 0;
+                                ) {
+                                  let suma = 0;
 
-                                tablaTipoMovimiento.map((column) => {
-                                  return (suma += Number(
-                                    column.fondoIngresoAfectadoXGobiernoEstatal
-                                  ));
-                                });
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXGobiernoEstatal
+                                    ));
+                                  });
 
-                                auxArray.map((column) => {
-                                  return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                    (
-                                      suma +
-                                      val +
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                      )
-                                    ).toString());
-                                });
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                        )
+                                      ).toString());
+                                  });
 
-                                auxArray[
-                                  index
-                                ].fondoIngresoAfectadoXGobiernoEstatal =
-                                  val.toString();
+                                  auxArray[
+                                    index
+                                  ].fondoIngresoAfectadoXGobiernoEstatal =
+                                    val.toString();
 
-                                addPorcentaje(auxArray);
-                              }
-                            }}
-                          />
-                        )}
+                                  addPorcentaje(auxArray);
+                                }
+                              }}
+                            />
+                          )}
                       </StyledTableCell>
 
                       {/* AFECTACION GOBIERNO ESTATAL / 100 */}
@@ -991,69 +1002,69 @@ export function TipoDeMovimientoFideicomiso() {
                       <StyledTableCell align="center">
                         {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
                           "municipio" && (
-                          <TextField
-                            type="number"
-                            inputProps={{
-                              sx: {
-                                fontSize: "0.7rem",
-                              },
-                            }}
-                            size="small"
-                            value={row?.fondoIngresoAfectadoXMunicipio}
-                            onChange={(v) => {
-                              let auxArray = [...tablaTipoMovimiento];
-                              let val = Number(v.target.value);
+                            <TextField
+                              type="number"
+                              inputProps={{
+                                sx: {
+                                  fontSize: "0.7rem",
+                                },
+                              }}
+                              size="small"
+                              value={row?.fondoIngresoAfectadoXMunicipio}
+                              onChange={(v) => {
+                                let auxArray = [...tablaTipoMovimiento];
+                                let val = Number(v.target.value);
 
-                              if (
-                                val <= 100 &&
-                                Number(
-                                  sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                ) +
+                                if (
+                                  val <= 100 &&
+                                  Number(
+                                    sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                  ) +
                                   val <=
                                   Number(
                                     tablaTipoMovimiento[index]
                                       .fondoIngresoAsignadoMunicipio
                                   )
-                              ) {
-                                let suma = 0;
+                                ) {
+                                  let suma = 0;
 
-                                tablaTipoMovimiento.map((column) => {
-                                  return (suma += Number(
-                                    column.fondoIngresoAfectadoXMunicipio
-                                  ));
-                                });
+                                  tablaTipoMovimiento.map((column) => {
+                                    return (suma += Number(
+                                      column.fondoIngresoAfectadoXMunicipio
+                                    ));
+                                  });
 
-                                auxArray.map((column) => {
-                                  return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                    (
-                                      suma +
-                                      val +
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                      )
-                                    ).toString());
-                                });
+                                  auxArray.map((column) => {
+                                    return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                      (
+                                        suma +
+                                        val +
+                                        Number(
+                                          sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                        )
+                                      ).toString());
+                                  });
 
-                                auxArray[index].fondoIngresoAfectadoXMunicipio =
-                                  val.toString();
+                                  auxArray[index].fondoIngresoAfectadoXMunicipio =
+                                    val.toString();
 
-                                addPorcentaje(auxArray);
-                              }
-                            }}
-                          />
-                        )}
+                                  addPorcentaje(auxArray);
+                                }
+                              }}
+                            />
+                          )}
                       </StyledTableCell>
 
                       {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
                       <StyledTableCell align="center">
                         {row?.tipoFideicomitente.Descripcion.toLowerCase() ===
                           "municipio" && (
-                          <Typography sx={{ fontSize: "0.7rem" }}>
-                            {
-                              row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                            }
-                          </Typography>
-                        )}
+                            <Typography sx={{ fontSize: "0.7rem" }}>
+                              {
+                                row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                              }
+                            </Typography>
+                          )}
                       </StyledTableCell>
 
                       {/* AFECTADO POR ORGANISMO */}
@@ -1061,7 +1072,7 @@ export function TipoDeMovimientoFideicomiso() {
                         {row?.tipoFideicomitente.Descripcion.toLowerCase() !==
                           "gobierno estatal" &&
                           row?.tipoFideicomitente.Descripcion.toLowerCase() !==
-                            "municipio" && (
+                          "municipio" && (
                             <TextField
                               type="number"
                               inputProps={{
@@ -1080,11 +1091,11 @@ export function TipoDeMovimientoFideicomiso() {
                                   Number(
                                     sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
                                   ) +
-                                    val <=
-                                    Number(
-                                      tablaTipoMovimiento[index]
-                                        .ingresoOrganismo
-                                    )
+                                  val <=
+                                  Number(
+                                    tablaTipoMovimiento[index]
+                                      .ingresoOrganismo
+                                  )
                                 ) {
                                   let suma = 0;
 

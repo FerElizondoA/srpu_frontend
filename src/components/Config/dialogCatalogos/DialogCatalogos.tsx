@@ -162,6 +162,7 @@ export function DialogCatalogos({
             />
             {edit.Modulo === "Reglas de Financiamiento" ||
             edit.Modulo === "Destinos" ||
+            edit.Modulo === "Tipo de Solicitudes" ||
             edit.Modulo === "Tipos de Documento" ? (
               <FormGroup>
                 <FormControlLabel

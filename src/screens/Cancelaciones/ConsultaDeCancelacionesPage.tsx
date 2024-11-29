@@ -250,7 +250,7 @@ export function ConsultaDeCancelacionesPage() {
         : "Cancelacion",
       (e: IData[]) => {
         setDatos(e);
-        
+
       },
       setDatosFiltrados
     );
@@ -287,17 +287,17 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
-  const getDatos=()=>{
+  const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
-        ? "Inscripcion"
+        ? "SolicitaCancelacion"
         : "Revision",
       (e: IInscripcion[]) => {
         setDatos(e);
-      },setDatosFiltrados
+      }, setDatosFiltrados
     );
   }
-  
+
   useEffect(() => {
     getDatos();
   }, []);
@@ -305,7 +305,7 @@ export function ConsultaDeCancelacionesPage() {
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
       <Grid item width={"100%"}>
-      <LateralMenu fnc={getDatos}/>
+        <LateralMenu fnc={getDatos} />
       </Grid>
       <Grid
         display={"flex"}
@@ -367,7 +367,7 @@ export function ConsultaDeCancelacionesPage() {
         </Paper>
       </Grid> */}
 
-<BarraFiltros Lista={datos} setStateFiltered={setDatosFiltrados} CamposFecha={["FechaContratacion","FechaRequerimientos"]}/>
+      <BarraFiltros Lista={datos} setStateFiltered={setDatosFiltrados} CamposFecha={["FechaContratacion", "FechaRequerimientos"]} />
 
       <Grid container display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
@@ -571,9 +571,9 @@ export function ConsultaDeCancelacionesPage() {
                         >
                           {row.Estatus.includes("Actualización")
                             ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
+                              new Date(row.FechaRequerimientos),
+                              "dd/MM/yyyy"
+                            )
                             : " "}
                         </StyledTableCell>
 
@@ -605,7 +605,7 @@ export function ConsultaDeCancelacionesPage() {
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
 
-                                // llenaSolicitud(row);
+                                 //llenaSolicitud(row);
                                 // changeOpenDialogVer(!openDialogVer);
                                 // getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -623,7 +623,7 @@ export function ConsultaDeCancelacionesPage() {
                                     llenaSolicitud(row);
                                     getComentariosSolicitudPlazo(
                                       row.Id,
-                                      () => {}
+                                      () => { }
                                     ).then((data) => {
                                       if (
                                         rolesAdmin.includes(
@@ -648,7 +648,8 @@ export function ConsultaDeCancelacionesPage() {
                                           ConsultaConstancia(
                                             row.Solicitud,
                                             row.NumeroRegistro,
-                                            setUrl
+                                            setUrl,
+                                            row.MontoOriginalContratado
                                           );
                                           navigate("../firmaUrl");
                                         }
@@ -710,6 +711,7 @@ export function ConsultaDeCancelacionesPage() {
         <VerBorradorCancelacion
           handler={changeOpenDialogVer}
           openState={openDialogVer}
+          rowSolicitud={inscripcion}
         />
       )}
       {openDescargar && (

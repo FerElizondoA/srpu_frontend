@@ -324,19 +324,19 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
           MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
           NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias,
+        tablaDeclaratorias: ReesState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
-            Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
+            Id: ReesState.ReestructuraDeclaratorias.TipoConvenio.Id,
+            Descripcion: ReesState.ReestructuraDeclaratorias.TipoConvenio.Descripcion
           },
-          FechaConvenio: lpState.ReestructuraDeclaratorias.FechaConvenio,
-          SalgoVigente: lpState.ReestructuraDeclaratorias.SalgoVigente,
-          PeriodoFinanciamiento: lpState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
-          PeriodoAdminitracion: lpState.ReestructuraDeclaratorias.PeriodoAdminitracion,
+          FechaConvenio: ReesState.ReestructuraDeclaratorias.FechaConvenio,
+          SalgoVigente: ReesState.ReestructuraDeclaratorias.SalgoVigente,
+          PeriodoFinanciamiento: ReesState.ReestructuraDeclaratorias.PeriodoFinanciamiento,
+          PeriodoAdminitracion: ReesState.ReestructuraDeclaratorias.PeriodoAdminitracion,
           ClaseTitulo: {
-            Id: lpState.ReestructuraDeclaratorias.ClaseTitulo.Id,
-            Descripcion: lpState.ReestructuraDeclaratorias.ClaseTitulo.Descripcion
+            Id: ReesState.ReestructuraDeclaratorias.ClaseTitulo.Id,
+            Descripcion: ReesState.ReestructuraDeclaratorias.ClaseTitulo.Descripcion
           },
         }
       },

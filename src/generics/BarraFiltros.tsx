@@ -13,19 +13,35 @@ export function BarraFiltros({
   setStateFiltered,
   CamposFecha,
 }:
-{Lista:any[];
-  setStateFiltered:Function
-  CamposFecha: string[]
-}) {
-    const [busqueda, setBusqueda] = useState("");
-    const [fechaInicio, setFechaInicio] = useState<Dayjs|null>(null);
-    const [fechaFin, setFechaFin] = useState<Dayjs| null>(null);
+  {
+    Lista: any[];
+    setStateFiltered: Function
+    CamposFecha: string[]
+  }) {
+  const [busqueda, setBusqueda] = useState("");
+  const [fechaInicio, setFechaInicio] = useState<Dayjs | null>(null);
+  const [fechaFin, setFechaFin] = useState<Dayjs | null>(null);
 
-    useEffect(()=>{
-        if(fechaInicio===null){
-            setFechaFin(null)
-        }
-    },[fechaInicio])
+  const limpiarFiltro = () => {
+    setBusqueda("")
+    setFechaInicio(null)
+    setFechaFin(null)
+    setStateFiltered(filterByWord(Lista, busqueda))
+  }
+
+  // useEffect(() => {
+  //   setStateFiltered(filterByWord(Lista, busqueda))
+  // }, [
+  //   //busqueda === "", fechaInicio === null, fechaFin === null
+  // ])
+
+
+  useEffect(() => {
+    if (fechaInicio === null) {
+      setFechaFin(null)
+    }
+  }, [fechaInicio])
+
   return (
     <>
       <Grid
@@ -41,10 +57,10 @@ export function BarraFiltros({
         <Grid
           item
           xs={10}
-          sm={5}
-          md={5}
-          lg={5}
-          xl={5}
+          sm={4}
+          md={4}
+          lg={4}
+          xl={4}
           display="center"
           justifyContent="center"
           alignItems={"center"}
@@ -63,17 +79,18 @@ export function BarraFiltros({
               value={busqueda}
               onChange={(e) => {
                 setBusqueda(e.target.value);
-                if (e.target.value === "") {
-                  // setDatosFiltrados(datos);
-                }
+                // if (e.target.value === "") {
+                //   setBusqueda()
+                // }
               }}
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  // filtrarDatos();
-                  ev.preventDefault();
-                  return false;
-                }
-              }}
+              // onKeyPress={(ev) => {
+              //   if (ev.key === "Enter") {
+              //     fechaInicio === null ?
+              //       setStateFiltered(filterByWord(Lista, busqueda))
+              //       : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
+              //    // return false;
+              //   }
+              // }}
             />
           </Paper>
         </Grid>
@@ -147,29 +164,41 @@ export function BarraFiltros({
         ) : null}
 
         <Grid
-          item
+          container
           xs={12}
-          sm={1}
-          md={1}
-          lg={1}
-          xl={1}
+          sm={3}
+          md={3}
+          lg={3}
+          xl={3}
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
           }}
         >
           <Button
-            sx={{ ...queries.buttonContinuar, minWidth: "60%" }}
+            sx={{ ...queries.buttonContinuar, width: "30%" }}
             onClick={() => {
-                console.log('condition',fechaInicio===null);
-                
-                fechaInicio===null?
-                    setStateFiltered(filterByWord(Lista, busqueda))
-                    :setStateFiltered((filtrarPorFecha(Lista,CamposFecha,fechaInicio,fechaFin, busqueda)))
+              console.log("Lista", Lista);
+              console.log("Busqueda: ", busqueda);
+
+
+              fechaInicio === null ?
+                setStateFiltered(filterByWord(Lista, busqueda))
+                : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
             }}
           >
             Buscar
+          </Button>
+
+          <Button sx={{ ...queries.buttonCancelar, width: "30%" }}
+            onClick={() => {
+              limpiarFiltro()
+
+              // setStateFiltered(filterByWord([], ""))
+            }}
+          >
+            Restablecer Filtro
           </Button>
         </Grid>
       </Grid>

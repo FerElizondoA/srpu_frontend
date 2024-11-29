@@ -54,6 +54,7 @@ import { createNotification } from "../../components/LateralMenu/APINotificacion
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { DialogVerRestrucuturas } from "../Reestructura/DialogVerRestructuras";
 import BuildIcon from "@mui/icons-material/Build";
+import { log } from "console";
 
 export interface IData {
   Id: string;
@@ -61,6 +62,7 @@ export interface IData {
   Nombre: string;
   TipoEntePublico: string;
   TipoSolicitud: string;
+  TipoCredito: string;
   Institucion: string;
   NoEstatus: string;
   Estatus: string;
@@ -108,6 +110,9 @@ const heads: Array<{ label: string }> = [
     label: "Tipo de Documento",
   },
   {
+    label: "Tipo de Credito",
+  },
+  {
     label: "Acciones",
   },
 ];
@@ -140,6 +145,9 @@ export function ConsultaDeSolicitudPage() {
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
         elemento.TipoSolicitud?.toString()
+          .toLocaleLowerCase()
+          .includes(busqueda.toLocaleLowerCase()) ||
+          elemento.TipoCredito?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
@@ -183,6 +191,11 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
+
+  const convertirMontosAPalabras: Function = useSolicitudFirmaStore(
+    (state) => state.convertirMontosAPalabras
+  );
+
   const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -194,6 +207,7 @@ export function ConsultaDeSolicitudPage() {
       setDatosFiltrados
     );
   };
+  
   useEffect(() => {
     getDatos();
     cleanSolicitudCortoPlazo();
@@ -536,7 +550,7 @@ export function ConsultaDeSolicitudPage() {
                         </StyledTableCell>
 
                         <StyledTableCell
-                          sx={{ padding: "1px 25px 1px 0" }}
+                          sx={{ padding: "1px 25px 1px 0", width: "250px" }}
                           align="center"
                           component="th"
                           scope="row"
@@ -545,7 +559,7 @@ export function ConsultaDeSolicitudPage() {
                         </StyledTableCell>
 
                         <StyledTableCell
-                          sx={{ padding: "1px 30px 1px 0" }}
+                          sx={{ padding: "1px 30px 1px 0", width: "250px" }}
                           align="center"
                           component="th"
                           scope="row"
@@ -589,6 +603,15 @@ export function ConsultaDeSolicitudPage() {
                         </StyledTableCell>
 
                         <StyledTableCell
+                          sx={{ padding: "1px 25px 1px 0" }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.TipoCredito || "Sin tipo de Credito"}
+                        </StyledTableCell>
+
+                        <StyledTableCell
                           sx={{
                             flexDirection: "row",
                             display: "grid",
@@ -618,6 +641,8 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    console.log("ROW", row);
+                                    console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {
                                       setInscripcion(row);
@@ -647,13 +672,15 @@ export function ConsultaDeSolicitudPage() {
                                           ConsultaConstancia(
                                             row.Solicitud,
                                             row.NumeroRegistro,
-                                            setUrl
+                                            setUrl,
+                                            convertirMontosAPalabras(row.MontoOriginalContratado)
                                           );
                                           navigate("../firmaUrl");
                                         }
                                       });
                                     }
-                                  }}
+                                  }
+                                }
                                 >
                                   <HistoryEduIcon />
                                 </IconButton>
@@ -788,6 +815,7 @@ export function ConsultaDeSolicitudPage() {
         openState={openEliminar}
         texto={"Solicitud"}
       />
+      
     </Grid>
   );
 }

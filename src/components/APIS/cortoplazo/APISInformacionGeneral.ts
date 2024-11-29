@@ -71,10 +71,6 @@ export function getSolicitudes(tipoListado: string, setState: Function, setState
         setStateFilter(data.data);
       }
         setState(data.data);
-      
-
-
-
 })
     .catch((error) => {
       alertaError("(" + error.response.status + ") " + error.response.data.msg)

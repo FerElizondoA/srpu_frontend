@@ -63,6 +63,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
     Nombre: "",
     TipoEntePublico: "",
     TipoSolicitud: "",
+    TipoCredito: "",
     Institucion: "",
     NoEstatus: "",
     Estatus: "",
