@@ -197,7 +197,7 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 1 && <InformacionGeneral />}
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
-      {tabIndex === 4 && <Resumen coments={true} estatus={""} arrDocsEliminados={arrDocsEliminados} />}
+      {tabIndex === 4 && <Resumen coments={true} arrDocsEliminados={arrDocsEliminados} />}
       {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados}/>}
 
       {openDialogBorrador && (

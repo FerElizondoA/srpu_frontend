@@ -96,12 +96,12 @@ const headsCondiciones: Head[] = [
 
 export function Resumen({ 
   coments, 
-  estatus, 
+  estatus ="", 
   arrDocsEliminados ,
   funcionFiltroComentarios,
 }: { 
   coments: boolean, 
-  estatus: string, 
+  estatus?: string, 
   arrDocsEliminados?: IDocsEliminados[] ,
   funcionFiltroComentarios?: Function
 }) {
