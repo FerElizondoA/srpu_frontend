@@ -70,7 +70,6 @@ export function DialogGuardarComentarios({
     (state) => state.addComentario
   );
 
-  
   const setFiltroComentarios: Function = useCortoPlazoStore(
     (state) => state.setFiltroComentarios
   );

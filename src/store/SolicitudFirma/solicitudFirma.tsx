@@ -381,24 +381,24 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         )
         .then((response) => {
           console.log("response: ", response)
-          // let titulo =
-          //   estatusPrevio.ControlInterno === "inscripcion"
-          //     ? "Solicitud de Inscripción"
-          //     : estatusPrevio.ControlInterno === "revision"
-          //       ? "Solicitud de Requerimientos"
+           let titulo =
+             estatusPrevio.ControlInterno === "inscripcion"
+               ? "Solicitud de Inscripción"
+               : estatusPrevio.ControlInterno === "revision"
+                 ? "Solicitud de Requerimientos"
 
-          //       : "Constancia de Inscripción";
-          // let mensaje =
-          //   estatusPrevio.ControlInterno === "inscripcion"
-          //     ? `Se recibe el ${new Date().toLocaleString(
-          //       "es-MX"
-          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-          //     }`
-          //     : `Se envía el ${new Date().toLocaleString(
-          //       "es-MX"
-          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-          //     }`;
-          // let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+                 : "Constancia de Inscripción";
+          let mensaje =
+            estatusPrevio.ControlInterno === "inscripcion"
+              ? `Se recibe el ${new Date().toLocaleString(
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+              }`
+              : `Se envía el ${new Date().toLocaleString(
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+              }`;
+           let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -406,7 +406,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          //GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
+          GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
 
 
           cambiaEstatus(
@@ -1366,7 +1366,7 @@ export async function GeneraAcuse(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/ACUSE",
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })

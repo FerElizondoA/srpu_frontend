@@ -121,10 +121,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
-
-
-
-
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
@@ -401,7 +397,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
-    const state = useCortoPlazoStore.getState();
+    const state = useCortoPlazoStore.getState(); 
     console.log("Entre saveFiles");
 
     return await state.tablaDocumentos.map((file) => {
