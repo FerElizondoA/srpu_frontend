@@ -33,6 +33,27 @@ export const queries = {
     },
   },
 
+  bold_text_Titulos: {
+    fontSize: "1rem",
+    fontFamily: "MontserratBold",
+
+    "@media (min-width: 480px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      fontSize: "1rem",
+    },
+  },
+
   bold_text: {
     fontSize: "1rem",
     fontFamily: "MontserratBold",

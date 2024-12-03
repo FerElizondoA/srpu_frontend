@@ -29,8 +29,8 @@ export function DeclaratoriasReestructura() {
                 <Tabs
                     value={tabIndex}
                     onChange={handleChange}
-                    centered={query.isScrollable ? false : true}
-                    variant={query.isScrollable ? "scrollable" : "standard"}
+                    centered={true}
+                    //variant={query.isScrollable ? "scrollable" : "standard"}
                     scrollButtons="auto"
                     allowScrollButtonsMobile
                     sx={{ width: "100%", display: "flex", justifyContent: "center" }}

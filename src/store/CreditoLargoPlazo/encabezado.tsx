@@ -27,7 +27,11 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   get
 ) => ({
   encabezado: {
-    tipoDocumento: "Crédito Simple a Largo Plazo",
+    tipoCredito: {
+      Id: "",
+      Descripcion:  "",
+    },
+    tipoDocumento: "Crédito Simple a Corto Plazo",
     solicitanteAutorizado: {
       IdSolicitante: localStorage.getItem("IdCentral") || "",
       Cargo: localStorage.getItem("Puesto") || "",

@@ -49,6 +49,7 @@ import { DialogVerDetalle } from "./DialogVerDetalle";
 import { useReestructuraStore } from "../../store/Reestructura/main";
 import { IDatosSolicitudReestructura } from "../../store/Reestructura/reestructura";
 import { VerComentariosSolicitudReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogComentariosSolicitudReestructura";
+import { BarraFiltros } from "../../generics/BarraFiltros";
 
 
 interface Head {
@@ -224,11 +225,12 @@ export function SolicitudesReestructura() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
-    console.log("Requeriemito solicitud", solicitud)
+    console.log("Requerimiento solicitud", solicitud)
+    console.log("Requerimientos de reestructura", Requerimiento);
+    
 
     ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl, idClaveInscripcion);
-
-
+    
     setProceso("actualizacion");
     navigate("../firmaUrl");
   };
@@ -314,7 +316,7 @@ export function SolicitudesReestructura() {
           ).length > 0
         ) {
           console.log("SI HUBO REQUERIMIENTOS");
-     
+
           setInscripcion(row)
           requerimientos(
             SolicitudReestructuraFirma.SolicitudReestructura,
@@ -327,7 +329,7 @@ export function SolicitudesReestructura() {
           );
         } else {
 
-          
+
           RegistroEstatalReestructura(
             SolicitudReestructuraFirma.SolicitudReestructura,
             row.NumeroRegistro,
@@ -375,6 +377,7 @@ export function SolicitudesReestructura() {
           Reestructura
         </Typography>
       </Grid>
+      {/*       
       <Grid container display="flex" width={"100%"} mb={2}>
         <Grid
           item
@@ -436,7 +439,13 @@ export function SolicitudesReestructura() {
             </IconButton>
           </Paper>
         </Grid>
-      </Grid>
+      </Grid> */}
+
+      <BarraFiltros
+        Lista={datos}
+        setStateFiltered={setDatosFiltrados}
+        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+      />
 
       <Paper sx={{ width: "100%", height: "100%" }}>
         <TableContainer

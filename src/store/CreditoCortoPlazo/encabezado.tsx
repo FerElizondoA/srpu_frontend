@@ -7,6 +7,7 @@ import {
 import { useCortoPlazoStore } from "./main";
 
 export interface IEncabezado {
+  tipoCredito: { Id: string; Descripcion: string };
   tipoDocumento: string;
   solicitanteAutorizado: {
     IdSolicitante: string;
@@ -37,8 +38,13 @@ export interface IUsuarios {
 export interface EncabezadoSlice {
   encabezado: IEncabezado;
 
+  checkBoxOtroTipoSolicitud: boolean;
+  changeCheckBoxOtroTipoSolicitud: (check: boolean) => void;
+
   catalogoOrganismos: IEntePublico[];
   catalogoTiposEntePublico: ICatalogo[];
+
+  catalogoTiposSolicitudes: ICatalogo[];
 
   changeEncabezado: (encabezado: any) => void;
 
@@ -47,13 +53,53 @@ export interface EncabezadoSlice {
 
   getOrganismos: () => void;
   getTiposEntesPublicos: () => void;
+
+  getTiposSolicitudes: (tipoSolicitud: string) => void;
+
 }
 
 export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
   set,
   get
 ) => ({
+
+  checkBoxOtroTipoSolicitud: false,
+  
+  changeCheckBoxOtroTipoSolicitud: (check: boolean) => {
+    set(() => ({
+      checkBoxOtroTipoSolicitud: check,
+    }));
+  },
+
+  catalogoTiposSolicitudes: [],
+
+  getTiposSolicitudes: async (tipoSolicitud: string) => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-TiposSolicitudes", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        if (tipoSolicitud === "CP") {
+          r = r.filter((v: any) => v.OCP === 1);
+        } else if (tipoSolicitud === "LP") {
+          r = r.filter((v: any) => v.OLP === 1);
+        } else {
+        }
+        console.log("tiposSolciitudes:", r);
+        
+        set((state) => ({
+          catalogoTiposSolicitudes: r,
+        }));
+      });
+  },
   encabezado: {
+    tipoCredito: {
+      Id: "",
+      Descripcion:  "",
+    },
     tipoDocumento: "Crédito Simple a Corto Plazo",
     solicitanteAutorizado: {
       IdSolicitante: localStorage.getItem("IdCentral") || "",

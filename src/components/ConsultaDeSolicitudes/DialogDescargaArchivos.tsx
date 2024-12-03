@@ -44,6 +44,9 @@ const heads: Array<{ label: string }> = [
   {
     label: "Descargar",
   },
+  {
+    label: "Fecha",
+  },
 ];
 
 export function DialogDescargaArchivos({

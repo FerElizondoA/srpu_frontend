@@ -15,9 +15,14 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 
 export function Encabezado() {
-  const tipoDocumento: string = useLargoPlazoStore(
+  const tipoCredito: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.encabezado.tipoCredito
+  );
+
+  const tipoDocumento:  string  = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
+
   const tipoEntePublico: { Id: string; TipoEntePublico: string } =
     useLargoPlazoStore((state) => state.encabezado.tipoEntePublico);
 

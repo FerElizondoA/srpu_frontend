@@ -17,6 +17,7 @@ export interface IInscripcion {
   Nombre: string;
   TipoEntePublico: string;
   TipoSolicitud: string;
+  TipoCredito: string;
   Institucion: string;
   NoEstatus: string;
   Estatus: string;
@@ -154,6 +155,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         Nombre: "",
         TipoEntePublico: "",
         TipoSolicitud: "",
+        TipoCredito: "",
         Institucion: "",
         NoEstatus: "",
         Estatus: "",
@@ -246,6 +248,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     Nombre: "",
     TipoEntePublico: "",
     TipoSolicitud: "",
+    TipoCredito: "",
     Institucion: "",
     NoEstatus: "",
     Estatus: "",
@@ -331,7 +334,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     let state = useCortoPlazoStore.getState();
 
     state.changeEncabezado({
-      tipoDocumento: "Crédito Simple a Corto Plazo",
+      tipoDocumento: "",
       solicitanteAutorizado: {
         IdSolicitante: localStorage.getItem("IdCentral") || "",
         Cargo: localStorage.getItem("Puesto") || "",

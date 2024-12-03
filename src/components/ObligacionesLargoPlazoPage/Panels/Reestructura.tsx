@@ -461,8 +461,10 @@ export function SolicitudReestructura() {
                 alignItems: "center",
               }}
               onClick={() => {
-                addTablaDeclaratorias(AnexoClausulas);
-                cleanAnexoClausulas();
+                 addTablaDeclaratorias(AnexoClausulas);
+                 cleanAnexoClausulas();
+                
+                console.log("tablaDeclaratorias", tablaDeclaratorias)
               }}
             >
               <Typography>Agregar</Typography>

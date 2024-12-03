@@ -24,13 +24,16 @@ import { useEffect, useState } from "react";
 import { DatosCancelacion } from "../Panels/DatosCancelacion";
 import { useCancelacionStore } from "../../../store/Cancelacion/main";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function VerBorradorCancelacion({
   handler,
   openState,
+  rowSolicitud,
 }: {
   handler: Function;
   openState: boolean;
+  rowSolicitud: IInscripcion
 }) {
   const [openSolicitarCancelacion, setOpenSolicitarCancelacion] =
     useState(false);
@@ -40,14 +43,17 @@ export function VerBorradorCancelacion({
   // // SOLICITUD
   const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
-  const credito: IData = useCancelacionStore((state) => state.credito);
+  //const credito: IData = useCancelacionStore((state) => state.credito);
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
   // REQUERIMIENTOS
   useEffect(() => {
-    if (credito.Id !== "") {
-      getComentariosSolicitudPlazo(credito.Id, setDatosComentarios);
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id, setDatosComentarios);
     }
-  }, [credito]);
+  }, [inscripcion]);
 
   const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
     []
@@ -82,6 +88,7 @@ export function VerBorradorCancelacion({
     (state) => state.cleanSolicitudCortoPlazo
   );
 
+
   const [value, setValue] = useState(1);
 
   return (
@@ -112,7 +119,7 @@ export function VerBorradorCancelacion({
             alignItems: "center",
             width: "40%",
             justifyContent:
-              credito.NoEstatus !== "10" ? "space-around" : "flex-start",
+            inscripcion.NoEstatus !== "10" ? "space-around" : "flex-start",
           }}
         >
           <Button
@@ -149,8 +156,8 @@ export function VerBorradorCancelacion({
           >
             Volver
           </Button>
-
-          {credito.NoEstatus !== "10" && (
+{/* 
+          {inscripcion.NoEstatus === "10" && (
             <Tabs
               variant={"standard"}
               scrollButtons
@@ -173,11 +180,11 @@ export function VerBorradorCancelacion({
                 value={2}
               />
             </Tabs>
-          )}
+          )} */}
         </Box>
 
         {localStorage.getItem("Rol") === "Verificador" &&
-          credito.NoEstatus === "10" && (
+          inscripcion.NoEstatus === "10" && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -197,11 +204,11 @@ export function VerBorradorCancelacion({
             </Grid>
           )}
 
-        {((localStorage.getItem("IdUsuario") === credito.IdEditor &&
+        {((localStorage.getItem("IdUsuario") === inscripcion.IdEditor &&
           rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-          (credito.NoEstatus === "12" &&
+          (inscripcion.NoEstatus === "12" &&
             localStorage.getItem("Rol") === "Revisor")) &&
-          ["12", "13", "14"].includes(credito.NoEstatus) && (
+          ["12", "13", "14"].includes(inscripcion.NoEstatus) && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -275,8 +282,8 @@ export function VerBorradorCancelacion({
         }}
       >
         {value === 1 ? (
-          credito.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
-            <Resumen coments={false}  />
+          inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
+            <Resumen coments={false}  estatus={rowSolicitud.NoEstatus}/>
           ) : (
             <ResumenLP coments={false} />
           )
@@ -295,6 +302,7 @@ export function VerBorradorCancelacion({
         <DialogGuardarComentarios
           open={openGuardaComentarios}
           handler={setOpenGuardaComentarios}
+          
         />
       )}
     </Dialog>

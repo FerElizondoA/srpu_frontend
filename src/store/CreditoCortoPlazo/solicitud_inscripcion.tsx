@@ -8,6 +8,7 @@ import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
 import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { alertaConfirmCancelar } from "../../generics/Alertas";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -28,7 +29,7 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitud:Function
+    setIdSolicitud: Function
   ) => void;
 
   modificaSolicitud: (
@@ -36,7 +37,7 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string,
     // comentario: string,
-    arrDocsEliminados:IDocsEliminados[]
+    arrDocsEliminados: IDocsEliminados[]
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -60,13 +61,23 @@ export interface SolicitudInscripcionSlice {
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc:string
+    TpoDoc: string
   ) => void;
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
+  IdSolicitudBorrador: string
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
+
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => {
+    set(() => ({ IdSolicitudBorrador: IdSolicitudBorrador }))
+  },
+  IdSolicitudBorrador: "",
+
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública y Planeación Financiera",
@@ -105,10 +116,14 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitud:Function
+    setIdSolicitudCreada: Function
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
+
+
+
+
 
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
@@ -146,6 +161,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
+          TipoCredito: state.encabezado.tipoCredito.Descripcion,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
@@ -163,18 +179,23 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log("Crearsoli data: ", data.data); 
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS );
-        setIdSolicitud(data.data.Id);
+        console.log("data.data.Id", data.data.Id)
+        console.log("data.data", data.data)
+
+        state.setIdSolicitudBorrador(data.data.Id)
+        setIdSolicitudCreada(data.data.Id)
+
+        //inscripcionState.setInscripcion(data.data.)
+        alertaConfirmCancelar("La solicitud se guardó con éxito")
         state.saveFiles(
           data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
 
         // inscripcionState.setInscripcion(data.data);
 
-        state.addComentario(data.data.Id, comentario, "Captura");
+        //state.addComentario(data.data.Id, comentario, "Captura");
 
       });
   },
@@ -188,8 +209,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
-    console.log('arrDocsEliminados: modisoli ',arrDocsEliminados);
-    
+    console.log('arrDocsEliminados: modisoli ', arrDocsEliminados);
+
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
@@ -227,6 +248,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
+          TipoCredito: state.encabezado.tipoCredito.Descripcion,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
@@ -244,11 +266,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         console.log("modifcarsoli data: ", data.data);
-        console.log('arrDocsEliminados',arrDocsEliminados);
-        if(arrDocsEliminados.length!=0){
-          deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
+        console.log('arrDocsEliminados', arrDocsEliminados);
+        if (arrDocsEliminados.length != 0) {
+          deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
         }
-          
+
         state.saveFiles(
           data.data.Id,
           `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
@@ -323,7 +345,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             idComentario: "",
           });
         })
-        .catch((e) => {});
+        .catch((e) => { });
     }
   },
 
@@ -357,7 +379,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   deleteFiles: async (ruta: string) => {
@@ -367,7 +389,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     return axios
       .post(
         process.env.REACT_APP_APPLICATION_FILES +
-          "/api/ApiDoc/DeleteDirectorio",
+        "/api/ApiDoc/DeleteDirectorio",
         dataArray,
         {
           headers: {
@@ -375,7 +397,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
@@ -384,7 +406,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     return await state.tablaDocumentos.map((file) => {
       console.log(file);
-      
+
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
@@ -392,7 +414,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         dataArray.append("ROUTE", `${ruta}`);
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
-       
+
         if (file.archivo && file.archivo.size > 0) {
           console.log("entre");
 
@@ -416,10 +438,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
                 data.RESPONSE.NOMBREARCHIVO,
                 file.tipoArchivo
               );
-              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR,' tipoArchivo: ', file.tipoArchivo );
-              
+              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR, ' tipoArchivo: ', file.tipoArchivo);
+
             })
-            .catch((e) => {});
+            .catch((e) => { });
         } else {
           return null;
         }
@@ -430,7 +452,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
     console.log("Entre guardaDocumentos");
-    
+
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
     dataArray.append("ADDROUTE", "true");
@@ -456,7 +478,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             'firmados'
           );
         })
-        .catch((e) => {});
+        .catch((e) => { });
     } else {
       return null;
     }
@@ -467,7 +489,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc:string
+    TpoDoc: string
   ) => {
 
     console.log("Entre savePathDoc");
@@ -479,7 +501,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc:TpoDoc
+          TpoDoc: TpoDoc
         },
         {
           headers: {
@@ -488,11 +510,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((r) => {
-        console.log("r: ",r.data);
-        
+        console.log("r: ", r.data);
+
         //saveFiles("", Ruta);
       })
 
-      .catch((e) => {});
+      .catch((e) => { });
   },
 });

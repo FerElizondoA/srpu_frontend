@@ -32,7 +32,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { addDays } from "date-fns";
-
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import { format } from "date-fns";
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
@@ -48,47 +48,48 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { moneyMask } from "./InformacionGeneral";
+import { log } from "console";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Interes",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Interes",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: `Importe de disposición`,
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: `Importe de disposición`,
+    },
+  ];
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -190,8 +191,13 @@ export function DisposicionPagosCapital() {
     (state) => state.cleanDisposicion
   );
 
-  
-  
+  // const moneyMask = (value: string) => {
+  //   const floatValue = parseFloat(value).toFixed(2); // Aseguramos siempre dos decimales
+  //   return floatValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formateamos el número con comas
+  // };
+
+
+
 
   useEffect(() => {
     catalogoPeriocidadDePago.length <= 0 && getPeriocidadPago();
@@ -246,22 +252,53 @@ export function DisposicionPagosCapital() {
   const [restante, setRestante] = useState(0);
 
   useEffect(() => {
-    let loc = 0.0;
-    tablaDisposicion.map((value: any, index: number) => {
-      loc += parseFloat(
+    let totalImporte = 0;
+
+    // Sumar los importes de la tabla
+    tablaDisposicion.forEach((value) => {
+      totalImporte += Number(
         value.importe.toString().replaceAll("$", "").replaceAll(",", "")
       );
     });
 
-    let res = 0.0;
-    res =
-      parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
-      parseFloat(loc.toFixed(2));
-    setRestante(res);
+    // Calcular el restante sin formateo
+    const montoSinFormato = Number(
+      monto.toString().replaceAll("$", "").replaceAll(",", "")
+    );
+
+    const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
+
+
+    // Actualizar el estado restante (como número)
+    setRestante(Number(nuevoRestante));
   }, [tablaDisposicion]);
+
+  // useEffect(() => {
+  //   let loc = 0.0;
+  //   tablaDisposicion.map((value: any, index: number) => {
+  //     loc += parseFloat(
+  //       value.importe.toString().replaceAll("$", "").replaceAll(",", "")
+  //     );
+  //   });
+
+  //   let res = 0.0;
+  //   res =
+  //     parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
+  //     parseFloat(loc.toFixed(2));
+  //     setRestante(res);
+  // }, [tablaDisposicion]);
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
+  };
+
+  const validacionBotonAgregar = (valorFormateado: string) => {
+    // Remueve cualquier carácter que no sea número o punto decimal
+    const valorNumerico = valorFormateado.replace(/[^\d.-]/g, "");
+
+    console.log("valorNumerico", valorNumerico);
+
+    return (parseFloat(valorNumerico)); // Convierte la cadena a número flotante
   };
 
   return (
@@ -282,41 +319,62 @@ export function DisposicionPagosCapital() {
       }}
       flexDirection={"column"}
       justifyContent={"space-between"}
-      height={
-        query.isMobile === false
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "32rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "44rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "44rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "60rem"
-            : "36rem"
-          : query.isMobile === true
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "65rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "65rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "85rem"
-            : "52rem"
-          : "36rem"
-      }
+
+    // height={
+    //   query.isMobile === false
+    //     ? disposicionesParciales === false && tasasParciales === false
+    //       ? "32rem"
+    //       : disposicionesParciales === true && tasasParciales === false
+    //         ? "50rem"
+    //         : disposicionesParciales === false && tasasParciales === true
+    //           ? "50rem"
+    //           : disposicionesParciales === true && tasasParciales === true
+    //             ? "62rem"
+    //             : "36rem"
+    //     : query.isMobile === true
+    //       ? disposicionesParciales === false && tasasParciales === false
+    //         ? "50rem"
+    //         : disposicionesParciales === true && tasasParciales === false
+    //           ? "65rem"
+    //           : disposicionesParciales === false && tasasParciales === true
+    //             ? "65rem"
+    //             : disposicionesParciales === true && tasasParciales === true
+    //               ? "85rem"
+    //               : "52rem"
+    //       : "36rem"
+    // }
     >
-      <Grid item container mt={2} direction="column">
-        <Grid item>
-          <Divider>
+      <Grid container mt={2} direction="column"
+        height={{
+          xs: "20rem",
+          sm: "10rem",
+          md: "10rem",
+          lg: "10rem",
+          xl: "10rem" /* */
+        }} //MOVER EL HEIGHT
+      >
+        <Grid item >
+          <Divider sx={{ marginBottom: 2 }}>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               PAGOS DE CAPITAL
             </Typography>
           </Divider>
         </Grid>
 
-        <Grid container display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
+        <Grid container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          alignItems={"center"}
+        >
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{
+              xs: 3,
+              sm: 0,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
+            sx={{ width: "100%" }}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -339,7 +397,15 @@ export function DisposicionPagosCapital() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{
+              xs: 3,
+              sm: 0,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
+          >
             <InputLabel sx={queries.medium_text}>
               Periodicidad de Pago
             </InputLabel>
@@ -395,7 +461,7 @@ export function DisposicionPagosCapital() {
               onChange={(v) => {
                 setPagosDeCapital({
                   ...pagosDeCapital,
-                  numeroDePago: v.target.value ,
+                  numeroDePago: v.target.value,
                 });
               }}
               fullWidth
@@ -415,10 +481,21 @@ export function DisposicionPagosCapital() {
         </Grid>
       </Grid>
 
-      <Grid container direction="column" width={"100%"}>
-        <Grid item width={"100%"}>
-          <Divider>
-            <Typography color={"#af8c55 "} fontWeight={"bold"}>
+      <Grid container direction="column" width={"100%"} alignItems={"center"}
+        //height={disposicionesParciales === false ? "16rem": "35rem"}
+        height={{
+          xs: disposicionesParciales === false ? "16rem" : "38rem",
+          sm: disposicionesParciales === false ? "16rem" : "35rem",
+          md: disposicionesParciales === false ? "16rem" : "35rem",
+          lg: disposicionesParciales === false ? "12rem" : "35rem",
+          xl: disposicionesParciales === false ? "12rem" : "28rem" /* */
+        }}
+      // height={ disposicionesParciales === false ? 2 : 3 }
+
+      >
+        <Grid item width={"100%"} alignItems={"center"}>
+          <Divider sx={{ marginBottom: 2 }}>
+            <Typography color={"#af8c55 "} fontWeight={"bold"} >
               DISPOSICIÓN
             </Typography>
           </Divider>
@@ -430,7 +507,15 @@ export function DisposicionPagosCapital() {
             alignItems={"center"}
             width={"100%"}
           >
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
               <FormControlLabel
                 label="Disposiciones Parciales"
                 control={
@@ -438,17 +523,24 @@ export function DisposicionPagosCapital() {
                     checked={disposicionesParciales}
                     onChange={(v) => {
                       setDisposicionesParciales();
-                      if(disposicionesParciales === false){
+                      if (disposicionesParciales === false) {
                         removeDisposicion(0)
                       }
-                      
-                      
                     }}
                   />
                 }
               ></FormControlLabel>
             </Grid>
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+
+            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
@@ -471,41 +563,52 @@ export function DisposicionPagosCapital() {
               </LocalizationProvider>
             </Grid>
 
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-              <InputLabel sx={queries.medium_text}>Importe</InputLabel>
+            <Grid item xs={10} sm={6} md={6} lg={3} xl={3}
+              mb={{
+                xs: 3,
+                // sm: ,
+                // md: ,
+                // lg: ,
+                // xl:  /* */
+              }}
+            >
 
-              <TextField
+              {/* <TextField
                 disabled={!disposicionesParciales}
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
+                    monto +
+                    "; Monto restante: " +
+                   moneyMask(restante.toString())
                     : ""
                 }
                 value={disposicion.importe}
                 onChange={(v) => {
+                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
+                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
+                  console.log("");
+                  
+
+                  // Verificamos que sea numérico y aplicamos las validaciones
                   if (
-                    validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                    validator.isNumeric(valorNumerico) &&
                     disposicionesParciales &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <=
-                      restante * 101
+                    Number(valorNumerico) < restante // Comparamos directamente con 'restante'
                   ) {
+                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
                     setDisposicion({
                       ...disposicion,
-                      importe: moneyMask(v.target.value),
+                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
                     });
                   } else if (v.target.value === "") {
+                    // Si está vacío, seteamos a "0"
                     setDisposicion({ ...disposicion, importe: moneyMask("0") });
                   }
                 }}
                 error={
-                  parseFloat(
-                    disposicion.importe.toString().replace(/\D/g, "")
-                  ) > parseFloat(monto.toString().replace(/\D/g, ""))
+                  Number(disposicion.importe.replace(/[^\d.]/g, "")) >
+                  Number(monto.toString().replace(/[^\d.]/g, ""))
                 }
                 fullWidth
                 InputLabelProps={{
@@ -519,48 +622,184 @@ export function DisposicionPagosCapital() {
                   },
                 }}
                 variant="standard"
-              />
+              /> */}
+              <Grid justifyContent={"space-between"}>
+
+
+                {validacionBotonAgregar(
+                  disposicion.importe.toString()
+                ) >
+                  restante && disposicionesParciales ? <InputLabel>
+                  <Typography sx={{
+                    fontSize: ".7rem",
+                    fontFamily: "MontserratMedium",
+                    color: "red"
+                  }}>
+                    *favor de ingresar un numero menor*
+                  </Typography>
+
+                </InputLabel> : null}
+
+
+                <Grid display={"flex"} justifyContent={"space-between"}>
+                  <TextField
+                    disabled={!disposicionesParciales}
+                    helperText={
+                      (disposicionesParciales
+                        ? "Monto Original Contratado: " +
+                        moneyMask(monto.toString()) +  // Formatear el monto
+                        "; Monto restante: " +
+                        moneyMask(restante.toString()) // Formatear el restante
+                        : ""
+                      )
+                    }
+                    value={disposicion.importe}
+                    onChange={(v) => {
+                      const valornuevo = v.target.value;
+                      console.log("valorNuevo", valornuevo);
+
+                      setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
+                    }}
+                    error={
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) >
+                        restante
+                    }
+                    fullWidth
+                    InputLabelProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    variant="standard"
+                  />
+                  {/* <Tooltip title={validacionBotonAgregar(
+                    disposicion.importe.toString()
+                  ) >
+                    restante ? "Favor de ingresar un numero menor" : null}>
+                    <Button
+                      disabled={validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) <=
+                        restante}
+                      onClick={() => {
+
+                      }}
+                    >
+                      < NewReleasesIcon />
+                    </Button>
+                  </Tooltip> */}
+                </Grid>
+
+              </Grid>
+
+              {/* <TextField
+                disabled={!disposicionesParciales}
+                helperText={
+                  disposicionesParciales
+                    ? "Monto Original Contratado: " +
+                    monto +
+                    "; Monto restante: " +
+                    moneyMask(restante.toFixed(2))
+                    : ""
+                }
+                value={disposicion.importe}
+                onChange={(v) => {
+                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
+                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
+
+                  // Verificamos que sea numérico y aplicamos las validaciones
+                  if (
+                    // validator.isNumeric(valorNumerico) &&
+                    //disposicion.importe.length < monto.toString().length &&
+                    disposicionesParciales &&
+                    parseFloat(valorNumerico) <= restante &&
+                    parseFloat(valorNumerico) < 9999999999999999
+
+                  ) {
+                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
+                    setDisposicion({
+                      ...disposicion,
+                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
+                    });
+                  } else if (v.target.value === "") {
+                    // Si está vacío, seteamos a "0"
+                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
+                  }
+                }}
+                error={
+                  parseFloat(disposicion.importe.toString().replace(/[^\d.]/g, "")) >
+                  parseFloat(monto.toString().replace(/[^\d.]/g, ""))
+                }
+                fullWidth
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                variant="standard"
+              /> */}
             </Grid>
           </Grid>
+
           {disposicionesParciales && (
+
             <Grid
               container
               flexDirection={"column"}
               alignItems={"center"}
               width={"100%"}
             >
+
               <ThemeProvider theme={buttonTheme}>
-                <Button
-                  sx={{
-                    ...queries.buttonContinuarSolicitudInscripcion,
-                    mt: 2,
-                    mb: 2,
-                    width: "15vh",
-                  }}
-                  disabled={
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) === 0 ||
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) >
-                      restante * 101
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
-                    addDisposicion(disposicion);
-                  }}
-                >
-                  Agregar
-                </Button>
+                <Tooltip title={validacionBotonAgregar(
+                  disposicion.importe.toString()
+                ) >
+                  restante ? "Favor de ingresar un numero menor" : "345"}>
+                  <Button
+                    sx={{
+                      ...queries.buttonContinuarSolicitudInscripcion,
+                      mt: 2,
+                      mb: 2,
+                      width: "15vh",
+                    }}
+                    disabled={
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) === 0 ||
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) >
+                      restante
+                    }
+                    variant="outlined"
+                    onClick={() => {
+                      setDisposicion({ ...disposicion, importe: moneyMask("0") });
+                      addDisposicion(disposicion);
+                    }}
+                  >
+                    Agregar
+                  </Button>
+                </Tooltip>
               </ThemeProvider>
+
 
               <Grid
                 width={"100%"}
                 display={"flex"}
                 justifyContent={"center"}
-                height={"12rem"}
+                height={"13rem"}
               >
                 <Paper sx={{ width: "88%", height: "100%" }}>
                   <TableContainer
@@ -622,12 +861,14 @@ export function DisposicionPagosCapital() {
                 </Paper>
               </Grid>
             </Grid>
+
+
           )}
         </Grid>
       </Grid>
 
       <Grid container direction="column">
-        <Grid item>
+        <Grid item mt={3}>
           <Divider>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               TASA DE INTERÉS
@@ -642,6 +883,13 @@ export function DisposicionPagosCapital() {
         >
           <Grid
             item
+            mb={{
+              xs: 3,
+              // sm: ,
+              // md: ,
+              // lg: ,
+              // xl:  /* */
+            }}
             container
             sx={{
               justifyContent: "center",
@@ -695,11 +943,17 @@ export function DisposicionPagosCapital() {
                 <Grid
                   item
                   xs={10}
-                  sm={2}
-                  md={2}
+                  sm={5} md={5}
                   lg={2}
                   xl={2}
                   display={"block"}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
                 >
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
@@ -720,7 +974,15 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                   <TextField
@@ -746,7 +1008,15 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -789,7 +1059,15 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}
+                  mb={{
+                    xs: 3,
+                    // sm: ,
+                    // md: ,
+                    // lg: ,
+                    // xl:  /* */
+                  }}
+                >
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -841,7 +1119,7 @@ export function DisposicionPagosCapital() {
                   display: "flex",
                 }}
               >
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2} width={"100%"}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -850,6 +1128,7 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                      sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
@@ -860,7 +1139,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -904,7 +1183,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Tasa de Referencia
                   </InputLabel>
@@ -948,7 +1227,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
                     //type="number"
@@ -984,7 +1263,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>

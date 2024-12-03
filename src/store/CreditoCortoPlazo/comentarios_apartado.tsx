@@ -18,12 +18,26 @@ export interface ComentarioApartadoSlice {
   datosActualizar: Array<string>;
 
   setDatosActualizar: (datos: any) => void;
+
+  filtroComentarios: boolean;
+  setFiltroComentarios:(filtroComentarios: boolean) => void;
+
+
 }
 
 export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
   set,
   get
 ) => ({
+
+  filtroComentarios: false,
+  setFiltroComentarios:(filtroComentarios: boolean) => {
+    set((state) => ({
+      filtroComentarios: filtroComentarios
+    }));
+
+  },
+
   idComentario: "",
   comentarios: {},
 

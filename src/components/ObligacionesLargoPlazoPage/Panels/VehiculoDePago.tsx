@@ -92,56 +92,56 @@ export function VehiculoDePago() {
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
 
-  const llenarFuentePago = (mecanismoPago: string) => {
-    let auxArray = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
-    auxArray.map((column: any) => {
-      return (
-        (column.acumuladoAfectacionGobiernoEstatalEntre100 = Number(
-          sumaPorcentajeAcumulado.SumaAcumuladoEstado
-        ).toString()),
-        (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio = Number(
-          sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-        ).toString()),
-        (column.acumuladoAfectacionOrganismoEntre100 = Number(
-          sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-        ).toString())
-      );
-    });
+  // const llenarFuentePago = (mecanismoPago: string) => {
+  //   let auxArray = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
+  //   auxArray.map((column: any) => {
+  //     return (
+  //       (column.acumuladoAfectacionGobiernoEstatalEntre100 = Number(
+  //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
+  //       ).toString()),
+  //       (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio = Number(
+  //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+  //       ).toString()),
+  //       (column.acumuladoAfectacionOrganismoEntre100 = Number(
+  //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+  //       ).toString())
+  //     );
+  //   });
 
-    if (mecanismoPago === "Mandato") {
-      editarMandato(
-        mecanismoVehiculoPago.Id,
-        {
-          numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
-          fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
-          mandatario: catalogoOrganismos.filter(
-            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandatario
-          )[0],
-          mandante: catalogoOrganismos.filter(
-            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandante
-          )[0],
-        },
-        auxArray,
-        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
-      );
+  //   if (mecanismoPago === "Mandato") {
+  //     editarMandato(
+  //       mecanismoVehiculoPago.Id,
+  //       {
+  //         numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
+  //         fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
+  //         mandatario: catalogoOrganismos.filter(
+  //           (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandatario
+  //         )[0],
+  //         mandante: catalogoOrganismos.filter(
+  //           (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandante
+  //         )[0],
+  //       },
+  //       auxArray,
+  //       JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+  //     );
 
-      setOpenAgregarMandato(!openAgregarMandato);
-    } else {
-      editarInstruccion(
-        mecanismoVehiculoPago.Id,
-        {
-          numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
-          cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: mecanismoVehiculoPago.Banco,
-          fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
-        },
-        auxArray,
-        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
-      );
+  //     setOpenAgregarMandato(!openAgregarMandato);
+  //   } else {
+  //     editarInstruccion(
+  //       mecanismoVehiculoPago.Id,
+  //       {
+  //         numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
+  //         cuentaCLABE: mecanismoVehiculoPago.CLABE,
+  //         banco: mecanismoVehiculoPago.Banco,
+  //         fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
+  //       },
+  //       auxArray,
+  //       JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+  //     );
 
-      setOpenAgregarInstruccion(!openAgregarInstruccion);
-    }
-  };
+  //     setOpenAgregarInstruccion(!openAgregarInstruccion);
+  //   }
+  // };
 
   const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
     (state) => state.tablaResumenMecanismoPago
@@ -257,7 +257,7 @@ export function VehiculoDePago() {
               sx={queries.buttonContinuar}
               disabled={tablaMecanismoVehiculoPago === null}
               onClick={() => {
-                llenarFuentePago(tipoMecanismoVehiculoPago);
+                //llenarFuentePago(tipoMecanismoVehiculoPago);
               }}
             >
               <Typography
@@ -269,7 +269,7 @@ export function VehiculoDePago() {
                   },
                 }}
               >
-                Agregar
+                Ver mecanismo de pago
               </Typography>
             </Button>
           </ThemeProvider>

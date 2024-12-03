@@ -38,6 +38,10 @@ import { useMandatoStore } from "../../store/Mandatos/main";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { DetalleMandato } from "../../components/mandatos/dialog/DetalleMandato";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
+import { BarraFiltros } from "../../generics/BarraFiltros";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
+import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -183,6 +187,24 @@ export function Mandatos() {
   }, [openAgregarMandato]);
 
   const [openDetalle, setOpenDetalle] = useState(false);
+  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+    const getDatos = () => {
+    getSolicitudes(
+      !rolesAdmin.includes(localStorage.getItem("Rol")!)
+        ? "Inscripcion"
+        : "Revision",
+      (e: IInscripcion[]) => {
+        setDatos(e);
+      },
+      setDatosFiltrados
+    );
+  };
+  useEffect(() => {
+    getDatos();
+    
+  }, []);
+
 
   const [detalleMandato, setDetalleMandato] = useState<IDatosMandatos>({
     AcumuladoEstado: "",
@@ -203,6 +225,9 @@ export function Mandatos() {
     TipoMovimiento: "",
     UltimaModificacion: "",
   });
+
+
+
 
   return (
     <Grid height={"74vh"}>
@@ -234,8 +259,15 @@ export function Mandatos() {
         </Typography>
       </Grid>
 
-      <Grid display="center" justifyContent="space-between" height={"4rem"}>
-        <Grid
+      <Grid display="center" justifyContent="space-between" >
+      <BarraFiltros
+        Lista={datos}
+        setStateFiltered={setDatosFiltrados}
+        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+      />
+     
+
+        {/* <Grid
           width={"80%"}
           height={"75%"}
           display={"flex"}
@@ -268,7 +300,7 @@ export function Mandatos() {
               <GridSearchIcon />
             </IconButton>
           </Paper>
-        </Grid>
+        </Grid> */}
 
         <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
           <Button

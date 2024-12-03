@@ -181,6 +181,43 @@ export function CondicionesFinancieras() {
     (state) => state.informacionGeneral.monto
   );
 
+  const [sumaTotal, setSumaTotal] = useState(0);
+
+  const calcularSumaTotal = () => {
+    const suma = tablaCondicionesFinancieras.reduce((acumulado, condicion) => {
+      // Sumamos todos los importes de las disposiciones de la condición actual
+      const sumaDisposicion = condicion.disposicion.reduce((sum, disp) => {
+        return sum + parseFloat(disp.importe || '0'); // Convertir importe de string a número
+      }, 0);
+      console.log("acumulado + sumaDisposicion", acumulado, sumaDisposicion);
+      
+      return acumulado + sumaDisposicion; // Sumar al acumulado total
+
+    }, 0);
+    console.log("suma", suma);
+
+    return suma;
+  };
+
+  // useEffect que se dispara cuando las condiciones financieras cambian
+  useEffect(() => {
+    const total = calcularSumaTotal();
+    setSumaTotal(total);
+    console.log("sumaTotal", sumaTotal)
+  }, [tablaCondicionesFinancieras, !openFiltroMonto]);
+
+
+
+  // useEffect(() => {
+  //   const sumaTotal = tablaCondicionesFinancieras.disposicion.importe.map()
+  //   setnumDisposicionTotal(tablaCondicionesFinancieras.disposicion.importe.map(heads, index) =>(
+      
+  //   ))
+
+  //   console.log("tablaCondicionesFinancieras", tablaCondicionesFinancieras)
+    
+  // }, [tablaCondicionesFinancieras, !openFiltroMonto])
+  
 
 
 

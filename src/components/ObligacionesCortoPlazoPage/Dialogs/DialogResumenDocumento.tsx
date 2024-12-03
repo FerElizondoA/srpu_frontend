@@ -6,10 +6,11 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  ThemeProvider,
   Typography,
 } from "@mui/material";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
@@ -23,10 +24,12 @@ import {
   rolesAdmin,
 } from "./DialogSolicitarModificacion";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
-import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
+//import { DialogGuardarComentarios } from "./DialogGuardarComentarios";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { alertaExito } from "../../../generics/Alertas";
+import { appTheme } from "../../..";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 type Props = {
   handler: Function;
@@ -41,13 +44,15 @@ export function VerBorradorDocumento(props: Props) {
 
   // REQUERIMIENTOS
   React.useEffect(() => {
-    if (props.rowSolicitud.Id !== "") { 
+    if (props.rowSolicitud.Id !== "") {
       getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
     }
   }, [props.rowSolicitud.Id]);
 
   const [datosComentario, setDatosComentarios] = React.useState<Array<IComentarios>>([]);
-  
+
+  const [botonVolverFiltro, setBotonVolverFiltro] = React.useState({});
+
   React.useEffect(() => {
     let a: any = {};
 
@@ -61,8 +66,9 @@ export function VerBorradorDocumento(props: Props) {
         });
       });
 
+    setBotonVolverFiltro(a);
     setComentarios(a);
-    console.log("comentarios", comentarios)
+    //console.log("comentarios", comentarios)
 
     useCortoPlazoStore.setState({
       idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
@@ -76,11 +82,22 @@ export function VerBorradorDocumento(props: Props) {
   const setComentarios: Function = useCortoPlazoStore(
     (state) => state.setComentarios
   );
+
+  const setFiltroComentarios: Function = useCortoPlazoStore(
+    (state) => state.setFiltroComentarios
+  );
+
+  const filtroComentarios: boolean = useCortoPlazoStore(
+    (state) => state.filtroComentarios
+  );
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
 
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
+
+  const [openDialogConfirmacionVolver, setOpenDialogConfirmacionVolver] = useState(false);
+
   const [accion, setAccion] = useState("");
 
   const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
@@ -90,12 +107,59 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.cleanSolicitudLargoPlazo
   );
 
-  
-  
+
+
   const cleanCondicionFinanciera: Function = useLargoPlazoStore(
     (state) => state.cleanCondicionFinanciera
   );
-  
+
+  //const [filtroComentarios, setFiltroComentarios] = useState(false);
+
+
+  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+
+  function tieneComentarios(obj: {}) {
+    // Verificar que el objeto no esté vacío y tenga al menos un valor
+    return Object.values(obj).some(valor => valor !== "" && valor !== null && valor !== undefined);
+  }
+
+  // function compararComentarios(obj1: object, obj2: object) {
+  //   const claves1 = Object.keys(obj1);
+  //   const claves2 = Object.keys(obj2);
+
+  //   // Comparar longitud de las claves
+  //   if (claves1.length !== claves2.length) {
+  //       return false;
+  //   }
+
+  //   // Comparar valores clave por clave
+  //   return claves1.every(clave => obj2.hasOwnProperty(clave) && obj1[clave] === obj2[clave]);
+  // }
+
+  function compararComentarios(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
+    const claves1 = Object.keys(obj1);
+    const claves2 = Object.keys(obj2);
+
+    // Comparar longitud de las claves
+    if (claves1.length !== claves2.length) {
+      return false;
+    }
+
+    // Comparar valores clave por clave
+    const prueba = claves1.every(clave => obj2.hasOwnProperty(clave) && obj1[clave] === obj2[clave]);
+    console.log("prueba comparacion", prueba);
+
+    return prueba
+  }
+
+  // useEffect(() => {
+  //   console.log("props.rowSolicitud", props.rowSolicitud);
+  //   console.log("props.rowSolicitud.NoEstatus", props.rowSolicitud.NoEstatus);
+
+
+  // }, [])
+
+
   return (
 
     <Dialog
@@ -142,30 +206,50 @@ export function VerBorradorDocumento(props: Props) {
               fontSize: "80%",
             },
           }}
+          disabled={comentario.length > 0}
           onClick={() => {
-            props.handler(false);
-            useCortoPlazoStore.setState({
-              comentarios: {},
-              idComentario: "",
-            });
-            cleanSolicitudCortoPlazo();
-            cleanSolicitudLargoPlazo();
-            cleanCondicionFinanciera();
+
+            if (compararComentarios(comentarios, botonVolverFiltro)) {
+              console.log("No ha habido modificaciones en los comentarios.");
+
+              props.handler(false);
+              useCortoPlazoStore.setState({
+                comentarios: {},
+                idComentario: "",
+              });
+              cleanSolicitudCortoPlazo();
+              cleanSolicitudLargoPlazo();
+              cleanCondicionFinanciera();
+            }
+            else {
+              console.log("Hubo modificaciones en los comentarios.");
+              console.log("COMENTARIOS", comentarios)
+              console.log("botonVolverFiltro", botonVolverFiltro)
+
+              setOpenDialogConfirmacionVolver(true)
+
+            }
+
           }}
         >
           Volver
         </Button>
 
-        {((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-          (props.rowSolicitud.NoEstatus === "4" &&
-            localStorage.getItem("Rol") === "Revisor")) &&
-          ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus) && (
-            <Grid
-              justifyContent={"space-evenly"}
-              sx={{ width: "50rem", display: "flex" }}
-            >
+        {
+          //Primera condicion
+          (props.rowSolicitud.NoEstatus === "2" &&
+            localStorage.getItem("Rol") === "Verificador" &&
+            localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor) ||
+            
+            ((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+              (props.rowSolicitud.NoEstatus === "4" &&
+                localStorage.getItem("Rol") === "Revisor")) &&
+            ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus)
+            ?
+            <ThemeProvider theme={buttonTheme}>
               <Button
+                disabled={!tieneComentarios(comentarios)}
                 sx={{
                   ...queries.buttonCancelar,
                   fontSize: "50%",
@@ -176,6 +260,23 @@ export function VerBorradorDocumento(props: Props) {
               >
                 Guardar Comentarios
               </Button>
+            </ThemeProvider>
+
+            : null}
+
+
+        {((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
+          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+          (props.rowSolicitud.NoEstatus === "4" &&
+            localStorage.getItem("Rol") === "Revisor")) &&
+          ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus) ||
+          (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") &&
+          (
+            <Grid
+              justifyContent={"space-evenly"}
+              sx={{ width: "50rem", display: "flex" }}
+            >
+
               {localStorage.getItem("Rol") !== "Revisor" && (
                 <Button
                   sx={{
@@ -187,11 +288,10 @@ export function VerBorradorDocumento(props: Props) {
                     setAccion("modificar");
                   }}
                 >
-                  {`Devolver para ${
-                    localStorage.getItem("Rol") === "Autorizador"
-                      ? "validación"
-                      : "revisión"
-                  }`}
+                  {`Devolver para ${localStorage.getItem("Rol") === "Autorizador"
+                    ? "validación"
+                    : "revisión"
+                    }`}
                 </Button>
               )}
 
@@ -209,10 +309,10 @@ export function VerBorradorDocumento(props: Props) {
                 {localStorage.getItem("Rol") === "Validador"
                   ? "Validación"
                   : localStorage.getItem("Rol") === "Revisor"
-                  ? "Revisión"
-                  : Object.keys(comentarios).length > 0
-                  ? "Solicitud de Requerimientos"
-                  : "Autorización"}
+                    ? "Revisión"
+                    : Object.keys(comentarios).length > 0
+                      ? "Solicitud de Requerimientos"
+                      : "Autorización"}
               </Button>
             </Grid>
           )}
@@ -233,8 +333,24 @@ export function VerBorradorDocumento(props: Props) {
           },
         }}
       >
+        <Grid
+          //width={query.isTittle ? "20%" : "20%"}
+          display={"flex"}
+          justifyContent={"start"}
+          alignItems={"center"}
+        >
+          <Typography
+            sx={{
+              fontSize: "1.2rem",
+              fontFamily: "MontserratBold",
+            }}
+          >
+            <strong>{`Número de Registro: ${props.rowSolicitud.NumeroRegistro}`}</strong>
+          </Typography>
+        </Grid>
+
         {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
-          <Resumen coments={false} />
+          <Resumen coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios} />
         ) : (
           <ResumenLP coments={false} />
         )}
@@ -268,7 +384,7 @@ export function VerBorradorDocumento(props: Props) {
                 JSON.stringify(comentarios),
                 "Requerimiento"
               ).then(() => {
-                                alertaExito(()=>{} ,"Comentarios guardados con éxito")
+                alertaExito(() => { }, "Comentarios guardados con éxito")
                 setOpenGuardaComentarios(false);
                 props.handler(false);
 
@@ -279,12 +395,53 @@ export function VerBorradorDocumento(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-      {openGuardaComentarios && (
+
+      <Dialog open={openDialogConfirmacionVolver}>
+        <DialogTitle sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>
+          ADVERTENCIA
+        </DialogTitle>
+
+        <DialogContent>
+          Se agregaron o modificaron comentarios en distintos campos, si desea enviarlos o guardar los cambios, porfavor oprimir el boton de <strong>"Guardar Comentarios"</strong>, de lo contrario precione <strong>"Aceptar"</strong> para continuar y borrar las modificaciones.
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={{ ...queries.buttonCancelar }}
+            onClick={() => {
+              setOpenDialogConfirmacionVolver(false)
+            }}
+          >
+            Cerrar
+          </Button>
+
+          <Button
+            sx={{ ...queries.buttonContinuar }}
+            onClick={() => {
+              setOpenDialogConfirmacionVolver(false)
+              props.handler(false);
+              useCortoPlazoStore.setState({
+                comentarios: {},
+                idComentario: "",
+              });
+              cleanSolicitudCortoPlazo();
+              cleanSolicitudLargoPlazo();
+              cleanCondicionFinanciera();
+            }}
+          >
+            Aceptar
+          </Button>
+
+        </DialogActions>
+
+      </Dialog>
+      {/* {openGuardaComentarios && (
         <DialogGuardarComentarios
           open={openGuardaComentarios}
           handler={setOpenGuardaComentarios}
+          
         />
-      )}
+      )} */}
 
       {openDialogRegresar && (
         <DialogSolicitarModificacion

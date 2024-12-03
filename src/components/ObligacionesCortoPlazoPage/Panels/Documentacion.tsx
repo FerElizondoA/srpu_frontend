@@ -151,7 +151,9 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
   });
 
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
-
+  //const [confirmBorrarDocumento, setConfirmBorrarDocumento] = useState(false);
+  const [index, setIndex] = useState(0);
+  
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
@@ -392,7 +394,9 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                             <Button
                               sx={{ position: "absolute", right: 0 }}
                               onClick={() => {
-                                clearArchivo(index);
+                                  clearArchivo(index);// pedro
+                                setOpenEliminar({ open: true, index: index})//fernandondo
+                            
                               }}
                             >
                               <CloseIcon />
@@ -539,8 +543,11 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
         openState={openComentarioApartado}
       />
       <Dialog
+        
         open={openEliminar.open}
+        
         onClose={() => setOpenEliminar({ ...openEliminar, open: false })}
+        
       >
         <DialogContent>
           ¿Eliminar este archivo de la documentación?
@@ -549,7 +556,8 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
-              setOpenEliminar({ ...openEliminar, open: false });
+             
+              //setOpenEliminar({ ...openEliminar, open: false });
             }}
           >
             Cancelar
@@ -557,7 +565,8 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
           <Button
             sx={queries.buttonContinuar}
             onClick={() => {
-              quitDocument(openEliminar.index);
+              clearArchivo(openEliminar.index);
+              //quitDocument(openEliminar.index);
               setOpenEliminar({ ...openEliminar, open: false });
             }}
           >
