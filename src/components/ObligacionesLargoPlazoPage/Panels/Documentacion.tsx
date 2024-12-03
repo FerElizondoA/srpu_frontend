@@ -304,7 +304,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                             !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
-                        multiline={!query.isMobile}
+                        // multiline={!query.isMobile}
                         value={val.nombreArchivo}
                         onChange={(v) => {
                           let auxArrayArchivos = [...tablaDocumentos];

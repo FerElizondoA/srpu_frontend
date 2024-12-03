@@ -31,6 +31,7 @@ import {
 } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 const headsTipoMovimiento: { label: string }[] = [
   {
@@ -427,18 +428,36 @@ export function DetalleInstruccion({
                         ) : (
                           <Tooltip title={"Mostrar vista previa del documento"}>
                             <IconButton
-                              onClick={() => {
-                                setFileSelected(
-                                  `data:application/pdf;base64,${
-                                    arr.filter((td: any) =>
-                                      td.NOMBREFORMATEADO.includes(
-                                        row.nombreArchivo
-                                      )
-                                    )[0].FILE
-                                  }`
-                                );
-                                setShowModalPrevia(true);
-                              }}
+                              // onClick={() => {
+                              //   setFileSelected(
+                              //     `data:application/pdf;base64,${
+                              //       arr.filter((td: any) =>
+                              //         td.NOMBREFORMATEADO.includes(
+                              //           row.nombreArchivo
+                              //         )
+                              //       )[0].FILE
+                              //     }`
+                              //   );
+                              //   setShowModalPrevia(true);
+                              // }}
+                              onClick={async () => {
+                                    
+                                let base64String='';
+                                try {
+                                  if (row.archivo instanceof File) {
+                                     base64String = await convertFileToBase64(row.archivo);
+                                  }else{
+                                     base64String = row.archivo;
+                                  }
+                                  
+                                  const dataUri = `data:application/pdf;base64,${base64String}`;
+                                  setFileSelected(dataUri);
+                                } catch (error) {
+                                  console.error("Error al convertir el archivo a Base64", error);
+                                }
+                              
+                              setShowModalPrevia(true);
+                            }}
                             >
                               <FileOpenIcon />
                             </IconButton>

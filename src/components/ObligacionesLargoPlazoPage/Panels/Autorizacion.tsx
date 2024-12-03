@@ -146,7 +146,7 @@ export function Autorizacion() {
           val?.NombreIdentificador,
           (res: any, index: number) => {
             loc.push({ file: res, nombre: val.NombreArchivo });
-          }
+          },"LARGOPLAZO"
         );
       });
       setArrDocs(loc);

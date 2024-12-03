@@ -301,7 +301,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                                 !datosActualizar.includes(val.tipoArchivo))
                         }
                         size="small"
-                        multiline={!query.isMobile}
+                        // multiline={!query.isMobile}
                         value={val.nombreArchivo}
                         onChange={(v) => {
                           let auxArrayArchivos = [...tablaDocumentos];
@@ -393,8 +393,6 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                               sx={{ position: "absolute", right: 0 }}
                               onClick={() => {
                                 clearArchivo(index);
-                                // quitDocument(openEliminar.index);
-                                // setOpenEliminar({ ...openEliminar, open: false });
                               }}
                             >
                               <CloseIcon />
@@ -403,77 +401,6 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                         </Grid>
                       </Grid>
                     </StyledTableCell>
-
-                    {/* <StyledTableCell sx={{ position: "relative" }}>
-                      <Grid
-                        container
-                        height="3rem"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        sx={{ position: "relative" }}
-                      >
-                        <Grid container alignItems="center" sx={{ width: "100%" }}>
-                          <Typography
-                            sx={{
-                              fontFamily:
-                                val.archivo?.name !== "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                                  ? "MontserratBold"
-                                  : "MontserratMedium",
-                              textAlign: "center",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              width: "250px",
-                              height: "65%",
-                              fontSize: "70%",
-                              border:
-                                val.archivo?.name !== "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                                  ? "2px dotted #af8c55"
-                                  : "2px dotted black",
-                              marginRight: "1rem",
-                            }}
-                          >
-                            {val.archivo?.name ||
-                              val.nombreArchivo ||
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-                          </Typography>
-
-                          <input
-                            disabled={
-                              reestructura === "con autorizacion" ? true :
-                                datosActualizar.length > 0 && !datosActualizar.includes(val.tipoArchivo)
-                            }
-                            type="file"
-                            accept="application/pdf"
-                            onChange={(v) => {
-                              cargarArchivo(v, index);
-                            }}
-                            style={{
-                              opacity: 0,
-                              width: "100%",
-                              height: "5vh",
-                              cursor: "pointer",
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                            }}
-                          />
-
-                          <Tooltip title="Remover Archivo">
-                            <Button
-                              sx={{ position: "absolute", right: 0 }}
-                              onClick={() => {
-                                quitDocument(openEliminar.index);
-                                setOpenEliminar({ ...openEliminar, open: false });
-                              }}
-                            >
-                              <CloseIcon />
-                            </Button>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-                    </StyledTableCell> */}
 
                     <StyledTableCell sx={{ width: "700px" }}>
                       {index < catalogoTiposDocumentosObligatorios.length ? (

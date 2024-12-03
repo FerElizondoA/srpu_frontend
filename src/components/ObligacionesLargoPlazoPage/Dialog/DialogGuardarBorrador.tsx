@@ -92,7 +92,7 @@ export function DialogGuardarBorrador({
     (state) => state.inscripcion
   );
 
-  const monto: number = useCortoPlazoStore(
+  const monto: number = useLargoPlazoStore(
     (state) => state.informacionGeneral.monto
   );
 

@@ -21,17 +21,17 @@ import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Pan
 
 export function ObligacionesCortoPlazoPage() {
 
-  const [arrDocsEliminados, setArrDocsEliminados]=useState<IDocsEliminados[]>([]);
+  const [arrDocsEliminados, setArrDocsEliminados] = useState<IDocsEliminados[]>([]);
 
-  useEffect(()=>{
-    console.log("arrDocsEliminados ObligacionCortoPlazo:",JSON.stringify(arrDocsEliminados));
-  },[arrDocsEliminados])
+  useEffect(() => {
+    console.log("arrDocsEliminados ObligacionCortoPlazo:", JSON.stringify(arrDocsEliminados));
+  }, [arrDocsEliminados])
 
 
   const addArrDocsEliminados = (obj: IDocsEliminados) => {
     console.log('objeto eliminado', obj);
-    
-    setArrDocsEliminados( [...arrDocsEliminados, obj]);
+
+    setArrDocsEliminados([...arrDocsEliminados, obj]);
   };
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -62,11 +62,13 @@ export function ObligacionesCortoPlazoPage() {
 
   useEffect(() => {
     getTiposDocumentos();
-    if(inscripcion.Id){getDocumentos(
-      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
-      () => {},
-      () => {}
-    );}
+    if (inscripcion.Id) {
+      getDocumentos(
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        () => { },
+        () => { },"CORTOPLAZO"
+      );
+    }
   }, []);
 
   return (
@@ -107,8 +109,8 @@ export function ObligacionesCortoPlazoPage() {
               !inscripcion.NumeroRegistro
                 ? "90%"
                 : query.isTittle
-                ? "60%"
-                : "50%"
+                  ? "60%"
+                  : "50%"
             }
             display={"flex"}
             justifyContent={"center"}
@@ -187,7 +189,7 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
       {tabIndex === 4 && <Resumen coments={true} arrDocsEliminados={arrDocsEliminados} />}
-      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados}/>}
+      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados} />}
 
       {openDialogBorrador && (
         <DialogGuardarBorrador

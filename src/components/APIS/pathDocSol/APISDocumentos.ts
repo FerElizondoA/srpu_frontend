@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { alertaError, alertaExito } from "../../../generics/Alertas";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 
 export async function getPathDocumentos(
   IdSolicitud: string,
@@ -81,9 +82,10 @@ export async function getPathDocumentosMandato(
 export const getDocumentos = async (
   ROUTE: string,
   setState: Function,
-  setLoad: Function
+  setLoad: Function,
+  tpoCredito?:string
 ) => {
-  const state = useCortoPlazoStore.getState();
+  const state = tpoCredito==='CORTOPLAZO'? useCortoPlazoStore.getState():useLargoPlazoStore.getState();
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/ListFile",
@@ -99,11 +101,6 @@ export const getDocumentos = async (
     )
     .then(({ data }) => {
       let files = data.RESPONSE;
-
-      console.log('el conchesumadre files:', files);
-      console.log();
-      
-      console.log('state.tablaDocumentos',state.tablaDocumentos);
       
       const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
         const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
@@ -121,16 +118,6 @@ export const getDocumentos = async (
       console.log("auxArrayArchivos",auxArrayArchivos);
       
       state.setTablaDocumentos(auxArrayArchivos);
-
-
-      // files.map((file: any, index: any) => {
-      //   let auxArrayArchivos = [...state.tablaDocumentos];
-      //   auxArrayArchivos[index].archivo = file.FILE;
-      //   auxArrayArchivos[index].nombreArchivo = file.NOMBRE;
-      //   console.log('el conchesumadre auxArrayArchivos',auxArrayArchivos);
-        
-      //   return state.setTablaDocumentos(auxArrayArchivos);
-      // });
 
       setState(files);
       setLoad(false);

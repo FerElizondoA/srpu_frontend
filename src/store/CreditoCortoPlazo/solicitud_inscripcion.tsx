@@ -453,7 +453,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
             data.RESPONSE.NOMBREARCHIVO,
-            'fake'
+            'firmados'
           );
         })
         .catch((e) => {});

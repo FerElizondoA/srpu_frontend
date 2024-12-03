@@ -49,7 +49,8 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc:string
   ) => void;
 }
 
@@ -403,7 +404,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
+                data.RESPONSE.NOMBREARCHIVO,
+                file.tipoArchivo
               );
             })
             .catch((e) => { });
@@ -438,7 +440,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
-            data.RESPONSE.NOMBREARCHIVO
+            data.RESPONSE.NOMBREARCHIVO,
+            'firmados'
           );
         })
         .catch((e) => { });
@@ -451,7 +454,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc:string
   ) => {
     return await axios
       .post(
@@ -461,6 +465,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          TpoDoc:TpoDoc
         },
         {
           headers: {

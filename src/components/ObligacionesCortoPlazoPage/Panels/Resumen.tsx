@@ -234,7 +234,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        setCargados,"CORTOPLAZO"
       );
   }, []);
 

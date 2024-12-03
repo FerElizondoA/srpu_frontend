@@ -27,6 +27,7 @@ import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPla
 import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
 import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
 import { deleteDocumentos } from "../../generics/interfaces";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -91,21 +92,31 @@ export function ObligacionesLargoPlazoPage() {
 
   useEffect(() => {
     getTiposDocumentos();
-    getDocumentos(
-      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
-      () => { },
-      () => { }
-    );
+    if (inscripcion.Id) {
+      getDocumentos(
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        () => { },
+        () => { },"LARGOPLAZO"
+      );
+    }
   }, []);
 
   const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
     (state) => state.inscripcionReestructura
   );
-  
-  useEffect(() => {
-    console.log("inscripcion", inscripcion);
-    console.log("inscripcionReestructura", inscripcionReestructura);
-  }, [])
+
+  const [arrDocsEliminados, setArrDocsEliminados]=useState<IDocsEliminados[]>([]);
+
+  useEffect(()=>{
+    console.log("arrDocsEliminados ObligacionCortoPlazo:",JSON.stringify(arrDocsEliminados));
+  },[arrDocsEliminados])
+
+
+  const addArrDocsEliminados = (obj: IDocsEliminados) => {
+    console.log('objeto eliminado', obj);
+    
+    setArrDocsEliminados( [...arrDocsEliminados, obj]);
+  };
   
 
   return (

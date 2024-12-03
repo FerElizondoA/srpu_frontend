@@ -397,7 +397,7 @@ export function Resumen({ coments }: { coments: boolean }) {
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        setCargados,"LARGOPLAZO"
       );
   }, []);
 
@@ -1847,7 +1847,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
         {/* <Divider color="lightGrey"></Divider> */}
         <Grid mt={5} mb={4} width={"100%"}>
-          <Typography sx={queries.bold_text}>Documentación</Typography>
+          <Typography sx={queries.bold_text}>Documentación xd</Typography>
           <Grid
             sx={{
               flexDirection: "row",
@@ -1999,14 +1999,22 @@ export function Resumen({ coments }: { coments: boolean }) {
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ height: "100vh" }}>
-          <iframe
+          {/* <iframe
             style={{
               width: "100%",
               height: "85vh",
             }}
             src={fileSelected}
             title="description"
-          ></iframe>
+          ></iframe> */}
+          <iframe
+        style={{
+          width: "100%",
+          height: "85vh",
+        }}
+        src={fileSelected}
+        title="PDF Viewer"
+      ></iframe>
         </DialogContent>
       </Dialog>
       <ComentarioApartado
