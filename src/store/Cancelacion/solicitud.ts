@@ -424,6 +424,14 @@ export async function CancelacionSolicitud(setUrl: Function) {
         new Blob([response.data], { type: "application/pdf" })
       );
 
+      //AQUI NO VA CORREGIR 
+      // state.saveFiles(
+      //   response.data.Id,
+      //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/DOCSOL/${response.data.Id}`
+      // );
+
+      // console.log("URL, cancelaciones xD", url);
+      
       setUrl(url);
     })
     .catch((err) => {});

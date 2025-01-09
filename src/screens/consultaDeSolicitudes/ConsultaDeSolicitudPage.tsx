@@ -645,6 +645,8 @@ export function ConsultaDeSolicitudPage() {
                                     console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {
+                                      console.log("entre al if del estatus 3");
+                                      
                                       setInscripcion(row);
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");

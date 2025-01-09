@@ -630,7 +630,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
             sx={queries.buttonCancelar}
             onClick={() => {
              
-              //setOpenEliminar({ ...openEliminar, open: false });
+              setOpenEliminar({ ...openEliminar, open: false });
             }}
           >
             Cancelar

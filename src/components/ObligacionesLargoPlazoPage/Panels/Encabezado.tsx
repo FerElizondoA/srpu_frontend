@@ -1,4 +1,4 @@
-import { Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Grid, InputLabel, MenuItem, Select, TextField, FormControlLabel, Checkbox, Autocomplete, Typography } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
@@ -13,13 +13,14 @@ import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-U
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 export function Encabezado() {
   const tipoCredito: { Id: string; Descripcion: string } = useLargoPlazoStore(
     (state) => state.encabezado.tipoCredito
   );
 
-  const tipoDocumento:  string  = useLargoPlazoStore(
+  const tipoDocumento: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
 
@@ -57,8 +58,20 @@ export function Encabezado() {
     (state) => state.reestructura
   );
 
+  const checkBoxOtroTipoSolicitud: boolean = useCortoPlazoStore(
+    (state) => state.checkBoxOtroTipoSolicitud
+  );
+
+  const changeCheckBoxOtroTipoSolicitud: Function = useCortoPlazoStore(
+    (state) => state.changeCheckBoxOtroTipoSolicitud
+  );
+
+  const catalogoTiposSolicitudes: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoTiposSolicitudes
+  );
+
   return (
-    <Grid container height={"25rem"}>
+    <Grid container height={"30rem"}>
       <Grid
         item
         container
@@ -67,6 +80,156 @@ export function Encabezado() {
         justifyContent={"space-evenly"}
         alignItems={"center"}
       >
+
+        <Grid item xs={10} sm={10} md={3.5} lg={3} xl={3}
+          mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
+        >
+
+          <Grid
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <InputLabel
+              sx={{
+                ...queries.medium_text,
+                display: "flex",
+              }}
+            >
+              Tipo de Solicitud
+            </InputLabel>
+
+
+            {/* <Grid item xs={10} sm={2} md={1} lg={1} xl={1}
+              mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
+
+            > */}
+            <FormControlLabel
+              label="Otro Tipo"
+              control={
+                <Checkbox
+                  checked={checkBoxOtroTipoSolicitud}
+                  onChange={(v) => {
+                    changeCheckBoxOtroTipoSolicitud(!checkBoxOtroTipoSolicitud);
+                    changeEncabezado({
+                      ...encabezado,
+                      tipoCredito: {
+                        Id: "",
+                        Descripcion: "",
+                      }
+                    })
+                  }}
+                />
+              }
+            ></FormControlLabel>
+            {/* </Grid> */}
+          </Grid>
+
+          {checkBoxOtroTipoSolicitud === false
+            ?
+            <Autocomplete
+              sx={{ display: "flex", justifyContent: "space-evenly" }}
+
+              disabled={checkBoxOtroTipoSolicitud}
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={catalogoTiposSolicitudes}
+              getOptionLabel={(option) => option.Descripcion}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.Descripcion}>
+                    <Typography>{option.Descripcion}</Typography>
+                  </li>
+                );
+              }}
+              value={!checkBoxOtroTipoSolicitud ? encabezado.tipoCredito : null}
+
+              onChange={(event, text) => {
+
+                changeEncabezado({
+                  ...encabezado,
+                  tipoCredito: {
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                  },
+                });
+
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.Id === value.Id || value.Descripcion === ""
+              }
+            />
+
+
+            : // OTRA CONDICION 
+
+            <TextField
+              type="text"
+              //value={AnexoClausulas.Modificacion}
+
+              value={checkBoxOtroTipoSolicitud === true ? encabezado.tipoCredito.Descripcion : ""}
+              disabled={checkBoxOtroTipoSolicitud ? false : true}
+              //inputProps={{ maxlength: 120 }}
+              fullWidth
+              variant="outlined"
+              multiline
+              rows={2}
+              error={encabezado.tipoCredito.Descripcion.length === 120}
+              // FormHelperTextProps={{
+              //   sx: {
+              //     color: getHelperTextColor(),
+              //   },
+              // }}
+              // helperText={`El texto de modificación no debe pasar los 120 caracteres. Caracteres Usados: ${Declaratorias.ClaseTitulo.Descripcion
+              //   ? Declaratorias.ClaseTitulo.Descripcion.length
+              //   : 0
+              //   }`}
+              // sx={{
+              //   "& .MuiOutlinedInput-root": {
+              //     "& fieldset": {
+              //       borderColor: getBorderColor(),
+              //     },
+              //     "&:hover fieldset": {
+              //       borderColor: getBorderColor(),
+              //     },
+              //     "&.Mui-focused fieldset": {
+              //       borderColor: getBorderColor(),
+              //     },
+              //   },
+              // }}
+              onChange={(x) => {
+                let inputValue = x.target.value;
+                const expRegular = /^[a-zA-ZñÑ0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+                if (
+                  (inputValue.length <= 120 && expRegular.test(inputValue)) ||
+                  x.target.value === ""
+                ) {
+                  const nuevaTabla = inputValue;
+                  changeEncabezado({
+                    ...encabezado,
+                    tipoCredito: {
+                      id: "otro",
+                      Descripcion: nuevaTabla
+                    },
+                  });
+                  console.log("tipo de documento", tipoDocumento);
+
+                }
+              }}
+            ></TextField>
+          }
+        </Grid>
+
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
@@ -139,6 +302,16 @@ export function Encabezado() {
           </Select>
         </Grid>
 
+
+      </Grid>
+
+      <Grid
+        item
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+      >
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
@@ -168,15 +341,6 @@ export function Encabezado() {
             }}
           />
         </Grid>
-      </Grid>
-
-      <Grid
-        item
-        container
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        alignItems={"center"}
-      >
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
@@ -235,6 +399,11 @@ export function Encabezado() {
             }}
           />
         </Grid>
+
+
+      </Grid>
+
+      <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
 
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>

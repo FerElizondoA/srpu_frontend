@@ -161,7 +161,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"CSCP"}/${new Date().getFullYear()}`,
+          IdClaveInscripcion: `DDPYPF-${"CSCP"}-${new Date().getFullYear()}`,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -188,11 +188,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
-
-        // inscripcionState.setInscripcion(data.data);
-
+        //inscripcionState.setInscripcion(data.data);
         //state.addComentario(data.data.Id, comentario, "Captura");
-
       });
   },
 
@@ -269,8 +266,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
         state.saveFiles(
           data.data.Id,
-          `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        );
+        //   `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`  
+      );
 
 
       });
@@ -466,6 +464,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then(({ data }) => {
+
+          console.log("DATA guardarDocumentos", data);
+          
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,

@@ -75,6 +75,16 @@ export function DialogSolicitarCancelacion({
     }
   }, [openState]);
 
+
+  useEffect(() => {
+    
+  console.log("cancelacion.AcreditacionDeLaCancelacion", cancelacion.AcreditacionDeLaCancelacion);
+  console.log("cancelacion.BajaDeCreditoFederal", cancelacion.BajaDeCreditoFederal);
+  console.log("cancelacion.Justificacion", cancelacion.Justificacion);
+
+  }, [cancelacion])
+  
+
   return (
     <Dialog fullWidth open={openState} maxWidth={"md"} keepMounted>
       <DialogTitle>

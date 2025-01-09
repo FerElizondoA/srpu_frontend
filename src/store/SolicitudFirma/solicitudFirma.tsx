@@ -60,16 +60,16 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       const montoLimpio = monto.replace(/[^0-9.]/g, '');
       return parseFloat(montoLimpio);
     }
-  
+
     const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
     const parteEntera = Math.floor(numeroFloat); // Parte entera del número
     const centavos = Math.round((numeroFloat - parteEntera) * 100); // Parte decimal (centavos)
-  
+
     const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
     const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
     const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
     const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
-  
+
     // Función para convertir el número entero a palabras
     function convertirNumeroAPalabras(numero: number): string {
       if (numero === 0) return 'cero';
@@ -79,10 +79,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       if (numero < 1000) return convertirCentenas(numero);
       if (numero < 1000000) return convertirMiles(numero);
       if (numero < 1000000000000) return convertirMillones(numero);
-  
+
       return 'Número demasiado grande';
     }
-  
+
     function convertirDecenas(numero: number): string {
       const decena = Math.floor(numero / 10);
       const unidad = numero % 10;
@@ -91,38 +91,38 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       }
       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
     }
-  
+
     function convertirCentenas(numero: number): string {
       const centena = Math.floor(numero / 100);
       const resto = numero % 100;
       if (numero === 100) return 'cien';
       return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
     }
-  
+
     function convertirMiles(numero: number): string {
       const miles = Math.floor(numero / 1000);
       const resto = numero % 1000;
       if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
       return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
     }
-  
+
     function convertirMillones(numero: number): string {
       const millones = Math.floor(numero / 1000000);
       const resto = numero % 1000000;
       if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
       return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
     }
-  
+
     // Convertir la parte entera del monto a palabras
     let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
-  
+
     // Agregar "pesos" y manejar los centavos
     const centavosEnPalabras = centavos > 0 ? ` ${centavos}/100 M.N.` : ' 00/100 M.N.';
     parteEnteraEnPalabras += ` pesos${centavosEnPalabras}`;
-  
+
     return parteEnteraEnPalabras;
   },
-  
+
   //  convertirMontosAPalabras (numeroConFormato: string): string  {
 
 
@@ -183,9 +183,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   //   return convertirNumeroAPalabras(numeroFloat);
   // },
 
-  
-  
-  
+
+
+
   // convertirMontosAPalabras: (numeroString: string) => {
 
   //   const montoLimpio = parseFloat(numeroString.replace(/[^0-9.]/g, ''));
@@ -195,7 +195,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
   //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
 
-    
+
   //     if (montoLimpio === 0) return 'cero';
   //     if (montoLimpio < 10) return unidades[montoLimpio];
   //     if (montoLimpio < 20) return especiales[montoLimpio - 10];
@@ -204,7 +204,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   //     if (montoLimpio < 1000000) return convertirMiles(montoLimpio);
   //     if (montoLimpio < 1000000000000) return convertirMillones(montoLimpio);
   //     return 'Número demasiado grande';
-    
+
 
   //   function convertirDecenas(numero: number): string {
   //     const decena = Math.floor(numero / 10);
@@ -241,7 +241,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   //     return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
   //   }
   // },
-  
+
   proceso: "",
 
   url: "",
@@ -308,6 +308,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
       console.log("inf", inf)
 
+      console.log("AQUI ENTRO A LA VALIDACION DE INFO DE LA FIRMA");
+
       const filtro = useInscripcionStore.getState();
       let state: any;
 
@@ -316,7 +318,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         NoEstatus: "",
         Estatus: "",
         ControlInterno: "",
+        IdClaveInscripcion: ""
       };
+
+      console.log("FILTRO INFORMACION", filtro);
+
 
       if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
         filtro.inscripcionReestructura?.IdSolicitud === null ||
@@ -329,6 +335,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           NoEstatus: state.NoEstatus,
           Estatus: state.Estatus,
           ControlInterno: state.ControlInterno,
+          IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
         };
 
       } else {
@@ -341,14 +348,19 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             NoEstatus: state.Estatus,
             Estatus: "",
             ControlInterno: "reestructura",
+            IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
+
           }
         } else {
+          console.log("Entre al ELSE de state Filtro.insciprion", filtro.inscripcion);
+
           state = filtro.inscripcion;
           estatusPrevio = {
             Id: state.Id,
             NoEstatus: state.NoEstatus,
             Estatus: state.Estatus,
             ControlInterno: state.ControlInterno,
+            IdClaveInscripcion: state.IdClaveInscripcion
           };
         }
       }
@@ -381,24 +393,61 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         )
         .then((response) => {
           console.log("response: ", response)
-           let titulo =
-             estatusPrevio.ControlInterno === "inscripcion"
-               ? "Solicitud de Inscripción"
-               : estatusPrevio.ControlInterno === "revision"
-                 ? "Solicitud de Requerimientos"
+          console.log("estatusPrevio", estatusPrevio);
 
-                 : "Constancia de Inscripción";
+
+
+          //  let titulo =
+          //    estatusPrevio.ControlInterno === "inscripcion"
+          //      ? "Solicitud de Inscripción"
+          //      : estatusPrevio.ControlInterno === "revision"
+          //        ? "Solicitud de Requerimientos"
+
+          //        : "Constancia de Inscripción";
+          // let mensaje =
+          //   estatusPrevio.ControlInterno === "inscripcion"
+          //     ? `Se recibe el ${new Date().toLocaleString(
+          //       "es-MX"
+          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+          //     }`
+          //     : `Se envía el ${new Date().toLocaleString(
+          //       "es-MX"
+          //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
+          //     }`;
+
+          //  let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+
+
+          let titulo =
+            estatusPrevio.ControlInterno === "inscripcion"
+              ? "Solicitud de Inscripción"
+              : estatusPrevio.ControlInterno === "revision"
+                ? "Solicitud de Requerimientos"
+                : "Constancia de Inscripción";
           let mensaje =
             estatusPrevio.ControlInterno === "inscripcion"
               ? `Se recibe el ${new Date().toLocaleString(
                 "es-MX"
-              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-              }`
+              )} el documento ${titulo} con el identificador: ${estatusPrevio.IdClaveInscripcion}`
               : `Se envía el ${new Date().toLocaleString(
                 "es-MX"
-              )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
-              }`;
-           let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+              )} el documento ${titulo} con el identificador: ${estatusPrevio.IdClaveInscripcion}`;
+
+          let oficio = `Solicitud ${estatusPrevio.IdClaveInscripcion}`;
+
+
+          // let mensaje = "Prueba de mensaje Mensaje";
+          // let oficio = "Prueba de mensaje Oficio"
+          // let titulo = "Prueba de mensje TITULO"
+
+          console.log("oficio", oficio);
+
+          console.log("mensaje", mensaje);
+
+          console.log("titulo", titulo);
+
+
+
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -406,8 +455,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
 
+          //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); // CORREGIR
+          GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id); 
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -474,7 +524,8 @@ export async function GeneraAcuseRespuesta(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/ACUSE",
+        //process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE", 
         new File([response.data], `Acuse-${noOficio}.pdf`)
       );
       // setUrl(url);
@@ -499,13 +550,13 @@ export async function GeneraFormatoReestructura(
   const MontoALetras = state.convertirMontosAPalabras(
     solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
 
-    const saldoVigenteLetra = state.convertirMontosAPalabras(
-      solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente.toString());
-  
-  
+  const saldoVigenteLetra = state.convertirMontosAPalabras(
+    solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente.toString());
+
+
 
   const SolicitudReestructura: any = {
-    oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
+    oficioNum: `DDPYPF-${"SR-"}${noOficio}-${new Date().getFullYear()}`,
     servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
     cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
     organismo: solicitud.encabezado.organismo.Organismo,
@@ -545,11 +596,11 @@ export async function GeneraFormatoReestructura(
       solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
     montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-    montoOriginalPalabras:MontoALetras,
+    montoOriginalPalabras: MontoALetras,
 
     saldoVigente: solicitud.informacionGeneral.destinoGastosCostos[0].saldoVigente,
-    saldoVigenteLetra:saldoVigenteLetra,
-    
+    saldoVigenteLetra: saldoVigenteLetra,
+
     mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
     fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion, //tabla "REVISAR"
     directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
@@ -581,13 +632,13 @@ export async function GeneraFormatoReestructura(
         entePublicoObligado: SolicitudReestructura.entePublicoObligado,
         obligadoSolidarioAval: SolicitudReestructura.obligadoSolidarioAval,
         institucionFinanciera: SolicitudReestructura.institucionFinanciera,
-        
+
         montoOriginalContratado: SolicitudReestructura.montoOriginalContratado,
-        montoOriginalPalabras:MontoALetras,
+        montoOriginalPalabras: MontoALetras,
 
         saldoVigente: SolicitudReestructura.saldoVigente,
         saldoVigenteLetra: saldoVigenteLetra,
-       
+
         mecanismoVehiculoDePago: SolicitudReestructura.mecanismoVehiculoDePago,
         fuentePago: SolicitudReestructura.fuentePago,
         directorGeneral: SolicitudReestructura.directorGeneral,
@@ -659,7 +710,7 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
 
-        montoOriginalPalabras:MontoALetras,
+        montoOriginalPalabras: MontoALetras,
 
         entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
 
@@ -719,7 +770,7 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
 
 
   //const solicitud: any = JSON.parse(Solicitud);
-  
+
   const state = useCortoPlazoStore.getState();
   const MontoALetras = state.convertirMontosAPalabras(
     solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
@@ -748,7 +799,7 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
         fechaContratacionReestructura: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
           locale: es, // YAA FALTA MODIFICAR TAL VEZ
         }),
-        
+
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,// YAA
         montoOriginalPalabras: MontoALetras,
 
@@ -765,7 +816,7 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
 
         periodoFinanciamiento: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoFinanciamiento,
         periodoAdministracion: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoAdminitracion,
-        
+
         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
         saldoVigenteLetra: saldoVigenteLetra,
 
@@ -975,11 +1026,11 @@ export async function ConsultaRequerimientosReestructura(
 //       if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
 //       return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
 //     }
-    
+
 //   }
 
 //   const montoLimpio = limpiarFormatoMoneda(solicitud?.informacionGeneral?.informacionGeneral?.monto)
- 
+
 //   const palabras = convertirMontosAPalabras(Math.floor(montoLimpio));
 
 //   console.log("solicitud?.solicitud?.informacionGeneral?.informacionGeneral?.monto", solicitud?.informacionGeneral?.informacionGeneral?.monto)
@@ -1116,7 +1167,7 @@ export async function ConsultaRequerimientos(
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.monto,
-        montoOriginalPalabras:MontoALetras,
+        montoOriginalPalabras: MontoALetras,
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:
@@ -1222,11 +1273,11 @@ export async function ConsultaConstancia(
   Solicitud: string,
   NoOficio: string,
   setUrl: Function,
-  montoOriginal:string
+  montoOriginal: string
 ) {
   // const state = useCortoPlazoStore.getState();
   // const MontoALetras = state.convertirMontosAPalabras(montoOriginal.toString());
-  
+
   const solicitud: any = JSON.parse(Solicitud);
 
   await axios
@@ -1291,7 +1342,7 @@ export async function ConsultaConstancia(
     .then((response) => {
 
       console.log("MontoLetras en firma", montoOriginal);
-      
+
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -1343,30 +1394,34 @@ export async function GeneraAcuse(
   oficio: string,
   idRegistro: string
 ) {
+  console.log("idRegistro en ACUSE ", idRegistro);
+
+  let objBody={
+    titulo: titulo,
+    mensaje: mensaje,
+    oficio: oficio,
+  }
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse",
-      {
-        titulo: titulo,
-        mensaje: mensaje,
-        oficio: oficio,
-      },
+      objBody,
       {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
           "Access-Control-Allow-Origin": "*",
-
-
         },
         responseType: "arraybuffer",
       }
     )
     .then((response) => {
+      console.log("response YA FIRMADO", response);
+      console.log("objBody",JSON.stringify(objBody));
+      
       const state = useCortoPlazoStore.getState();
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
         new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })

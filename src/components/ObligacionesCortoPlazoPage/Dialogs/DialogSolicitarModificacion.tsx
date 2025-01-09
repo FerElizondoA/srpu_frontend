@@ -21,6 +21,7 @@ import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
+import { alertaConfirmCancelar } from "../../../generics/Alertas";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -66,6 +67,11 @@ export function DialogSolicitarModificacion({
 
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
+  );
+
+
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
   useEffect(() => {
@@ -134,6 +140,8 @@ export function DialogSolicitarModificacion({
     } else {
       if (inscripcion.Id !== "") {
         console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
+        
+        console.log("ENTRO AQUI AL SI HABER ID DE LA SOLICITUD");
 
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
@@ -174,13 +182,26 @@ export function DialogSolicitarModificacion({
         );
         navigate("../ConsultaDeSolicitudes");
       } else {
+        console.log("ENTRO AQUI AL NO HABER ID DE LA SOLICITUD");
+
         crearSolicitud(
-          
           idUsuarioAsignado,
           "1",
-          JSON.stringify(comentarios),
+          "",
+          //JSON.stringify(comentarios),
           setIdSolicitudCreada
-        ).catch(() => {
+        ).then(() => {
+          addComentario(
+            idSolicitudCreada,
+            JSON.stringify(comentarios),
+            "Captura"
+          );
+          alertaConfirmCancelar("La solicitud se envió con éxito")
+          cleanSolicitud();
+          navigate("../ConsultaDeSolicitudes");
+        })
+        
+        .catch(() => {
           Swal.fire({
             confirmButtonColor: "#15212f",
             cancelButtonColor: "rgb(175, 140, 85)",
@@ -189,19 +210,19 @@ export function DialogSolicitarModificacion({
             text: "Ocurrió un error, inténtelo de nuevo",
           });
         });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado],
-          idSolicitudCreada,
-          "inscripcion"
-        );
-        navigate("../ConsultaDeSolicitudes");
+        // createNotification(
+        //   "Crédito simple a corto plazo",
+        //   `Se te ha asignado una solicitud para modificación`,
+        //   [idUsuarioAsignado],
+        //   idSolicitudCreada,
+        //   "inscripcion"
+        // );
+        
       }
     }
 
     handler(false);
-  };
+  }; 
 
   return (
     <Dialog
@@ -233,6 +254,8 @@ export function DialogSolicitarModificacion({
                 select
                 value={idUsuarioAsignado}
                 onChange={(e) => {
+                  console.log("VALOR USUARIO", e.target.value);
+                  
                   setidUsuarioAsignado(e.target.value);
                 }}
               >

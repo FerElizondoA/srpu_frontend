@@ -157,7 +157,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
+          IdClaveInscripcion: `DDPYPF-${"CSCLP"}-${new Date().getFullYear()}`,
           MontoOriginalContratado: lpState.informacionGeneral.monto,
           FechaContratacion: lpState.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
