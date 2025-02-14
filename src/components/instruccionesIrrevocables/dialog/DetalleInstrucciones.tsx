@@ -181,7 +181,7 @@ export function DetalleInstruccion({
       >
         <Grid container 
          mt={{xs:4, sm:8, md:2}}
-         height={{xs:"20rem", sm:"20rem", md:""}}
+         height={{xs:"20rem", sm:"20rem", md:"20rem"}}
           sx={{
             //height: "20%",
             display: "flex",

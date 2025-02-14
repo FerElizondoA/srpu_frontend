@@ -27,6 +27,7 @@ import {
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { SoporteDocumentalFideicomiso } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoFideicomiso } from "../panels/TipoDeMovimiento";
+import { IDatosGeneralesFideicomiso, IDeudorFideicomiso, IDeudorFideicomisoNew, IFideicomisario, ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
 
 export function AgregarFideicomisos({
   handler,
@@ -75,6 +76,25 @@ export function AgregarFideicomisos({
     (state) => state.getOrdenesFideicomisario
   );
 
+  const tablaTipoMovimiento: IDeudorFideicomiso[] = useFideicomisoStore(
+    (state) => state.tablaTipoMovimientoFideicomiso
+  );
+
+  const tablaFideicomisario: IFideicomisario[] = useFideicomisoStore(
+    (state) => state.tablaFideicomisario
+  );
+
+  const datosGenerales: IDatosGeneralesFideicomiso = useFideicomisoStore(
+    (state) => state.datosGenerales
+  );
+  
+  const tablaTipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[] = useFideicomisoStore(
+    (state) => state.tablaTipoMovimientoFideicomisoNew
+  );
+
+  const tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[] =
+  useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
+
   useEffect(() => {
     getOrganismos();
     getTipoEntePublicoObligado();
@@ -110,6 +130,14 @@ export function AgregarFideicomisos({
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
+              disabled = {
+                tablaTipoMovimientoFideicomisoNew.length <= 0 ||
+                tablaFideicomisario.length <= 0 ||
+                datosGenerales.numeroFideicomiso === "" ||
+                datosGenerales.tipoFideicomiso.Descripcion === "" ||
+                datosGenerales.fiduciario.Descripcion === "" ||
+                tablaSoporteDocumentalFideicomiso.length <= 0
+              }
                 sx={queries.buttonContinuar}
                 onClick={() => {
 
@@ -120,9 +148,9 @@ export function AgregarFideicomisos({
                       handler(false);
                     });
                   } else if (IdFideicomiso !== "") {
-                    setLoading(true);
+                   // setLoading(true);
                     modificarFideicomiso(() => {
-                      setLoading(false);
+                     // setLoading(false);
                       handler(false);
                     });
                   }
@@ -168,14 +196,14 @@ export function AgregarFideicomisos({
         {tabIndex === 2 && <SoporteDocumentalFideicomiso />}
       </Grid>
 
-      <ThemeProvider theme={buttonTheme}>
+      {/* <ThemeProvider theme={buttonTheme}>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-      </ThemeProvider>
+      </ThemeProvider> */}
     </Dialog>
   );
 }

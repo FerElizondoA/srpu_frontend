@@ -62,6 +62,7 @@ export const TimerCounter = () => {
         process.env.REACT_APP_APPLICATION_LOGIN + "/api/refresh-token",
         {
           refreshToken: localStorage.getItem("refreshToken"),
+          IdApp:localStorage.getItem("IdApp"),
         },
         {
           headers: {

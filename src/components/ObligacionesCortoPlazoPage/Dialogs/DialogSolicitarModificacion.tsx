@@ -21,6 +21,7 @@ import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
+import { alertaConfirmCancelar } from "../../../generics/Alertas";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -68,6 +69,11 @@ export function DialogSolicitarModificacion({
     (state) => state.inscripcion
   );
 
+
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
     console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
@@ -101,10 +107,9 @@ export function DialogSolicitarModificacion({
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para  
-          ${
-            localStorage.getItem("Rol") === "Autorizador"? 
-              accion === "enviar" ? 
-              "firmar": 
+          ${localStorage.getItem("Rol") === "Autorizador" ?
+            accion === "enviar" ?
+              "firmar" :
               "validación"
             : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
@@ -134,6 +139,8 @@ export function DialogSolicitarModificacion({
     } else {
       if (inscripcion.Id !== "") {
         console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
+
+        console.log("ENTRO AQUI AL SI HABER ID DE LA SOLICITUD");
 
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
@@ -174,34 +181,54 @@ export function DialogSolicitarModificacion({
         );
         navigate("../ConsultaDeSolicitudes");
       } else {
+        console.log("ENTRO AQUI AL NO HABER ID DE LA SOLICITUD");
+
         crearSolicitud(
-          
           idUsuarioAsignado,
           "1",
-          JSON.stringify(comentarios),
+          "",
+          //JSON.stringify(comentarios),
           setIdSolicitudCreada
-        ).catch(() => {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Mensaje",
-            text: "Ocurrió un error, inténtelo de nuevo",
+        ).then(() => {
+          addComentario(
+            idSolicitudCreada,
+            JSON.stringify(comentarios),
+            "Captura"
+          );
+          alertaConfirmCancelar("La solicitud se envió con éxito")
+          cleanSolicitud();
+          navigate("../ConsultaDeSolicitudes");
+        })
+
+          .catch(() => {
+            Swal.fire({
+              confirmButtonColor: "#15212f",
+              cancelButtonColor: "rgb(175, 140, 85)",
+              icon: "error",
+              title: "Mensaje",
+              text: "Ocurrió un error, inténtelo de nuevo",
+            });
           });
-        });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado],
-          idSolicitudCreada,
-          "inscripcion"
-        );
-        navigate("../ConsultaDeSolicitudes");
+        // createNotification(
+        //   "Crédito simple a corto plazo",
+        //   `Se te ha asignado una solicitud para modificación`,
+        //   [idUsuarioAsignado],
+        //   idSolicitudCreada,
+        //   "inscripcion"
+        // );
+
       }
     }
 
     handler(false);
   };
+
+
+  useEffect(() => {
+
+    console.log("COMENTARIOS", comentarios)
+
+  }, [])
 
   return (
     <Dialog
@@ -233,6 +260,8 @@ export function DialogSolicitarModificacion({
                 select
                 value={idUsuarioAsignado}
                 onChange={(e) => {
+                  console.log("VALOR USUARIO", e.target.value);
+
                   setidUsuarioAsignado(e.target.value);
                 }}
               >
@@ -312,7 +341,23 @@ export function DialogSolicitarModificacion({
               : "Comentarios"}
           </Typography>
         )}
-        {Object.entries(comentarios).map(([key, val], index) =>
+
+        {Object.values(comentarios).every(val => val === "") ? (
+          <Typography sx={{...queries.text, fontSize: "1.5ch", display : "flex", justifyContent: "center"}}>
+            {rolesAdmin.includes(localStorage.getItem("Rol")!)
+              ? " Sin Requerimientos"
+              : "Sin Comentarios"}
+          </Typography>
+        ) : (
+          Object.entries(comentarios).map(([key, val], index) =>
+            val === "" ? null : (
+              <Typography sx={{ fontSize: "1.5ch" }} key={index}>
+                <strong>{key}:</strong> {val as string}
+              </Typography>
+            )
+          )
+        )}
+        {/* {Object.entries(comentarios).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography
               sx={{
@@ -324,7 +369,7 @@ export function DialogSolicitarModificacion({
               {val as string}
             </Typography>
           )
-        )}
+        )} */}
       </DialogContent>
 
       <DialogActions>

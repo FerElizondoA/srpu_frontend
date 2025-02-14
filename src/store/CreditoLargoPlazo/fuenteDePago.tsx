@@ -1,6 +1,6 @@
 import axios from "axios";
 import { StateCreator } from "zustand";
-import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
+import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
 import { useLargoPlazoStore } from "./main";
 import { IDeudorInstrucciones } from "../InstruccionesIrrevocables/instruccionesIrrevocables";
 
@@ -43,7 +43,7 @@ export type AsignarFuenteV = {
 export interface FuenteDePagoLargoPlazoSlice {
 
   tablaResumenMecanismoPago: IDeudorInstrucciones[];
-  setTablaResumenMecanismoPago:(tablaResumenMecanismoPago: IDeudorInstrucciones[]) => void;
+  setTablaResumenMecanismoPago: (tablaResumenMecanismoPago: IDeudorInstrucciones[]) => void;
 
   tablaMecanismoVehiculoPago: IRegistro[];
   getMecanismosVehiculosPago: (tabla: string, setState: Function) => void;
@@ -59,6 +59,12 @@ export interface FuenteDePagoLargoPlazoSlice {
   cleanTablaAsignarFuente: () => void;
   addPorcentaje: (tablaAsignarFuente: IDeudorFideicomiso) => void;
 
+
+
+  tablaAsignarFuenteNew: IDeudorFideicomisoNew[];
+  setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
+  cleanTablaAsignarFuenteNew: () => void;
+
   garantiaPago: string;
   setGarantiaPago: (garantiaPago: string) => void;
 
@@ -68,7 +74,7 @@ export interface FuenteDePagoLargoPlazoSlice {
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
-  tablaResumenMecanismoPago:[],
+  tablaResumenMecanismoPago: [],
   setTablaResumenMecanismoPago: (tablaResumenMecanismoPago: IDeudorInstrucciones[]) =>
     set(() => ({
       tablaResumenMecanismoPago: tablaResumenMecanismoPago,
@@ -107,6 +113,18 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
   garantiaPago: "",
 
   tablaAsignarFuente: [],
+
+  tablaAsignarFuenteNew: [],
+
+  setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) =>
+    set(() => ({
+      tablaAsignarFuenteNew: fuente,
+    })),
+
+  cleanTablaAsignarFuenteNew: () =>
+    set(() => ({
+      tablaAsignarFuente: [],
+    })),
 
   setTablaAsignarFuente: (fuente: IDeudorFideicomiso[]) =>
     set(() => ({

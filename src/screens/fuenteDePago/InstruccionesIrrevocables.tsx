@@ -38,6 +38,8 @@ import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/d
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { BarraFiltros } from "../../generics/BarraFiltros";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -113,6 +115,10 @@ export function InstruccionesIrrevocables() {
   const editarInstruccion: Function = useInstruccionesStore(
     (state) => state.editarInstruccion
   );
+
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
+
 
   const filtrarDatos = () => {
     let ResultadoBusqueda = instrucciones.filter((elemento) => {
@@ -219,7 +225,43 @@ export function InstruccionesIrrevocables() {
         <LateralMenu />
       </Grid>
 
+
+
       <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        height={60}
+      >
+        <Typography
+          sx={{
+            fontSize: "2.3ch",
+            fontFamily: "MontserratBold",
+            color: "#AF8C55",
+            "@media (max-width: 600px)": {
+              fontSize: "1rem",
+            },
+            "@media (min-width: 601px) and (max-width: 900px)": {
+              fontSize: "1.5ch",
+            },
+          }}
+        >
+          Instrucciones Irrevocables
+        </Typography>
+      </Grid>
+
+
+
+      <BarraFiltros
+        Lista={datos}
+        setStateFiltered={setDatosFiltrados}
+        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setOpenDialogAgregar={setOpenAgregarInstruccion}
+        openDialogAgregar={openAgregarInstruccion}
+        BooleaDialog={true}
+      />
+
+      {/* <Grid
         display={"flex"}
         justifyContent={"center"}
         width={"97%"}
@@ -292,7 +334,7 @@ export function InstruccionesIrrevocables() {
             Agregar
           </Button>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid
         container
@@ -351,10 +393,12 @@ export function InstruccionesIrrevocables() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center" >
-                          <Typography sx={{width:"300px",
-                        fontFamily: "MontserratRegular",
-                        fontSize: "1.6ch"}}>
-                          {row.DescripcionBanco}
+                          <Typography sx={{
+                            width: "300px",
+                            fontFamily: "MontserratRegular",
+                            fontSize: "1.6ch"
+                          }}>
+                            {row.DescripcionBanco}
                           </Typography>
                         </StyledTableCell>
 

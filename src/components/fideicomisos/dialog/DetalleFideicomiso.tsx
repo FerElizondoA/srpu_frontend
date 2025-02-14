@@ -11,8 +11,10 @@ import {
   Divider,
   Grid,
   IconButton,
+  Paper,
   Table,
   TableBody,
+  TableContainer,
   TableHead,
   TableRow,
   Tooltip,
@@ -119,7 +121,7 @@ export function DetalleFideicomiso({
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
         setLoading(false);
       });
     }
@@ -164,7 +166,6 @@ export function DetalleFideicomiso({
 
       <DialogContent
         sx={{
-          
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: ".5vw",
@@ -178,95 +179,126 @@ export function DetalleFideicomiso({
         }}
       >
         <Grid container
-        mt={{xs:4, sm:8, md:2}}
-        height={{xs:"20rem", sm:"20rem", md:""}}
-          sx={{
-         
-            //height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            mb: 4,
-          }}
+          mt={{ xs: 4, sm: 8, md: 2 }}
+          //height={{xs:"20rem", sm:"20rem", md:"15rem"}}
+          sx={{ display: "flex", justifyContent: "space-evenly" }}
+          //height={"15rem"}
+          mb={2}
         >
-          <Typography sx={queries.bold_text}>Datos Generales</Typography>
-          <Divider color="lightGrey"></Divider>
+          <Grid xs={11} sm={6} md={6} lg={6} xl={6}
+            //width={"50%"}
+            height={"17rem"}
+          >
+            <Typography sx={{
+               fontSize: "1.2rem",
+               fontFamily: "MontserratBold",
+            }}>Datos Generales</Typography>
+            <Divider color="lightGrey" sx={{ width: "80%" }}></Divider>
 
-          <Typography  sx={{ ...queries.medium_text }}>
-            <strong> Número de Fideicomiso:</strong>{" "}
-            {fideicomiso.NumeroFideicomiso}
-          </Typography>
+            <Grid container sx={{
+              width: "100%",
+              height: "100%",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+            }}>
+              <Typography sx={{ ...queries.medium_text }}>
+                <strong> Número de Fideicomiso:</strong>{" "}
+                {fideicomiso.NumeroFideicomiso}
+              </Typography>
 
-          <Typography sx={{ ...queries.medium_text }}>
-            <strong>Tipo de Fideicomiso:</strong> {fideicomiso.TipoFideicomiso}
-          </Typography>
+              <Typography sx={{ ...queries.medium_text }}>
+                <strong>Tipo de Fideicomiso:</strong> {fideicomiso.TipoFideicomiso}
+              </Typography>
 
-          <Typography sx={{ ...queries.medium_text }}>
-            <strong>Fecha de Fideicomiso:</strong>{" "}
-            {format(new Date(fideicomiso.FechaFideicomiso), "PPP", {
-              locale: es,
-            })}
-          </Typography>
+              <Typography sx={{ ...queries.medium_text }}>
+                <strong>Fecha de Fideicomiso:</strong>{" "}
+                {format(new Date(fideicomiso.FechaFideicomiso), "PPP", {
+                  locale: es,
+                })}
+              </Typography>
 
-          <Typography sx={{ ...queries.medium_text }}>
-            <strong>Fiduciario:</strong> {fideicomiso.Fiduciario}
-          </Typography>
+              <Typography sx={{ ...queries.medium_text }}>
+                <strong>Fiduciario:</strong> {fideicomiso.Fiduciario}
+              </Typography>
+            </Grid>
+          </Grid>
 
-          <Divider color="lightGrey"></Divider>
+          <Grid xs={10.5} sm={6} md={6} lg={6} xl={6}
+            mt={{ xs: 4, sm: 0, md: 0, lg: 0, xl: 0 }}
+            sx={{
+              //width: "50%",
+              height: "16rem"
+            }}
+          >
+            <Typography sx={{
+              fontSize: "1.2rem",
+              fontFamily: "MontserratBold",
+            }}>Fideicomisario</Typography>
+            <Divider color="lightGrey" sx={{ width: "80%" }}></Divider>
+
+            <Grid
+              sx={{
+                mt: 2,
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                height: "100%"
+              }}
+            >
+              <Paper sx={{
+                width: "100%",
+                height: "90%"
+              }}>
+                <Table aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>
+                        <Typography sx={{ fontSize: "1rem", fontWeight: "700" }}>
+                          Fideicomisario
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Typography sx={{ fontSize: "1rem", fontWeight: "700" }}>
+                          Orden Fideicomisario
+                        </Typography>
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {JSON.parse(fideicomiso.Fideicomisario).map(
+                      (e: IFideicomisario, index: number) => (
+                        <StyledTableRow key={index} id={`${index + 1}`}>
+                          <StyledTableCell scope="row">
+                            <Typography sx={{ fontSize: "1rem" }}>
+                              {e.fideicomisario.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
+                          <StyledTableCell scope="row">
+                            <Typography sx={{ fontSize: "1rem" }}>
+                              {e.ordenFideicomisario.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </Paper>
+            </Grid>
+          </Grid>
         </Grid>
 
-        <Grid
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            mb: 4,
-          }}
-        >
-          <Typography sx={queries.bold_text}>Fideicomisario</Typography>
-          <Divider color="lightGrey"></Divider>
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: "700" }}>
-                    Fideicomisario
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: "700" }}>
-                    Orden Fideicomisario
-                  </Typography>
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {JSON.parse(fideicomiso.Fideicomisario).map(
-                (e: IFideicomisario, index: number) => (
-                  <StyledTableRow key={index} id={`${index + 1}`}>
-                    <StyledTableCell scope="row">
-                      <Typography sx={{ fontSize: "0.8rem" }}>
-                        {e.fideicomisario.Descripcion}
-                      </Typography>
-                    </StyledTableCell>
-                    <StyledTableCell scope="row">
-                      <Typography sx={{ fontSize: "0.8rem" }}>
-                        {e.ordenFideicomisario.Descripcion}
-                      </Typography>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )
-              )}
-            </TableBody>
-          </Table>
-          <Divider color="lightGrey"></Divider>
+        <Grid mt={2}>
+          <Divider color="lightGrey" ></Divider>
         </Grid>
 
-        <Grid
+
+        <Grid container
           sx={{
-            display: "flex",
             flexDirection: "column",
             justifyContent: "space-around",
+            mt: 4,
             mb: 4,
             overflowX: "auto",
             "&::-webkit-scrollbar": {
@@ -282,136 +314,151 @@ export function DetalleFideicomiso({
           }}
         >
           <Typography sx={queries.bold_text}>Tipo de Movimiento</Typography>
-          <Divider color="lightGrey"></Divider>
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {headsTipoMovimiento.map((head, index) => (
-                  <StyledTableCell key={index}>
-                    <Typography sx={{ fontSize: "0.7rem", fontWeight: "700" }}>
-                      {head.label}
-                    </Typography>
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {JSON.parse(fideicomiso.TipoMovimiento).map(
-                (row: IDeudorFideicomiso, index: number) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      {/* ID */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.id}
+          <Divider color="lightGrey" sx={{ width: "40%" }}></Divider>
+          <Paper
+            sx={{
+              height: "22rem"
+            }}
+          >
+            <TableContainer
+              sx={{
+                width: "100%",
+                height: "100%"
+              }}
+            >
+              <Table aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    {headsTipoMovimiento.map((head, index) => (
+                      <StyledTableCell key={index}>
+                        <Typography sx={{ fontSize: "0.7rem", fontWeight: "700" }}>
+                          {head.label}
                         </Typography>
                       </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {JSON.parse(fideicomiso.TipoMovimiento).map(
+                    (row: IDeudorFideicomiso, index: number) => {
+                      return (
+                        <StyledTableRow key={index}>
+                          {/* ID */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.id}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* TIPO fideicomitente */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.tipoFideicomitente.Descripcion}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* TIPO fideicomitente */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.tipoFideicomitente.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* fideicomitente */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fideicomitente.Descripcion}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* fideicomitente */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fideicomitente.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* FUENTE DE PAGO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.tipoFuente.Descripcion}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* FUENTE DE PAGO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.tipoFuente.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* FONDO INGRESO GOBIERNO ESTATAL */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoGobiernoEstatal}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* FONDO INGRESO GOBIERNO ESTATAL */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fondoIngresoGobiernoEstatal}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* FONDO INGRESO MUNICIPIOS */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoMunicipios}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* FONDO INGRESO MUNICIPIOS */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fondoIngresoMunicipios}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* FONDO INGRESO MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAsignadoMunicipio}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* FONDO INGRESO MUNICIPIO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fondoIngresoAsignadoMunicipio}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* INGRESO ORGANISMO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.ingresoOrganismo}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* INGRESO ORGANISMO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.ingresoOrganismo}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* AFECTADO POR GOBIERNO ESTATAL */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAfectadoXGobiernoEstatal}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* AFECTADO POR GOBIERNO ESTATAL */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fondoIngresoAfectadoXGobiernoEstatal}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* AFECTACION GOBIERNO ESTATAL / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.afectacionGobiernoEstatalEntre100}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* AFECTACION GOBIERNO ESTATAL / 100 */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.afectacionGobiernoEstatalEntre100}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.acumuladoAfectacionGobiernoEstatalEntre100}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.acumuladoAfectacionGobiernoEstatalEntre100}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* AFECTADO POR MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAfectadoXMunicipio}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* AFECTADO POR MUNICIPIO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.fondoIngresoAfectadoXMunicipio}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {
-                            row.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                          }
-                        </Typography>
-                      </StyledTableCell>
+                          {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {
+                                row.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
+                              }
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* AFECTADO POR ORGANISMO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.ingresoAfectadoXOrganismo}
-                        </Typography>
-                      </StyledTableCell>
+                          {/* AFECTADO POR ORGANISMO */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.ingresoAfectadoXOrganismo}
+                            </Typography>
+                          </StyledTableCell>
 
-                      {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.acumuladoAfectacionOrganismoEntre100}
-                        </Typography>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                }
-              )}
-            </TableBody>
-          </Table>
+                          {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
+                          <StyledTableCell align="center">
+                            <Typography sx={{ fontSize: "0.8rem" }}>
+                              {row?.acumuladoAfectacionOrganismoEntre100}
+                            </Typography>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+          </Paper>
+
           <Divider color="lightGrey"></Divider>
         </Grid>
 
@@ -463,25 +510,16 @@ export function DetalleFideicomiso({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {loading ? (
-                          <CircularProgress />
-                        ) : arr.filter((td: any) =>
-                            td.NOMBREFORMATEADO.includes(row.nombreArchivo)
-                          ).length === 0 ? (
-                          <Tooltip title={"Error al Cargar el Archivo"}>
-                            <SyncProblemIcon />
-                          </Tooltip>
-                        ) : (
+                     
                           <Tooltip title={"Mostrar vista previa del documento"}>
                             <IconButton
                               onClick={() => {
                                 setFileSelected(
-                                  `data:application/pdf;base64,${
-                                    arr.filter((td: any) =>
-                                      td.NOMBREFORMATEADO.includes(
-                                        row.nombreArchivo
-                                      )
-                                    )[0].FILE
+                                  `data:application/pdf;base64,${arr.filter((td: any) =>
+                                    td.NOMBREFORMATEADO.includes(
+                                      row.nombreArchivo
+                                    )
+                                  )[0].FILE
                                   }`
                                 );
                                 setShowModalPrevia(true);
@@ -490,7 +528,7 @@ export function DetalleFideicomiso({
                               <FileOpenIcon />
                             </IconButton>
                           </Tooltip>
-                        )}
+                       
                       </StyledTableCell>
                     </StyledTableRow>
                   );

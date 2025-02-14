@@ -24,9 +24,11 @@ const theme = createTheme({
 export function ComentarioApartado({
   setOpen,
   openState,
+  filtroComentarioVolver
 }: {
   setOpen: Function;
   openState: { open: boolean; apartado: string; tab: string };
+  filtroComentarioVolver?: Function
 }) {
   const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
 
@@ -36,6 +38,7 @@ export function ComentarioApartado({
     (state) => state.newComentario
   );
 
+
   const removeComentario: Function = useCortoPlazoStore(
     (state) => state.removeComentario
   );
@@ -43,6 +46,14 @@ export function ComentarioApartado({
   // const comentariosRegistro: any = useCortoPlazoStore(
   //   (state) => state.comentariosRegistro
   // );
+
+  const setFiltroComentarios: Function = useCortoPlazoStore(
+    (state) => state.setFiltroComentarios
+  );
+
+  const filtroComentarios: boolean = useCortoPlazoStore(
+    (state) => state.filtroComentarios
+  );
 
 
   useEffect(() => {
@@ -54,6 +65,15 @@ export function ComentarioApartado({
       // comentariosRegistro[openState.apartado],
     });
   }, [openState.apartado]);
+
+  useEffect(() => {
+    
+    console.log("comemt", coment,);
+    console.log("newComentario");
+
+    console.log("comentario", comentario);
+  }, [newComentario, coment.Comentario, comentario])
+  
 
 
   return (
@@ -104,6 +124,7 @@ export function ComentarioApartado({
           </Button>
         ) : null}
         <Button
+        
           sx={queries.buttonCancelar}
           onClick={() => {
             setComent({ Comentario: "", Apartado: "" });
@@ -115,11 +136,28 @@ export function ComentarioApartado({
 
         <ThemeProvider theme={theme}>
           <Button
+           disabled={coment.Comentario===""}
             sx={queries.buttonContinuar}
             onClick={() => {
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
+
+              
+    
+              console.log("comemt", coment,);
+              console.log("newComentario", newComentario);
+              
+
+
+
+              // if(coment.Comentario!== ""){
+              //   setFiltroComentarios(true)
+              // }
+
+              console.log("comment,comentario", coment.Comentario);
+              
+
             }}
           >
             Aceptar

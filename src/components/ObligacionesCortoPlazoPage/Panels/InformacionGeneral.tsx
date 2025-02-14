@@ -24,7 +24,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
 import { addDays, subDays } from "date-fns/esm";
-
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
@@ -33,20 +33,21 @@ import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
 const heads: {
   label: string;
 }[] = [
-  {
-    label: "Selección",
-  },
-  {
-    label: "Tipo de Ente Público Obligado",
-  },
-  {
-    label: "Ente Público Obligado",
-  },
-];
+    {
+      label: "Selección",
+    },
+    {
+      label: "Tipo de Ente Público Obligado",
+    },
+    {
+      label: "Ente Público Obligado",
+    },
+  ];
 
 export const moneyMask = (value: string) => {
   value = value.replace(/\D/g, "");
@@ -202,6 +203,13 @@ export function InformacionGeneral() {
     (state) => state.datosActualizar
   );
 
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] =
+    useCortoPlazoStore((state) => state.tablaCondicionesFinancieras);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
   return (
     <Grid
       container
@@ -281,13 +289,28 @@ export function InformacionGeneral() {
         </Grid>
 
         <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-          <InputLabel sx={queries.medium_text}>
-            Monto Original Contratado
-          </InputLabel>
+          <Grid display={"flex"} justifyContent={"space-between"}>
+            <InputLabel sx={queries.medium_text}>
+              Monto Original Contratado
+            </InputLabel>
+
+
+            <Tooltip title="No se puede modificar al haber una condicion financiera">
+              <Button
+                disabled={tablaCondicionesFinancieras.length === 0}
+                onClick={handleMenu}
+              >
+                < NewReleasesIcon />
+              </Button>
+            </Tooltip>
+
+          </Grid>
+
           <TextField
             disabled={
-              datosActualizar.length > 0 &&
-              !datosActualizar.includes("Monto Original Contratado")
+              (datosActualizar.length > 0 &&
+                !datosActualizar.includes("Monto Original Contratado")) ||
+              tablaCondicionesFinancieras.length > 0
             }
             fullWidth
             placeholder="0"
@@ -305,7 +328,7 @@ export function InformacionGeneral() {
                     .replace(".", "")
                     .replace(",", "")
                     .replace(/\D/g, "")
-                ) < 9999999999999999
+                ) < 99999999999
               ) {
                 setInformacionGeneral({
                   fechaContratacion: contratacion,
@@ -316,7 +339,6 @@ export function InformacionGeneral() {
                   denominacion: denominacion,
                   institucionFinanciera: institucionFinanciera,
                 });
-                console.log(monto)
               }
             }}
             InputLabelProps={{
@@ -722,7 +744,7 @@ export function InformacionGeneral() {
 
               <TableBody>
                 {obligadoSolidario === "NO APLICA" &&
-                tablaObligados.length === 0 ? (
+                  tablaObligados.length === 0 ? (
                   <StyledTableRow>
                     <StyledTableCell />
                     <StyledTableCell align="center">NO APLICA</StyledTableCell>

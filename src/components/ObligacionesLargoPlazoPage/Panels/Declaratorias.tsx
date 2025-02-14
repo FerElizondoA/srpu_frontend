@@ -114,7 +114,7 @@ export function Declaratorias() {
   useEffect(() => {
     console.log(Declaratorias.ClaseTitulo.Id)
     console.log(Declaratorias.ClaseTitulo.Descripcion)
-    
+
   }, [Declaratorias.ClaseTitulo.Descripcion])
 
   return (
@@ -122,18 +122,18 @@ export function Declaratorias() {
       <Grid container
         flexDirection={"column"}
         justifyContent={"space-evenly"}
-        height={{ xs:"50rem", sm:"23rem", md:"23rem", lg:"23rem", xl:"23rem" }}
+        height={{ xs: "50rem", sm: "23rem", md: "23rem", lg: "23rem", xl: "23rem" }}
       >
-        <Grid container  sx={{
+        <Grid container sx={{
           display: "flex",
           justifyContent: "space-evenly"
 
         }}>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} 
-            mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
-            
+
             <InputLabel
               sx={{
                 ...queries.medium_text,
@@ -163,8 +163,8 @@ export function Declaratorias() {
             />
           </Grid>
 
-          <Grid xs={10} sm={3} md={3} lg={3} xl={3} 
-             mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+          <Grid xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
             <InputLabel
               sx={{ ...queries.medium_text }}
@@ -206,7 +206,7 @@ export function Declaratorias() {
           </Grid>
 
           <Grid xs={10} sm={3} md={3} lg={3} xl={3}
-             mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
             <InputLabel
               sx={{
@@ -228,12 +228,12 @@ export function Declaratorias() {
           </Grid>
         </Grid>
 
-        <Grid container  mb={2} sx={{
+        <Grid container mb={2} sx={{
           display: "flex",
           justifyContent: "space-evenly"
         }}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} 
-            mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
             <InputLabel sx={{ ...queries.medium_text }}>
               Saldo Vigente
@@ -275,7 +275,7 @@ export function Declaratorias() {
 
 
           <Grid xs={10} sm={3} md={3} lg={3} xl={3}
-            mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
             <InputLabel
               sx={{ ...queries.medium_text, display: "flex" }}
@@ -313,7 +313,7 @@ export function Declaratorias() {
 
 
           <Grid xs={10} sm={3} md={3} lg={3} xl={3}
-            //mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+          //mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
           >
             <InputLabel
               sx={{
@@ -348,8 +348,8 @@ export function Declaratorias() {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} 
-            mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
           >
             <InputLabel
               sx={{
@@ -405,7 +405,7 @@ export function Declaratorias() {
           </Grid>
 
           <Grid item xs={10} sm={2} md={1} lg={1} xl={1}
-            mb={{ xs:3, sm:2, md:0, lg:2, xl: 2 }}
+            mb={{ xs: 3, sm: 2, md: 0, lg: 2, xl: 2 }}
 
           >
             <FormControlLabel

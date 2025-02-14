@@ -135,6 +135,7 @@ export const FirmaConUrl = () => {
             AsuntoDoc: "asd",
           })}
           setState={(v: any) => {
+           console.log("FIRMADOCONURL", v);
            
             changeInfoDoc(v, enviaNotificacion);
           }}

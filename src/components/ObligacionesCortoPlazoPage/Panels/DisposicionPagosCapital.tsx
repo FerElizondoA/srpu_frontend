@@ -32,7 +32,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { addDays } from "date-fns";
-
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import { format } from "date-fns";
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
@@ -48,6 +48,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { moneyMask } from "./InformacionGeneral";
+import { log } from "console";
 //import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 
 const heads: readonly {
@@ -190,6 +191,11 @@ export function DisposicionPagosCapital() {
     (state) => state.cleanDisposicion
   );
 
+  // const moneyMask = (value: string) => {
+  //   const floatValue = parseFloat(value).toFixed(2); // Aseguramos siempre dos decimales
+  //   return floatValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formateamos el número con comas
+  // };
+
 
 
 
@@ -246,22 +252,53 @@ export function DisposicionPagosCapital() {
   const [restante, setRestante] = useState(0);
 
   useEffect(() => {
-    let loc = 0.0;
-    tablaDisposicion.map((value: any, index: number) => {
-      loc += parseFloat(
+    let totalImporte = 0;
+
+    // Sumar los importes de la tabla
+    tablaDisposicion.forEach((value) => {
+      totalImporte += Number(
         value.importe.toString().replaceAll("$", "").replaceAll(",", "")
       );
     });
 
-    let res = 0.0;
-    res =
-      parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
-      parseFloat(loc.toFixed(2));
-    setRestante(res);
+    // Calcular el restante sin formateo
+    const montoSinFormato = Number(
+      monto.toString().replaceAll("$", "").replaceAll(",", "")
+    );
+
+    const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
+
+
+    // Actualizar el estado restante (como número)
+    setRestante(Number(nuevoRestante));
   }, [tablaDisposicion]);
+
+  // useEffect(() => {
+  //   let loc = 0.0;
+  //   tablaDisposicion.map((value: any, index: number) => {
+  //     loc += parseFloat(
+  //       value.importe.toString().replaceAll("$", "").replaceAll(",", "")
+  //     );
+  //   });
+
+  //   let res = 0.0;
+  //   res =
+  //     parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
+  //     parseFloat(loc.toFixed(2));
+  //     setRestante(res);
+  // }, [tablaDisposicion]);
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
+  };
+
+  const validacionBotonAgregar = (valorFormateado: string) => {
+    // Remueve cualquier carácter que no sea número o punto decimal
+    const valorNumerico = valorFormateado.replace(/[^\d.-]/g, "");
+
+    console.log("valorNumerico", valorNumerico);
+
+    return (parseFloat(valorNumerico)); // Convierte la cadena a número flotante
   };
 
   return (
@@ -535,41 +572,43 @@ export function DisposicionPagosCapital() {
                 // xl:  /* */
               }}
             >
-              <InputLabel sx={queries.medium_text}>Importe</InputLabel>
 
-              <TextField
+              {/* <TextField
                 disabled={!disposicionesParciales}
                 helperText={
                   disposicionesParciales
                     ? "Monto Original Contratado: " +
                     monto +
                     "; Monto restante: " +
-
-                    moneyMask(restante.toFixed(2))
+                   moneyMask(restante.toString())
                     : ""
                 }
                 value={disposicion.importe}
                 onChange={(v) => {
+                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
+                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
+                  console.log("");
+                  
+
+                  // Verificamos que sea numérico y aplicamos las validaciones
                   if (
-                    validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
+                    validator.isNumeric(valorNumerico) &&
                     disposicionesParciales &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <
-                    9999999999999999 &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <=
-                    restante * 101
+                    Number(valorNumerico) < restante // Comparamos directamente con 'restante'
                   ) {
+                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
                     setDisposicion({
                       ...disposicion,
-                      importe: moneyMask(v.target.value),
+                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
                     });
                   } else if (v.target.value === "") {
+                    // Si está vacío, seteamos a "0"
                     setDisposicion({ ...disposicion, importe: moneyMask("0") });
                   }
                 }}
                 error={
-                  parseFloat(
-                    disposicion.importe.toString().replace(/\D/g, "")
-                  ) > parseFloat(monto.toString().replace(/\D/g, ""))
+                  Number(disposicion.importe.replace(/[^\d.]/g, "")) >
+                  Number(monto.toString().replace(/[^\d.]/g, ""))
                 }
                 fullWidth
                 InputLabelProps={{
@@ -583,42 +622,178 @@ export function DisposicionPagosCapital() {
                   },
                 }}
                 variant="standard"
-              />
+              /> */}
+              <Grid justifyContent={"space-between"}>
+
+
+                {validacionBotonAgregar(
+                  disposicion.importe.toString()
+                ) >
+                  restante && disposicionesParciales ? <InputLabel>
+                  <Typography sx={{
+                    fontSize: ".7rem",
+                    fontFamily: "MontserratMedium",
+                    color: "red"
+                  }}>
+                    *favor de ingresar un numero menor*
+                  </Typography>
+
+                </InputLabel> : null}
+
+
+                <Grid display={"flex"} justifyContent={"space-between"}>
+                  <TextField
+                    disabled={!disposicionesParciales}
+                    helperText={
+                      (disposicionesParciales
+                        ? "Monto Original Contratado: " +
+                        moneyMask(monto.toString()) +  // Formatear el monto
+                        "; Monto restante: " +
+                        moneyMask(restante.toString()) // Formatear el restante
+                        : ""
+                      )
+                    }
+                    value={disposicion.importe}
+                    onChange={(v) => {
+                      const valornuevo = v.target.value;
+                      console.log("valorNuevo", valornuevo);
+
+                      setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
+                    }}
+                    error={
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) >
+                        restante
+                    }
+                    fullWidth
+                    InputLabelProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    variant="standard"
+                  />
+                  {/* <Tooltip title={validacionBotonAgregar(
+                    disposicion.importe.toString()
+                  ) >
+                    restante ? "Favor de ingresar un numero menor" : null}>
+                    <Button
+                      disabled={validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) <=
+                        restante}
+                      onClick={() => {
+
+                      }}
+                    >
+                      < NewReleasesIcon />
+                    </Button>
+                  </Tooltip> */}
+                </Grid>
+
+              </Grid>
+
+              {/* <TextField
+                disabled={!disposicionesParciales}
+                helperText={
+                  disposicionesParciales
+                    ? "Monto Original Contratado: " +
+                    monto +
+                    "; Monto restante: " +
+                    moneyMask(restante.toFixed(2))
+                    : ""
+                }
+                value={disposicion.importe}
+                onChange={(v) => {
+                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
+                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
+
+                  // Verificamos que sea numérico y aplicamos las validaciones
+                  if (
+                    // validator.isNumeric(valorNumerico) &&
+                    //disposicion.importe.length < monto.toString().length &&
+                    disposicionesParciales &&
+                    parseFloat(valorNumerico) <= restante &&
+                    parseFloat(valorNumerico) < 9999999999999999
+
+                  ) {
+                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
+                    setDisposicion({
+                      ...disposicion,
+                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
+                    });
+                  } else if (v.target.value === "") {
+                    // Si está vacío, seteamos a "0"
+                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
+                  }
+                }}
+                error={
+                  parseFloat(disposicion.importe.toString().replace(/[^\d.]/g, "")) >
+                  parseFloat(monto.toString().replace(/[^\d.]/g, ""))
+                }
+                fullWidth
+                InputLabelProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    fontFamily: "MontserratMedium",
+                  },
+                }}
+                variant="standard"
+              /> */}
             </Grid>
           </Grid>
+
           {disposicionesParciales && (
+
             <Grid
               container
               flexDirection={"column"}
               alignItems={"center"}
               width={"100%"}
             >
+
               <ThemeProvider theme={buttonTheme}>
-                <Button
-                  sx={{
-                    ...queries.buttonContinuarSolicitudInscripcion,
-                    mt: 2,
-                    mb: 2,
-                    width: "15vh",
-                  }}
-                  disabled={
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) === 0 ||
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) >
-                    restante * 101
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
-                    addDisposicion(disposicion);
-                  }}
-                >
-                  Agregar
-                </Button>
+                <Tooltip title={validacionBotonAgregar(
+                  disposicion.importe.toString()
+                ) >
+                  restante ? "Favor de ingresar un numero menor" : "345"}>
+                  <Button
+                    sx={{
+                      ...queries.buttonContinuarSolicitudInscripcion,
+                      mt: 2,
+                      mb: 2,
+                      width: "15vh",
+                    }}
+                    disabled={
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) === 0 ||
+                      validacionBotonAgregar(
+                        disposicion.importe.toString()
+                      ) >
+                      restante
+                    }
+                    variant="outlined"
+                    onClick={() => {
+                      setDisposicion({ ...disposicion, importe: moneyMask("0") });
+                      addDisposicion(disposicion);
+                    }}
+                  >
+                    Agregar
+                  </Button>
+                </Tooltip>
               </ThemeProvider>
+
 
               <Grid
                 width={"100%"}
@@ -686,6 +861,8 @@ export function DisposicionPagosCapital() {
                 </Paper>
               </Grid>
             </Grid>
+
+
           )}
         </Grid>
       </Grid>

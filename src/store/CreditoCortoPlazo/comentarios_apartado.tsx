@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 
 export interface ComentarioApartadoSlice {
   idComentario: string;
-  comentarios: {};
+  comentarios: { [key: string]: string };
 
   cleanComentario: () => void;
 
@@ -18,12 +18,26 @@ export interface ComentarioApartadoSlice {
   datosActualizar: Array<string>;
 
   setDatosActualizar: (datos: any) => void;
+
+  filtroComentarios: boolean;
+  setFiltroComentarios:(filtroComentarios: boolean) => void;
+
+
 }
 
 export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
   set,
   get
 ) => ({
+
+  filtroComentarios: false,
+  setFiltroComentarios:(filtroComentarios: boolean) => {
+    set((state) => ({
+      filtroComentarios: filtroComentarios
+    }));
+
+  },
+
   idComentario: "",
   comentarios: {},
 
@@ -45,12 +59,14 @@ export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
   },
 
   removeComentario: (apartado: string, Tab: string) => {
-    set((state) => ({
-      comentarios: {
-        ...state.comentarios,
-        [apartado]: "",
-      },
-    }));
+    set((state) => {
+      const newComentarios: { [key: string]: string } = { ...state.comentarios };
+      delete newComentarios[apartado]; // 🔥 Elimina completamente la propiedad
+  
+      return {
+        comentarios: newComentarios,
+      };
+    });
   },
 
   setComentarios: (comentarios: any) => {

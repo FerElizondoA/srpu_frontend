@@ -287,7 +287,7 @@ export function SoporteDocumentalInstrucciones() {
         gridColumn={"1/4"}
         mt={4}
       >
-        <Paper sx={{ width: "91%", height: "50vh" }}>
+        <Paper sx={{ width: "91%", height: "30vh" }}>
           <TableContainer
             sx={{
               height: "100%",

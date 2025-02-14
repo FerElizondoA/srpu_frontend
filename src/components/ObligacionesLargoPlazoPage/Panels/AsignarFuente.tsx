@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { IDeudorFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
@@ -29,6 +29,29 @@ import {
 interface HeadSelect {
   Label: string;
 }
+const headsNews: HeadSelect[] = [
+  {
+    Label: "Id",
+  },
+  {
+    Label: "Tipo de Fuente",
+  },
+  {
+    Label: "Fondo o Ingreso",
+  },
+  {
+    Label: "Fideicomitente",
+  },
+  {
+    Label: "Porcentaje Afectado Sobre el Total de Ingreso",
+  },
+  {
+    Label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
+  },
+  {
+    Label: "Eliminar",
+  },
+];
 
 const headFP: HeadSelect[] = [
   {
@@ -99,6 +122,10 @@ export function AsignarFuente() {
   );
   const tablaAsignarFuente: IDeudorFideicomiso[] = useLargoPlazoStore(
     (state) => state.tablaAsignarFuente
+  );
+
+  const tablaAsignarFuenteNew: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tablaAsignarFuenteNew
   );
 
   const setTablaAsignarFuente: Function = useLargoPlazoStore(
@@ -340,7 +367,7 @@ export function AsignarFuente() {
                 JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
                   (i: IDeudorFideicomiso) =>
                     i.tipoFuente.Descripcion ===
-                      filtro.TipoFuente.Descripcion &&
+                    filtro.TipoFuente.Descripcion &&
                     i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
                 )
               );
@@ -382,9 +409,78 @@ export function AsignarFuente() {
                 outline: "1px solid slategrey",
                 borderRadius: 1,
               },
-            }}
+            }} 
           >
             <Table>
+              <TableHead>
+                <TableRow>
+                  {headsNews.map((head, index) => (
+                    <StyledTableCell align="center" key={index}>
+                      <Typography
+                        sx={{
+                          // fontSize: ".7rem",
+                          fontFamily: "MontserratRegular",
+                        }}
+                      >
+                        {head.Label}
+                      </Typography>
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tablaAsignarFuenteNew.map(
+                  (movimiento: IDeudorFideicomisoNew, index: number) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        {movimiento.tipoFuente.Descripcion}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {movimiento.fondoIngreso.Descripcion}
+                      </StyledTableCell>
+                      {/* <StyledTableCell align="center">
+                        {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">0.00</StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <TextField
+                          disabled={
+                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
+                            "mandato" ||
+                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
+                            "instruccion irrevocable"
+                          }
+                          type="number"
+                          inputProps={{
+                            sx: {
+                              fontSize: "0.7rem",
+                            },
+                          }}
+                          size="small"
+                          value={movimiento.fondoIngresoAfectadoXMunicipio}
+                          onChange={(v) => {
+                            let auxArray = [...tablaAsignarFuente];
+                            let val = Number(v.target.value);
+
+                            auxArray[index].fondoIngresoAfectadoXMunicipio =
+                              val.toString();
+
+                            addPorcentaje(auxArray);
+                          }}
+                        />
+                      </StyledTableCell> */}
+                      <StyledTableCell />
+                      <StyledTableCell />
+                    </StyledTableRow>
+                  )
+                )}
+              </TableBody>
+            </Table>
+
+
+
+            {/* <Table>
               <TableHead>
                 <TableRow>
                   {headFP.map((head, index) => (
@@ -461,7 +557,7 @@ export function AsignarFuente() {
                   )
                 )}
               </TableBody>
-            </Table>
+            </Table> */}
           </TableContainer>
         </Paper>
       </Grid>

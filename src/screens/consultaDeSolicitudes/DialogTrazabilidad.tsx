@@ -41,6 +41,9 @@ const heads: Array<{ label: string }> = [
   {
     label: "Fecha del movimiento",
   },
+  {
+    label: "Hora",
+  },
 ];
 
 export function DialogTrazabilidad(props: Props) {
@@ -143,6 +146,10 @@ export function DialogTrazabilidad(props: Props) {
                         })}
                         {/* {row.FechaModificacion} */}
                       </Typography>
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <Typography>10:35</Typography>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))

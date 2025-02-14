@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
+  
 } from "@mui/material";
 import * as React from "react";
 import Swal from "sweetalert2";
@@ -19,9 +20,11 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 export function DialogGuardarComentarios({
   open,
   handler,
+  //comentarios,
 }: {
   open: boolean;
   handler: Function;
+  //comentarios: object
 }) {
   // // SOLICITUD
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -35,32 +38,30 @@ export function DialogGuardarComentarios({
     }
   }, [inscripcion.Id]);
 
-  const [datosComentario, setDatosComentarios] = React.useState<
-    Array<IComentarios>
-  >([]);
-  React.useEffect(() => {
-    let a: any = {};
+  const [datosComentario, setDatosComentarios] = React.useState<Array<IComentarios>>([]);
+  // React.useEffect(() => {
+  //   let a: any = {};
 
-    datosComentario
-      ?.filter((td) => td.Tipo === "Requerimiento")
-      .map((_) => {
-        return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
-          return a[v]
-            ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
-            : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
-        });
-      });
+  //   datosComentario
+  //     ?.filter((td) => td.Tipo === "Requerimiento")
+  //     .map((_) => {
+  //       return Object.keys(JSON.parse(_?.Comentarios)).map((v) => {
+  //         return a[v]
+  //           ? (a[v] = a[v] + ` ; ` + JSON.parse(_?.Comentarios)[v])
+  //           : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
+  //       });
+  //     });
 
-    setComentarios(a);
+  //   setComentarios(a);
 
-    useCortoPlazoStore.setState({
-      idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
-        ?.Id,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosComentario]);
+  //   useCortoPlazoStore.setState({
+  //     idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
+  //       ?.Id,
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [datosComentario]);
 
-  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
+  const comentarios: Object = useCortoPlazoStore((state) => state.comentarios);
 
   const setComentarios: Function = useCortoPlazoStore(
     (state) => state.setComentarios
@@ -69,26 +70,38 @@ export function DialogGuardarComentarios({
     (state) => state.addComentario
   );
 
+  const setFiltroComentarios: Function = useCortoPlazoStore(
+    (state) => state.setFiltroComentarios
+  );
+
+  const filtroComentarios: boolean = useCortoPlazoStore(
+    (state) => state.filtroComentarios
+  );
+
+  React.useEffect(() => {
+    console.log("comentarios", comentarios);
+  }, [])
+  
   return (
     <Dialog open={open} fullWidth maxWidth={"md"}>
       <DialogTitle>Guardar comentarios</DialogTitle>
       <DialogContent>
-        {Object.entries(comentarios).map(([key, val], index) =>
+        {/* {Object.entries(comentarios).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography key={index}>
               <strong>{key}:</strong>
               {val as string}
             </Typography>
-          )
-        )}
+          ))} */}
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions> 
         <Button sx={queries.buttonCancelar} onClick={() => handler(false)}>
           Cancelar
         </Button>
         <Button
           sx={queries.buttonContinuar}
+          //disabled={}
           onClick={() => {
             addComentario(
               inscripcion.Id,
@@ -106,7 +119,7 @@ export function DialogGuardarComentarios({
             });
           }}
         >
-          Confirmar
+          Confirmar Corto plazo
         </Button>
       </DialogActions>
     </Dialog>
