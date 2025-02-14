@@ -72,9 +72,6 @@ export function ComentarioApartado({
     console.log("newComentario");
 
     console.log("comentario", comentario);
-    
-  
-    
   }, [newComentario, coment.Comentario, comentario])
   
 

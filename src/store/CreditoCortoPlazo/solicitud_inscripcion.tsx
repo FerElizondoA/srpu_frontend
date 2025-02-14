@@ -9,6 +9,7 @@ import { log } from "console";
 import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../generics/Alertas";
+import { useFideicomisoStore } from "../Fideicomiso/main";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -53,6 +54,7 @@ export interface SolicitudInscripcionSlice {
   deleteFiles: (ruta: string) => void;
 
   saveFiles: (idRegistro: string, ruta: string) => void;
+  saveFilesFuentesPago: (idRegistro: string, ruta: string) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -242,8 +244,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
           TipoCredito: state.encabezado.tipoCredito.Descripcion,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
+          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
@@ -266,9 +267,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
         state.saveFiles(
           data.data.Id,
-        //   `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`  
-      );
+          //   `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
+        );
 
 
       });
@@ -316,7 +317,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   addComentario: async (Id: string, comentario: any, tipo: string) => {
-    if (comentario.length !== 2) {
+    if (comentario === null || comentario === undefined || comentario.trim() === '') {
+      comentario = ''; // Enviar un string vacío al backend para eliminarlo
+    }
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
@@ -340,7 +343,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           });
         })
         .catch((e) => { });
-    }
+    
   },
 
   eliminarRequerimientos: async (Id: string, setState: Function) => {
@@ -394,8 +397,57 @@ export const createSolicitudInscripcionSlice: StateCreator<
       .catch((e) => { });
   },
 
+  saveFilesFuentesPago: async (idRegistro: string, ruta: string) => {
+    const state = useFideicomisoStore.getState();
+    console.log("Entre saveFiles");
+
+    return await state.tablaSoporteDocumentalFideicomiso.map((file, index) => {
+      console.log(file);
+
+      return setTimeout(() => {
+        const url = new File([file.archivo], file.nombreArchivo);
+
+        let dataArray = new FormData();
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
+        dataArray.append("FILE", url);
+
+        if (file.archivo && file.archivo.size > 0) {
+          console.log("entre");
+
+          return axios
+            .post(
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+              dataArray,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("jwtToken"),
+                },
+              }
+            )
+            .then(({ data }) => {
+              console.log("data response", data);
+
+              state.savePathDocFideicomiso(
+                idRegistro,
+                data.RESPONSE.RUTA,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREARCHIVO,
+                // file.tipoArchivo
+              );
+              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
+
+            })
+            .catch((e) => { });
+        } else {
+          return null;
+        }
+      }, 1000);
+    });
+  },
+
   saveFiles: async (idRegistro: string, ruta: string) => {
-    const state = useCortoPlazoStore.getState(); 
+    const state = useCortoPlazoStore.getState();
     console.log("Entre saveFiles");
 
     return await state.tablaDocumentos.map((file) => {
@@ -445,7 +497,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
+
     console.log("Entre guardaDocumentos");
+    // console.log("ID ACUSE OBTENIDO", idAcuse);
+
 
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
@@ -466,14 +521,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
         .then(({ data }) => {
 
           console.log("DATA guardarDocumentos", data);
-          
+
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
             data.RESPONSE.NOMBREARCHIVO,
-            'fake'
+            ""
           );
+
+
+
+
         })
         .catch((e) => { });
     } else {
@@ -488,8 +547,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
     NombreArchivo: string,
     TpoDoc: string
   ) => {
+    const state = useCortoPlazoStore.getState();
+
+    // const idAcuse = ""
+    // state.getIdAcuse(idAcuse)
 
     console.log("Entre savePathDoc");
+    console.log("TpoDoc:", TpoDoc);
+
+    console.log("state.idAcuse:", state.idAcuse);
+
+
+
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
@@ -498,7 +567,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: TpoDoc
+          TpoDoc: state.idAcuse
         },
         {
           headers: {

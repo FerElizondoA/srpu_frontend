@@ -343,13 +343,15 @@ export function ConsultaDeSolicitudPage() {
         </Paper>
       </Grid> */}
 
-      <BarraFiltros
+      <BarraFiltros 
         Lista={datos}
         setStateFiltered={setDatosFiltrados}
         CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
       />
 
-      <Grid container display={"flex"} justifyContent={"center"}>
+      <Grid container display={"flex"} justifyContent={"center"}
+      mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+      >
         <Paper sx={{ width: "100%" }}>
           <TableContainer
             sx={{

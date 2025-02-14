@@ -36,6 +36,8 @@ import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 import { Transition } from "./Mandatos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { DetalleFideicomiso } from "../../components/fideicomisos/dialog/DetalleFideicomiso";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { BarraFiltros } from "../../generics/BarraFiltros";
 
 export interface IDatosFideicomiso {
   AcumuladoEstado: string;
@@ -194,8 +196,12 @@ export function Fideicomisos() {
       UltimaModificacion: "",
     });
 
+  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+
+
   return (
-    <Grid height={"74vh"}>
+    <Grid>
       <Grid item>
         <LateralMenu />
       </Grid>
@@ -224,7 +230,18 @@ export function Fideicomisos() {
         </Typography>
       </Grid>
 
-      <Grid display="center" justifyContent="space-between" height={"4rem"}>
+      <BarraFiltros
+        Lista={datos}
+        setStateFiltered={setDatosFiltrados}
+        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setOpenDialogAgregar={setOpenAgregarFideicomiso}
+        openDialogAgregar={openAgregarFideicomisos}
+        BooleaDialog={true}
+      />
+
+
+
+      {/* <Grid display="center" justifyContent="space-between" height={"4rem"}>
         <Grid
           width={"80%"}
           height={"75%"}
@@ -270,7 +287,7 @@ export function Fideicomisos() {
             Agregar
           </Button>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid
         container

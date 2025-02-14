@@ -189,7 +189,7 @@ export function Mandatos() {
   const [openDetalle, setOpenDetalle] = useState(false);
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
-    const getDatos = () => {
+  const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
         ? "Inscripcion"
@@ -201,8 +201,8 @@ export function Mandatos() {
     );
   };
   useEffect(() => {
-    getDatos();
-    
+    getMandatos(setMandatos);
+
   }, []);
 
 
@@ -230,7 +230,7 @@ export function Mandatos() {
 
 
   return (
-    <Grid height={"74vh"}>
+    <Grid >
       <Grid item>
         <LateralMenu />
       </Grid>
@@ -238,9 +238,8 @@ export function Mandatos() {
       <Grid
         display={"flex"}
         justifyContent={"center"}
-        width={"97%"}
-        height={"4rem"}
         alignItems={"center"}
+        height={60}
       >
         <Typography
           sx={{
@@ -259,15 +258,20 @@ export function Mandatos() {
         </Typography>
       </Grid>
 
-      <Grid display="center" justifyContent="space-between" >
+
+
       <BarraFiltros
-        Lista={datos}
+        Lista={mandatos}
         setStateFiltered={setDatosFiltrados}
         CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setOpenDialogAgregar={setOpenAgregarMandato}
+        openDialogAgregar={openAgregarMandato}
+        BooleaDialog={true}
       />
-     
 
-        {/* <Grid
+
+
+      {/* <Grid
           width={"80%"}
           height={"75%"}
           display={"flex"}
@@ -302,20 +306,8 @@ export function Mandatos() {
           </Paper>
         </Grid> */}
 
-        <Grid width={"15%"} display={"flex"} justifyContent={"center"}>
-          <Button
-            sx={{
-              ...queries.buttonContinuar,
-              height: "75%",
-            }}
-            onClick={() => {
-              setOpenAgregarMandato(!openAgregarMandato);
-            }}
-          >
-            Agregar
-          </Button>
-        </Grid>
-      </Grid>
+
+
 
       <Grid
         container
@@ -326,11 +318,11 @@ export function Mandatos() {
           justifyContent: "center",
         }}
       >
-        <Paper sx={{ width: "100%", height: "100%" }}>
+        <Paper sx={{ width: "100%" }}>
           <TableContainer
             sx={{
-              width: "100%",
-              height: "100%",
+              //height: 520,
+
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -341,6 +333,22 @@ export function Mandatos() {
                 backgroundColor: "#AF8C55",
                 outline: "1px solid slategrey",
                 borderRadius: 1,
+              },
+              height: "35rem",
+              "@media (min-width: 480px)": {
+                height: "30.5rem",
+              },
+              "@media (min-width: 768px)": {
+                height: "30.5rem",
+              },
+              "@media (min-width: 1140px)": {
+                height: "30.5rem",
+              },
+              "@media (min-width: 1400px)": {
+                height: "30.5rem",
+              },
+              "@media (min-width: 1870px)": {
+                height: "44.5rem",
               },
             }}
           >

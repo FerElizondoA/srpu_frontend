@@ -12,11 +12,17 @@ export function BarraFiltros({
   Lista,
   setStateFiltered,
   CamposFecha,
+  setOpenDialogAgregar,
+  openDialogAgregar,
+  BooleaDialog
 }:
   {
     Lista: any[];
     setStateFiltered: Function
     CamposFecha: string[]
+    setOpenDialogAgregar?: Function,
+    openDialogAgregar?: boolean
+    BooleaDialog?: boolean 
   }) {
   const [busqueda, setBusqueda] = useState("");
   const [fechaInicio, setFechaInicio] = useState<Dayjs | null>(null);
@@ -45,7 +51,6 @@ export function BarraFiltros({
   return (
     <>
       <Grid
-        item
         container
         xs={12}
         sm={12}
@@ -57,10 +62,10 @@ export function BarraFiltros({
         <Grid
           item
           xs={10}
-          sm={4}
-          md={4}
-          lg={4}
-          xl={4}
+          sm={10}
+          md={3}
+          lg={3}
+          xl={3}
           display="center"
           justifyContent="center"
           alignItems={"center"}
@@ -69,7 +74,7 @@ export function BarraFiltros({
             component="form"
             sx={{
               display: "flex",
-              height: ["100%", "50%", "50%", "50%", "50%"],
+              height: ["100%", "100%", "50%", "50%", "50%"],
               width: "100%",
             }}
           >
@@ -83,19 +88,27 @@ export function BarraFiltros({
                 //   setBusqueda()
                 // }
               }}
-              // onKeyPress={(ev) => {
-              //   if (ev.key === "Enter") {
-              //     fechaInicio === null ?
-              //       setStateFiltered(filterByWord(Lista, busqueda))
-              //       : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
-              //    // return false;
-              //   }
-              // }}
+            // onKeyPress={(ev) => {
+            //   if (ev.key === "Enter") {
+            //     fechaInicio === null ?
+            //       setStateFiltered(filterByWord(Lista, busqueda))
+            //       : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
+            //    // return false;
+            //   }
+            // }}
             />
           </Paper>
         </Grid>
 
-        <Grid item xs={5} sm={2} md={2} lg={2} xl={2} mb={{ xs: 3 }}>
+        <Grid item
+          mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+          xs={10}
+          sm={fechaInicio != null ? 4 : 10}
+          md={3}
+          lg={2}
+          xl={2}
+          mb={{ xs: 3 }}
+        >
           <Grid
             sx={{
               display: "flex",
@@ -127,7 +140,11 @@ export function BarraFiltros({
         </Grid>
 
         {fechaInicio != null ? (
-          <Grid item xs={5} sm={2} md={2} lg={2} xl={2} sx={{ mb: "3" }}>
+          <Grid
+            mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+            mb={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+
+            item xs={10} sm={4} md={3} lg={2} xl={2} sx={{ mb: "3" }}>
             <Grid
               sx={{
                 display: "flex",
@@ -166,10 +183,11 @@ export function BarraFiltros({
         <Grid
           container
           xs={12}
-          sm={3}
-          md={3}
+          sm={11}
+          md={10}
           lg={3}
           xl={3}
+          mt={{ xs: 5, sm: 3, md: 3, lg: 0 }}
           sx={{
             display: "flex",
             alignItems: "center",
@@ -191,7 +209,11 @@ export function BarraFiltros({
             Buscar
           </Button>
 
-          <Button sx={{ ...queries.buttonCancelar, width: "30%" }}
+          <Button
+            sx={{
+              ...queries.buttonCancelar,
+              width: { xs: "32%", sm: "35%", md: "30%", lg: "45%", xl: "40%" }
+            }}
             onClick={() => {
               limpiarFiltro()
 
@@ -200,6 +222,19 @@ export function BarraFiltros({
           >
             Restablecer Filtro
           </Button>
+
+          {BooleaDialog === true ? (
+          
+              <Button
+                  sx={{ ...queries.buttonContinuar, width: "20%" }}
+                onClick={() => {
+                  setOpenDialogAgregar && setOpenDialogAgregar(!openDialogAgregar);
+                }}
+              >
+                Agregar
+              </Button>
+            
+          ) : null}
         </Grid>
       </Grid>
     </>

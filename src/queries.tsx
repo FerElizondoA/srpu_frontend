@@ -1,6 +1,6 @@
 export const queries = {
   text: {
-    fontSize: "2ch",
+    fontSize: "1rem",
     fontFamily: "MontserratRegular",
     alignSelf: "center",
     "@media (max-width: 600px)": {
@@ -9,7 +9,7 @@ export const queries = {
     },
     "@media (min-width: 601px) and (max-width: 900px)": {
       // SM (small) screen
-      fontSize: "1.5ch",
+      fontSize: "1rem",
     },
   },
   medium_text: {

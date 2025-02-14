@@ -510,15 +510,7 @@ export function DetalleFideicomiso({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {loading ? (
-                          <CircularProgress />
-                        ) : arr.filter((td: any) =>
-                          td.NOMBREFORMATEADO.includes(row.nombreArchivo)
-                        ).length === 0 ? (
-                          <Tooltip title={"Error al Cargar el Archivo"}>
-                            <SyncProblemIcon />
-                          </Tooltip>
-                        ) : (
+                     
                           <Tooltip title={"Mostrar vista previa del documento"}>
                             <IconButton
                               onClick={() => {
@@ -536,7 +528,7 @@ export function DetalleFideicomiso({
                               <FileOpenIcon />
                             </IconButton>
                           </Tooltip>
-                        )}
+                       
                       </StyledTableCell>
                     </StyledTableRow>
                   );

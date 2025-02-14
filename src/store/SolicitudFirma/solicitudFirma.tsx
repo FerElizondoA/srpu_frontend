@@ -305,10 +305,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
       const inf = JSON.parse(info);
 
-
-      console.log("inf", inf)
-
-      console.log("AQUI ENTRO A LA VALIDACION DE INFO DE LA FIRMA");
+      const BusquedaTipoDocumentoAcuse = useCortoPlazoStore.getState();
+    
+      const idAcuse = ""
+      BusquedaTipoDocumentoAcuse.getIdAcuse(idAcuse)
 
       const filtro = useInscripcionStore.getState();
       let state: any;
@@ -435,26 +435,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
           let oficio = `Solicitud ${estatusPrevio.IdClaveInscripcion}`;
 
-
-          // let mensaje = "Prueba de mensaje Mensaje";
-          // let oficio = "Prueba de mensaje Oficio"
-          // let titulo = "Prueba de mensje TITULO"
-
-          console.log("oficio", oficio);
-
-          console.log("mensaje", mensaje);
-
-          console.log("titulo", titulo);
-
-
-
-
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // } else if (state.estatus === "Reestructura") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
-
 
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); // CORREGIR
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id); 
@@ -462,6 +447,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
+              :estatusPrevio.NoEstatus === "7" ? "8" 
               : estatusPrevio.ControlInterno === "revision" &&
                 state.proceso === "actualizacion"
                 ? "8"
@@ -1419,6 +1405,10 @@ export async function GeneraAcuse(
       
       const state = useCortoPlazoStore.getState();
 
+      // state.getIdAcuse()
+      // console.log("state.idAcuse en generaAcuse", state.idAcuse);
+      
+
       state.guardaDocumentos(
         idRegistro,
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
@@ -1460,6 +1450,46 @@ export const CambiaEstatus = (
       return true;
     })
     .catch((err) => { });
+};
+
+export const getPdfAcuse = (
+  id: string,
+  noRegistro: string,
+  fechaContratacion: string,
+  IdPath: string
+) => {
+  let dataArray = new FormData();
+  dataArray.append("id", id);
+  dataArray.append("phrase", "");
+
+  axios
+    .post(process.env.REACT_APP_APPLICATION_FIEL + "/api/getfpdf", dataArray, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: localStorage.getItem("jwt") || "",
+      },
+      responseType: "arraybuffer",
+    })
+    .then((r) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([r.data], { type: "application/pdf" })
+      );
+
+      let link = document.createElement("a");
+
+      link.setAttribute("download", `${noRegistro}- ${fechaContratacion}.pdf`);
+      link.setAttribute("href", url);
+      document.body.appendChild(link);
+      link.click();
+      if (IdPath !== "") {
+        ActualizaDescarga(IdPath);
+      }
+    })
+    .catch((err) => {
+      alertaError("Error al intentar descargar documento pdf")
+    });
 };
 
 export const getPdf = (
