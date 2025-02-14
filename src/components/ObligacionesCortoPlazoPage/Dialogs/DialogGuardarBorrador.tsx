@@ -92,10 +92,6 @@ export function DialogGuardarBorrador({
       setInfo(
         "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
       );
-    } else if (isMissingTipoCredito) {
-      setInfo(
-        "*En ENCABEZADO: Seleccionar tipo de Solicitud"
-      );
     }else {
       setInfo("La solicitud se guardará como borrador.");
     }
@@ -160,7 +156,7 @@ export function DialogGuardarBorrador({
     >
       <DialogTitle>
         <Typography align="center" sx={queries.bold_text_Largo_Plazo} mb={2}>
-          Guardar como Borrador prueba 
+          Guardar como borrador
         </Typography>
       </DialogTitle>
 

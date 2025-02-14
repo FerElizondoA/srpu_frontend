@@ -202,7 +202,6 @@ export function Mandatos() {
   };
   useEffect(() => {
     getMandatos(setMandatos);
-
   }, []);
 
 
