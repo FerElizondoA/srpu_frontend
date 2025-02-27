@@ -529,10 +529,6 @@ export const createSolicitudInscripcionSlice: StateCreator<
             data.RESPONSE.NOMBREARCHIVO,
             ""
           );
-
-
-
-
         })
         .catch((e) => { });
     } else {

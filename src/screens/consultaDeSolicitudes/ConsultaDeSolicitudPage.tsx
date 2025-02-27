@@ -67,6 +67,7 @@ export interface IData {
   NoEstatus: string;
   Estatus: string;
   ControlInterno: string;
+  Control: string;
   IdClaveInscripcion: string;
   MontoOriginalContratado: string;
   FechaContratacion: string;
@@ -78,7 +79,29 @@ export interface IData {
   IdEditor: string;
   FechaRequerimientos: string;
   IdPathDoc?: string;
-  Control: string;
+  CountReestructuras?: string;
+  // Id: string;
+  // NumeroRegistro: string;
+  // Nombre: string;
+  // TipoEntePublico: string;
+  // TipoSolicitud: string;
+  // TipoCredito: string;
+  // Institucion: string;
+  // NoEstatus: string;
+  // Estatus: string;
+  // ControlInterno: string;
+  // IdClaveInscripcion: string;
+  // MontoOriginalContratado: string;
+  // FechaContratacion: string;
+  // Solicitud: string;
+  // FechaCreacion: string;
+  // CreadoPor: string;
+  // UltimaModificacion: string;
+  // ModificadoPor: string;
+  // IdEditor: string;
+  // FechaRequerimientos: string;
+  // IdPathDoc?: string;
+  // Control: string;
 }
 
 const heads: Array<{ label: string }> = [

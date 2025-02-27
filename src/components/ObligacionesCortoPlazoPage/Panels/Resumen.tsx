@@ -963,7 +963,7 @@ useEffect(() => {
                 </TableHead>
                 <TableBody>
                   {documentos.map((row, index) => {
-                    console.log('documentos resumen:', row);
+                    //console.log('documentos resumen:', row);
 
                     return (
                       <StyledTableRow key={index}>

@@ -9,6 +9,7 @@ import { useInscripcionStore } from "../Inscripcion/main";
 import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../generics/Alertas";
 import { IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 import { useState } from "react";
+import { useCancelacionStore } from "../Cancelacion/main";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -296,23 +297,27 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
-    //console.log("info", info)
-
     set(() => ({ infoDoc: info }));
+    const stateCancelaciones = useCancelacionStore.getState()
 
     if (info) {
-      let validacionReestructura = false
+      //Proceso para saber que tipo de firma hara - Inscripcion (CP y LP), Reestructura y Cancelacion
+      const tipoFirmaDetalle = stateCancelaciones.tipoFirmaDetalle === ""
+        ? "inscripcion"
+        : stateCancelaciones.tipoFirmaDetalle === "cancelacion" ? "cancelacion" : "reestructura"
+      console.log("tipoFirmaDetalle", tipoFirmaDetalle);
+      //**************** */
 
+
+      let validacionReestructura = false
       const inf = JSON.parse(info);
 
-      const BusquedaTipoDocumentoAcuse = useCortoPlazoStore.getState();
-    
+      const stateCortoPlazo = useCortoPlazoStore.getState();
       const idAcuse = ""
-      BusquedaTipoDocumentoAcuse.getIdAcuse(idAcuse)
+      stateCortoPlazo.getIdAcuse(idAcuse)
 
       const filtro = useInscripcionStore.getState();
       let state: any;
-
       let estatusPrevio = {
         Id: "",
         NoEstatus: "",
@@ -320,9 +325,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         ControlInterno: "",
         IdClaveInscripcion: ""
       };
-
-      console.log("FILTRO INFORMACION", filtro);
-
+      console.log("info", info);
+      console.log("inf", inf);
 
       if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
         filtro.inscripcionReestructura?.IdSolicitud === null ||
@@ -352,7 +356,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
           }
         } else {
-          console.log("Entre al ELSE de state Filtro.insciprion", filtro.inscripcion);
+          //console.log("Entre al ELSE de state Filtro.insciprion", filtro.inscripcion);
 
           state = filtro.inscripcion;
           estatusPrevio = {
@@ -375,6 +379,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             IdSolicitud: estatusPrevio.Id,
 
             NumeroOficio: `${inf.NumeroOficio}`,
+            TipoFirma: tipoFirmaDetalle,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
             SerialCertificado: inf.SerialCertificado,
@@ -417,15 +422,16 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
           //  let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
 
-
           let titulo =
-            estatusPrevio.ControlInterno === "inscripcion"
-              ? "Solicitud de Inscripción"
-              : estatusPrevio.ControlInterno === "revision"
-                ? "Solicitud de Requerimientos"
-                : "Constancia de Inscripción";
+            (estatusPrevio.ControlInterno === "autorizado" && estatusPrevio.NoEstatus === "10" && tipoFirmaDetalle === "cancelacion")
+              ? "Solicitud de Cancelación"
+              : estatusPrevio.ControlInterno === "inscripcion"
+                ? "Solicitud de Inscripción"
+                : estatusPrevio.ControlInterno === "revision"
+                  ? "Solicitud de Requerimientos"
+                  : "Constancia de Inscripción";
           let mensaje =
-            estatusPrevio.ControlInterno === "inscripcion"
+            (estatusPrevio.ControlInterno === "inscripcion" || estatusPrevio.ControlInterno === "autorizado")
               ? `Se recibe el ${new Date().toLocaleString(
                 "es-MX"
               )} el documento ${titulo} con el identificador: ${estatusPrevio.IdClaveInscripcion}`
@@ -441,33 +447,51 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); // CORREGIR
-          GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id); 
+          //Guardar Justificantes de Cancelacion
+          if (tipoFirmaDetalle === "cancelacion") {
+            const cancelacion = useCancelacionStore.getState();
+            
+            const cancelacionJustificacion = cancelacion.justificacion;
+            const cancelacionAcreditacionDeLaCancelacion = cancelacion.documentacionCancelacion
+
+            if (cancelacionJustificacion === "" || cancelacionAcreditacionDeLaCancelacion.length === 0) {
+              alertaError("Faltan documentos por cargar");
+              return;
+            } else {
+              stateCancelaciones.saveFilesCancelaciones(
+                filtro.inscripcion.Id,
+                process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/${filtro.inscripcion.Id}`
+              );
+            }
+          }
+
+          //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
+          GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
-              :estatusPrevio.NoEstatus === "7" ? "8" 
-              : estatusPrevio.ControlInterno === "revision" &&
-                state.proceso === "actualizacion"
-                ? "8"
-                : estatusPrevio.NoEstatus === "9"
-                  ? "10"
-                  : estatusPrevio.NoEstatus === "10" &&
-                    state.proceso === "cancelacion"
-                    ? "12"
-                    : estatusPrevio.ControlInterno === "cancelacion" &&
-                      state.proceso === "actualizacion"
-                      ? "16"
-                      : estatusPrevio.ControlInterno === "cancelado"
-                        ? "18"
-                        : estatusPrevio.NoEstatus === "19"
-                          ? "20"
-                          : estatusPrevio.NoEstatus === "23"
-                            ? "24"
-                            : estatusPrevio.NoEstatus === "25"
-                              ? "10"
-                              : "11",
+              : estatusPrevio.NoEstatus === "7" ? "8"
+                : estatusPrevio.ControlInterno === "revision" &&
+                  state.proceso === "actualizacion"
+                  ? "8"
+                  : estatusPrevio.NoEstatus === "9"
+                    ? "10"
+                    : estatusPrevio.NoEstatus === "10" &&
+                      state.proceso === "cancelacion"
+                      ? "12"
+                      : estatusPrevio.ControlInterno === "cancelacion" &&
+                        state.proceso === "actualizacion"
+                        ? "16"
+                        : estatusPrevio.ControlInterno === "cancelado"
+                          ? "18"
+                          : estatusPrevio.NoEstatus === "19"
+                            ? "20"
+                            : estatusPrevio.NoEstatus === "23"
+                              ? "24"
+                              : estatusPrevio.NoEstatus === "25"
+                                ? "10"
+                                : "11",
             estatusPrevio.Id,
             inf.IdUsuario,
             //oficio
@@ -1382,7 +1406,7 @@ export async function GeneraAcuse(
 ) {
   console.log("idRegistro en ACUSE ", idRegistro);
 
-  let objBody={
+  let objBody = {
     titulo: titulo,
     mensaje: mensaje,
     oficio: oficio,
@@ -1401,13 +1425,13 @@ export async function GeneraAcuse(
     )
     .then((response) => {
       console.log("response YA FIRMADO", response);
-      console.log("objBody",JSON.stringify(objBody));
-      
+      console.log("objBody", JSON.stringify(objBody));
+
       const state = useCortoPlazoStore.getState();
 
       // state.getIdAcuse()
       // console.log("state.idAcuse en generaAcuse", state.idAcuse);
-      
+
 
       state.guardaDocumentos(
         idRegistro,

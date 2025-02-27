@@ -66,13 +66,13 @@ export function ComentarioApartado({
     });
   }, [openState.apartado]);
 
-  useEffect(() => {
+  // useEffect(() => {
     
-    console.log("comemt", coment,);
-    console.log("newComentario");
+  //   //console.log("comemt", coment,);
+  //   //console.log("newComentario");
 
-    console.log("comentario", comentario);
-  }, [newComentario, coment.Comentario, comentario])
+  //   //console.log("comentario", comentario);
+  // }, [newComentario, coment.Comentario, comentario])
   
 
 

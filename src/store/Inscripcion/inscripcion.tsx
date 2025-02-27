@@ -174,8 +174,6 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         IdPathDoc: "",
         CountReestructuras: "",
       },
-      
-      
     }));
   },
 

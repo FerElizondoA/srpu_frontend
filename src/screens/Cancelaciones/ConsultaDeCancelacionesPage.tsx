@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Button,
   Chip,
   Grid,
   InputBase,
@@ -90,6 +91,8 @@ export function ConsultaDeCancelacionesPage() {
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
 
   const setCredito: Function = useCancelacionStore((state) => state.setCredito);
+
+  const credito: IData = useCancelacionStore((state) => state.credito);
 
   const filtrarDatos = () => {
     // eslint-disable-next-line array-callback-return
@@ -298,6 +301,16 @@ export function ConsultaDeCancelacionesPage() {
     );
   }
 
+  const cleanDocumentacionCancelacion: Function = useCancelacionStore(
+    (state) => state.cleanDocumentacionCancelacion
+  );
+
+  const setJustificacion: Function = useCancelacionStore(
+    (state) => state.setJustificacion
+  );
+
+
+
   useEffect(() => {
     getDatos();
   }, []);
@@ -431,16 +444,16 @@ export function ConsultaDeCancelacionesPage() {
                 ) : (
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
-
-                    if (row.NoEstatus === "10") {
+                    
+                    if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          color="success"
+                          color="info"
                           variant="outlined"
                         />
                       );
-                    } else if (["12", "13", "14"].includes(row.NoEstatus)) {
+                    } else if (row.ControlInterno === "revision") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -448,7 +461,15 @@ export function ConsultaDeCancelacionesPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (["15", "16"].includes(row.NoEstatus)) {
+                    } else if (row.ControlInterno === "autorizado") {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="success"
+                          variant="outlined"
+                        />
+                      );
+                    } else if (row.Estatus.includes("Requerimientos")) {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -456,17 +477,40 @@ export function ConsultaDeCancelacionesPage() {
                           variant="outlined"
                         />
                       );
-                    } else if (["16"].includes(row.NoEstatus)) {
+                    } else if (row.Estatus === "actualizacion") {
+                    }
+                    // else if (row.Estatus.includes("Inscrito")) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="warning"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // }
+                    else if (row.ControlInterno === "Inscrito") {
+                      chip = (
+                        <Tooltip title={"Registro de trazabilidad"}>
+                          <Button>
+                            <Chip
+                              label={row.Estatus}
+                              color="secondary"
+                              variant="outlined"
+                            />
+                          </Button>
+                        </Tooltip>
+                      );
+                    } else if (row.Estatus === "Actualizacion") {
                       chip = (
                         <Tooltip
                           title={`${differenceInDays(
                             getDays(new Date(row.FechaRequerimientos), 11),
                             new Date()
-                          )} días restantes para denegar la solicitud automáticamente`}
+                          )} días restantes para cancelación automática`}
                         >
                           <Chip
                             label={
-                              ["16"].includes(row.NoEstatus)
+                              row.Estatus === "Actualizacion"
                                 ? "Actualización"
                                 : row.Estatus
                             }
@@ -482,15 +526,74 @@ export function ConsultaDeCancelacionesPage() {
                           />
                         </Tooltip>
                       );
-                    } else if (["18"].includes(row.NoEstatus)) {
+                    } else {
                       chip = (
                         <Chip
                           label={row.Estatus}
-                          color="error"
+                          color="warning"
                           variant="outlined"
                         />
                       );
                     }
+                    // if (row.NoEstatus === "10") {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="success"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // } else if (["12", "13", "14"].includes(row.NoEstatus)) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="secondary"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // } else if (["15", "16"].includes(row.NoEstatus)) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="warning"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // } else if (["16"].includes(row.NoEstatus)) {
+                    //   chip = (
+                    //     <Tooltip
+                    //       title={`${differenceInDays(
+                    //         getDays(new Date(row.FechaRequerimientos), 11),
+                    //         new Date()
+                    //       )} días restantes para denegar la solicitud automáticamente`}
+                    //     >
+                    //       <Chip
+                    //         label={
+                    //           ["16"].includes(row.NoEstatus)
+                    //             ? "Actualización"
+                    //             : row.Estatus
+                    //         }
+                    //         color={
+                    //           differenceInDays(
+                    //             getDays(new Date(row.FechaRequerimientos), 11),
+                    //             new Date()
+                    //           ) > 5
+                    //             ? "warning"
+                    //             : "error"
+                    //         }
+                    //         variant="filled"
+                    //       />
+                    //     </Tooltip>
+                    //   );
+                    // } else if (["18"].includes(row.NoEstatus)) {
+                    //   chip = (
+                    //     <Chip
+                    //       label={row.Estatus}
+                    //       color="error"
+                    //       variant="outlined"
+                    //     />
+                    //   );
+                    // }
 
                     return (
                       <StyledTableRow key={index}>
@@ -602,8 +705,12 @@ export function ConsultaDeCancelacionesPage() {
                               type="button"
                               onClick={() => {
                                 setInscripcion(row);
+                               // setCredito(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
+
+                                cleanDocumentacionCancelacion();
+                                setJustificacion("");
 
                                  //llenaSolicitud(row);
                                 // changeOpenDialogVer(!openDialogVer);
