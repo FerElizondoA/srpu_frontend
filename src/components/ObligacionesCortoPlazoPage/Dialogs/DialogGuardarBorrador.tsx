@@ -78,17 +78,14 @@ export function DialogGuardarBorrador({
     tipoCredito.Descripcion === null;
     
 
-    if (isMissingInstitution && isMissingOriginalAmount && isMissingTipoCredito) {
-      setInfo(
-        "*En INFORMACIÓN GENERAL: Seleccionar institución financiera, monto original contratado"+
-        "*En ENCABEZADO: Seleccionar tipo de credito"
-     );
-     
-    } else if (isMissingInstitution && isMissingTipoCredito) {
+    if (isMissingInstitution && isMissingOriginalAmount ) {
+      setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera, monto original contratado");
+    } else if (isMissingInstitution ) {
       setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
-    } else if (isMissingInstitution) {
-      setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
-    } else if (isMissingOriginalAmount) {
+    } 
+    // else if (isMissingInstitution) {
+    //   setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
+     else if (isMissingOriginalAmount) {
       setInfo(
         "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
       );
@@ -138,11 +135,11 @@ export function DialogGuardarBorrador({
       (state) => state.IdSolicitudBorrador
     );
 
-  useEffect(() => {
-    console.log("SOLICITUD: ", solicitud);
-    console.log("idSolicitudCreada", idSolicitudCreada);
-    console.log("IdSolicitudBorrador", IdSolicitudBorrador)
-  }, [openState])
+  // useEffect(() => {
+  //   console.log("SOLICITUD: ", solicitud);
+  //   console.log("idSolicitudCreada", idSolicitudCreada);
+  //   console.log("IdSolicitudBorrador", IdSolicitudBorrador)
+  // }, [openState])
 
 
   return (
@@ -173,8 +170,8 @@ export function DialogGuardarBorrador({
               : "black"
           }
         >
-          <span style={{ color: "red", fontWeight: "bold" }}><div dangerouslySetInnerHTML={{ __html: markedText }} /></span>
-
+          {/* <span style={{ color: "red", fontWeight: "bold" }}><div dangerouslySetInnerHTML={{ __html: markedText }} /></span> */}
+          <span style={{ color: "red", fontWeight: "bold" }}> {markedText} </span>
 
 
           <span style={{ color: "red" }}>{restText}</span>

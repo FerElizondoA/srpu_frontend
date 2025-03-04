@@ -520,7 +520,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         )
         .then(({ data }) => {
 
-          console.log("DATA guardarDocumentos", data);
+          //console.log("DATA guardarDocumentos", data);
 
           state.savePathDoc(
             idRegistro,

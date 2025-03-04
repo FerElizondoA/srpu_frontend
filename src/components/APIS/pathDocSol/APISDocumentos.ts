@@ -123,11 +123,8 @@ export const getDocumentos = async (
     .then(({ data }) => {
       let files = data.RESPONSE;
 
-      console.log('el conchesumadre files:', files);
-      console.log();
-      
-      console.log('state.tablaDocumentos',state.tablaDocumentos);
-      
+      console.log('el conchesumadre files:', files);      
+            
       const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
         const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
         if (archivo) {
@@ -297,7 +294,6 @@ export const deleteFile =(ruta:string)=>{
 
 export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
   console.log('docs axios',docs);
-  
   axios.delete(
     process.env.REACT_APP_APPLICATION_BACK + "/delete-PathDocSol",
      {

@@ -77,7 +77,6 @@ export function DialogSolicitarModificacion({
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
     console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
-
   }, [openState]);
 
   const checkform = () => {

@@ -62,14 +62,14 @@ export interface SolicitudCancelacionSlice {
   deleteFiles: (ruta: string) => void;
   saveFilesCancelaciones: (idRegistro: string, ruta: string) => void;
 
-  guardaDocumentosCancelacion: (idRegistro: string, ruta: string, archivo: File) => void;
 
   savePathDocCancelacion: (
     idSolicitud: string,
     Ruta: string,
-    //NombreIdentificador: string,
+    NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc: string
+    TipoArchivoJustificacion: string,
+    Justificacion: string
   ) => void;
 }
 
@@ -391,47 +391,10 @@ export const createSolicitudCancelacionSlice: StateCreator<
       .catch((e) => { });
   },
 
-  guardaDocumentosCancelacion: async (idRegistro: string, ruta: string, archivo: File) => {
-    const state = useCancelacionStore.getState();
-    let dataArray = new FormData();
-    dataArray.append("ROUTE", `${ruta}`);
-    dataArray.append("ADDROUTE", "true");
-    dataArray.append("FILE", archivo);
-
-    if (archivo.size > 0) {
-      return axios
-        .post(
-          process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-          dataArray,
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {
-          state.savePathDocCancelacion(
-            idRegistro,
-            data.RESPONSE.RUTA,
-            //data.RESPONSE.NOMBREIDENTIFICADOR,
-            data.RESPONSE.NOMBREARCHIVO,
-            ""
-          );
-        })
-        .catch((e) => { });
-    } else {
-      return null;
-    }
-  },
-
   saveFilesCancelaciones: async (idRegistro: string, ruta: string) => {
     const state = useCancelacionStore.getState();
-    console.log("saveFilesCancelaciones");
-    console.log("idRegistro Cancelacion", idRegistro);
-    console.log("ruta Cancelacion", ruta);
-    
-    
-    return await state.documentacionCancelacion.map((file:any) => {
+  
+    return await state.documentacionCancelacion.map((file:any, index) => {
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
         let dataArray = new FormData();
@@ -450,11 +413,13 @@ export const createSolicitudCancelacionSlice: StateCreator<
               }
             )
             .then(({ data }) => {
+              console.log("state.documentacionCancelacion[index].TipoArchivoJustificacion,", state.documentacionCancelacion[index].TipoArchivoJustificacion,)
               state.savePathDocCancelacion(
                 idRegistro,
                 data.RESPONSE.RUTA,
-                //data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO,
+                state.documentacionCancelacion[index].TipoArchivoJustificacion,
                 state.justificacion
               );
             })
@@ -470,11 +435,11 @@ export const createSolicitudCancelacionSlice: StateCreator<
   savePathDocCancelacion: async (
     idSolicitud: string,
     Ruta: string,
-    //NombreIdentificador: string,
+    NombreIdentificador: string,
     NombreArchivo: string,
-    TipoArchivoJustificacion: string
+    TipoArchivoJustificacion: string,
+    Justificacion: string
   ) => {
-    console.log("savePathDocCancelacion LA REFERENCIA");
 
     const state = useCancelacionStore.getState();
     return await axios
@@ -484,7 +449,9 @@ export const createSolicitudCancelacionSlice: StateCreator<
           IdSolicitud: idSolicitud,
           Ruta: Ruta,
           NombreArchivo: NombreArchivo,
-          TipoArchivoJustificacion: TipoArchivoJustificacion
+          NombreIdentificador: NombreIdentificador,
+          TipoArchivoJustificacion: TipoArchivoJustificacion,
+          Justificacion: Justificacion,
         },
         {
           headers: {

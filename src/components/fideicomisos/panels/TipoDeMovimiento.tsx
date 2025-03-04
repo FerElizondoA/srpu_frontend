@@ -369,11 +369,7 @@ export function TipoDeMovimientoFideicomiso() {
 
   useEffect(() => {
     console.log("TipoMovimientoFideicomisoNew", tipoMovimientoFideicomisoNew);
-
   }, [tipoMovimientoFideicomisoNew])
-
-
-
 
 
   return (
@@ -417,7 +413,7 @@ export function TipoDeMovimientoFideicomiso() {
             sx={{ ...queries.medium_text }}
             value="DEUDOR"
             control={<Radio />}
-            label="Alta de Deudor"
+            label="Alta de Fideicomitente"
           />
           {tablaTipoMovimientoFideicomisoNew.length > 0 && (
             <FormControlLabel
@@ -440,7 +436,7 @@ export function TipoDeMovimientoFideicomiso() {
               color: "#af8c55 ",
             }}
           >
-            MANDANTE
+            FIDEICOMITENTE
           </Typography>
         </Divider>
       </Grid>

@@ -123,15 +123,8 @@ export function DialogSolicitarCancelacion({
     }
   }, [openState]);
 
-
-  useEffect(() => {
-    console.log("documentacionCancelacion", documentacionCancelacion);
-    console.log("Justificacion: ", justificacion);
-  }, [justificacion, documentacionCancelacion])
-
   useEffect(() => {
     cleanTipoFirmaDetalle();
-
   }, [openState === true])
 
 
