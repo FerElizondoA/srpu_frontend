@@ -206,7 +206,6 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.setTipoMovimientoNew
   );
 
-
   const addTipoMovimientoNew: Function = useFideicomisoStore(
     (state) => state.addTipoMovimientoNew
   );
@@ -229,7 +228,11 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.setBeneficiarioNew
   );
 
+  const updateTipoMovimientoField: Function = useFideicomisoStore(
+    (state) => state.updateTipoMovimientoField
+  );
 
+  
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -369,7 +372,14 @@ export function TipoDeMovimientoFideicomiso() {
 
   useEffect(() => {
     console.log("TipoMovimientoFideicomisoNew", tipoMovimientoFideicomisoNew);
+  
   }, [tipoMovimientoFideicomisoNew])
+
+  
+  useEffect(() => {
+    console.log("tablaTipoMovimientoFideicomisoNew", tablaTipoMovimientoFideicomisoNew);
+  
+  }, [tablaTipoMovimientoFideicomisoNew])
 
 
   return (
@@ -420,7 +430,9 @@ export function TipoDeMovimientoFideicomiso() {
               sx={{ ...queries.medium_text }}
               value="BENEFICIARIO"
               control={<Radio />}
-              label="Alta de Beneficiario"
+              label="Alta de Fideicomisario"
+
+            // label="Alta de Beneficiario"
             />
           )}
         </RadioGroup>
@@ -1027,21 +1039,33 @@ export function TipoDeMovimientoFideicomiso() {
                         </Typography>
                       </StyledTableCell>
 
+
+
+                      {/* Porcentaje Afectado Sobre el Total de Ingreso */}
                       <StyledTableCell align="center">
-                        <TextField />
-                        {/* <Typography sx={{ fontSize: "0.7rem" }}>
-                          
-                          {row?.tipoFuente.Descripcion} 
-                        </Typography> */}
+                        <TextField
+                          type="number"
+                          value={row.AfectadoTotalIngreso || ''}
+                          onChange={(e) => {
+                            const newValue = Number(e.target.value);
+                            updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                          }}
+                          inputProps={{ min: 0 }}
+                        />
                       </StyledTableCell>
 
-                      {/* FUENTE DE PAGO  */}
+                      {/* Equivalencia Sin incluir el monto de municipios */}
                       <StyledTableCell align="center">
-                        <TextField />
-                        {/* <Typography sx={{ fontSize: "0.7rem" }}>
-                          
-                          {row?.tipoFuente.Descripcion} 
-                        </Typography> */}
+                        <TextField
+                          type="number"
+                          disabled={row.tipoFideicomitente.Descripcion.toLowerCase() !== "gobierno estatal"}
+                          value={row.tipoFideicomitente.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
+                          onChange={(e) => {
+                            const newValue = Number(e.target.value);
+                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                          }}
+                          inputProps={{ min: 0 }}
+                        />
                       </StyledTableCell>
 
 

@@ -51,7 +51,7 @@ interface Head {
   label: string;
 }
 
-interface HeadLabels {
+export interface HeadLabels {
   label: string;
   value: string;
 }
@@ -238,8 +238,6 @@ export function Resumen({
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-
-
     if (inscripcion.Id)
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,

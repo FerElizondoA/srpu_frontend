@@ -955,7 +955,7 @@ export const queries = {
     },
 
     "@media (min-width: 1870px)": {
-      height: "80vh",
+      height: "68vh",
     },
   },
 };

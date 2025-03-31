@@ -112,6 +112,7 @@ export function AgregarFideicomisos({
               edge="start"
               onClick={() => {
                 handler(false);
+                
               }}
               sx={{ color: "white" }}
             >
@@ -142,17 +143,19 @@ export function AgregarFideicomisos({
                 onClick={() => {
 
                   if (IdFideicomiso === "") {
-                    setLoading(true);
-                    createFideicomiso(() => {
-                      setLoading(false);
-                      handler(false);
-                    });
-                  } else if (IdFideicomiso !== "") {
+                    createFideicomiso(handler())
                    // setLoading(true);
-                    modificarFideicomiso(() => {
-                     // setLoading(false);
-                      handler(false);
-                    });
+                    // createFideicomiso(() => {
+                    //  // setLoading(false);
+                    //   handler(false);
+                    // });
+                  } else if (IdFideicomiso !== "") {
+                    modificarFideicomiso();
+                   // setLoading(true);
+                    // modificarFideicomiso(() => {
+                    //  // setLoading(false);
+                    //   handler(false);
+                    // });
                   }
                   setTabIndex(0);
                 }}

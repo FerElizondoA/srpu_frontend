@@ -27,12 +27,8 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 export function VerBorradorCancelacion({
-  handler,
-  openState,
   rowSolicitud,
 }: {
-  handler: Function;
-  openState: boolean;
   rowSolicitud: IInscripcion
 }) {
   const [openSolicitarCancelacion, setOpenSolicitarCancelacion] =
@@ -92,181 +88,8 @@ export function VerBorradorCancelacion({
   const [value, setValue] = useState(1);
 
   return (
-    <Dialog
-      open={openState}
-      fullScreen
-      maxWidth={"lg"}
-      TransitionComponent={Transition}
-      onClose={() => {
-        handler(false);
-        cleanSolicitud();
-      }}
-    >
-      <DialogTitle
-        sx={{
-          backgroundColor: "#686868",
-          width: "100%",
-          height: "8%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            width: "40%",
-            justifyContent:
-            inscripcion.NoEstatus !== "10" ? "space-around" : "flex-start",
-          }}
-        >
-          <Button
-            sx={{
-              backgroundColor: "rgb(175, 140, 85)",
-              color: "white",
-              "&&:hover": {
-                backgroundColor: "rgba(175, 140, 85, 0.6)",
-                color: "#000",
-              },
-              height: "2rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "0.8vh",
-              textTransform: "capitalize",
-              fontSize: "60%",
-              "@media (min-width: 480px)": {
-                fontSize: "70%",
-              },
-
-              "@media (min-width: 768px)": {
-                fontSize: "80%",
-              },
-            }}
-            onClick={() => {
-              handler(false);
-              useCortoPlazoStore.setState({
-                comentarios: {},
-                idComentario: "",
-              });
-              cleanSolicitud();
-            }}
-          >
-            Volver
-          </Button>
-{/* 
-          {inscripcion.NoEstatus === "10" && (
-            <Tabs
-              variant={"standard"}
-              scrollButtons
-              allowScrollButtonsMobile
-              value={value}
-              onChange={(e, number) => {
-                setValue(number);
-              }}
-            >
-              <Tab
-                key={1}
-                label="Datos del Crédito"
-                sx={queries.medium_text}
-                value={1}
-              />
-              <Tab
-                key={2}
-                label="Datos de la Cancelación"
-                sx={queries.medium_text}
-                value={2}
-              />
-            </Tabs>
-          )} */}
-        </Box>
-
-        {localStorage.getItem("Rol") === "Verificador" &&
-          inscripcion.NoEstatus === "10" && (
-            <Grid
-              justifyContent={"space-evenly"}
-              sx={{ width: "50rem", display: "flex" }}
-            >
-              <Button
-                sx={{
-                  ...queries.buttonCancelar,
-                  fontSize: "50%",
-                }}
-                onClick={() => {
-                  setOpenSolicitarCancelacion(true);
-                  setProceso("cancelacion");
-                }}
-              >
-                Solicitar Cancelación
-              </Button>
-            </Grid>
-          )}
-
-        {((localStorage.getItem("IdUsuario") === inscripcion.IdEditor &&
-          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-          (inscripcion.NoEstatus === "12" &&
-            localStorage.getItem("Rol") === "Revisor")) &&
-          ["12", "13", "14"].includes(inscripcion.NoEstatus) && (
-            <Grid
-              justifyContent={"space-evenly"}
-              sx={{ width: "50rem", display: "flex" }}
-            >
-              <Button
-                sx={{
-                  ...queries.buttonCancelar,
-                  fontSize: "50%",
-                }}
-                onClick={() => {
-                  setOpenGuardaComentarios(true);
-                }}
-              >
-                Guardar Comentarios
-              </Button>
-              {localStorage.getItem("Rol") !== "Revisor" && (
-                <Button
-                  sx={{
-                    ...queries.buttonCancelar,
-                    fontSize: "50%",
-                  }}
-                  onClick={() => {
-                    // setOpenDialogRegresar(true);
-                    // setAccion("modificar");
-                  }}
-                >
-                  {`Devolver para ${
-                    localStorage.getItem("Rol") === "Autorizador"
-                      ? "validación"
-                      : "revisión"
-                  }`}
-                </Button>
-              )}
-
-              <Button
-                sx={{
-                  ...queries.buttonContinuar,
-                  fontSize: "50%",
-                }}
-                onClick={() => {
-                  //   setOpenDialogRegresar(true);
-                  //   setAccion("enviar");
-                }}
-              >
-                Confirmar{" "}
-                {localStorage.getItem("Rol") === "Validador"
-                  ? "Validación"
-                  : localStorage.getItem("Rol") === "Revisor"
-                  ? "Revisión"
-                  : Object.keys(comentarios).length > 0
-                  ? "Solicitud de Requerimientos"
-                  : "Autorización"}
-              </Button>
-            </Grid>
-          )}
-      </DialogTitle>
-
-      <DialogContent
+    <>
+      <Grid
         sx={{
           mt: 2,
           overflow: "auto",
@@ -290,7 +113,9 @@ export function VerBorradorCancelacion({
         ) : (
           <DatosCancelacion />
         )}
-      </DialogContent>
+      </Grid>
+
+      
       {openSolicitarCancelacion && (
         <DialogSolicitarCancelacion
           handler={setOpenSolicitarCancelacion}
@@ -305,6 +130,6 @@ export function VerBorradorCancelacion({
           
         />
       )}
-    </Dialog>
+    </>
   );
 }

@@ -50,6 +50,7 @@ import { useCancelacionStore } from "../../store/Cancelacion/main";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { BarraFiltros } from "../../generics/BarraFiltros";
+import { TabsCancelacionArchivos } from "../../components/Cancelacion/Dialogs/DialogTabsCancelacionArchivos";
 
 const heads: Array<{ label: string }> = [
   {
@@ -444,7 +445,7 @@ export function ConsultaDeCancelacionesPage() {
                 ) : (
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
-                    
+
                     if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
@@ -705,14 +706,14 @@ export function ConsultaDeCancelacionesPage() {
                               type="button"
                               onClick={() => {
                                 setInscripcion(row);
-                               // setCredito(row);
+                                // setCredito(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
 
                                 cleanDocumentacionCancelacion();
                                 setJustificacion("");
 
-                                 //llenaSolicitud(row);
+                                //llenaSolicitud(row);
                                 // changeOpenDialogVer(!openDialogVer);
                                 // getCatalogoFirmaDetalle(row.Id);
                               }}
@@ -813,14 +814,21 @@ export function ConsultaDeCancelacionesPage() {
         openState={openTrazabilidad}
         row={inscripcion}
       />
-
       {openDialogVer && (
-        <VerBorradorCancelacion
+        <TabsCancelacionArchivos
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           rowSolicitud={inscripcion}
         />
       )}
+
+      {/* {openDialogVer && (
+        <VerBorradorCancelacion
+          handler={changeOpenDialogVer}
+          openState={openDialogVer}
+          rowSolicitud={inscripcion}
+        />
+      )} */}
       {openDescargar && (
         <DialogDescargaArchivos
           open={openDescargar}

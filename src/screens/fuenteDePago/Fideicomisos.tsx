@@ -57,6 +57,24 @@ export interface IDatosFideicomiso {
   UltimaModificacion: string;
 }
 
+export interface IDatosFideicomisoNew {
+  SumAfectadoTotalIngreso: number;
+  SumEquivalenciaCorrespondienteMunicipios: number;
+  AcumuladoOrganismos: string;
+  CreadoPor: string;
+  Fiduciario: string;
+  TipoFideicomiso: string;
+  FechaCreacion: string;
+  FechaFideicomiso: string;
+  Fideicomisario: string;
+  Id: string;
+  ModificadoPor: string;
+  NumeroFideicomiso: string;
+  SoporteDocumental: string;
+  TipoMovimiento: string;
+  UltimaModificacion: string;
+}
+
 interface Head {
   label: string;
 }
@@ -81,9 +99,9 @@ const heads: Head[] = [
 
 export function Fideicomisos() {
   const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
-  const [fideicomisos, setFideicomisos] = useState<IDatosFideicomiso[]>([]);
+  const [fideicomisos, setFideicomisos] = useState<IDatosFideicomisoNew[]>([]);
   const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<IDatosFideicomiso[]>(fideicomisos);
+    useState<IDatosFideicomisoNew[]>(fideicomisos);
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -94,8 +112,8 @@ export function Fideicomisos() {
   const getFideicomisos: Function = useFideicomisoStore(
     (state) => state.getFideicomisos
   );
-  const cleanFideicomiso: Function = useFideicomisoStore(
-    (state) => state.cleanFideicomiso
+  const cleanFideicomisoNew: Function = useFideicomisoStore(
+    (state) => state.cleanFideicomisoNew
   );
   const deleteFideicomiso: Function = useFideicomisoStore(
     (state) => state.deleteFideicomiso
@@ -106,6 +124,9 @@ export function Fideicomisos() {
   );
   const editarFideicomiso: Function = useFideicomisoStore(
     (state) => state.editarFideicomiso
+  );
+  const editarFideicomisoNew: Function = useFideicomisoStore(
+    (state) => state.editarFideicomisoNew
   );
 
   const filtrarDatos = () => {
@@ -168,7 +189,7 @@ export function Fideicomisos() {
 
   useEffect(() => {
     if (openAgregarFideicomisos === false) {
-      cleanFideicomiso();
+      cleanFideicomisoNew();
     }
     if (!openDialogEliminar) {
       getFideicomisos(setFideicomisos);
@@ -178,9 +199,9 @@ export function Fideicomisos() {
   const [openDetalle, setOpenDetalle] = useState(false);
 
   const [detalleFideicomiso, setDetalleFideicomiso] =
-    useState<IDatosFideicomiso>({
-      AcumuladoEstado: "",
-      AcumuladoMunicipios: "",
+    useState<IDatosFideicomisoNew>({
+      SumAfectadoTotalIngreso: 0,
+      SumEquivalenciaCorrespondienteMunicipios: 0,
       AcumuladoOrganismos: "",
       CreadoPor: "",
       Fiduciario: "",
@@ -194,10 +215,53 @@ export function Fideicomisos() {
       SoporteDocumental: "",
       TipoMovimiento: "",
       UltimaModificacion: "",
+
+      // AcumuladoEstado: "",
+      // AcumuladoMunicipios: "",
+      // AcumuladoOrganismos: "",
+      // CreadoPor: "",
+      // Fiduciario: "",
+      // TipoFideicomiso: "",
+      // FechaCreacion: "",
+      // FechaFideicomiso: "",
+      // Fideicomisario: "",
+      // Id: "",
+      // ModificadoPor: "",
+      // NumeroFideicomiso: "",
+      // SoporteDocumental: "",
+      // TipoMovimiento: "",
+      // UltimaModificacion: "",
     });
 
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+
+  const [sumaAfectatoToalIngreso, setSumaAfectatoToalIngreso] = useState(0);
+  const [SumEquivalenciaCorrespondienteMunicipios, setSumEquivalenciaCorrespondienteMunicipios] = useState(0);
+
+  useEffect(() => {
+    setSumaAfectatoToalIngreso(
+      fideicomisos.reduce(
+        (acumuladorIngresoTotal, item) =>
+          acumuladorIngresoTotal +
+          parseFloat(item.SumAfectadoTotalIngreso?.toString() || "0"),
+        0
+      )
+    );
+    setSumEquivalenciaCorrespondienteMunicipios(
+      fideicomisos.reduce(
+        (acumuladorMunicipios, item) =>
+          acumuladorMunicipios +
+          parseFloat(item.SumEquivalenciaCorrespondienteMunicipios?.toString() || "0"),
+        0
+      )
+    );
+  }, [fideicomisos]);
+
+  useEffect(() => {
+    console.log("sumaAfectatoToalIngreso", sumaAfectatoToalIngreso);
+    console.log("SumEquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
+  }, [sumaAfectatoToalIngreso, SumEquivalenciaCorrespondienteMunicipios])
 
 
   return (
@@ -288,6 +352,19 @@ export function Fideicomisos() {
           </Button>
         </Grid>
       </Grid> */}
+      <Grid container display={"flex"} justifyContent={"space-evenly"} mb={2}>
+
+        <Typography sx={{ ...queries.text }}>
+          Porcentaje Afectado Total Ingreso:{" "}
+          <strong>{sumaAfectatoToalIngreso.toFixed(3)} %</strong>
+        </Typography>
+
+        <Typography sx={{ ...queries.text }}>
+          Porcentaje Total de Equivalencia Correspondiente Municipios:{" "}
+          <strong>{SumEquivalenciaCorrespondienteMunicipios.toFixed(3)} %</strong>
+        </Typography>
+
+      </Grid>
 
       <Grid
         container
@@ -328,7 +405,7 @@ export function Fideicomisos() {
               </TableHead>
               <TableBody>
                 {fideicomisosFiltrados.map(
-                  (row: IDatosFideicomiso, index: number) => {
+                  (row: IDatosFideicomisoNew, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
@@ -366,26 +443,28 @@ export function Fideicomisos() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                let auxArray = JSON.parse(row.TipoMovimiento);
+                                console.log("ROWFIDEICOMISO", row);
+                                 let auxArray = JSON.parse(row.TipoMovimiento);
+                                 console.log("auxArray", auxArray);
 
-                                auxArray.map((column: any) => {
-                                  return (
-                                    (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                      ).toString()),
-                                    (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                      ).toString()),
-                                    (column.acumuladoAfectacionOrganismoEntre100 =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                      ).toString())
-                                  );
-                                });
+                                // auxArray.map((column: any) => {
+                                //   return (
+                                //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                //       ).toString()),
+                                //     (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                //       ).toString()),
+                                //     (column.acumuladoAfectacionOrganismoEntre100 =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                //       ).toString())
+                                //   );
+                                // });
 
-                                editarFideicomiso(
+                                editarFideicomisoNew(
                                   row.Id,
                                   {
                                     numeroFideicomiso: row.NumeroFideicomiso,
@@ -403,7 +482,7 @@ export function Fideicomisos() {
                                     )[0],
                                   },
                                   JSON.parse(row.Fideicomisario),
-                                  auxArray,
+                                  JSON.parse(row.TipoMovimiento),
                                   JSON.parse(row.SoporteDocumental)
                                 );
 

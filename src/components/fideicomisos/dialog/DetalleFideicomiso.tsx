@@ -25,7 +25,7 @@ import { es } from "date-fns/locale";
 import * as React from "react";
 import { useEffect } from "react";
 import { queries } from "../../../queries";
-import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
+import { IDatosFideicomiso, IDatosFideicomisoNew } from "../../../screens/fuenteDePago/Fideicomisos";
 import {
   IDeudorFideicomiso,
   IFideicomisario,
@@ -110,7 +110,7 @@ export function DetalleFideicomiso({
 }: {
   open: boolean;
   setOpen: Function;
-  fideicomiso: IDatosFideicomiso;
+  fideicomiso: IDatosFideicomisoNew;
 }) {
   const [fileSelected, setFileSelected] = React.useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = React.useState(false);

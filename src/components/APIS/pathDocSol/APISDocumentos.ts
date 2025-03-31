@@ -24,6 +24,28 @@ export async function getPathDocumentos(
     .catch((error) => {});
 }
 
+export async function getPathDocumentosCancelacion(
+  IdSolicitud: string,
+  setState: Function
+) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocCancelacion",
+    params: { IdSolicitud: IdSolicitud },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      
+      if (!data.data[0].error) {
+        setState(data.data);
+      }
+    })
+    .catch((error) => {});
+}
+
 
 export async function getPathAcuses(
   IdSolicitud: string,
