@@ -9,6 +9,7 @@ import { useInscripcionStore } from "../Inscripcion/main";
 import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../generics/Alertas";
 import { IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 import { useState } from "react";
+import { useCancelacionStore } from "../Cancelacion/main";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -41,6 +42,9 @@ export interface SolicitudFirmaSlice {
   setProceso: (estatus: string) => void;
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
+  convertirMontosAPalabras: (numeroConFormato: string) => void;
+
+
   setUrl: (url: string) => void;
 }
 
@@ -48,6 +52,197 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
+
+
+  convertirMontosAPalabras(numeroConFormato: string): string {
+
+    // Limpia el formato de moneda para extraer solo el número
+    function limpiarFormatoMoneda(monto: string): number {
+      const montoLimpio = monto.replace(/[^0-9.]/g, '');
+      return parseFloat(montoLimpio);
+    }
+
+    const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
+    const parteEntera = Math.floor(numeroFloat); // Parte entera del número
+    const centavos = Math.round((numeroFloat - parteEntera) * 100); // Parte decimal (centavos)
+
+    const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+    const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+    const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+    const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+    // Función para convertir el número entero a palabras
+    function convertirNumeroAPalabras(numero: number): string {
+      if (numero === 0) return 'cero';
+      if (numero < 10) return unidades[numero];
+      if (numero < 20) return especiales[numero - 10];
+      if (numero < 100) return convertirDecenas(numero);
+      if (numero < 1000) return convertirCentenas(numero);
+      if (numero < 1000000) return convertirMiles(numero);
+      if (numero < 1000000000000) return convertirMillones(numero);
+
+      return 'Número demasiado grande';
+    }
+
+    function convertirDecenas(numero: number): string {
+      const decena = Math.floor(numero / 10);
+      const unidad = numero % 10;
+      if (numero < 30) {
+        return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+      }
+      return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+    }
+
+    function convertirCentenas(numero: number): string {
+      const centena = Math.floor(numero / 100);
+      const resto = numero % 100;
+      if (numero === 100) return 'cien';
+      return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+    }
+
+    function convertirMiles(numero: number): string {
+      const miles = Math.floor(numero / 1000);
+      const resto = numero % 1000;
+      if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+      return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+    }
+
+    function convertirMillones(numero: number): string {
+      const millones = Math.floor(numero / 1000000);
+      const resto = numero % 1000000;
+      if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+      return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+    }
+
+    // Convertir la parte entera del monto a palabras
+    let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+
+    // Agregar "pesos" y manejar los centavos
+    const centavosEnPalabras = centavos > 0 ? ` ${centavos}/100 M.N.` : ' 00/100 M.N.';
+    parteEnteraEnPalabras += ` pesos${centavosEnPalabras}`;
+
+    return parteEnteraEnPalabras;
+  },
+
+  //  convertirMontosAPalabras (numeroConFormato: string): string  {
+
+
+  //   function limpiarFormatoMoneda(monto: string): number {
+  //     const montoLimpio = monto.replace(/[^0-9.]/g, '');
+  //     return parseFloat(montoLimpio);
+  //   }
+
+  //   const numeroFloat = limpiarFormatoMoneda(numeroConFormato)
+
+  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+  //   function convertirNumeroAPalabras(numero: number): string {
+  //     if (numero === 0) return 'cero';
+  //     if (numero < 10) return unidades[numero];
+  //     if (numero < 20) return especiales[numero - 10];
+  //     if (numero < 100) return convertirDecenas(numero);
+  //     if (numero < 1000) return convertirCentenas(numero);
+  //     if (numero < 1000000) return convertirMiles(numero);
+  //     if (numero < 1000000000000) return convertirMillones(numero);
+
+  //     return 'Número demasiado grande';
+  //   }
+
+  //   function convertirDecenas(numero: number): string {
+  //     const decena = Math.floor(numero / 10);
+  //     const unidad = numero % 10;
+  //     if (numero < 30) {
+  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //     }
+  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //   }
+
+  //   function convertirCentenas(numero: number): string {
+  //     const centena = Math.floor(numero / 100);
+  //     const resto = numero % 100;
+  //     if (numero === 100) return 'cien';
+  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+  //   }
+
+  //   function convertirMiles(numero: number): string {
+  //     const miles = Math.floor(numero / 1000);
+  //     const resto = numero % 1000;
+  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //     return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //   }
+
+  //   function convertirMillones(numero: number): string {
+  //     const millones = Math.floor(numero / 1000000);
+  //     const resto = numero % 1000000;
+  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+  //     return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+  //   }
+
+  //   return convertirNumeroAPalabras(numeroFloat);
+  // },
+
+
+
+
+  // convertirMontosAPalabras: (numeroString: string) => {
+
+  //   const montoLimpio = parseFloat(numeroString.replace(/[^0-9.]/g, ''));
+
+  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+
+  //     if (montoLimpio === 0) return 'cero';
+  //     if (montoLimpio < 10) return unidades[montoLimpio];
+  //     if (montoLimpio < 20) return especiales[montoLimpio - 10];
+  //     if (montoLimpio < 100) return convertirDecenas(montoLimpio);
+  //     if (montoLimpio < 1000) return convertirCentenas(montoLimpio);
+  //     if (montoLimpio < 1000000) return convertirMiles(montoLimpio);
+  //     if (montoLimpio < 1000000000000) return convertirMillones(montoLimpio);
+  //     return 'Número demasiado grande';
+
+
+  //   function convertirDecenas(numero: number): string {
+  //     const decena = Math.floor(numero / 10);
+  //     const unidad = numero % 10;
+
+  //     if (numero < 30) {
+  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //     }
+
+  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //   }
+
+  //   function convertirCentenas(numero: number): string {
+  //     const centena = Math.floor(numero / 100);
+  //     const resto = numero % 100;
+
+  //     if (numero === 100) return 'cien';
+  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+  //   }
+
+  //   function convertirMiles(numero: number): string {
+  //     const miles = Math.floor(numero / 1000);
+  //     const resto = numero % 1000;
+
+  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //     return convertirCentenas(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //   }
+
+  //   function convertirMillones(numero: number): string {
+  //     const millones = Math.floor(numero / 1000000);
+  //     const resto = numero % 1000000;
+
+  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+  //     return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+  //   }
+  // },
+
   proceso: "",
 
   url: "",
@@ -102,27 +297,36 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
-    //console.log("info", info)
-
     set(() => ({ infoDoc: info }));
+    const stateCancelaciones = useCancelacionStore.getState()
 
     if (info) {
-      let validacionReestructura = false
+      //Proceso para saber que tipo de firma hara - Inscripcion (CP y LP), Reestructura y Cancelacion
+      const tipoFirmaDetalle = stateCancelaciones.tipoFirmaDetalle === ""
+        ? "inscripcion"
+        : stateCancelaciones.tipoFirmaDetalle === "cancelacion" ? "cancelacion" : "reestructura"
+      console.log("tipoFirmaDetalle", tipoFirmaDetalle);
+      //**************** */
 
+
+      let validacionReestructura = false
       const inf = JSON.parse(info);
 
-
-      console.log("inf", inf)
+      const stateCortoPlazo = useCortoPlazoStore.getState();
+      const idAcuse = ""
+      stateCortoPlazo.getIdAcuse(idAcuse)
 
       const filtro = useInscripcionStore.getState();
       let state: any;
-
       let estatusPrevio = {
         Id: "",
         NoEstatus: "",
         Estatus: "",
         ControlInterno: "",
+        IdClaveInscripcion: ""
       };
+      console.log("info", info);
+      console.log("inf", inf);
 
       if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
         filtro.inscripcionReestructura?.IdSolicitud === null ||
@@ -135,6 +339,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           NoEstatus: state.NoEstatus,
           Estatus: state.Estatus,
           ControlInterno: state.ControlInterno,
+          IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
         };
 
       } else {
@@ -147,14 +352,19 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             NoEstatus: state.Estatus,
             Estatus: "",
             ControlInterno: "reestructura",
+            IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
+
           }
         } else {
+          //console.log("Entre al ELSE de state Filtro.insciprion", filtro.inscripcion);
+
           state = filtro.inscripcion;
           estatusPrevio = {
             Id: state.Id,
             NoEstatus: state.NoEstatus,
             Estatus: state.Estatus,
             ControlInterno: state.ControlInterno,
+            IdClaveInscripcion: state.IdClaveInscripcion
           };
         }
       }
@@ -169,6 +379,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             IdSolicitud: estatusPrevio.Id,
 
             NumeroOficio: `${inf.NumeroOficio}`,
+            TipoFirma: tipoFirmaDetalle,
             Asunto: inf.Asunto,
             Rfc: inf.Rfc,
             SerialCertificado: inf.SerialCertificado,
@@ -186,13 +397,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          // let titulo =
-          //   estatusPrevio.ControlInterno === "inscripcion"
-          //     ? "Solicitud de Inscripción"
-          //     : estatusPrevio.ControlInterno === "revision"
-          //       ? "Solicitud de Requerimientos"
+          console.log("response: ", response)
+          console.log("estatusPrevio", estatusPrevio);
 
-          //       : "Constancia de Inscripción";
+
+
+          //  let titulo =
+          //    estatusPrevio.ControlInterno === "inscripcion"
+          //      ? "Solicitud de Inscripción"
+          //      : estatusPrevio.ControlInterno === "revision"
+          //        ? "Solicitud de Requerimientos"
+
+          //        : "Constancia de Inscripción";
           // let mensaje =
           //   estatusPrevio.ControlInterno === "inscripcion"
           //     ? `Se recibe el ${new Date().toLocaleString(
@@ -203,7 +419,27 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //       "es-MX"
           //     )} el documento ${titulo} con el identificador: ${state.inscripcion.IdClaveInscripcion
           //     }`;
-          // let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+
+          //  let oficio = `Solicitud ${state.inscripcion.IdClaveInscripcion}`;
+
+          let titulo =
+            (estatusPrevio.ControlInterno === "autorizado" && estatusPrevio.NoEstatus === "10" && tipoFirmaDetalle === "cancelacion")
+              ? "Solicitud de Cancelación"
+              : estatusPrevio.ControlInterno === "inscripcion"
+                ? "Solicitud de Inscripción"
+                : estatusPrevio.ControlInterno === "revision"
+                  ? "Solicitud de Requerimientos"
+                  : "Constancia de Inscripción";
+          let mensaje =
+            (estatusPrevio.ControlInterno === "inscripcion" || estatusPrevio.ControlInterno === "autorizado")
+              ? `Se recibe el ${new Date().toLocaleString(
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${estatusPrevio.IdClaveInscripcion}`
+              : `Se envía el ${new Date().toLocaleString(
+                "es-MX"
+              )} el documento ${titulo} con el identificador: ${estatusPrevio.IdClaveInscripcion}`;
+
+          let oficio = `Solicitud ${estatusPrevio.IdClaveInscripcion}`;
 
           // else if (state.estatus === "Cancelacion") {
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
@@ -211,37 +447,51 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //   borrarFirmaDetalle(state.idSolicitud, "En espera cancelación");
           // }
 
-          //GeneraAcuse(titulo, mensaje, oficio, "state.idSolicitud"); // CORREGIR
+          //Guardar Justificantes de Cancelacion
+          if (tipoFirmaDetalle === "cancelacion") {
+            const cancelacion = useCancelacionStore.getState();
 
+            const cancelacionJustificacion = cancelacion.justificacion;
+            const cancelacionAcreditacionDeLaCancelacion = cancelacion.documentacionCancelacion
 
-          console.log("state.Id 2", state.Id)
+            if (cancelacionJustificacion === "" || cancelacionAcreditacionDeLaCancelacion.length === 0) {
+              alertaError("Faltan documentos por cargar");
+              return;
+            } else {
+              stateCancelaciones.saveFilesCancelaciones(
+                filtro.inscripcion.Id,
+                process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/${filtro.inscripcion.Id}`
+              );
+            }
+          }
 
-          console.log("estatusPrevioEstatus", estatusPrevio.Estatus)
-          console.log("estatusPrevioNoEstatus", estatusPrevio.NoEstatus)
-          //console.log("state.IdSolicitu 2", state.IdSolicitud)
+          //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
+          GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
+
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4"
-              : estatusPrevio.ControlInterno === "revision" &&
-                state.proceso === "actualizacion"
-                ? "8"
-                : estatusPrevio.NoEstatus === "9"
-                  ? "10"
-                  : estatusPrevio.NoEstatus === "10" &&
-                    state.proceso === "cancelacion"
-                    ? "12"
-                    : estatusPrevio.ControlInterno === "cancelacion" &&
-                      state.proceso === "actualizacion"
-                      ? "16"
-                      : estatusPrevio.ControlInterno === "cancelado"
-                        ? "18"
-                        : estatusPrevio.NoEstatus === "19"
-                          ? "20"
-                          : estatusPrevio.NoEstatus === "23"
-                            ? "24"
-                            : estatusPrevio.NoEstatus === "25"
-                              ? "10"
-                              : "11",
+              : estatusPrevio.NoEstatus === "7" ? "8"
+                : estatusPrevio.ControlInterno === "revision" &&
+                  state.proceso === "actualizacion"
+                  ? "8"
+                  : estatusPrevio.NoEstatus === "9"
+                    ? "10"
+                    : estatusPrevio.NoEstatus === "10" &&
+                      state.proceso === "cancelacion"
+                      ? "12"
+                      : estatusPrevio.ControlInterno === "cancelacion" &&
+                        state.proceso === "actualizacion"
+                        ? "16"
+                        : estatusPrevio.ControlInterno === "cancelado"
+                          ? "18"
+                          : estatusPrevio.NoEstatus === "19"
+                            ? "20"
+                            : estatusPrevio.NoEstatus === "23"
+                              ? "24"
+                              : estatusPrevio.NoEstatus === "25"
+                                ? "10"
+                                : "11",
             estatusPrevio.Id,
             inf.IdUsuario,
             //oficio
@@ -284,7 +534,8 @@ export async function GeneraAcuseRespuesta(
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/ACUSE",
+        //process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE", 
         new File([response.data], `Acuse-${noOficio}.pdf`)
       );
       // setUrl(url);
@@ -304,10 +555,18 @@ export async function GeneraFormatoReestructura(
 ) {
   const solicitud: any = JSON.parse(Solicitud);
 
+  const state = useCortoPlazoStore.getState();
+
+  const MontoALetras = state.convertirMontosAPalabras(
+    solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+
+  const saldoVigenteLetra = state.convertirMontosAPalabras(
+    solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente.toString());
+
 
 
   const SolicitudReestructura: any = {
-    oficioNum: `DDPYPF-${"SR-"}${noOficio}/${new Date().getFullYear()}`,
+    oficioNum: `DDPYPF-${"SR-"}${noOficio}-${new Date().getFullYear()}`,
     servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
     cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
     organismo: solicitud.encabezado.organismo.Organismo,
@@ -318,7 +577,7 @@ export async function GeneraFormatoReestructura(
       locale: es,
     }),
 
-    tipoDocumento: solicitud.encabezado.tipoDocumento,
+    tipoDocumento: solicitud.encabezado.tipoDocumento.Descripcion,
 
     fechaContratacion: format(new Date(solicitud.encabezado.fechaContratacion), "PPP", {
       locale: es,
@@ -345,10 +604,15 @@ export async function GeneraFormatoReestructura(
 
     institucionFinanciera:
       solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+
     montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+    montoOriginalPalabras: MontoALetras,
+
     saldoVigente: solicitud.informacionGeneral.destinoGastosCostos[0].saldoVigente,
+    saldoVigenteLetra: saldoVigenteLetra,
+
     mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
-    fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion, //tabla "REVISAR"
+    fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion, //tabla "REVISAR"
     directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
     cargoDirectorGeneral:
       solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
@@ -370,7 +634,7 @@ export async function GeneraFormatoReestructura(
         organismo: SolicitudReestructura.organismo,
         oficioSolicitud: SolicitudReestructura.oficioSolicitud,
         fechaSolicitud: SolicitudReestructura.fechaSolicitud,
-        tipoDocumento: solicitud.encabezado.tipoDocumento,
+        tipoDocumento: solicitud.encabezado.tipoDocumento.Descripcion,
         fechaContratacion: SolicitudReestructura.fechaContratacion,
         claveInscripcion: SolicitudReestructura.claveInscripcion,
         fechaClave: SolicitudReestructura.fechaClave,
@@ -378,8 +642,13 @@ export async function GeneraFormatoReestructura(
         entePublicoObligado: SolicitudReestructura.entePublicoObligado,
         obligadoSolidarioAval: SolicitudReestructura.obligadoSolidarioAval,
         institucionFinanciera: SolicitudReestructura.institucionFinanciera,
+
         montoOriginalContratado: SolicitudReestructura.montoOriginalContratado,
+        montoOriginalPalabras: MontoALetras,
+
         saldoVigente: SolicitudReestructura.saldoVigente,
+        saldoVigenteLetra: saldoVigenteLetra,
+
         mecanismoVehiculoDePago: SolicitudReestructura.mecanismoVehiculoDePago,
         fuentePago: SolicitudReestructura.fuentePago,
         directorGeneral: SolicitudReestructura.directorGeneral,
@@ -421,6 +690,11 @@ export async function ConsultaSolicitud(setUrl: Function) {
   let inscripcion: IInscripcion = useInscripcionStore?.getState()?.inscripcion;
   let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.Solicitud);
 
+  const state = useCortoPlazoStore.getState();
+
+  const MontoALetras = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+
+
 
   await axios
     .post(
@@ -445,6 +719,8 @@ export async function ConsultaSolicitud(setUrl: Function) {
         }),
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+
+        montoOriginalPalabras: MontoALetras,
 
         entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
 
@@ -502,6 +778,17 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
   let inscripcion: IDatosSolicitudReestructura = useInscripcionStore?.getState()?.inscripcionReestructura;
   let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.SolicitudReestructura);
 
+
+  //const solicitud: any = JSON.parse(Solicitud);
+
+  const state = useCortoPlazoStore.getState();
+  const MontoALetras = state.convertirMontosAPalabras(
+    solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+
+  const saldoVigenteLetra = state.convertirMontosAPalabras(
+    solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente.toString());
+
+
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-solicitud-reestructura",
@@ -522,7 +809,10 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
         fechaContratacionReestructura: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
           locale: es, // YAA FALTA MODIFICAR TAL VEZ
         }),
+
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,// YAA
+        montoOriginalPalabras: MontoALetras,
+
         entePublicoObligado:
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
             ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
@@ -533,9 +823,13 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
             : ["No Aplica"],
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+
         periodoFinanciamiento: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoFinanciamiento,
         periodoAdministracion: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoAdminitracion,
+
         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
+        saldoVigenteLetra: saldoVigenteLetra,
+
         tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
         comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
         gastosAdicionales: solicitud.informacionGeneral?.destinoGastosCostos[0]?.gastosAdicionales,
@@ -564,8 +858,7 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
     })
     .catch((err) => { });
 }
-
-export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER!!!!
+export async function ConsultaRequerimientosReestructura(
   Solicitud: string,
   Requerimientos: {},
   NoOficio: string,
@@ -573,6 +866,14 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
   idClaveInscripcion: string,
 ) {
   const solicitud: any = JSON.parse(Solicitud);
+
+  const state = useCortoPlazoStore.getState();
+
+  const MontoALetras = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto);
+
+
+  const saldoVigenteLetra = state.convertirMontosAPalabras(
+    solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente.toString());
 
   await axios
     .post(
@@ -582,8 +883,10 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
         //oficioRequerimiento: 1,
         oficioNum: NoOficio,
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
-        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
 
+        claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo.Descripcion,
+
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
         }),
@@ -629,10 +932,18 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
             : ["No Aplica"],
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+        montoOriginalPalabras: MontoALetras,
 
         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
+        saldoVigenteLetra: saldoVigenteLetra,
+
         mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
-        fuentePago: solicitud.fuenteDePago.fuente[0].fondoIngreso.Descripcion,
+        fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion,
+
+        plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+        autoriazcionReestructura: solicitud.SolicitudReestructuracion.autorizacionReestructura.NumeroAutorizacion,
+        periodicidad: solicitud.condicionesFinancieras[0].pagosDeCapital.periodicidadDePago.Descripcion,
+
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
@@ -657,6 +968,175 @@ export async function ConsultaRequerimientosReestructura( //TE QUEDASTE AQUI FER
     .catch((err) => { });
 }
 
+// export async function ConsultaRequerimientosReestructura(
+//   Solicitud: string,
+//   Requerimientos: {},
+//   NoOficio: string,
+//   setUrl: Function,
+//   idClaveInscripcion: string,
+// ) {
+//   const solicitud: any = JSON.parse(Solicitud);
+
+//   function limpiarFormatoMoneda(monto: string): number {
+//     // Elimina el símbolo de peso y las comas
+//     const montoLimpio = monto.replace(/[^0-9.]/g, '');
+//     return parseFloat(montoLimpio);
+//   }
+
+//   function convertirMontosAPalabras (numero: number)  {
+//     const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+//     const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+//     const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+//     const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+//     function convertirNumeroAPalabras(numero: number): string {
+//       if (numero === 0) return 'cero';
+
+//       if (numero < 10) return unidades[numero];
+//       if (numero < 20) return especiales[numero - 10];
+//       if (numero < 100) return convertirDecenas(numero);
+//       if (numero < 1000) return convertirCentenas(numero);
+//       if (numero < 1000000) return convertirMiles(numero);
+//       if (numero < 1000000000000) return convertirMillones(numero);
+
+//       return 'Número demasiado grande';
+//     }
+
+//     function convertirDecenas(numero: number): string {
+//       const decena = Math.floor(numero / 10);
+//       const unidad = numero % 10;
+
+//       if (numero < 30) {
+//         return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+//       }
+
+//       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+//     }
+
+//     function convertirCentenas(numero: number): string {
+//       const centena = Math.floor(numero / 100);
+//       const resto = numero % 100;
+
+//       if (numero === 100) return 'cien';
+//       return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+//     }
+
+//     function convertirMiles(numero: number): string {
+//       const miles = Math.floor(numero / 1000);
+//       const resto = numero % 1000;
+
+//       if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+//       return convertirCentenas(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+//     }
+
+//     function convertirMillones(numero: number): string {
+//       const millones = Math.floor(numero / 1000000);
+//       const resto = numero % 1000000;
+
+//       if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+//       return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+//     }
+
+//   }
+
+//   const montoLimpio = limpiarFormatoMoneda(solicitud?.informacionGeneral?.informacionGeneral?.monto)
+
+//   const palabras = convertirMontosAPalabras(Math.floor(montoLimpio));
+
+//   console.log("solicitud?.solicitud?.informacionGeneral?.informacionGeneral?.monto", solicitud?.informacionGeneral?.informacionGeneral?.monto)
+//   console.log("Palabra", palabras)
+
+//   await axios
+//     .post(
+//       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-constancia-reestructura",
+//       {
+
+//         //oficioRequerimiento: 1,
+//         oficioNum: NoOficio,
+//         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+
+//         claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo.Descripcion,
+
+//         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+//         fechaSolicitud: format(new Date(), "PPP", {
+//           locale: es,
+//         }),
+
+//         tipoDocumento: "Solicitud de reestructuración",
+
+//         // fechaContratacion: format(new Date(), "PPP", {
+//         //   locale: es,
+//         // }),
+
+//         organismo: solicitud.encabezado.organismo.Organismo,
+//         oficioSolicitud: NoOficio,
+
+//         fechaContratacion: format(
+//           new Date(solicitud.encabezado.fechaContratacion),
+//           "PPP",
+//           {
+//             locale: es,
+//           }
+//         ),
+
+//         claveInscripcion: (idClaveInscripcion !== "" || idClaveInscripcion !== undefined)
+//           ? idClaveInscripcion
+//           : "Sin Id Clave de Inscripcion",
+
+//         fechaClave: format(
+//           new Date(solicitud.encabezado.fechaContratacion),
+//           "PPP",
+//           {
+//             locale: es,
+//           }
+//         ),
+
+//         fechaReestructuracion: format(new Date(), "PPP", {
+//           locale: es,
+//         }),
+
+//         entePublicoObligado: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+//         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+//         obligadoSolidarioAval:
+//           solicitud.informacionGeneral.obligadosSolidarios.length > 0
+//             ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
+//             : ["No Aplica"],
+
+//         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+//         montoPalabra: palabras,
+
+//         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
+//         mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+//         fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion,
+
+//         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+//         autoriazcionReestructura: solicitud.SolicitudReestructuracion.autorizacionReestructura.NumeroAutorizacion,
+//         periodicidad: solicitud.condicionesFinancieras[0].pagosDeCapital.periodicidadDePago.Descripcion,
+
+//         comentarios: JSON.stringify(Requerimientos),
+//         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+//         cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+//       },
+//       {
+//         headers: {
+//           Authorization: localStorage.getItem("jwtToken"),
+//           "Access-Control-Allow-Origin": "*",
+//         },
+//         responseType: "arraybuffer",
+//       }
+//     )
+//     .then((response) => {
+//       const a = window.URL || window.webkitURL;
+
+//       const url = a.createObjectURL(
+//         new Blob([response.data], { type: "application/pdf" })
+//       );
+
+//       setUrl(url);
+//     })
+//     .catch((err) => { });
+// }
+
 
 
 
@@ -667,6 +1147,11 @@ export async function ConsultaRequerimientos(
   setUrl: Function
 ) {
   const solicitud: any = JSON.parse(Solicitud);
+
+  const state = useCortoPlazoStore.getState();
+
+  const MontoALetras = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto);
+
 
   await axios
     .post(
@@ -692,6 +1177,7 @@ export async function ConsultaRequerimientos(
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.monto,
+        montoOriginalPalabras: MontoALetras,
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:
@@ -723,7 +1209,12 @@ export async function RegistroEstatalReestructura(
   setUrl: Function
 ) {
   const solicitud: any = JSON.parse(Solicitud);
-  console.log("hola")
+
+  const state = useCortoPlazoStore.getState();
+  const MontoALetras = state.convertirMontosAPalabras(
+    solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+
+
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-contestacion-reestructura",
@@ -740,7 +1231,7 @@ export async function RegistroEstatalReestructura(
           locale: es,
         }),
 
-        claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo,
+        claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo.Descripcion,
 
         fechaContratacion: format(new Date(), "PPP", {
           locale: es,
@@ -754,12 +1245,15 @@ export async function RegistroEstatalReestructura(
 
         acreditante: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         monto: solicitud.informacionGeneral.informacionGeneral.monto,
+        montoOriginalPalabras: MontoALetras,
 
         //modificaciones: solicitud.modificaciones,
 
 
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+        mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+        fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion,
         anexosClausulas: JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias),
       },
       {
@@ -788,8 +1282,12 @@ export async function RegistroEstatalReestructura(
 export async function ConsultaConstancia(
   Solicitud: string,
   NoOficio: string,
-  setUrl: Function
+  setUrl: Function,
+  montoOriginal: string
 ) {
+  // const state = useCortoPlazoStore.getState();
+  // const MontoALetras = state.convertirMontosAPalabras(montoOriginal.toString());
+
   const solicitud: any = JSON.parse(Solicitud);
 
   await axios
@@ -804,7 +1302,7 @@ export async function ConsultaConstancia(
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
         }),
-        tipoDocumento: solicitud.encabezado.tipoDocumento,
+        tipoDocumento: solicitud.encabezado.tipoDocumento.Descripcion,
         fechaContratacion: format(
           new Date(solicitud.encabezado.fechaContratacion),
           "PPP",
@@ -825,6 +1323,7 @@ export async function ConsultaConstancia(
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+        montoOriginalPalabras: montoOriginal,
 
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
@@ -851,6 +1350,9 @@ export async function ConsultaConstancia(
       }
     )
     .then((response) => {
+
+      console.log("MontoLetras en firma", montoOriginal);
+
       const a = window.URL || window.webkitURL;
 
       const url = a.createObjectURL(
@@ -902,33 +1404,55 @@ export async function GeneraAcuse(
   oficio: string,
   idRegistro: string
 ) {
+  console.log("idRegistro en ACUSE ", idRegistro);
+
+  let objBody = {
+    titulo: titulo,
+    mensaje: mensaje,
+    oficio: oficio,
+  }
+
+  const now = new Date();
+
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // +1 porque los meses van de 0-11
+  const year = now.getFullYear();
+
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+  const fileName = `Acuse-${oficio}-${year}${month}${day}_${hour}${minute}${second}.pdf`;
+
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse",
-      {
-        titulo: titulo,
-        mensaje: mensaje,
-        oficio: oficio,
-      },
+      objBody,
       {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
           "Access-Control-Allow-Origin": "*",
-
-
         },
         responseType: "arraybuffer",
       }
     )
     .then((response) => {
+      console.log("response YA FIRMADO", response);
+      console.log("objBody", JSON.stringify(objBody));
+
       const state = useCortoPlazoStore.getState();
+
+      // state.getIdAcuse()
+      // console.log("state.idAcuse en generaAcuse", state.idAcuse);
+
 
       state.guardaDocumentos(
         idRegistro,
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/CORTOPLAZO/ACUSE",
-        new File([response.data], `Acuse-${oficio}.pdf`)
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
+        new File([response.data], fileName)
+        //new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
+    
     .catch(() => { });
 }
 
@@ -964,6 +1488,46 @@ export const CambiaEstatus = (
       return true;
     })
     .catch((err) => { });
+};
+
+export const getPdfAcuse = (
+  id: string,
+  noRegistro: string,
+  fechaContratacion: string,
+  IdPath: string
+) => {
+  let dataArray = new FormData();
+  dataArray.append("id", id);
+  dataArray.append("phrase", "");
+
+  axios
+    .post(process.env.REACT_APP_APPLICATION_FIEL + "/api/getfpdf", dataArray, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: localStorage.getItem("jwt") || "",
+      },
+      responseType: "arraybuffer",
+    })
+    .then((r) => {
+      const a = window.URL || window.webkitURL;
+
+      const url = a.createObjectURL(
+        new Blob([r.data], { type: "application/pdf" })
+      );
+
+      let link = document.createElement("a");
+
+      link.setAttribute("download", `${noRegistro}- ${fechaContratacion}.pdf`);
+      link.setAttribute("href", url);
+      document.body.appendChild(link);
+      link.click();
+      if (IdPath !== "") {
+        ActualizaDescarga(IdPath);
+      }
+    })
+    .catch((err) => {
+      alertaError("Error al intentar descargar documento pdf")
+    });
 };
 
 export const getPdf = (
@@ -1057,6 +1621,11 @@ export async function AnularCancelacionSolicitud(
   setUrl: Function
 ) {
   let solicitud: any = JSON.parse(Solicitud);
+  const state = useCortoPlazoStore.getState();
+  const MontoALetras = state.convertirMontosAPalabras(
+    solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+
+
   const SolicitudCancelacion: any = {
     numeroSolicitud: NumeroRegistro,
     UsuarioDestinatario: solicitud.inscripcion.servidorPublicoDirigido,
@@ -1083,6 +1652,7 @@ export async function AnularCancelacionSolicitud(
     institucionFinanciera:
       solicitud.informacionGeneral.institucionFinanciera.Descripcion,
     montoOriginalContratado: solicitud.informacionGeneral.monto,
+    montoOriginalPalabras: MontoALetras,
     causaAnulacion: causaAnulacion,
   };
 
@@ -1122,6 +1692,7 @@ export async function AnularCancelacionSolicitud(
         entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
         institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
         montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
+        montoOriginalPalabras: MontoALetras,
         causaAnulacion: SolicitudCancelacion.causaAnulacion,
       },
       {

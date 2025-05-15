@@ -51,7 +51,7 @@ interface Head {
   label: string;
 }
 
-interface HeadLabels {
+export interface HeadLabels {
   label: string;
   value: string;
 }
@@ -94,7 +94,17 @@ const headsCondiciones: Head[] = [
   },
 ];
 
-export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDocsEliminados?:IDocsEliminados[] }) {
+export function Resumen({ 
+  coments, 
+  estatus, 
+  arrDocsEliminados ,
+  funcionFiltroComentarios,
+}: { 
+  coments: boolean, 
+  estatus: string, 
+  arrDocsEliminados?: IDocsEliminados[] ,
+  funcionFiltroComentarios?: Function
+}) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -228,9 +238,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-
-    
-    if(inscripcion.Id)
+    if (inscripcion.Id)
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
@@ -249,6 +257,18 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
   const [openDisposicion, setOpenDisposicion] = useState(false);
   const activaAccion = localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
+
+  const activacionComentariosRevisor = ["4","12","20"]
+
+useEffect(() => {
+  
+
+  console.log("comentario", comentarios)
+  console.log("openComentarioApartado", openComentarioApartado)
+}, [openComentarioApartado])
+
+
+  
 
   return (
 
@@ -311,20 +331,19 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {activaAccion && (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
                         comentarios[head.label]
                           ? // ||
-                            // comentariosRegistro[head.label]
-                            "success"
+                          // comentariosRegistro[head.label]
+                          "success"
                           : "primary"
                       }
                       size="small"
                       onClick={() => {
-                        console.log("Hola Informacion General");
-                        
+                        console.log("comentario", comentarios)
                         setOpenComentarioApartado({
                           open: true,
                           apartado: head.label,
@@ -362,14 +381,14 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {activaAccion && (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) &&  (
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
                         comentarios[head.label]
                           ? // ||
-                            // comentariosRegistro[head.label]
-                            "success"
+                          // comentariosRegistro[head.label]
+                          "success"
                           : "primary"
                       }
                       size="small"
@@ -398,14 +417,14 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
-              {activaAccion && (
+              {(activaAccion  || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
                       comentarios["Tabla Obligado Solidario / Aval"]
                         ? // ||
-                          // comentariosRegistro["Tabla Obligado Solidario / Aval"]
-                          "success"
+                        // comentariosRegistro["Tabla Obligado Solidario / Aval"]
+                        "success"
                         : "primary"
                     }
                     size="small"
@@ -505,14 +524,14 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
           <Divider color="lightGrey"></Divider>
           <Grid item width={"100%"} mt={3} display={"flex"} height={350}>
             <Grid mt={4}>
-              {activaAccion && (
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
                       comentarios["Tabla Condiciones Financieras"]
                         ? // ||
-                          // comentariosRegistro["Tabla Condiciones Financieras"]
-                          "success"
+                        // comentariosRegistro["Tabla Condiciones Financieras"]
+                        "success"
                         : "primary"
                     }
                     size="small"
@@ -675,7 +694,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                                         {row.periocidadPago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaReferencia.Descripcion}
+                                        {row.tasaReferencia.Descripcion === "" ? "N/A" : row.tasaReferencia.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.sobreTasa}
@@ -756,7 +775,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                                         {row.monto}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.iva}
+                                        {row.iva === false ? "N/A" : "Aplica"}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -890,7 +909,36 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
 
         {/* <Divider color="lightGrey"></Divider> */}
         <Grid mt={5} mb={4} width={"100%"}>
-          <Typography sx={queries.bold_text}>Documentación</Typography>
+     
+          <Grid display={"flex"} >
+          {localStorage.getItem("Rol") === "Revisor" || 
+            localStorage.getItem("Rol") === "Validador" ||
+            localStorage.getItem("Rol") === "Autorizador" ?
+            <Tooltip title="Añadir comentario a este apartado">
+              <IconButton
+                color={
+                  comentarios["Documentación"]
+                    ? // ||
+                    // comentariosRegistro["Tabla Condiciones Financieras"]
+                    "success"
+                    : "primary"
+                }
+                size="small"
+                onClick={() => {
+                  setOpenComentarioApartado({
+                    open: true,
+                    apartado: "Documentación",
+                    tab: "TabDocumentacion",
+                  });
+                }}
+              >
+                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+              </IconButton>
+            </Tooltip> : null}
+    
+            <Typography sx={queries.bold_text}>Documentación</Typography>
+          </Grid>
+       
           <Grid
             sx={{
               flexDirection: "row",
@@ -913,11 +961,11 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                 </TableHead>
                 <TableBody>
                   {documentos.map((row, index) => {
-                    console.log('documentos resumen:',row);
-                    
+                    //console.log('documentos resumen:', row);
+
                     return (
                       <StyledTableRow key={index}>
-                        {activaAccion && (
+                        {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                           <StyledTableCell sx={{ width: "5%" }}>
                             <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
@@ -960,7 +1008,7 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                           </StyledTableCell>
                         )}
 
-                        {row.nombreArchivo === undefined || row.nombreArchivo==='' ? (
+                        {row.nombreArchivo === undefined || row.nombreArchivo === '' ? (
                           <StyledTableCell
                             sx={{
                               bgcolor: "rgb(255 0 0 / 24%)",
@@ -973,37 +1021,37 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
                           <StyledTableCell>{row.nombreArchivo}</StyledTableCell>
                         )}
 
-                        {row.nombreArchivo === undefined || row.nombreArchivo===''? null : (
+                        {row.nombreArchivo === undefined || row.nombreArchivo === '' ? null : (
                           <StyledTableCell>
                             <Tooltip title={"Ver Documento"}>
                               {
-                               row?.archivo?.name==="ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" && cargados ? (
-                                <CircularProgress />
-                              ) : (
+                                row?.archivo?.name === "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" && cargados ? (
+                                  <CircularProgress />
+                                ) : (
 
-                                <IconButton
-                                  onClick={async () => {
-                                    
-                                      let base64String='';
+                                  <IconButton
+                                    onClick={async () => {
+
+                                      let base64String = '';
                                       try {
                                         if (row.archivo instanceof File) {
-                                           base64String = await convertFileToBase64(row.archivo);
-                                        }else{
-                                           base64String = row.archivo;
+                                          base64String = await convertFileToBase64(row.archivo);
+                                        } else {
+                                          base64String = row.archivo;
                                         }
-                                        
+
                                         const dataUri = `data:application/pdf;base64,${base64String}`;
                                         setFileSelected(dataUri);
                                       } catch (error) {
                                         console.error("Error al convertir el archivo a Base64", error);
                                       }
-                                    
-                                    setShowModalPrevia(true);
-                                  }}
-                                >
-                                  <FileOpenIcon />
-                                </IconButton>
-                              )}
+
+                                      setShowModalPrevia(true);
+                                    }}
+                                  >
+                                    <FileOpenIcon />
+                                  </IconButton>
+                                )}
                             </Tooltip>
                           </StyledTableCell>
                         )}
@@ -1040,27 +1088,28 @@ export function Resumen({ coments,arrDocsEliminados }: { coments: boolean,arrDoc
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ height: "100vh" }}>
-   {/*     <iframe
+          {/*     <iframe
             style={{
               width: "100%",
               height: "85vh",
             }}
             src={fileSelected}
             title="description"
-          ></iframe>*/}  
+          ></iframe>*/}
           <iframe
-        style={{
-          width: "100%",
-          height: "85vh",
-        }}
-        src={fileSelected}
-        title="PDF Viewer"
-      ></iframe>
+            style={{
+              width: "100%",
+              height: "85vh",
+            }}
+            src={fileSelected}
+            title="PDF Viewer"
+          ></iframe>
         </DialogContent>
       </Dialog>
       <ComentarioApartado
         setOpen={setOpenComentarioApartado}
         openState={openComentarioApartado}
+        filtroComentarioVolver={funcionFiltroComentarios}
       />
     </Grid>
   );

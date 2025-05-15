@@ -126,6 +126,10 @@ export const modulos = [
     fnc: "ClaveRefinanciar",
   },
   {
+    label: "Tipo de Solicitudes",
+    fnc: "TiposSolicitudes",
+  },
+  {
     label: "Usuarios",
     fnc: "Usuarios",
   },

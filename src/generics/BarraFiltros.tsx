@@ -12,24 +12,45 @@ export function BarraFiltros({
   Lista,
   setStateFiltered,
   CamposFecha,
+  setOpenDialogAgregar,
+  openDialogAgregar,
+  BooleaDialog
 }:
-{Lista:any[];
-  setStateFiltered:Function
-  CamposFecha: string[]
-}) {
-    const [busqueda, setBusqueda] = useState("");
-    const [fechaInicio, setFechaInicio] = useState<Dayjs|null>(null);
-    const [fechaFin, setFechaFin] = useState<Dayjs| null>(null);
+  {
+    Lista: any[];
+    setStateFiltered: Function
+    CamposFecha: string[]
+    setOpenDialogAgregar?: Function,
+    openDialogAgregar?: boolean
+    BooleaDialog?: boolean 
+  }) {
+  const [busqueda, setBusqueda] = useState("");
+  const [fechaInicio, setFechaInicio] = useState<Dayjs | null>(null);
+  const [fechaFin, setFechaFin] = useState<Dayjs | null>(null);
 
-    useEffect(()=>{
-        if(fechaInicio===null){
-            setFechaFin(null)
-        }
-    },[fechaInicio])
+  const limpiarFiltro = () => {
+    setBusqueda("")
+    setFechaInicio(null)
+    setFechaFin(null)
+    setStateFiltered(filterByWord(Lista, busqueda))
+  }
+
+  // useEffect(() => {
+  //   setStateFiltered(filterByWord(Lista, busqueda))
+  // }, [
+  //   //busqueda === "", fechaInicio === null, fechaFin === null
+  // ])
+
+
+  useEffect(() => {
+    if (fechaInicio === null) {
+      setFechaFin(null)
+    }
+  }, [fechaInicio])
+
   return (
     <>
       <Grid
-        item
         container
         xs={12}
         sm={12}
@@ -41,10 +62,10 @@ export function BarraFiltros({
         <Grid
           item
           xs={10}
-          sm={5}
-          md={5}
-          lg={5}
-          xl={5}
+          sm={10}
+          md={3}
+          lg={3}
+          xl={3}
           display="center"
           justifyContent="center"
           alignItems={"center"}
@@ -53,7 +74,7 @@ export function BarraFiltros({
             component="form"
             sx={{
               display: "flex",
-              height: ["100%", "50%", "50%", "50%", "50%"],
+              height: ["100%", "100%", "50%", "50%", "50%"],
               width: "100%",
             }}
           >
@@ -63,22 +84,31 @@ export function BarraFiltros({
               value={busqueda}
               onChange={(e) => {
                 setBusqueda(e.target.value);
-                if (e.target.value === "") {
-                  // setDatosFiltrados(datos);
-                }
+                // if (e.target.value === "") {
+                //   setBusqueda()
+                // }
               }}
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  // filtrarDatos();
-                  ev.preventDefault();
-                  return false;
-                }
-              }}
+            // onKeyPress={(ev) => {
+            //   if (ev.key === "Enter") {
+            //     fechaInicio === null ?
+            //       setStateFiltered(filterByWord(Lista, busqueda))
+            //       : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
+            //    // return false;
+            //   }
+            // }}
             />
           </Paper>
         </Grid>
 
-        <Grid item xs={5} sm={2} md={2} lg={2} xl={2} mb={{ xs: 3 }}>
+        <Grid item
+          mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+          xs={10}
+          sm={fechaInicio != null ? 4 : 10}
+          md={3}
+          lg={2}
+          xl={2}
+          mb={{ xs: 3 }}
+        >
           <Grid
             sx={{
               display: "flex",
@@ -110,7 +140,11 @@ export function BarraFiltros({
         </Grid>
 
         {fechaInicio != null ? (
-          <Grid item xs={5} sm={2} md={2} lg={2} xl={2} sx={{ mb: "3" }}>
+          <Grid
+            mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+            mb={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+
+            item xs={10} sm={4} md={3} lg={2} xl={2} sx={{ mb: "3" }}>
             <Grid
               sx={{
                 display: "flex",
@@ -147,30 +181,60 @@ export function BarraFiltros({
         ) : null}
 
         <Grid
-          item
+          container
           xs={12}
-          sm={1}
-          md={1}
-          lg={1}
-          xl={1}
+          sm={11}
+          md={10}
+          lg={3}
+          xl={3}
+          mt={{ xs: 5, sm: 3, md: 3, lg: 0 }}
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
           }}
         >
           <Button
-            sx={{ ...queries.buttonContinuar, minWidth: "60%" }}
+            sx={{ ...queries.buttonContinuar, width: "30%" }}
             onClick={() => {
-                console.log('condition',fechaInicio===null);
-                
-                fechaInicio===null?
-                    setStateFiltered(filterByWord(Lista, busqueda))
-                    :setStateFiltered((filtrarPorFecha(Lista,CamposFecha,fechaInicio,fechaFin, busqueda)))
+              console.log("Lista", Lista);
+              console.log("Busqueda: ", busqueda);
+
+
+              fechaInicio === null ?
+                setStateFiltered(filterByWord(Lista, busqueda))
+                : setStateFiltered((filtrarPorFecha(Lista, CamposFecha, fechaInicio, fechaFin, busqueda)))
             }}
           >
             Buscar
           </Button>
+
+          <Button
+            sx={{
+              ...queries.buttonCancelar,
+              width: { xs: "32%", sm: "35%", md: "30%", lg: "45%", xl: "40%" }
+            }}
+            onClick={() => {
+              limpiarFiltro()
+
+              // setStateFiltered(filterByWord([], ""))
+            }}
+          >
+            Restablecer Filtro
+          </Button>
+
+          {BooleaDialog === true ? (
+          
+              <Button
+                  sx={{ ...queries.buttonContinuar, width: "20%" }}
+                onClick={() => {
+                  setOpenDialogAgregar && setOpenDialogAgregar(!openDialogAgregar);
+                }}
+              >
+                Agregar
+              </Button>
+            
+          ) : null}
         </Grid>
       </Grid>
     </>

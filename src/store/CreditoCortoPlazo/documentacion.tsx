@@ -9,6 +9,11 @@ export interface DocumentosSlice {
   catalogoTiposDocumentos: ITiposDocumento[];
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
+  idAcuse: string;
+  // setIdAcuse: (idAcuse: string) => void;
+
+  getIdAcuse: (idAcuse: string) => void;
+
   addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;
   setTablaDocumentos: (docs: any) => any;
@@ -19,8 +24,47 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
-  tablaDocumentos: [],
+  idAcuse: "",
 
+  // setIdAcuse: (idAcuse: string) =>
+  //   set(() => ({
+  //     idAcuse: idAcuse
+  //   })),
+
+  getIdAcuse: async () => {
+    const state = useInscripcionStore.getState();
+
+    console.log('state', state);
+
+    await axios({
+      method: "get",
+      url:
+        process.env.REACT_APP_APPLICATION_BACK +
+        "/get-tiposDocumentosCortoPlazo",
+      data: {},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+
+      // Busca el ID donde TipoDocumento sea "Acuses"
+      const acuse = data.data.find(
+        (td: any) => td.Descripcion === "Acuses"
+      );
+
+      if (acuse && acuse.Id) {
+        set((state) => ({
+          idAcuse: acuse.Id, // Guarda el ID en el estado
+        }));
+      } 
+
+    });
+  },
+
+
+
+  tablaDocumentos: [],
   catalogoTiposDocumentos: [],
   catalogoTiposDocumentosObligatorios: [],
 
@@ -39,8 +83,8 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   getTiposDocumentos: async () => {
     const state = useInscripcionStore.getState();
 
-    console.log('state',state);
-    
+    console.log('state', state);
+
     await axios({
       method: "get",
       url:
@@ -52,8 +96,8 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      console.log('data que quiero',data);
-      
+      console.log('data que quiero', data);
+
       if (state.inscripcion.Id !== "") {
         set((state) => ({
           catalogoTiposDocumentos: data.data,

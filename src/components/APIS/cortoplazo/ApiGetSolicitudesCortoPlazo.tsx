@@ -64,7 +64,7 @@ export function getComentariosSolicitudPlazo(
               !rolesAdmin.includes(localStorage.getItem("Rol")!))
         )
       );
-      console.log("Data comentarios", data.data)
+     // console.log("Data comentarios", data.data)
       return data.data;
 
     })

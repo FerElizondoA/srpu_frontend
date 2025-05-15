@@ -1,6 +1,6 @@
 export const queries = {
   text: {
-    fontSize: "2ch",
+    fontSize: "1rem",
     fontFamily: "MontserratRegular",
     alignSelf: "center",
     "@media (max-width: 600px)": {
@@ -9,12 +9,33 @@ export const queries = {
     },
     "@media (min-width: 601px) and (max-width: 900px)": {
       // SM (small) screen
-      fontSize: "1.5ch",
+      fontSize: "1rem",
     },
   },
   medium_text: {
     fontSize: "1rem",
     fontFamily: "MontserratMedium",
+
+    "@media (min-width: 480px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 768px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 1140px)": {
+      fontSize: "1rem",
+    },
+
+    "@media (min-width: 1400px)": {
+      fontSize: "1rem",
+    },
+  },
+
+  bold_text_Titulos: {
+    fontSize: "1rem",
+    fontFamily: "MontserratBold",
 
     "@media (min-width: 480px)": {
       fontSize: "1rem",
@@ -934,7 +955,7 @@ export const queries = {
     },
 
     "@media (min-width: 1870px)": {
-      height: "80vh",
+      height: "68vh",
     },
   },
 };

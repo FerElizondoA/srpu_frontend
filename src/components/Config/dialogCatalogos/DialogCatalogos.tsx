@@ -102,8 +102,8 @@ export function DialogCatalogos({
           {edit.Crud === "crea"
             ? `Agregar nuevo elemento a la tabla: ${edit.Modulo}`
             : edit.Crud === "edita"
-            ? `Modificar elemento`
-            : `¿Desea eliminar el elemento de la tabla:
+              ? `Modificar elemento`
+              : `¿Desea eliminar el elemento de la tabla:
           ${edit.Modulo}?`}
         </DialogTitle>
         {edit.Crud === "crea" ? null : (
@@ -154,15 +154,17 @@ export function DialogCatalogos({
               value={element || edit.Descripcion || ""}
               onChange={(v) => {
                 setElement(
-                  /^[a-zA-Z0-9 ()$_,.-ñ]*$/.test(v.target.value)
+                  /^[a-zA-Z0-9 ()$_,.\-%ñáéíóúÁÉÍÓÚüÜ]*$/.test(v.target.value)
+                    // /^[a-zA-Z0-9 ()$_,.-ñ]*$/.test(v.target.value)
                     ? v.target.value
                     : element
                 );
               }}
             />
             {edit.Modulo === "Reglas de Financiamiento" ||
-            edit.Modulo === "Destinos" ||
-            edit.Modulo === "Tipos de Documento" ? (
+              edit.Modulo === "Destinos" ||
+              edit.Modulo === "Tipo de Solicitudes" ||
+              edit.Modulo === "Tipos de Documento" ? (
               <FormGroup>
                 <FormControlLabel
                   control={

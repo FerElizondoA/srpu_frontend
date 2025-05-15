@@ -16,6 +16,51 @@ export async function getPathDocumentos(
     },
   })
     .then(({ data }) => {
+      
+      if (!data.data[0].error) {
+        setState(data.data);
+      }
+    })
+    .catch((error) => {});
+}
+
+export async function getPathDocumentosCancelacion(
+  IdSolicitud: string,
+  setState: Function
+) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocCancelacion",
+    params: { IdSolicitud: IdSolicitud },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
+      
+      if (!data.data[0].error) {
+        setState(data.data);
+      }
+    })
+    .catch((error) => {});
+}
+
+
+export async function getPathAcuses(
+  IdSolicitud: string,
+  setState: Function
+) {
+  await axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + "/get-DetailPathDocAcuses",
+    params: { IdSolicitud: IdSolicitud },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => {
       if (!data.data[0].error) {
         setState(data.data);
       }
@@ -100,11 +145,8 @@ export const getDocumentos = async (
     .then(({ data }) => {
       let files = data.RESPONSE;
 
-      console.log('el conchesumadre files:', files);
-      console.log();
-      
-      console.log('state.tablaDocumentos',state.tablaDocumentos);
-      
+      console.log('el conchesumadre files:', files);      
+            
       const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
         const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
         if (archivo) {
@@ -169,6 +211,44 @@ export const descargaDocumento = async (
     .catch((r) => {
       alertaError("Error al intentar descargar documento")
     });
+};
+
+
+
+export const descargaDocumentoAcuse = async (
+  ROUTE: string,
+  NOMBRE: string,
+  IdPath: string
+) => {
+  try {
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_APPLICATION_FILES}/api/ApiDoc/GetByRoute`,
+      {
+        ROUTE: ROUTE,
+        NOMBRE: NOMBRE.replace('.pdf', ''), // Eliminar extensión si el servidor la agrega automáticamente
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken") || "",
+        },
+      }
+    );
+
+    if (data.RESPONSE && data.RESPONSE.FILE) {
+      const a = document.createElement("a");
+      a.href = "data:application/pdf;base64," + data.RESPONSE.FILE;
+      a.download = `${NOMBRE}`;
+      a.click();
+
+      if (IdPath !== "") {
+        ActualizaDescarga(IdPath);
+      }
+    } else {
+      throw new Error("El archivo no está disponible en la respuesta.");
+    }
+  } catch (err) {
+    alertaError("Error al intentar descargar documento");
+  }
 };
 
 export const listFile = async (ROUTE: string, setState: Function) => {
@@ -236,7 +316,6 @@ export const deleteFile =(ruta:string)=>{
 
 export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
   console.log('docs axios',docs);
-  
   axios.delete(
     process.env.REACT_APP_APPLICATION_BACK + "/delete-PathDocSol",
      {

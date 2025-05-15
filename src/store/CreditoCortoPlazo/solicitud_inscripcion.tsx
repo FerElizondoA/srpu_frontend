@@ -8,6 +8,8 @@ import { ISolicitudCortoPlazo } from "../Inscripcion/inscripcion";
 import { log } from "console";
 import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { alertaConfirmCancelar } from "../../generics/Alertas";
+import { useFideicomisoStore } from "../Fideicomiso/main";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -28,7 +30,7 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitud:Function
+    setIdSolicitud: Function
   ) => void;
 
   modificaSolicitud: (
@@ -36,7 +38,7 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string,
     // comentario: string,
-    arrDocsEliminados:IDocsEliminados[]
+    arrDocsEliminados: IDocsEliminados[]
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -52,6 +54,7 @@ export interface SolicitudInscripcionSlice {
   deleteFiles: (ruta: string) => void;
 
   saveFiles: (idRegistro: string, ruta: string) => void;
+  saveFilesFuentesPago: (idRegistro: string, ruta: string) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -60,13 +63,23 @@ export interface SolicitudInscripcionSlice {
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc:string
+    TpoDoc: string
   ) => void;
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
+  IdSolicitudBorrador: string
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
+
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => {
+    set(() => ({ IdSolicitudBorrador: IdSolicitudBorrador }))
+  },
+  IdSolicitudBorrador: "",
+
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública y Planeación Financiera",
@@ -105,7 +118,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitud:Function
+    setIdSolicitudCreada: Function
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -146,10 +159,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
+          TipoCredito: state.encabezado.tipoCredito.Descripcion,
           IdInstitucionFinanciera:
             state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"CSCP"}/${new Date().getFullYear()}`,
+          IdClaveInscripcion: `DDPYPF-${"CSCP"}-${new Date().getFullYear()}`,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -163,19 +177,21 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        console.log("Crearsoli data: ", data.data); 
-        console.log("ruta: ",process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS );
-        setIdSolicitud(data.data.Id);
+        console.log("data.data.Id", data.data.Id)
+        console.log("data.data", data.data)
+
+        state.setIdSolicitudBorrador(data.data.Id)
+        setIdSolicitudCreada(data.data.Id)
+
+        //inscripcionState.setInscripcion(data.data.)
+        alertaConfirmCancelar("La solicitud se guardó con éxito")
         state.saveFiles(
           data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
-
-        // inscripcionState.setInscripcion(data.data);
-
-        state.addComentario(data.data.Id, comentario, "Captura");
-
+        //inscripcionState.setInscripcion(data.data);
+        //state.addComentario(data.data.Id, comentario, "Captura");
       });
   },
 
@@ -188,8 +204,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
-    console.log('arrDocsEliminados: modisoli ',arrDocsEliminados);
-    
+    console.log('arrDocsEliminados: modisoli ', arrDocsEliminados);
+
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
 
@@ -227,8 +243,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
-          IdInstitucionFinanciera:
-            state.informacionGeneral.institucionFinanciera.Id,
+          TipoCredito: state.encabezado.tipoCredito.Descripcion,
+          IdInstitucionFinanciera: state.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
           MontoOriginalContratado: state.informacionGeneral.monto,
           FechaContratacion: state.encabezado.fechaContratacion,
@@ -244,14 +260,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then(({ data }) => {
         console.log("modifcarsoli data: ", data.data);
-        console.log('arrDocsEliminados',arrDocsEliminados);
-        if(arrDocsEliminados.length!=0){
-          deleteDocPathSol( inscripcionState.inscripcion.Id,arrDocsEliminados)
+        console.log('arrDocsEliminados', arrDocsEliminados);
+        if (arrDocsEliminados.length != 0) {
+          deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
         }
-          
+
         state.saveFiles(
           data.data.Id,
-          `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          //   `${process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS}/CORTOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
 
@@ -300,7 +317,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
   },
 
   addComentario: async (Id: string, comentario: any, tipo: string) => {
-    if (comentario.length !== 2) {
+    if (comentario === null || comentario === undefined || comentario.trim() === '') {
+      comentario = ''; // Enviar un string vacío al backend para eliminarlo
+    }
       await axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
@@ -323,8 +342,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
             idComentario: "",
           });
         })
-        .catch((e) => {});
-    }
+        .catch((e) => { });
+    
   },
 
   eliminarRequerimientos: async (Id: string, setState: Function) => {
@@ -357,7 +376,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   deleteFiles: async (ruta: string) => {
@@ -367,7 +386,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
     return axios
       .post(
         process.env.REACT_APP_APPLICATION_FILES +
-          "/api/ApiDoc/DeleteDirectorio",
+        "/api/ApiDoc/DeleteDirectorio",
         dataArray,
         {
           headers: {
@@ -375,7 +394,56 @@ export const createSolicitudInscripcionSlice: StateCreator<
           },
         }
       )
-      .catch((e) => {});
+      .catch((e) => { });
+  },
+
+  saveFilesFuentesPago: async (idRegistro: string, ruta: string) => {
+    const state = useFideicomisoStore.getState();
+    console.log("Entre saveFiles");
+
+    return await state.tablaSoporteDocumentalFideicomiso.map((file, index) => {
+      console.log(file);
+
+      return setTimeout(() => {
+        const url = new File([file.archivo], file.nombreArchivo);
+
+        let dataArray = new FormData();
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
+        dataArray.append("FILE", url);
+
+        if (file.archivo && file.archivo.size > 0) {
+          console.log("entre");
+
+          return axios
+            .post(
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+              dataArray,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("jwtToken"),
+                },
+              }
+            )
+            .then(({ data }) => {
+              console.log("data response", data);
+
+              state.savePathDocFideicomiso(
+                idRegistro,
+                data.RESPONSE.RUTA,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREARCHIVO,
+                // file.tipoArchivo
+              );
+              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
+
+            })
+            .catch((e) => { });
+        } else {
+          return null;
+        }
+      }, 1000);
+    });
   },
 
   saveFiles: async (idRegistro: string, ruta: string) => {
@@ -384,7 +452,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
     return await state.tablaDocumentos.map((file) => {
       console.log(file);
-      
+
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
 
@@ -392,7 +460,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         dataArray.append("ROUTE", `${ruta}`);
         dataArray.append("ADDROUTE", "true");
         dataArray.append("FILE", url);
-       
+
         if (file.archivo && file.archivo.size > 0) {
           console.log("entre");
 
@@ -416,10 +484,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
                 data.RESPONSE.NOMBREARCHIVO,
                 file.tipoArchivo
               );
-              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR,' tipoArchivo: ', file.tipoArchivo );
-              
+              console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR, ' tipoArchivo: ', file.tipoArchivo);
+
             })
-            .catch((e) => {});
+            .catch((e) => { });
         } else {
           return null;
         }
@@ -429,8 +497,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useCortoPlazoStore.getState();
+
     console.log("Entre guardaDocumentos");
-    
+    // console.log("ID ACUSE OBTENIDO", idAcuse);
+
+
     let dataArray = new FormData();
     dataArray.append("ROUTE", `${ruta}`);
     dataArray.append("ADDROUTE", "true");
@@ -448,15 +519,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
           }
         )
         .then(({ data }) => {
+
+          //console.log("DATA guardarDocumentos", data);
+
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
             data.RESPONSE.NOMBREARCHIVO,
-            'fake'
+            ""
           );
         })
-        .catch((e) => {});
+        .catch((e) => { });
     } else {
       return null;
     }
@@ -467,10 +541,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc:string
+    TpoDoc: string
   ) => {
+    const state = useCortoPlazoStore.getState();
+
+    // const idAcuse = ""
+    // state.getIdAcuse(idAcuse)
 
     console.log("Entre savePathDoc");
+    console.log("TpoDoc:", TpoDoc);
+
+    console.log("state.idAcuse:", state.idAcuse);
+
+
+
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
@@ -479,7 +563,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc:TpoDoc
+          TpoDoc: state.idAcuse
         },
         {
           headers: {
@@ -488,11 +572,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then((r) => {
-        console.log("r: ",r.data);
-        
+        console.log("r: ", r.data);
+
         //saveFiles("", Ruta);
       })
 
-      .catch((e) => {});
+      .catch((e) => { });
   },
 });

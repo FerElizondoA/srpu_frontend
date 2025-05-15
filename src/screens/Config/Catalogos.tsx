@@ -349,7 +349,8 @@ export function Catalogos() {
                               </TableCell>
                             ) : null}
                             <TableCell sx={{ textAlign: "center" }}>
-                              {modulo === "Reglas de Financiamiento" ||
+                              {modulo === "Tipo de Solicitudes" ||
+                              modulo === "Reglas de Financiamiento" ||
                                 modulo === "Destinos" ||
                                 modulo === "Tipos de Documento" ? (
                                 <Tooltip

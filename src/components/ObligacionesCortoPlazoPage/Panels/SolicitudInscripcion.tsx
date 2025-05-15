@@ -120,6 +120,16 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
         comisiones = item.comisiones;
       }
       if (
+        solicitud.encabezado.tipoCredito.Descripcion === undefined ||
+        solicitud.encabezado.tipoCredito.Descripcion === "" ||
+        /^[\s]*$/.test(solicitud.PlazoDias)
+      ) {
+        err = 1;
+        errores.push(
+          "Sección Encabezado: Seleccionar algun tipo de Credito."
+        );
+      }
+      if (
         solicitud.PlazoDias === undefined ||
         solicitud.PlazoDias === 0 ||
         /^[\s]*$/.test(solicitud.PlazoDias)
@@ -261,6 +271,16 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
       };
+      if (
+        solicitud.encabezado.tipoCredito.Descripcion === undefined ||
+        solicitud.encabezado.tipoCredito.Descripcion === "" ||
+        /^[\s]*$/.test(solicitud.PlazoDias)
+      ) {
+        err = 1;
+        errores.push(
+          "Sección Encabezado: Seleccionar algun tipo de Credito."
+        );
+      }
       if (
         solicitud.MontoOriginalContratado === undefined ||
         solicitud.MontoOriginalContratado === 0 ||

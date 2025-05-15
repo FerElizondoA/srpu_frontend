@@ -5,11 +5,14 @@ import { IData } from "../../screens/consultaDeSolicitudes/ConsultaDeSolicitudPa
 import { useCancelacionStore } from "./main";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useInscripcionStore } from "../Inscripcion/main";
+import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 
 export interface ArchivoCancelacion {
   archivo: File;
   nombreArchivo: string;
   fechaArchivo: string;
+  TipoArchivoJustificacion: string;
 }
 
 export interface ICancelacion {
@@ -19,6 +22,17 @@ export interface ICancelacion {
 }
 
 export interface SolicitudCancelacionSlice {
+
+  //#region Cancelacion-Documentacion para iniciar el proceso 
+  documentacionCancelacion: ArchivoCancelacion[];
+  cleanDocumentacionCancelacion:() => void;
+  addDocumentacionCancelacion: (newDocumento: ArchivoCancelacion) => void;
+
+  justificacion: string
+  setJustificacion: (justificacion: string) => void;
+ //#endregion
+
+
   credito: IData;
   setCredito: (credito: IData) => void;
 
@@ -33,6 +47,10 @@ export interface SolicitudCancelacionSlice {
 
   borrarSolicitud: (Id: string) => void;
 
+  tipoFirmaDetalle: string;
+  setTipoFirmaDetalle: (tipoFirmaDetalle: string) => void;
+  cleanTipoFirmaDetalle: () => void;
+
   addComentario: (
     idSolicitud: string,
     comentario: string,
@@ -42,31 +60,97 @@ export interface SolicitudCancelacionSlice {
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
   deleteFiles: (ruta: string) => void;
-  saveFiles: (idRegistro: string, ruta: string) => void;
+  saveFilesCancelaciones: (idRegistro: string, ruta: string) => void;
 
-  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
-  savePathDoc: (
+  savePathDocCancelacion: (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TipoArchivoJustificacion: string,
+    Justificacion: string
   ) => void;
 }
 
 export const createSolicitudCancelacionSlice: StateCreator<
   SolicitudCancelacionSlice
 > = (set, get) => ({
+  //#region Cancelacion-Documentacion para iniciar el proceso 
+  documentacionCancelacion: [],
+
+  // addDocumentacionCancelacion: (newDocumento: ArchivoCancelacion) => {
+  //   set((state) => ({
+  //     documentacionCancelacion: [
+  //       ...state.documentacionCancelacion,
+  //       newDocumento,
+  //     ],
+  //   }));
+  // },
+  
+  addDocumentacionCancelacion: (newDocumento) => {
+    set((state) => {
+      const updatedDocs = [...state.documentacionCancelacion];
+      const index = updatedDocs.findIndex(
+        (doc) => doc.TipoArchivoJustificacion === newDocumento.TipoArchivoJustificacion
+      );
+      
+      if (index !== -1) {
+        updatedDocs[index] = newDocumento; // Sobrescribir si ya existe
+      } else if (updatedDocs.length < 2) {
+        updatedDocs.push(newDocumento); // Agregar si hay espacio
+      }
+      
+      return { documentacionCancelacion: updatedDocs };
+    });
+  },
+
+  cleanDocumentacionCancelacion: () => {
+    set((state) => ({
+      documentacionCancelacion: []
+    }));
+  },
+
+  justificacion: "",
+
+  setJustificacion: (justificacion: string) => {
+    set(() => ({
+      justificacion: justificacion,
+    }));
+  },
+
+
+
+  tipoFirmaDetalle: "",
+
+  setTipoFirmaDetalle: (tipoFirmaDetalle: string) => {
+    set((state) => ({
+      tipoFirmaDetalle: tipoFirmaDetalle,
+    }));
+  },
+
+  //#endregion 
+
+  cleanTipoFirmaDetalle: () => {
+    console.log("cleanTipoFirmaDetalle, se borro");
+    set((state) => ({
+      tipoFirmaDetalle: "",
+    }));
+  },
+
+
   credito: {
     Id: "",
     NumeroRegistro: "",
     Nombre: "",
     TipoEntePublico: "",
     TipoSolicitud: "",
+    TipoCredito: "",
     Institucion: "",
     NoEstatus: "",
     Estatus: "",
     ControlInterno: "",
+    Control: "",
     IdClaveInscripcion: "",
     MontoOriginalContratado: "",
     FechaContratacion: "",
@@ -78,7 +162,30 @@ export const createSolicitudCancelacionSlice: StateCreator<
     IdEditor: "",
     FechaRequerimientos: "",
     IdPathDoc: "",
-    Control: "",
+    CountReestructuras: "",
+
+    // Id: "",
+    // NumeroRegistro: "",
+    // Nombre: "",
+    // TipoEntePublico: "",
+    // TipoSolicitud: "",
+    // TipoCredito: "",
+    // Institucion: "",
+    // NoEstatus: "",
+    // Estatus: "",
+    // ControlInterno: "",
+    // IdClaveInscripcion: "",
+    // MontoOriginalContratado: "",
+    // FechaContratacion: "",
+    // Solicitud: "",
+    // FechaCreacion: "",
+    // CreadoPor: "",
+    // UltimaModificacion: "",
+    // ModificadoPor: "",
+    // IdEditor: "",
+    // FechaRequerimientos: "",
+    // IdPathDoc: "",
+    // Control: "",
   },
 
   setCredito: (credito: IData) => {
@@ -92,11 +199,13 @@ export const createSolicitudCancelacionSlice: StateCreator<
       archivo: new File([], ""),
       nombreArchivo: "",
       fechaArchivo: "",
+      TipoArchivoJustificacion: "",
     },
     BajaDeCreditoFederal: {
       archivo: new File([], ""),
       nombreArchivo: "",
       fechaArchivo: "",
+      TipoArchivoJustificacion: "",
     },
     Justificacion: "",
   },
@@ -115,12 +224,14 @@ export const createSolicitudCancelacionSlice: StateCreator<
           archivo: new File([], ""),
           nombreArchivo: "",
           fechaArchivo: new Date().toString(),
+          TipoArchivoJustificacion: "", // AGREGAR ESTO PARA SABER QUE TIPO DE DOCUMENTO DE JUSTIFIACION ES
         },
 
         BajaDeCreditoFederal: {
           archivo: new File([], ""),
           nombreArchivo: "",
           fechaArchivo: new Date().toString(),
+          TipoArchivoJustificacion: "",
         },
       },
     })),
@@ -141,7 +252,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
           },
         }
       )
-      .then(({ data }) => {});
+      .then(({ data }) => { });
   },
 
   modificaSolicitud: async (idCreador: string) => {
@@ -162,7 +273,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
           },
         }
       )
-      .then(({ data }) => {});
+      .then(({ data }) => { });
   },
 
   borrarSolicitud: async (Id: string) => {
@@ -224,8 +335,8 @@ export const createSolicitudCancelacionSlice: StateCreator<
             },
           }
         )
-        .then(({ data }) => {})
-        .catch((e) => {});
+        .then(({ data }) => { })
+        .catch((e) => { });
     }
   },
 
@@ -259,7 +370,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
         });
         setState();
       })
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
   deleteFiles: async (ruta: string) => {
@@ -269,7 +380,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
     return axios
       .post(
         process.env.REACT_APP_APPLICATION_FILES +
-          "/api/ApiDoc/DeleteDirectorio",
+        "/api/ApiDoc/DeleteDirectorio",
         dataArray,
         {
           headers: {
@@ -277,89 +388,69 @@ export const createSolicitudCancelacionSlice: StateCreator<
           },
         }
       )
-      .catch((e) => {});
+      .catch((e) => { });
   },
 
-  saveFiles: async (idRegistro: string, ruta: string) => {
-    // return await state.tablaDocumentos.map((file:any) => {
-    //   return setTimeout(() => {
-    //     const url = new File([file.archivo], file.nombreArchivo);
-    //     let dataArray = new FormData();
-    //     dataArray.append("ROUTE", `${ruta}`);
-    //     dataArray.append("ADDROUTE", "true");
-    //     dataArray.append("FILE", url);
-    //     if (file.archivo) {
-    //       return axios
-    //         .post(
-    //           process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-    //           dataArray,
-    //           {
-    //             headers: {
-    //               Authorization: localStorage.getItem("jwtToken"),
-    //             },
-    //           }
-    //         )
-    //         .then(({ data }) => {
-    //           state.savePathDoc(
-    //             idRegistro,
-    //             data.RESPONSE.RUTA,
-    //             data.RESPONSE.NOMBREIDENTIFICADOR,
-    //             data.RESPONSE.NOMBREARCHIVO
-    //           );
-    //         })
-    //         .catch((e) => {});
-    //     } else {
-    //       return null;
-    //     }
-    //   }, 1000);
-    // });
+  saveFilesCancelaciones: async (idRegistro: string, ruta: string) => {
+    const state = useCancelacionStore.getState();
+  
+    return await state.documentacionCancelacion.map((file:any, index) => {
+      return setTimeout(() => {
+        const url = new File([file.archivo], file.nombreArchivo);
+        let dataArray = new FormData();
+        dataArray.append("ROUTE", `${ruta}`);
+        dataArray.append("ADDROUTE", "true");
+        dataArray.append("FILE", url);
+        if (file.archivo) {
+          return axios
+            .post(
+              process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+              dataArray,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("jwtToken"),
+                },
+              }
+            )
+            .then(({ data }) => {
+              state.savePathDocCancelacion(
+                idRegistro,
+                data.RESPONSE.RUTA,
+                data.RESPONSE.NOMBREIDENTIFICADOR,
+                data.RESPONSE.NOMBREARCHIVO,
+                state.documentacionCancelacion[index].TipoArchivoJustificacion,
+                state.justificacion
+              );
+            })
+            .catch((e) => {});
+        } else {
+          return null;
+        }
+      }, 1000);
+    });
   },
 
-  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
-    let dataArray = new FormData();
-    dataArray.append("ROUTE", `${ruta}`);
-    dataArray.append("ADDROUTE", "true");
-    dataArray.append("FILE", archivo);
 
-    if (archivo.size > 0) {
-      return axios
-        .post(
-          process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
-          dataArray,
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {
-          //   state.savePathDoc(
-          //     idRegistro,
-          //     data.RESPONSE.RUTA,
-          //     data.RESPONSE.NOMBREIDENTIFICADOR,
-          //     data.RESPONSE.NOMBREARCHIVO
-          //   );
-        })
-        .catch((e) => {});
-    } else {
-      return null;
-    }
-  },
-
-  savePathDoc: async (
+  savePathDocCancelacion: async (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TipoArchivoJustificacion: string,
+    Justificacion: string
   ) => {
+
+    const state = useCancelacionStore.getState();
     return await axios
       .post(
-        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",
+        process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocCancelacion",
         {
           IdSolicitud: idSolicitud,
           Ruta: Ruta,
-          NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          NombreIdentificador: NombreIdentificador,
+          TipoArchivoJustificacion: TipoArchivoJustificacion,
+          Justificacion: Justificacion,
         },
         {
           headers: {
@@ -367,21 +458,28 @@ export const createSolicitudCancelacionSlice: StateCreator<
           },
         }
       )
-      .then((r) => {})
-      .catch((e) => {});
+      .then((r) => {
+        state.cleanDocumentacionCancelacion();
+        state.setJustificacion("");
+
+       })
+      .catch((e) => { });
   },
 });
 
 export async function CancelacionSolicitud(setUrl: Function) {
-  const state = useCancelacionStore.getState();
-  let infoSolicitud: any = JSON.parse(state.credito.Solicitud);
-  let credito = state.credito;
-  let cancelacion = state.cancelacion;
+  const stateC = useCancelacionStore.getState();
+  const state = useInscripcionStore.getState();
+
+
+  let infoSolicitud: any = JSON.parse(state.inscripcion.Solicitud);
+  let credito = state.inscripcion;
+  let cancelacion = stateC.cancelacion;
 
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK +
-        "/create-pdf-solicitud-cancelacion",
+      "/create-pdf-solicitud-cancelacion",
       {
         numeroSolicitud: credito.NumeroRegistro,
         UsuarioDestinatario: infoSolicitud.inscripcion.servidorPublicoDirigido,
@@ -400,14 +498,17 @@ export async function CancelacionSolicitud(setUrl: Function) {
           locale: es,
         }),
         entePublicoObligado: credito.Nombre,
-        institucionFinanciera:
-          infoSolicitud.informacionGeneral.institucionFinanciera.Descripcion,
-        montoOriginalContratado: infoSolicitud.informacionGeneral.monto,
-        causaCancelacion: cancelacion.Justificacion,
-        documentoAcreditacionCancelacion:
-          cancelacion.AcreditacionDeLaCancelacion.nombreArchivo,
-        documentoBajaCreditoFederal:
-          cancelacion.BajaDeCreditoFederal.nombreArchivo,
+        institucionFinanciera: //CORREGIDO
+          infoSolicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        montoOriginalContratado: infoSolicitud.informacionGeneral.informacionGeneral.monto,
+        
+        causaCancelacion: stateC.justificacion,
+        documentoAcreditacionCancelacion: stateC.documentacionCancelacion.find(
+          doc => doc.TipoArchivoJustificacion === "Acreditacion De La Cancelacion")?.nombreArchivo,
+        documentoBajaCreditoFederal: stateC.documentacionCancelacion.find(
+          doc => doc.TipoArchivoJustificacion === "Baja De Credito Federal")?.nombreArchivo,
+
+
       },
       {
         headers: {
@@ -423,7 +524,19 @@ export async function CancelacionSolicitud(setUrl: Function) {
         new Blob([response.data], { type: "application/pdf" })
       );
 
+      console.log("URL, cancelaciones xD", url);
+
+      //AQUI NO VA CORREGIR 
+      // state.saveFiles(
+      //   response.data.Id,
+      //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/DOCSOL/${response.data.Id}`
+      // );
+
+      // console.log("URL, cancelaciones xD", url);
+
       setUrl(url);
     })
-    .catch((err) => {});
+    .catch((err) => { });
 }
+
+

@@ -75,8 +75,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     comentario: string
   ) => {
     const lpState = useLargoPlazoStore.getState();
-    const cpState = useCortoPlazoStore.getState();
-    const inscripcionState = useInscripcionStore.getState();
+    //const cpState = useCortoPlazoStore.getState();
+   // const inscripcionState = useInscripcionStore.getState();
 
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
@@ -157,11 +157,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: `DDPYPF-${"CSCLP"}/${new Date().getFullYear()}`,
+          IdClaveInscripcion: `DDPYPF-${"CSCLP"}-${new Date().getFullYear()}`,
           MontoOriginalContratado: lpState.informacionGeneral.monto,
           FechaContratacion: lpState.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
-          IdEditor: localStorage.getItem("IdUsuario"),
+          IdEditor: idEditor,
           CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {

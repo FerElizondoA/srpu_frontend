@@ -212,6 +212,11 @@ export function Resumen({ coments }: { coments: boolean }) {
   const TipodeDocumento: string = useLargoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
+
+  const tipoCredito: { Id: string; Descripcion: string } = useLargoPlazoStore(
+    (state) => state.encabezado.tipoCredito
+  );
+
   const solicitanteAutorizado: {
     IdSolicitante: string;
     Cargo: string;

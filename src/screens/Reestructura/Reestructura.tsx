@@ -225,11 +225,12 @@ export function SolicitudesReestructura() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
-    console.log("Requeriemito solicitud", solicitud)
+    console.log("Requerimiento solicitud", solicitud)
+    console.log("Requerimientos de reestructura", Requerimiento);
+    
 
     ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl, idClaveInscripcion);
-
-
+    
     setProceso("actualizacion");
     navigate("../firmaUrl");
   };

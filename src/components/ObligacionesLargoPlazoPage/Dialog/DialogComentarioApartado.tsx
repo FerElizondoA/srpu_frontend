@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, TextField, Typography, createTheme } from "@mui/material";
+import { Button, Dialog, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -45,6 +45,14 @@ export function ComentarioApartado({
 
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
+  );
+
+  const setFiltroComentarios: Function = useCortoPlazoStore(
+    (state) => state.setFiltroComentarios
+  );
+
+  const filtroComentarios: boolean = useCortoPlazoStore(
+    (state) => state.filtroComentarios
   );
 
   useEffect(() => {
@@ -121,20 +129,23 @@ export function ComentarioApartado({
             setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
           }}
-        >
+        > 
           Cancelar
         </Button>
+        <ThemeProvider theme={theme}>
         <Button
           sx={queries.buttonContinuar}
-         // disabled={reestructura === "con autorizacion"}
+         // disabled={coment.Comentario==="" || coment.Comentario===undefined}
           onClick={() => {
-            newComentario(coment, openState.tab);
-            setComent({ Comentario: "", Apartado: "" });
-            setOpen(false);
+             newComentario(coment, openState.tab);
+             setComent({ Comentario: "", Apartado: "" });
+             setOpen(false);
+            console.log("coment.comentario", coment)
           }}
         >
           Aceptar
         </Button>
+        </ThemeProvider>
       </DialogActions>
     </Dialog>
   );
