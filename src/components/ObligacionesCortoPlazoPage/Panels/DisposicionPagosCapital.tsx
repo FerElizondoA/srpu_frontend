@@ -249,6 +249,7 @@ export function DisposicionPagosCapital() {
     }
   }, [monto, disposicionesParciales]);
 
+
   const [restante, setRestante] = useState(0);
 
   useEffect(() => {
@@ -261,17 +262,50 @@ export function DisposicionPagosCapital() {
       );
     });
 
-    // Calcular el restante sin formateo
-    const montoSinFormato = Number(
-      monto.toString().replaceAll("$", "").replaceAll(",", "")
-    );
+    // Asegurarnos de que `monto` está en la escala correcta
+    let montoSinFormato = monto;
+
+    if (typeof monto === "string") {
+      montoSinFormato = Number((monto as string).replaceAll("$", "").replaceAll(",", ""));
+    }
+
+    // Si `moneyMask` ya dividió por 100 antes, multiplicamos nuevamente por 100 para restaurar el valor original
+    if (montoSinFormato < 100000000) {
+      montoSinFormato *= 100;
+    }
 
     const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
 
+    console.log("Monto Original sin Formato:", montoSinFormato);
+    console.log("Total Importe:", totalImporte);
+    console.log("Nuevo Restante:", nuevoRestante);
 
-    // Actualizar el estado restante (como número)
+    // Actualizar el estado restante correctamente
     setRestante(Number(nuevoRestante));
-  }, [tablaDisposicion]);
+  }, [tablaDisposicion, monto]);
+
+  //   useEffect(() => {
+  //     let totalImporte = 0;
+
+  //     // Sumar los importes de la tabla
+  //     tablaDisposicion.forEach((value) => {
+  //       totalImporte += Number(
+  //         value.importe.toString().replaceAll("$", "").replaceAll(",", "")
+  //       );
+  //     });
+
+  //     // Calcular el restante sin formateo
+  //     const montoSinFormato = Number(
+  //       monto.toString().replaceAll("$", "").replaceAll(",", "")
+  //     );
+
+  //     const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
+
+  // console.log("nuevoRestante", nuevoRestante);
+
+  //     // Actualizar el estado restante (como número)
+  //     setRestante(Number(nuevoRestante));
+  //   }, [tablaDisposicion]);
 
   // useEffect(() => {
   //   let loc = 0.0;
@@ -649,7 +683,7 @@ export function DisposicionPagosCapital() {
                         ? "Monto Original Contratado: " +
                         moneyMask(monto.toString()) +  // Formatear el monto
                         "; Monto restante: " +
-                        moneyMask(restante.toString()) // Formatear el restante
+                        moneyMask((restante*100).toString()) // Formatear el restante
                         : ""
                       )
                     }
@@ -664,7 +698,7 @@ export function DisposicionPagosCapital() {
                       validacionBotonAgregar(
                         disposicion.importe.toString()
                       ) >
-                        restante
+                      restante
                     }
                     fullWidth
                     InputLabelProps={{

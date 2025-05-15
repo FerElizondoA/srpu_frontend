@@ -132,9 +132,9 @@ const heads: Array<{ label: string }> = [
   {
     label: "Tipo de Documento",
   },
-  {
-    label: "Tipo de Credito",
-  },
+  // {
+  //   label: "Tipo de Credito",
+  // },
   {
     label: "Acciones",
   },
@@ -618,14 +618,14 @@ export function ConsultaDeSolicitudPage() {
                             : " "}
                         </StyledTableCell>
 
-                        <StyledTableCell
+                        {/* <StyledTableCell
                           sx={{ padding: "1px 25px 1px 0" }}
                           align="center"
                           component="th"
                           scope="row"
                         >
                           {row.TipoSolicitud}
-                        </StyledTableCell>
+                        </StyledTableCell> */}
 
                         <StyledTableCell
                           sx={{ padding: "1px 25px 1px 0" }}

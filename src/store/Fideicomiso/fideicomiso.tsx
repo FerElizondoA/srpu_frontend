@@ -33,6 +33,14 @@ export interface IDeudorFideicomisoNew {
   // SumEquivalenciaCorrespondienteMunicipios:number
 }
 
+export interface IPorcentajeAcumulados {
+  IdTipoEntePublicoObligado: string;
+  IdEntePublicoObligado: string;
+  NombreEntePublico: string;
+  AfectadoTotalIngreso: number;
+  EquivalenciaCorrespondienteMunicipios: number;
+}
+
 export interface IDeudorFideicomiso {
   id: string;
   tipoFideicomitente: { Id: string; Descripcion: string };
@@ -137,9 +145,12 @@ export interface FideicomisoSlice {
   cleanSoporteDocumental: () => void;
 
   getFideicomisos: (setState: Function) => void;
-  createFideicomiso: (stateOpen:Function) => void;
+  createFideicomiso: (stateOpen: Function) => void;
   modificaFideicomiso: (setLoading: Function) => void;
   deleteFideicomiso: (Id: string) => void;
+
+  createPorcentajeAcumualdo: () => void;
+  DetallePorcentajeAcumulado: (IdEntePublicoObligado: string, setPorcentajeAcumulado: Function) => void;
 
   saveFilesFideicomiso: (
     idRegistro: string,
@@ -173,15 +184,12 @@ export interface FideicomisoSlice {
   getTiposDeFuente: () => void;
   getFondosOIngresos: () => void;
 
-
-
   tipoMovimientoFideicomisoNew: IDeudorFideicomisoNew;
   tablaTipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[];
   setTipoMovimientoNew: (tipoMovimientoNew: IDeudorFideicomisoNew) => void;
   addTipoMovimientoNew: (tipoMovimientoNew: IDeudorFideicomisoNew) => void;
   removeTipoMovimientoNew: (index: number) => void;
   cleanTipoMovimientoNew: () => void;
-
 
   editarFideicomisoNew: (
     id: string,
@@ -191,7 +199,7 @@ export interface FideicomisoSlice {
     soporteDocumental: ISoporteDocumentalFideicomiso[]
   ) => void;
 
-  cleanFideicomisoNew:() => void;
+  cleanFideicomisoNew: () => void;
 
   updateTipoMovimientoField: (
     index: number,
@@ -397,7 +405,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       tablaSoporteDocumentalFideicomiso: [],
     }));
   },
-  
+
   cleanFideicomisoNew: () => {
     set(() => ({
       idFideicomiso: "",
@@ -599,6 +607,88 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         setState(r);
       });
   },
+  DetallePorcentajeAcumulado: (IdEntePublicoObligado: string, setPorcentajeAcumulado: Function) => {
+    axios
+      .get( //MODIFICALO
+        process.env.REACT_APP_APPLICATION_BACK + "/get-PorcentajesAcumulados",
+        {
+          params: {
+            IdEntePublicoObligado: IdEntePublicoObligado
+          },
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        })
+
+      .then(({ data }) => {
+        let r = data.data;
+
+        setPorcentajeAcumulado(r)
+
+        console.log("PORCENTAJE ACUMULADO", r)
+      });
+  },
+
+  createPorcentajeAcumualdo: async () => {
+    const state = useFideicomisoStore.getState();
+    //const stateSaveFiles = useCortoPlazoStore.getState();
+console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimientoFideicomisoNew)
+    return await state.tablaTipoMovimientoFideicomisoNew.map((v: any, index: number) => {
+      return setTimeout(() => {
+
+        if (state.tablaTipoMovimientoFideicomisoNew.length !== 0) {
+          return axios.post(process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+            {
+              IdTipoEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].tipoFideicomitente.Id,
+              IdEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Id,
+              NombreFideicomitente: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Descripcion,
+              AfectadoTotalIngreso: state.tablaTipoMovimientoFideicomisoNew[index].AfectadoTotalIngreso,
+              EquivalenciaCorrespondienteMunicipios: state.tablaTipoMovimientoFideicomisoNew[index].EquivalenciaCorrespondienteMunicipios,
+              // CreadoPor: localStorage.getItem("IdUsuario"),
+            },
+            {
+              headers: {
+                Authorization: localStorage.getItem("jwtToken"),
+              },
+            }
+          ).then(({ data }) => {
+            console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
+          })
+            .catch((data) => {
+              console.log("ERROR DATA", data.data);
+            });
+        }
+
+      }, 2000)
+    })
+
+    // await axios
+    //   .post(
+    //     process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+    //     {
+    //       IdTipoEntePublicoObligado: state.datosGenerales.numeroFideicomiso,
+    //       IdEntePublicoObligado: state.datosGenerales.fechaFideicomiso,
+    //       NombreFideicomitente: state.datosGenerales.tipoFideicomiso.Descripcion,
+    //       AfectadoTotalIngreso: state.datosGenerales.fiduciario.Descripcion,
+    //       EquivalenciaCorrespondienteMunicipios: JSON.stringify(state.tablaFideicomisario),
+    //       // CreadoPor: localStorage.getItem("IdUsuario"),
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: localStorage.getItem("jwtToken"),
+    //       },
+    //     }
+    //   )
+    //   .then(({ data }) => {
+    //     //console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
+
+
+    //   })
+    //   .catch((data) => {
+    //     //console.log("ERROR DATA", data);
+
+    //   });
+  },
 
   createFideicomiso: async (stateOpen: Function) => {
     const state = useFideicomisoStore.getState();
@@ -696,7 +786,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       )
       .then(({ data }) => {
         //const stateNew = useCortoPlazoStore.getState();
-
+        state.createPorcentajeAcumualdo();
         state.setIdFideicomiso(data.data.Id);
         console.log("ID FIDEICOMISO", state.idFideicomiso);
 
@@ -815,7 +905,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
           SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
 
-          
+
           // AcumuladoEstado: acumuladoEstado,
           // AcumuladoMunicipios: acumuladoMunicipio,
           // AcumuladoOrganismos: acumuladoOrganismo,

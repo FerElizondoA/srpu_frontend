@@ -450,7 +450,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //Guardar Justificantes de Cancelacion
           if (tipoFirmaDetalle === "cancelacion") {
             const cancelacion = useCancelacionStore.getState();
-            
+
             const cancelacionJustificacion = cancelacion.justificacion;
             const cancelacionAcreditacionDeLaCancelacion = cancelacion.documentacionCancelacion
 
@@ -1411,6 +1411,18 @@ export async function GeneraAcuse(
     mensaje: mensaje,
     oficio: oficio,
   }
+
+  const now = new Date();
+
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // +1 porque los meses van de 0-11
+  const year = now.getFullYear();
+
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+  const fileName = `Acuse-${oficio}-${year}${month}${day}_${hour}${minute}${second}.pdf`;
+
   await axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-acuse",
@@ -1436,9 +1448,11 @@ export async function GeneraAcuse(
       state.guardaDocumentos(
         idRegistro,
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
-        new File([response.data], `Acuse-${oficio}.pdf`)
+        new File([response.data], fileName)
+        //new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
+    
     .catch(() => { });
 }
 

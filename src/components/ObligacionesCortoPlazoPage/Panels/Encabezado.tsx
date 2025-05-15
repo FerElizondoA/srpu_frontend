@@ -18,7 +18,7 @@ export function Encabezado() {
     (state) => state.encabezado.tipoCredito
   );
 
-  const tipoDocumento:  string = useCortoPlazoStore(
+  const tipoDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
 
@@ -99,7 +99,8 @@ export function Encabezado() {
                 display: "flex",
               }}
             >
-              Tipo de Solicitud
+              Tipo de Documento
+              {/* Tipo de Solicitud */}
             </InputLabel>
 
 
@@ -174,7 +175,7 @@ export function Encabezado() {
             />
 
 
-            : // OTRA CONDICION 
+            : // OTRA CONDICION
 
             <TextField
               type="text"
@@ -233,7 +234,7 @@ export function Encabezado() {
           }
         </Grid>
 
-        <Grid item xs={10} md={3} lg={3}>
+        {/* <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
@@ -257,7 +258,7 @@ export function Encabezado() {
               },
             }}
           />
-        </Grid>
+        </Grid> */}
 
 
 
@@ -305,17 +306,6 @@ export function Encabezado() {
           </Select>
         </Grid>
 
-
-      </Grid>
-
-      <Grid
-        item
-        container
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        alignItems={"center"}
-      >
-
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
@@ -343,6 +333,17 @@ export function Encabezado() {
             }}
           />
         </Grid>
+
+      </Grid>
+
+      <Grid
+        item
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+      >
+
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
@@ -398,12 +399,8 @@ export function Encabezado() {
           />
         </Grid>
 
-        
-      </Grid>
-      <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
-          
-          <Grid xs={10} md={3} lg={3} justifyContent={"center"} >
-            <InputLabel sx={queries.medium_text}>
+        <Grid xs={10} md={3} lg={3} justifyContent={"center"} >
+          <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
           </InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
@@ -421,9 +418,15 @@ export function Encabezado() {
               maxDate={new Date()}
             />
           </LocalizationProvider>
-          </Grid>
-          
         </Grid>
+
+
+      </Grid>
+      {/* <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
+
+        
+
+      </Grid> */}
     </Grid>
   );
 }

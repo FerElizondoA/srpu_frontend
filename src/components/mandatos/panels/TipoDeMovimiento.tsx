@@ -345,7 +345,7 @@ export function TipoDeMovimientoMandato() {
             //       ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
             //       : "",
             // });
-            // cleanTipoMovimiento();
+             cleanTipoMovimientoNew();
           }}
         >
           Agregar
@@ -977,7 +977,6 @@ export function TipoDeMovimientoMandato() {
                       </StyledTableCell>
 
 
-
                       {/* Porcentaje Afectado Sobre el Total de Ingreso */}
                       <StyledTableCell align="center">
                         <TextField
@@ -995,8 +994,8 @@ export function TipoDeMovimientoMandato() {
                       <StyledTableCell align="center">
                         <TextField
                           type="number"
-                          disabled={row.mandatario.Descripcion.toLowerCase() !== "gobierno estatal"}
-                          value={row.mandatario.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
+                          disabled={row.tipoEntePublicoObligado.Descripcion.toLowerCase() !== "gobierno estatal"}
+                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
                             updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
@@ -1014,7 +1013,7 @@ export function TipoDeMovimientoMandato() {
                               //let auxArray = [...tablaTipoMovimientoFideicomisoNew];
 
                               //addPorcentaje(auxArray);
-                              removeTipoMovimiento(index);
+                              removeTipoMovimientoNew(index);
                             }}
                           >
                             <DeleteIcon />

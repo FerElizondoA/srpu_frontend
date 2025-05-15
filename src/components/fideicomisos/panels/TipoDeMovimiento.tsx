@@ -232,6 +232,11 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.updateTipoMovimientoField
   );
 
+  const DetallePorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.DetallePorcentajeAcumulado
+  );
+
+  const [porcentajeAcumulado, setPorcentajeAcumulado] = useState("");
   
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -381,6 +386,13 @@ export function TipoDeMovimientoFideicomiso() {
   
   }, [tablaTipoMovimientoFideicomisoNew])
 
+useEffect(() => {
+  
+
+  // console.log("UseEffect porcentajeacumulado", porcentajeAcumulado);
+  console.log("UseEffect tipoFideicomitente",tipoMovimientoFideicomisoNew.tipoFideicomitente );
+  console.log("UseEffect fideicomitente",tipoMovimientoFideicomisoNew.fideicomitente );
+}, [tipoMovimientoFideicomisoNew.tipoFideicomitente, tipoMovimientoFideicomisoNew.fideicomitente])
 
   return (
     <Grid
@@ -625,6 +637,8 @@ export function TipoDeMovimientoFideicomiso() {
                   Descripcion: text.Descripcion,
                 },
               });
+
+              DetallePorcentajeAcumulado(text.Id, setPorcentajeAcumulado)
             }}
             value={tipoMovimientoFideicomisoNew.fideicomitente}
             renderInput={(params) => (

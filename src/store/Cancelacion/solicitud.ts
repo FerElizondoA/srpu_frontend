@@ -413,7 +413,6 @@ export const createSolicitudCancelacionSlice: StateCreator<
               }
             )
             .then(({ data }) => {
-              console.log("state.documentacionCancelacion[index].TipoArchivoJustificacion,", state.documentacionCancelacion[index].TipoArchivoJustificacion,)
               state.savePathDocCancelacion(
                 idRegistro,
                 data.RESPONSE.RUTA,

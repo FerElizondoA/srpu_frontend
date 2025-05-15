@@ -392,18 +392,47 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   createMandato: async (setLoading: Function) => {
     const state = useMandatoStore.getState();
 
-    let acumuladoEstado = 0;
-    let acumuladoMunicipio = 0;
-    let acumuladoOrganismo = 0;
+    // let acumuladoEstado = 0;
+    // let acumuladoMunicipio = 0;
+    // let acumuladoOrganismo = 0;
 
-    // eslint-disable-next-line array-callback-return
-    state.tablaTipoMovimientoMandato.map((v: any, index: number) => {
-      acumuladoEstado += parseFloat(
-        v.fondoIngresoAfectadoXGobiernoEstatal || 0
-      );
-      acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
-      acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
-    });
+    // // eslint-disable-next-line array-callback-return
+    // state.tablaTipoMovimientoMandato.map((v: any, index: number) => {
+    //   acumuladoEstado += parseFloat(
+    //     v.fondoIngresoAfectadoXGobiernoEstatal || 0
+    //   );
+    //   acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
+    //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
+    // });
+
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+      id,
+      tipoEntePublicoObligado,
+      mandatario,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    }) => ({
+      id,
+      tipoEntePublicoObligado,
+      mandatario,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    })
+    );
+        // Calcula la suma de AfectadoTotalIngreso
+        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
+          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
+        );
+    
+        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
+        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
+          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
+        );
+    
 
     await axios
       .post(
@@ -416,10 +445,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           TipoEntePublicoObligado:
             state.datosGenerales.mandante.Descripcion.split(" ")[0],
           MecanismoPago: "Mandato",
-          TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
-          AcumuladoEstado: acumuladoEstado,
-          AcumuladoMunicipios: acumuladoMunicipio,
-          AcumuladoOrganismos: acumuladoOrganismo,
+          TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
+
+          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
+          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
+
+
+          // AcumuladoEstado: acumuladoEstado,
+          // AcumuladoMunicipios: acumuladoMunicipio,
+          // AcumuladoOrganismos: acumuladoOrganismo,
+
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalMandato
           ),
@@ -454,18 +489,48 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     const state = useMandatoStore.getState();
     const cpState = useCortoPlazoStore.getState();
 
-    let acumuladoEstado = 0;
-    let acumuladoMunicipio = 0;
-    let acumuladoOrganismo = 0;
+    // let acumuladoEstado = 0;
+    // let acumuladoMunicipio = 0;
+    // let acumuladoOrganismo = 0;
 
-    // eslint-disable-next-line array-callback-return
-    state.tablaTipoMovimientoMandato.map((v: any, index: number) => {
-      acumuladoEstado += parseFloat(
-        v.fondoIngresoAfectadoXGobiernoEstatal || 0
-      );
-      acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
-      acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
-    });
+    // // eslint-disable-next-line array-callback-return
+    // state.tablaTipoMovimientoMandato.map((v: any, index: number) => {
+    //   acumuladoEstado += parseFloat(
+    //     v.fondoIngresoAfectadoXGobiernoEstatal || 0
+    //   );
+    //   acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
+    //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
+    // });
+
+    
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+      id,
+      tipoEntePublicoObligado,
+      mandatario,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    }) => ({
+      id,
+      tipoEntePublicoObligado,
+      mandatario,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    })
+    );
+        // Calcula la suma de AfectadoTotalIngreso
+        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
+          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
+        );
+    
+        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
+        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
+          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
+        );
+    
 
     await axios
       .put(
@@ -476,10 +541,15 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           FechaMandato: state.datosGenerales.fechaMandato,
           Mandatario: state.datosGenerales.mandatario.Descripcion,
           MunicipioOrganismoMandante: state.datosGenerales.mandante.Descripcion,
-          TipoMovimiento: JSON.stringify(state.tablaTipoMovimientoMandato),
-          AcumuladoEstado: acumuladoEstado,
-          AcumuladoMunicipios: acumuladoMunicipio,
-          AcumuladoOrganismos: acumuladoOrganismo,
+          TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
+
+
+          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
+          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
+
+          // AcumuladoEstado: acumuladoEstado,
+          // AcumuladoMunicipios: acumuladoMunicipio,
+          // AcumuladoOrganismos: acumuladoOrganismo,
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalMandato
           ),

@@ -62,7 +62,7 @@ export function HomePage() {
       </Grid>
 
 
-      <Grid  className="FondoBotonesEquipo" >
+      <Grid className="FondoBotonesEquipo" >
         <Grid container className="lista-botones">
           {listaBotones.map((boton) => (
             <Button className="boton-prueba">
