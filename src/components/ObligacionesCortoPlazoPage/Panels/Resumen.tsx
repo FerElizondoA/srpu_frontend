@@ -192,7 +192,7 @@ export function Resumen({
       value: MunicipiouOrganismo.Organismo,
     },
     {
-      label: "Fecha de Contratación (Encabezado)",
+      label: "Fecha de Contratación",
       value: FechadeContratación,
     },
     {
@@ -203,7 +203,7 @@ export function Resumen({
 
   const infoGeneral: HeadLabels[] = [
     {
-      label: "Fecha de Contratación (Informacion General)",
+      label: "Fecha de Contratación",
       value: FechadeContratación,
     },
     {

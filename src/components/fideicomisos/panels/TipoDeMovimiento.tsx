@@ -31,6 +31,7 @@ import {
   IBeneficiarioFideicomiso,
   IDeudorFideicomiso,
   IDeudorFideicomisoNew,
+  IPorcentajeAcumulados,
 } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -228,16 +229,45 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.setBeneficiarioNew
   );
 
+  const porcentajeAcumuladoRegistros: IPorcentajeAcumulados = useFideicomisoStore(
+    (state) => state.porcentajeAcumuladoRegistros
+  );
+
+  const setPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.setPorcentajeAcumulado
+  );
+
+  const arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[] = useFideicomisoStore(
+    (state) => state.arregloPorcetajesAcumuladosRegistros
+  );
+
+
+
+  const addArregloPorcetajesAcumuladosRegistros: Function = useFideicomisoStore(
+    (state) => state.addArregloPorcetajesAcumuladosRegistros
+  );
+
+
+
+
   const updateTipoMovimientoField: Function = useFideicomisoStore(
     (state) => state.updateTipoMovimientoField
   );
 
-  const DetallePorcentajeAcumulado: Function = useFideicomisoStore(
-    (state) => state.DetallePorcentajeAcumulado
+  const DetallePorcentajesAcumulados: Function = useFideicomisoStore(
+    (state) => state.DetallePorcentajesAcumulados
   );
 
-  const [porcentajeAcumulado, setPorcentajeAcumulado] = useState("");
-  
+  // const [porcentajeAcumulado, setPorcentajeAcumulado] = useState({
+  //   IdEntePublicoObligado: "",
+  //   IdTipoEntePublicoObligado: "",
+  //   NombreEntePublico: "",
+  //   AfectadoTotalIngreso: 0.0,
+  //   EquivalenciaCorrespondienteMunicipios: 0.0,
+  // });
+
+
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -357,15 +387,16 @@ export function TipoDeMovimientoFideicomiso() {
             width: "15vh",
           }}
           onClick={() => {
+
             addTipoMovimientoNew({
               id: tipoMovimientoFideicomisoNew.id,
               tipoFideicomitente: tipoMovimientoFideicomisoNew.tipoFideicomitente,
               fideicomitente: tipoMovimientoFideicomisoNew.fideicomitente,
               tipoFuente: tipoMovimientoFideicomisoNew.tipoFuente,
               fondoIngreso: tipoMovimientoFideicomisoNew.fondoIngreso,
-            });
 
-
+            })
+            addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
             cleanTipoMovimientoNew();
           }}
         >
@@ -376,23 +407,17 @@ export function TipoDeMovimientoFideicomiso() {
   };
 
   useEffect(() => {
-    console.log("TipoMovimientoFideicomisoNew", tipoMovimientoFideicomisoNew);
-  
-  }, [tipoMovimientoFideicomisoNew])
+    console.log("Porcentaje Acumulado", porcentajeAcumuladoRegistros);
+  }, [porcentajeAcumuladoRegistros])
 
-  
+
   useEffect(() => {
-    console.log("tablaTipoMovimientoFideicomisoNew", tablaTipoMovimientoFideicomisoNew);
-  
-  }, [tablaTipoMovimientoFideicomisoNew])
 
-useEffect(() => {
-  
 
-  // console.log("UseEffect porcentajeacumulado", porcentajeAcumulado);
-  console.log("UseEffect tipoFideicomitente",tipoMovimientoFideicomisoNew.tipoFideicomitente );
-  console.log("UseEffect fideicomitente",tipoMovimientoFideicomisoNew.fideicomitente );
-}, [tipoMovimientoFideicomisoNew.tipoFideicomitente, tipoMovimientoFideicomisoNew.fideicomitente])
+    // console.log("UseEffect porcentajeacumulado", porcentajeAcumulado);
+    console.log("UseEffect tipoFideicomitente", tipoMovimientoFideicomisoNew.tipoFideicomitente);
+    console.log("UseEffect fideicomitente", tipoMovimientoFideicomisoNew.fideicomitente);
+  }, [tipoMovimientoFideicomisoNew.tipoFideicomitente, tipoMovimientoFideicomisoNew.fideicomitente])
 
   return (
     <Grid
@@ -638,7 +663,7 @@ useEffect(() => {
                 },
               });
 
-              DetallePorcentajeAcumulado(text.Id, setPorcentajeAcumulado)
+              DetallePorcentajesAcumulados(text.Id, setPorcentajeAcumulado)
             }}
             value={tipoMovimientoFideicomisoNew.fideicomitente}
             renderInput={(params) => (

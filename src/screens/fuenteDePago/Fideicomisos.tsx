@@ -352,7 +352,7 @@ export function Fideicomisos() {
           </Button>
         </Grid>
       </Grid> */}
-      <Grid container display={"flex"} justifyContent={"space-evenly"} mb={2}>
+      {/* <Grid container display={"flex"} justifyContent={"space-evenly"} mb={2}>
 
         <Typography sx={{ ...queries.text }}>
           Porcentaje Afectado Total Ingreso:{" "}
@@ -364,7 +364,7 @@ export function Fideicomisos() {
           <strong>{SumEquivalenciaCorrespondienteMunicipios.toFixed(3)} %</strong>
         </Typography>
 
-      </Grid>
+      </Grid> */}
 
       <Grid
         container

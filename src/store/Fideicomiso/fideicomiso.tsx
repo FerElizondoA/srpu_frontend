@@ -149,8 +149,8 @@ export interface FideicomisoSlice {
   modificaFideicomiso: (setLoading: Function) => void;
   deleteFideicomiso: (Id: string) => void;
 
-  createPorcentajeAcumualdo: () => void;
-  DetallePorcentajeAcumulado: (IdEntePublicoObligado: string, setPorcentajeAcumulado: Function) => void;
+  createPorcentajesAcumulados: (stateOpen: Function) => void;
+  DetallePorcentajesAcumulados: (IdEntePublicoObligado: string) => void;
 
   saveFilesFideicomiso: (
     idRegistro: string,
@@ -207,6 +207,11 @@ export interface FideicomisoSlice {
     value: number
   ) => void;
 
+  porcentajeAcumuladoRegistros: IPorcentajeAcumulados
+  setPorcentajeAcumulado: (IPorcentajeAcumulados: IPorcentajeAcumulados) => void;
+
+  arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[];
+  addArregloPorcetajesAcumuladosRegistros: (arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados) => void;
 
   beneficiarioNew: IBeneficiarioFideicomiso;
   setBeneficiarioNew: (beneficiarioNew: IBeneficiarioFideicomiso) => void;
@@ -264,6 +269,30 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     fechaAlta: new Date(),
   },
 
+  porcentajeAcumuladoRegistros: {
+    IdEntePublicoObligado: "",
+    IdTipoEntePublicoObligado: "",
+    NombreEntePublico: "",
+    AfectadoTotalIngreso: 0.0,
+    EquivalenciaCorrespondienteMunicipios: 0.0,
+  },
+
+  setPorcentajeAcumulado: (porcentajeAcumuladoRegistros: IPorcentajeAcumulados) => {
+    set((state) => ({
+      porcentajeAcumuladoRegistros: porcentajeAcumuladoRegistros,
+    }));
+  },
+
+  arregloPorcetajesAcumuladosRegistros: [],
+
+  addArregloPorcetajesAcumuladosRegistros: (arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados) => {
+    set((state) => ({
+      arregloPorcetajesAcumuladosRegistros: [
+        ...state.arregloPorcetajesAcumuladosRegistros,
+        arregloPorcetajesAcumuladosRegistros,
+      ],
+    }));
+  },
   tablaTipoMovimientoFideicomisoNew: [],
 
   setBeneficiarioNew: (beneficiarioNew: IBeneficiarioFideicomiso) => {
@@ -607,88 +636,142 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         setState(r);
       });
   },
-  DetallePorcentajeAcumulado: (IdEntePublicoObligado: string, setPorcentajeAcumulado: Function) => {
+  DetallePorcentajesAcumulados: (IdEntePublicoObligado: string
+    //setMensaje: Function
+  ) => {
+    const state = useFideicomisoStore.getState();
     axios
-      .get( //MODIFICALO
+      .get(
         process.env.REACT_APP_APPLICATION_BACK + "/get-PorcentajesAcumulados",
         {
           params: {
-            IdEntePublicoObligado: IdEntePublicoObligado
+            IdEntePublicoObligado,
           },
           headers: {
             Authorization: localStorage.getItem("jwtToken"),
           },
-        })
-
+        }
+      )
       .then(({ data }) => {
-        let r = data.data;
-
-        setPorcentajeAcumulado(r)
-
-        console.log("PORCENTAJE ACUMULADO", r)
+        if (data.mensaje) {
+          console.log("MENSAJE DEL BACKEND:", data.mensaje);
+          //setMensaje(data.mensaje); // puedes mostrarlo en pantalla
+          //state.setPorcentajeAcumulado(); // limpia
+        } else {
+          console.log("PORCENTAJE ACUMULADO", data.data);
+          state.setPorcentajeAcumulado(data.data);
+          // setMensaje(""); // limpia mensaje
+        }
+      })
+      .catch((err) => {
+        console.error("Error al obtener porcentaje:", err);
+        //setMensaje("Error al obtener información del servidor.");
       });
   },
-
-  createPorcentajeAcumualdo: async () => {
+  createPorcentajesAcumulados: async (stateOpen: Function) => {
     const state = useFideicomisoStore.getState();
-    //const stateSaveFiles = useCortoPlazoStore.getState();
-console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimientoFideicomisoNew)
-    return await state.tablaTipoMovimientoFideicomisoNew.map((v: any, index: number) => {
-      return setTimeout(() => {
 
-        if (state.tablaTipoMovimientoFideicomisoNew.length !== 0) {
-          return axios.post(process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
-            {
-              IdTipoEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].tipoFideicomitente.Id,
-              IdEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Id,
-              NombreFideicomitente: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Descripcion,
-              AfectadoTotalIngreso: state.tablaTipoMovimientoFideicomisoNew[index].AfectadoTotalIngreso,
-              EquivalenciaCorrespondienteMunicipios: state.tablaTipoMovimientoFideicomisoNew[index].EquivalenciaCorrespondienteMunicipios,
-              // CreadoPor: localStorage.getItem("IdUsuario"),
-            },
-            {
-              headers: {
-                Authorization: localStorage.getItem("jwtToken"),
-              },
-            }
-          ).then(({ data }) => {
-            console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
-          })
-            .catch((data) => {
-              console.log("ERROR DATA", data.data);
-            });
+    const peticiones = state.tablaTipoMovimientoFideicomisoNew.map((item) => {
+
+      console.log("ITEM", item)
+      return axios.post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+        {
+          IdTipoEntePublicoObligado: item.tipoFideicomitente.Id,
+          IdEntePublicoObligado: item.fideicomitente.Id,
+          NombreEntePublico: item.fideicomitente.Descripcion,
+          AfectadoTotalIngreso: item.AfectadoTotalIngreso,
+          EquivalenciaCorrespondienteMunicipios: item.EquivalenciaCorrespondienteMunicipios || 0.0,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
         }
+      ).then(({ data }) => {
+        console.log("DATA CREADA PORCENTAJE ACUMULADO", data?.data);
+        return data;
+      }).catch((error) => {
+        console.log("data?.data", error?.data)
+        console.error("ERROR DATA", error?.response?.data || error.message);
+        throw error; // Esto es importante para que Promise.all detecte errores
+      });
+    });
 
-      }, 2000)
-    })
-
-    // await axios
-    //   .post(
-    //     process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
-    //     {
-    //       IdTipoEntePublicoObligado: state.datosGenerales.numeroFideicomiso,
-    //       IdEntePublicoObligado: state.datosGenerales.fechaFideicomiso,
-    //       NombreFideicomitente: state.datosGenerales.tipoFideicomiso.Descripcion,
-    //       AfectadoTotalIngreso: state.datosGenerales.fiduciario.Descripcion,
-    //       EquivalenciaCorrespondienteMunicipios: JSON.stringify(state.tablaFideicomisario),
-    //       // CreadoPor: localStorage.getItem("IdUsuario"),
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: localStorage.getItem("jwtToken"),
-    //       },
-    //     }
-    //   )
-    //   .then(({ data }) => {
-    //     //console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
-
-
-    //   })
-    //   .catch((data) => {
-    //     //console.log("ERROR DATA", data);
-
-    //   });
+    try {
+      await Promise.all(peticiones); // Espera que todas las peticiones terminen
+      console.log("✅ Todos los porcentajes acumulados fueron creados");
+      state.createFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+    } catch (error) {
+      console.error("❌ Error al crear uno o más porcentajes acumulados:", error);
+      // Puedes mostrar un mensaje al usuario si quieres
+    }
   },
+
+
+
+  // createPorcentajeAcumualdo: async (stateOpen: Function) => {
+  //   const state = useFideicomisoStore.getState();
+  //   //const stateSaveFiles = useCortoPlazoStore.getState();
+  //   console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimientoFideicomisoNew)
+  //   return await state.tablaTipoMovimientoFideicomisoNew.map((v: any, index: number) => {
+  //     return setTimeout(() => {
+
+  //       if (state.tablaTipoMovimientoFideicomisoNew.length !== 0) {
+  //         return axios.post(process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+  //           {
+  //             IdTipoEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].tipoFideicomitente.Id,
+  //             IdEntePublicoObligado: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Id,
+  //             NombreFideicomitente: state.tablaTipoMovimientoFideicomisoNew[index].fideicomitente.Descripcion,
+  //             AfectadoTotalIngreso: state.tablaTipoMovimientoFideicomisoNew[index].AfectadoTotalIngreso,
+  //             EquivalenciaCorrespondienteMunicipios: state.tablaTipoMovimientoFideicomisoNew[index].EquivalenciaCorrespondienteMunicipios,
+  //             // CreadoPor: localStorage.getItem("IdUsuario"),
+  //           },
+  //           {
+  //             headers: {
+  //               Authorization: localStorage.getItem("jwtToken"),
+  //             },
+  //           }
+  //         ).then(({ data }) => {
+
+  //           state.createFideicomiso(stateOpen)
+  //           console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
+  //         })
+  //           .catch((data) => {
+  //             console.log("ERROR DATA", data.data);
+  //           });
+  //       }
+
+  //     }, 2000)
+  //   })
+
+  //   // await axios
+  //   //   .post(
+  //   //     process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+  //   //     {
+  //   //       IdTipoEntePublicoObligado: state.datosGenerales.numeroFideicomiso,
+  //   //       IdEntePublicoObligado: state.datosGenerales.fechaFideicomiso,
+  //   //       NombreFideicomitente: state.datosGenerales.tipoFideicomiso.Descripcion,
+  //   //       AfectadoTotalIngreso: state.datosGenerales.fiduciario.Descripcion,
+  //   //       EquivalenciaCorrespondienteMunicipios: JSON.stringify(state.tablaFideicomisario),
+  //   //       // CreadoPor: localStorage.getItem("IdUsuario"),
+  //   //     },
+  //   //     {
+  //   //       headers: {
+  //   //         Authorization: localStorage.getItem("jwtToken"),
+  //   //       },
+  //   //     }
+  //   //   )
+  //   //   .then(({ data }) => {
+  //   //     //console.log("DATA CREADA PORCENTAJE ACUMULADO", data.data);
+
+
+  //   //   })
+  //   //   .catch((data) => {
+  //   //     //console.log("ERROR DATA", data);
+
+  //   //   });
+  // },
 
   createFideicomiso: async (stateOpen: Function) => {
     const state = useFideicomisoStore.getState();
@@ -786,7 +869,7 @@ console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimientoFideicomiso
       )
       .then(({ data }) => {
         //const stateNew = useCortoPlazoStore.getState();
-        state.createPorcentajeAcumualdo();
+        //state.createPorcentajeAcumualdo();
         state.setIdFideicomiso(data.data.Id);
         console.log("ID FIDEICOMISO", state.idFideicomiso);
 

@@ -319,7 +319,7 @@ export function Resumen({ coments }: { coments: boolean }) {
       value: MunicipiouOrganismo.Organismo,
     },
     {
-      label: "Fecha de Contratación (Encabezado)",
+      label: "Fecha de Contratación",
       value: FechadeContratación,
     },
     {
@@ -330,7 +330,7 @@ export function Resumen({ coments }: { coments: boolean }) {
 
   const infoGeneral: HeadLabels[] = [
     {
-      label: "Fecha de Contratación (Informacion General)",
+      label: "Fecha de Contratación",
       value: FechadeContratación,
     },
     {

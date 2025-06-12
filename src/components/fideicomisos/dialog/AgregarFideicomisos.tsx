@@ -5,6 +5,9 @@ import {
   Backdrop,
   Button,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   Tab,
@@ -27,7 +30,9 @@ import {
 import { DatoGeneralesFideicomiso } from "../panels/DatosGeneralesFideicomiso";
 import { SoporteDocumentalFideicomiso } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoFideicomiso } from "../panels/TipoDeMovimiento";
-import { IDatosGeneralesFideicomiso, IDeudorFideicomiso, IDeudorFideicomisoNew, IFideicomisario, ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { IDatosGeneralesFideicomiso, IDeudorFideicomiso, IDeudorFideicomisoNew, IFideicomisario, IPorcentajeAcumulados, ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import Swal from "sweetalert2";
+
 
 export function AgregarFideicomisos({
   handler,
@@ -53,6 +58,12 @@ export function AgregarFideicomisos({
   const createFideicomiso: Function = useFideicomisoStore(
     (state) => state.createFideicomiso
   );
+
+  const createPorcentajesAcumulados: Function = useFideicomisoStore(
+    (state) => state.createPorcentajesAcumulados
+  );
+
+
 
   const modificarFideicomiso: Function = useFideicomisoStore(
     (state) => state.modificaFideicomiso
@@ -87,13 +98,119 @@ export function AgregarFideicomisos({
   const datosGenerales: IDatosGeneralesFideicomiso = useFideicomisoStore(
     (state) => state.datosGenerales
   );
-  
+
   const tablaTipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[] = useFideicomisoStore(
     (state) => state.tablaTipoMovimientoFideicomisoNew
   );
 
   const tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[] =
-  useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
+    useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
+
+
+
+  const arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[] = useFideicomisoStore(
+    (state) => state.arregloPorcetajesAcumuladosRegistros
+  );
+
+
+  const addArregloPorcetajesAcumuladosRegistros: Function = useFideicomisoStore(
+    (state) => state.addArregloPorcetajesAcumuladosRegistros
+  );
+
+  const [erroresPorcentajeAcumulado, setErroresPorcentajesAcumulados] = useState<Array<string>>([])
+
+  const CreacionFideicomisos = (errores: string[]) => {
+    // ✅ SOLO AQUÍ evaluamos si hay errores, después de haber recorrido todos
+    console.log(" CreacionFideicomisos errores", errores)
+    // if (errores.length > 0) {
+    //   console.warn("❌ Errores encontrados:");
+    //   errores.forEach(e => console.warn(e));
+    //   alert("No se puede guardar. Hay entes con porcentajes que superan el 100%. Revisa la consola.");
+
+    // }
+    if (errores.length === 0) {
+      console.log("✅ Todos los registros son válidos. Procediendo a guardar...");
+      if (IdFideicomiso === "") {
+        createPorcentajesAcumulados(handler());
+      } else {
+        modificarFideicomiso();
+      }
+    } else {
+      console.warn("❌ Errores encontrados:");
+      //errores.forEach(e => console.warn(e));
+
+      setOpenPorcentajeAcumulado(true)
+      //alert("No se puede guardar. Hay entes con porcentajes que superan el 100%. Revisa la consola.");
+    }
+  }
+
+  const validarPorcentajesAntesDeGuardar = (
+    nuevosRegistros: IDeudorFideicomisoNew[],
+    arregloBase: IPorcentajeAcumulados[],
+
+  ) => {
+    console.log("nuevosRegistros:", nuevosRegistros);
+    console.log("arregloBase:", arregloBase);
+    const limpiarNumero = (valor: string | number | undefined): number => {
+      return Number((valor ?? "0").toString().trim());
+    };
+
+    const errores: string[] = [];
+
+    nuevosRegistros.forEach((nuevo) => {
+      const existente = arregloBase.find(
+        (base) => base.IdEntePublicoObligado === nuevo.fideicomitente.Id
+      );
+
+
+      const sumaAfectadoTotal =
+        limpiarNumero(existente?.AfectadoTotalIngreso) +
+        limpiarNumero(nuevo.AfectadoTotalIngreso);
+
+      const sumaEquivalencia =
+        limpiarNumero(existente?.EquivalenciaCorrespondienteMunicipios) +
+        limpiarNumero(nuevo.EquivalenciaCorrespondienteMunicipios);
+
+
+      console.log("DEBUG => existente.AfectadoTotalIngreso:", existente?.AfectadoTotalIngreso);
+      console.log("DEBUG => nuevo.AfectadoTotalIngreso:", nuevo.AfectadoTotalIngreso);
+      console.log("DEBUG => suma:", sumaAfectadoTotal);
+
+      console.log("ID que buscas:", nuevo.fideicomitente.Id);
+      console.log("IDs existentes en arregloBase:", arregloBase.map(b => b.IdEntePublicoObligado));
+
+      if (sumaAfectadoTotal > 100) {
+        errores.push(
+          `${nuevo.fideicomitente.Descripcion}: supera el 100% en AfectadoTotalIngreso (${sumaAfectadoTotal}%).`
+        );
+      }
+
+      if (sumaEquivalencia > 100) {
+        errores.push(
+          `${nuevo.fideicomitente.Descripcion}: supera el 100% en EquivalenciaCorrespondienteMunicipios (${sumaEquivalencia}%).`
+        );
+      }
+    });
+
+    setErroresPorcentajesAcumulados(errores)
+
+    return CreacionFideicomisos(errores);
+  };
+
+
+  const buttonAgregarNew = () => {
+    console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros)
+    console.log("tablaTipoMovimientoFideicomisoNew", tablaTipoMovimientoFideicomisoNew)
+    if (tablaTipoMovimientoFideicomisoNew.length > 0 && arregloPorcetajesAcumuladosRegistros.length > 0) {
+
+      validarPorcentajesAntesDeGuardar(tablaTipoMovimientoFideicomisoNew,
+        arregloPorcetajesAcumuladosRegistros
+      )
+    }
+    setTabIndex(0);
+  }
+
+  const [openDialogPorcentajeAcumulado, setOpenPorcentajeAcumulado] = useState(false)
 
   useEffect(() => {
     getOrganismos();
@@ -112,7 +229,7 @@ export function AgregarFideicomisos({
               edge="start"
               onClick={() => {
                 handler(false);
-                
+
               }}
               sx={{ color: "white" }}
             >
@@ -131,33 +248,36 @@ export function AgregarFideicomisos({
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
-              disabled = {
-                tablaTipoMovimientoFideicomisoNew.length <= 0 ||
-                tablaFideicomisario.length <= 0 ||
-                datosGenerales.numeroFideicomiso === "" ||
-                datosGenerales.tipoFideicomiso.Descripcion === "" ||
-                datosGenerales.fiduciario.Descripcion === "" ||
-                tablaSoporteDocumentalFideicomiso.length <= 0
-              }
+                disabled={
+                  tablaTipoMovimientoFideicomisoNew.length <= 0 ||
+                  tablaFideicomisario.length <= 0 ||
+                  datosGenerales.numeroFideicomiso === "" ||
+                  datosGenerales.tipoFideicomiso.Descripcion === "" ||
+                  datosGenerales.fiduciario.Descripcion === "" ||
+                  tablaSoporteDocumentalFideicomiso.length <= 0
+                }
                 sx={queries.buttonContinuar}
                 onClick={() => {
+                  buttonAgregarNew()
 
-                  if (IdFideicomiso === "") {
-                    createFideicomiso(handler())
-                   // setLoading(true);
-                    // createFideicomiso(() => {
-                    //  // setLoading(false);
-                    //   handler(false);
-                    // });
-                  } else if (IdFideicomiso !== "") {
-                    modificarFideicomiso();
-                   // setLoading(true);
-                    // modificarFideicomiso(() => {
-                    //  // setLoading(false);
-                    //   handler(false);
-                    // });
-                  }
-                  setTabIndex(0);
+                  // if (IdFideicomiso === "") {
+                  //   //createFideicomiso(handler())
+                  //   createPorcentajesAcumulados(handler())
+
+                  //   // setLoading(true);
+                  //   // createFideicomiso(() => {
+                  //   //  // setLoading(false);
+                  //   //   handler(false);
+                  //   // });
+                  // } else if (IdFideicomiso !== "") {
+                  //   modificarFideicomiso();
+                  //   // setLoading(true);
+                  //   // modificarFideicomiso(() => {
+                  //   //  // setLoading(false);
+                  //   //   handler(false);
+                  //   // });
+                  // }
+                  // setTabIndex(0);
                 }}
               >
                 <Typography
@@ -198,6 +318,52 @@ export function AgregarFideicomisos({
 
         {tabIndex === 2 && <SoporteDocumentalFideicomiso />}
       </Grid>
+
+      <Dialog open={openDialogPorcentajeAcumulado}>
+        <DialogTitle sx={queries.bold_text}>
+          Fideicomitentes: Limite superado
+        </DialogTitle>
+        <DialogContent>
+
+          {erroresPorcentajeAcumulado.map((e, idx) => {
+            const division = e.indexOf(":");
+
+            const markedText =
+              division !== -1 ? e.substring(0, division + 1) : e;
+
+            const restText =
+              division !== -1 ? e.substring(division + 1) : "";
+            return (
+
+              <Typography color={"red"} sx={{ fontSize: ".9rem" }} key={idx}>
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  * {markedText}
+                </span>
+
+                <span style={{ color: "red" }}>
+                  {restText} <br /> <br />
+                </span>
+              </Typography>
+              // <Typography key={idx} sx={{ mb: 1 }}>
+              //   {e}
+              // </Typography>
+            );
+          })}
+
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenPorcentajeAcumulado(false)
+            }}
+          >
+            Cerrar
+          </Button>
+
+        </DialogActions>
+      </Dialog>
 
       {/* <ThemeProvider theme={buttonTheme}>
         <Backdrop
