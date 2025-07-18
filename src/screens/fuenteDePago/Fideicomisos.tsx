@@ -163,6 +163,12 @@ export function Fideicomisos() {
     (state) => state.getSumaPorcentajeAcumulado
   );
 
+    const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+
+  
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -236,32 +242,32 @@ export function Fideicomisos() {
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
-  const [sumaAfectatoToalIngreso, setSumaAfectatoToalIngreso] = useState(0);
-  const [SumEquivalenciaCorrespondienteMunicipios, setSumEquivalenciaCorrespondienteMunicipios] = useState(0);
+  // const [sumaAfectatoToalIngreso, setSumaAfectatoToalIngreso] = useState(0);
+  // const [SumEquivalenciaCorrespondienteMunicipios, setSumEquivalenciaCorrespondienteMunicipios] = useState(0);
 
-  useEffect(() => {
-    setSumaAfectatoToalIngreso(
-      fideicomisos.reduce(
-        (acumuladorIngresoTotal, item) =>
-          acumuladorIngresoTotal +
-          parseFloat(item.SumAfectadoTotalIngreso?.toString() || "0"),
-        0
-      )
-    );
-    setSumEquivalenciaCorrespondienteMunicipios(
-      fideicomisos.reduce(
-        (acumuladorMunicipios, item) =>
-          acumuladorMunicipios +
-          parseFloat(item.SumEquivalenciaCorrespondienteMunicipios?.toString() || "0"),
-        0
-      )
-    );
-  }, [fideicomisos]);
+  // useEffect(() => {
+  //   setSumaAfectatoToalIngreso(
+  //     fideicomisos.reduce(
+  //       (acumuladorIngresoTotal, item) =>
+  //         acumuladorIngresoTotal +
+  //         parseFloat(item.SumAfectadoTotalIngreso?.toString() || "0"),
+  //       0
+  //     )
+  //   );
+  //   setSumEquivalenciaCorrespondienteMunicipios(
+  //     fideicomisos.reduce(
+  //       (acumuladorMunicipios, item) =>
+  //         acumuladorMunicipios +
+  //         parseFloat(item.SumEquivalenciaCorrespondienteMunicipios?.toString() || "0"),
+  //       0
+  //     )
+  //   );
+  // }, [fideicomisos]);
 
-  useEffect(() => {
-    console.log("sumaAfectatoToalIngreso", sumaAfectatoToalIngreso);
-    console.log("SumEquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
-  }, [sumaAfectatoToalIngreso, SumEquivalenciaCorrespondienteMunicipios])
+  // useEffect(() => {
+  //   console.log("sumaAfectatoToalIngreso", sumaAfectatoToalIngreso);
+  //   console.log("SumEquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
+  // }, [sumaAfectatoToalIngreso, SumEquivalenciaCorrespondienteMunicipios])
 
 
   return (
@@ -352,7 +358,7 @@ export function Fideicomisos() {
           </Button>
         </Grid>
       </Grid> */}
-      <Grid container display={"flex"} justifyContent={"space-evenly"} mb={2}>
+      {/* <Grid container display={"flex"} justifyContent={"space-evenly"} mb={2}>
 
         <Typography sx={{ ...queries.text }}>
           Porcentaje Afectado Total Ingreso:{" "}
@@ -364,7 +370,7 @@ export function Fideicomisos() {
           <strong>{SumEquivalenciaCorrespondienteMunicipios.toFixed(3)} %</strong>
         </Typography>
 
-      </Grid>
+      </Grid> */}
 
       <Grid
         container
@@ -485,6 +491,10 @@ export function Fideicomisos() {
                                   JSON.parse(row.TipoMovimiento),
                                   JSON.parse(row.SoporteDocumental)
                                 );
+
+                                //Tabla prueba antes de la edicion solo para comparar.
+                                setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
+                                // DetallePorcentajesAcumuladosMultiples()
 
                                 setOpenAgregarFideicomiso(
                                   !openAgregarFideicomisos

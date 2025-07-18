@@ -36,12 +36,12 @@ export const MostrarArchivos = ({
   useEffect(() => {
     valueTab === "Video"
       ? getFileByName(
-          process.env.REACT_APP_DOC_ROUTE + "/VIDEOS/TUTORIALES/",
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/VIDEOS/TUTORIALES/",
           infoFile.nombre,
           saveVideo
         )
       : getFileByName(
-          process.env.REACT_APP_DOC_ROUTE + "/GUIAS/",
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + "/GUIAS/",
           infoFile.nombre,
           savePDF
         );

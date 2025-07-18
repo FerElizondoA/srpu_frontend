@@ -90,14 +90,14 @@ export function DialogSolicitarModificacion({
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
             ? Object.keys(comentarios).length > 0
-              ? "7"
-              : "9"
-            : "5"
+              ? "8" //Antes 7
+              : "10" //Antes 9
+            : "6" //Antes 5
           : localStorage.getItem("Rol") === "Validador"
             ? accion === "enviar"
-              ? "6"
-              : "4"
-            : "5",
+              ? "7" //Antes 6
+              : "5" //Antes 4
+            : "6", //Antes 5
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!

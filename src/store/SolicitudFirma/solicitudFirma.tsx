@@ -468,34 +468,63 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
-          cambiaEstatus(
+              cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
-              ? "4"
-              : estatusPrevio.NoEstatus === "7" ? "8"
+              ? "4" // Revision // Asignaccion
+              : estatusPrevio.NoEstatus === "8" ? "9" // 7 y 8
                 : estatusPrevio.ControlInterno === "revision" &&
                   state.proceso === "actualizacion"
-                  ? "8"
-                  : estatusPrevio.NoEstatus === "9"
-                    ? "10"
-                    : estatusPrevio.NoEstatus === "10" &&
+                  ? "9" //Antes 8// 
+                  : estatusPrevio.NoEstatus === "10" // Antes 9
+                    ? "11" // Antes 10
+                    : estatusPrevio.NoEstatus === "11" && //Antes 10
                       state.proceso === "cancelacion"
-                      ? "12"
+                      ? "13" //Antes 12
                       : estatusPrevio.ControlInterno === "cancelacion" &&
                         state.proceso === "actualizacion"
-                        ? "16"
+                        ? "17" // Antes 16
                         : estatusPrevio.ControlInterno === "cancelado"
-                          ? "18"
-                          : estatusPrevio.NoEstatus === "19"
-                            ? "20"
-                            : estatusPrevio.NoEstatus === "23"
-                              ? "24"
-                              : estatusPrevio.NoEstatus === "25"
-                                ? "10"
-                                : "11",
+                          ? "19" // Antes 18
+                          : estatusPrevio.NoEstatus === "20" // Antes 19 
+                            ? "21" // Antes 20
+                            : estatusPrevio.NoEstatus === "24" // Antes 23
+                              ? "25" // Antes 24
+                              : estatusPrevio.NoEstatus === "26" // Antes 25
+                                ? "11" // Antes 10
+                                : "12", // Antes 11
             estatusPrevio.Id,
             inf.IdUsuario,
             //oficio
           );
+
+          // cambiaEstatus(
+          //   estatusPrevio.ControlInterno === "inscripcion"
+          //     ? "4" // Revision // Asignaccion
+          //     : estatusPrevio.NoEstatus === "7" ? "8"
+          //       : estatusPrevio.ControlInterno === "revision" &&
+          //         state.proceso === "actualizacion"
+          //         ? "8"
+          //         : estatusPrevio.NoEstatus === "9"
+          //           ? "10"
+          //           : estatusPrevio.NoEstatus === "10" &&
+          //             state.proceso === "cancelacion"
+          //             ? "12"
+          //             : estatusPrevio.ControlInterno === "cancelacion" &&
+          //               state.proceso === "actualizacion"
+          //               ? "16"
+          //               : estatusPrevio.ControlInterno === "cancelado"
+          //                 ? "18"
+          //                 : estatusPrevio.NoEstatus === "19"
+          //                   ? "20"
+          //                   : estatusPrevio.NoEstatus === "23"
+          //                     ? "24"
+          //                     : estatusPrevio.NoEstatus === "25"
+          //                       ? "10"
+          //                       : "11",
+          //   estatusPrevio.Id,
+          //   inf.IdUsuario,
+          //   //oficio
+          // );
 
         })
         .catch((err) => { });

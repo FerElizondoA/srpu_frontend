@@ -327,5 +327,9 @@ export const deleteDocPathSol=(IdSolicitud:string, docs?:any[])=>{
   })
     
   .then((response) => {})
-  .catch((err) => {alertaError('Error de eliminacion')});
+
+  .catch((err) => {
+    console.error('Error al eliminar el documento:', err);
+    alertaError('Error de eliminacion')
+  });
 }

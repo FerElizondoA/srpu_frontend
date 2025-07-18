@@ -151,7 +151,7 @@ export function ConfirmacionEnviarSolicitud({
         <Button
           onClick={() => {
             handler(false);
-            if (solicitud.Id !== "") {
+            if (solicitud.Id !== "") { //Si tiene ID
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
@@ -207,7 +207,7 @@ export function ConfirmacionEnviarSolicitud({
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }
-            } else {
+            } else { //Si no tiene ID
               if (localStorage.getItem("Rol") === "Verificador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),

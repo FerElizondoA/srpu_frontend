@@ -44,7 +44,7 @@ const heads: readonly Head[] = [
 ];
 export let errores: string[] = [];
 
-export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDocsEliminados[]}) {
+export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?: IDocsEliminados[] }) {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
@@ -74,12 +74,14 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
     (state) => state.reglasAplicables
   );
 
+  const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
+
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
   useEffect(() => {
     catalogoReglas.length <= 0 && getReglas();
-    console.log('arrDocsEliminados SolicitudInscripcion',arrDocsEliminados);
-    
+    console.log('arrDocsEliminados SolicitudInscripcion', arrDocsEliminados);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -340,6 +342,28 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
   };
 
+  useEffect(() => {
+    console.log("comentarios", comentarios)
+  }, [])
+
+  const [filtroBotonFinalizar, setFiltroBotonFinalizar] = useState(false)
+
+  useEffect(() => {
+    console.log("Se ejecuto el la funcion de comentarios.lenght")
+    console.log("Se ejecuto el la funcion de comentarios.lenght", comentarios)
+
+    if (comentarios.length > 0) {
+      console.log("Se ejecuto el la funcion de comentarios.lenght ya validad")
+      setFiltroBotonFinalizar(true)
+    } else {
+      setFiltroBotonFinalizar(false)
+    }
+
+
+  }, [comentarios.lenght > 0])
+
+
+
   return (
     <Grid container>
       <Grid
@@ -514,13 +538,13 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
                                 onChange={(v) => {
                                   v.target.checked
                                     ? setCheckObj({
-                                        ...checkObj,
-                                        [index]: true,
-                                      })
+                                      ...checkObj,
+                                      [index]: true,
+                                    })
                                     : setCheckObj({
-                                        ...checkObj,
-                                        [index]: false,
-                                      });
+                                      ...checkObj,
+                                      [index]: false,
+                                    });
 
                                   v.target.checked
                                     ? arrReglas.push(row.Descripcion)
@@ -610,23 +634,57 @@ export function SolicitudInscripcion({arrDocsEliminados}:{arrDocsEliminados?:IDo
                     </Grid>
                   ) : null}
 
-                  <Grid
-                    mb={2}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <Button
-                      sx={queries.buttonContinuarSolicitudInscripcion}
-                      onClick={() => {
-                        infoValidaciones("Enviar");
-                      }}
+                  {/* Ver QUE VALIDACION IBA AQUI */}
+
+                  {
+                    Object.keys(comentarios).length > 0 &&
+                     (localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador")
+                      ? null
+                      : <Grid
+                        mb={2}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <Button
+                          disabled={comentarios.lenght > 0}
+                          sx={queries.buttonContinuarSolicitudInscripcion}
+                          onClick={() => {
+                            infoValidaciones("Enviar");
+                          }}
+                        >
+                          {localStorage.getItem("Rol") === "Verificador"
+                            ? "Finalizar"
+                            : "Enviar"}
+                        </Button>
+                      </Grid>
+                  }
+
+                  {/* {comentarios == !{} &&
+                    (localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador")
+                    ? null
+
+
+                    : <Grid
+                      mb={2}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
                     >
-                      {localStorage.getItem("Rol") === "Verificador"
-                        ? "Finalizar"
-                        : "Enviar"}
-                    </Button>
-                  </Grid>
+                      <Button
+                        disabled={comentarios.lenght > 0}
+                        sx={queries.buttonContinuarSolicitudInscripcion}
+                        onClick={() => {
+                          infoValidaciones("Enviar");
+                        }}
+                      >
+                        {localStorage.getItem("Rol") === "Verificador"
+                          ? "Finalizar"
+                          : "Enviar"}
+                      </Button>
+                    </Grid>} */}
+
+
 
                   {openDialogBorrador && (
                     <DialogGuardarBorrador

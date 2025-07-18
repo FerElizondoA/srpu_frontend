@@ -213,7 +213,7 @@ export function Encabezado() {
               // }}
               onChange={(x) => {
                 let inputValue = x.target.value;
-                const expRegular = /^[a-zA-ZñÑ0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+                const expRegular = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9@#$%^&*()_+\-=<>?/|{}[\]\\:";'.,!\s]+$/;
                 if (
                   (inputValue.length <= 120 && expRegular.test(inputValue)) ||
                   x.target.value === ""
@@ -227,7 +227,6 @@ export function Encabezado() {
                     },
                   });
                   console.log("tipo de documento", tipoDocumento);
-
                 }
               }}
             ></TextField>

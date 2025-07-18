@@ -39,8 +39,8 @@ export const FirmaConUrl = () => {
   ) => {
     let users: string[] = [];
     let editor = "";
-
-    if (estatus === "4") {
+//TODOS LOS IF TENIAN MENOS 1 POR EL EL NUEVO ESTATUS 
+    if (estatus === "5") {
       usuarios
         .filter(
           (usr: any) =>
@@ -62,7 +62,7 @@ export const FirmaConUrl = () => {
       //   `Se ha registrado una solicitud de inscripción pendiente de revisión`,
       //   users
       // );
-    } else if (estatus === "8") {
+    } else if (estatus === "9") {
       editor = idCreador;
       //editor = "";
       // createNotification(
@@ -70,7 +70,7 @@ export const FirmaConUrl = () => {
       //   `${oficio} requiere modificaciones, ingresa al apartado Consulta de Solicitudes para ver más detalles`,
       //   [idCreador]
       // );
-    } else if (estatus === "9") {
+    } else if (estatus === "10") {
       editor = idCreador;
       //editor = "";
       usuarios
@@ -89,7 +89,7 @@ export const FirmaConUrl = () => {
       //   } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
       //   users
       // );
-    } else if (estatus === "10") {
+    } else if (estatus === "11") {
       // editor = idCreador;
       //editor = "";
       usuarios

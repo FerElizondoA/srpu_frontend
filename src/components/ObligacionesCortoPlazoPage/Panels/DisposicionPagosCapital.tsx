@@ -683,7 +683,7 @@ export function DisposicionPagosCapital() {
                         ? "Monto Original Contratado: " +
                         moneyMask(monto.toString()) +  // Formatear el monto
                         "; Monto restante: " +
-                        moneyMask((restante*100).toString()) // Formatear el restante
+                        moneyMask((restante * 100).toString()) // Formatear el restante
                         : ""
                       )
                     }
@@ -997,6 +997,8 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                      minDate={new Date(fechaContratacion)}
+                      maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                       sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) => {

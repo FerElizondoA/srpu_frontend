@@ -10,6 +10,7 @@ import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumento
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { useFideicomisoStore } from "../Fideicomiso/main";
+import { alertaInfo } from "../../avisosPAUA/componentes/Alertas";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -68,12 +69,23 @@ export interface SolicitudInscripcionSlice {
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
   IdSolicitudBorrador: string
+
+
+  comentariosSolicitudInscrpcion: { [key: string]: string };
+    setComentariosSolicitudInscrpcion: (comentario: any) => void;
+
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
+comentariosSolicitudInscrpcion:{},
 
+ setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
+    set((state) => ({
+      comentariosSolicitudInscrpcion: comentariosSolicitudInscrpcion,
+    }));
+  },
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => {
     set(() => ({ IdSolicitudBorrador: IdSolicitudBorrador }))
@@ -438,7 +450,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
               console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
 
             })
-            .catch((e) => { });
+            .catch((e) => {
+
+              alertaInfo("")
+             });
         } else {
           return null;
         }

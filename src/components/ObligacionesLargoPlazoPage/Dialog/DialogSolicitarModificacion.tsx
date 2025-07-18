@@ -69,7 +69,7 @@ export function DialogSolicitarModificacion({
     getListadoUsuarioRol(setUsuarios);
   }, [openState]);
 
-  const checkform = () => {
+  const checkform = () => { //Falta revisar los estatus
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
       addComentario(
         inscripcion.Id,
