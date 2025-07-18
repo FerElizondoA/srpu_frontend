@@ -17,7 +17,7 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { IFideicomisario } from "../../../store/Fideicomiso/fideicomiso";
+import { IDeudorFideicomisoNew, IFideicomisario } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
@@ -28,6 +28,7 @@ import {
   buttonTheme,
 } from "../../mandatos/dialog/AgregarMandatos";
 import { IDeudorInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { AgregarFideicomisos } from "../../fideicomisos/dialog/AgregarFideicomisos";
 
 interface Head {
   label: string;
@@ -45,7 +46,17 @@ const CatalogoMecanismo: Head[] = [
   },
 ];
 
-export function VehiculoDePago() {
+export function VehiculoDePago({
+  handler,
+  openState,
+  filtroCampoTipoFuente,
+  setFiltroCampoTipoFuente,
+}: {
+  handler: Function;
+  openState: boolean;
+  filtroCampoTipoFuente: IDeudorFideicomisoNew[],
+  setFiltroCampoTipoFuente: Function
+}) {
   const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
     (state) => state.getMecanismosVehiculosPago
   );
@@ -56,6 +67,7 @@ export function VehiculoDePago() {
   const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
     (state) => state.tipoMecanismoVehiculoPago
   );
+
   const setTipoMecanismoVehiculoPago: Function = useLargoPlazoStore(
     (state) => state.setTipoMecanismoVehiculoPago
   );
@@ -79,8 +91,31 @@ export function VehiculoDePago() {
     (state) => state.editarInstruccion
   );
 
+  const editarFideicomisoNew: Function = useFideicomisoStore(
+    (state) => state.editarFideicomisoNew
+  );
+
+
+
+
   const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
+  );
+
+
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
+  );
+
+  const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+  const getTiposFideicomiso: Function = useFideicomisoStore(
+    (state) => state.getTiposFideicomiso
+  );
+
+  const catalogoTiposDeFideicomiso: ICatalogo[] = useFideicomisoStore(
+    (state) => state.catalogoTiposDeFideicomiso
   );
 
   const sumaPorcentajeAcumulado: {
@@ -89,66 +124,161 @@ export function VehiculoDePago() {
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
+
+  const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
 
-  // const llenarFuentePago = (mecanismoPago: string) => {
-  //   let auxArray = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
-  //   auxArray.map((column: any) => {
-  //     return (
-  //       (column.acumuladoAfectacionGobiernoEstatalEntre100 = Number(
-  //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
-  //       ).toString()),
-  //       (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio = Number(
-  //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-  //       ).toString()),
-  //       (column.acumuladoAfectacionOrganismoEntre100 = Number(
-  //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-  //       ).toString())
-  //     );
-  //   });
+  const llenarFuentePago = (mecanismoPago: string) => {
+    let auxArray = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
+    auxArray.map((column: any) => {
+      return (
+        (column.acumuladoAfectacionGobiernoEstatalEntre100 = Number(
+          sumaPorcentajeAcumulado.SumaAcumuladoEstado
+        ).toString()),
+        (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio = Number(
+          sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+        ).toString()),
+        (column.acumuladoAfectacionOrganismoEntre100 = Number(
+          sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+        ).toString())
+      );
+    });
 
-  //   if (mecanismoPago === "Mandato") {
-  //     editarMandato(
-  //       mecanismoVehiculoPago.Id,
-  //       {
-  //         numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
-  //         fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
-  //         mandatario: catalogoOrganismos.filter(
-  //           (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandatario
-  //         )[0],
-  //         mandante: catalogoOrganismos.filter(
-  //           (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandante
-  //         )[0],
-  //       },
-  //       auxArray,
-  //       JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
-  //     );
+    if (mecanismoPago === "Mandato") {
+      editarMandato(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
+          fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
+          mandatario: catalogoOrganismos.filter(
+            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandatario
+          )[0],
+          mandante: catalogoOrganismos.filter(
+            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandante
+          )[0],
+        },
+        auxArray,
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
 
-  //     setOpenAgregarMandato(!openAgregarMandato);
-  //   } else {
-  //     editarInstruccion(
-  //       mecanismoVehiculoPago.Id,
-  //       {
-  //         numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
-  //         cuentaCLABE: mecanismoVehiculoPago.CLABE,
-  //         banco: mecanismoVehiculoPago.Banco,
-  //         fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
-  //       },
-  //       auxArray,
-  //       JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
-  //     );
+      handler(true);
+    } else if (mecanismoPago === "Instrucción Irrevocable") {
+      editarInstruccion(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
+          cuentaCLABE: mecanismoVehiculoPago.CLABE,
+          banco: mecanismoVehiculoPago.Banco,
+          fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
+        },
+        auxArray,
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
 
-  //     setOpenAgregarInstruccion(!openAgregarInstruccion);
-  //   }
-  // };
+      handler(true);
+    } else if (mecanismoPago === "Fideicomiso") {
+
+      editarFideicomisoNew(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroFideicomiso: mecanismoVehiculoPago.NumeroRegistro,
+          fechaFideicomiso: new Date(
+            mecanismoVehiculoPago.FechaRegistro
+          ),
+          tipoFideicomiso:
+            catalogoTiposDeFideicomiso.filter(
+              (v, index) =>
+                v.Descripcion === mecanismoVehiculoPago.TipoFideicomiso
+            )[0],
+          fiduciario: catalogoInstituciones.filter(
+            (v, index) =>
+              v.Descripcion === mecanismoVehiculoPago.Fiduciario
+          )[0],
+        },
+        JSON.parse(mecanismoVehiculoPago.Fideicomisario),
+        JSON.parse(mecanismoVehiculoPago.TipoMovimiento),
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
+      handler(true);
+    }
+  };
 
   const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
     (state) => state.tablaResumenMecanismoPago
-  )
+  );
   const setTablaResumenMecanismoPago: Function = useLargoPlazoStore(
     (state) => state.setTablaResumenMecanismoPago
-  )
+  );
+
+
+  //Para el Filtro y agregado de la tabla
+  const setTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
+    (state) => state.setTipoMovimientoFuentesPago
+  );
+
+  const tipoMovimientoFuentesPago: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tipoMovimientoFuentesPago
+  );
+
+  const cleanTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
+    (state) => state.cleanTipoMovimientoFuentesPago
+  );
+
+
+  const [opcionesFiltradasTipoFuente, setOpcionesFiltradasTipoFuente] = useState<ICatalogo[]>([]);
+
+  const catalogoTiposDeFuente: ICatalogo[] = useFideicomisoStore(
+    (state) => state.catalogoTiposDeFuente
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      console.log("Asingar Fuente - Tabla Asignar Fuente", filtroCampoTipoFuente);
+      filtradoOpcionesAsignarFuente();
+    }, 100); // 100ms suele ser suficiente
+
+    return () => clearTimeout(timeout);
+  }, [filtroCampoTipoFuente]);
+
+
+
+  const getFuentesPago: Function = useFideicomisoStore(
+    (state) => state.getFondosOIngresos
+  );
+
+  const getTiposDeFuente: Function = useFideicomisoStore(
+    (state) => state.getTiposDeFuente
+  );
+
+  const filtradoOpcionesAsignarFuente = () => {
+
+    setOpcionesFiltradasTipoFuente(catalogoTiposDeFuente.filter((opcion) => {
+      return filtroCampoTipoFuente.some((reg) =>
+        reg.id.toLowerCase().startsWith(opcion.Descripcion.toLowerCase())
+      );
+    }))
+    // const opcionesFiltradasTipoFuente = catalogoTiposDeFuente.filter((opcion) => {
+    //   return tipoMovimientoFuentesPago.some((reg) =>
+    //     reg.id.toLowerCase().startsWith(opcion.Descripcion.toLowerCase())
+    //   );
+    // });
+    console.log("Opciones filtradas", opcionesFiltradasTipoFuente);
+
+
+    return [opcionesFiltradasTipoFuente];
+  };
+
+  useEffect(() => {
+    console.log("✔️ tipoMovimientoFuentesPago actualizado", filtroCampoTipoFuente);
+  }, [mecanismoVehiculoPago]);
+
+  useEffect(() => {
+    getTiposFideicomiso();
+    getInstituciones();
+    getTiposDeFuente();
+    getFuentesPago();
+  }, []);
 
   return (
     <Grid container direction={"column"} justifyContent={"space-around"}>
@@ -169,6 +299,7 @@ export function VehiculoDePago() {
               fullWidth
               variant="standard"
               onChange={(e) => {
+                console.log("Mecanismo de pago", e.target.value);
                 setMecanismoVehiculoPago({
                   Id: "",
                   NumeroRegistro: "",
@@ -190,10 +321,11 @@ export function VehiculoDePago() {
                   TipoMovimiento: "",
                   SoporteDocumental: "",
                 });
-                getMecanismosVehiculosPago(e.target.value, () => {});
+                getMecanismosVehiculosPago(e.target.value, () => { });
                 setTipoMecanismoVehiculoPago(e.target.value);
                 cleanTablaAsignarFuente();
-             
+
+
               }}
             >
               {CatalogoMecanismo.map((item, index) => (
@@ -225,8 +357,17 @@ export function VehiculoDePago() {
               );
             }}
             onChange={(event, text) => {
+
+              console.log("Vehiculo de pago seleccionado", text);
               setMecanismoVehiculoPago(text);
-              setTablaResumenMecanismoPago(JSON.parse(mecanismoVehiculoPago.TipoMovimiento))
+              
+              console.log("Tabla resumen mecanismo pago", JSON.parse(mecanismoVehiculoPago.TipoMovimiento));
+
+              const AuxFiltro = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
+              console.log("AuxFiltro", AuxFiltro);
+              setFiltroCampoTipoFuente(AuxFiltro)
+
+              //setTablaResumenMecanismoPago(JSON.parse(mecanismoVehiculoPago.TipoMovimiento))
             }}
             value={mecanismoVehiculoPago}
             renderInput={(params) => (
@@ -242,39 +383,6 @@ export function VehiculoDePago() {
           />
         </Grid>
       </Grid>
-
-      {tipoMecanismoVehiculoPago === "Mandato" ||
-      tipoMecanismoVehiculoPago === "Instrucción Irrevocable" ? (
-        <Grid
-          container
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          height={"5rem"}
-        >
-          <ThemeProvider theme={buttonTheme}>
-            <Button
-              sx={queries.buttonContinuar}
-              disabled={tablaMecanismoVehiculoPago === null}
-              onClick={() => {
-                //llenarFuentePago(tipoMecanismoVehiculoPago);
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "1.3ch",
-                  fontFamily: "MontserratMedium",
-                  "@media (min-width: 480px)": {
-                    fontSize: ".8rem",
-                  },
-                }}
-              >
-                Ver mecanismo de pago
-              </Typography>
-            </Button>
-          </ThemeProvider>
-        </Grid>
-      ) : null}
 
       {mecanismoVehiculoPago.NumeroRegistro && (
         <Grid
@@ -595,7 +703,7 @@ export function VehiculoDePago() {
                   height: "22rem",
                 },
               }}
-              //height={"16rem"}
+            //height={"16rem"}
             >
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
@@ -712,7 +820,7 @@ export function VehiculoDePago() {
             </Grid>
           )}
 
-          {openAgregarInstruccion && (
+          {/* {openAgregarInstruccion && (
             <AgregarInstruccionesIrrevocables
               handler={setOpenAgregarInstruccion}
               openState={openAgregarInstruccion}
@@ -725,6 +833,11 @@ export function VehiculoDePago() {
               openState={openAgregarMandato}
             />
           )}
+
+          <AgregarFideicomisos
+            handler={setOpenAgregarFideicomiso}
+            openState={openAgregarFideicomisos}
+          /> */}
         </Grid>
       )}
     </Grid>

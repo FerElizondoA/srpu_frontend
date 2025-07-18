@@ -94,15 +94,15 @@ const headsCondiciones: Head[] = [
   },
 ];
 
-export function Resumen({ 
-  coments, 
-  estatus, 
-  arrDocsEliminados ,
+export function Resumen({
+  coments,
+  estatus,
+  arrDocsEliminados,
   funcionFiltroComentarios,
-}: { 
-  coments: boolean, 
-  estatus: string, 
-  arrDocsEliminados?: IDocsEliminados[] ,
+}: {
+  coments: boolean,
+  estatus: string,
+  arrDocsEliminados?: IDocsEliminados[],
   funcionFiltroComentarios?: Function
 }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
@@ -258,17 +258,13 @@ export function Resumen({
   const [openDisposicion, setOpenDisposicion] = useState(false);
   const activaAccion = localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
 
-  const activacionComentariosRevisor = ["4","12","20"]
+  // const activacionComentariosRevisor = ["4", "12", "20"]
+  const activacionComentariosRevisor = ["5", "13", "21"]
 
-useEffect(() => {
-  
-
-  console.log("comentario", comentarios)
-  console.log("openComentarioApartado", openComentarioApartado)
-}, [openComentarioApartado])
-
-
-  
+  useEffect(() => {
+    console.log("comentario", comentarios)
+    console.log("openComentarioApartado", openComentarioApartado)
+  }, [openComentarioApartado])
 
   return (
 
@@ -381,7 +377,7 @@ useEffect(() => {
             <Divider color="lightGrey"></Divider>
             {infoGeneral.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) &&  (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
@@ -417,7 +413,7 @@ useEffect(() => {
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
-              {(activaAccion  || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 <Tooltip title="Añadir comentario a este apartado">
                   <IconButton
                     color={
@@ -909,36 +905,36 @@ useEffect(() => {
 
         {/* <Divider color="lightGrey"></Divider> */}
         <Grid mt={5} mb={4} width={"100%"}>
-     
+
           <Grid display={"flex"} >
-          {localStorage.getItem("Rol") === "Revisor" || 
-            localStorage.getItem("Rol") === "Validador" ||
-            localStorage.getItem("Rol") === "Autorizador" ?
-            <Tooltip title="Añadir comentario a este apartado">
-              <IconButton
-                color={
-                  comentarios["Documentación"]
-                    ? // ||
-                    // comentariosRegistro["Tabla Condiciones Financieras"]
-                    "success"
-                    : "primary"
-                }
-                size="small"
-                onClick={() => {
-                  setOpenComentarioApartado({
-                    open: true,
-                    apartado: "Documentación",
-                    tab: "TabDocumentacion",
-                  });
-                }}
-              >
-                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-              </IconButton>
-            </Tooltip> : null}
-    
+            {localStorage.getItem("Rol") === "Revisor" ||
+              localStorage.getItem("Rol") === "Validador" ||
+              localStorage.getItem("Rol") === "Autorizador" ?
+              <Tooltip title="Añadir comentario a este apartado">
+                <IconButton
+                  color={
+                    comentarios["Documentación"]
+                      ? // ||
+                      // comentariosRegistro["Tabla Condiciones Financieras"]
+                      "success"
+                      : "primary"
+                  }
+                  size="small"
+                  onClick={() => {
+                    setOpenComentarioApartado({
+                      open: true,
+                      apartado: "Documentación",
+                      tab: "TabDocumentacion",
+                    });
+                  }}
+                >
+                  <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                </IconButton>
+              </Tooltip> : null}
+
             <Typography sx={queries.bold_text}>Documentación</Typography>
           </Grid>
-       
+
           <Grid
             sx={{
               flexDirection: "row",

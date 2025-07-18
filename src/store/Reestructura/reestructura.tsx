@@ -369,7 +369,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
         //navigate("../ConsultaDeSolicitudes");
         // console.log("reestructura", ReesState.tablaDeclaratorias )
         // console.log("reestructura", ReesState.autorizacionSelectReestructura )
-        CambiaEstatus("19", IdSolicitud, IdEditor);
+        CambiaEstatus("20", IdSolicitud, IdEditor); // Ya modificado por el estatus de Asignacioopn 16/07/2025
         setState(true)
       })
       .catch(() => {

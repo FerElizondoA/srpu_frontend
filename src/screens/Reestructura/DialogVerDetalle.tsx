@@ -248,7 +248,7 @@ export function DialogVerDetalle(props: Props) {
         {
           reestructura !== "" &&
             localStorage.getItem("IdUsuario") === props.rowSolicitud.CreadoPor &&
-            props.rowSolicitud.NoEstatus === "10" &&
+            props.rowSolicitud.NoEstatus === "11" &&
             //props.rowSolicitud.ControlInterno === "autorizado" &&
             localStorage.getItem("Rol") === "Verificador" ? (
             <Grid
@@ -422,9 +422,10 @@ export function DialogVerDetalle(props: Props) {
 
         {((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
           rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-          (props.rowSolicitud.NoEstatus === "20" &&
+          (props.rowSolicitud.NoEstatus === "21" &&
             localStorage.getItem("Rol") === "Revisor")) &&
-          ["20", "21", "22"].includes(props.rowSolicitud.NoEstatus) && (
+            // ["20", "21", "22"].includes(props.rowSolicitud.NoEstatus) && (
+          ["21", "22", "23"].includes(props.rowSolicitud.NoEstatus) && (
             //["4", "5", "6"].includes(props.rowSolicitud.NoEstatus) && (
             <Grid
               justifyContent={"space-evenly"}

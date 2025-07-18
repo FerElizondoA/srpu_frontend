@@ -654,6 +654,7 @@ export function ConsultaDeSolicitudPage() {
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
+                                console.log("Row RESUMEN", row)
                               }}
                             >
                               <VisibilityIcon />
@@ -661,7 +662,8 @@ export function ConsultaDeSolicitudPage() {
                           </Tooltip>
 
                           {localStorage.getItem("Rol") === row.Control &&
-                            ["3", "7", "9"].includes(row.NoEstatus) && (
+                          // ["3", "7", "9"].includes(row.NoEstatus) && (
+                            ["3", "8", "10"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
@@ -715,7 +717,8 @@ export function ConsultaDeSolicitudPage() {
                             )}
 
                           {localStorage.getItem("Rol") === row.Control &&
-                            ["1", "2", "8"].includes(row.NoEstatus) && (
+                          // ["1", "2", "8"].includes(row.NoEstatus) && (
+                            ["1", "2", "9"].includes(row.NoEstatus) && (
                               <Tooltip title="Editar">
                                 <IconButton
                                   type="button"

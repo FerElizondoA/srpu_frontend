@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Grid,
+  IconButton,
   InputLabel,
   Paper,
   Table,
@@ -12,6 +13,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -25,6 +27,9 @@ import {
   ICatalogo,
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+
 
 interface HeadSelect {
   Label: string;
@@ -92,7 +97,13 @@ const headFP: HeadSelect[] = [
   },
 ];
 
-export function AsignarFuente() {
+export function AsignarFuente({
+  filtroCampoTipoFuente,
+  setFiltroCampoTipoFuente
+}: {
+  filtroCampoTipoFuente: IDeudorFideicomisoNew[],
+  setFiltroCampoTipoFuente: Function
+}) {
   const mecanismoVehiculoPago: IRegistro = useLargoPlazoStore(
     (state) => state.mecanismoVehiculoPago
   );
@@ -128,6 +139,11 @@ export function AsignarFuente() {
     (state) => state.tablaAsignarFuenteNew
   );
 
+  const setTablaAsignarFuenteNew: Function = useLargoPlazoStore(
+    (state) => state.setTablaAsignarFuenteNew
+  );
+
+
   const setTablaAsignarFuente: Function = useLargoPlazoStore(
     (state) => state.setTablaAsignarFuente
   );
@@ -143,17 +159,70 @@ export function AsignarFuente() {
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   const [filtro, setFiltro] = useState({
-    Clasificacion: { Descripcion: "" },
+    Clasificacion: { Descripcion: "Fuente de Pago" },
     TipoFuente: { Id: "", Descripcion: "" },
     FuentePago: { Id: "", Descripcion: "" },
     RespectoA: { Descripcion: "" },
   });
+
+  //Para el Filtro y agregado de la tabla
+  const setTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
+    (state) => state.setTipoMovimientoFuentesPago
+  );
+
+  const tipoMovimientoFuentesPago: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tipoMovimientoFuentesPago
+  );
+
+  const removeTablaAsignarFuente: Function = useLargoPlazoStore(
+    (state) => state.removeTablaAsignarFuente
+  );
+
+
+
+  const [opcionesFiltradasTipoFuente, setOpcionesFiltradasTipoFuente] = useState<ICatalogo[]>([]);
+
 
   useEffect(() => {
     getTiposDeFuente();
     getFuentesPago();
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
   }, []);
+
+
+
+  //   useEffect(() => {
+  //     const timeout = setTimeout(() => {
+  //       console.log("Asingar Fuente - Tabla Asignar Fuente", filtroCampoTipoFuente);
+  //       filtradoOpcionesAsignarFuente();
+  //     }, 100); // 100ms suele ser suficiente
+
+  //     return () => clearTimeout(timeout);
+  //   }, [filtroCampoTipoFuente]);
+
+  useEffect(() => {
+    console.log("✔️ tipoMovimientoFuentesPago actualizado", filtroCampoTipoFuente);
+  }, [filtroCampoTipoFuente]);
+
+
+  //   const filtradoOpcionesAsignarFuente = () => {
+
+  //     setOpcionesFiltradasTipoFuente(catalogoTiposDeFuente.filter((opcion) => {
+  //       return filtroCampoTipoFuente.some((reg) =>
+  //         reg.id.toLowerCase().startsWith(opcion.Descripcion.toLowerCase())
+  //       );
+  //     }))
+  //     // const opcionesFiltradasTipoFuente = catalogoTiposDeFuente.filter((opcion) => {
+  //     //   return tipoMovimientoFuentesPago.some((reg) =>
+  //     //     reg.id.toLowerCase().startsWith(opcion.Descripcion.toLowerCase())
+  //     //   );
+  //     // });
+  //     console.log("Opciones filtradas", opcionesFiltradasTipoFuente);
+
+
+  //     return [opcionesFiltradasTipoFuente];
+  //   };
+
 
   return (
     <Grid
@@ -195,6 +264,7 @@ export function AsignarFuente() {
               );
             }}
             onChange={(event, text) => {
+              console.log("text", text);
               setFiltro({
                 Clasificacion: {
                   Descripcion: text?.Descripcion || "",
@@ -226,6 +296,7 @@ export function AsignarFuente() {
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
+            // options={catalogoTiposDeFuente}
             options={catalogoTiposDeFuente}
             value={filtro.TipoFuente}
             getOptionLabel={(option) => option.Descripcion}
@@ -360,30 +431,33 @@ export function AsignarFuente() {
           xl={1}
           mt={{ xs: 0, sm: 4 }}
         >
-          <Button
-            disabled={filtro.RespectoA.Descripcion === ""}
-            onClick={() => {
-              setTablaAsignarFuente(
-                JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
-                  (i: IDeudorFideicomiso) =>
-                    i.tipoFuente.Descripcion ===
-                    filtro.TipoFuente.Descripcion &&
-                    i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
-                )
-              );
-              setFiltro({
-                Clasificacion: {
-                  Descripcion: "",
-                },
-                TipoFuente: { Id: "", Descripcion: "" },
-                FuentePago: { Id: "", Descripcion: "" },
-                RespectoA: { Descripcion: "" },
-              });
-            }}
-            sx={queries.buttonContinuar}
-          >
-            Aceptar
-          </Button>
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              disabled={filtro.RespectoA.Descripcion === ""}
+              onClick={() => {
+                setTablaAsignarFuenteNew(
+                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
+                    (i: IDeudorFideicomisoNew) =>
+                      i.tipoFuente.Descripcion ===
+                      filtro.TipoFuente.Descripcion &&
+                      i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+                  )
+                );
+                setFiltro({
+                  Clasificacion: {
+                    Descripcion: "Fuente de Pago",
+                  },
+                  TipoFuente: { Id: "", Descripcion: "" },
+                  FuentePago: { Id: "", Descripcion: "" },
+                  RespectoA: { Descripcion: "" },
+                });
+              }}
+              sx={queries.buttonContinuar}
+            >
+              Aceptar
+            </Button>
+          </ThemeProvider>
+
         </Grid>
       </Grid>
 
@@ -409,7 +483,7 @@ export function AsignarFuente() {
                 outline: "1px solid slategrey",
                 borderRadius: 1,
               },
-            }} 
+            }}
           >
             <Table>
               <TableHead>
@@ -432,11 +506,48 @@ export function AsignarFuente() {
                 {tablaAsignarFuenteNew.map(
                   (movimiento: IDeudorFideicomisoNew, index: number) => (
                     <StyledTableRow key={index}>
+
+                      <StyledTableCell align="center">
+                        {movimiento.id}
+                      </StyledTableCell>
+
                       <StyledTableCell align="center">
                         {movimiento.tipoFuente.Descripcion}
                       </StyledTableCell>
+
                       <StyledTableCell align="center">
                         {movimiento.fondoIngreso.Descripcion}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {movimiento.fideicomitente.Descripcion}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <TextField>
+
+                        </TextField>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <TextField>
+
+                        </TextField>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <IconButton
+                          type="button"
+                          // disabled={
+                          //   reestructura === "con autorizacion" ||
+                          //   reestructura === "sin autorizacion"
+                          // }
+                          onClick={() =>
+                            removeTablaAsignarFuente(index)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </StyledTableCell>
                       {/* <StyledTableCell align="center">
                         {sumaPorcentajeAcumulado.SumaAcumuladoEstado}

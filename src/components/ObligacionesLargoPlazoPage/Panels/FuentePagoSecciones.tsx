@@ -1,17 +1,20 @@
 import { Button, Grid, Tab, Tabs, ThemeProvider, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { VehiculoDePago } from "./VehiculoDePago";
 import { AsignarFuente } from "./AsignarFuente";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
-import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { AgregarMandatos, buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/main";
+import { AgregarFideicomisos } from "../../fideicomisos/dialog/AgregarFideicomisos";
+import { AgregarInstruccionesIrrevocables } from "../../instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
+import { IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
 
 export function FuentePagoSecciones() {
   const query = {
@@ -48,9 +51,28 @@ export function FuentePagoSecciones() {
     (state) => state.editarInstruccion
   );
 
-  const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
-  const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
+  const editarFideicomisoNew: Function = useFideicomisoStore(
+    (state) => state.editarFideicomisoNew
+  );
 
+  const catalogoTiposDeFideicomiso: ICatalogo[] = useFideicomisoStore(
+    (state) => state.catalogoTiposDeFideicomiso
+  );
+
+  const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
+  );
+
+  const getTiposFideicomiso: Function = useFideicomisoStore(
+    (state) => state.getTiposFideicomiso
+  );
+
+
+  const [pruebaAbrirFuente, setPruebaAbrirFuente] = useState(false);
 
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -91,8 +113,8 @@ export function FuentePagoSecciones() {
         JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
       );
 
-      setOpenAgregarMandato(!openAgregarMandato);
-    } else {
+      setPruebaAbrirFuente(!pruebaAbrirFuente);
+    } else if (mecanismoPago === "Instrucción Irrevocable") {
       editarInstruccion(
         mecanismoVehiculoPago.Id,
         {
@@ -105,13 +127,82 @@ export function FuentePagoSecciones() {
         JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
       );
 
-      setOpenAgregarInstruccion(!openAgregarInstruccion);
+      setPruebaAbrirFuente(!pruebaAbrirFuente);
+    } else if (mecanismoPago === "Fideicomiso") {
+
+      editarFideicomisoNew(
+        mecanismoVehiculoPago.Id,
+        {
+          numeroFideicomiso: mecanismoVehiculoPago.NumeroRegistro,
+          fechaFideicomiso: new Date(
+            mecanismoVehiculoPago.FechaRegistro
+          ),
+          tipoFideicomiso:
+            catalogoTiposDeFideicomiso.filter(
+              (v, index) =>
+                v.Descripcion === mecanismoVehiculoPago.TipoFideicomiso
+            )[0],
+          fiduciario: catalogoInstituciones.filter(
+            (v, index) =>
+              v.Descripcion === mecanismoVehiculoPago.Fiduciario
+          )[0],
+        },
+        JSON.parse(mecanismoVehiculoPago.Fideicomisario),
+        JSON.parse(mecanismoVehiculoPago.TipoMovimiento),
+        JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
+      );
+      setPruebaAbrirFuente(!pruebaAbrirFuente);
     }
   };
+
+  //Para el Filtro y agregado de la tabla
+  const setTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
+    (state) => state.setTipoMovimientoFuentesPago
+  );
+
+  const tipoMovimientoFuentesPago: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tipoMovimientoFuentesPago
+  );
+
+  const cleanTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
+    (state) => state.cleanTipoMovimientoFuentesPago
+  );
+
+  const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
+  const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
+  const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
+
+  useEffect(() => {
+    getTiposFideicomiso();
+    getInstituciones();
+  }, []);
+
 
   return (
     <Grid container direction="column">
       <Grid item width={"100%"} display={"flex"}>
+
+        <Grid sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "12%",
+        }}>
+          <ThemeProvider theme={buttonTheme}>
+            <Button sx={{ ...queries.buttonContinuar }}
+              disabled={!mecanismoVehiculoPago.NumeroRegistro}
+              onClick={() => {
+                if (mecanismoVehiculoPago.NumeroRegistro) {
+                  llenarFuentePago(tipoMecanismoVehiculoPago);
+                } else {
+                  console.log("Debe seleccionar un mecanismo de pago");
+                }
+              }}
+            >
+              Ver Fuente de Pago
+            </Button>
+          </ThemeProvider>
+        </Grid>
 
         <Tabs
           value={tabIndex}
@@ -120,14 +211,12 @@ export function FuentePagoSecciones() {
           variant={query.isScrollable ? "scrollable" : "standard"}
           scrollButtons="auto"
           allowScrollButtonsMobile
-          sx={{ width: "100%", display: "flex", justifyContent: "space-evenly" }}
+          sx={{ width: "70%", display: "flex", justifyContent: "space-evenly" }}
         >
-
           <Tab
             label="mecanismo o vehiculo de pago"
             sx={{
               ...queries.bold_text_InfoGeneralGastoCosto,
-
             }}
           />
           {mecanismoVehiculoPago.NumeroRegistro && (
@@ -141,12 +230,35 @@ export function FuentePagoSecciones() {
         </Tabs>
       </Grid>
 
-      {tabIndex === 0 && <VehiculoDePago />}
-      {tabIndex === 1 && <AsignarFuente />}
+      {tabIndex === 0 && <VehiculoDePago
+        handler={setPruebaAbrirFuente}
+        openState={pruebaAbrirFuente}
+        filtroCampoTipoFuente={tipoMovimientoFuentesPago}
+        setFiltroCampoTipoFuente={setTipoMovimientoFuentesPago}
+      />}
+      {tabIndex === 1 && <AsignarFuente
+        filtroCampoTipoFuente={tipoMovimientoFuentesPago}
+        setFiltroCampoTipoFuente={setTipoMovimientoFuentesPago} />}
 
 
+      {tipoMecanismoVehiculoPago === "Instrucción Irrevocable" && pruebaAbrirFuente === true ?
+        <AgregarInstruccionesIrrevocables
+          handler={setPruebaAbrirFuente}
+          openState={pruebaAbrirFuente}
+        />
+        : tipoMecanismoVehiculoPago === "Mandato" && pruebaAbrirFuente === true ?
+          <AgregarMandatos
+            handler={setPruebaAbrirFuente}
+            openState={pruebaAbrirFuente}
+          />
+          : tipoMecanismoVehiculoPago === "Fideicomiso" && pruebaAbrirFuente === true ?
+            <AgregarFideicomisos
 
-
+              handler={setPruebaAbrirFuente}
+              openState={pruebaAbrirFuente}
+            />
+            : null
+      }
     </Grid>
   );
 }

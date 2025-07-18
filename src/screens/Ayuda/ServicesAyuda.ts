@@ -13,7 +13,7 @@ export const saveFile = (
   const url = new File([archivo.archivo], archivo.nombreArchivo);
   let ruta = "";
   TabValue === "Guías" ? (ruta = "/GUIAS/") : (ruta = "/VIDEOS/TUTORIALES/");
-  ruta = (process.env.REACT_APP_DOC_ROUTE || "") + ruta;
+  ruta = (process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS || "") + ruta;
   let dataArray = new FormData();
   dataArray.append("ROUTE", `${ruta}`);
   dataArray.append("ADDROUTE", "TRUE");

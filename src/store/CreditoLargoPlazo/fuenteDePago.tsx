@@ -63,17 +63,34 @@ export interface FuenteDePagoLargoPlazoSlice {
 
   tablaAsignarFuenteNew: IDeudorFideicomisoNew[];
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
+  removeTablaAsignarFuente: (index: number) => void;
+
   cleanTablaAsignarFuenteNew: () => void;
 
   garantiaPago: string;
   setGarantiaPago: (garantiaPago: string) => void;
 
   getDetalleFuenteDePago: (Tabla: string, Id: string) => void;
+
+
+  tipoMovimientoFuentesPago: IDeudorFideicomisoNew[],
+  setTipoMovimientoFuentesPago: (tipoMovimientoFuentesPago: IDeudorFideicomisoNew[]) => void;
+  cleanTipoMovimientoFuentesPago: () => void;
 }
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
+
+
+removeTablaAsignarFuente: (index: number) =>
+    set((state) => ({
+      tablaAsignarFuenteNew: state.tablaAsignarFuenteNew.filter(
+        (_, i) => i !== index
+      ),
+    })),
+
+
   tablaResumenMecanismoPago: [],
   setTablaResumenMecanismoPago: (tablaResumenMecanismoPago: IDeudorInstrucciones[]) =>
     set(() => ({
@@ -185,4 +202,16 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       state.setMecanismoVehiculoPago(data.data);
     });
   },
+
+  tipoMovimientoFuentesPago: [],
+
+  setTipoMovimientoFuentesPago: (tipoMovimientoFuentesPago: IDeudorFideicomisoNew[]) =>
+    set(() => ({
+      tipoMovimientoFuentesPago: tipoMovimientoFuentesPago,
+    })),
+
+  cleanTipoMovimientoFuentesPago: () =>
+    set(() => ({
+      tipoMovimientoFuentesPago: [],
+    })),
 });

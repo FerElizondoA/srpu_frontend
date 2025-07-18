@@ -30,6 +30,8 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { alertaExito } from "../../../generics/Alertas";
 import { appTheme } from "../../..";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { ConfirmacionEnviarSolicitud } from "./DialogEnviarSolicitud";
+import { DialogAsignacionResumen } from "./DialogAsignacionResumen";
 
 type Props = {
   handler: Function;
@@ -145,6 +147,7 @@ export function VerBorradorDocumento(props: Props) {
     return prueba
   }
 
+  const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
 
   return (
 
@@ -197,7 +200,7 @@ export function VerBorradorDocumento(props: Props) {
             setConfirmBotonAccionComentario(false)
             if (compararComentarios(comentarios, botonVolverFiltro)) {
               console.log("No ha habido modificaciones en los comentarios.");
-            
+
 
               props.handler(false);
               useCortoPlazoStore.setState({
@@ -228,6 +231,30 @@ export function VerBorradorDocumento(props: Props) {
         }}
         >
           {
+            (props.rowSolicitud.NoEstatus === "4" && (localStorage.getItem("Rol") === "Validador" || localStorage.getItem("Rol") === "Autorizador"))
+
+              ?
+              <ThemeProvider theme={buttonTheme}>
+                <Button
+                  //disabled={compararComentarios(comentarios, botonVolverFiltro)}
+                  sx={{
+                    ...queries.buttonCancelar,
+                    fontSize: "50%",
+                  }}
+                  onClick={() => {
+
+                    setOpenDialogEnviar(true);
+                  }}
+                >
+                  Asignar Revisor
+                </Button>
+              </ThemeProvider>
+
+              : null
+
+
+          }
+          {
             //Primera condicion
             (props.rowSolicitud.NoEstatus === "2" &&
               localStorage.getItem("Rol") === "Verificador" &&
@@ -235,9 +262,12 @@ export function VerBorradorDocumento(props: Props) {
 
               ((localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
                 rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
-                (props.rowSolicitud.NoEstatus === "4" &&
-                  localStorage.getItem("Rol") === "Revisor")) &&
-              ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus)
+                //  (props.rowSolicitud.NoEstatus === "4" &&
+                (props.rowSolicitud.NoEstatus === "5" &&
+                  localStorage.getItem("Rol") === "Revisor" &&
+                  props.rowSolicitud.IdEditor === localStorage.getItem("IdUsuario"))) &&
+              // ["4", "5", "6"].includes(props.rowSolicitud.NoEstatus)
+              ["5", "6", "7"].includes(props.rowSolicitud.NoEstatus)
               ?
               <ThemeProvider theme={buttonTheme}>
                 <Button
@@ -260,16 +290,20 @@ export function VerBorradorDocumento(props: Props) {
 
 
           {
-            (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") ||
-              (props.rowSolicitud.NoEstatus === "4" &&
+            // (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") ||
 
-                localStorage.getItem("Rol") === "Revisor") ||
+            (["10", "11", "26"].includes(props.rowSolicitud.NoEstatus) &&
+              localStorage.getItem("Rol") === "Autorizador") ||
+
+              (props.rowSolicitud.NoEstatus === "5" &&
+                localStorage.getItem("Rol") === "Revisor" &&
+                localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor
+              ) ||
 
               (localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
                 rolesAdmin.includes(localStorage.getItem("Rol")!))
 
               ?
-
               <Grid sx={{ width: "50%", display: "flex", justifyContent: "space-between" }}
               // justifyContent={"space-evenly"}
               // sx={{ width: "50rem", display: "flex" }}
@@ -318,7 +352,7 @@ export function VerBorradorDocumento(props: Props) {
                   Confirmar{" "}
                   {localStorage.getItem("Rol") === "Validador"
                     ? "Validación"
-                    : localStorage.getItem("Rol") === "Revisor"
+                    : (localStorage.getItem("Rol") === "Revisor" && props.rowSolicitud.NoEstatus === "5" && props.rowSolicitud.IdEditor === localStorage.getItem("IdUsuario"))
                       ? "Revisión"
                       : Object.keys(comentarios).length > 0
                         ? "Solicitud de Requerimientos"
@@ -329,6 +363,7 @@ export function VerBorradorDocumento(props: Props) {
               : null
 
           }
+
 
 
           {/* {
@@ -468,7 +503,7 @@ export function VerBorradorDocumento(props: Props) {
                   props.handler(true)
 
                 }, 100);
-              
+
               });
             }}
           >
@@ -503,26 +538,26 @@ export function VerBorradorDocumento(props: Props) {
             Cerrar
           </Button>
 
-          {confirmBotonAccionComentario === true 
-          ? null 
-          : (<Button
-            sx={{ ...queries.buttonContinuar }}
-            onClick={() => {
-              setOpenDialogConfirmacionVolver(false)
-              props.handler(false);
-              useCortoPlazoStore.setState({
-                comentarios: {},
-                idComentario: "",
-              });
-              cleanSolicitudCortoPlazo();
-              cleanSolicitudLargoPlazo();
-              cleanCondicionFinanciera();
-            }}
-          >
-            Aceptar
-          </Button>)}
+          {confirmBotonAccionComentario === true
+            ? null
+            : (<Button
+              sx={{ ...queries.buttonContinuar }}
+              onClick={() => {
+                setOpenDialogConfirmacionVolver(false)
+                props.handler(false);
+                useCortoPlazoStore.setState({
+                  comentarios: {},
+                  idComentario: "",
+                });
+                cleanSolicitudCortoPlazo();
+                cleanSolicitudLargoPlazo();
+                cleanCondicionFinanciera();
+              }}
+            >
+              Aceptar
+            </Button>)}
 
-          
+
 
         </DialogActions>
 
@@ -534,6 +569,16 @@ export function VerBorradorDocumento(props: Props) {
           
         />
       )} */}
+
+      {openDialogEnviar && (
+        <DialogAsignacionResumen
+          handler={setOpenDialogEnviar}
+          openState={openDialogEnviar}
+          accion={"asignacion"}
+        //arrDocsEliminados={arrDocsEliminados}
+        />
+      )}
+
 
       {openDialogRegresar && (
         <DialogSolicitarModificacion

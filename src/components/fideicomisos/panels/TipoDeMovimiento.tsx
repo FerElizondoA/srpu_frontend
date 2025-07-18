@@ -233,21 +233,18 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.porcentajeAcumuladoRegistros
   );
 
-  const setPorcentajeAcumulado: Function = useFideicomisoStore(
-    (state) => state.setPorcentajeAcumulado
-  );
+  // const setPorcentajeAcumulado: Function = useFideicomisoStore(
+  //   (state) => state.setPorcentajeAcumulado
+  // );
 
   const arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[] = useFideicomisoStore(
     (state) => state.arregloPorcetajesAcumuladosRegistros
   );
 
 
-
   const addArregloPorcetajesAcumuladosRegistros: Function = useFideicomisoStore(
     (state) => state.addArregloPorcetajesAcumuladosRegistros
   );
-
-
 
 
   const updateTipoMovimientoField: Function = useFideicomisoStore(
@@ -257,14 +254,6 @@ export function TipoDeMovimientoFideicomiso() {
   const DetallePorcentajesAcumulados: Function = useFideicomisoStore(
     (state) => state.DetallePorcentajesAcumulados
   );
-
-  // const [porcentajeAcumulado, setPorcentajeAcumulado] = useState({
-  //   IdEntePublicoObligado: "",
-  //   IdTipoEntePublicoObligado: "",
-  //   NombreEntePublico: "",
-  //   AfectadoTotalIngreso: 0.0,
-  //   EquivalenciaCorrespondienteMunicipios: 0.0,
-  // });
 
 
 
@@ -417,7 +406,27 @@ export function TipoDeMovimientoFideicomiso() {
     // console.log("UseEffect porcentajeacumulado", porcentajeAcumulado);
     console.log("UseEffect tipoFideicomitente", tipoMovimientoFideicomisoNew.tipoFideicomitente);
     console.log("UseEffect fideicomitente", tipoMovimientoFideicomisoNew.fideicomitente);
-  }, [tipoMovimientoFideicomisoNew.tipoFideicomitente, tipoMovimientoFideicomisoNew.fideicomitente])
+    console.log("UseEffect tipoMovimientoFideicomisoNew", tipoMovimientoFideicomisoNew);
+  }, [tipoMovimientoFideicomisoNew])
+
+  useEffect(() => {
+    //1* primero va y busca los porcentajes acumulados
+    console.log("Entro a buscar el porcentajes acumulados")
+
+    DetallePorcentajesAcumulados(tipoMovimientoFideicomisoNew.fideicomitente.Id,
+       tipoMovimientoFideicomisoNew.fondoIngreso.Id )
+
+  }, [tipoMovimientoFideicomisoNew.fondoIngreso.Id !== ""])
+
+
+  useEffect(() => {
+    console.log("GUARDO EL REGISTRO DEL % ACUMULADO EN EL ARRAY QUE VIENE DE LA BASE DE DATOS", );
+    console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros);
+  
+    
+  }, [arregloPorcetajesAcumuladosRegistros])
+  
+  
 
   return (
     <Grid
@@ -663,7 +672,7 @@ export function TipoDeMovimientoFideicomiso() {
                 },
               });
 
-              DetallePorcentajesAcumulados(text.Id, setPorcentajeAcumulado)
+              // DetallePorcentajesAcumulados(text.Id, text.)
             }}
             value={tipoMovimientoFideicomisoNew.fideicomitente}
             renderInput={(params) => (
@@ -780,22 +789,6 @@ export function TipoDeMovimientoFideicomiso() {
               );
             }}
             onChange={(event, text) => {
-              // setTipoMovimiento({
-              //   ...tipoMovimientoFideicomiso,
-              //   id: `${tipoMovimientoFideicomiso.tipoFuente?.Descripcion
-              //     }/${text.Descripcion.split(" ")
-              //       .map((word) =>
-              //         word.charAt(0) === word.charAt(0).toUpperCase()
-              //           ? word.charAt(0)
-              //           : ""
-              //       )
-              //       .join("")}/${tablaTipoMovimiento?.length + 1}`,
-              //   fondoIngreso: {
-              //     Id: text.Id,
-              //     Descripcion: text.Descripcion,
-              //     TipoDeFuente: text.TipoDeFuente,
-              //   },
-              // });
               setTipoMovimientoNew({
                 ...tipoMovimientoFideicomisoNew,
                 id: `${tipoMovimientoFideicomisoNew.tipoFuente?.Descripcion
@@ -812,6 +805,9 @@ export function TipoDeMovimientoFideicomiso() {
                   TipoDeFuente: text.TipoDeFuente,
                 },
               });
+
+              
+//Poner un useeffect para que busque en la base de datos si ya existe el id
             }}
             renderInput={(params) => (
               <TextField
