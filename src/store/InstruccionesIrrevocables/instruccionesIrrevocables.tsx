@@ -19,17 +19,19 @@ export interface IDeudorInstrucciones {
   entePublicoObligado: { Id: string; Descripcion: string };
   tipoFuente: { Id: string; Descripcion: string };
   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
-  fondoIngresoGobiernoEstatal: string;
-  fondoIngresoMunicipios: string;
-  fondoIngresoAsignadoMunicipio: string;
-  ingresoOrganismo: string;
-  fondoIngresoAfectadoXGobiernoEstatal: string;
-  afectacionGobiernoEstatalEntre100: string;
-  acumuladoAfectacionGobiernoEstatalEntre100: string;
-  fondoIngresoAfectadoXMunicipio: string;
-  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
-  ingresoAfectadoXOrganismo: string;
-  acumuladoAfectacionOrganismoEntre100: string;
+  AfectadoTotalIngreso: number;
+  EquivalenciaCorrespondienteMunicipios: number;
+  // fondoIngresoGobiernoEstatal: string;
+  // fondoIngresoMunicipios: string;
+  // fondoIngresoAsignadoMunicipio: string;
+  // ingresoOrganismo: string;
+  // fondoIngresoAfectadoXGobiernoEstatal: string;
+  // afectacionGobiernoEstatalEntre100: string;
+  // acumuladoAfectacionGobiernoEstatalEntre100: string;
+  // fondoIngresoAfectadoXMunicipio: string;
+  // acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
+  // ingresoAfectadoXOrganismo: string;
+  // acumuladoAfectacionOrganismoEntre100: string;
 }
 
 export interface IBeneficiarioInstrucciones {
@@ -117,6 +119,12 @@ export interface InstruccionesIrrevocablesSlice {
     nombreArchivo: string,
     setLoading: Function
   ) => void;
+
+  updateTipoMovimientoField: (
+    index: number,
+    field: keyof Pick<IDeudorInstrucciones, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>,
+    value: number
+  ) => void;
 }
 
 export const createInstruccionesIrrevocables: StateCreator<
@@ -144,17 +152,19 @@ export const createInstruccionesIrrevocables: StateCreator<
     entePublicoObligado: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-    fondoIngresoGobiernoEstatal: "",
-    fondoIngresoMunicipios: "",
-    fondoIngresoAsignadoMunicipio: "",
-    ingresoOrganismo: "",
-    fondoIngresoAfectadoXGobiernoEstatal: "",
-    afectacionGobiernoEstatalEntre100: "",
-    acumuladoAfectacionGobiernoEstatalEntre100: "",
-    fondoIngresoAfectadoXMunicipio: "",
-    acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-    ingresoAfectadoXOrganismo: "",
-    acumuladoAfectacionOrganismoEntre100: "",
+    AfectadoTotalIngreso: 0,
+    EquivalenciaCorrespondienteMunicipios: 0
+    // fondoIngresoGobiernoEstatal: "",
+    // fondoIngresoMunicipios: "",
+    // fondoIngresoAsignadoMunicipio: "",
+    // ingresoOrganismo: "",
+    // fondoIngresoAfectadoXGobiernoEstatal: "",
+    // afectacionGobiernoEstatalEntre100: "",
+    // acumuladoAfectacionGobiernoEstatalEntre100: "",
+    // fondoIngresoAfectadoXMunicipio: "",
+    // acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
+    // ingresoAfectadoXOrganismo: "",
+    // acumuladoAfectacionOrganismoEntre100: "",
   },
   tablaTipoMovimiento: [],
 
@@ -303,17 +313,8 @@ export const createInstruccionesIrrevocables: StateCreator<
         entePublicoObligado: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-        fondoIngresoGobiernoEstatal: "",
-        fondoIngresoMunicipios: "",
-        fondoIngresoAsignadoMunicipio: "",
-        ingresoOrganismo: "",
-        fondoIngresoAfectadoXGobiernoEstatal: "",
-        afectacionGobiernoEstatalEntre100: "",
-        acumuladoAfectacionGobiernoEstatalEntre100: "",
-        fondoIngresoAfectadoXMunicipio: "",
-        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-        ingresoAfectadoXOrganismo: "",
-        acumuladoAfectacionOrganismoEntre100: "",
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
       },
     }));
   },
@@ -371,9 +372,7 @@ export const createInstruccionesIrrevocables: StateCreator<
           EntePublicoObligado:
             state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          AcumuladoEstado: acumuladoEstado,
-          AcumuladoMunicipios: acumuladoMunicipio,
-          AcumuladoOrganismos: acumuladoOrganismo,
+
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalInstruccion
           ),
@@ -392,13 +391,13 @@ export const createInstruccionesIrrevocables: StateCreator<
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.data.Id}`,
           setLoading
         );
-       
+
 
         alertaConfirmCancelar("La instruccion se ha creado exitosamente")
         state.cleanInstruccion();
       })
       .catch((error) => {
-      
+
         alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
   },
@@ -448,11 +447,11 @@ export const createInstruccionesIrrevocables: StateCreator<
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
           setLoading
         );
-       
+
         alertaConfirmCancelar("La instruccion se ha creado exitosamente")
       })
       .catch((error) => {
-        
+
 
         alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
@@ -534,7 +533,7 @@ export const createInstruccionesIrrevocables: StateCreator<
                 setLoading
               );
             })
-            .catch((e) => {});
+            .catch((e) => { });
         } else {
           return null;
         }
@@ -552,7 +551,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/create-addPathDocInstruccion",
+        "/create-addPathDocInstruccion",
         {
           IdInstruccion: id,
           Ruta: ruta,
@@ -568,6 +567,14 @@ export const createInstruccionesIrrevocables: StateCreator<
       .then((r) => {
         setLoading(false);
       })
-      .catch((e) => {});
+      .catch((e) => { });
+  },
+    updateTipoMovimientoField: (index, field, value) => {
+    set((state) => {
+      const updatedTabla = state.tablaTipoMovimiento.map((row, i) =>
+        i === index ? { ...row, [field]: value } : row
+      );
+      return { tablaTipoMovimiento: updatedTabla };
+    });
   },
 });

@@ -134,7 +134,7 @@ export function DatosGeneralesMandato() {
       <Grid sx={{ width: "70%" }}>
         <InputLabel sx={queries.medium_text}>Mandatario</InputLabel>
         <TextField
-          value={datosGenerales.mandatario.Descripcion}
+          value={datosGenerales.mandatario.Descripcion || datosGenerales.mandatario}
           onChange={(v) => {
             setDatosGenerales({
               ...datosGenerales,

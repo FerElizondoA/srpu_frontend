@@ -15,45 +15,32 @@ export interface IDatosGeneralesMandato {
 
 export interface IDeudorMandatoNew {
   id: string;
-  tipoEntePublicoObligado: { Id: string; Descripcion: string };
-  mandatario: { Id: string; Descripcion: string };
+  tipoEntePublicoObligado: { Id: string; Descripcion: string }; //tipoFideicomitente
+  mandatario: { Id: string; Descripcion: string }; //fideicomitente
   tipoFuente: { Id: string; Descripcion: string };
   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
-
   AfectadoTotalIngreso: number;
   EquivalenciaCorrespondienteMunicipios: number;
-
-  // fondoIngresoGobiernoEstatal: string;
-  // fondoIngresoMunicipios: string;
-  // fondoIngresoAsignadoMunicipio: string;
-  // ingresoOrganismo: string;
-  // fondoIngresoAfectadoXGobiernoEstatal: string;
-  // afectacionGobiernoEstatalEntre100: string;
-  // acumuladoAfectacionGobiernoEstatalEntre100: string;
-  // fondoIngresoAfectadoXMunicipio: string;
-  // acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
-  // ingresoAfectadoXOrganismo: string;
-  // acumuladoAfectacionOrganismoEntre100: string;
 }
 
-export interface IDeudorMandato {
-  id: string;
-  tipoEntePublicoObligado: { Id: string; Descripcion: string };
-  mandatario: { Id: string; Descripcion: string };
-  tipoFuente: { Id: string; Descripcion: string };
-  fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
-  fondoIngresoGobiernoEstatal: string;
-  fondoIngresoMunicipios: string;
-  fondoIngresoAsignadoMunicipio: string;
-  ingresoOrganismo: string;
-  fondoIngresoAfectadoXGobiernoEstatal: string;
-  afectacionGobiernoEstatalEntre100: string;
-  acumuladoAfectacionGobiernoEstatalEntre100: string;
-  fondoIngresoAfectadoXMunicipio: string;
-  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
-  ingresoAfectadoXOrganismo: string;
-  acumuladoAfectacionOrganismoEntre100: string;
-}
+// export interface IDeudorMandato {
+//   id: string;
+//   tipoEntePublicoObligado: { Id: string; Descripcion: string };
+//   mandatario: { Id: string; Descripcion: string };
+//   tipoFuente: { Id: string; Descripcion: string };
+//   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
+//   fondoIngresoGobiernoEstatal: string;
+//   fondoIngresoMunicipios: string;
+//   fondoIngresoAsignadoMunicipio: string;
+//   ingresoOrganismo: string;
+//   fondoIngresoAfectadoXGobiernoEstatal: string;
+//   afectacionGobiernoEstatalEntre100: string;
+//   acumuladoAfectacionGobiernoEstatalEntre100: string;
+//   fondoIngresoAfectadoXMunicipio: string;
+//   acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
+//   ingresoAfectadoXOrganismo: string;
+//   acumuladoAfectacionOrganismoEntre100: string;
+// }
 
 export interface IBeneficiarioMandato {
   tipoBeneficiario: { Id: string; Descripcion: string };
@@ -71,7 +58,7 @@ export interface ISoporteDocumentalMandato {
 export interface IMandato {
   id: string;
   datosGenerales: IDatosGeneralesMandato;
-  tipoMovimientoDeudor: IDeudorMandato[];
+  tipoMovimientoDeudor: IDeudorMandatoNew[];
   soporteDocumental: ISoporteDocumentalMandato[];
 }
 
@@ -82,14 +69,14 @@ export interface MandatoSlice {
   setIdMandato: (Id: string) => void;
 
   datosGenerales: IDatosGeneralesMandato;
-  tipoMovimiento: IDeudorMandato;
+  tipoMovimiento: IDeudorMandatoNew;
   beneficiario: IBeneficiarioMandato;
   soporteDocumental: ISoporteDocumentalMandato;
 
   idTipoMovimientoSelect: string;
   setIdTipoMovimientoSelect: (id: string) => void;
 
-  tablaTipoMovimientoMandato: IDeudorMandato[];
+  tablaTipoMovimientoMandato: IDeudorMandatoNew[];
   tablaSoporteDocumentalMandato: ISoporteDocumentalMandato[];
 
   cleanMandato: () => void;
@@ -97,22 +84,22 @@ export interface MandatoSlice {
   editarMandato: (
     id: string,
     datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandato[],
+    tipoMovimiento: IDeudorMandatoNew[],
     soporteDocumental: ISoporteDocumentalMandato[]
   ) => void;
 
   setDatosGenerales: (datosGenerales: IDatosGeneralesMandato) => void;
-  setTipoMovimiento: (tipoMovimiento: IDeudorMandato) => void;
+  setTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => void;
   setBeneficiario: (beneficiario: IBeneficiarioMandato) => void;
   setSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => void;
 
-  addTipoMovimiento: (tipoMovimiento: IDeudorMandato) => void;
+  addTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => void;
   addSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => void;
 
   removeTipoMovimiento: (index: number) => void;
   removeSoporteDocumental: (index: number) => void;
 
-  addPorcentaje: (tipoMovimiento: IDeudorMandato) => void;
+  addPorcentaje: (tipoMovimiento: IDeudorMandatoNew) => void;
 
   cleanTipoMovimiento: () => void;
   cleanSoporteDocumental: () => void;
@@ -139,19 +126,19 @@ export interface MandatoSlice {
 
 
 
-  tipoMovimientoMandatoNew: IDeudorMandatoNew;
-  tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[];
-  setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
-  addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
-  removeTipoMovimientoNew: (index: number) => void;
-  cleanTipoMovimientoNew: () => void;
+  // tipoMovimientoMandatoNew: IDeudorMandatoNew;
+  // tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[];
+  // setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
+  // addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
+  // removeTipoMovimientoNew: (index: number) => void;
+  // cleanTipoMovimientoNew: () => void;
 
-  editarMandatoNew: (
-    id: string,
-    datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandatoNew[],
-    soporteDocumental: ISoporteDocumentalMandato[]
-  ) => void;
+  // editarMandatoNew: (
+  //   id: string,
+  //   datosGenerales: IDatosGeneralesMandato,
+  //   tipoMovimiento: IDeudorMandatoNew[],
+  //   soporteDocumental: ISoporteDocumentalMandato[]
+  // ) => void;
 
   updateTipoMovimientoField: (
     index: number,
@@ -188,17 +175,9 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     mandatario: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-    fondoIngresoGobiernoEstatal: "",
-    fondoIngresoMunicipios: "",
-    fondoIngresoAsignadoMunicipio: "",
-    ingresoOrganismo: "",
-    fondoIngresoAfectadoXGobiernoEstatal: "",
-    afectacionGobiernoEstatalEntre100: "",
-    acumuladoAfectacionGobiernoEstatalEntre100: "",
-    fondoIngresoAfectadoXMunicipio: "",
-    acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-    ingresoAfectadoXOrganismo: "",
-    acumuladoAfectacionOrganismoEntre100: "",
+    AfectadoTotalIngreso: 0,
+    EquivalenciaCorrespondienteMunicipios: 0
+
   },
   tablaTipoMovimientoMandato: [],
 
@@ -243,17 +222,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-        fondoIngresoGobiernoEstatal: "",
-        fondoIngresoMunicipios: "",
-        fondoIngresoAsignadoMunicipio: "",
-        ingresoOrganismo: "",
-        fondoIngresoAfectadoXGobiernoEstatal: "",
-        afectacionGobiernoEstatalEntre100: "",
-        acumuladoAfectacionGobiernoEstatalEntre100: "",
-        fondoIngresoAfectadoXMunicipio: "",
-        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-        ingresoAfectadoXOrganismo: "",
-        acumuladoAfectacionOrganismoEntre100: "",
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
       },
       tablaTipoMovimientoMandato: [],
 
@@ -270,7 +240,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   editarMandato: (
     id: string,
     datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandato[],
+    tipoMovimiento: IDeudorMandatoNew[],
     soporteDocumental: ISoporteDocumentalMandato[]
   ) => {
     set((state) => ({
@@ -286,7 +256,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       datosGenerales: datosGenerales,
     }));
   },
-  setTipoMovimiento: (tipoMovimiento: IDeudorMandato) => {
+  setTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => {
     set(() => ({
       tipoMovimiento: tipoMovimiento,
     }));
@@ -302,7 +272,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     }));
   },
 
-  addTipoMovimiento: (tipoMovimiento: IDeudorMandato) => {
+  addTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => {
     set((state) => ({
       tablaTipoMovimientoMandato: [
         ...state.tablaTipoMovimientoMandato,
@@ -346,17 +316,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-        fondoIngresoGobiernoEstatal: "",
-        fondoIngresoMunicipios: "",
-        fondoIngresoAsignadoMunicipio: "",
-        ingresoOrganismo: "",
-        fondoIngresoAfectadoXGobiernoEstatal: "",
-        afectacionGobiernoEstatalEntre100: "",
-        acumuladoAfectacionGobiernoEstatalEntre100: "",
-        fondoIngresoAfectadoXMunicipio: "",
-        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-        ingresoAfectadoXOrganismo: "",
-        acumuladoAfectacionOrganismoEntre100: "",
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
       },
     }));
   },
@@ -405,7 +366,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
     // });
 
-    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandato.map(({
       id,
       tipoEntePublicoObligado,
       mandatario,
@@ -423,16 +384,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       EquivalenciaCorrespondienteMunicipios,
     })
     );
-        // Calcula la suma de AfectadoTotalIngreso
-        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-        );
-    
-        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-        );
-    
+    // // Calcula la suma de AfectadoTotalIngreso
+    const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandato.reduce(
+      (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
+    );
+
+    // // Calcula la suma de EquivalenciaCorrespondienteMunicipios
+    const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandato.reduce(
+      (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
+    );
+
 
     await axios
       .post(
@@ -502,8 +463,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
     // });
 
-    
-    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandato.map(({
       id,
       tipoEntePublicoObligado,
       mandatario,
@@ -521,16 +482,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       EquivalenciaCorrespondienteMunicipios,
     })
     );
-        // Calcula la suma de AfectadoTotalIngreso
-        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-        );
-    
-        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-        );
-    
+    // Calcula la suma de AfectadoTotalIngreso
+    const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandato.reduce(
+      (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
+    );
+
+    // Calcula la suma de EquivalenciaCorrespondienteMunicipios
+    const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandato.reduce(
+      (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
+    );
+
 
     await axios
       .put(
@@ -715,41 +676,41 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   //     beneficiarioNew: beneficiarioNew,
   //   }));
   // },
-  setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
-    set(() => ({
-      tipoMovimientoMandatoNew: tipoMovimientoNew,
-    }));
-  },
+  // setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
+  //   set(() => ({
+  //     tipoMovimientoMandatoNew: tipoMovimientoNew,
+  //   }));
+  // },
 
-  addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
-    set((state) => ({
-      tablaTipoMovimientoMandatoNew: [
-        ...state.tablaTipoMovimientoMandatoNew,
-        tipoMovimientoNew,
-      ],
-    }));
-  },
+  // addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
+  //   set((state) => ({
+  //     tablaTipoMovimientoMandatoNew: [
+  //       ...state.tablaTipoMovimientoMandatoNew,
+  //       tipoMovimientoNew,
+  //     ],
+  //   }));
+  // },
 
-  removeTipoMovimientoNew: (index: number) => {
-    set((state) => ({
-      tablaTipoMovimientoMandatoNew:
-        state.tablaTipoMovimientoMandatoNew.filter((_, i) => i !== index),
-    }));
-  },
-  cleanTipoMovimientoNew: () => {
-    set(() => ({
-      tipoMovimientoMandatoNew: {
-        id: "",
-        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
-        mandatario: { Id: "", Descripcion: "" },
-        tipoFuente: { Id: "", Descripcion: "" },
-        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+  // removeTipoMovimientoNew: (index: number) => {
+  //   set((state) => ({
+  //     tablaTipoMovimientoMandatoNew:
+  //       state.tablaTipoMovimientoMandatoNew.filter((_, i) => i !== index),
+  //   }));
+  // },
+  // cleanTipoMovimientoNew: () => {
+  //   set(() => ({
+  //     tipoMovimientoMandatoNew: {
+  //       id: "",
+  //       tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+  //       mandatario: { Id: "", Descripcion: "" },
+  //       tipoFuente: { Id: "", Descripcion: "" },
+  //       fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
 
-        AfectadoTotalIngreso: 0,
-        EquivalenciaCorrespondienteMunicipios: 0,
-      },
-    }));
-  },
+  //       AfectadoTotalIngreso: 0,
+  //       EquivalenciaCorrespondienteMunicipios: 0,
+  //     },
+  //   }));
+  // },
 
   editarMandatoNew: (
     id: string,
@@ -767,10 +728,10 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
 
   updateTipoMovimientoField: (index, field, value) => {
     set((state) => {
-      const updatedTabla = state.tablaTipoMovimientoMandatoNew.map((row, i) =>
+      const updatedTabla = state.tablaTipoMovimientoMandato.map((row, i) =>
         i === index ? { ...row, [field]: value } : row
       );
-      return { tablaTipoMovimientoMandatoNew: updatedTabla };
+      return { tablaTipoMovimientoMandato: updatedTabla };
     });
   },
 

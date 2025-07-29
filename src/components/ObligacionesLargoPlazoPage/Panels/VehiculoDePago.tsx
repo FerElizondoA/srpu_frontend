@@ -270,7 +270,7 @@ export function VehiculoDePago({
   };
 
   useEffect(() => {
-    console.log("✔️ tipoMovimientoFuentesPago actualizado", filtroCampoTipoFuente);
+    console.log("✔️ mecanismoVehiculoPago", mecanismoVehiculoPago);
   }, [mecanismoVehiculoPago]);
 
   useEffect(() => {

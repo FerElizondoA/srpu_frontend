@@ -32,9 +32,11 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
 
 export function AgregarInstruccionesIrrevocables({
+  deshabilidarCamposSCLP,
   handler,
   openState,
 }: {
+  deshabilidarCamposSCLP?: boolean;
   handler: Function;
   openState: boolean;
 }) {

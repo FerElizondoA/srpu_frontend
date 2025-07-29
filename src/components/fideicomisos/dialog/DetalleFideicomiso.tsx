@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,58 +35,31 @@ import {
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+
 
 const headsTipoMovimiento: { label: string }[] = [
   {
     label: "Id",
   },
   {
-    label: "Tipo de Fideicomitente",
+    label: "Tipo de Fuente",
+  },
+  {
+    label: "Fondo o Ingreso",
   },
   {
     label: "Fideicomitente",
   },
   {
-    label: "Fuente de Pago",
+    label: "Porcentaje Afectado Sobre el Total de Ingreso",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
   },
-  {
-    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
-  },
-  {
-    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
-  },
-  {
-    label: "% del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Afectado al Fideicomiso del Ingreso o Fondo Correspondiente al Gobierno del Estado",
-  },
-  {
-    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
-  },
-  {
-    label:
-      "% Afectado al Fideicomiso del Ingreso o Fondo Correspondiente al Municipio",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
-  },
-  {
-    label: "% Afectado al Fideicomiso del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
-  },
+  // {
+  //   label: "Eliminar",
+  // },
 ];
 
 const headsSoporteDocumental = [
@@ -110,7 +84,7 @@ export function DetalleFideicomiso({
 }: {
   open: boolean;
   setOpen: Function;
-  fideicomiso: IDatosFideicomisoNew;
+  fideicomiso: IRegistro; // Adjusted type to match the expected structure
 }) {
   const [fileSelected, setFileSelected] = React.useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = React.useState(false);
@@ -190,8 +164,8 @@ export function DetalleFideicomiso({
             height={"17rem"}
           >
             <Typography sx={{
-               fontSize: "1.2rem",
-               fontFamily: "MontserratBold",
+              fontSize: "1.2rem",
+              fontFamily: "MontserratBold",
             }}>Datos Generales</Typography>
             <Divider color="lightGrey" sx={{ width: "80%" }}></Divider>
 
@@ -203,7 +177,7 @@ export function DetalleFideicomiso({
             }}>
               <Typography sx={{ ...queries.medium_text }}>
                 <strong> Número de Fideicomiso:</strong>{" "}
-                {fideicomiso.NumeroFideicomiso}
+                {fideicomiso.NumeroRegistro}
               </Typography>
 
               <Typography sx={{ ...queries.medium_text }}>
@@ -212,7 +186,7 @@ export function DetalleFideicomiso({
 
               <Typography sx={{ ...queries.medium_text }}>
                 <strong>Fecha de Fideicomiso:</strong>{" "}
-                {format(new Date(fideicomiso.FechaFideicomiso), "PPP", {
+                {format(new Date(fideicomiso?.FechaRegistro), "PPP", {
                   locale: es,
                 })}
               </Typography>
@@ -330,8 +304,12 @@ export function DetalleFideicomiso({
                 <TableHead>
                   <TableRow>
                     {headsTipoMovimiento.map((head, index) => (
-                      <StyledTableCell key={index}>
-                        <Typography sx={{ fontSize: "0.7rem", fontWeight: "700" }}>
+                      <StyledTableCell key={index} align="center">
+                        <Typography
+                        sx={{ 
+                          //fontSize: "0.7rem", 
+                          fontWeight: "bold" }}
+                        >
                           {head.label}
                         </Typography>
                       </StyledTableCell>
@@ -340,114 +318,75 @@ export function DetalleFideicomiso({
                 </TableHead>
                 <TableBody>
                   {JSON.parse(fideicomiso.TipoMovimiento).map(
-                    (row: IDeudorFideicomiso, index: number) => {
+                    (row: any, index: number) => {
                       return (
                         <StyledTableRow key={index}>
                           {/* ID */}
                           <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
+                            <Typography 
+                            //sx={{ fontSize: "0.8rem" }}
+                            >
                               {row?.id}
                             </Typography>
                           </StyledTableCell>
 
-                          {/* TIPO fideicomitente */}
+                          {/* TIPO MANDANTE  */}
                           <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.tipoFideicomitente.Descripcion}
+                            <Typography 
+                            //sx={{ fontSize: "0.8rem" }}
+                            >
+                              {row?.tipoFuente.Descripcion}
+                              {/* {row?.tipoFuente.Descripcion} */}
                             </Typography>
                           </StyledTableCell>
 
-                          {/* fideicomitente */}
                           <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
+                            <Typography 
+                           // sx={{ fontSize: "0.8rem" }}
+                            >
+                              {row?.fondoIngreso.Descripcion}
+                            </Typography>
+                          </StyledTableCell>
+
+                          {/* fideicomitente  */}
+                          <StyledTableCell align="center">
+                            <Typography 
+                            //sx={{ fontSize: "0.8rem" }}
+                            >
                               {row?.fideicomitente.Descripcion}
                             </Typography>
                           </StyledTableCell>
 
-                          {/* FUENTE DE PAGO */}
+
+
+                          {/* Porcentaje Afectado Sobre el Total de Ingreso */}
                           <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.tipoFuente.Descripcion}
-                            </Typography>
+                            {row.AfectadoTotalIngreso || ''}
+                            {/* <TextField
+                              type="number"
+                              disabled
+                              value={row.AfectadoTotalIngreso || ''}
+                              // onChange={(e) => {
+                              //   const newValue = Number(e.target.value);
+                              //   updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                              // }}
+                              inputProps={{ min: 0 }}
+                            /> */}
                           </StyledTableCell>
 
-                          {/* FONDO INGRESO GOBIERNO ESTATAL */}
+                          {/* Equivalencia Sin incluir el monto de municipios */}
                           <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.fondoIngresoGobiernoEstatal}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* FONDO INGRESO MUNICIPIOS */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.fondoIngresoMunicipios}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* FONDO INGRESO MUNICIPIO */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.fondoIngresoAsignadoMunicipio}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* INGRESO ORGANISMO */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.ingresoOrganismo}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* AFECTADO POR GOBIERNO ESTATAL */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.fondoIngresoAfectadoXGobiernoEstatal}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* AFECTACION GOBIERNO ESTATAL / 100 */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.afectacionGobiernoEstatalEntre100}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.acumuladoAfectacionGobiernoEstatalEntre100}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* AFECTADO POR MUNICIPIO */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.fondoIngresoAfectadoXMunicipio}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {
-                                row.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                              }
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* AFECTADO POR ORGANISMO */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.ingresoAfectadoXOrganismo}
-                            </Typography>
-                          </StyledTableCell>
-
-                          {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
-                          <StyledTableCell align="center">
-                            <Typography sx={{ fontSize: "0.8rem" }}>
-                              {row?.acumuladoAfectacionOrganismoEntre100}
-                            </Typography>
+                            {row.tipoFideicomitente.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
+                            {/* <TextField
+                              type="number"
+                              disabled
+                              value=
+                              // onChange={(e) => {
+                              //   const newValue = Number(e.target.value);
+                              //   updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                              // }}
+                              inputProps={{ min: 0 }}
+                            /> */}
                           </StyledTableCell>
                         </StyledTableRow>
                       );
@@ -510,25 +449,25 @@ export function DetalleFideicomiso({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                     
-                          <Tooltip title={"Mostrar vista previa del documento"}>
-                            <IconButton
-                              onClick={() => {
-                                setFileSelected(
-                                  `data:application/pdf;base64,${arr.filter((td: any) =>
-                                    td.NOMBREFORMATEADO.includes(
-                                      row.nombreArchivo
-                                    )
-                                  )[0].FILE
-                                  }`
-                                );
-                                setShowModalPrevia(true);
-                              }}
-                            >
-                              <FileOpenIcon />
-                            </IconButton>
-                          </Tooltip>
-                       
+
+                        <Tooltip title={"Mostrar vista previa del documento"}>
+                          <IconButton
+                            onClick={() => {
+                              setFileSelected(
+                                `data:application/pdf;base64,${arr.filter((td: any) =>
+                                  td.NOMBREFORMATEADO.includes(
+                                    row.nombreArchivo
+                                  )
+                                )[0].FILE
+                                }`
+                              );
+                              setShowModalPrevia(true);
+                            }}
+                          >
+                            <FileOpenIcon />
+                          </IconButton>
+                        </Tooltip>
+
                       </StyledTableCell>
                     </StyledTableRow>
                   );

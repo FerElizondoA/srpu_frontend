@@ -42,10 +42,10 @@ const headsNews: HeadSelect[] = [
     Label: "Tipo de Fuente",
   },
   {
-    Label: "Fondo o Ingreso",
+    Label: "Fuente de Pago",// Label: "Fondo o Ingreso",
   },
   {
-    Label: "Fideicomitente",
+    Label: "Ente Publico Obligado",//Label: "Fideicomitente",
   },
   {
     Label: "Porcentaje Afectado Sobre el Total de Ingreso",
@@ -152,6 +152,10 @@ export function AsignarFuente({
     (state) => state.addPorcentaje
   );
 
+  const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+    (state) => state.tipoMecanismoVehiculoPago
+  );
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -178,6 +182,11 @@ export function AsignarFuente({
     (state) => state.removeTablaAsignarFuente
   );
 
+  const updateTipoMovimientoField: Function = useLargoPlazoStore(
+    (state) => state.updateTipoMovimientoField
+  );
+
+
 
 
   const [opcionesFiltradasTipoFuente, setOpcionesFiltradasTipoFuente] = useState<ICatalogo[]>([]);
@@ -201,8 +210,8 @@ export function AsignarFuente({
   //   }, [filtroCampoTipoFuente]);
 
   useEffect(() => {
-    console.log("✔️ tipoMovimientoFuentesPago actualizado", filtroCampoTipoFuente);
-  }, [filtroCampoTipoFuente]);
+    console.log(" tipoMecanismoVehiculoPago", tipoMecanismoVehiculoPago);
+  }, []);
 
 
   //   const filtradoOpcionesAsignarFuente = () => {
@@ -222,6 +231,23 @@ export function AsignarFuente({
 
   //     return [opcionesFiltradasTipoFuente];
   //   };
+
+  const [porcentajesTablaEnCeros, setPorcentajesTablaEnCeros] = useState<IDeudorFideicomisoNew[]>([]);
+
+  const agregarRegistrosAFideicomiso = (registro: any) => {
+      const registrosParaTabla = tablaAsignarFuenteNew.map((reg) => ({
+        ...reg,
+        AfectadoTotalIngreso: 0, // o ""
+        EquivalenciaCorrespondienteMunicipios: 0, // o ""
+      }));
+      setPorcentajesTablaEnCeros(registrosParaTabla);
+    };
+
+  useEffect(() => {
+    agregarRegistrosAFideicomiso(tablaAsignarFuenteNew)
+    console.log("✔️ tablaAsignarFuenteNew", tablaAsignarFuenteNew);
+  }, [tablaAsignarFuenteNew])
+
 
 
   return (
@@ -503,8 +529,19 @@ export function AsignarFuente({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaAsignarFuenteNew.map(
-                  (movimiento: IDeudorFideicomisoNew, index: number) => (
+                {porcentajesTablaEnCeros.map((movimiento: any, index: number) => {
+
+                  // const agregarRegistrosAFideicomiso = (registro: any) => {
+                  //   const registrosParaTabla = tablaAsignarFuenteNew.map((reg) => ({
+                  //     ...reg,
+                  //     AfectadoTotalIngreso: 0, // o ""
+                  //     EquivalenciaCorrespondienteMunicipios: 0, // o ""
+                  //   }));
+                  //   setPorcentajesTablaEnCeros(registrosParaTabla);
+                  // };
+
+                  return (
+
                     <StyledTableRow key={index}>
 
                       <StyledTableCell align="center">
@@ -520,19 +557,40 @@ export function AsignarFuente({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {movimiento.fideicomitente.Descripcion}
+                        {movimiento?.fideicomitente?.Descripcion ||
+                          movimiento?.mandatario?.Descripcion ||
+                          movimiento?.entePublicoObligado?.Descripcion}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        <TextField>
-
-                        </TextField>
+                        {/* Poner la funcion updateTipoMovimientoField en cada fuente de pago*/}
+                        <TextField
+                          type="number"
+                          value={movimiento.AfectadoTotalIngreso !== 0 ? movimiento.AfectadoTotalIngreso : ""}
+                          onChange={(e) => {
+                            const newValue = Number(e.target.value);
+                            updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                          }}
+                          inputProps={{ min: 0 }}
+                        />
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        <TextField>
-
-                        </TextField>
+                        <TextField
+                          type="number"
+                          disabled={movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() !== "gobierno estatal" ||
+                            movimiento?.tipoFideicomitente?.Descripcion?.toLowerCase() !== "gobierno estatal"
+                          }
+                          value={movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() === "gobierno estatal"
+                            ? (movimiento?.EquivalenciaCorrespondienteMunicipios || '')
+                            : movimiento?.tipoFideicomitente?.Descripcion?.toLowerCase() === "gobierno estatal"
+                              ? (movimiento?.EquivalenciaCorrespondienteMunicipios || '') : 0}
+                          onChange={(e) => {
+                            const newValue = Number(e.target.value);
+                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                          }}
+                          inputProps={{ min: 0 }}
+                        />
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -585,7 +643,7 @@ export function AsignarFuente({
                       <StyledTableCell />
                     </StyledTableRow>
                   )
-                )}
+                })}
               </TableBody>
             </Table>
 

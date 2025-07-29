@@ -38,6 +38,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { DetalleFideicomiso } from "../../components/fideicomisos/dialog/DetalleFideicomiso";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { BarraFiltros } from "../../generics/BarraFiltros";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 
 export interface IDatosFideicomiso {
   AcumuladoEstado: string;
@@ -58,10 +60,10 @@ export interface IDatosFideicomiso {
 }
 
 export interface IDatosFideicomisoNew {
-  SumAfectadoTotalIngreso: number;
-  SumEquivalenciaCorrespondienteMunicipios: number;
-  AcumuladoOrganismos: string;
-  CreadoPor: string;
+  // SumAfectadoTotalIngreso: number;
+  // SumEquivalenciaCorrespondienteMunicipios: number;
+  // AcumuladoOrganismos: string;
+  //  CreadoPor: string;
   Fiduciario: string;
   TipoFideicomiso: string;
   FechaCreacion: string;
@@ -69,10 +71,11 @@ export interface IDatosFideicomisoNew {
   Fideicomisario: string;
   Id: string;
   ModificadoPor: string;
-  NumeroFideicomiso: string;
+  NumeroRegistro: string;
+  //NumeroFideicomiso: string;
   SoporteDocumental: string;
   TipoMovimiento: string;
-  UltimaModificacion: string;
+  //UltimaModificacion: string;
 }
 
 interface Head {
@@ -99,9 +102,9 @@ const heads: Head[] = [
 
 export function Fideicomisos() {
   const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
-  const [fideicomisos, setFideicomisos] = useState<IDatosFideicomisoNew[]>([]);
+  const [fideicomisos, setFideicomisos] = useState<IRegistro[]>([]);
   const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<IDatosFideicomisoNew[]>(fideicomisos);
+    useState<IRegistro[]>(fideicomisos);
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -133,10 +136,10 @@ export function Fideicomisos() {
     // eslint-disable-next-line array-callback-return
     let ResultadoBusqueda = fideicomisos.filter((elemento) => {
       if (
-        elemento.NumeroFideicomiso.toString()
+        elemento.NumeroRegistro.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.FechaFideicomiso.toString()
+        elemento.FechaRegistro.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
@@ -163,11 +166,21 @@ export function Fideicomisos() {
     (state) => state.getSumaPorcentajeAcumulado
   );
 
-    const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
     (state) => state.setTablaPruebaEditarFideicomiso
   );
 
-  
+
+  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
+    (state) => state.getMecanismosVehiculosPago
+  );
+
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+
+
+
 
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -176,19 +189,20 @@ export function Fideicomisos() {
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   useEffect(() => {
-    getFideicomisos(setFideicomisos);
+    getMecanismosVehiculosPago("Fideicomisos", () => { })
+    //getFideicomisos(setFideicomisos);
     getTiposFideicomiso();
     getInstituciones();
     getSumaPorcentajeAcumulado("Fideicomisos");
   }, []);
 
   useEffect(() => {
-    setFideicomisoFiltrados(fideicomisos);
-  }, [fideicomisos]);
+    setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
+  }, [tablaMecanismoVehiculoPago]);
 
   useEffect(() => {
     if (busqueda.length !== 0) {
-      setFideicomisoFiltrados(fideicomisos);
+      setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
@@ -198,45 +212,51 @@ export function Fideicomisos() {
       cleanFideicomisoNew();
     }
     if (!openDialogEliminar) {
-      getFideicomisos(setFideicomisos);
+      getMecanismosVehiculosPago("Fideicomiso", () => { })
+      //getFideicomisos(setFideicomisos);
     }
   }, [openAgregarFideicomisos]);
 
   const [openDetalle, setOpenDetalle] = useState(false);
 
   const [detalleFideicomiso, setDetalleFideicomiso] =
-    useState<IDatosFideicomisoNew>({
-      SumAfectadoTotalIngreso: 0,
-      SumEquivalenciaCorrespondienteMunicipios: 0,
-      AcumuladoOrganismos: "",
-      CreadoPor: "",
-      Fiduciario: "",
-      TipoFideicomiso: "",
-      FechaCreacion: "",
-      FechaFideicomiso: "",
-      Fideicomisario: "",
-      Id: "",
-      ModificadoPor: "",
-      NumeroFideicomiso: "",
-      SoporteDocumental: "",
-      TipoMovimiento: "",
-      UltimaModificacion: "",
+    useState<IRegistro>({
 
-      // AcumuladoEstado: "",
-      // AcumuladoMunicipios: "",
-      // AcumuladoOrganismos: "",
-      // CreadoPor: "",
+      MecanismoPago: "",
+      Id: "",
+      NumeroRegistro: "",
+      FechaRegistro: "",
+
+      TipoFideicomiso: "",
+      Fiduciario: "",
+      Fideicomisario: "",
+
+      Mandatario: "",
+      Mandante: "",
+      TipoEntePublicoObligado: "",
+
+      CLABE: "",
+      Banco: "",
+      EntePublicoObligado: "",
+
+      TipoMovimiento: "",
+      SoporteDocumental: "",
+      // // Propiedades requeridas por IRegistro
+      // MecanismoPago: "",
+      // Mandatario: "",
+      // Mandante: "",
+      // TipoEntePublicoObligado: "",
+      // //FechaFideicomiso: "",
+      // // Propiedades originales
       // Fiduciario: "",
       // TipoFideicomiso: "",
-      // FechaCreacion: "",
-      // FechaFideicomiso: "",
+      // FechaRegistro: "",
       // Fideicomisario: "",
       // Id: "",
-      // ModificadoPor: "",
-      // NumeroFideicomiso: "",
+      // NumeroRegistro: "",
       // SoporteDocumental: "",
       // TipoMovimiento: "",
-      // UltimaModificacion: "",
+      // Puedes agregar aquí otras propiedades opcionales con valores por defecto si existen en IRegistro
     });
 
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
@@ -411,15 +431,15 @@ export function Fideicomisos() {
               </TableHead>
               <TableBody>
                 {fideicomisosFiltrados.map(
-                  (row: IDatosFideicomisoNew, index: number) => {
+                  (row: IRegistro, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          {row.NumeroFideicomiso}
+                          {row.NumeroRegistro}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {format(new Date(row.FechaFideicomiso), "PPP", {
+                          {format(new Date(row.FechaRegistro), "PPP", {
                             locale: es,
                           })}
                         </StyledTableCell>
@@ -450,8 +470,8 @@ export function Fideicomisos() {
                               type="button"
                               onClick={() => {
                                 console.log("ROWFIDEICOMISO", row);
-                                 let auxArray = JSON.parse(row.TipoMovimiento);
-                                 console.log("auxArray", auxArray);
+                                let auxArray = JSON.parse(row.TipoMovimiento);
+                                console.log("auxArray", auxArray);
 
                                 // auxArray.map((column: any) => {
                                 //   return (
@@ -473,9 +493,9 @@ export function Fideicomisos() {
                                 editarFideicomisoNew(
                                   row.Id,
                                   {
-                                    numeroFideicomiso: row.NumeroFideicomiso,
+                                    numeroFideicomiso: row.NumeroRegistro,
                                     fechaFideicomiso: new Date(
-                                      row.FechaFideicomiso
+                                      row.FechaRegistro
                                     ),
                                     tipoFideicomiso:
                                       catalogoTiposDeFideicomiso.filter(

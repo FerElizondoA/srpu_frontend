@@ -76,14 +76,27 @@ export interface FuenteDePagoLargoPlazoSlice {
   tipoMovimientoFuentesPago: IDeudorFideicomisoNew[],
   setTipoMovimientoFuentesPago: (tipoMovimientoFuentesPago: IDeudorFideicomisoNew[]) => void;
   cleanTipoMovimientoFuentesPago: () => void;
+
+  updateTipoMovimientoField: (
+    index: number,
+    field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>,
+    value: number
+  ) => void;
 }
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
 
-
-removeTablaAsignarFuente: (index: number) =>
+  updateTipoMovimientoField: (index, field, value) => {
+    set((state) => {
+      const updatedTabla = state.tablaAsignarFuenteNew.map((row, i) =>
+        i === index ? { ...row, [field]: value } : row
+      );
+      return { tablaAsignarFuenteNew: updatedTabla };
+    });
+  },
+  removeTablaAsignarFuente: (index: number) =>
     set((state) => ({
       tablaAsignarFuenteNew: state.tablaAsignarFuenteNew.filter(
         (_, i) => i !== index
@@ -168,7 +181,7 @@ removeTablaAsignarFuente: (index: number) =>
     }));
   },
 
-  getMecanismosVehiculosPago: (tabla: string, setState: Function) => {
+  getMecanismosVehiculosPago: (tabla: string, setState: Function) => { //Es este 
     axios
       .get(process.env.REACT_APP_APPLICATION_BACK + `/listaMecanismosDePago`, {
         params: { tabla: tabla },

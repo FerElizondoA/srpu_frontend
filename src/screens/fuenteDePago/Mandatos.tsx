@@ -42,6 +42,8 @@ import { BarraFiltros } from "../../generics/BarraFiltros";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -201,28 +203,57 @@ export function Mandatos() {
     );
   };
   useEffect(() => {
-    getMandatos(setMandatos);
+    getMecanismosVehiculosPago("Mandato", () => {})
+    //getMandatos(setMandatos);
   }, []);
 
 
-  const [detalleMandato, setDetalleMandato] = useState<IDatosMandatos>({
-    AcumuladoEstado: "",
-    AcumuladoMunicipios: "",
-    AcumuladoOrganismos: "",
-    CreadoPor: "",
-    Deleted: "",
-    FechaCreacion: "",
-    FechaMandato: "",
-    Id: "",
-    Mandatario: "",
+  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
+    (state) => state.getMecanismosVehiculosPago
+  );
+
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+
+  const [detalleMandato, setDetalleMandato] = useState<IRegistro>({
+
     MecanismoPago: "",
-    ModificadoPor: "",
-    MunicipioOrganismoMandante: "",
-    NumeroMandato: "",
-    SoporteDocumental: "",
+    Id: "",
+    NumeroRegistro: "",
+    FechaRegistro: "",
+
+    TipoFideicomiso: "",
+    Fiduciario: "",
+    Fideicomisario: "",
+
+    Mandatario: "",
+    Mandante: "",
     TipoEntePublicoObligado: "",
+
+    CLABE: "",
+    Banco: "",
+    EntePublicoObligado: "",
+
     TipoMovimiento: "",
-    UltimaModificacion: "",
+    SoporteDocumental: "",
+    // AcumuladoEstado: "",
+    // AcumuladoMunicipios: "",
+    // AcumuladoOrganismos: "",
+    // CreadoPor: "",
+    // Deleted: "",
+    // FechaCreacion: "",
+    // FechaMandato: "",
+    // Id: "",
+    // Mandatario: "",
+    // MecanismoPago: "",
+    // ModificadoPor: "",
+    // MunicipioOrganismoMandante: "",
+    // NumeroMandato: "",
+    // SoporteDocumental: "",
+    // TipoEntePublicoObligado: "",
+    // TipoMovimiento: "",
+    // UltimaModificacion: "",
   });
 
 
@@ -362,17 +393,17 @@ export function Mandatos() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mandatosFiltrados.map((row: IDatosMandatos, index: number) => {
+                {tablaMecanismoVehiculoPago.map((row: IRegistro, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
-                        {row.NumeroMandato}
+                        {row.NumeroRegistro}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {format(new Date(row.FechaMandato), "PPP", {
+                        {/* {format(new Date(row.FechaRegistro), "PPP", {
                           locale: es,
-                        })}
+                        })} */}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -384,7 +415,7 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.MunicipioOrganismoMandante}
+                        {row.Mandante}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -405,29 +436,30 @@ export function Mandatos() {
                             type="button"
                             onClick={() => {
                               let auxArray = JSON.parse(row.TipoMovimiento);
+                              console.log(auxArray)
 
-                              auxArray.map((column: any) => {
-                                return (
-                                  (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                    ).toString()),
-                                  (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                    ).toString()),
-                                  (column.acumuladoAfectacionOrganismoEntre100 =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                    ).toString())
-                                );
-                              });
+                              // auxArray.map((column: any) => {
+                              //   return (
+                              //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                              //       Number(
+                              //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                              //       ).toString()),
+                              //     (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                              //       Number(
+                              //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                              //       ).toString()),
+                              //     (column.acumuladoAfectacionOrganismoEntre100 =
+                              //       Number(
+                              //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                              //       ).toString())
+                              //   );
+                              // });
 
                               editarMandato(
                                 row.Id,
                                 {
-                                  numeroMandato: row.NumeroMandato,
-                                  fechaMandato: new Date(row.FechaMandato),
+                                  numeroMandato: row.NumeroRegistro,
+                                  fechaMandato: new Date(row.FechaRegistro),
                                   mandatario: catalogoOrganismos.filter(
                                     (v, index) =>
                                       v.Descripcion === row.Mandatario
@@ -435,7 +467,7 @@ export function Mandatos() {
                                   mandante: catalogoOrganismos.filter(
                                     (v, index) =>
                                       v.Descripcion ===
-                                      row.MunicipioOrganismoMandante
+                                      row.Mandante
                                   )[0],
                                 },
                                 auxArray,
